@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "route": "signature-requests/{signatureRequestId}/status",
+      "methods": ["put"]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "$return"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "SetSignatureRequestStatus"
+}

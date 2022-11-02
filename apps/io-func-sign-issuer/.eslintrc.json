@@ -1,0 +1,16 @@
+{
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "ignorePatterns": ["Dangerfile.js"],
+  "extends": ["@pagopa/eslint-config/recommended"],
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts"],
+      "rules": {
+        "functional/no-let": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "uploadedDocument",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "uploaded-documents/{name}",
+      "connection": "StorageAccountConnectionString"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "SetSignatureRequestStatus"
+}
