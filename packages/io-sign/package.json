@@ -1,0 +1,23 @@
+{
+  "name": "@internal/io-sign",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "exports": {
+    "./": "./src/"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@pagopa/ts-commons": "^10.10.0",
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.19",
+    "io-ts-types": "^0.5.19",
+    "ulid": "^2.3.0"
+  }
+}

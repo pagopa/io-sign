@@ -1,0 +1,22 @@
+{
+  "name": "@internal/io-services",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./": "./src/"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./src/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@internal/io-sign": "*",
+    "@pagopa/io-functions-services-sdk": "^3.16.0",
+    "@pagopa/ts-commons": "^10.10.0",
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.19"
+  }
+}

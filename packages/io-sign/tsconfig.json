@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2021", "DOM"],
+    "module": "commonjs",
+    "target": "ES2021",
+    "strict": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "lib",
+    "noEmitOnError": true,
+    "composite": true,
+    "sourceMap": true
+  }
+}
