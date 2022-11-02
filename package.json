@@ -1,0 +1,19 @@
+{
+  "name": "io-sign",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "npm run test --ws",
+    "format": "npm run format --ws",
+    "lint": "npm run lint --ws"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.4829",
+    "tsup": "^6.3.0",
+    "typescript": "^4.8.4"
+  }
+}
