@@ -69,7 +69,7 @@ export const newSignatureRequest = (
 });
 
 class InvalidExpiryDateError extends Error {
-  constructor(dateProvided: Date) {
+  constructor() {
     super("... invalid expiry date");
   }
 }
@@ -83,7 +83,7 @@ export const withExpiryDate =
       E.right(request),
       E.filterOrElse(
         isExpiryDateValid(expiryDate),
-        () => new InvalidExpiryDateError(expiryDate)
+        () => new InvalidExpiryDateError()
       ),
       E.map((request) => ({
         ...request,

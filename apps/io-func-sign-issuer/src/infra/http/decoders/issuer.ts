@@ -14,8 +14,8 @@ import {
 
 const requireSubscriptionId = flow(
   header("X-Subscription-Id"),
-  E.fromOption(() => new Error("missing header blablabla")),
-  E.chainW(validate(Issuer.props.subscriptionId, "invalid subscription id"))
+  E.fromOption(() => new Error("Missing X-Subscription-Id header")),
+  E.chainW(validate(Issuer.props.subscriptionId, "Invalid subscription id"))
 );
 
 export const makeRequireIssuer = (

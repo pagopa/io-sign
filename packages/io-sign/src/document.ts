@@ -109,7 +109,7 @@ export const Document = t.intersection([
 
 export type Document = t.TypeOf<typeof Document>;
 
-export const document = (metadata: DocumentMetadata): Document => ({
+export const newDocument = (metadata: DocumentMetadata): Document => ({
   id: id(),
   status: "WAIT_FOR_UPLOAD",
   metadata,

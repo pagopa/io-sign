@@ -22,6 +22,7 @@
     "io-ts": "^2.2.19"
   },
   "devDependencies": {
-    "@pagopa/openapi-codegen-ts": "^12.0.1"
+    "@pagopa/openapi-codegen-ts": "^12.0.1",
+    "vitest": "^0.24.5"
   }
 }

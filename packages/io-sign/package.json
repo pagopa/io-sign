@@ -19,5 +19,11 @@
     "io-ts": "^2.2.19",
     "io-ts-types": "^0.5.19",
     "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.24.5"
+  },
+  "scripts": {
+    "test": "vitest run"
   }
 }

@@ -49,7 +49,9 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
   return createHandler(
     decodeHttpRequest,
     createDossierUseCase,
-    error,
+    (e) => {
+      console.log(e);
+    },
     encodeHttpResponse
   );
 };

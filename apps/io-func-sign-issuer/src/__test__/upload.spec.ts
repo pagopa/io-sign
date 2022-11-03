@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { it, describe, expect } from "vitest";
 
 import { id as newId } from "@internal/io-sign/id";
 
