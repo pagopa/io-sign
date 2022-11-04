@@ -21,6 +21,7 @@ import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
+import { sequenceS } from "fp-ts/lib/Apply";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -42,27 +43,23 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  ({ clause: { title, type }, attrs }, ctx) => {
-    const clause = {
-      title,
-      type: toClauseType(type),
-    };
-    if ("unique_name" in attrs) {
-      return pipe(
-        NonEmptyString.decode(attrs.unique_name),
-        E.map((uniqueName) => ({ uniqueName })),
-        E.map((attributes) => ({ clause, attributes })),
-        E.chain(t.success),
-        E.alt(() =>
-          t.failure(attrs.unique_name, ctx, "uniqueName should not be empty")
-        )
-      );
-    }
-    return t.success({
-      clause,
-      attributes: attrs,
-    });
-  },
+  ({ clause: { title, type }, attrs }, ctx) =>
+    sequenceS(E.Apply)({
+      clause: pipe(
+        SignatureField.props.clause.props.title.decode(title),
+        E.map((title) => ({
+          title,
+          type: toClauseType(type),
+        }))
+      ),
+      attributes:
+        "unique_name" in attrs
+          ? pipe(
+              NonEmptyString.decode(attrs.unique_name),
+              E.map((uniqueName) => ({ uniqueName }))
+            )
+          : E.right(attrs),
+    }),
   SignatureFieldToApiModel.encode
 );
 
@@ -77,9 +74,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
     pipe(
       signature_fields,
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
-      E.map((signatureFields) => ({ title, signatureFields })),
-      E.chain(t.success),
-      E.alt(() => t.failure(signature_fields, ctx, "invalid signature_fields"))
+      E.map((signatureFields) => ({ title, signatureFields }))
     ),
   DocumentMetadataToApiModel.encode
 );

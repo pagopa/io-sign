@@ -20,8 +20,10 @@ const ClauseType = t.keyof({
   OPTIONAL: null,
 });
 
+const ClauseTitle = WithinRangeString(10, 80);
+
 const Clause = t.type({
-  title: WithinRangeString(3, 15),
+  title: ClauseTitle,
   type: ClauseType,
 });
 
