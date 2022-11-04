@@ -2,11 +2,6 @@ import { it, describe, expect } from "vitest";
 
 import { id as newId } from "@internal/io-sign/id";
 
-import { newDossier } from "../dossier";
-import { newIssuer } from "../issuer";
-import { newSignatureRequest, getDocument } from "../signature-request";
-import { newUploadMetadata } from "../upload";
-
 import * as E from "fp-ts/lib/Either";
 import { flow, pipe } from "fp-ts/lib/function";
 
@@ -16,6 +11,10 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { newSigner } from "@internal/io-sign/signer";
 import { validate } from "@pagopa/handler-kit/lib/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
+import { newUploadMetadata } from "../upload";
+import { newSignatureRequest, getDocument } from "../signature-request";
+import { newIssuer } from "../issuer";
+import { newDossier } from "../dossier";
 
 describe("UploadMetadata", () => {
   describe("newUploadMetadata", () => {

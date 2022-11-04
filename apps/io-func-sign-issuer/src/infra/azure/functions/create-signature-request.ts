@@ -1,8 +1,3 @@
-import {
-  CreateSignatureRequestPayload,
-  makeCreateSignatureRequest,
-} from "../../../app/use-cases/create-signature-request";
-
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
@@ -17,19 +12,23 @@ import {
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe, flow } from "fp-ts/lib/function";
+import { signerNotFoundError } from "@internal/io-sign/signer";
+import * as azure from "@pagopa/handler-kit/lib/azure";
+import { createHandler } from "@pagopa/handler-kit";
+import type { Database as CosmosDatabase } from "@azure/cosmos";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { SignatureRequest } from "../../../signature-request";
 import { makeGetDossier } from "../cosmos/dossier";
 
 import { dossierNotFoundError } from "../../../dossier";
-import { GetSigner, signerNotFoundError } from "@internal/io-sign/signer";
-import * as azure from "@pagopa/handler-kit/lib/azure";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { SignatureRequestDetailView } from "../../http/models/SignatureRequestDetailView";
-import { createHandler } from "@pagopa/handler-kit";
 
-import type { Database as CosmosDatabase } from "@azure/cosmos";
+import {
+  CreateSignatureRequestPayload,
+  makeCreateSignatureRequest,
+} from "../../../app/use-cases/create-signature-request";
 
 import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";

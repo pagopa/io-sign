@@ -1,5 +1,4 @@
 import { Id, id as newId } from "@internal/io-sign/id";
-import { Issuer } from "./issuer";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -8,7 +7,6 @@ import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
 
 import { Signer } from "@internal/io-sign/signer";
-import { Dossier } from "./dossier";
 
 import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
@@ -25,6 +23,8 @@ import {
 import { EntityNotFoundError } from "@internal/io-sign/error";
 
 import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
+import { Dossier } from "./dossier";
+import { Issuer } from "./issuer";
 
 export const SignatureRequest = t.type({
   id: Id,
@@ -97,6 +97,8 @@ export const getDocument =
       request.documents,
       findFirst((document) => document.id === id)
     );
+
+const documentNotFoundError = new EntityNotFoundError("Document");
 
 export const replaceDocument =
   (id: Document["id"], updated: Document) =>
@@ -208,34 +210,44 @@ const onDraftStatus =
         return pipe(
           request,
           getDocument(action.payload.documentId),
-          E.fromOption(() => new Error("document not found")),
+          E.fromOption(() => documentNotFoundError),
           E.chain(startValidation),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
-          E.chain(E.fromOption(() => new Error("error updating the document")))
+          E.chain(
+            E.fromOption(() => new Error("Unable to start the validation"))
+          )
         );
       case "MARK_DOCUMENT_AS_READY":
         return pipe(
           request,
           getDocument(action.payload.documentId),
-          E.fromOption(() => new Error("document not found")),
+          E.fromOption(() => documentNotFoundError),
           E.chain(setReadyStatus(action.payload.url)),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
-          E.chain(E.fromOption(() => new Error("error updating the document")))
+          E.chain(
+            E.fromOption(
+              () => new Error("Unable to mark the document as READY")
+            )
+          )
         );
       case "MARK_DOCUMENT_AS_REJECTED":
         return pipe(
           request,
           getDocument(action.payload.documentId),
-          E.fromOption(() => new Error("document not found")),
+          E.fromOption(() => documentNotFoundError),
           E.chain(setRejectedStatus(action.payload.reason)),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
-          E.chain(E.fromOption(() => new Error("error updating the document")))
+          E.chain(
+            E.fromOption(
+              () => new Error("Unable to mark the document as REJECTED")
+            )
+          )
         );
       default:
         return E.left(
@@ -273,19 +285,17 @@ const onReadyStatus =
 const onWaitForSignatureStatus =
   (action: SignatureRequestAction) =>
   (request: SignatureRequest): E.Either<Error, SignatureRequest> => {
-    switch (action.name) {
-      case "MARK_AS_SIGNED":
-        return E.right({
-          ...request,
-          status: "SIGNED",
-        });
-      default:
-        return E.left(
-          new ActionNotAllowedError(
-            "This operation is prohibited if the signature request is in WAIT_FOR_SIGNATURE status"
-          )
-        );
+    if (action.name === "MARK_AS_SIGNED") {
+      return E.right({
+        ...request,
+        status: "SIGNED",
+      });
     }
+    return E.left(
+      new ActionNotAllowedError(
+        "This operation is prohibited if the signature request is in WAIT_FOR_SIGNATURE status"
+      )
+    );
   };
 
 export const markAsReady = dispatch({ name: "MARK_AS_READY" });

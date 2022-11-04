@@ -7,5 +7,5 @@ export default defineConfig({
   clean: true,
   minify: false,
   noExternal: [/^@internal\//],
-  target: "node16"
+  target: "node16",
 });

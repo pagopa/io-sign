@@ -1,5 +1,3 @@
-import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-read";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
@@ -8,13 +6,14 @@ import * as RE from "fp-ts/lib/ReaderEither";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { flow, pipe } from "fp-ts/lib/function";
 import { body, error, HttpRequest } from "@pagopa/handler-kit/lib/http";
-import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 
 import { createHandler } from "@pagopa/handler-kit";
 
 import { Database as CosmosDatabase } from "@azure/cosmos";
+import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
+import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
+import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-read";
 
 import {
   makeGetSignatureRequest,

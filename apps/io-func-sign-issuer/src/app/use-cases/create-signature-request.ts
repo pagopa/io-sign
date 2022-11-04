@@ -1,10 +1,10 @@
 import { Signer } from "@internal/io-sign/signer";
-import { Dossier } from "../../dossier";
 
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
+import { Dossier } from "../../dossier";
 import {
   defaultExpiryDate,
   InsertSignatureRequest,

@@ -7,9 +7,9 @@ import { error, success } from "@pagopa/handler-kit/lib/http";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { flow } from "fp-ts/lib/function";
+import { createHandler } from "@pagopa/handler-kit";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { SignatureRequestDetailView } from "../../http/models/SignatureRequestDetailView";
-import { createHandler } from "@pagopa/handler-kit";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";

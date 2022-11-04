@@ -15,13 +15,13 @@ import { flow, pipe } from "fp-ts/lib/function";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import * as TE from "fp-ts/lib/TaskEither";
-import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 import { validate } from "@pagopa/handler-kit/lib/validation";
-
 import * as O from "fp-ts/lib/Option";
+import { createHandler } from "@pagopa/handler-kit";
+import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
+
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
-import { createHandler } from "@pagopa/handler-kit";
 import { mockGetSignerByFiscalCode } from "../../__mocks__/signer";
 
 const makeGetSignerByFiscalCodeHandler = () => {

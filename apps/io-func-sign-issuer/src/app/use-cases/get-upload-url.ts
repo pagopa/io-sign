@@ -1,5 +1,6 @@
 import { Document } from "@internal/io-sign/document";
 import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/lib/TaskEither";
 import { SignatureRequest } from "../../signature-request";
 
 import {
@@ -7,8 +8,6 @@ import {
   InsertUploadMetadata,
   newUploadMetadata,
 } from "../../upload";
-
-import * as TE from "fp-ts/lib/TaskEither";
 
 export type GetUploadUrlPayload = {
   signatureRequest: SignatureRequest;

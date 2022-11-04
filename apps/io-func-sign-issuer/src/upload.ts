@@ -2,8 +2,6 @@ import { Document } from "@internal/io-sign/document";
 import { Id, id as newId } from "@internal/io-sign/id";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
-import { Issuer } from "./issuer";
-import { getDocument, SignatureRequest } from "./signature-request";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
@@ -12,6 +10,8 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { EntityNotFoundError } from "@internal/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
+import { getDocument, SignatureRequest } from "./signature-request";
+import { Issuer } from "./issuer";
 
 export const UploadMetadata = t.intersection([
   t.type({

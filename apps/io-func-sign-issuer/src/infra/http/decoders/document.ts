@@ -1,37 +1,24 @@
 import { body } from "@pagopa/handler-kit/lib/http";
-import { validate, ValidationError } from "@pagopa/handler-kit/lib/validation";
+import { validate } from "@pagopa/handler-kit/lib/validation";
 
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 
-import { CreateDossierBody } from "../models/CreateDossierBody";
-import { DocumentMetadataList } from "../models/DocumentMetadataList";
-
-import { fold } from "fp-ts/lib/boolean";
-
 import * as tx from "io-ts-types";
 
-import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
-
 import * as t from "io-ts";
-import { DocumentMetadata, Document } from "@internal/io-sign/document";
+import { DocumentMetadata } from "@internal/io-sign/document";
+
+import { SignatureField } from "@internal/io-sign/document";
+
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
-import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
+import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
-import {
-  SignatureField,
-  SignatureFieldAttributes,
-  SignatureFieldToBeCreatedAttributes,
-} from "@internal/io-sign/document";
-
-import * as D from "io-ts/lib/Decoder";
-
-import { sequenceS } from "fp-ts/lib/Apply";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { Clause, TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { CreateDossierBody } from "../models/CreateDossierBody";
+import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
 

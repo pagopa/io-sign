@@ -4,13 +4,6 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
-
-import {
-  makeGetUploadUrl as makeGetUploadUrlUseCase,
-  GetUploadUrlPayload,
-} from "../../../app/use-cases/get-upload-url";
-
 import { flow } from "fp-ts/lib/function";
 import {
   error,
@@ -22,16 +15,20 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@pagopa/handler-kit/lib/validation";
 import { Document } from "@internal/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
-import { UploadUrlToApiModel } from "../../http/encoders/upload";
+import { Database as CosmosDatabase } from "@azure/cosmos";
+import { ContainerClient } from "@azure/storage-blob";
 import { UploadUrl } from "../../http/models/UploadUrl";
-import { AzureFunction } from "@azure/functions";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
-import { Database as CosmosDatabase } from "@azure/cosmos";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 
 import { makeGetUploadUrl } from "../../azure/storage/upload";
-import { ContainerClient } from "@azure/storage-blob";
+import {
+  makeGetUploadUrl as makeGetUploadUrlUseCase,
+  GetUploadUrlPayload,
+} from "../../../app/use-cases/get-upload-url";
+import { UploadUrlToApiModel } from "../../http/encoders/upload";
+import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
 
 const makeGetUploadUrlHandler = (
@@ -88,4 +85,4 @@ export const makeGetUploadUrlAzureFunction = (
 ) => {
   const handler = makeGetUploadUrlHandler(db, uploadedContainerClient);
   return azure.unsafeRun(handler);
-}
+};

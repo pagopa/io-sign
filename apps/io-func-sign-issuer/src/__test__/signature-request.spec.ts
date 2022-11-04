@@ -2,11 +2,11 @@ import { describe, it, test, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import { newSigner } from "@internal/io-sign/signer";
+import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newIssuer } from "../issuer";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
-import { newSigner } from "@internal/io-sign/signer";
-import { addDays, isEqual, subDays } from "date-fns/fp";
 
 const issuer = newIssuer("my-sub-id");
 

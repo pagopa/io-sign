@@ -1,11 +1,4 @@
 import {
-  GetSignatureRequest,
-  InsertSignatureRequest,
-  UpsertSignatureRequest,
-  SignatureRequest,
-} from "../../../signature-request";
-
-import {
   CosmosdbModel,
   BaseModel,
   CosmosResource,
@@ -16,6 +9,12 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
+import {
+  GetSignatureRequest,
+  InsertSignatureRequest,
+  UpsertSignatureRequest,
+  SignatureRequest,
+} from "../../../signature-request";
 import { toCosmosDatabaseError } from "./errors";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);

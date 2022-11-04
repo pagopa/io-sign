@@ -11,11 +11,11 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
 import { validate } from "@pagopa/handler-kit/lib/validation";
+import { sequenceS } from "fp-ts/lib/Apply";
+import { createHandler } from "@pagopa/handler-kit";
 import { Dossier, dossierNotFoundError } from "../../../dossier";
 import { makeGetDossier } from "../cosmos/dossier";
-import { sequenceS } from "fp-ts/lib/Apply";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
-import { createHandler } from "@pagopa/handler-kit";
 import { DossierToApiModel } from "../../http/encoders/dossier";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 

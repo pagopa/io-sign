@@ -1,14 +1,12 @@
-import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
-import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
-
 import {
   SignatureField,
   SignatureFieldAttributes,
   SignatureFieldToBeCreatedAttributes,
 } from "@internal/io-sign/document";
-
 import * as E from "io-ts/lib/Encoder";
+import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
+import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
+import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
 
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 

@@ -1,10 +1,4 @@
 import {
-  GetUploadMetadata,
-  InsertUploadMetadata,
-  UploadMetadata,
-} from "../../../upload";
-
-import {
   CosmosdbModel,
   BaseModel,
   CosmosResource,
@@ -15,7 +9,12 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
-import { x } from "pdfkit";
+
+import {
+  GetUploadMetadata,
+  InsertUploadMetadata,
+  UploadMetadata,
+} from "../../../upload";
 import { toCosmosDatabaseError } from "./errors";
 
 const NewUploadMetadata = t.intersection([UploadMetadata, BaseModel]);

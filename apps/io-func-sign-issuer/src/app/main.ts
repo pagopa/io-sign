@@ -1,5 +1,3 @@
-import { getConfigFromEnvironment } from "./config";
-
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
@@ -14,6 +12,7 @@ import { makeGetSignerByFiscalCodeAzureFunction } from "../infra/azure/functions
 import { makeGetUploadUrlAzureFunction } from "../infra/azure/functions/get-upload-url";
 import { makeSetSignatureRequestStatusAzureFunction } from "../infra/azure/functions/set-signature-request-status";
 import { makeValidateUploadAzureFunction } from "../infra/azure/functions/validate-upload";
+import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),

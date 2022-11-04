@@ -1,3 +1,4 @@
+import * as E from "io-ts/lib/Encoder";
 import {
   SignatureRequestDetailView as SignatureRequestApiModel,
   StatusEnum as SignatureRequestStatusEnum,
@@ -5,7 +6,6 @@ import {
 
 import { SignatureRequest } from "../../../signature-request";
 
-import * as E from "io-ts/lib/Encoder";
 import { DocumentToApiModel } from "./document";
 
 const toApiModelEnum = (

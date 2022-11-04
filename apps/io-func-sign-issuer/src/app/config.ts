@@ -3,21 +3,20 @@ import * as t from "io-ts";
 import { pipe } from "fp-ts/function";
 import * as RE from "fp-ts/lib/ReaderEither";
 
+import { sequenceS } from "fp-ts/lib/Apply";
+import {
+  PdvTokenizerConfig,
+  getPdvTokenizerConfigFromEnvironment,
+} from "@internal/pdv-tokenizer/config";
 import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
 
-import { sequenceS } from "fp-ts/lib/Apply";
 import {
   CosmosConfig,
   getCosmosConfigFromEnvironment,
 } from "../infra/azure/cosmos/config";
-
-import {
-  PdvTokenizerConfig,
-  getPdvTokenizerConfigFromEnvironment,
-} from "@internal/pdv-tokenizer/config";
 
 export const Config = t.type({
   azure: t.type({

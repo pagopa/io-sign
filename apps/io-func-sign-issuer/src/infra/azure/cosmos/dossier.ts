@@ -2,18 +2,16 @@ import * as t from "io-ts";
 
 import * as cosmos from "@azure/cosmos";
 
-import { Dossier, GetDossier, InsertDossier } from "../../../dossier";
-
 import {
   CosmosdbModel,
   BaseModel,
   CosmosResource,
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
-import { toCosmosDatabaseError } from "./errors";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
+import { Dossier, GetDossier, InsertDossier } from "../../../dossier";
+import { toCosmosDatabaseError } from "./errors";
 
 const NewDossier = t.intersection([Dossier, BaseModel]);
 type NewDossier = t.TypeOf<typeof NewDossier>;

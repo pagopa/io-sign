@@ -1,19 +1,16 @@
+import { identity, pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/lib/TaskEither";
+import * as E from "fp-ts/lib/Either";
+import { sequenceS } from "fp-ts/lib/Apply";
+import { IsUploaded, MoveUploadedDocument, UploadMetadata } from "../../upload";
 import {
   GetSignatureRequest,
-  markAsReady,
   markDocumentAsReady,
   markDocumentAsRejected,
   signatureRequestNotFoundError,
   startValidationOnDocument,
   UpsertSignatureRequest,
 } from "../../signature-request";
-
-import { IsUploaded, MoveUploadedDocument, UploadMetadata } from "../../upload";
-
-import { identity, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-import { sequenceS } from "fp-ts/lib/Apply";
 
 export const makeValidateUpload =
   (

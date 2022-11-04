@@ -1,18 +1,9 @@
 import {
-  DeleteUploadMetadata,
-  GetUploadUrl,
-  IsUploaded,
-  MoveUploadedDocument,
-  UploadUrl,
-} from "../../../upload";
-
-import {
   BlobClient,
   ContainerClient,
   SASProtocol,
   BlobSASPermissions,
   BlobGenerateSasUrlOptions,
-  CopyPollerBlobClient,
 } from "@azure/storage-blob";
 
 import * as TE from "fp-ts/lib/TaskEither";
@@ -21,6 +12,13 @@ import { pipe } from "fp-ts/lib/function";
 
 import { addMinutes } from "date-fns";
 import { validate } from "@pagopa/handler-kit/lib/validation";
+import {
+  DeleteUploadMetadata,
+  GetUploadUrl,
+  IsUploaded,
+  MoveUploadedDocument,
+  UploadUrl,
+} from "../../../upload";
 
 export const defaultBlobGenerateSasUrlOptions: BlobGenerateSasUrlOptions = {
   permissions: BlobSASPermissions.parse("racw"),

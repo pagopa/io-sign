@@ -12,5 +12,8 @@
         "functional/no-let": "off"
       }
     }
-  ]
+  ],
+  "rules": {
+    "max-classes-per-file": "off"
+  }
 }

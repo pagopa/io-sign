@@ -1,11 +1,11 @@
 import * as E from "io-ts/lib/Encoder";
 
+import { Document, DocumentMetadata } from "@internal/io-sign/document";
 import { DocumentDetailView as DocumentApiModel } from "../models/DocumentDetailView";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
-import { Document, DocumentMetadata } from "@internal/io-sign/document";
-import { SignatureFieldToApiModel } from "./signature-field";
 import { StatusEnum as DocumentStatusEnum } from "../models/Document";
+import { SignatureFieldToApiModel } from "./signature-field";
 
 export const DocumentMetadataToApiModel: E.Encoder<
   DocumentMetadataApiModel,

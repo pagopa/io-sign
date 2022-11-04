@@ -5,18 +5,14 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as t from "io-ts";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
-import {
-  GetUploadMetadata,
-  UploadMetadata,
-  uploadMetadataNotFoundError,
-} from "../../../upload";
 
 import { last } from "fp-ts/ReadonlyNonEmptyArray";
 import { split } from "fp-ts/string";
 import { validate } from "@pagopa/handler-kit/lib/validation";
-import { makeGetUploadMetadata } from "../cosmos/upload";
-
 import { Database as CosmosDatabase } from "@azure/cosmos";
+import { ContainerClient } from "@azure/storage-blob";
+import { createHandler } from "@pagopa/handler-kit";
+import { makeGetUploadMetadata } from "../cosmos/upload";
 
 import { makeValidateUpload } from "../../../app/use-cases/validate-upload";
 
@@ -26,15 +22,22 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeIsUploaded, makeMoveUploadedDocument } from "../storage/upload";
-import { ContainerClient } from "@azure/storage-blob";
-import { createHandler } from "@pagopa/handler-kit";
+import {
+  GetUploadMetadata,
+  UploadMetadata,
+  uploadMetadataNotFoundError,
+} from "../../../upload";
 
 export const extractFileNameFromURI = flow(split("/"), last);
 
 const makeRequireUploadMetadata =
   (
     getUploadMetadata: GetUploadMetadata
-  ): RTE.ReaderTaskEither<azure.Blob<{}>, Error, UploadMetadata> =>
+  ): RTE.ReaderTaskEither<
+    azure.Blob<Record<string, never>>,
+    Error,
+    UploadMetadata
+  > =>
   (blob) =>
     pipe(
       extractFileNameFromURI(blob.uri),

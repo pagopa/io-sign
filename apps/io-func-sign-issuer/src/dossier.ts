@@ -10,9 +10,8 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { Id, id as newId } from "@internal/io-sign/id";
 import { DocumentMetadata } from "@internal/io-sign/document";
 
-import { Issuer } from "./issuer";
-
 import { EntityNotFoundError } from "@internal/io-sign/error";
+import { Issuer } from "./issuer";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
 
