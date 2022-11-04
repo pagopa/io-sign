@@ -20,7 +20,7 @@ const ClauseType = t.keyof({
   OPTIONAL: null,
 });
 
-const ClauseTitle = WithinRangeString(10, 80);
+const ClauseTitle = WithinRangeString(5, 80);
 
 const Clause = t.type({
   title: ClauseTitle,
