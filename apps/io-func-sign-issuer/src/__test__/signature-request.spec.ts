@@ -60,21 +60,4 @@ describe("SignatureRequest", () => {
       ).toBe(true);
     });
   });
-
-  /*describe("replaceDocument", () => {
-    it("should replace the specified document", () => {});
-    it("should return an error when the document does not exists", () => {});
-  });
-
-  describe("markAsReady", () => {
-    it('should mark as "READY" only request with "DRAFT" status', () => {});
-    it('should return an error if at least one document is not on "READY" status', () => {});
-  });
-
-  describe("markAsWaitForSignature", () => {});
-  describe("markAsSigned", () => {});
-
-  describe("startValidationOnDocuemnt", () => {});
-  describe("markDocumentAsReady", () => {});
-  describe("markDocumentAsRejected", () => {});*/
 });
