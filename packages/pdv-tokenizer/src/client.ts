@@ -17,7 +17,7 @@ type PdvTokenizerClient = Client;
 
 export const createPdvTokenizerClient = (
   baseUrl: string,
-  apiKey: string, // TODO: set api_key property with "withDefault"
+  apiKey: string,
   timeout = 1000 as Millisecond
 ): PdvTokenizerClient =>
   createClient({

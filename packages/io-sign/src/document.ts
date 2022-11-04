@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-small-switch */
+
 import * as t from "io-ts";
 
 import * as E from "fp-ts/lib/Either";
@@ -11,8 +13,8 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
-import { id, Id } from "./id";
 import { pipe } from "fp-ts/lib/function";
+import { id, Id } from "./id";
 
 const ClauseType = t.keyof({
   REQUIRED: null,

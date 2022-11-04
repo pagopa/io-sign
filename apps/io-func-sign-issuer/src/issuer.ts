@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 
-import { Id, id as newId } from "@internal/io-sign/id";
+import { Id, newId } from "@internal/io-sign/id";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";

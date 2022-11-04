@@ -1,9 +1,9 @@
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
-import { Id, id as newId } from "./id";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
+import { Id, id as newId } from "./id";
 import { EntityNotFoundError } from "./error";
 
 export const SignerId = Id;

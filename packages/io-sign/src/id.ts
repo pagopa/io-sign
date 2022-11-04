@@ -6,3 +6,4 @@ export const Id = NonEmptyString;
 export type Id = NonEmptyString;
 
 export const id = (): Id => ulid() as Id;
+export const newId = (): Id => ulid() as Id;

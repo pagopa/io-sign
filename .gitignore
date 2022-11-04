@@ -8,6 +8,7 @@ bin
 obj
 models
 node_modules
+.turbo
 
 # Azurite Files (note - https://github.com/Azure/Azurite/pull/1061)
 __azurite_db_blob_extent__.json

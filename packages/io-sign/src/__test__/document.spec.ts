@@ -1,4 +1,7 @@
 import { describe, it, expect } from "vitest";
+
+import { identity, pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
 import {
   DocumentMetadata,
   newDocument,
@@ -6,9 +9,6 @@ import {
   markAsReady,
   markAsRejected,
 } from "../document";
-
-import { identity, pipe } from "fp-ts/lib/function";
-import * as E from "fp-ts/lib/Either";
 
 const metadata: DocumentMetadata = {
   title: "my test document",
@@ -23,27 +23,24 @@ describe("Document", () => {
     });
   });
   describe("startValidation", () => {
-    it(
-      'should not start validation on document when is already in "WAIT_FOR_VALIDATION" status'
-    ),
-      () => {
-        const document = newDocument(metadata);
-        const maybeWaitForValidationDocument = startValidation(document);
-        expect(
-          pipe(
-            maybeWaitForValidationDocument,
-            E.map((doc) => doc.status),
-            E.getOrElse((e) => e.message)
-          )
-        ).toBe("WAIT_FOR_VALIDATION");
-        expect(
-          pipe(
-            maybeWaitForValidationDocument,
-            E.chain(startValidation),
-            E.getOrElseW(identity)
-          )
-        ).toBeInstanceOf(Error);
-      };
+    it('should not start validation on document when is already in "WAIT_FOR_VALIDATION" status', () => {
+      const document = newDocument(metadata);
+      const maybeWaitForValidationDocument = startValidation(document);
+      expect(
+        pipe(
+          maybeWaitForValidationDocument,
+          E.map((doc) => doc.status),
+          E.getOrElse((e) => e.message)
+        )
+      ).toBe("WAIT_FOR_VALIDATION");
+      expect(
+        pipe(
+          maybeWaitForValidationDocument,
+          E.chain(startValidation),
+          E.getOrElseW(identity)
+        )
+      ).toBeInstanceOf(Error);
+    });
   });
   describe("markAsReady", () => {
     it('should not mark as "READY" a document in "WAIT_FOR_UPLOAD" or "REJECTED" status', () => {
