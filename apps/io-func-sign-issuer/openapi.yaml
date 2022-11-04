@@ -194,7 +194,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{req_id}/documents/{doc_id}/upload-url:
+  /signature-requests/{req_id}/documents/{doc_id}/upload_url:
     get:
       operationId: getDocumentUploadUrl
       tags:
