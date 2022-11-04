@@ -1,2 +1,0 @@
-POST http://localhost:7071/api/v1/sign/dossiers
-x-subscription-id: my-test
