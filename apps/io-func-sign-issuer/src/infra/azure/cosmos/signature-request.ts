@@ -16,6 +16,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
+import { toCosmosDatabaseError } from "./errors";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
 type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
@@ -44,30 +45,27 @@ class SignatureRequestModel extends CosmosdbModel<
 export const makeGetSignatureRequest =
   (db: cosmos.Database): GetSignatureRequest =>
   (id) =>
-  (issuerId) => {
-    const model = new SignatureRequestModel(db);
-    return pipe(
-      model.find([id, issuerId]),
-      TE.mapLeft(() => new Error("NOT_IMPLEMENTED"))
+  (issuerId) =>
+    pipe(
+      new SignatureRequestModel(db),
+      (model) => model.find([id, issuerId]),
+      TE.mapLeft(toCosmosDatabaseError)
     );
-  };
 
 export const makeInsertSignatureRequest =
   (db: cosmos.Database): InsertSignatureRequest =>
-  (request) => {
-    const model = new SignatureRequestModel(db);
-    return pipe(
-      model.create(request),
-      TE.mapLeft(() => new Error("NOT_IMPLEMENTED"))
+  (request) =>
+    pipe(
+      new SignatureRequestModel(db),
+      (model) => model.create(request),
+      TE.mapLeft(toCosmosDatabaseError)
     );
-  };
 
 export const makeUpsertSignatureRequest =
   (db: cosmos.Database): UpsertSignatureRequest =>
-  (request) => {
-    const model = new SignatureRequestModel(db);
-    return pipe(
-      model.upsert(request),
-      TE.mapLeft(() => new Error("NOT_IMPLEMENTED"))
+  (request) =>
+    pipe(
+      new SignatureRequestModel(db),
+      (model) => model.upsert(request),
+      TE.mapLeft(toCosmosDatabaseError)
     );
-  };

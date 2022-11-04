@@ -32,11 +32,11 @@ import { createHandler } from "@pagopa/handler-kit";
 import type { Database as CosmosDatabase } from "@azure/cosmos";
 
 import { makeInsertSignatureRequest } from "../cosmos/signature-request";
+import { mockGetSigner } from "../../__mocks__/signer";
+import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
 const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   const getDossier = makeGetDossier(db);
-
-  const getSigner: GetSigner = (_) => TE.left(new Error("not implemented"));
 
   const insertSignatureRequest = makeInsertSignatureRequest(db);
 
@@ -65,7 +65,7 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
     CreateSignatureRequestPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      issuer: makeRequireIssuer((_) => TE.left(new Error("not implemented"))),
+      issuer: makeRequireIssuer(mockGetIssuerBySubscriptionId),
       body: RTE.fromReaderEither(requireCreateSignatureRequestBody),
     }),
     RTE.bindW("dossier", ({ issuer, body }) =>
@@ -78,7 +78,7 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
     ),
     RTE.bindW("signer", ({ body }) =>
       pipe(
-        getSigner(body.signerId),
+        mockGetSigner(body.signerId),
         TE.chain(TE.fromOption(() => signerNotFoundError)),
         RTE.fromTaskEither
       )

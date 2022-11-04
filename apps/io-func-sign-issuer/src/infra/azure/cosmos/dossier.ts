@@ -10,7 +10,10 @@ import {
   CosmosResource,
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
+import { toCosmosDatabaseError } from "./errors";
+
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 const NewDossier = t.intersection([Dossier, BaseModel]);
 type NewDossier = t.TypeOf<typeof NewDossier>;
@@ -32,16 +35,18 @@ class DossierModel extends CosmosdbModel<
 export const makeGetDossier =
   (db: cosmos.Database): GetDossier =>
   (dossierId) =>
-  (issuerId) => {
-    const model = new DossierModel(db);
-    const result = model.find([dossierId, issuerId]);
-    return TE.mapLeft(() => new Error("error getting the dossier"))(result);
-  };
+  (issuerId) =>
+    pipe(
+      new DossierModel(db),
+      (model) => model.find([dossierId, issuerId]),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
 
 export const makeInsertDossier =
   (db: cosmos.Database): InsertDossier =>
-  (dossier) => {
-    const model = new DossierModel(db);
-    const result = model.create(dossier);
-    return TE.mapLeft(() => new Error("error creating the dossier"))(result);
-  };
+  (dossier) =>
+    pipe(
+      new DossierModel(db),
+      (model) => model.create(dossier),
+      TE.mapLeft(toCosmosDatabaseError)
+    );

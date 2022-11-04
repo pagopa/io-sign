@@ -29,7 +29,6 @@ import { makeIsUploaded, makeMoveUploadedDocument } from "../storage/upload";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 
-
 export const extractFileNameFromURI = flow(split("/"), last);
 
 const makeRequireUploadMetadata =
@@ -82,11 +81,15 @@ const makeValidateUploadHandler = (
   return createHandler(decodeRequest, validateUpload, identity, constVoid);
 };
 
-export const makeValidateUploadAzureFunction = (db: CosmosDatabase, uploadedContainerClient: ContainerClient, validatedContainerClient: ContainerClient) => {
+export const makeValidateUploadAzureFunction = (
+  db: CosmosDatabase,
+  uploadedContainerClient: ContainerClient,
+  validatedContainerClient: ContainerClient
+) => {
   const handler = makeValidateUploadHandler(
     db,
     uploadedContainerClient,
-    validatedContainerClient,
+    validatedContainerClient
   );
   return azure.unsafeRun(handler);
 };

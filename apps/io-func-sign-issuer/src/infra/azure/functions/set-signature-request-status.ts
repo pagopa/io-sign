@@ -41,7 +41,7 @@ const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
   > = flow(
     body(SetSignatureRequestStatusBody),
     E.filterOrElse(
-      (status) => status !== "READY",
+      (status) => status === "READY",
       () => new Error("only READY is allowed")
     )
   );

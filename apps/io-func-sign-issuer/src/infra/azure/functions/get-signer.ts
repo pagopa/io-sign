@@ -4,11 +4,7 @@ import {
   HttpRequest,
   success,
 } from "@pagopa/handler-kit/lib/http";
-import {
-  GetSignerByFiscalCode,
-  Signer,
-  signerNotFoundError,
-} from "@internal/io-sign/signer";
+import { Signer, signerNotFoundError } from "@internal/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as RE from "fp-ts/lib/ReaderEither";
 
@@ -26,12 +22,9 @@ import * as O from "fp-ts/lib/Option";
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
 import { createHandler } from "@pagopa/handler-kit";
-import { AzureFunction } from "@azure/functions";
+import { mockGetSignerByFiscalCode } from "../../__mocks__/signer";
 
 const makeGetSignerByFiscalCodeHandler = () => {
-  const getSignerByFiscalCode: GetSignerByFiscalCode = (_) =>
-    TE.left(new Error("not implemented"));
-
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
     flow(
       body(GetSignerByFiscalCodeBody),
@@ -54,7 +47,7 @@ const makeGetSignerByFiscalCodeHandler = () => {
 
   return createHandler(
     decodeHttpRequest,
-    getSignerByFiscalCode,
+    mockGetSignerByFiscalCode,
     error,
     encodeHttpSuccessResponse
   );

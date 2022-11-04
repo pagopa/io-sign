@@ -22,6 +22,7 @@ import { requireDocumentsMetadata } from "../../http/decoders/document";
 import { DossierToApiModel } from "../../http/encoders/dossier";
 
 import { makeInsertDossier } from "../cosmos/dossier";
+import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);
@@ -31,7 +32,7 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
     Error,
     CreateDossierPayload
   > = sequenceS(RTE.ApplyPar)({
-    issuer: makeRequireIssuer((_) => TE.left(new Error("not implemented"))),
+    issuer: makeRequireIssuer(mockGetIssuerBySubscriptionId),
     documentsMetadata: RTE.fromReaderEither(requireDocumentsMetadata),
   });
 
@@ -49,9 +50,7 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
   return createHandler(
     decodeHttpRequest,
     createDossierUseCase,
-    (e) => {
-      console.log(e);
-    },
+    error,
     encodeHttpResponse
   );
 };

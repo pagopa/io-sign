@@ -27,7 +27,7 @@ const makeGetDossierHandler = (database: cosmos.Database) => {
   const requireIssuer = makeRequireIssuer(mockGetIssuerBySubscriptionId);
 
   const requireDossierId = flow(
-    path("id"),
+    path("dossierId"),
     E.fromOption(() => new Error(`missing "id" in path`)),
     E.chainW(validate(Dossier.props.id, `invalid "id" supplied`))
   );

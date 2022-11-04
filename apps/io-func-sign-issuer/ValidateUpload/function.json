@@ -10,5 +10,5 @@
     }
   ],
   "scriptFile": "../dist/main.js",
-  "entryPoint": "SetSignatureRequestStatus"
+  "entryPoint": "ValidateUpload"
 }

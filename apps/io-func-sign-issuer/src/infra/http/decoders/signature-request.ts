@@ -16,7 +16,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { validate } from "@pagopa/handler-kit/lib/validation";
 
 const requireSignatureRequestIdFromPath = flow(
-  path("id"),
+  path("signatureRequestId"),
   E.fromOption(() => new Error(`missing "id" in path`)),
   E.chainW(validate(SignatureRequest.props.id, `invalid "id" supplied`))
 );
