@@ -4,12 +4,7 @@
     "build": {
       "inputs": ["src/**/*.ts"],
       "outputs": ["dist/**"],
-      "dependsOn": [
-        "io-func-sign-issuer#typecheck",
-        "io-func-sign-issuer#test",
-        "^typecheck",
-        "^test"
-      ]
+      "dependsOn": ["^typecheck", "^test"]
     },
     "typecheck": {
       "inputs": ["src/**/*.ts"],
