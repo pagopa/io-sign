@@ -11,11 +11,11 @@ import {
 } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { pipe, flow, identity } from "fp-ts/lib/function";
 import { signerNotFoundError } from "@internal/io-sign/signer";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { createHandler } from "@pagopa/handler-kit";
-import type { Database as CosmosDatabase } from "@azure/cosmos";
+import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { SignatureRequest } from "../../../signature-request";
@@ -33,6 +33,7 @@ import {
 import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
+import { getConfigFromEnvironment } from "../../../app/config";
 
 const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   const getDossier = makeGetDossier(db);
@@ -109,7 +110,18 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   );
 };
 
-export const makeCreateSignatureRequestAzureFunction = flow(
-  makeCreateSignatureRequestHandler,
-  azure.unsafeRun
+const configOrError = pipe(
+  getConfigFromEnvironment(process.env),
+  E.getOrElseW(identity)
 );
+
+if (configOrError instanceof Error) {
+  throw configOrError;
+}
+
+const config = configOrError;
+
+const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const database = cosmosClient.database(config.azure.cosmos.dbName);
+
+export const run = pipe(makeCreateSignatureRequestHandler(database));

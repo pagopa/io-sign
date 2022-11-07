@@ -8,15 +8,15 @@
     },
     {
       "path": "packages/io-sign",
-      "name": "@internal/io-sign"
+      "name": "io-sign (internal)"
     },
     {
       "path": "packages/pdv-tokenizer",
-      "name": "@internal/pdv-tokenizer"
+      "name": "pdv-tokenizer (internal)"
     },
     {
       "path": "packages/io-services",
-      "name": "@internal/io-services"
+      "name": "io-services (internal)"
     }
   ],
   "settings": {

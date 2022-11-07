@@ -26,6 +26,8 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
   }),
+  uploadedStorageContainerName: t.string,
+  validatedStorageContainerName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -48,5 +50,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
     },
+    uploadedStorageContainerName: "uploaded-documents",
+    validatedStorageContainerName: "validated-documents",
   }))
 );

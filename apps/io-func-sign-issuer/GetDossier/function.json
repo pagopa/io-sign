@@ -14,6 +14,5 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/main.js",
-  "entryPoint": "GetDossier"
+  "scriptFile": "../dist/get-dossier.js"
 }

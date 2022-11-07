@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["./src/app/main.ts"],
+  entry: ["./src/infra/azure/functions/**.ts"],
   splitting: false,
   sourcemap: true,
   clean: true,

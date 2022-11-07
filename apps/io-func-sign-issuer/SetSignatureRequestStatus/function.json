@@ -14,6 +14,5 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/main.js",
-  "entryPoint": "SetSignatureRequestStatus"
+  "scriptFile": "../dist/set-signature-request-status.js"
 }

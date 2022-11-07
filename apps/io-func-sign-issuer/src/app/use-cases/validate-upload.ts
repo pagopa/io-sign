@@ -32,7 +32,7 @@ export const makeValidateUpload =
         ),
         url: pipe(
           uploadMetadata.url,
-          TE.fromNullable(new Error("url not found in upload metadata")),
+          TE.fromNullable(new Error("Not found: url in upload metadata")),
           TE.chainFirst(() =>
             pipe(
               isUploaded(uploadMetadata.id),

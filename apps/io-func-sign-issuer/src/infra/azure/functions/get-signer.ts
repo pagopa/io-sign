@@ -53,7 +53,4 @@ const makeGetSignerByFiscalCodeHandler = () => {
   );
 };
 
-export const makeGetSignerByFiscalCodeAzureFunction = flow(
-  makeGetSignerByFiscalCodeHandler,
-  azure.unsafeRun
-);
+export const run = pipe(makeGetSignerByFiscalCodeHandler(), azure.unsafeRun);
