@@ -1,0 +1,24 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "inputs": ["src/**/*.ts"],
+      "outputs": ["dist/**"],
+      "dependsOn": ["^typecheck", "^test"]
+    },
+    "typecheck": {
+      "inputs": ["src/**/*.ts"],
+      "outputs": []
+    },
+    "lint": {
+      "inputs": ["src/**/*.ts"],
+      "outputs": []
+    },
+    "format": {},
+    "test": {
+      "inputs": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+      "outputs": [],
+      "outputMode": "hash-only"
+    }
+  }
+}

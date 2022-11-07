@@ -1,0 +1,18 @@
+{
+  "name": "io-sign",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test": "turbo run test --no-daemon",
+    "format": "turbo run format --no-daemon",
+    "lint": "npm run lint --ws",
+    "build": "turbo run build --no-daemon"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.6.3"
+  }
+}

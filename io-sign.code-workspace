@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "apps/io-func-sign-issuer"
+    },
+    {
+      "path": "apps/io-func-sign-user"
+    },
+    {
+      "path": "packages/io-sign",
+      "name": "io-sign (internal)"
+    },
+    {
+      "path": "packages/pdv-tokenizer",
+      "name": "pdv-tokenizer (internal)"
+    },
+    {
+      "path": "packages/io-services",
+      "name": "io-services (internal)"
+    }
+  ],
+  "settings": {
+    "azureFunctions.funcCliPath": "../../node_modules/.bin/func"
+  }
+}
