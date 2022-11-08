@@ -12,8 +12,10 @@ import { pipe } from "fp-ts/lib/function";
 
 import { addMinutes } from "date-fns";
 import { validate } from "@pagopa/handler-kit/lib/validation";
+import { toError } from "fp-ts/lib/Either";
 import {
   DeleteUploadMetadata,
+  DownloadUploadDocumentFromBlob,
   GetUploadUrl,
   IsUploaded,
   MoveUploadedDocument,
@@ -96,3 +98,10 @@ export const makeMoveUploadedDocument =
   (documentId) =>
   (source) =>
     pipe(containerClient.getBlobClient(documentId), copyFromUrl(source));
+
+export const makeDownloadUploadedDocument =
+  (containerClient: ContainerClient): DownloadUploadDocumentFromBlob =>
+  (id) =>
+    pipe(containerClient.getBlobClient(id), (blob) =>
+      TE.tryCatch(() => blob.downloadToBuffer(), toError)
+    );

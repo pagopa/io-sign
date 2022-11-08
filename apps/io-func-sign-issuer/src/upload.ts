@@ -82,3 +82,7 @@ export type MoveUploadedDocument = (
 export type DeleteUploadMetadata = (
   documentId: UploadMetadata["documentId"]
 ) => TE.TaskEither<Error, string>;
+
+export type DownloadUploadDocumentFromBlob = (
+  documentId: UploadMetadata["id"]
+) => TE.TaskEither<Error, Buffer>;
