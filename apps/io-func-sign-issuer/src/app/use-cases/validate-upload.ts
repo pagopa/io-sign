@@ -1,10 +1,12 @@
 import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import {
-  DownloadUploadDocumentFromBlob,
+  DeleteUploadDocument,
+  DownloadUploadDocument,
   IsUploaded,
   MoveUploadedDocument,
   UploadMetadata,
+  UpsertUploadMetadata,
 } from "../../upload";
 import {
   GetSignatureRequest,
@@ -22,7 +24,9 @@ export const makeValidateUpload =
     upsertSignatureRequest: UpsertSignatureRequest,
     isUploaded: IsUploaded,
     moveUploadedDocument: MoveUploadedDocument,
-    downloadDocumentUploadedFromBlobStorage: DownloadUploadDocumentFromBlob
+    downloadDocumentUploadedFromBlobStorage: DownloadUploadDocument,
+    deleteDocumentUploadedFromBlobStorage: DeleteUploadDocument,
+    upsertUploadMetadata: UpsertUploadMetadata
   ) =>
   (uploadMetadata: UploadMetadata) =>
     pipe(
@@ -47,7 +51,17 @@ export const makeValidateUpload =
                 pipe(
                   uploadMetadata.id,
                   downloadDocumentUploadedFromBlobStorage,
-                  TE.chain(getPdfMetadata)
+                  TE.chain(getPdfMetadata),
+                  TE.chain(() =>
+                    pipe(
+                      {
+                        ...uploadMetadata,
+                        validated: true,
+                        updatedAt: new Date(),
+                      },
+                      upsertUploadMetadata
+                    )
+                  )
                 )
               )
             )
@@ -71,5 +85,6 @@ export const makeValidateUpload =
           )
         )
       ),
-      TE.chain(upsertSignatureRequest)
+      TE.chain(upsertSignatureRequest),
+      TE.chain(() => deleteDocumentUploadedFromBlobStorage(uploadMetadata.id))
     );

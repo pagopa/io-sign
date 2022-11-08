@@ -60,6 +60,10 @@ export type GetUploadMetadata = (
   id: UploadMetadata["id"]
 ) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
 
+export type UpsertUploadMetadata = (
+  uploadMetadata: UploadMetadata
+) => TE.TaskEither<Error, UploadMetadata>;
+
 export const UploadUrl = UrlFromString;
 export type UploadUrl = t.TypeOf<typeof UploadUrl>;
 
@@ -79,10 +83,10 @@ export type MoveUploadedDocument = (
   destination: UploadMetadata["documentId"]
 ) => (source: string) => TE.TaskEither<Error, string>;
 
-export type DeleteUploadMetadata = (
+export type DeleteUploadDocument = (
   documentId: UploadMetadata["documentId"]
 ) => TE.TaskEither<Error, string>;
 
-export type DownloadUploadDocumentFromBlob = (
+export type DownloadUploadDocument = (
   documentId: UploadMetadata["id"]
 ) => TE.TaskEither<Error, Buffer>;

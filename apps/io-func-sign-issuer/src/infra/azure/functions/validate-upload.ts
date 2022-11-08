@@ -13,7 +13,10 @@ import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 import * as E from "fp-ts/lib/Either";
-import { makeGetUploadMetadata } from "../cosmos/upload";
+import {
+  makeGetUploadMetadata,
+  makeUpsertUploadMetadata,
+} from "../cosmos/upload";
 
 import { getConfigFromEnvironment } from "../../../app/config";
 
@@ -25,6 +28,7 @@ import {
 } from "../cosmos/signature-request";
 
 import {
+  makeDeleteUploadedMetadata,
   makeDownloadUploadedDocument,
   makeIsUploaded,
   makeMoveUploadedDocument,
@@ -67,6 +71,8 @@ const makeValidateUploadHandler = (
 
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
+  const upsertUploadMetadata = makeUpsertUploadMetadata(db);
+
   const isUploaded = makeIsUploaded(uploadedContainerClient);
 
   const moveUploadedDocument = makeMoveUploadedDocument(
@@ -77,6 +83,10 @@ const makeValidateUploadHandler = (
     uploadedContainerClient
   );
 
+  const deleteDocumentUploadedFromBlobStorage = makeDeleteUploadedMetadata(
+    uploadedContainerClient
+  );
+
   const requireUploadMetadata = makeRequireUploadMetadata(getUploadMetadata);
 
   const validateUpload = makeValidateUpload(
@@ -84,7 +94,9 @@ const makeValidateUploadHandler = (
     upsertSignatureRequest,
     isUploaded,
     moveUploadedDocument,
-    downloadDocumentUploadedFromBlobStorage
+    downloadDocumentUploadedFromBlobStorage,
+    deleteDocumentUploadedFromBlobStorage,
+    upsertUploadMetadata
   );
 
   const decodeRequest = flow(

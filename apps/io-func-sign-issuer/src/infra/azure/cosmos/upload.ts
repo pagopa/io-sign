@@ -14,6 +14,7 @@ import {
   GetUploadMetadata,
   InsertUploadMetadata,
   UploadMetadata,
+  UpsertUploadMetadata,
 } from "../../../upload";
 import { toCosmosDatabaseError } from "./errors";
 
@@ -51,5 +52,14 @@ export const makeGetUploadMetadata =
     pipe(
       new UploadMetadataModel(db),
       (model) => model.find([id]),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+
+export const makeUpsertUploadMetadata =
+  (db: cosmos.Database): UpsertUploadMetadata =>
+  (uploadMetadata) =>
+    pipe(
+      new UploadMetadataModel(db),
+      (model) => model.upsert(uploadMetadata),
       TE.mapLeft(toCosmosDatabaseError)
     );
