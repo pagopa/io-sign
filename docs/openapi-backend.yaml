@@ -1,0 +1,414 @@
+openapi: 3.0.3
+info:
+  title: IO Sign - Backend API
+  version: 0.0.1
+servers:
+  - url: https://app-backend.io.italia.it/api/v1/sign
+    description: Production
+security:
+  - Bearer: []
+paths:
+  /signature-requests/{id}:
+    get:
+      operationId: getSignatureRequestById
+      summary: Get a Signature Request By Id
+      tags:
+        - Signature Request
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            description: Entity Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "200":
+          description: The Signature Request detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestDetailView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /qtsp/clauses:
+    get:
+      operationId: getQtspClausesMetadata
+      summary: Get clauses list and MRC from QTSP
+      tags:
+        - QTSP Clauses
+      responses:
+        "200":
+          description: The QTSP clauses list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QtspClausesMetadata"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /qtsp/clauses/filled_document:
+    post:
+      operationId: createFilledDocument
+      summary: Create a filled document for QTSP
+      tags:
+        - QTSP Clauses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFilledDocumentBody"
+      responses:
+        "201":
+          description: Filled document created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FilledDocumentDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /signatures:
+    post:
+      operationId: createSignature
+      summary: Create a Signature from SignatureRequest
+      tags:
+        - Signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSignatureBody"
+      responses:
+        "201":
+          description: Signature created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+components:
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+  responses:
+    NotFound:
+      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/NotFound"
+    BadRequest:
+      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/BadRequest"
+    Forbidden:
+      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/Forbidden"
+    Unexpected:
+      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/Unexpected"
+  schemas:
+    Id:
+      type: string
+      description: Entity Id
+      format: ulid
+      example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+
+    Timestamp:
+      type: string
+      format: UTCISODateFromString
+      description: A date-time field in ISO-8601 format and UTC timezone.
+      x-import: "@pagopa/ts-commons/lib/dates"
+      example: "2018-10-13T00:00:00.000Z"
+
+    Document:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        status:
+          type: string
+          enum:
+            - WAIT_FOR_UPLOAD
+            - WAIT_FOR_VALIDATION
+            - READY
+            - REJECTED
+        metadata:
+          $ref: "#/components/schemas/DocumentMetadata"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - status
+        - metadata
+        - created_at
+        - updated_at
+
+    DocumentMetadata:
+      type: object
+      properties:
+        title:
+          type: string
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+
+    ExistingSignatureFieldAttrs:
+      type: object
+      properties:
+        unique_name:
+          type: string
+      required:
+        - unique_name
+
+    SignatureFieldToBeCreatedAttrs:
+      type: object
+      properties:
+        coordinates:
+          type: object
+          properties:
+            bottom_left:
+              type: object
+              properties:
+                x: { type: number, minimum: 0 }
+                y: { type: number, minimum: 0 }
+            top_right:
+              type: object
+              properties:
+                x: { type: number, minimum: 0 }
+                y: { type: number, minimum: 0 }
+          required:
+            - bottom_left
+            - top_right
+        page:
+          type: number
+          minimum: 0
+      required:
+        - coordinates
+        - page
+
+    Clause:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          $ref: "#/components/schemas/ClausesType"
+      required:
+        - title
+        - type
+
+    ClausesType:
+      description: |
+        Signature request status:
+        * `REQUIRED` - The clause is mandatory and the user sees it already accepted.
+        * `UNFAIR` - The clause is unfair and the user must explicitly accept it to continue
+        * `OPTIONAL` - The clause is optional and the user can also decide not to accept it
+      type: string
+      x-extensible-enum:
+        - REQUIRED
+        - UNFAIR
+        - OPTIONAL
+
+    SignatureField:
+      type: object
+      properties:
+        attrs:
+          type: object
+          oneOf:
+            - $ref: "#/components/schemas/ExistingSignatureFieldAttrs"
+            - $ref: "#/components/schemas/SignatureFieldToBeCreatedAttrs"
+        clause:
+          $ref: "#/components/schemas/Clause"
+      required:
+        - unique_name
+        - clause
+
+    SignatureRequestDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        status:
+          type: string
+          x-extensible-enum:
+            - DRAFT
+            - READY
+            - WAIT_FOR_SIGNATURE
+            - WAIT_FOR_QTSP
+            - SIGNED
+        dossier_id:
+          $ref: "#/components/schemas/Id"
+        signer_id:
+          $ref: "#/components/schemas/Id"
+        expires_at:
+          $ref: "#/components/schemas/Timestamp"
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentDetailView"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        qr_code_url:
+          type: string
+          format: uri
+      required:
+        - id
+        - status
+        - dossier_id
+        - signer_id
+        - expires_at
+        - documents
+        - created_at
+        - updated_at
+
+    DocumentDetailView:
+      allOf:
+        - $ref: "#/components/schemas/Document"
+        - type: object
+          properties:
+            uploaded_at:
+              $ref: "#/components/schemas/Timestamp"
+            url:
+              type: string
+              format: uri
+          required:
+            - uploaded_at
+            - url
+
+    QtspClausesMetadata:
+      type: object
+      properties:
+        clauses:
+          type: array
+          items:
+            $ref: "#/components/schemas/QtspClause"
+          minItems: 1
+          uniqueItems: true
+        document_url:
+          type: string
+          format: uri
+        privacy_url:
+          type: string
+          format: url
+        privacy_text:
+          type: string
+        terms_and_conditions_url:
+          type: string
+          format: uri
+        nonce:
+          type: string
+          format: base64
+
+      required:
+        - clauses
+        - document_url
+        - privacy_url
+        - privacy_text
+        - terms_and_conditions_url
+
+    QtspClause:
+      type: object
+      properties:
+        text:
+          type: string
+      required:
+        - text
+
+    PublicKeyDigest:
+      type: string
+      format: base64url
+      description: Hash of PEM public key encoded in base64
+
+    DocumentSignature:
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: ulid
+        signature:
+          type: string
+          format: base64url
+          description: Signature of document digest concatenated with document clauses
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+      required:
+        - document_id
+        - signature
+        - signature_fields
+
+    QtspClauses:
+      type: object
+      properties:
+        accepted_clauses:
+          type: array
+          items:
+            $ref: "#/components/schemas/QtspClause"
+          minItems: 1
+          uniqueItems: true
+        filled_document_url:
+          type: string
+          format: uri
+        signature:
+          type: string
+          format: base64url
+          description: Signature of MRC digest concatenated with QTSP accepted clauses
+        nonce:
+          type: string
+          format: base64
+      required:
+        - accepted_clauses
+        - filled_document_url
+        - signature
+        - nonce
+
+    CreateSignatureBody:
+      type: object
+      properties:
+        signature_request_id:
+          $ref: "#/components/schemas/Id"
+        public_key_digest:
+          $ref: "#/components/schemas/PublicKeyDigest"
+        document_signatures:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentSignature"
+          minItems: 1
+          uniqueItems: true
+        qtsp_clauses:
+          $ref: "#/components/schemas/QtspClauses"
+      required:
+        - signature_request_id
+        - public_key_digest
+        - document_signatures
+        - qtsp_clauses
+
+    CreateFilledDocumentBody:
+      type: object
+      properties:
+        document_url:
+          type: string
+          format: url
+      required:
+        - document_url
+
+    FilledDocumentDetailView:
+      type: object
+      properties:
+        filled_document_url:
+          type: string
+          format: url
+      required:
+        - filled_document_url
