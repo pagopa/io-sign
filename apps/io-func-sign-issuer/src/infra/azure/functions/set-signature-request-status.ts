@@ -13,7 +13,7 @@ import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
-import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-read";
+import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";
 
 import {
   makeGetSignatureRequest,
