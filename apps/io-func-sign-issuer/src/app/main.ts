@@ -12,4 +12,5 @@ if (configOrError instanceof Error) {
   throw configOrError;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const config = configOrError;
