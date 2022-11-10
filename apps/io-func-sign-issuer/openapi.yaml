@@ -595,6 +595,10 @@ components:
           $ref: "#/components/schemas/Timestamp"
         updated_at:
           $ref: "#/components/schemas/Timestamp"
+        signed_at:
+          $ref: "#/components/schemas/Timestamp"
+        reject_reason:
+          type: string
         qr_code_url:
           type: string
           format: uri
