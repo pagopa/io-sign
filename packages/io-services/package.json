@@ -24,7 +24,8 @@
     "@pagopa/io-functions-services-sdk": "^3.16.0",
     "@pagopa/ts-commons": "^10.10.0",
     "fp-ts": "^2.13.1",
-    "io-ts": "^2.2.19"
+    "io-ts": "^2.2.19",
+    "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
     "@pagopa/eslint-config": "^3.0.0",

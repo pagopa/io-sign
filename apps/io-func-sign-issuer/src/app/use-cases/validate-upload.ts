@@ -1,5 +1,6 @@
 import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
+import { getPdfMetadata } from "@internal/io-sign/infra/pdf";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -16,7 +17,6 @@ import {
   startValidationOnDocument,
   UpsertSignatureRequest,
 } from "../../signature-request";
-import { getPdfMetadata } from "./validate-pdf";
 
 export const makeValidateUpload =
   (
