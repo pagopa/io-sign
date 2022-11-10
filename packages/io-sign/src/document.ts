@@ -96,6 +96,14 @@ const DocumentRejected = t.type({
   rejectReason: t.string,
 });
 
+const DocumentSigned = t.type({
+  status: t.literal("SIGNED"),
+  uploadedAt: IsoDateFromString,
+  url: t.string,
+  signedUrl: t.string,
+  signedAt: IsoDateFromString,
+});
+
 export const Document = t.intersection([
   t.type({
     id: Id,
@@ -108,6 +116,7 @@ export const Document = t.intersection([
     DocumentToBeValidated,
     DocumentUploaded,
     DocumentRejected,
+    DocumentSigned,
   ]),
 ]);
 
@@ -162,6 +171,12 @@ const dispatch =
         return pipe(document, onWaitForValidationStatus(action));
       case "REJECTED":
         return pipe(document, onRejectedStatus(action));
+      case "SIGNED":
+        return E.left(
+          new ActionNotAllowedError(
+            "This operation is prohibited if the document is already SIGNED"
+          )
+        );
       default:
         return E.left(new ActionNotAllowedError("Invalid status"));
     }

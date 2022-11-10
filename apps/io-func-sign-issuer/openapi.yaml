@@ -503,6 +503,7 @@ components:
             - WAIT_FOR_VALIDATION
             - READY
             - REJECTED
+            - SIGNED
         metadata:
           $ref: "#/components/schemas/DocumentMetadata"
         created_at:
@@ -561,12 +562,34 @@ components:
             - rejected_at
             - reject_reason
 
+    DocumentSigned:
+      allOf:
+        - $ref: "#/components/schemas/Document"
+        - type: object
+          properties:
+            uploaded_at:
+              $ref: "#/components/schemas/Timestamp"
+            url:
+              type: string
+              format: uri
+            signed_url:
+              type: string
+              format: uri
+            signed_at:
+              $ref: "#/components/schemas/Timestamp"
+          required:
+            - uploaded_at
+            - url
+            - signed_url
+            - signed_at
+
     DocumentDetailView:
       oneOf:
         - $ref: "#/components/schemas/DocumentToBeUploaded"
         - $ref: "#/components/schemas/DocumentToBeValidated"
         - $ref: "#/components/schemas/DocumentUploaded"
         - $ref: "#/components/schemas/DocumentRejected"
+        - $ref: "#/components/schemas/DocumentSigned"
 
     SignatureRequestDetailView:
       type: object

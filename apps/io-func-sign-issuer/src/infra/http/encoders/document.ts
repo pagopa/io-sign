@@ -27,6 +27,8 @@ const toApiModelEnum = (status: Document["status"]): DocumentStatusEnum => {
       return DocumentStatusEnum.WAIT_FOR_UPLOAD;
     case "WAIT_FOR_VALIDATION":
       return DocumentStatusEnum.WAIT_FOR_VALIDATION;
+    case "SIGNED":
+      return DocumentStatusEnum.SIGNED;
   }
 };
 
@@ -65,6 +67,15 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
           uploaded_at: additionals.uploadedAt,
           rejected_at: additionals.rejectedAt,
           reject_reason: additionals.rejectReason,
+        };
+      }
+      case "SIGNED": {
+        return {
+          ...commonFields,
+          uploaded_at: additionals.uploadedAt,
+          url: additionals.url,
+          signed_at: additionals.signedAt,
+          signed_url: additionals.signedUrl,
         };
       }
       default: {
