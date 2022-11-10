@@ -36,6 +36,7 @@ export const SignatureRequest = t.type({
     READY: null,
     WAIT_FOR_SIGNATURE: null,
     SIGNED: null,
+    REJECTED: null,
   }),
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,

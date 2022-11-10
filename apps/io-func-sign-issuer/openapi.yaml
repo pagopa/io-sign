@@ -580,6 +580,7 @@ components:
             - READY
             - WAIT_FOR_SIGNATURE
             - SIGNED
+            - REJECTED
         dossier_id:
           $ref: "#/components/schemas/Id"
         signer_id:

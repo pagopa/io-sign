@@ -20,6 +20,8 @@ const toApiModelEnum = (
       return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
     case "SIGNED":
       return SignatureRequestStatusEnum.SIGNED;
+    case "REJECTED":
+      return SignatureRequestStatusEnum.REJECTED;
   }
 };
 
