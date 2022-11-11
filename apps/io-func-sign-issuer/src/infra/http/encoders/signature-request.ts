@@ -37,33 +37,36 @@ export const SignatureRequestToApiModel: E.Encoder<
     updatedAt: updated_at,
     expiresAt: expires_at,
     documents,
-    ...additionals
+    ...extras
   }) => {
     const commonFields = {
       id,
       dossier_id,
       signer_id,
-      status: toApiModelEnum(additionals.status),
+      status: toApiModelEnum(extras.status),
       created_at,
       updated_at,
       expires_at,
       documents: documents.map(DocumentToApiModel.encode),
       // here we have to handle the dynamic QR Code
-      qr_code_url: ["DRAFT", "READY"].includes(additionals.status)
-        ? void 0
+      qr_code_url: [
+        SignatureRequestStatusEnum.DRAFT,
+        SignatureRequestStatusEnum.READY,
+      ].includes(toApiModelEnum(extras.status))
+        ? undefined
         : "https://place-holder.com/qr-code",
     };
-    switch (additionals.status) {
+    switch (extras.status) {
       case "SIGNED": {
         return {
           ...commonFields,
-          signed_at: additionals.signedAt,
+          signed_at: extras.signedAt,
         };
       }
       case "REJECTED": {
         return {
           ...commonFields,
-          reject_reason: additionals.rejectedReason,
+          reject_reason: extras.rejectedReason,
         };
       }
       default: {
