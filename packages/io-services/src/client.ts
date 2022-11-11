@@ -1,5 +1,5 @@
 import { agent } from "@pagopa/ts-commons";
-
+import { Notification } from "@internal/io-sign/notification";
 import {
   AbortableFetch,
   setFetchTimeout,
@@ -9,17 +9,19 @@ import {
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 import { createClient, Client } from "@pagopa/io-functions-services-sdk/client";
-
+import { CreatedMessage } from "@pagopa/io-functions-services-sdk/CreatedMessage";
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
-
+import { validate } from "@pagopa/handler-kit/lib/validation";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { pipe } from "fp-ts/lib/function";
 
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
 
-type IOApiClient = Client<"SubscriptionKey">;
+export type IOApiClient = Client<"SubscriptionKey">;
 
 export const createIOApiClient = (
   baseUrl: string,
@@ -57,12 +59,36 @@ export const withFiscalCode =
     fiscal_code: fiscalCode,
   });
 
+export type SubmitMessageForUser = (
+  message: NewMessageWithFiscalCode
+) => TE.TaskEither<Error, Notification>;
+
 export const makeSubmitMessageForUser =
-  (ioApiClient: IOApiClient) => (message: NewMessageWithFiscalCode) =>
-    TE.tryCatch(
-      () =>
-        ioApiClient.submitMessageforUserWithFiscalCodeInBody({
-          message,
-        }),
-      E.toError
+  (ioApiClient: IOApiClient): SubmitMessageForUser =>
+  (message: NewMessageWithFiscalCode) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          ioApiClient.submitMessageforUserWithFiscalCodeInBody({
+            message,
+          }),
+        E.toError
+      ),
+      TE.chain((createdMessage) =>
+        pipe(
+          createdMessage,
+          E.map((response) => response.value),
+          E.chainW(
+            validate(
+              CreatedMessage,
+              "An error occurred while validating the response"
+            )
+          ),
+          E.mapLeft(() => new Error("Unable to send the message")),
+          TE.fromEither
+        )
+      ),
+      TE.map((createdMessage) => ({
+        ioMessageId: createdMessage.id as NonEmptyString,
+      }))
     );
