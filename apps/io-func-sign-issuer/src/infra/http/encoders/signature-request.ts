@@ -49,7 +49,7 @@ export const SignatureRequestToApiModel: E.Encoder<
       expires_at,
       documents: documents.map(DocumentToApiModel.encode),
       // here we have to handle the dynamic QR Code
-      qr_code_url: ["DRAFT", "READ"].includes(additionals.status)
+      qr_code_url: ["DRAFT", "READY"].includes(additionals.status)
         ? void 0
         : "https://place-holder.com/qr-code",
     };
