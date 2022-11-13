@@ -6,7 +6,7 @@ import { Notification } from "@internal/io-sign/notification";
 import {
   SubmitMessageForUser,
   withFiscalCode,
-} from "@internal/io-services/client";
+} from "@internal/io-services/message";
 import { validate } from "@pagopa/handler-kit/lib/validation";
 import {
   SignatureRequest,

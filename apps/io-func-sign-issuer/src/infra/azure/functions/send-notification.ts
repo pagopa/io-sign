@@ -9,12 +9,8 @@ import { error, HttpRequest, success } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
-import {
-  createIOApiClient,
-  IOApiClient,
-  makeSubmitMessageForUser,
-} from "@internal/io-services/client";
-
+import { makeSubmitMessageForUser } from "@internal/io-services/message";
+import { createIOApiClient, IOApiClient } from "@internal/io-services/client";
 import {
   PdvTokenizerClient,
   createPdvTokenizerClient,
