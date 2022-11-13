@@ -20,12 +20,15 @@ import {
   createPdvTokenizerClient,
 } from "@internal/pdv-tokenizer/client";
 
-import { makeGetFiscalCodeBySigner } from "@internal/pdv-tokenizer/signer";
+import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
 
 import { NotificationDetailView } from "../../http/models/NotificationDetailView";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
-import { makeGetSignatureRequest } from "../cosmos/signature-request";
+import {
+  makeGetSignatureRequest,
+  makeUpsertSignatureRequest,
+} from "../cosmos/signature-request";
 
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { getConfigFromEnvironment } from "../../../app/config";
@@ -41,10 +44,15 @@ const makeSendNotificationHandler = (
   tokenizer: PdvTokenizerClient
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
+  const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
-  const getFiscalCode = makeGetFiscalCodeBySigner(tokenizer);
+  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
-  const sendNotification = makeSendNotification(submitMessage, getFiscalCode);
+  const sendNotification = makeSendNotification(
+    submitMessage,
+    getFiscalCodeBySignerId,
+    upsertSignatureRequest
+  );
 
   const requireSignatureRequest = makeRequireSignatureRequest(
     mockGetIssuerBySubscriptionId,

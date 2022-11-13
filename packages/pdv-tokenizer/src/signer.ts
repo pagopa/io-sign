@@ -19,7 +19,7 @@ export const makeGetSignerByFiscalCode =
     );
 
 // TODO: This is a mock
-export const makeGetFiscalCodeBySigner =
+export const makeGetFiscalCodeBySignerId =
   (_client: PdvTokenizerClient): GetFiscalCodeBySignerId =>
   (_id) =>
     pipe(

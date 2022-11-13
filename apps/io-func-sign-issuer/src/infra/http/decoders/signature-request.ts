@@ -18,7 +18,9 @@ import { makeRequireIssuer } from "./issuer";
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),
   E.fromOption(() => new Error(`missing "id" in path`)),
-  E.chainW(validate(SignatureRequest.props.id, `invalid "id" supplied`))
+  E.chainW(
+    validate(SignatureRequest.types[0].props.id, `invalid "id" supplied`)
+  )
 );
 
 export const makeRequireSignatureRequest = (

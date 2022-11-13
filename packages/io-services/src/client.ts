@@ -9,9 +9,8 @@ import {
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 import { createClient, Client } from "@pagopa/io-functions-services-sdk/client";
-import { CreatedMessage } from "@pagopa/io-functions-services-sdk/CreatedMessage";
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
@@ -77,14 +76,14 @@ export const makeSubmitMessageForUser =
       TE.chain((createdMessage) =>
         pipe(
           createdMessage,
-          E.map((response) => response.value),
-          E.chainW(
-            validate(
-              CreatedMessage,
-              "An error occurred while validating the response"
-            )
+          E.mapLeft(() => new Error("Unable to send the message!")),
+          E.chainW((response) =>
+            response.status === 201
+              ? E.right(response.value)
+              : E.left(
+                  new Error(`An error occurred while sending the message!`)
+                )
           ),
-          E.mapLeft(() => new Error("Unable to send the message")),
           TE.fromEither
         )
       ),
