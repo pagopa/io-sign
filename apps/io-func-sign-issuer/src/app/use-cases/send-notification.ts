@@ -1,6 +1,5 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as A from "fp-ts/lib/Array";
 import * as t from "io-ts";
 import { GetFiscalCodeBySignerId } from "@internal/io-sign/signer";
 import { Notification } from "@internal/io-sign/notification";
@@ -15,7 +14,6 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 import { Dossier, GetDossier } from "../../dossier";
-import { Istitution, istitutionRegistry } from "../../istitution-registry";
 
 export type SendNotificationPayload = {
   signatureRequest: SignatureRequest;
@@ -23,8 +21,7 @@ export type SendNotificationPayload = {
 
 // TODO: this is a mock
 const mockMessage =
-  (dossier: Dossier, istitution: Istitution) =>
-  (signatureRequest: SignatureRequest) => ({
+  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
     content: {
       subject: `Richiesta di firma`,
       markdown: `---\n- SignatureRequestId: \`${
@@ -33,9 +30,9 @@ const mockMessage =
         signatureRequest.documents.length
       }\`\n- expiresAt: \`${
         signatureRequest.expiresAt ? signatureRequest.expiresAt : "never"
-      }\`\n- istitution: \`${istitution.description}\`\n- dossier: \`${
-        dossier.id
-      }\`\n- docs: \`${JSON.stringify(signatureRequest.documents)}\`\n `,
+      }\`\n- dossier: \`${dossier.id}\`\n- docs: \`${JSON.stringify(
+        signatureRequest.documents
+      )}\`\n `,
     },
   });
 
@@ -48,19 +45,9 @@ const makeMessage =
           getDossier(signatureRequest.dossierId),
           TE.chain(TE.fromOption(() => new Error("Invalid dossier")))
         ),
-        issuer: pipe(
-          istitutionRegistry,
-          A.filter(
-            (istitution) => istitution.issuerId === signatureRequest.issuerId
-          ),
-          A.head,
-          TE.fromOption(
-            () => new Error("Issuer not found in the istitution registry")
-          )
-        ),
       }),
-      TE.chainW(({ dossier, issuer }) =>
-        pipe(signatureRequest, mockMessage(dossier, issuer), TE.right)
+      TE.chainW(({ dossier }) =>
+        pipe(signatureRequest, mockMessage(dossier), TE.right)
       )
     );
 
