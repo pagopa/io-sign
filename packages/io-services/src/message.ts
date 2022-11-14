@@ -6,8 +6,9 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { pipe } from "fp-ts/lib/function";
+import { pipe, flow, identity } from "fp-ts/lib/function";
 import { IOApiClient } from "./client";
+import { makeRetriveUserProfileSenderAllowed } from "./profile";
 
 export const newNewMessage = (
   subject: string,
@@ -36,16 +37,23 @@ export const makeSubmitMessageForUser =
   (ioApiClient: IOApiClient): SubmitMessageForUser =>
   (message: NewMessageWithFiscalCode) =>
     pipe(
-      TE.tryCatch(
-        () =>
-          ioApiClient.submitMessageforUserWithFiscalCodeInBody({
-            message,
-          }),
-        E.toError
+      message.fiscal_code,
+      makeRetriveUserProfileSenderAllowed(ioApiClient),
+      TE.filterOrElse(
+        identity,
+        () => new Error("It is not allowed to send a message to this user.")
       ),
-      TE.chain((createdMessage) =>
-        pipe(
-          createdMessage,
+      TE.chain(() =>
+        TE.tryCatch(
+          () =>
+            ioApiClient.submitMessageforUserWithFiscalCodeInBody({
+              message,
+            }),
+          E.toError
+        )
+      ),
+      TE.chain(
+        flow(
           E.mapLeft(() => new Error("Unable to send the message!")),
           E.chainW((response) =>
             response.status === 201

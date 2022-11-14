@@ -23,7 +23,7 @@ export const makeGetFiscalCodeBySignerId =
   (_client: PdvTokenizerClient): GetFiscalCodeBySignerId =>
   (_id) =>
     pipe(
-      "AAAAAA00B00C000D",
+      "GRSFNC93A22A509H",
       FiscalCode.decode,
       TE.fromEither,
       TE.map(O.some),
