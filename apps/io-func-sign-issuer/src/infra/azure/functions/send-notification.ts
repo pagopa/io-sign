@@ -33,6 +33,7 @@ import {
   SendNotificationPayload,
 } from "../../../app/use-cases/send-notification";
 import { NotificationToApiModel } from "../../http/encoders/notification";
+import { makeGetDossier } from "../cosmos/dossier";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,
@@ -43,11 +44,13 @@ const makeSendNotificationHandler = (
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const getDossier = makeGetDossier(db);
 
   const sendNotification = makeSendNotification(
     submitMessage,
     getFiscalCodeBySignerId,
-    upsertSignatureRequest
+    upsertSignatureRequest,
+    getDossier
   );
 
   const requireSignatureRequest = makeRequireSignatureRequest(
