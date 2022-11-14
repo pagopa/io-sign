@@ -16,7 +16,7 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import {
   createPdvTokenizerClient,
-  PdvTokenizerClient,
+  PdvTokenizerClientWithApiKey,
 } from "@internal/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@internal/pdv-tokenizer/signer";
 
@@ -31,9 +31,11 @@ import { SignerDetailView } from "../../http/models/SignerDetailView";
 import { getConfigFromEnvironment } from "../../../app/config";
 
 const makeGetSignerByFiscalCodeHandler = (
-  pdvTokenizerClient: PdvTokenizerClient
+  pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey
 ) => {
-  const getSignerByFiscalCode = makeGetSignerByFiscalCode(pdvTokenizerClient);
+  const getSignerByFiscalCode = makeGetSignerByFiscalCode(
+    pdvTokenizerClientWithApiKey
+  );
 
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
     flow(
@@ -74,12 +76,12 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const pdvTokenizerClient = createPdvTokenizerClient(
+const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
 );
 
 export const run = pipe(
-  makeGetSignerByFiscalCodeHandler(pdvTokenizerClient),
+  makeGetSignerByFiscalCodeHandler(pdvTokenizerClientWithApiKey),
   azure.unsafeRun
 );
