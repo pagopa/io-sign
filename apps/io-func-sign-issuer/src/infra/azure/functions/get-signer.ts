@@ -10,9 +10,15 @@ import * as RE from "fp-ts/lib/ReaderEither";
 
 import * as E from "fp-ts/lib/Either";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
+
+import {
+  createPdvTokenizerClient,
+  PdvTokenizerClient,
+} from "@internal/pdv-tokenizer/client";
+import { makeGetSignerByFiscalCode } from "@internal/pdv-tokenizer/signer";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { validate } from "@pagopa/handler-kit/lib/validation";
@@ -22,9 +28,13 @@ import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCo
 
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
-import { mockGetSignerByFiscalCode } from "../../__mocks__/signer";
+import { getConfigFromEnvironment } from "../../../app/config";
 
-const makeGetSignerByFiscalCodeHandler = () => {
+const makeGetSignerByFiscalCodeHandler = (
+  pdvTokenizerClient: PdvTokenizerClient
+) => {
+  const getSignerByFiscalCode = makeGetSignerByFiscalCode(pdvTokenizerClient);
+
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
     flow(
       body(GetSignerByFiscalCodeBody),
@@ -47,10 +57,29 @@ const makeGetSignerByFiscalCodeHandler = () => {
 
   return createHandler(
     decodeHttpRequest,
-    mockGetSignerByFiscalCode,
+    getSignerByFiscalCode,
     error,
     encodeHttpSuccessResponse
   );
 };
 
-export const run = pipe(makeGetSignerByFiscalCodeHandler(), azure.unsafeRun);
+const configOrError = pipe(
+  getConfigFromEnvironment(process.env),
+  E.getOrElseW(identity)
+);
+
+if (configOrError instanceof Error) {
+  throw configOrError;
+}
+
+const config = configOrError;
+
+const pdvTokenizerClient = createPdvTokenizerClient(
+  config.pagopa.tokenizer.basePath,
+  config.pagopa.tokenizer.apiKey
+);
+
+export const run = pipe(
+  makeGetSignerByFiscalCodeHandler(pdvTokenizerClient),
+  azure.unsafeRun
+);

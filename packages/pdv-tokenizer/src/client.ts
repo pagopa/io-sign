@@ -13,7 +13,7 @@ import { createClient, Client } from "./models/client";
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
 
-type PdvTokenizerClient = Client;
+export type PdvTokenizerClient = Client;
 
 export const createPdvTokenizerClient = (
   baseUrl: string,
@@ -25,4 +25,5 @@ export const createPdvTokenizerClient = (
     fetchApi: toFetch(
       setFetchTimeout(timeout, abortableFetch)
     ) as unknown as typeof fetch,
+    basePath: "/tokenizer/v1/",
   });
