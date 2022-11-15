@@ -407,12 +407,19 @@ components:
         $ref: "#/components/schemas/DocumentMetadata"
       minLength: 1
 
+    DossierTitle:
+      type: string
+      minLength: 3
+
     CreateDossierBody:
       type: object
       properties:
+        title:
+          $ref: "#/components/schemas/DossierTitle"
         documents_metadata:
           $ref: "#/components/schemas/DocumentMetadataList"
       required:
+        - title
         - documents_metadata
 
     SetSignatureRequestStatusBody:
@@ -425,6 +432,8 @@ components:
       properties:
         id:
           $ref: "#/components/schemas/Id"
+        title:
+          $ref: "#/components/schemas/DossierTitle"
         documents_metadata:
           $ref: "#/components/schemas/DocumentMetadataList"
         created_at:
@@ -433,6 +442,7 @@ components:
           $ref: "#/components/schemas/Timestamp"
       required:
         - id
+        - title
         - documents_metadata
         - created_at
         - updated_at

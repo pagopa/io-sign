@@ -10,7 +10,7 @@ import { newSignatureRequest, withExpiryDate } from "../signature-request";
 
 const issuer = newIssuer("my-sub-id");
 
-const dossier = newDossier(issuer, [
+const dossier = newDossier(issuer, "My dossier", [
   {
     title: "document #1",
     signatureFields: [],
