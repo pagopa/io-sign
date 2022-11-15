@@ -8,7 +8,7 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { last } from "fp-ts/ReadonlyNonEmptyArray";
 import { split } from "fp-ts/string";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
@@ -38,6 +38,8 @@ import {
   UploadMetadata,
   uploadMetadataNotFoundError,
 } from "../../../upload";
+
+import { validate } from "@internal/io-sign/validation";
 
 export const extractFileNameFromURI = flow(split("/"), last);
 

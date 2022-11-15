@@ -17,7 +17,7 @@ export const UploadMetadata = t.intersection([
   t.type({
     id: Id,
     documentId: Document.types[0].props.id,
-    signatureRequestId: SignatureRequest.props.id,
+    signatureRequestId: SignatureRequest.types[0].props.id,
     issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,

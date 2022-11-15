@@ -5,7 +5,7 @@ import * as RE from "fp-ts/lib/ReaderEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { flow, identity, pipe } from "fp-ts/lib/function";
-import { body, error, HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { createHandler } from "@pagopa/handler-kit";
@@ -22,6 +22,8 @@ import {
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
+import { validate } from "@internal/io-sign/validation";
+import { error } from "@internal/io-sign/infra/http/response";
 
 const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
@@ -39,7 +41,8 @@ const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
     Error,
     "READY"
   > = flow(
-    body(SetSignatureRequestStatusBody),
+    (req) => req.body,
+    validate(SetSignatureRequestStatusBody),
     E.filterOrElse(
       (status) => status === "READY",
       () => new Error("only READY is allowed")

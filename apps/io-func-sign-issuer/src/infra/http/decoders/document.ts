@@ -1,5 +1,6 @@
-import { body } from "@pagopa/handler-kit/lib/http";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+import { validate } from "@internal/io-sign/validation";
+
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { flow, pipe } from "fp-ts/lib/function";
 
@@ -80,7 +81,8 @@ export const DocumentMetadataFromApiModel = new t.Type<
 );
 
 export const requireDocumentsMetadata = flow(
-  body(CreateDossierBody),
+  (res: HttpRequest) => res.body,
+  validate(CreateDossierBody),
   E.map((body) => body.documents_metadata),
   E.chain(
     validate(

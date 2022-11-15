@@ -11,8 +11,10 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
 import { addMinutes } from "date-fns";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
+import { validate } from "@internal/io-sign/validation";
 import { toError } from "fp-ts/lib/Either";
+
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,

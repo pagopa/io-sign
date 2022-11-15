@@ -1,6 +1,7 @@
 import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import { getPdfMetadata } from "@internal/io-sign/infra/pdf";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -13,7 +14,6 @@ import {
   GetSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
-  signatureRequestNotFoundError,
   startValidationOnDocument,
   UpsertSignatureRequest,
 } from "../../signature-request";
@@ -33,7 +33,14 @@ export const makeValidateUpload =
       getSignatureRequest(uploadMetadata.signatureRequestId)(
         uploadMetadata.issuerId
       ),
-      TE.chain(TE.fromOption(() => signatureRequestNotFoundError)),
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new EntityNotFoundError(
+              "The specified Signature Request does not exists."
+            )
+        )
+      ),
       TE.chainEitherK(startValidationOnDocument(uploadMetadata.documentId)),
       TE.chain(upsertSignatureRequest),
       TE.chain((signatureRequest) =>
@@ -47,6 +54,7 @@ export const makeValidateUpload =
                 identity,
                 () => new Error("Unable to find the uploaded document")
               ),
+
               TE.chain(() =>
                 pipe(
                   uploadMetadata.id,

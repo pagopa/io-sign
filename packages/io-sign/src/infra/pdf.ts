@@ -2,10 +2,11 @@ import { PDFDocument } from "pdf-lib";
 
 import * as TE from "fp-ts/TaskEither";
 import * as t from "io-ts";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
+import { validate } from "../validation";
 
 export const PdfMetadata = t.partial({
   title: t.string,
