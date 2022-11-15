@@ -5,24 +5,35 @@ import * as RE from "fp-ts/lib/ReaderEither";
 
 import * as E from "fp-ts/lib/Either";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
+
+import {
+  createPdvTokenizerClient,
+  PdvTokenizerClientWithApiKey,
+} from "@internal/pdv-tokenizer/client";
+import { makeGetSignerByFiscalCode } from "@internal/pdv-tokenizer/signer";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
 import * as O from "fp-ts/lib/Option";
 import { createHandler } from "@pagopa/handler-kit";
+import { validate } from "@internal/io-sign/validation";
+import { error, success } from "@internal/io-sign/infra/http/response";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
-import { mockGetSignerByFiscalCode } from "../../__mocks__/signer";
+import { getConfigFromEnvironment } from "../../../app/config";
 
-import { validate } from "@internal/io-sign/validation";
-import { error, success } from "@internal/io-sign/infra/http/response";
+const makeGetSignerByFiscalCodeHandler = (
+  pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey
+) => {
+  const getSignerByFiscalCode = makeGetSignerByFiscalCode(
+    pdvTokenizerClientWithApiKey
+  );
 
-const makeGetSignerByFiscalCodeHandler = () => {
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
     flow(
       (req) => req.body,
@@ -46,10 +57,29 @@ const makeGetSignerByFiscalCodeHandler = () => {
 
   return createHandler(
     decodeHttpRequest,
-    mockGetSignerByFiscalCode,
+    getSignerByFiscalCode,
     error,
     encodeHttpSuccessResponse
   );
 };
 
-export const run = pipe(makeGetSignerByFiscalCodeHandler(), azure.unsafeRun);
+const configOrError = pipe(
+  getConfigFromEnvironment(process.env),
+  E.getOrElseW(identity)
+);
+
+if (configOrError instanceof Error) {
+  throw configOrError;
+}
+
+const config = configOrError;
+
+const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
+  config.pagopa.tokenizer.basePath,
+  config.pagopa.tokenizer.apiKey
+);
+
+export const run = pipe(
+  makeGetSignerByFiscalCodeHandler(pdvTokenizerClientWithApiKey),
+  azure.unsafeRun
+);
