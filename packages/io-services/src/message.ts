@@ -7,9 +7,17 @@ import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
+import {
+  HttpBadRequestError,
+  HttpError,
+} from "@internal/io-sign/infra/http/errors";
+
+import {
+  ActionNotAllowedError,
+  TooManyRequestsError,
+} from "@internal/io-sign/error";
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
-import { ConflictError } from "./error";
 
 export const newNewMessage = (
   subject: string,
@@ -43,7 +51,9 @@ export const makeSubmitMessageForUser =
       TE.filterOrElse(
         identity,
         () =>
-          new ConflictError("It is not allowed to send a message to this user.")
+          new ActionNotAllowedError(
+            "It is not allowed to send a message to this user."
+          )
       ),
       TE.chain(() =>
         TE.tryCatch(
@@ -57,13 +67,24 @@ export const makeSubmitMessageForUser =
       TE.chain(
         flow(
           E.mapLeft(() => new Error("Unable to send the message!")),
-          E.chainW((response) =>
-            response.status === 201
-              ? E.right(response.value)
-              : E.left(
-                  new Error(`An error occurred while sending the message!`)
-                )
-          ),
+          E.chainW((response) => {
+            switch (response.status) {
+              case 201:
+                return E.right(response.value);
+              case 429:
+                return E.left(new TooManyRequestsError(`Too many requests!`));
+              case 500:
+                return E.left(
+                  new HttpError(`The message cannot be delivered.`)
+                );
+              default:
+                return E.left(
+                  new HttpBadRequestError(
+                    `An error occurred while sending the message!`
+                  )
+                );
+            }
+          }),
           TE.fromEither
         )
       ),

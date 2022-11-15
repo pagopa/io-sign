@@ -3,7 +3,11 @@ import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import {
+  EntityNotFoundError,
+  TooManyRequestsError,
+} from "@internal/io-sign/error";
+import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 import { IOApiClient } from "./client";
 
 export type RetriveUserProfileSenderAllowed = (
@@ -32,9 +36,13 @@ export const makeRetriveUserProfileSenderAllowed =
                 return E.left(
                   new EntityNotFoundError(`User profile not found!`)
                 );
+              case 429:
+                return E.left(new TooManyRequestsError(`Too many requests!`));
               default:
                 return E.left(
-                  new Error(`An error occurred while getting the profile!`)
+                  new HttpBadRequestError(
+                    `An error occurred while getting the profile!`
+                  )
                 );
             }
           }),

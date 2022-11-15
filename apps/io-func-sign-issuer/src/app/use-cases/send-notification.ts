@@ -9,6 +9,7 @@ import {
 } from "@internal/io-services/message";
 import { validate } from "@internal/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
+import { ConflictError, EntityNotFoundError } from "@internal/io-sign/error";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -69,7 +70,7 @@ export const makeSendNotification =
       TE.filterOrElse(
         () => signatureRequest.notification === undefined,
         () =>
-          new Error(
+          new ConflictError(
             "You cannot send a new notification if it has already been sent!"
           )
       ),
@@ -77,7 +78,9 @@ export const makeSendNotification =
       TE.chain(
         TE.fromOption(
           () =>
-            new Error("The tax code associated with this signer is not valid!")
+            new EntityNotFoundError(
+              "The tax code associated with this signer is not valid!"
+            )
         )
       ),
       TE.chain((fiscalCode) =>

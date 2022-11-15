@@ -29,6 +29,10 @@ export class HttpConflictError extends HttpError {
   status = 409;
   title = "Unexpected error";
 }
+export class HttpTooManyRequestsError extends HttpError {
+  status = 429;
+  title = "Too many request";
+}
 
 export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
   "HttpErrorFromError",
@@ -46,6 +50,8 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
         return t.success(new HttpBadRequestError(e.message));
       case "ConflictError":
         return t.success(new HttpConflictError(e.message));
+      case "TooManyRequestsError":
+        return t.success(new HttpTooManyRequestsError(e.message));
     }
     return t.failure(e, ctx, "Unsupported error type.");
   },
