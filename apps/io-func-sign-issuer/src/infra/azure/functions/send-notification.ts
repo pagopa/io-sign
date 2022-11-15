@@ -13,8 +13,8 @@ import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { makeSubmitMessageForUser } from "@internal/io-services/message";
 import { createIOApiClient, IOApiClient } from "@internal/io-services/client";
 import {
-  PdvTokenizerClient,
   createPdvTokenizerClient,
+  PdvTokenizerClientWithApiKey,
 } from "@internal/pdv-tokenizer/client";
 
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
@@ -39,7 +39,7 @@ import { makeGetDossier } from "../cosmos/dossier";
 const makeSendNotificationHandler = (
   db: CosmosDatabase,
   ioApiClient: IOApiClient,
-  tokenizer: PdvTokenizerClient
+  tokenizer: PdvTokenizerClientWithApiKey
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);

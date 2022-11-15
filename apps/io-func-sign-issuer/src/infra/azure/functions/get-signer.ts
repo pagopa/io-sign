@@ -21,6 +21,8 @@ import * as O from "fp-ts/lib/Option";
 import { createHandler } from "@pagopa/handler-kit";
 import { validate } from "@internal/io-sign/validation";
 import { error, success } from "@internal/io-sign/infra/http/response";
+import { makeRetriveUserProfileSenderAllowed } from "@internal/io-services/profile";
+import { createIOApiClient, IOApiClient } from "@internal/io-services/client";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 
 import { SignerToApiModel } from "../../http/encoders/signer";
@@ -28,18 +30,27 @@ import { SignerDetailView } from "../../http/models/SignerDetailView";
 import { getConfigFromEnvironment } from "../../../app/config";
 
 const makeGetSignerByFiscalCodeHandler = (
-  pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey
+  pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
+  ioApiClient: IOApiClient
 ) => {
+  const retriveUserProfile = makeRetriveUserProfileSenderAllowed(ioApiClient);
   const getSignerByFiscalCode = makeGetSignerByFiscalCode(
     pdvTokenizerClientWithApiKey
   );
+
+  const getAllowedSignerByFiscalCode = (fiscalCode: FiscalCode) =>
+    pipe(
+      fiscalCode,
+      retriveUserProfile,
+      TE.chain(() => getSignerByFiscalCode(fiscalCode))
+    );
 
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
     flow(
       (req) => req.body,
       validate(GetSignerByFiscalCodeBody),
       E.map((body) => body.fiscal_code),
-      E.chain(validate(FiscalCode, "not a valid fiscal code"))
+      E.chain(validate(FiscalCode, "Not a valid fiscal code"))
     );
 
   const decodeHttpRequest = flow(
@@ -57,7 +68,7 @@ const makeGetSignerByFiscalCodeHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    getSignerByFiscalCode,
+    getAllowedSignerByFiscalCode,
     error,
     encodeHttpSuccessResponse
   );
@@ -79,7 +90,12 @@ const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.apiKey
 );
 
+const ioApiClient = createIOApiClient(
+  config.pagopa.ioServices.basePath,
+  config.pagopa.ioServices.subscriptionKey
+);
+
 export const run = pipe(
-  makeGetSignerByFiscalCodeHandler(pdvTokenizerClientWithApiKey),
+  makeGetSignerByFiscalCodeHandler(pdvTokenizerClientWithApiKey, ioApiClient),
   azure.unsafeRun
 );

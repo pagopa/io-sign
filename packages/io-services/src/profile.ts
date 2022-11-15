@@ -4,6 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
 import {
+  ActionNotAllowedError,
   EntityNotFoundError,
   TooManyRequestsError,
 } from "@internal/io-sign/error";
@@ -35,6 +36,12 @@ export const makeRetriveUserProfileSenderAllowed =
               case 404:
                 return E.left(
                   new EntityNotFoundError(`User profile not found!`)
+                );
+              case 403:
+                return E.left(
+                  new ActionNotAllowedError(
+                    `You are not allowed to issue requests for this user!`
+                  )
                 );
               case 429:
                 return E.left(new TooManyRequestsError(`Too many requests!`));
