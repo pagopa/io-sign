@@ -1,8 +1,15 @@
 import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-import { sequenceS } from "fp-ts/lib/Apply";
-import { IsUploaded, MoveUploadedDocument, UploadMetadata } from "../../upload";
+import { getPdfMetadata } from "@internal/io-sign/infra/pdf";
+import { EntityNotFoundError } from "@internal/io-sign/error";
+import {
+  DeleteUploadDocument,
+  DownloadUploadDocument,
+  IsUploaded,
+  MoveUploadedDocument,
+  UploadMetadata,
+  UpsertUploadMetadata,
+} from "../../upload";
 import {
   GetSignatureRequest,
   markDocumentAsReady,
@@ -10,34 +17,34 @@ import {
   startValidationOnDocument,
   UpsertSignatureRequest,
 } from "../../signature-request";
-import { EntityNotFoundError } from "@internal/io-sign/error";
 
 export const makeValidateUpload =
   (
     getSignatureRequest: GetSignatureRequest,
     upsertSignatureRequest: UpsertSignatureRequest,
     isUploaded: IsUploaded,
-    moveUploadedDocument: MoveUploadedDocument
+    moveUploadedDocument: MoveUploadedDocument,
+    downloadDocumentUploadedFromBlobStorage: DownloadUploadDocument,
+    deleteDocumentUploadedFromBlobStorage: DeleteUploadDocument,
+    upsertUploadMetadata: UpsertUploadMetadata
   ) =>
   (uploadMetadata: UploadMetadata) =>
     pipe(
-      sequenceS(TE.ApplySeq)({
-        signatureRequest: pipe(
-          getSignatureRequest(uploadMetadata.signatureRequestId)(
-            uploadMetadata.issuerId
-          ),
-          TE.chain(
-            TE.fromOption(
-              () =>
-                new EntityNotFoundError(
-                  "The specified Signature Request does not exists."
-                )
+      getSignatureRequest(uploadMetadata.signatureRequestId)(
+        uploadMetadata.issuerId
+      ),
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new EntityNotFoundError(
+              "The specified Signature Request does not exists."
             )
-          ),
-          TE.chainEitherK(startValidationOnDocument(uploadMetadata.documentId)),
-          TE.chain(upsertSignatureRequest)
-        ),
-        url: pipe(
+        )
+      ),
+      TE.chainEitherK(startValidationOnDocument(uploadMetadata.documentId)),
+      TE.chain(upsertSignatureRequest),
+      TE.chain((signatureRequest) =>
+        pipe(
           uploadMetadata.url,
           TE.fromNullable(new Error("Not found: url in upload metadata")),
           TE.chainFirst(() =>
@@ -46,28 +53,46 @@ export const makeValidateUpload =
               TE.filterOrElse(
                 identity,
                 () => new Error("Unable to find the uploaded document")
+              ),
+
+              TE.chain(() =>
+                pipe(
+                  uploadMetadata.id,
+                  downloadDocumentUploadedFromBlobStorage,
+                  TE.chain(getPdfMetadata),
+                  TE.chain(() =>
+                    pipe(
+                      {
+                        ...uploadMetadata,
+                        validated: true,
+                        updatedAt: new Date(),
+                      },
+                      upsertUploadMetadata
+                    )
+                  )
+                )
               )
             )
           ),
-          TE.chain(moveUploadedDocument(uploadMetadata.documentId))
-        ),
-      }),
-      TE.chainEitherK(({ signatureRequest, url }) =>
-        pipe(
-          pipe(
-            signatureRequest,
-            markDocumentAsReady(uploadMetadata.documentId, url)
+          TE.chain(moveUploadedDocument(uploadMetadata.documentId)),
+          TE.chainEitherK((url) =>
+            pipe(
+              signatureRequest,
+              markDocumentAsReady(uploadMetadata.documentId, url)
+            )
           ),
-          E.altW(() =>
+          TE.altW(() =>
             pipe(
               signatureRequest,
               markDocumentAsRejected(
                 uploadMetadata.documentId,
                 "There was an error on the upload"
-              )
+              ),
+              TE.fromEither
             )
           )
         )
       ),
-      TE.chain(upsertSignatureRequest)
+      TE.chain(upsertSignatureRequest),
+      TE.chain(() => deleteDocumentUploadedFromBlobStorage(uploadMetadata.id))
     );
