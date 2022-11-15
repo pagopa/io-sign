@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
@@ -24,6 +25,11 @@ export class HttpBadRequestError extends HttpError {
   title = "Bad Request";
 }
 
+export class HttpTooManyRequestsError extends HttpError {
+  status = 429;
+  title = "Too many request";
+}
+
 export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
   "HttpErrorFromError",
   isHttpError,
@@ -38,6 +44,8 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
         return t.success(new HttpBadRequestError(e.message));
       case "InvalidExpiryDateError":
         return t.success(new HttpBadRequestError(e.message));
+      case "TooManyRequestsError":
+        return t.success(new HttpTooManyRequestsError(e.message));
     }
     return t.failure(e, ctx, "Unsupported error type.");
   },

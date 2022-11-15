@@ -11,7 +11,7 @@ export const IOServicesConfig = t.type({
 
 type IOServicesConfig = t.TypeOf<typeof IOServicesConfig>;
 
-export const getPdvTokenizerConfigFromEnvironment: RE.ReaderEither<
+export const getIoServicesConfigFromEnvironment: RE.ReaderEither<
   NodeJS.ProcessEnv,
   Error,
   IOServicesConfig

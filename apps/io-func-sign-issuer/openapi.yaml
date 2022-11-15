@@ -231,6 +231,39 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /signature-requests/{req_id}/notification:
+    put:
+      operationId: sendNotification
+      tags:
+        - Signature Request
+      summary: Send a signature request notification to user via IO message
+      parameters:
+        - in: path
+          name: req_id
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "201":
+          description: The notification detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationDetailView"
+        "409":
+          description: "If the notification has already been sent"
+          $ref: "#/components/responses/Conflict"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     SubscriptionKey:
@@ -276,6 +309,13 @@ components:
             $ref: "#/components/schemas/ProblemDetail"
 
     Unexpected:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
+    Conflict:
       description: Unexpected error
       content:
         application/json:
@@ -587,6 +627,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DocumentDetailView"
+        notification:
+          $ref: "#/components/schemas/NotificationDetailView"
         created_at:
           $ref: "#/components/schemas/Timestamp"
         updated_at:
@@ -611,3 +653,11 @@ components:
     UploadUrl:
       type: string
       format: uri
+
+    NotificationDetailView:
+      type: object
+      properties:
+        io_message_id:
+          type: string
+      required:
+        - io_message_id
