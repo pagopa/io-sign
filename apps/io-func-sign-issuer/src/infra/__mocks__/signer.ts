@@ -1,3 +1,6 @@
+// this mock does not work as intended due the split of the application entries
+// it affects "createSignatureRequest"
+
 import {
   GetSigner,
   GetSignerByFiscalCode,
@@ -24,10 +27,5 @@ export const mockGetSignerByFiscalCode: GetSignerByFiscalCode = (
 };
 
 export const mockGetSigner: GetSigner = (id) => {
-  for (const signer of cache.values()) {
-    if (id === signer.id) {
-      return TE.right(O.some(signer));
-    }
-  }
-  return TE.right(O.none);
+  return TE.right(O.some({ id }));
 };

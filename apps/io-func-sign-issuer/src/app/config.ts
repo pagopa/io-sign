@@ -9,6 +9,10 @@ import {
   getPdvTokenizerConfigFromEnvironment,
 } from "@internal/pdv-tokenizer/config";
 import {
+  IOServicesConfig,
+  getIoServicesConfigFromEnvironment,
+} from "@internal/io-services/config";
+import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
@@ -25,6 +29,7 @@ export const Config = t.type({
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
+    ioServices: IOServicesConfig,
   }),
   uploadedStorageContainerName: t.string,
   validatedStorageContainerName: t.string,
@@ -41,6 +46,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     storage: getStorageConfigFromEnvironment,
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
+    ioServices: getIoServicesConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -49,6 +55,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     },
     pagopa: {
       tokenizer: config.tokenizer,
+      ioServices: config.ioServices,
     },
     uploadedStorageContainerName: "uploaded-documents",
     validatedStorageContainerName: "validated-documents",

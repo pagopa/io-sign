@@ -16,6 +16,13 @@ services:
       - 10254:10254
     volumes:
       - cosmos-db-volume:/data/db
+      
+  storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: "azurite -l /data --blobHost 0.0.0.0 --queueHost 0.0.0.0 --skipApiVersionCheck"
+    ports:
+      - 10000:10000
+      - 10001:10001
 
 volumes:
   cosmos-db-volume:

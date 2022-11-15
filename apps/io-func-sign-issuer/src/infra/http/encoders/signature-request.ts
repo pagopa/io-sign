@@ -7,6 +7,7 @@ import {
 import { SignatureRequest } from "../../../signature-request";
 
 import { DocumentToApiModel } from "./document";
+import { NotificationToApiModel } from "./notification";
 
 const toApiModelEnum = (
   type: SignatureRequest["status"]
@@ -20,6 +21,8 @@ const toApiModelEnum = (
       return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
     case "SIGNED":
       return SignatureRequestStatusEnum.SIGNED;
+    case "REJECTED":
+      return SignatureRequestStatusEnum.REJECTED;
   }
 };
 
@@ -31,23 +34,50 @@ export const SignatureRequestToApiModel: E.Encoder<
     id,
     dossierId: dossier_id,
     signerId: signer_id,
-    status,
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
     documents,
-  }) => ({
-    id,
-    dossier_id,
-    signer_id,
-    status: toApiModelEnum(status),
-    created_at,
-    updated_at,
-    expires_at,
-    documents: documents.map(DocumentToApiModel.encode),
-    // here we have to handle the dynamic QR Code
-    qr_code_url: ["DRAFT", "READ"].includes(status)
-      ? void 0
-      : "https://place-holder.com/qr-code",
-  }),
+    notification,
+    ...extras
+  }) => {
+    const commonFields = {
+      id,
+      dossier_id,
+      signer_id,
+      status: toApiModelEnum(extras.status),
+      created_at,
+      updated_at,
+      expires_at,
+      documents: documents.map(DocumentToApiModel.encode),
+      notification:
+        notification !== undefined
+          ? NotificationToApiModel.encode(notification)
+          : undefined,
+      // here we have to handle the dynamic QR Code
+      qr_code_url: [
+        SignatureRequestStatusEnum.DRAFT,
+        SignatureRequestStatusEnum.READY,
+      ].includes(toApiModelEnum(extras.status))
+        ? undefined
+        : "https://place-holder.com/qr-code",
+    };
+    switch (extras.status) {
+      case "SIGNED": {
+        return {
+          ...commonFields,
+          signed_at: extras.signedAt,
+        };
+      }
+      case "REJECTED": {
+        return {
+          ...commonFields,
+          reject_reason: extras.rejectedReason,
+        };
+      }
+      default: {
+        return commonFields;
+      }
+    }
+  },
 };

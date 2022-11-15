@@ -7,11 +7,14 @@ import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
 
 import { Signer } from "@internal/io-sign/signer";
+import { Notification } from "@internal/io-sign/notification";
 
 import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
+
+import { ActionNotAllowedError } from "@internal/io-sign/error";
 
 import {
   Document,
@@ -26,22 +29,30 @@ import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
 import { Dossier } from "./dossier";
 import { Issuer } from "./issuer";
 
-export const SignatureRequest = t.type({
-  id: Id,
-  issuerId: Issuer.props.id,
-  signerId: Signer.props.id,
-  dossierId: Dossier.props.id,
-  status: t.keyof({
-    DRAFT: null,
-    READY: null,
-    WAIT_FOR_SIGNATURE: null,
-    SIGNED: null,
+export const SignatureRequest = t.intersection([
+  t.type({
+    id: Id,
+    issuerId: Issuer.props.id,
+    signerId: Signer.props.id,
+    dossierId: Dossier.props.id,
+    status: t.keyof({
+      DRAFT: null,
+      READY: null,
+      WAIT_FOR_SIGNATURE: null,
+      SIGNED: null,
+      REJECTED: null,
+    }),
+    createdAt: IsoDateFromString,
+    updatedAt: IsoDateFromString,
+    expiresAt: IsoDateFromString,
+    documents: t.array(Document),
   }),
-  createdAt: IsoDateFromString,
-  updatedAt: IsoDateFromString,
-  expiresAt: IsoDateFromString,
-  documents: t.array(Document),
-});
+  t.partial({
+    notification: Notification,
+    signedAt: IsoDateFromString,
+    rejectedReason: t.string,
+  }),
+]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
@@ -69,8 +80,9 @@ export const newSignatureRequest = (
 });
 
 class InvalidExpiryDateError extends Error {
+  name = "InvalidExpireDateError";
   constructor() {
-    super("... invalid expiry date");
+    super("Invalid expiry date provided");
   }
 }
 
@@ -116,13 +128,6 @@ export const replaceDocument =
 export const canBeMarkedAsReady = (request: SignatureRequest) =>
   request.status === "DRAFT" &&
   request.documents.every((document) => document.status === "READY");
-
-export class ActionNotAllowedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ActionNotAllowedError";
-  }
-}
 
 type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
@@ -320,10 +325,8 @@ export const markDocumentAsRejected = (
   });
 
 export type GetSignatureRequest = (
-  id: SignatureRequest["id"]
-) => (
-  issuerId: SignatureRequest["issuerId"]
-) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  id: Id
+) => (issuerId: Id) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
 
 export type InsertSignatureRequest = (
   request: SignatureRequest
@@ -332,7 +335,3 @@ export type InsertSignatureRequest = (
 export type UpsertSignatureRequest = (
   request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
-
-export const signatureRequestNotFoundError = new EntityNotFoundError(
-  "SignatureRequest"
-);

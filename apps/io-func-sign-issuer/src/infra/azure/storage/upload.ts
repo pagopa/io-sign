@@ -11,9 +11,13 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
 import { addMinutes } from "date-fns";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
+import { validate } from "@internal/io-sign/validation";
+import { toError } from "fp-ts/lib/Either";
+
 import {
-  DeleteUploadMetadata,
+  DeleteUploadDocument,
+  DownloadUploadDocument,
   GetUploadUrl,
   IsUploaded,
   MoveUploadedDocument,
@@ -87,7 +91,7 @@ export const makeIsUploaded =
     pipe(containerClient.getBlobClient(id), blobExists);
 
 export const makeDeleteUploadedMetadata =
-  (containerClient: ContainerClient): DeleteUploadMetadata =>
+  (containerClient: ContainerClient): DeleteUploadDocument =>
   (id) =>
     pipe(containerClient.getBlobClient(id), deleteBlobIfExists);
 
@@ -96,3 +100,10 @@ export const makeMoveUploadedDocument =
   (documentId) =>
   (source) =>
     pipe(containerClient.getBlobClient(documentId), copyFromUrl(source));
+
+export const makeDownloadUploadedDocument =
+  (containerClient: ContainerClient): DownloadUploadDocument =>
+  (id) =>
+    pipe(containerClient.getBlobClient(id), (blob) =>
+      TE.tryCatch(() => blob.downloadToBuffer(), toError)
+    );

@@ -1,5 +1,6 @@
-import { body } from "@pagopa/handler-kit/lib/http";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+import { validate } from "@internal/io-sign/validation";
+
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { flow, pipe } from "fp-ts/lib/function";
 
@@ -14,6 +15,7 @@ import { SignatureField } from "@internal/io-sign/document";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
+import { sequenceS } from "fp-ts/lib/Apply";
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
@@ -21,7 +23,6 @@ import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
-import { sequenceS } from "fp-ts/lib/Apply";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -43,7 +44,7 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  ({ clause: { title, type }, attrs }, ctx) =>
+  ({ clause: { title, type }, attrs }, _ctx) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
@@ -70,7 +71,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
 >(
   "DocumentMetadataFromApiModel",
   DocumentMetadata.is,
-  ({ title, signature_fields }, ctx) =>
+  ({ title, signature_fields }, _ctx) =>
     pipe(
       signature_fields,
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
@@ -80,7 +81,8 @@ export const DocumentMetadataFromApiModel = new t.Type<
 );
 
 export const requireDocumentsMetadata = flow(
-  body(CreateDossierBody),
+  (res: HttpRequest) => res.body,
+  validate(CreateDossierBody),
   E.map((body) => body.documents_metadata),
   E.chain(
     validate(

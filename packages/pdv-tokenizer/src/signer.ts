@@ -8,6 +8,8 @@ import * as O from "fp-ts/lib/Option";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
 
+import { TooManyRequestsError } from "@internal/io-sign/error";
+import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 import { PdvTokenizerClientWithApiKey } from "./client";
 
 export const makeGetSignerByFiscalCode =
@@ -25,15 +27,20 @@ export const makeGetSignerByFiscalCode =
       TE.chain(
         flow(
           E.mapLeft(() => new Error("Unable to get signerId from tokenizer!")),
-          E.chainW((response) =>
-            response.status === 200
-              ? E.right(response.value)
-              : E.left(
-                  new Error(
-                    "An error occurred while connecting to the tokenizer to get signerId !"
+          E.chainW((response) => {
+            switch (response.status) {
+              case 200:
+                return E.right(response.value);
+              case 429:
+                return E.left(new TooManyRequestsError(`Too many requests!`));
+              default:
+                return E.left(
+                  new HttpBadRequestError(
+                    `An error occurred while connecting to the tokenizer to get signerId!`
                   )
-                )
-          ),
+                );
+            }
+          }),
           TE.fromEither,
           TE.map(
             flow(
@@ -64,15 +71,20 @@ export const makeGetFiscalCodeBySignerId =
           E.mapLeft(
             () => new Error("Unable to get fiscal code from tokenizer!")
           ),
-          E.chainW((response) =>
-            response.status === 200
-              ? E.right(response.value)
-              : E.left(
-                  new Error(
-                    "An error occurred while connecting to the tokenizer to get fiscal code!"
+          E.chainW((response) => {
+            switch (response.status) {
+              case 200:
+                return E.right(response.value);
+              case 429:
+                return E.left(new TooManyRequestsError(`Too many requests!`));
+              default:
+                return E.left(
+                  new HttpBadRequestError(
+                    `An error occurred while connecting to the tokenizer to get Fiscal Code!`
                   )
-                )
-          ),
+                );
+            }
+          }),
           TE.fromEither,
           TE.map(
             flow(

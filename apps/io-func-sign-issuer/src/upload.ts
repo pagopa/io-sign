@@ -17,7 +17,7 @@ export const UploadMetadata = t.intersection([
   t.type({
     id: Id,
     documentId: Document.types[0].props.id,
-    signatureRequestId: SignatureRequest.props.id,
+    signatureRequestId: SignatureRequest.types[0].props.id,
     issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,
@@ -60,6 +60,10 @@ export type GetUploadMetadata = (
   id: UploadMetadata["id"]
 ) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
 
+export type UpsertUploadMetadata = (
+  uploadMetadata: UploadMetadata
+) => TE.TaskEither<Error, UploadMetadata>;
+
 export const UploadUrl = UrlFromString;
 export type UploadUrl = t.TypeOf<typeof UploadUrl>;
 
@@ -79,6 +83,10 @@ export type MoveUploadedDocument = (
   destination: UploadMetadata["documentId"]
 ) => (source: string) => TE.TaskEither<Error, string>;
 
-export type DeleteUploadMetadata = (
+export type DeleteUploadDocument = (
   documentId: UploadMetadata["documentId"]
 ) => TE.TaskEither<Error, string>;
+
+export type DownloadUploadDocument = (
+  documentId: UploadMetadata["id"]
+) => TE.TaskEither<Error, Buffer>;
