@@ -9,7 +9,7 @@ import {
 } from "@internal/io-services/message";
 import { validate } from "@internal/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { ConflictError, EntityNotFoundError } from "@internal/io-sign/error";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -52,6 +52,11 @@ const makeMessage =
       )
     );
 
+const SignatureRequestReadyToNotify = t.type({
+  status: t.literal("READY"),
+  notification: t.undefined,
+});
+
 export const makeSendNotification =
   (
     submitMessage: SubmitMessageForUser,
@@ -61,19 +66,12 @@ export const makeSendNotification =
   ) =>
   ({ signatureRequest }: SendNotificationPayload) =>
     pipe(
-      signatureRequest.status,
+      signatureRequest,
       validate(
-        t.literal("READY"),
-        "Notification can only be sent if the signature request is READY!"
+        SignatureRequestReadyToNotify,
+        "Notification can only be sent if the signature request is READY and it has not already been sent!"
       ),
       TE.fromEither,
-      TE.filterOrElse(
-        () => signatureRequest.notification === undefined,
-        () =>
-          new ConflictError(
-            "You cannot send a new notification if it has already been sent!"
-          )
-      ),
       TE.chain(() => getFiscalCodeBySignerId(signatureRequest.signerId)),
       TE.chain(
         TE.fromOption(
