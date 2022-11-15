@@ -133,4 +133,7 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-export const run = pipe(makeCreateSignatureRequestHandler(database));
+export const run = pipe(
+  makeCreateSignatureRequestHandler(database),
+  azure.unsafeRun
+);
