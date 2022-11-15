@@ -6,19 +6,21 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+
+import { validate } from "@internal/io-sign/validation";
+
 import { GetIssuerBySubscriptionId } from "../../../issuer";
 import {
   GetSignatureRequest,
   SignatureRequest,
-  signatureRequestNotFoundError,
 } from "../../../signature-request";
 import { makeRequireIssuer } from "./issuer";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),
-  E.fromOption(() => new Error(`missing "id" in path`)),
-  E.chainW(validate(SignatureRequest.props.id, `invalid "id" supplied`))
+  E.fromOption(() => new Error(`Missing "id" in path`)),
+  E.chainW(validate(SignatureRequest.props.id, `Invalid "id" supplied.`))
 );
 
 export const makeRequireSignatureRequest = (
@@ -37,7 +39,14 @@ export const makeRequireSignatureRequest = (
       pipe(
         issuer.id,
         getSignatureRequest(signatureRequestId),
-        TE.chain(TE.fromOption(() => signatureRequestNotFoundError))
+        TE.chain(
+          TE.fromOption(
+            () =>
+              new EntityNotFoundError(
+                "The specified Signature Request does not exists."
+              )
+          )
+        )
       )
     )
   );

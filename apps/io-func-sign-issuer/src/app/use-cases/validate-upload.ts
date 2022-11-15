@@ -7,10 +7,10 @@ import {
   GetSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
-  signatureRequestNotFoundError,
   startValidationOnDocument,
   UpsertSignatureRequest,
 } from "../../signature-request";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 
 export const makeValidateUpload =
   (
@@ -26,7 +26,14 @@ export const makeValidateUpload =
           getSignatureRequest(uploadMetadata.signatureRequestId)(
             uploadMetadata.issuerId
           ),
-          TE.chain(TE.fromOption(() => signatureRequestNotFoundError)),
+          TE.chain(
+            TE.fromOption(
+              () =>
+                new EntityNotFoundError(
+                  "The specified Signature Request does not exists."
+                )
+            )
+          ),
           TE.chainEitherK(startValidationOnDocument(uploadMetadata.documentId)),
           TE.chain(upsertSignatureRequest)
         ),
