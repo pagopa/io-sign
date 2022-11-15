@@ -69,6 +69,26 @@ describe.concurrent("errors", () => {
       );
       expect(isHttpBadRequest).toBe(true);
     });
+    it("should parse an InvalidExpiryDateError as HttpBadRequest", () => {
+      const invalidExpiryDateError = new (class extends Error {
+        name = "InvalidExpiryDateError";
+      })("Action not allowed");
+      const isHttpBadRequest = pipe(
+        HttpErrorFromError.decode(invalidExpiryDateError),
+        E.mapLeft(() => false),
+        E.filterOrElse(
+          (e) => e.name === "HttpError",
+          () => false
+        ),
+        E.filterOrElse(
+          (e) => e.status === 400,
+          () => false
+        ),
+        E.map(HttpErrorFromError.is),
+        E.getOrElse(identity)
+      );
+      expect(isHttpBadRequest).toBe(true);
+    });
     it("should fail on unsupported error type", () => {
       const unexpected = new Error("Unexpected.");
       const unsupported = pipe(HttpErrorFromError.decode(unexpected), E.isLeft);

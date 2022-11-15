@@ -36,6 +36,8 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
         return t.success(new HttpNotFoundError(e.message));
       case "ActionNotAllowedError":
         return t.success(new HttpBadRequestError(e.message));
+      case "InvalidExpiryDateError":
+        return t.success(new HttpBadRequestError(e.message));
     }
     return t.failure(e, ctx, "Unsupported error type.");
   },
