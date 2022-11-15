@@ -250,9 +250,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotificationDetailView"
-        "409":
-          description: "If the notification has already been sent"
-          $ref: "#/components/responses/Conflict"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -309,13 +306,6 @@ components:
             $ref: "#/components/schemas/ProblemDetail"
 
     Unexpected:
-      description: Unexpected error
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ProblemDetail"
-
-    Conflict:
       description: Unexpected error
       content:
         application/json:
