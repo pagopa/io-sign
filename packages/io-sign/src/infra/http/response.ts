@@ -42,9 +42,11 @@ export const error = (e: Error) =>
   pipe(
     HttpErrorFromError.decode(e),
     E.orElse(() => E.right(e)),
-    E.map(toProblemDetail),
-    E.map((problem) => response(problem)),
-    E.map((res) => pipe(res, withStatusCode(res.body.status))),
+    E.map(
+      flow(toProblemDetail, response, (res) =>
+        pipe(res, withStatusCode(res.body.status))
+      )
+    ),
     E.chainW(serializeToJSON),
     E.map(withHeader("Content-Type", "application/problem+json")),
     E.getOrElse(() => serializationProblem)
