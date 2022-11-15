@@ -2,25 +2,28 @@ import { Database as CosmosDatabase, CosmosClient } from "@azure/cosmos";
 
 import { flow, pipe, identity } from "fp-ts/lib/function";
 
-import { path, error, success } from "@pagopa/handler-kit/lib/http";
+import { validate } from "@internal/io-sign/validation";
+
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as O from "fp-ts/lib/Option";
 
-import { validate } from "@pagopa/handler-kit/lib/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
-import { Dossier, dossierNotFoundError } from "../../../dossier";
+import { Dossier } from "../../../dossier";
 import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
-import { DossierToApiModel } from "../../http/encoders/dossier";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
+
+import { path } from "@pagopa/handler-kit/lib/http";
+import { error, success } from "@internal/io-sign/infra/http/response";
+import { DossierToApiModel } from "../../http/encoders/dossier";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const makeGetDossierHandler = (database: CosmosDatabase) => {
   const getDossier = makeGetDossier(database);
@@ -29,8 +32,8 @@ const makeGetDossierHandler = (database: CosmosDatabase) => {
 
   const requireDossierId = flow(
     path("dossierId"),
-    E.fromOption(() => new Error(`missing "id" in path`)),
-    E.chainW(validate(Dossier.props.id, `invalid "id" supplied`))
+    E.fromOption(() => new Error(`Missing "id" in path.`)),
+    E.chainW(validate(Dossier.props.id, `Invalid "id" supplied.`))
   );
 
   const requireGetDossierPayload = sequenceS(RTE.ApplyPar)({
@@ -44,18 +47,21 @@ const makeGetDossierHandler = (database: CosmosDatabase) => {
     TE.chain(requireGetDossierPayload)
   );
 
-  const encodeHttpRequest = (maybeDossier: O.Option<Dossier>) =>
-    pipe(
-      maybeDossier,
-      E.fromOption(() => dossierNotFoundError),
-      E.fold(error, flow(DossierToApiModel.encode, success(DossierDetailView)))
-    );
-
   return createHandler(
     decodeHttpRequest,
-    ({ issuer, dossierId }) => pipe(issuer.id, getDossier(dossierId)),
+    ({ issuer, dossierId }) =>
+      pipe(
+        issuer.id,
+        getDossier(dossierId),
+        TE.chain(
+          TE.fromOption(
+            () =>
+              new EntityNotFoundError("The specified Dossier does not exists.")
+          )
+        )
+      ),
     error,
-    encodeHttpRequest
+    flow(DossierToApiModel.encode, success(DossierDetailView))
   );
 };
 

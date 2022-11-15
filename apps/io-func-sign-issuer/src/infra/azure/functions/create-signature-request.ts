@@ -3,16 +3,13 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
-import {
-  HttpRequest,
-  body,
-  created,
-  error,
-} from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+
+import { validate } from "@internal/io-sign/validation";
+
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe, flow, identity } from "fp-ts/lib/function";
-import { signerNotFoundError } from "@internal/io-sign/signer";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
@@ -21,7 +18,6 @@ import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureReq
 import { SignatureRequest } from "../../../signature-request";
 import { makeGetDossier } from "../cosmos/dossier";
 
-import { dossierNotFoundError } from "../../../dossier";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { SignatureRequestDetailView } from "../../http/models/SignatureRequestDetailView";
 
@@ -34,6 +30,8 @@ import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
+import { created, error } from "@internal/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   const getDossier = makeGetDossier(db);
@@ -45,7 +43,8 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   );
 
   const requireCreateSignatureRequestBody = flow(
-    body(CreateSignatureRequestBody),
+    (req: HttpRequest) => req.body,
+    validate(CreateSignatureRequestBody),
     E.map(
       (
         body
@@ -72,14 +71,24 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
       pipe(
         issuer.id,
         getDossier(body.dossierId),
-        TE.chain(TE.fromOption(() => dossierNotFoundError)),
+        TE.chain(
+          TE.fromOption(
+            () =>
+              new EntityNotFoundError("The specified Dossier does not exists.")
+          )
+        ),
         RTE.fromTaskEither
       )
     ),
     RTE.bindW("signer", ({ body }) =>
       pipe(
         mockGetSigner(body.signerId),
-        TE.chain(TE.fromOption(() => signerNotFoundError)),
+        TE.chain(
+          TE.fromOption(
+            () =>
+              new EntityNotFoundError("The specified Signer does not exists.")
+          )
+        ),
         RTE.fromTaskEither
       )
     ),
