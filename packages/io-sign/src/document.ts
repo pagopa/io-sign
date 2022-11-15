@@ -85,7 +85,7 @@ const DocumentToBeValidated = t.type({
   uploadedAt: IsoDateFromString,
 });
 
-const DocumentUploaded = t.type({
+const DocumentReady = t.type({
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
   url: t.string,
@@ -108,7 +108,7 @@ export const Document = t.intersection([
   t.union([
     DocumentToBeUploaded,
     DocumentToBeValidated,
-    DocumentUploaded,
+    DocumentReady,
     DocumentRejected,
   ]),
 ]);

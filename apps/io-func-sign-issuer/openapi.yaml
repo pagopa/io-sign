@@ -527,7 +527,7 @@ components:
           required:
             - uploaded_at
 
-    DocumentUploaded:
+    DocumentReady:
       allOf:
         - $ref: "#/components/schemas/Document"
         - type: object
@@ -561,7 +561,7 @@ components:
       oneOf:
         - $ref: "#/components/schemas/DocumentToBeUploaded"
         - $ref: "#/components/schemas/DocumentToBeValidated"
-        - $ref: "#/components/schemas/DocumentUploaded"
+        - $ref: "#/components/schemas/DocumentReady"
         - $ref: "#/components/schemas/DocumentRejected"
 
     SignatureRequestDetailView:
@@ -576,6 +576,7 @@ components:
             - READY
             - WAIT_FOR_SIGNATURE
             - SIGNED
+            - REJECTED
         dossier_id:
           $ref: "#/components/schemas/Id"
         signer_id:
@@ -590,6 +591,10 @@ components:
           $ref: "#/components/schemas/Timestamp"
         updated_at:
           $ref: "#/components/schemas/Timestamp"
+        signed_at:
+          $ref: "#/components/schemas/Timestamp"
+        reject_reason:
+          type: string
         qr_code_url:
           type: string
           format: uri

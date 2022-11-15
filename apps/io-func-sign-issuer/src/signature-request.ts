@@ -28,22 +28,29 @@ import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
 import { Dossier } from "./dossier";
 import { Issuer } from "./issuer";
 
-export const SignatureRequest = t.type({
-  id: Id,
-  issuerId: Issuer.props.id,
-  signerId: Signer.props.id,
-  dossierId: Dossier.props.id,
-  status: t.keyof({
-    DRAFT: null,
-    READY: null,
-    WAIT_FOR_SIGNATURE: null,
-    SIGNED: null,
+export const SignatureRequest = t.intersection([
+  t.type({
+    id: Id,
+    issuerId: Issuer.props.id,
+    signerId: Signer.props.id,
+    dossierId: Dossier.props.id,
+    status: t.keyof({
+      DRAFT: null,
+      READY: null,
+      WAIT_FOR_SIGNATURE: null,
+      SIGNED: null,
+      REJECTED: null,
+    }),
+    createdAt: IsoDateFromString,
+    updatedAt: IsoDateFromString,
+    expiresAt: IsoDateFromString,
+    documents: t.array(Document),
   }),
-  createdAt: IsoDateFromString,
-  updatedAt: IsoDateFromString,
-  expiresAt: IsoDateFromString,
-  documents: t.array(Document),
-});
+  t.partial({
+    signedAt: IsoDateFromString,
+    rejectedReason: t.string,
+  }),
+]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
