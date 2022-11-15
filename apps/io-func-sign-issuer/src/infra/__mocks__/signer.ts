@@ -1,3 +1,6 @@
+// this mock does not work due the split of the application entries
+// it affects "createSignatureRequest"
+
 import {
   GetSigner,
   GetSignerByFiscalCode,

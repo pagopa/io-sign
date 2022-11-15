@@ -10,7 +10,6 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { Id, id as newId } from "@internal/io-sign/id";
 import { DocumentMetadata } from "@internal/io-sign/document";
 
-import { EntityNotFoundError } from "@internal/io-sign/error";
 import { Issuer } from "./issuer";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
@@ -41,5 +40,3 @@ export type InsertDossier = (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
 export type GetDossier = (
   dossierId: Dossier["id"]
 ) => (issuerId: Issuer["id"]) => TE.TaskEither<Error, O.Option<Dossier>>;
-
-export const dossierNotFoundError = new EntityNotFoundError("Dossier");

@@ -11,6 +11,8 @@ import {
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
+import { ActionNotAllowedError } from "./error";
+
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { pipe } from "fp-ts/lib/function";
@@ -120,13 +122,6 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   createdAt: new Date(),
   updatedAt: new Date(),
 });
-
-export class ActionNotAllowedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ActionNotAllowedError";
-  }
-}
 
 type Action_START_VALIDATION = {
   name: "START_VALIDATION";
