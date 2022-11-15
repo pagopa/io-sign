@@ -11,13 +11,14 @@ import { pipe } from "fp-ts/lib/function";
 import { EntityNotFoundError } from "@internal/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { getDocument, SignatureRequest } from "./signature-request";
+import { Issuer } from "./issuer";
 
 export const UploadMetadata = t.intersection([
   t.type({
     id: Id,
-    documentId: Id,
-    signatureRequestId: Id,
-    issuerId: Id,
+    documentId: Document.types[0].props.id,
+    signatureRequestId: SignatureRequest.types[0].props.id,
+    issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,
     validated: t.boolean,

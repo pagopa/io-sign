@@ -20,7 +20,9 @@ import { EntityNotFoundError } from "@internal/io-sign/error";
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),
   E.fromOption(() => new Error(`Missing "id" in path`)),
-  E.chainW(validate(SignatureRequest.props.id, `Invalid "id" supplied.`))
+  E.chainW(
+    validate(SignatureRequest.types[0].props.id, `Invalid "id" supplied.`)
+  )
 );
 
 export const makeRequireSignatureRequest = (
