@@ -9,6 +9,7 @@ import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
+import { ConflictError } from "./error";
 
 export const newNewMessage = (
   subject: string,
@@ -41,7 +42,8 @@ export const makeSubmitMessageForUser =
       makeRetriveUserProfileSenderAllowed(ioApiClient),
       TE.filterOrElse(
         identity,
-        () => new Error("It is not allowed to send a message to this user.")
+        () =>
+          new ConflictError("It is not allowed to send a message to this user.")
       ),
       TE.chain(() =>
         TE.tryCatch(

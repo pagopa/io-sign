@@ -3,6 +3,7 @@ import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import { IOApiClient } from "./client";
 
 export type RetriveUserProfileSenderAllowed = (
@@ -28,7 +29,9 @@ export const makeRetriveUserProfileSenderAllowed =
               case 200:
                 return E.right(response.value);
               case 404:
-                return E.left(new Error(`User profile not found!`));
+                return E.left(
+                  new EntityNotFoundError(`User profile not found!`)
+                );
               default:
                 return E.left(
                   new Error(`An error occurred while getting the profile!`)
