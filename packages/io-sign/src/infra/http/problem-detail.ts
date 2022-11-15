@@ -45,7 +45,7 @@ export const toProblemDetail = (e: Error): ProblemDetail => {
     };
   }
   return {
-    title: "Unexpected.",
+    title: "Something went wrong.",
     status: 500,
   };
 };
