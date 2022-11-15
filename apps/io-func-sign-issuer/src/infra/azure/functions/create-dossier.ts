@@ -8,7 +8,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { flow, identity, pipe } from "fp-ts/lib/function";
 
 import { createHandler } from "@pagopa/handler-kit";
-import { HttpRequest, error, created } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import {
@@ -26,6 +26,7 @@ import { DossierToApiModel } from "../../http/encoders/dossier";
 import { makeInsertDossier } from "../cosmos/dossier";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
+import { created, error } from "@internal/io-sign/infra/http/response";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);

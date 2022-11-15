@@ -5,7 +5,8 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { flow, identity, pipe } from "fp-ts/lib/function";
-import { error, HttpRequest, success } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { error, success } from "@internal/io-sign/infra/http/response";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";

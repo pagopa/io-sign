@@ -14,6 +14,8 @@ import { addDays, isBefore } from "date-fns/fp";
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
+import { ActionNotAllowedError } from "@internal/io-sign/error";
+
 import {
   Document,
   startValidation,
@@ -38,6 +40,7 @@ export const SignatureRequest = t.intersection([
       READY: null,
       WAIT_FOR_SIGNATURE: null,
       SIGNED: null,
+      REJECTED: null,
     }),
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,
@@ -46,6 +49,8 @@ export const SignatureRequest = t.intersection([
   }),
   t.partial({
     notification: Notification,
+    signedAt: IsoDateFromString,
+    rejectedReason: t.string,
   }),
 ]);
 
@@ -75,8 +80,9 @@ export const newSignatureRequest = (
 });
 
 class InvalidExpiryDateError extends Error {
+  name = "InvalidExpireDateError";
   constructor() {
-    super("... invalid expiry date");
+    super("Invalid expiry date provided");
   }
 }
 
@@ -122,13 +128,6 @@ export const replaceDocument =
 export const canBeMarkedAsReady = (request: SignatureRequest) =>
   request.status === "DRAFT" &&
   request.documents.every((document) => document.status === "READY");
-
-export class ActionNotAllowedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ActionNotAllowedError";
-  }
-}
 
 type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
@@ -336,7 +335,3 @@ export type InsertSignatureRequest = (
 export type UpsertSignatureRequest = (
   request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
-
-export const signatureRequestNotFoundError = new EntityNotFoundError(
-  "SignatureRequest"
-);

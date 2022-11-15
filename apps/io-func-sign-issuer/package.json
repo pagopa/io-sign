@@ -18,12 +18,13 @@
     "@azure/storage-queue": "^12.11.0",
     "@internal/io-sign": "*",
     "@internal/pdv-tokenizer": "*",
-    "@pagopa/handler-kit": "^0.3.3",
+    "@pagopa/handler-kit": "^0.4.2",
     "@pagopa/ts-commons": "^10.10.0",
     "date-fns": "^2.29.3",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.19",
     "io-ts-types": "^0.5.19",
+    "pdf-lib": "^1.17.1",
     "ulid": "^2.3.0"
   },
   "devDependencies": {

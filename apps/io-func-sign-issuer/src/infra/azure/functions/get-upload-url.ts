@@ -5,14 +5,8 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { flow, identity, pipe } from "fp-ts/lib/function";
-import {
-  error,
-  HttpRequest,
-  path,
-  success,
-} from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { validate } from "@pagopa/handler-kit/lib/validation";
 import { Document } from "@internal/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
@@ -31,6 +25,9 @@ import { UploadUrlToApiModel } from "../../http/encoders/upload";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
 import { getConfigFromEnvironment } from "../../../app/config";
+
+import { validate } from "@internal/io-sign/validation";
+import { error, success } from "@internal/io-sign/infra/http/response";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,

@@ -7,7 +7,7 @@ import {
   SubmitMessageForUser,
   withFiscalCode,
 } from "@internal/io-services/message";
-import { validate } from "@pagopa/handler-kit/lib/validation";
+import { validate } from "@internal/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
 import {
   SignatureRequest,

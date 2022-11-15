@@ -11,6 +11,8 @@ import {
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
+import { ActionNotAllowedError } from "./error";
+
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { pipe } from "fp-ts/lib/function";
@@ -83,7 +85,7 @@ const DocumentToBeValidated = t.type({
   uploadedAt: IsoDateFromString,
 });
 
-const DocumentUploaded = t.type({
+const DocumentReady = t.type({
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
   url: t.string,
@@ -106,7 +108,7 @@ export const Document = t.intersection([
   t.union([
     DocumentToBeUploaded,
     DocumentToBeValidated,
-    DocumentUploaded,
+    DocumentReady,
     DocumentRejected,
   ]),
 ]);
@@ -120,13 +122,6 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   createdAt: new Date(),
   updatedAt: new Date(),
 });
-
-export class ActionNotAllowedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ActionNotAllowedError";
-  }
-}
 
 type Action_START_VALIDATION = {
   name: "START_VALIDATION";
