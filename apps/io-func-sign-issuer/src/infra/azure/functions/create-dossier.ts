@@ -27,9 +27,19 @@ import { makeInsertDossier } from "../cosmos/dossier";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
 import { created, error } from "@internal/io-sign/infra/http/response";
+import { validate } from "@internal/io-sign/validation";
+import { CreateDossierBody } from "../../http/models/CreateDossierBody";
+import { Dossier } from "../../../dossier";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);
+
+  const requireDossierTitle = flow(
+    (req: HttpRequest) => req.body,
+    validate(CreateDossierBody),
+    E.map((body) => body.title),
+    E.chain(validate(Dossier.props.title))
+  );
 
   const requireCreateDossierPayload: RTE.ReaderTaskEither<
     HttpRequest,
@@ -37,6 +47,7 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
     CreateDossierPayload
   > = sequenceS(RTE.ApplyPar)({
     issuer: makeRequireIssuer(mockGetIssuerBySubscriptionId),
+    title: RTE.fromReaderEither(requireDossierTitle),
     documentsMetadata: RTE.fromReaderEither(requireDocumentsMetadata),
   });
 
