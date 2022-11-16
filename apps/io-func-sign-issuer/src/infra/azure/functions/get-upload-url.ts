@@ -7,7 +7,7 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 import { flow, identity, pipe } from "fp-ts/lib/function";
 import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { Document } from "@internal/io-sign/document";
+import { Document, DocumentId } from "@internal/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
@@ -51,7 +51,7 @@ const makeGetUploadUrlHandler = (
   const requireDocumentIdFromPath = flow(
     path("documentId"),
     E.fromOption(() => new Error(`missing "id" in path`)),
-    E.chainW(validate(Document.types[0].props.id, `invalid "id" supplied`))
+    E.chainW(validate(DocumentId, `invalid "id" supplied`))
   );
 
   const requireGetUploadUrlPayload: RTE.ReaderTaskEither<

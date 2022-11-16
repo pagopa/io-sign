@@ -76,41 +76,54 @@ export const DocumentMetadata = t.type({
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
 
+export const DocumentId = Id;
+
+const commonFields = {
+  id: DocumentId,
+  metadata: DocumentMetadata,
+  createdAt: IsoDateFromString,
+  updatedAt: IsoDateFromString,
+};
+
 const DocumentToBeUploaded = t.type({
+  ...commonFields,
   status: t.literal("WAIT_FOR_UPLOAD"),
 });
 
+export type DocumentToBeUploaded = t.TypeOf<typeof DocumentToBeUploaded>;
+
 const DocumentToBeValidated = t.type({
+  ...commonFields,
   status: t.literal("WAIT_FOR_VALIDATION"),
   uploadedAt: IsoDateFromString,
 });
 
+export type DocumentToBeValidated = t.TypeOf<typeof DocumentToBeValidated>;
+
 const DocumentReady = t.type({
+  ...commonFields,
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
   url: t.string,
 });
 
+export type DocumentReady = t.TypeOf<typeof DocumentReady>;
+
 const DocumentRejected = t.type({
+  ...commonFields,
   status: t.literal("REJECTED"),
   uploadedAt: IsoDateFromString,
   rejectedAt: IsoDateFromString,
   rejectReason: t.string,
 });
 
-export const Document = t.intersection([
-  t.type({
-    id: Id,
-    metadata: DocumentMetadata,
-    createdAt: IsoDateFromString,
-    updatedAt: IsoDateFromString,
-  }),
-  t.union([
-    DocumentToBeUploaded,
-    DocumentToBeValidated,
-    DocumentReady,
-    DocumentRejected,
-  ]),
+export type DocumentRejected = t.TypeOf<typeof DocumentRejected>;
+
+export const Document = t.union([
+  DocumentToBeUploaded,
+  DocumentToBeValidated,
+  DocumentReady,
+  DocumentRejected,
 ]);
 
 export type Document = t.TypeOf<typeof Document>;
@@ -164,11 +177,20 @@ const dispatch =
 
 const onWaitForUploadOrReadyStatus =
   (action: DocumentAction) =>
-  (document: Document): E.Either<Error, Document> => {
+  ({
+    id,
+    metadata,
+    createdAt,
+  }: DocumentToBeUploaded | DocumentReady): E.Either<
+    Error,
+    DocumentToBeValidated
+  > => {
     switch (action.name) {
       case "START_VALIDATION":
         return E.right({
-          ...document,
+          id,
+          createdAt,
+          metadata,
           status: "WAIT_FOR_VALIDATION",
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -184,22 +206,24 @@ const onWaitForUploadOrReadyStatus =
 
 const onWaitForValidationStatus =
   (action: DocumentAction) =>
-  (document: Document): E.Either<Error, Document> => {
+  (
+    document: DocumentToBeValidated
+  ): E.Either<Error, DocumentReady | DocumentRejected> => {
     switch (action.name) {
       case "MARK_AS_READY":
         return E.right({
           ...document,
           status: "READY",
-          uploadedAt: new Date(), // TODO: this date is wrong
           url: action.payload.url,
+          updatedAt: new Date(),
         });
       case "MARK_AS_REJECTED": {
         return E.right({
           ...document,
           status: "REJECTED",
-          uploadedAt: new Date(), // TODO: this date is wrong
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
+          updatedAt: new Date(),
         });
       }
       default:
@@ -213,11 +237,17 @@ const onWaitForValidationStatus =
 
 const onRejectedStatus =
   (action: DocumentAction) =>
-  (document: Document): E.Either<Error, Document> => {
+  ({
+    id,
+    createdAt,
+    metadata,
+  }: DocumentRejected): E.Either<Error, DocumentToBeValidated> => {
     switch (action.name) {
       case "START_VALIDATION":
         return E.right({
-          ...document,
+          id,
+          createdAt,
+          metadata,
           status: "WAIT_FOR_VALIDATION",
           uploadedAt: new Date(),
           updatedAt: new Date(),
