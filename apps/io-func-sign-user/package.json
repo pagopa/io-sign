@@ -5,8 +5,8 @@
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",
-    "lint": "eslint src/**",
-    "lint:fix": "eslint --fix src/**",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
     "test": "vitest run",
     "typecheck": "tsc",
     "start": "func start",
