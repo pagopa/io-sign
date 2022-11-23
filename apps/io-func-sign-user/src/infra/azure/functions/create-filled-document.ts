@@ -7,19 +7,36 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { pipe, flow, identity } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@internal/io-sign/validation";
-import { CreateFilledDocumentPayload } from "../../../app/use-cases/create-filled-document";
+import {
+  createPdvTokenizerClient,
+  PdvTokenizerClientWithApiKey,
+} from "@internal/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+import {
+  CreateFilledDocumentPayload,
+  makeCreateFilledDocument,
+} from "../../../app/use-cases/create-filled-document";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoder/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
-import { FilledDocumentUrl } from "../../../filled-document";
 
-const makeInfoHandler = () => {
+import { getConfigFromEnvironment } from "../../../app/config";
+
+const makeCreateFilledDocumentHandler = (
+  tokenizer: PdvTokenizerClientWithApiKey
+) => {
+  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+
+  const createFilledDocument = makeCreateFilledDocument(
+    getFiscalCodeBySignerId
+  );
+
   const requireCreateFilledDocumentBody = flow(
     (req: HttpRequest) => req.body,
     validate(CreateFilledDocumentBody),
@@ -35,10 +52,19 @@ const makeInfoHandler = () => {
     HttpRequest,
     Error,
     CreateFilledDocumentPayload
-  > = sequenceS(RTE.ApplyPar)({
-    signer: RTE.fromReaderEither(makeRequireSigner),
-    body: RTE.fromReaderEither(requireCreateFilledDocumentBody),
-  });
+  > = pipe(
+    sequenceS(RTE.ApplyPar)({
+      signer: RTE.fromReaderEither(makeRequireSigner),
+      body: RTE.fromReaderEither(requireCreateFilledDocumentBody),
+    }),
+    RTE.map(({ signer, body: { documentUrl, email, familyName, name } }) => ({
+      signer,
+      documentUrl,
+      email,
+      familyName,
+      name,
+    }))
+  );
 
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
@@ -53,17 +79,29 @@ const makeInfoHandler = () => {
 
   return createHandler(
     decodeHttpRequest,
-    ({ signer }) =>
-      pipe(
-        "http://mockfilleddocument/" + signer.id,
-        validate(FilledDocumentUrl, "Invalid filled document url"),
-        E.map((url) => ({
-          url,
-        })),
-        TE.fromEither
-      ),
+    createFilledDocument,
     error,
     encodeHttpSuccessResponse
   );
 };
-export const run = pipe(makeInfoHandler(), azure.unsafeRun);
+
+const configOrError = pipe(
+  getConfigFromEnvironment(process.env),
+  E.getOrElseW(identity)
+);
+
+if (configOrError instanceof Error) {
+  throw configOrError;
+}
+
+const config = configOrError;
+
+const pdvTokenizerClient = createPdvTokenizerClient(
+  config.pagopa.tokenizer.basePath,
+  config.pagopa.tokenizer.apiKey
+);
+
+export const run = pipe(
+  makeCreateFilledDocumentHandler(pdvTokenizerClient),
+  azure.unsafeRun
+);
