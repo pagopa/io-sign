@@ -11,11 +11,10 @@ import {
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
-import { ActionNotAllowedError } from "./error";
-
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { pipe } from "fp-ts/lib/function";
+import { ActionNotAllowedError } from "./error";
 import { id, Id } from "./id";
 
 const ClauseType = t.keyof({

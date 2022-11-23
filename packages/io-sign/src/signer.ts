@@ -22,6 +22,10 @@ export type GetSignerByFiscalCode = (
   fiscalCode: FiscalCode
 ) => TE.TaskEither<Error, O.Option<Signer>>;
 
+export type GetFiscalCodeBySignerId = (
+  id: Signer["id"]
+) => TE.TaskEither<Error, O.Option<FiscalCode>>;
+
 export type GetSigner = (
   id: Signer["id"]
 ) => TE.TaskEither<Error, O.Option<Signer>>;

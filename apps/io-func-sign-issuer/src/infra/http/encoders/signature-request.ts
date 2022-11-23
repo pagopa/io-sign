@@ -7,6 +7,7 @@ import {
 import { SignatureRequest } from "../../../signature-request";
 
 import { DocumentToApiModel } from "./document";
+import { NotificationToApiModel } from "./notification";
 
 const toApiModelEnum = (
   type: SignatureRequest["status"]
@@ -37,6 +38,7 @@ export const SignatureRequestToApiModel: E.Encoder<
     updatedAt: updated_at,
     expiresAt: expires_at,
     documents,
+    notification,
     ...extras
   }) => {
     const commonFields = {
@@ -48,6 +50,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       updated_at,
       expires_at,
       documents: documents.map(DocumentToApiModel.encode),
+      notification:
+        notification !== undefined
+          ? NotificationToApiModel.encode(notification)
+          : undefined,
       // here we have to handle the dynamic QR Code
       qr_code_url: [
         SignatureRequestStatusEnum.DRAFT,

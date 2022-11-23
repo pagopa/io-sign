@@ -7,6 +7,7 @@ import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
 
 import { Signer } from "@internal/io-sign/signer";
+import { Notification } from "@internal/io-sign/notification";
 
 import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
@@ -47,6 +48,7 @@ export const SignatureRequest = t.intersection([
     documents: t.array(Document),
   }),
   t.partial({
+    notification: Notification,
     signedAt: IsoDateFromString,
     rejectedReason: t.string,
   }),
@@ -323,10 +325,8 @@ export const markDocumentAsRejected = (
   });
 
 export type GetSignatureRequest = (
-  id: SignatureRequest["id"]
-) => (
-  issuerId: SignatureRequest["issuerId"]
-) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  id: Id
+) => (issuerId: Id) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
 
 export type InsertSignatureRequest = (
   request: SignatureRequest

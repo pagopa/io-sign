@@ -26,6 +26,4 @@ export const mockGetSignerByFiscalCode: GetSignerByFiscalCode = (
   return TE.right(O.some(signer));
 };
 
-export const mockGetSigner: GetSigner = (id) => {
-  return TE.right(O.some({ id }));
-};
+export const mockGetSigner: GetSigner = (id) => TE.right(O.some({ id }));

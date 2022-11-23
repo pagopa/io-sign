@@ -16,6 +16,7 @@ export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
 
 export const Dossier = t.type({
   id: Id,
+  title: t.string,
   issuerId: Issuer.props.id,
   documentsMetadata: DocumentsMetadata,
   createdAt: IsoDateFromString,
@@ -26,9 +27,11 @@ export type Dossier = t.TypeOf<typeof Dossier>;
 
 export const newDossier = (
   issuer: Issuer,
+  title: Dossier["title"],
   documentsMetadata: NonEmptyArray<DocumentMetadata>
 ): Dossier => ({
   id: newId(),
+  title,
   issuerId: issuer.id,
   documentsMetadata,
   createdAt: new Date(),
