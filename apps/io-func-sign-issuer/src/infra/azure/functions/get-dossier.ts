@@ -12,6 +12,9 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
+import { path } from "@pagopa/handler-kit/lib/http";
+import { error, success } from "@internal/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import { Dossier } from "../../../dossier";
 import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
@@ -20,10 +23,7 @@ import { DossierDetailView } from "../../http/models/DossierDetailView";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
 
-import { path } from "@pagopa/handler-kit/lib/http";
-import { error, success } from "@internal/io-sign/infra/http/response";
 import { DossierToApiModel } from "../../http/encoders/dossier";
-import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const makeGetDossierHandler = (database: CosmosDatabase) => {
   const getDossier = makeGetDossier(database);

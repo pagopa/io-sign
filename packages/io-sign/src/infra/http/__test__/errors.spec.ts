@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 
+import * as E from "fp-ts/lib/Either";
+import { identity, pipe } from "fp-ts/lib/function";
 import {
   HttpBadRequestError,
   HttpError,
   HttpErrorFromError,
   HttpNotFoundError,
 } from "../errors";
-import * as E from "fp-ts/lib/Either";
-import { identity, pipe } from "fp-ts/lib/function";
 import { ActionNotAllowedError, EntityNotFoundError } from "../../../error";
 
 describe.concurrent("errors", () => {
