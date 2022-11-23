@@ -5,12 +5,11 @@ import {
   serializeToJSON,
 } from "@pagopa/handler-kit/lib/http";
 
-import { validate } from "../../validation";
-
 import { pipe, flow } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
 import * as t from "io-ts";
+import { validate } from "../../validation";
 
 import { HttpError, HttpErrorFromError } from "./errors";
 

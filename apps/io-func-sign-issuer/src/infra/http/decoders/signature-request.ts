@@ -9,13 +9,13 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { validate } from "@internal/io-sign/validation";
 
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import { GetIssuerBySubscriptionId } from "../../../issuer";
 import {
   GetSignatureRequest,
   SignatureRequest,
 } from "../../../signature-request";
 import { makeRequireIssuer } from "./issuer";
-import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),

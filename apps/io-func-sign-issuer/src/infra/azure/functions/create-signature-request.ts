@@ -13,6 +13,8 @@ import { pipe, flow, identity } from "fp-ts/lib/function";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
+import { created, error } from "@internal/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { SignatureRequest } from "../../../signature-request";
@@ -30,8 +32,6 @@ import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
-import { created, error } from "@internal/io-sign/infra/http/response";
-import { EntityNotFoundError } from "@internal/io-sign/error";
 
 const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   const getDossier = makeGetDossier(db);
