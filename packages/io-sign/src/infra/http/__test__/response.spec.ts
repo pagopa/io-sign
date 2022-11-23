@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { success, created, error } from "../response";
-
 import * as t from "io-ts";
+import { success, created, error } from "../response";
 
 describe.concurrent("response", () => {
   describe("success", () => {
@@ -14,6 +13,7 @@ describe.concurrent("response", () => {
       const payload: t.TypeOf<typeof payloadT> = { message: "It works!" };
       const res = success(payloadT)(payload);
       expect(res.body).toBe(JSON.stringify(payload));
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       expect(res.headers).toHaveProperty("Content-Type", "application/json");
     });
     it("should return a serialization error on invalid payload", () => {

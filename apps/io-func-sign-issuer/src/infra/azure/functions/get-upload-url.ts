@@ -11,6 +11,8 @@ import { Document } from "@internal/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
 import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
+import { validate } from "@internal/io-sign/validation";
+import { error, success } from "@internal/io-sign/infra/http/response";
 import { UploadUrl } from "../../http/models/UploadUrl";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
@@ -25,9 +27,6 @@ import { UploadUrlToApiModel } from "../../http/encoders/upload";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
 import { getConfigFromEnvironment } from "../../../app/config";
-
-import { validate } from "@internal/io-sign/validation";
-import { error, success } from "@internal/io-sign/infra/http/response";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,

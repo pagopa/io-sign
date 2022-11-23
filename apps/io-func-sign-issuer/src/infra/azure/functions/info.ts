@@ -8,8 +8,8 @@ import { pipe, identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
 
-const makeInfoHandler = () => {
-  return createHandler(
+const makeInfoHandler = () =>
+  createHandler(
     nopRequestDecoder,
     () =>
       TE.right({
@@ -22,6 +22,5 @@ const makeInfoHandler = () => {
       })
     )
   );
-};
 
 export const run = pipe(makeInfoHandler(), azure.unsafeRun);
