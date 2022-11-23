@@ -13,6 +13,7 @@ import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 import * as E from "fp-ts/lib/Either";
+import { validate } from "@internal/io-sign/validation";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
@@ -38,8 +39,6 @@ import {
   UploadMetadata,
   uploadMetadataNotFoundError,
 } from "../../../upload";
-
-import { validate } from "@internal/io-sign/validation";
 
 export const extractFileNameFromURI = flow(split("/"), last);
 
