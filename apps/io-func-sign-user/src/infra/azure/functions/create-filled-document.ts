@@ -17,6 +17,7 @@ import {
   PdvTokenizerClientWithApiKey,
 } from "@internal/pdv-tokenizer/client";
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+import { ContainerClient } from "@azure/storage-blob";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocument,
@@ -27,14 +28,21 @@ import { FilledDocumentToApiModel } from "../../http/encoder/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 
 import { getConfigFromEnvironment } from "../../../app/config";
+import { makeUploadFilledDocument } from "../storage/filled-document";
 
+/* TODO: This function will have to be asynchronous.
+ * Refer to the Design Review
+ */
 const makeCreateFilledDocumentHandler = (
-  tokenizer: PdvTokenizerClientWithApiKey
+  tokenizer: PdvTokenizerClientWithApiKey,
+  filledContainerClient: ContainerClient
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const uploadFilledDocument = makeUploadFilledDocument(filledContainerClient);
 
   const createFilledDocument = makeCreateFilledDocument(
-    getFiscalCodeBySignerId
+    getFiscalCodeBySignerId,
+    uploadFilledDocument
   );
 
   const requireCreateFilledDocumentBody = flow(
@@ -101,7 +109,12 @@ const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.apiKey
 );
 
+const filledContainerClient = new ContainerClient(
+  config.azure.storage.connectionString,
+  config.filledStorageContainerName
+);
+
 export const run = pipe(
-  makeCreateFilledDocumentHandler(pdvTokenizerClient),
+  makeCreateFilledDocumentHandler(pdvTokenizerClient, filledContainerClient),
   azure.unsafeRun
 );

@@ -33,6 +33,7 @@ export const Config = t.type({
   }),
   uploadedStorageContainerName: t.string,
   validatedStorageContainerName: t.string,
+  filledStorageContainerName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -59,5 +60,6 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     },
     uploadedStorageContainerName: "uploaded-documents",
     validatedStorageContainerName: "validated-documents",
+    filledStorageContainerName: "filled-modules",
   }))
 );

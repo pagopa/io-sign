@@ -6,10 +6,10 @@ import { GetFiscalCodeBySignerId, Signer } from "@internal/io-sign/signer";
 import { EmailString } from "@pagopa/ts-commons/lib/strings";
 import { agent } from "@pagopa/ts-commons";
 import { EntityNotFoundError } from "@internal/io-sign/error";
-import { getPdfMetadata } from "@internal/io-sign/infra/pdf";
-import { retryingFetch } from "../../infra/http/downloader";
+import { Field, populatePdf } from "@internal/io-sign/infra/pdf";
 import { validate } from "@internal/io-sign/validation";
-import { FilledDocumentUrl } from "../../filled-document";
+import { retryingFetch } from "../../infra/http/retryable-fetch";
+import { FilledDocumentUrl, UploadFilledDocument } from "../../filled-document";
 
 export type CreateFilledDocumentPayload = {
   signer: Signer;
@@ -20,7 +20,10 @@ export type CreateFilledDocumentPayload = {
 };
 
 export const makeCreateFilledDocument =
-  (getFiscalCodeBySignerId: GetFiscalCodeBySignerId) =>
+  (
+    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    uploadFilledDocument: UploadFilledDocument
+  ) =>
   ({
     signer,
     documentUrl,
@@ -45,11 +48,31 @@ export const makeCreateFilledDocument =
           TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
-          TE.chain((buffer) => getPdfMetadata(buffer)),
-
-          TE.chainEitherKW(() =>
+          TE.chain((buffer) => {
+            const fields: Field[] = [
+              {
+                fieldName: "name",
+                fieldValue: name,
+              },
+              {
+                fieldName: "surname",
+                fieldValue: familyName,
+              },
+              {
+                fieldName: "email",
+                fieldValue: email,
+              },
+              {
+                fieldName: "CF",
+                fieldValue: fiscalCode,
+              },
+            ];
+            return pipe(fields, populatePdf(buffer));
+          }),
+          TE.chain(uploadFilledDocument("filename.pdf")),
+          TE.chainEitherKW((filledDocumentUrl) =>
             pipe(
-              "http://placeholder.it/filled_document",
+              filledDocumentUrl,
               validate(FilledDocumentUrl, "Invalid filled document url"),
               E.map((url) => ({
                 url,
