@@ -18,7 +18,7 @@ export const makeUploadFilledDocument =
         (result) => result.response.errorCode === undefined,
         (result) =>
           new Error(
-            `Unable to upload blob! Error code: ${result.response.errorCode}}`
+            `Unable to upload blob! Error code: ${result.response.errorCode}`
           )
       ),
       TE.map((result) => result.blockBlobClient.url)

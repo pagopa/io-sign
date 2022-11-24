@@ -19,6 +19,13 @@ export type CreateFilledDocumentPayload = {
   name: string;
 };
 
+// these types define the fields inside the PDF file to be enhanced
+type NameField = Field & { fieldName: "name" };
+type FamilyNameField = Field & { fieldName: "surname" };
+type EmailField = Field & { fieldName: "email" };
+type FiscalCodeField = Field & { fieldName: "CF" };
+type Fields = [NameField, FamilyNameField, EmailField, FiscalCodeField];
+
 export const makeCreateFilledDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
@@ -49,7 +56,7 @@ export const makeCreateFilledDocument =
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
           TE.chain((buffer) => {
-            const fields: Field[] = [
+            const fields: Fields = [
               {
                 fieldName: "name",
                 fieldValue: name,
@@ -69,7 +76,7 @@ export const makeCreateFilledDocument =
             ];
             return pipe(fields, populatePdf(buffer));
           }),
-          TE.chain(uploadFilledDocument("filename.pdf")),
+          TE.chain(uploadFilledDocument(`${signer.id}.pdf`)),
           TE.chainEitherKW((filledDocumentUrl) =>
             pipe(
               filledDocumentUrl,
