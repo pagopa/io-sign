@@ -8,13 +8,13 @@ changelog:
     - title: Chore
       labels:
         - chore
-    - title: Breaking Changes 🛠
+    - title: Breaking Changes
       labels:
         - breaking
-    - title: Exciting New Features 🎉
+    - title: Exciting New Features
       labels:
         - feature
-    - title: Fixes 🔧
+    - title: Fixes
       labels:
         - fix
     - title: Other Changes
