@@ -51,32 +51,31 @@ export const makeCreateFilledDocument =
       TE.chain((fiscalCode) => {
         const httpApiFetch = agent.getHttpFetch(process.env);
         const retriableFetch = retryingFetch(httpApiFetch);
+        const fields: Fields = [
+          {
+            fieldName: "name",
+            fieldValue: name,
+          },
+          {
+            fieldName: "surname",
+            fieldValue: familyName,
+          },
+          {
+            fieldName: "email",
+            fieldValue: email,
+          },
+          {
+            fieldName: "CF",
+            fieldValue: fiscalCode,
+          },
+        ];
+
         return pipe(
           TE.tryCatch(() => retriableFetch(documentUrl), E.toError),
           TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
-          TE.chain((buffer) => {
-            const fields: Fields = [
-              {
-                fieldName: "name",
-                fieldValue: name,
-              },
-              {
-                fieldName: "surname",
-                fieldValue: familyName,
-              },
-              {
-                fieldName: "email",
-                fieldValue: email,
-              },
-              {
-                fieldName: "CF",
-                fieldValue: fiscalCode,
-              },
-            ];
-            return pipe(fields, populatePdf(buffer));
-          }),
+          TE.chain((buffer) => pipe(fields, populatePdf(buffer))),
           TE.chain(uploadFilledDocument(`${signer.id}.pdf`)),
           TE.chainEitherKW((filledDocumentUrl) =>
             pipe(
