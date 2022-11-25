@@ -41,22 +41,22 @@ const makeCreateFilledDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   filledContainerClient: ContainerClient,
   fetchWithTimeout: typeof fetch,
-  fillingModulesQueue: QueueClient
+  documentsToFillQueue: QueueClient
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
-  const uploadBlob = makeUploadBlob(filledContainerClient);
-  const getBlobUrl = makeGetBlobUrl(filledContainerClient);
-  const enqueueMessage = makeEnqueueMessage(fillingModulesQueue);
+  const uploadFilledDocument = makeUploadBlob(filledContainerClient);
+  const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
+  const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
 
   const prepareFilledDocument = makePrepareFilledDocument(
-    getBlobUrl,
-    enqueueMessage
+    getFilledDocumentUrl,
+    enqueueDocumentToFill
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const createFilledDocument = makeCreateFilledDocument(
     getFiscalCodeBySignerId,
-    uploadBlob,
+    uploadFilledDocument,
     fetchWithTimeout
   );
 
@@ -129,9 +129,9 @@ const filledContainerClient = new ContainerClient(
   config.filledModulesStorageContainerName
 );
 
-const fillingModulesQueue = new QueueClient(
+const documentsToFillQueue = new QueueClient(
   config.azure.storage.connectionString,
-  config.fillingModulesQueueName
+  config.documentsToFillQueueName
 );
 
 const fetchWithTimeout = makeFetchWithTimeout();
@@ -141,7 +141,7 @@ export const run = pipe(
     pdvTokenizerClient,
     filledContainerClient,
     fetchWithTimeout,
-    fillingModulesQueue
+    documentsToFillQueue
   ),
   azure.unsafeRun
 );

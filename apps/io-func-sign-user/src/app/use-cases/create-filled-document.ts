@@ -38,7 +38,7 @@ export type CreateFilledDocumentPayload = PrepareFilledDocumentPayload & {
  * It also writes on a queue the information necessary to start the module creation function via the trigger queue
  */
 export const makePrepareFilledDocument =
-  (getBlobUrl: GetBlobUrl, enqueueMessage: EnqueueMessage) =>
+  (getFilledDocumentUrl: GetBlobUrl, enqueueDocumentToFill: EnqueueMessage) =>
   ({
     signer,
     documentUrl,
@@ -50,7 +50,7 @@ export const makePrepareFilledDocument =
 
     return pipe(
       filledDocumentFileName,
-      getBlobUrl,
+      getFilledDocumentUrl,
       TE.fromOption(
         () => new EntityNotFoundError("Unable to generate callback url!")
       ),
@@ -65,7 +65,7 @@ export const makePrepareFilledDocument =
             documentUrl,
           },
           JSON.stringify,
-          enqueueMessage
+          enqueueDocumentToFill
         )
       ),
       TE.chainEitherKW((callbackDocumentUrl) =>
@@ -84,7 +84,7 @@ export const makePrepareFilledDocument =
 export const makeCreateFilledDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    uploadBlob: UploadBlob,
+    uploadFilledDocument: UploadBlob,
     fetchWithTimeout: typeof fetch
   ) =>
   ({
@@ -130,7 +130,7 @@ export const makeCreateFilledDocument =
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
           TE.chain((buffer) => pipe(fields, populatePdf(buffer))),
-          TE.chain(uploadBlob(filledDocumentFileName))
+          TE.chain(uploadFilledDocument(filledDocumentFileName))
         );
       })
     );
