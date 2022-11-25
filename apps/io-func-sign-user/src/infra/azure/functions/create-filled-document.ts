@@ -37,9 +37,6 @@ import { makeFetchWithTimeout } from "../../http/fetch-timeout";
 import { makeGetBlobUrl, makeUploadBlob } from "../storage/blob";
 import { makeEnqueueMessage } from "../storage/queue";
 
-/* TODO: This function will have to be asynchronous.
- * Refer to the Design Review
- */
 const makeCreateFilledDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   filledContainerClient: ContainerClient,

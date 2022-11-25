@@ -30,6 +30,13 @@ export type PrepareFilledDocumentPayload = {
   name: NonEmptyString;
 };
 
+export type CreateFilledDocumentPayload = PrepareFilledDocumentPayload & {
+  filledDocumentFileName: NonEmptyString;
+};
+
+/* This function returns only the callback url of the filled document without creating it.
+ * It also writes on a queue the information necessary to start the module creation function via the trigger queue
+ */
 export const makePrepareFilledDocument =
   (getBlobUrl: GetBlobUrl, enqueueMessage: EnqueueMessage) =>
   ({
@@ -38,29 +45,32 @@ export const makePrepareFilledDocument =
     email,
     familyName,
     name,
-  }: PrepareFilledDocumentPayload) =>
-    pipe(
-      {
-        signer,
-        documentUrl,
-        email,
-        familyName,
-        name,
-      },
-      JSON.stringify,
-      enqueueMessage,
-      TE.chain(() =>
+  }: PrepareFilledDocumentPayload) => {
+    const filledDocumentFileName = `${signer.id}.pdf`;
+
+    return pipe(
+      filledDocumentFileName,
+      getBlobUrl,
+      TE.fromOption(
+        () => new EntityNotFoundError("Unable to generate callback url!")
+      ),
+      TE.chainFirst(() =>
         pipe(
-          signer.id,
-          getBlobUrl,
-          TE.fromOption(
-            () => new EntityNotFoundError("Unable to generate callback url!")
-          )
+          {
+            signer,
+            email,
+            familyName,
+            name,
+            filledDocumentFileName,
+            documentUrl,
+          },
+          JSON.stringify,
+          enqueueMessage
         )
       ),
-      TE.chainEitherKW((filledDocumentUrl) =>
+      TE.chainEitherKW((callbackDocumentUrl) =>
         pipe(
-          filledDocumentUrl,
+          callbackDocumentUrl,
           validate(FilledDocumentUrl, "Invalid filled document url"),
           E.map((url) => ({
             url,
@@ -68,7 +78,9 @@ export const makePrepareFilledDocument =
         )
       )
     );
+  };
 
+// This function downloads the pdf form, compiles it and uploads it to blobStorage
 export const makeCreateFilledDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
@@ -81,7 +93,8 @@ export const makeCreateFilledDocument =
     email,
     familyName,
     name,
-  }: PrepareFilledDocumentPayload) =>
+    filledDocumentFileName,
+  }: CreateFilledDocumentPayload) =>
     pipe(
       signer.id,
       getFiscalCodeBySignerId,
@@ -117,7 +130,7 @@ export const makeCreateFilledDocument =
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
           TE.chain((buffer) => pipe(fields, populatePdf(buffer))),
-          TE.chain(uploadBlob(`${signer.id}.pdf`))
+          TE.chain(uploadBlob(filledDocumentFileName))
         );
       })
     );
