@@ -19,9 +19,11 @@ import {
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
 import { ContainerClient } from "@azure/storage-blob";
 
+import { QueueClient } from "@azure/storage-queue";
 import {
-  CreateFilledDocumentPayload,
   makeCreateFilledDocument,
+  makePrepareFilledDocument,
+  PrepareFilledDocumentPayload,
 } from "../../../app/use-cases/create-filled-document";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
@@ -29,8 +31,11 @@ import { FilledDocumentToApiModel } from "../../http/encoder/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 
 import { getConfigFromEnvironment } from "../../../app/config";
-import { makeUploadFilledDocument } from "../storage/filled-document";
+
 import { makeFetchWithTimeout } from "../../http/fetch-timeout";
+
+import { makeGetBlobUrl, makeUploadBlob } from "../storage/blob";
+import { makeEnqueueMessage } from "../storage/queue";
 
 /* TODO: This function will have to be asynchronous.
  * Refer to the Design Review
@@ -38,14 +43,23 @@ import { makeFetchWithTimeout } from "../../http/fetch-timeout";
 const makeCreateFilledDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   filledContainerClient: ContainerClient,
-  fetchWithTimeout: typeof fetch
+  fetchWithTimeout: typeof fetch,
+  fillingModulesQueue: QueueClient
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
-  const uploadFilledDocument = makeUploadFilledDocument(filledContainerClient);
+  const uploadBlob = makeUploadBlob(filledContainerClient);
+  const getBlobUrl = makeGetBlobUrl(filledContainerClient);
+  const enqueueMessage = makeEnqueueMessage(fillingModulesQueue);
 
+  const prepareFilledDocument = makePrepareFilledDocument(
+    getBlobUrl,
+    enqueueMessage
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const createFilledDocument = makeCreateFilledDocument(
     getFiscalCodeBySignerId,
-    uploadFilledDocument,
+    uploadBlob,
     fetchWithTimeout
   );
 
@@ -63,7 +77,7 @@ const makeCreateFilledDocumentHandler = (
   const requireCreateFilledDocumentPayload: RTE.ReaderTaskEither<
     HttpRequest,
     Error,
-    CreateFilledDocumentPayload
+    PrepareFilledDocumentPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
       signer: RTE.fromReaderEither(makeRequireSigner),
@@ -91,7 +105,7 @@ const makeCreateFilledDocumentHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    createFilledDocument,
+    prepareFilledDocument,
     error,
     encodeHttpSuccessResponse
   );
@@ -115,7 +129,12 @@ const pdvTokenizerClient = createPdvTokenizerClient(
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  config.filledStorageContainerName
+  config.filledModulesStorageContainerName
+);
+
+const fillingModulesQueue = new QueueClient(
+  config.azure.storage.connectionString,
+  config.fillingModulesQueueName
 );
 
 const fetchWithTimeout = makeFetchWithTimeout();
@@ -124,7 +143,8 @@ export const run = pipe(
   makeCreateFilledDocumentHandler(
     pdvTokenizerClient,
     filledContainerClient,
-    fetchWithTimeout
+    fetchWithTimeout,
+    fillingModulesQueue
   ),
   azure.unsafeRun
 );

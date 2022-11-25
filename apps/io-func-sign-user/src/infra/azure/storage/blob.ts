@@ -1,11 +1,25 @@
 import { ContainerClient } from "@azure/storage-blob";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
 import { toError } from "fp-ts/lib/Either";
-import { UploadFilledDocument } from "../../../filled-document";
 
-export const makeUploadFilledDocument =
-  (containerClient: ContainerClient): UploadFilledDocument =>
+export type GetBlobUrl = (blobName: string) => O.Option<string>;
+export const makeGetBlobUrl =
+  (containerClient: ContainerClient): GetBlobUrl =>
+  (blobName: string) =>
+    pipe(
+      containerClient.getBlockBlobClient(blobName),
+      O.fromNullable,
+      O.map((block) => block.url)
+    );
+
+export type UploadBlob = (
+  blobName: string
+) => (content: Uint8Array) => TE.TaskEither<Error, string>;
+
+export const makeUploadBlob =
+  (containerClient: ContainerClient): UploadBlob =>
   (blobName: string) =>
   (content: Uint8Array) =>
     pipe(

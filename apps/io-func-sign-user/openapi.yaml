@@ -154,7 +154,7 @@ components:
     Email:
       type: string
       description: User's email.
-      format: EmailString
+      format: email
       example: me@example.com
 
     CreateFilledDocumentBody:
