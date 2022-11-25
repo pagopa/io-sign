@@ -13,7 +13,7 @@ paths:
         - QTSP Clauses
       parameters:
         - in: header
-          name: signer_id
+          name: x-iosign-signer-id
           schema:
             $ref: "#/components/schemas/Id"
           required: true
@@ -155,7 +155,6 @@ components:
       type: string
       description: User's email.
       format: EmailString
-      x-import: "@pagopa/ts-commons/lib/strings"
       example: me@example.com
 
     CreateFilledDocumentBody:
@@ -163,13 +162,16 @@ components:
       properties:
         document_url:
           type: string
+          minLength: 1
           format: url
         email:
           $ref: "#/components/schemas/Email"
         name:
           type: string
+          minLength: 1
         family_name:
           type: string
+          minLength: 1
       required:
         - document_url
         - email

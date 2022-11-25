@@ -20,6 +20,10 @@
     {
       "path": "packages/io-services",
       "name": "io-services (internal)"
+    },
+    {
+      "path": "packages/pdf-handler",
+      "name": "pdf-handler (internal)"
     }
   ],
   "settings": {

@@ -1,6 +1,7 @@
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
+
 export const FilledDocumentUrl = UrlFromString;
 export type FilledDocumentUrl = t.TypeOf<typeof FilledDocumentUrl>;
 

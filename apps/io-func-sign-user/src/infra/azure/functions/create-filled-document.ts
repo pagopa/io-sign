@@ -18,6 +18,7 @@ import {
 } from "@internal/pdv-tokenizer/client";
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
 import { ContainerClient } from "@azure/storage-blob";
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocument,
@@ -29,20 +30,23 @@ import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetail
 
 import { getConfigFromEnvironment } from "../../../app/config";
 import { makeUploadFilledDocument } from "../storage/filled-document";
+import { makeFetchWithTimeout } from "../../http/fetch-timeout";
 
 /* TODO: This function will have to be asynchronous.
  * Refer to the Design Review
  */
 const makeCreateFilledDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
-  filledContainerClient: ContainerClient
+  filledContainerClient: ContainerClient,
+  fetchWithTimeout: typeof fetch
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const uploadFilledDocument = makeUploadFilledDocument(filledContainerClient);
 
   const createFilledDocument = makeCreateFilledDocument(
     getFiscalCodeBySignerId,
-    uploadFilledDocument
+    uploadFilledDocument,
+    fetchWithTimeout
   );
 
   const requireCreateFilledDocumentBody = flow(
@@ -114,7 +118,13 @@ const filledContainerClient = new ContainerClient(
   config.filledStorageContainerName
 );
 
+const fetchWithTimeout = makeFetchWithTimeout(10000 as Millisecond);
+
 export const run = pipe(
-  makeCreateFilledDocumentHandler(pdvTokenizerClient, filledContainerClient),
+  makeCreateFilledDocumentHandler(
+    pdvTokenizerClient,
+    filledContainerClient,
+    fetchWithTimeout
+  ),
   azure.unsafeRun
 );

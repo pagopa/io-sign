@@ -3,20 +3,20 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
 import { GetFiscalCodeBySignerId, Signer } from "@internal/io-sign/signer";
-import { EmailString } from "@pagopa/ts-commons/lib/strings";
-import { agent } from "@pagopa/ts-commons";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { EntityNotFoundError } from "@internal/io-sign/error";
-import { Field, populatePdf } from "@internal/io-sign/infra/pdf";
+import { Field, populatePdf } from "@internal/pdf-handler/pdf";
 import { validate } from "@internal/io-sign/validation";
-import { retryingFetch } from "../../infra/http/retryable-fetch";
+
 import { FilledDocumentUrl, UploadFilledDocument } from "../../filled-document";
 
 export type CreateFilledDocumentPayload = {
   signer: Signer;
-  documentUrl: string;
+  documentUrl: NonEmptyString;
   email: EmailString;
-  familyName: string;
-  name: string;
+  familyName: NonEmptyString;
+  name: NonEmptyString;
 };
 
 // these types define the fields inside the PDF file to be enhanced
@@ -30,7 +30,8 @@ type Fields = [NameField, FamilyNameField, EmailField, FiscalCodeField];
 export const makeCreateFilledDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    uploadFilledDocument: UploadFilledDocument
+    uploadFilledDocument: UploadFilledDocument,
+    fetchWithTimeout: typeof fetch
   ) =>
   ({
     signer,
@@ -49,8 +50,6 @@ export const makeCreateFilledDocument =
         )
       ),
       TE.chain((fiscalCode) => {
-        const httpApiFetch = agent.getHttpFetch(process.env);
-        const retriableFetch = retryingFetch(httpApiFetch);
         const fields: Fields = [
           {
             fieldName: "name",
@@ -71,7 +70,7 @@ export const makeCreateFilledDocument =
         ];
 
         return pipe(
-          TE.tryCatch(() => retriableFetch(documentUrl), E.toError),
+          TE.tryCatch(() => fetchWithTimeout(documentUrl), E.toError),
           TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),

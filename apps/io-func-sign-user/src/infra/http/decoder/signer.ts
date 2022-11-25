@@ -11,7 +11,7 @@ import { Signer } from "@internal/io-sign/signer";
 const requireSignerId = (req: HttpRequest) =>
   pipe(
     req,
-    header("signer_id"),
+    header("x-iosign-signer-id"),
     E.fromOption(() => new Error("Missing signer_id in header")),
     E.chainW(validate(Signer.props.id, "Invalid signer id"))
   );

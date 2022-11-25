@@ -8,8 +8,8 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
-import { validate } from "../validation";
-import { EntityNotFoundError } from "../error";
+import { validate } from "@internal/io-sign/validation";
+import { EntityNotFoundError } from "@internal/io-sign/error";
 
 export const PdfMetadata = t.partial({
   title: t.string,
