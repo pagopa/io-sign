@@ -20,7 +20,7 @@ export type CreateFilledDocumentPayload = {
 };
 
 // these types define the fields inside the PDF file to be enhanced
-// TODO: These are not yet the real parameters. Pending communication from the QTSP
+// TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]
 type NameField = Field & { fieldName: "name" };
 type FamilyNameField = Field & { fieldName: "surname" };
 type EmailField = Field & { fieldName: "email" };
