@@ -140,7 +140,7 @@ components:
     Id:
       type: string
       description: Entity Id
-      format: NonEmptyString
+      minLength: 1
       example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
       x-import: "@pagopa/ts-commons/lib/strings"
 
