@@ -12,18 +12,13 @@ import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@internal/io-sign/validation";
-import {
-  createPdvTokenizerClient,
-  PdvTokenizerClientWithApiKey,
-} from "@internal/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+
 import { ContainerClient } from "@azure/storage-blob";
 
 import { QueueClient } from "@azure/storage-queue";
 import {
+  CreateFilledDocumentPayload,
   makeCreateFilledDocument,
-  makePrepareFilledDocument,
-  PrepareFilledDocumentPayload,
 } from "../../../app/use-cases/create-filled-document";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
@@ -32,32 +27,19 @@ import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetail
 
 import { getConfigFromEnvironment } from "../../../app/config";
 
-import { makeFetchWithTimeout } from "../../http/fetch-timeout";
-
-import { makeGetBlobUrl, makeUploadBlob } from "../storage/blob";
+import { makeGetBlobUrl } from "../storage/blob";
 import { makeEnqueueMessage } from "../storage/queue";
 
 const makeCreateFilledDocumentHandler = (
-  tokenizer: PdvTokenizerClientWithApiKey,
   filledContainerClient: ContainerClient,
-  fetchWithTimeout: typeof fetch,
   documentsToFillQueue: QueueClient
 ) => {
-  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
-  const uploadFilledDocument = makeUploadBlob(filledContainerClient);
   const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
 
-  const prepareFilledDocument = makePrepareFilledDocument(
+  const createFilledDocument = makeCreateFilledDocument(
     getFilledDocumentUrl,
     enqueueDocumentToFill
-  );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const createFilledDocument = makeCreateFilledDocument(
-    getFiscalCodeBySignerId,
-    uploadFilledDocument,
-    fetchWithTimeout
   );
 
   const requireCreateFilledDocumentBody = flow(
@@ -74,7 +56,7 @@ const makeCreateFilledDocumentHandler = (
   const requireCreateFilledDocumentPayload: RTE.ReaderTaskEither<
     HttpRequest,
     Error,
-    PrepareFilledDocumentPayload
+    CreateFilledDocumentPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
       signer: RTE.fromReaderEither(makeRequireSigner),
@@ -102,7 +84,7 @@ const makeCreateFilledDocumentHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    prepareFilledDocument,
+    createFilledDocument,
     error,
     encodeHttpSuccessResponse
   );
@@ -119,11 +101,6 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const pdvTokenizerClient = createPdvTokenizerClient(
-  config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
-);
-
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   config.filledModulesStorageContainerName
@@ -134,14 +111,7 @@ const documentsToFillQueue = new QueueClient(
   config.documentsToFillQueueName
 );
 
-const fetchWithTimeout = makeFetchWithTimeout();
-
 export const run = pipe(
-  makeCreateFilledDocumentHandler(
-    pdvTokenizerClient,
-    filledContainerClient,
-    fetchWithTimeout,
-    documentsToFillQueue
-  ),
+  makeCreateFilledDocumentHandler(filledContainerClient, documentsToFillQueue),
   azure.unsafeRun
 );

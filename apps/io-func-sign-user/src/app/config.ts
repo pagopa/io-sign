@@ -62,6 +62,6 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     uploadedStorageContainerName: "uploaded-documents",
     validatedStorageContainerName: "validated-documents",
     filledModulesStorageContainerName: "filled-modules",
-    documentsToFillQueueName: "wait-for-documents-to-fill",
+    documentsToFillQueueName: "waiting-for-documents-to-fill",
   }))
 );
