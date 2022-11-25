@@ -11,7 +11,7 @@ import {
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 import { Dossier, GetDossier, InsertDossier } from "../../../dossier";
-import { toCosmosDatabaseError } from "./errors";
+import { toCosmosDatabaseError } from "@internal/io-sign/infra/azure/cosmos/errors";
 
 const NewDossier = t.intersection([Dossier, BaseModel]);
 type NewDossier = t.TypeOf<typeof NewDossier>;
