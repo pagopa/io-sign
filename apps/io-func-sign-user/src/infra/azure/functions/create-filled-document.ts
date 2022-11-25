@@ -18,7 +18,7 @@ import {
 } from "@internal/pdv-tokenizer/client";
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
 import { ContainerClient } from "@azure/storage-blob";
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
+
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocument,
@@ -118,7 +118,7 @@ const filledContainerClient = new ContainerClient(
   config.filledStorageContainerName
 );
 
-const fetchWithTimeout = makeFetchWithTimeout(10000 as Millisecond);
+const fetchWithTimeout = makeFetchWithTimeout();
 
 export const run = pipe(
   makeCreateFilledDocumentHandler(
