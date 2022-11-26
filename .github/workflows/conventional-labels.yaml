@@ -1,0 +1,15 @@
+# Warning, do not check out untrusted code with
+# the pull_request_target event.
+on:
+  pull_request_target:
+    types: [opened, edited]
+name: conventional-release-labels
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      # npx pin-github-action .github/workflows/conventional-labels.yaml
+      - uses: bcoe/conventional-release-labels@886f696738527c7be444262c327c89436dfb95a8 # pin@v1
+        with:
+          type_labels: '{ "feat": "feature", "fix": "bug", "breaking": "breaking-change", "chore": "chore", "refactor": "technical-debt", "docs": "docs", "test": "test" }'
+          ignored_types: "[]"
