@@ -1,11 +1,11 @@
-import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { sequenceS } from "fp-ts/lib/Apply";
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import { createHandler } from "@pagopa/handler-kit";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
@@ -27,9 +27,9 @@ import { DossierToApiModel } from "../../http/encoders/dossier";
 
 import { makeInsertDossier } from "../cosmos/dossier";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-import { getConfigFromEnvironment } from "../../../app/config";
 import { CreateDossierBody } from "../../http/models/CreateDossierBody";
 import { Dossier } from "../../../dossier";
+import { database } from "../cosmos/client";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);
@@ -69,19 +69,5 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
     encodeHttpResponse
   );
 };
-
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 export const run = pipe(makeCreateDossierHandler(database), azure.unsafeRun);

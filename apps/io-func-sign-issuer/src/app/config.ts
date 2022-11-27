@@ -2,6 +2,7 @@ import * as t from "io-ts";
 
 import { pipe } from "fp-ts/function";
 import * as RE from "fp-ts/lib/ReaderEither";
+import * as E from "fp-ts/lib/Either";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import {
@@ -61,3 +62,11 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     validatedStorageContainerName: "validated-documents",
   }))
 );
+
+export const getConfigOrThrow = (env: NodeJS.ProcessEnv = process.env) =>
+  pipe(
+    getConfigFromEnvironment(env),
+    E.getOrElseW((err) => {
+      throw err;
+    })
+  );
