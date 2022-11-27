@@ -11,5 +11,5 @@ jobs:
       # npx pin-github-action .github/workflows/conventional-labels.yaml
       - uses: bcoe/conventional-release-labels@886f696738527c7be444262c327c89436dfb95a8 # pin@v1
         with:
-          type_labels: '{ "feat": "feature", "fix": "bug", "breaking": "breaking-change", "chore": "chore", "refactor": "technical-debt", "docs": "docs", "test": "test" }'
+          type_labels: '{ "feat": "feat", "fix": "fix", "breaking": "breaking-change", "chore": "chore", "refactor": "refactor", "docs": "docs", "test": "test" }'
           ignored_types: "[]"

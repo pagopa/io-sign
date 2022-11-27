@@ -7,7 +7,8 @@ changelog:
   categories:
     - title: Technical debt
       labels:
-        - technical-debt
+        - ci
+        - refactor
         - chore
         - test
     - title: Breaking changes
@@ -15,7 +16,7 @@ changelog:
         - breaking-change
     - title: New features
       labels:
-        - feature
+        - feat
     - title: Fixes
       labels:
         - fix
