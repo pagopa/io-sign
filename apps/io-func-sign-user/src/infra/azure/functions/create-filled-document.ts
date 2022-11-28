@@ -18,7 +18,7 @@ import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import {
   CreateFilledDocumentPayload,
-  makeCreateFilledDocument,
+  makeCreateFilledDocumentUrl,
 } from "../../../app/use-cases/create-filled-document";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
@@ -37,7 +37,7 @@ const makeCreateFilledDocumentHandler = (
   const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
 
-  const createFilledDocument = makeCreateFilledDocument(
+  const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
     getFilledDocumentUrl,
     enqueueDocumentToFill
   );
@@ -84,7 +84,7 @@ const makeCreateFilledDocumentHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    createFilledDocument,
+    createFilledDocumentUrl,
     error,
     encodeHttpSuccessResponse
   );

@@ -30,7 +30,7 @@ export type CreateFilledDocumentPayload = t.TypeOf<
 /** Create and return the storage path (URL) for the ToS document.
  * The caller of this API is expected to poll on it since the endpoint will return 404 until the ToS document gets processed.
  */
-export const makeCreateFilledDocument =
+export const makeCreateFilledDocumentUrl =
   (getFilledDocumentUrl: GetBlobUrl, enqueueDocumentToFill: EnqueueMessage) =>
   ({
     signer,
