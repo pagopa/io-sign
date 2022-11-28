@@ -2,3 +2,4 @@ io-func-sign-issuer: apps/io-func-sign-issuer/**/*
 io-func-sign-user: apps/io-func-sign-user/**/*
 internal: packages/**/*
 docs: docs/**/*
+ci: .github/workflows/**/*
