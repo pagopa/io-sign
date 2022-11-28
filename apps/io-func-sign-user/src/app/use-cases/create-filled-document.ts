@@ -2,7 +2,7 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { Signer } from "@internal/io-sign/signer";
+import { GetFiscalCodeBySignerId, Signer } from "@internal/io-sign/signer";
 
 import { EntityNotFoundError } from "@internal/io-sign/error";
 
@@ -31,7 +31,11 @@ export type CreateFilledDocumentPayload = t.TypeOf<
  * The caller of this API is expected to poll on it since the endpoint will return 404 until the ToS document gets processed.
  */
 export const makeCreateFilledDocumentUrl =
-  (getFilledDocumentUrl: GetBlobUrl, enqueueDocumentToFill: EnqueueMessage) =>
+  (
+    getFilledDocumentUrl: GetBlobUrl,
+    enqueueDocumentToFill: EnqueueMessage,
+    getFiscalCodeBySignerId: GetFiscalCodeBySignerId
+  ) =>
   ({
     signer,
     documentUrl,
@@ -42,10 +46,22 @@ export const makeCreateFilledDocumentUrl =
     const filledDocumentFileName = `${signer.id}.pdf`;
 
     return pipe(
-      filledDocumentFileName,
-      getFilledDocumentUrl,
-      TE.fromOption(
-        () => new EntityNotFoundError("Unable to generate callback url!")
+      signer.id,
+      getFiscalCodeBySignerId,
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new EntityNotFoundError("Fiscal code not found for this signer!")
+        )
+      ),
+      TE.chain(() =>
+        pipe(
+          filledDocumentFileName,
+          getFilledDocumentUrl,
+          TE.fromOption(
+            () => new EntityNotFoundError("Unable to generate callback url!")
+          )
+        )
       ),
       TE.chainFirst(() =>
         pipe(

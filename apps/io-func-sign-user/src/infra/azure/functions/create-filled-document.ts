@@ -16,6 +16,11 @@ import { validate } from "@internal/io-sign/validation";
 import { ContainerClient } from "@azure/storage-blob";
 
 import { QueueClient } from "@azure/storage-queue";
+import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+import {
+  createPdvTokenizerClient,
+  PdvTokenizerClientWithApiKey,
+} from "@internal/pdv-tokenizer/client";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
@@ -32,14 +37,17 @@ import { makeEnqueueMessage } from "../storage/queue";
 
 const makeCreateFilledDocumentHandler = (
   filledContainerClient: ContainerClient,
-  documentsToFillQueue: QueueClient
+  documentsToFillQueue: QueueClient,
+  tokenizer: PdvTokenizerClientWithApiKey
 ) => {
   const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
+  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
     getFilledDocumentUrl,
-    enqueueDocumentToFill
+    enqueueDocumentToFill,
+    getFiscalCodeBySignerId
   );
 
   const requireCreateFilledDocumentBody = flow(
@@ -111,7 +119,16 @@ const documentsToFillQueue = new QueueClient(
   config.documentsToFillQueueName
 );
 
+const pdvTokenizerClient = createPdvTokenizerClient(
+  config.pagopa.tokenizer.basePath,
+  config.pagopa.tokenizer.apiKey
+);
+
 export const run = pipe(
-  makeCreateFilledDocumentHandler(filledContainerClient, documentsToFillQueue),
+  makeCreateFilledDocumentHandler(
+    filledContainerClient,
+    documentsToFillQueue,
+    pdvTokenizerClient
+  ),
   azure.unsafeRun
 );

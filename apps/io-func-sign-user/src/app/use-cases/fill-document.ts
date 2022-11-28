@@ -25,11 +25,22 @@ export type FillDocumentPayload = t.TypeOf<typeof FillDocumentPayload>;
 
 // these types define the fields inside the PDF file to be enhanced
 // TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]
-type NameField = Field & { fieldName: "name" };
-type FamilyNameField = Field & { fieldName: "surname" };
-type EmailField = Field & { fieldName: "email" };
-type FiscalCodeField = Field & { fieldName: "CF" };
-type Fields = [NameField, FamilyNameField, EmailField, FiscalCodeField];
+type NameFieldB = Field & { fieldName: "QUADROB_name" };
+type FamilyNameFieldB = Field & { fieldName: "QUADROB_lastname" };
+type EmailFieldB = Field & { fieldName: "QUADROB_email" };
+type FiscalCodeFieldB = Field & { fieldName: "QUADROB_fiscalcode" };
+
+type NameFieldE = Field & { fieldName: "QUADROE_name" };
+type FamilyNameFieldE = Field & { fieldName: "QUADROE_lastname" };
+
+type Fields = [
+  NameFieldB,
+  FamilyNameFieldB,
+  EmailFieldB,
+  FiscalCodeFieldB,
+  NameFieldE,
+  FamilyNameFieldE
+];
 
 /** Downloads the ToS pdf form, compiles and stores the filled document. */
 export const makeFillDocument =
@@ -58,20 +69,28 @@ export const makeFillDocument =
       TE.chain((fiscalCode) => {
         const fields: Fields = [
           {
-            fieldName: "name",
+            fieldName: "QUADROB_name",
             fieldValue: name,
           },
           {
-            fieldName: "surname",
+            fieldName: "QUADROB_lastname",
             fieldValue: familyName,
           },
           {
-            fieldName: "email",
+            fieldName: "QUADROB_email",
             fieldValue: email,
           },
           {
-            fieldName: "CF",
+            fieldName: "QUADROB_fiscalcode",
             fieldValue: fiscalCode,
+          },
+          {
+            fieldName: "QUADROE_name",
+            fieldValue: name,
+          },
+          {
+            fieldName: "QUADROE_lastname",
+            fieldValue: familyName,
           },
         ];
 
