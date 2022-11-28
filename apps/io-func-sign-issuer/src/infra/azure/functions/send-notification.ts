@@ -1,10 +1,9 @@
-import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import { error, success } from "@internal/io-sign/infra/http/response";
 import { sequenceS } from "fp-ts/lib/Apply";

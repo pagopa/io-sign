@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/function";
 import { GetFiscalCodeBySignerId } from "@internal/io-sign/signer";
 
 import { EntityNotFoundError } from "@internal/io-sign/error";
-import { Field, populatePdf } from "@internal/pdf-handler/pdf";
+import { Field, populatePdf } from "@internal/pdf-handler";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
