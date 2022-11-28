@@ -9,5 +9,6 @@
       "connection": "StorageAccountConnectionString"
     }
   ],
-  "scriptFile": "../dist/validate-upload.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "ValidateUpload"
 }

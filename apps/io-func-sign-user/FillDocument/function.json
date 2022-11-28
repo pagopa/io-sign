@@ -1,0 +1,13 @@
+{
+  "disabled": true,
+  "bindings": [
+    {
+      "name": "documentsToFill",
+      "type": "queueTrigger",
+      "queueName": "waiting-for-documents-to-fill",
+      "connection": "StorageAccountConnectionString"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "FillDocument"
+}

@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 
-import { run } from "../info";
+import { makeInfoFunction } from "../info";
 
 describe("info", () => {
   it("should return a successful response", async () => {
-    const { statusCode } = await run();
+    const info = makeInfoFunction();
+    const { statusCode } = await info();
     expect(statusCode).toBe(200);
   });
 });

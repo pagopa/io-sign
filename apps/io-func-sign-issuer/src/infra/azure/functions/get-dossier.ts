@@ -1,6 +1,6 @@
-import { Database as CosmosDatabase, CosmosClient } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 
-import { flow, pipe, identity } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import { validate } from "@internal/io-sign/validation";
 
@@ -21,7 +21,6 @@ import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-import { getConfigFromEnvironment } from "../../../app/config";
 
 import { DossierToApiModel } from "../../http/encoders/dossier";
 
@@ -65,18 +64,7 @@ const makeGetDossierHandler = (database: CosmosDatabase) => {
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
+export const makeGetDossierFunction = flow(
+  makeGetDossierHandler,
+  azure.unsafeRun
 );
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-
-export const run = pipe(makeGetDossierHandler(database), azure.unsafeRun);

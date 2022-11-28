@@ -4,12 +4,12 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { Document } from "@internal/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
-import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { validate } from "@internal/io-sign/validation";
 import { error, success } from "@internal/io-sign/infra/http/response";
@@ -19,14 +19,15 @@ import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 
 import { makeGetUploadUrl } from "../../azure/storage/upload";
+
 import {
   makeGetUploadUrl as makeGetUploadUrlUseCase,
   GetUploadUrlPayload,
 } from "../../../app/use-cases/get-upload-url";
+
 import { UploadUrlToApiModel } from "../../http/encoders/upload";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
-import { getConfigFromEnvironment } from "../../../app/config";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,
@@ -76,26 +77,11 @@ const makeGetUploadUrlHandler = (
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-
-const uploadedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  config.uploadedStorageContainerName
-);
-
-export const run = pipe(
-  makeGetUploadUrlHandler(database, uploadedContainerClient),
-  azure.unsafeRun
-);
+export const makeGetUploadUrlFunction = (
+  database: CosmosDatabase,
+  uploadedContainerClient: ContainerClient
+) =>
+  pipe(
+    makeGetUploadUrlHandler(database, uploadedContainerClient),
+    azure.unsafeRun
+  );

@@ -12,12 +12,29 @@ import {
   IOServicesConfig,
   getIoServicesConfigFromEnvironment,
 } from "@internal/io-services/config";
+import {
+  StorageConfig,
+  getStorageConfigFromEnvironment,
+} from "../infra/azure/storage/config";
+
+import {
+  CosmosConfig,
+  getCosmosConfigFromEnvironment,
+} from "../infra/azure/cosmos/config";
 
 export const Config = t.type({
+  azure: t.type({
+    storage: StorageConfig,
+    cosmos: CosmosConfig,
+  }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
   }),
+  uploadedStorageContainerName: t.string,
+  validatedStorageContainerName: t.string,
+  filledModulesStorageContainerName: t.string,
+  documentsToFillQueueName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -28,13 +45,23 @@ export const getConfigFromEnvironment: RE.ReaderEither<
   Config
 > = pipe(
   sequenceS(RE.Apply)({
+    storage: getStorageConfigFromEnvironment,
+    cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
   }),
   RE.map((config) => ({
+    azure: {
+      storage: config.storage,
+      cosmos: config.cosmos,
+    },
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
     },
+    uploadedStorageContainerName: "uploaded-documents",
+    validatedStorageContainerName: "validated-documents",
+    filledModulesStorageContainerName: "filled-modules",
+    documentsToFillQueueName: "waiting-for-documents-to-fill",
   }))
 );
