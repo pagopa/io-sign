@@ -1,6 +1,6 @@
 import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
-import { getPdfMetadata } from "@internal/pdf-handler/pdf";
+import { getPdfMetadata } from "@internal/pdf-handler";
 import { EntityNotFoundError } from "@internal/io-sign/error";
 import {
   DeleteUploadDocument,

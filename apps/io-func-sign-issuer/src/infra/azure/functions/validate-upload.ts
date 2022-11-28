@@ -9,17 +9,15 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 import { last } from "fp-ts/ReadonlyNonEmptyArray";
 import { split } from "fp-ts/string";
 
-import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
-import * as E from "fp-ts/lib/Either";
+
 import { validate } from "@internal/io-sign/validation";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
 } from "../cosmos/upload";
-
-import { getConfigFromEnvironment } from "../../../app/config";
 
 import { makeValidateUpload } from "../../../app/use-cases/validate-upload";
 
@@ -109,35 +107,16 @@ const makeValidateUploadHandler = (
   return createHandler(decodeRequest, validateUpload, identity, constVoid);
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-
-const uploadedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  config.uploadedStorageContainerName
-);
-
-const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  config.validatedStorageContainerName
-);
-
-export const run = pipe(
-  makeValidateUploadHandler(
-    database,
-    uploadedContainerClient,
-    validatedContainerClient
-  ),
-  azure.unsafeRun
-);
+export const makeValidateUploadFunction = (
+  database: CosmosDatabase,
+  uploadedContainerClient: ContainerClient,
+  validatedContainerClient: ContainerClient
+) =>
+  pipe(
+    makeValidateUploadHandler(
+      database,
+      uploadedContainerClient,
+      validatedContainerClient
+    ),
+    azure.unsafeRun
+  );

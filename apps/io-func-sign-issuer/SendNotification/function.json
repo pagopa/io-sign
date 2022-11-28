@@ -14,5 +14,6 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/send-notification.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "SendNotification"
 }

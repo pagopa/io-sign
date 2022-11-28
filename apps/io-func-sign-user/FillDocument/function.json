@@ -8,5 +8,6 @@
       "connection": "StorageAccountConnectionString"
     }
   ],
-  "scriptFile": "../dist/fill-document.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "FillDocument"
 }

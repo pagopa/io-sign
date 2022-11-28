@@ -7,7 +7,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { pipe, flow, identity } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -17,10 +17,7 @@ import { ContainerClient } from "@azure/storage-blob";
 
 import { QueueClient } from "@azure/storage-queue";
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
-import {
-  createPdvTokenizerClient,
-  PdvTokenizerClientWithApiKey,
-} from "@internal/pdv-tokenizer/client";
+import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
@@ -29,8 +26,6 @@ import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoder/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
-
-import { getConfigFromEnvironment } from "../../../app/config";
 
 import { makeGetBlobUrl } from "../storage/blob";
 import { makeEnqueueMessage } from "../storage/queue";
@@ -98,37 +93,16 @@ const makeCreateFilledDocumentHandler = (
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const filledContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  config.filledModulesStorageContainerName
-);
-
-const documentsToFillQueue = new QueueClient(
-  config.azure.storage.connectionString,
-  config.documentsToFillQueueName
-);
-
-const pdvTokenizerClient = createPdvTokenizerClient(
-  config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
-);
-
-export const run = pipe(
-  makeCreateFilledDocumentHandler(
-    filledContainerClient,
-    documentsToFillQueue,
-    pdvTokenizerClient
-  ),
-  azure.unsafeRun
-);
+export const makeCreateFilledDocumentFunction = (
+  filledContainerClient: ContainerClient,
+  documentsToFillQueue: QueueClient,
+  pdvTokenizerClient: PdvTokenizerClientWithApiKey
+) =>
+  pipe(
+    makeCreateFilledDocumentHandler(
+      filledContainerClient,
+      documentsToFillQueue,
+      pdvTokenizerClient
+    ),
+    azure.unsafeRun
+  );

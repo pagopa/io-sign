@@ -14,5 +14,6 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/get-signature-request.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "GetSignatureRequest"
 }
