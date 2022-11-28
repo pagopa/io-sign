@@ -11,6 +11,8 @@ import { createHandler } from "@pagopa/handler-kit";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
+import { validate } from "@internal/io-sign/validation";
+import { created, error } from "@internal/io-sign/infra/http/response";
 import {
   CreateDossierPayload,
   makeCreateDossier,
@@ -26,8 +28,6 @@ import { DossierToApiModel } from "../../http/encoders/dossier";
 import { makeInsertDossier } from "../cosmos/dossier";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { getConfigFromEnvironment } from "../../../app/config";
-import { created, error } from "@internal/io-sign/infra/http/response";
-import { validate } from "@internal/io-sign/validation";
 import { CreateDossierBody } from "../../http/models/CreateDossierBody";
 import { Dossier } from "../../../dossier";
 
