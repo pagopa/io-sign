@@ -5,9 +5,11 @@ import { createPdvTokenizerClient } from "@internal/pdv-tokenizer/client";
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
+import { createIOApiClient } from "@internal/io-services/client";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
+import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -36,6 +38,11 @@ const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.apiKey
 );
 
+const ioApiClient = createIOApiClient(
+  config.pagopa.ioServices.basePath,
+  config.pagopa.ioServices.subscriptionKey
+);
+
 export const Info = makeInfoFunction();
 
 export const CreateFilledDocument = makeCreateFilledDocumentFunction(
@@ -43,7 +50,13 @@ export const CreateFilledDocument = makeCreateFilledDocumentFunction(
   documentsToFillQueue,
   pdvTokenizerClient
 );
+
 export const FillDocument = makeFillDocumentFunction(
   pdvTokenizerClient,
   filledContainerClient
+);
+
+export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
+  pdvTokenizerClient,
+  ioApiClient
 );

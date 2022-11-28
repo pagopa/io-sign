@@ -35,6 +35,32 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
 
+  /signers:
+    post:
+      operationId: getSignerByFiscalCode
+      tags:
+        - Signer
+      summary: Get Signer By Fiscal Code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetSignerByFiscalCodeBody"
+      responses:
+        "201":
+          description: The Signer detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignerDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     FunctionsKey:
@@ -185,3 +211,19 @@ components:
           format: url
       required:
         - filled_document_url
+
+    GetSignerByFiscalCodeBody:
+      type: object
+      properties:
+        fiscal_code:
+          $ref: "#/components/schemas/FiscalCode"
+      required:
+        - fiscal_code
+
+    SignerDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+      required:
+        - id
