@@ -8,7 +8,7 @@ paths:
   /qtsp/clauses/filled_document:
     post:
       operationId: createFilledDocument
-      summary: Create a filled document for QTSP
+      summary: Create a filled document for QTSP. The caller of this API is expected to poll on it since the endpoint will return 404 until the ToS document gets processed.
       tags:
         - QTSP Clauses
       parameters:
@@ -142,7 +142,6 @@ components:
       description: Entity Id
       minLength: 1
       example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
-      x-import: "@pagopa/ts-commons/lib/strings"
 
     FiscalCode:
       type: string

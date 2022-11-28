@@ -31,7 +31,7 @@ type EmailField = Field & { fieldName: "email" };
 type FiscalCodeField = Field & { fieldName: "CF" };
 type Fields = [NameField, FamilyNameField, EmailField, FiscalCodeField];
 
-// This function downloads the pdf form, compiles it and uploads it to blobStorage
+/** Downloads the ToS pdf form, compiles and stores the filled document. */
 export const makeFillDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
@@ -80,7 +80,7 @@ export const makeFillDocument =
           TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
-          TE.chain((buffer) => pipe(fields, populatePdf(buffer))),
+          TE.chain(populatePdf(fields)),
           TE.chain(uploadFilledDocument(filledDocumentFileName))
         );
       })

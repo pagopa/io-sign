@@ -61,9 +61,7 @@ const populate = (form: PDFForm) => (field: Field) =>
     E.map((textField) => textField.setText(field.fieldValue))
   );
 
-/* fill out the pdf form with the fields inside
- * pdfFields and return the filled pdf in base64 */
-export const populatePdf = (buffer: Buffer) => (pdfFields: Field[]) =>
+export const populatePdf = (pdfFields: Field[]) => (buffer: Buffer) =>
   pipe(
     buffer,
     loadPdf,
