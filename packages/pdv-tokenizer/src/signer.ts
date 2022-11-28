@@ -36,7 +36,7 @@ export const makeGetSignerByFiscalCode =
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `An error occurred while connecting to the tokenizer to get signerId!`
+                    `The attempt to get signer's fiscal code from his identifier failed.`
                   )
                 );
             }
@@ -80,7 +80,7 @@ export const makeGetFiscalCodeBySignerId =
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `An error occurred while connecting to the tokenizer to get Fiscal Code!`
+                    `An error occurred to retrieve the fiscal code from the signerId`
                   )
                 );
             }
