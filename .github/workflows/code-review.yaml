@@ -10,8 +10,8 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build:
-    name: Build and Test
+  code_review:
+    name: Code Review
     timeout-minutes: 5
     runs-on: ubuntu-latest
 

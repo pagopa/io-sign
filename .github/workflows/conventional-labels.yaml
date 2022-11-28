@@ -1,11 +1,14 @@
 # Warning, do not check out untrusted code with
 # the pull_request_target event.
+
+name: Conventional Release Labels
+
 on:
   pull_request_target:
     types: [opened, edited]
-name: conventional-release-labels
+
 jobs:
-  label:
+  conventional_release_labels:
     runs-on: ubuntu-latest
     steps:
       # npx pin-github-action .github/workflows/conventional-labels.yaml
