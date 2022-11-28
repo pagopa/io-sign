@@ -1,0 +1,51 @@
+# This workflow will perform the code review on each code change.
+# It uses "actions/cache" and turborepo in order to perform tasks only on changed files.
+
+name: "Code Review"
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - apps/**
+      - packages/**
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - apps/**
+      - packages/**
+  workflow_dispatch: {}
+
+jobs:
+  code_review:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: "Generate API models"
+        run: npm run generate:api-models --workspaces --if-present
+
+      - name: "Code review"
+        run: npm run code-review
