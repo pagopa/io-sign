@@ -12,6 +12,6 @@
   "retry": {
         "strategy": "fixedDelay",
         "maxRetryCount": 4,
-        "delayInterval": "00:00:10"
+        "delayInterval": "00:00:5"
     }
 }
