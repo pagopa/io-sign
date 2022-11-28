@@ -9,13 +9,10 @@ import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import { error, success } from "@internal/io-sign/infra/http/response";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
-import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 import { makeSubmitMessageForUser } from "@internal/io-services/message";
-import { createIOApiClient, IOApiClient } from "@internal/io-services/client";
-import {
-  createPdvTokenizerClient,
-  PdvTokenizerClientWithApiKey,
-} from "@internal/pdv-tokenizer/client";
+import { IOApiClient } from "@internal/io-services/client";
+import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
 
 import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
 
@@ -28,7 +25,6 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
-import { getConfigFromEnvironment } from "../../../app/config";
 import {
   makeSendNotification,
   SendNotificationPayload,
@@ -81,30 +77,12 @@ const makeSendNotificationHandler = (
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-const ioApiClient = createIOApiClient(
-  config.pagopa.ioServices.basePath,
-  config.pagopa.ioServices.subscriptionKey
-);
-
-const pdvTokenizerClient = createPdvTokenizerClient(
-  config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
-);
-
-export const run = pipe(
-  makeSendNotificationHandler(database, ioApiClient, pdvTokenizerClient),
-  azure.unsafeRun
-);
+export const makeSendNotificationFunction = (
+  database: CosmosDatabase,
+  pdvTokenizerClient: PdvTokenizerClientWithApiKey,
+  ioApiClient: IOApiClient
+) =>
+  pipe(
+    makeSendNotificationHandler(database, ioApiClient, pdvTokenizerClient),
+    azure.unsafeRun
+  );

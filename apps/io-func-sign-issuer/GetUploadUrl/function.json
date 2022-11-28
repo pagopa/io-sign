@@ -14,5 +14,6 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/get-upload-url.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "GetUploadUrl"
 }

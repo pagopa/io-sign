@@ -14,5 +14,6 @@
       "name": "$return"
     }
   ],
-  "scriptFile": "../dist/get-signer.js"
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "GetSignerByFiscalCode"
 }
