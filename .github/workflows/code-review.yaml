@@ -1,6 +1,8 @@
 # This workflow will perform the code review on each code change.
 # It uses "actions/cache" and turborepo in order to perform tasks only on changed files.
 
+name: "Code Review"
+
 on:
   push:
     branches: ["main"]
@@ -9,7 +11,6 @@ on:
 
 jobs:
   code_review:
-    name: Code Review
     timeout-minutes: 5
     runs-on: ubuntu-latest
 
