@@ -69,7 +69,12 @@ paths:
       operationId: getInfo
       responses:
         "200":
-          description: The info detail
+          description: Used to check if the function is active
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "It works"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
