@@ -16,4 +16,4 @@ This local-production disparity causes **bugs and unexpected behaviour** on depl
 
 ## Decision
 
-In order to avoid the problems described in the "Context" chapter, we decided to change the package manager used and move on `pnpm` that allows us to hoist dependencies maintaining at the same time a "local" node_modules folder for each workspace project.
+In order to avoid the problems described in the "_Context_" chapter, we decided to change the package manager used and move on `pnpm` that allows us to hoist dependencies maintaining at the same time a "local" `node_modules` folder for each workspace project.
