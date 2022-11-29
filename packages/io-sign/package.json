@@ -2,7 +2,6 @@
   "name": "@io-sign/io-sign",
   "version": "0.9.0-beta.1",
   "repository": "https://github.com/pagopa/io-sign",
-  "private": false,
   "type": "module",
   "exports": {
     "./": "./dist/"
