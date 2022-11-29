@@ -1,4 +1,4 @@
-# 1. Use PNPM as a package manager
+# 5. Use PNPM as a package manager
 
 Date: 2022-11-30
 
