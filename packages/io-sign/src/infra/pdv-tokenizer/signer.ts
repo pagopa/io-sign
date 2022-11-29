@@ -1,16 +1,15 @@
-import {
-  GetFiscalCodeBySignerId,
-  GetSignerByFiscalCode,
-} from "@io-sign/io-sign/signer";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
 
-import { TooManyRequestsError } from "@io-sign/io-sign/error";
-import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
 import { PdvTokenizerClientWithApiKey } from "./client";
+
+import { GetFiscalCodeBySignerId, GetSignerByFiscalCode } from "../../signer";
+
+import { TooManyRequestsError } from "../../error";
+import { HttpBadRequestError } from "../http/errors";
 
 export const makeGetSignerByFiscalCode =
   (clientPayload: PdvTokenizerClientWithApiKey): GetSignerByFiscalCode =>

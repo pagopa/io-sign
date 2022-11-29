@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "@jest/globals";
 
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
@@ -10,7 +10,7 @@ import {
 } from "../errors";
 import { ActionNotAllowedError, EntityNotFoundError } from "../../../error";
 
-describe.concurrent("errors", () => {
+describe("errors", () => {
   describe("isHttpError", () => {
     it("should pass on a well-formed http error", () => {
       const error = new HttpError("I'm an error, but at least I'm well-formed");

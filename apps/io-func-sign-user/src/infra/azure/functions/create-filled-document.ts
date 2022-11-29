@@ -16,8 +16,8 @@ import { validate } from "@io-sign/io-sign/validation";
 import { ContainerClient } from "@azure/storage-blob";
 
 import { QueueClient } from "@azure/storage-queue";
-import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
-import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,

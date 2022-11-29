@@ -9,8 +9,8 @@ import { flow, pipe } from "fp-ts/lib/function";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@internal/pdv-tokenizer/signer";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
@@ -18,8 +18,8 @@ import * as O from "fp-ts/lib/Option";
 import { createHandler } from "@pagopa/handler-kit";
 import { validate } from "@io-sign/io-sign/validation";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
-import { makeRetriveUserProfileSenderAllowed } from "@internal/io-services/profile";
-import { IOApiClient } from "@internal/io-services/client";
+import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";
+import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 
 import { SignerToApiModel } from "../../http/encoders/signer";

@@ -1,7 +1,6 @@
 {
   "name": "io-sign",
   "private": true,
-  "version": "0.1.0",
   "scripts": {
     "test": "turbo run test --no-daemon",
     "format": "turbo run format --no-daemon",
@@ -13,7 +12,10 @@
     "packages/*",
     "apps/*"
   ],
-  "devDependencies": {
+  "dependencies": {
     "turbo": "^1.6.3"
+  },
+  "devDependencies": {
+    "vitest": "^0.25.3"
   }
 }

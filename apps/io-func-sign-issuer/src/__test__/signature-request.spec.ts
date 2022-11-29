@@ -1,12 +1,13 @@
-import { describe, it, test, expect } from "vitest";
+import { describe, it, test, expect } from "@jest/globals";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
-import { newSigner } from "@io-sign/io-sign/signer";
 import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newIssuer } from "../issuer";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
+
+import { newSigner } from "@io-sign/io-sign/signer";
 
 const issuer = newIssuer("my-sub-id");
 
@@ -22,7 +23,7 @@ const dossier = newDossier(issuer, "My dossier", [
 ]);
 
 describe("SignatureRequest", () => {
-  describe.concurrent("newSignatureRequest", () => {
+  describe("newSignatureRequest", () => {
     it('should create a request with "DRAFT" status', () => {
       const request = newSignatureRequest(dossier, newSigner());
       expect(request.status).toBe("DRAFT");

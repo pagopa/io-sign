@@ -6,7 +6,7 @@ import { Notification } from "@io-sign/io-sign/notification";
 import {
   SubmitMessageForUser,
   withFiscalCode,
-} from "@internal/io-services/message";
+} from "@io-sign/io-sign/infra/io-services/message";
 import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";

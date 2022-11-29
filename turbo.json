@@ -4,7 +4,7 @@
     "build": {
       "inputs": ["src/**/*.ts"],
       "outputs": ["dist/**"],
-      "dependsOn": ["^typecheck", "^test"]
+      "dependsOn": ["^build", "typecheck", "test"]
     },
     "typecheck": {
       "inputs": ["src/**/*.ts"],
