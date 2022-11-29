@@ -43,6 +43,6 @@
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
     "build": "tsup-node",
-    "generate:pdv-tokenizer-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders"
+    "generate:api-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders"
   }
 }
