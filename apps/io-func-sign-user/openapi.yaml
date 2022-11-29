@@ -15,7 +15,10 @@ paths:
         - in: header
           name: x-iosign-signer-id
           schema:
-            $ref: "#/components/schemas/Id"
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
       requestBody:
         required: true
@@ -58,7 +61,7 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
-        default:
+        "500":
           $ref: "#/components/responses/Unexpected"
 
 components:
