@@ -26,7 +26,7 @@ jobs:
           node-version: 16
           registry-url: "https://npm.pkg.github.com"
           scope: "@pagopa"
-      - run: npm run ci
+      - run: npm ci
       - run: npm run generate:api-models -w ${{ github.event.inputs.package }} --if-present
       - run: npm run build -w ${{ github.event.inputs.package }}
       - run: "npm publish -w ${{ github.event.inputs.package }}"
