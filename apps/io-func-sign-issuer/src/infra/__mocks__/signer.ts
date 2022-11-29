@@ -6,7 +6,7 @@ import {
   GetSignerByFiscalCode,
   newSigner,
   Signer,
-} from "@pagopa/io-sign/signer";
+} from "@io-sign/io-sign/signer";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";

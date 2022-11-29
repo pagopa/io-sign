@@ -1,7 +1,7 @@
 import { createHandler, nopRequestDecoder } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { success } from "@pagopa/io-sign/infra/http/response";
+import { success } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { flow, identity } from "fp-ts/lib/function";

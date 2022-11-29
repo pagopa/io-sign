@@ -5,7 +5,7 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
-import { error, success } from "@pagopa/io-sign/infra/http/response";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { Database as CosmosDatabase } from "@azure/cosmos";

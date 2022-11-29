@@ -2,7 +2,7 @@ import { Database as CosmosDatabase } from "@azure/cosmos";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { error, success } from "@pagopa/io-sign/infra/http/response";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 

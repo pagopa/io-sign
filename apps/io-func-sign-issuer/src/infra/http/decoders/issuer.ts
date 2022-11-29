@@ -1,6 +1,6 @@
 import { header, HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { validate } from "@pagopa/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import { pipe, flow } from "fp-ts/lib/function";
 

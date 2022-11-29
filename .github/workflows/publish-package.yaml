@@ -9,7 +9,7 @@ on:
         type: choice
         description: What package to deploy
         options:
-          - "@pagopa/io-sign"
+          - "@io-sign/io-sign"
 
 jobs:
   publish:

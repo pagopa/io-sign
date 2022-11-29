@@ -1,7 +1,7 @@
 import { createHandler } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { created, error } from "@pagopa/io-sign/infra/http/response";
+import { created, error } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
@@ -11,7 +11,7 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
-import { validate } from "@pagopa/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import { ContainerClient } from "@azure/storage-blob";
 

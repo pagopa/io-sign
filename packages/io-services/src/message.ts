@@ -1,4 +1,4 @@
-import { Notification } from "@pagopa/io-sign/notification";
+import { Notification } from "@io-sign/io-sign/notification";
 
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
 
@@ -10,12 +10,12 @@ import { pipe, flow, identity } from "fp-ts/lib/function";
 import {
   HttpBadRequestError,
   HttpError,
-} from "@pagopa/io-sign/infra/http/errors";
+} from "@io-sign/io-sign/infra/http/errors";
 
 import {
   ActionNotAllowedError,
   TooManyRequestsError,
-} from "@pagopa/io-sign/error";
+} from "@io-sign/io-sign/error";
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
 

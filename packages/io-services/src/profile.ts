@@ -7,8 +7,8 @@ import {
   ActionNotAllowedError,
   EntityNotFoundError,
   TooManyRequestsError,
-} from "@pagopa/io-sign/error";
-import { HttpBadRequestError } from "@pagopa/io-sign/infra/http/errors";
+} from "@io-sign/io-sign/error";
+import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
 import { IOApiClient } from "./client";
 
 export type RetriveUserProfileSenderAllowed = (

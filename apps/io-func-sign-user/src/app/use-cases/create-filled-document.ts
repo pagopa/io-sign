@@ -2,11 +2,11 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId, Signer } from "@pagopa/io-sign/signer";
+import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 
-import { EntityNotFoundError } from "@pagopa/io-sign/error";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-import { validate } from "@pagopa/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";

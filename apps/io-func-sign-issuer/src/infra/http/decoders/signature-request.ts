@@ -7,9 +7,9 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { validate } from "@pagopa/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
-import { EntityNotFoundError } from "@pagopa/io-sign/error";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { GetIssuerBySubscriptionId } from "../../../issuer";
 import {
   GetSignatureRequest,
