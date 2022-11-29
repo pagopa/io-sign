@@ -10,7 +10,6 @@ on:
         description: What package to deploy
         options:
           - "@pagopa/io-sign"
-  push:
 
 jobs:
   publish:
