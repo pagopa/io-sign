@@ -2,7 +2,7 @@ import * as t from "io-ts";
 
 import * as RE from "fp-ts/lib/ReaderEither";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { readFromEnvironment } from "@internal/io-sign/infra/env";
+import { readFromEnvironment } from "@pagopa/io-sign/infra/env";
 
 import { pipe } from "fp-ts/lib/function";
 

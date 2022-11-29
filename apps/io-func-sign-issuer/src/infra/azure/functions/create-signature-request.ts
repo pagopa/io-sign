@@ -5,7 +5,7 @@ import * as O from "fp-ts/lib/Option";
 
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@pagopa/io-sign/validation";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 
@@ -13,8 +13,8 @@ import { pipe, flow } from "fp-ts/lib/function";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { createHandler } from "@pagopa/handler-kit";
 import { Database as CosmosDatabase } from "@azure/cosmos";
-import { created, error } from "@internal/io-sign/infra/http/response";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { created, error } from "@pagopa/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@pagopa/io-sign/error";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { SignatureRequest } from "../../../signature-request";

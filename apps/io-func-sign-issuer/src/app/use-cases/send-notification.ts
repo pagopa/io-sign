@@ -1,15 +1,15 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
-import { GetFiscalCodeBySignerId } from "@internal/io-sign/signer";
-import { Notification } from "@internal/io-sign/notification";
+import { GetFiscalCodeBySignerId } from "@pagopa/io-sign/signer";
+import { Notification } from "@pagopa/io-sign/notification";
 import {
   SubmitMessageForUser,
   withFiscalCode,
 } from "@internal/io-services/message";
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@pagopa/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { EntityNotFoundError } from "@pagopa/io-sign/error";
 import {
   SignatureRequest,
   UpsertSignatureRequest,

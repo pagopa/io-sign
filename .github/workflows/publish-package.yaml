@@ -1,0 +1,33 @@
+# Publish NPM package
+
+name: "Publish NPM package"
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        type: choice
+        description: What package to deploy
+        options:
+          - "@pagopa/io-sign"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@pagopa"
+      - run: npm run ci
+      - run: npm run generate:api-models -w ${{ github.event.inputs.package }} --if-present
+      - run: npm run build -w ${{ github.event.inputs.package }}
+      - run: "npm publish -w ${{ github.event.inputs.package }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

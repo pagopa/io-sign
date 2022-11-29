@@ -11,8 +11,8 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 
 import { Database as CosmosDatabase } from "@azure/cosmos";
-import { validate } from "@internal/io-sign/validation";
-import { error } from "@internal/io-sign/infra/http/response";
+import { validate } from "@pagopa/io-sign/validation";
+import { error } from "@pagopa/io-sign/infra/http/response";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
 import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";

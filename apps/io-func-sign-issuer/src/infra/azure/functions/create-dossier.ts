@@ -11,8 +11,8 @@ import { createHandler } from "@pagopa/handler-kit";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { validate } from "@internal/io-sign/validation";
-import { created, error } from "@internal/io-sign/infra/http/response";
+import { validate } from "@pagopa/io-sign/validation";
+import { created, error } from "@pagopa/io-sign/infra/http/response";
 import {
   CreateDossierPayload,
   makeCreateDossier,

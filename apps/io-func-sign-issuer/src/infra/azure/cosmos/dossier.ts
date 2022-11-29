@@ -10,7 +10,7 @@ import {
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
-import { toCosmosDatabaseError } from "@internal/io-sign/infra/azure/cosmos/errors";
+import { toCosmosDatabaseError } from "@pagopa/io-sign/infra/azure/cosmos/errors";
 import { Dossier, GetDossier, InsertDossier } from "../../../dossier";
 
 const NewDossier = t.intersection([Dossier, BaseModel]);

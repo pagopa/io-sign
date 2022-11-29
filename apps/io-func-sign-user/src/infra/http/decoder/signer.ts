@@ -1,12 +1,12 @@
 import { header, HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@pagopa/io-sign/validation";
 
 import { pipe, flow } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 
-import { Signer } from "@internal/io-sign/signer";
+import { Signer } from "@pagopa/io-sign/signer";
 
 const requireSignerId = (req: HttpRequest) =>
   pipe(

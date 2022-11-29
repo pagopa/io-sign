@@ -12,7 +12,7 @@ import { pipe } from "fp-ts/lib/function";
 
 import { addMinutes } from "date-fns";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@pagopa/io-sign/validation";
 import { toError } from "fp-ts/lib/Either";
 
 import {

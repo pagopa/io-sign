@@ -1,4 +1,4 @@
-import { Id, id as newId } from "@internal/io-sign/id";
+import { Id, id as newId } from "@pagopa/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -6,24 +6,24 @@ import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
 
-import { Signer } from "@internal/io-sign/signer";
-import { Notification } from "@internal/io-sign/notification";
+import { Signer } from "@pagopa/io-sign/signer";
+import { Notification } from "@pagopa/io-sign/notification";
 
 import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
-import { ActionNotAllowedError } from "@internal/io-sign/error";
+import { ActionNotAllowedError } from "@pagopa/io-sign/error";
 
 import {
   Document,
   startValidation,
   markAsReady as setReadyStatus,
   markAsRejected as setRejectedStatus,
-} from "@internal/io-sign/document";
+} from "@pagopa/io-sign/document";
 
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { EntityNotFoundError } from "@pagopa/io-sign/error";
 
 import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
 import { Dossier } from "./dossier";

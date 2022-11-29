@@ -1,5 +1,5 @@
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
-import { Signer, signerNotFoundError } from "@internal/io-sign/signer";
+import { Signer, signerNotFoundError } from "@pagopa/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as RE from "fp-ts/lib/ReaderEither";
 
@@ -16,8 +16,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import * as O from "fp-ts/lib/Option";
 import { createHandler } from "@pagopa/handler-kit";
-import { validate } from "@internal/io-sign/validation";
-import { error, success } from "@internal/io-sign/infra/http/response";
+import { validate } from "@pagopa/io-sign/validation";
+import { error, success } from "@pagopa/io-sign/infra/http/response";
 import { makeRetriveUserProfileSenderAllowed } from "@internal/io-services/profile";
 import { IOApiClient } from "@internal/io-services/client";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";

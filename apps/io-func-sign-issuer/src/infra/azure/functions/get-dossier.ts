@@ -2,7 +2,7 @@ import { Database as CosmosDatabase } from "@azure/cosmos";
 
 import { flow, pipe } from "fp-ts/lib/function";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@pagopa/io-sign/validation";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
@@ -13,8 +13,8 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { path } from "@pagopa/handler-kit/lib/http";
-import { error, success } from "@internal/io-sign/infra/http/response";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { error, success } from "@pagopa/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@pagopa/io-sign/error";
 import { Dossier } from "../../../dossier";
 import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
