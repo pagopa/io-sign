@@ -2,6 +2,12 @@
   "name": "io-func-sign-issuer",
   "version": "0.9.0",
   "private": true,
+  "files": [
+    "**/function.json",
+    "host.json",
+    "extensions.csproj"
+  ],
+  "bundledDependencies": true,
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",
