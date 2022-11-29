@@ -51,12 +51,25 @@ paths:
             schema:
               $ref: "#/components/schemas/GetSignerByFiscalCodeBody"
       responses:
-        "201":
+        "200":
           description: The Signer detail
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignerDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /info:
+    get:
+      operationId: getInfo
+      responses:
+        "200":
+          description: The info detail
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
