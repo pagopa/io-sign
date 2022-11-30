@@ -1,5 +1,5 @@
 # This workflow will triage pull requests and apply a label based on the
-# paths that are modified in the pull request.
+# paths title that are modified in the pull request and its title.
 #
 # To use this workflow, you will need to set up a .github/labeler.yml
 # file with configuration.  For more information, see:
@@ -20,7 +20,37 @@ jobs:
       - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: bcoe/conventional-release-labels@886f696738527c7be444262c327c89436dfb95a8 # pin@v1
+
+      # Note that the following step
+      # never removes labels
+      - uses: actions/github-script@v6
+        id: set-result
         with:
-          type_labels: '{ "feat": "feat", "fix": "fix", "breaking": "breaking-change", "chore": "chore", "refactor": "refactor", "docs": "docs", "test": "test" }'
-          ignored_types: "[]"
+          script: |
+            const config = {
+              docs: /^docs/,
+              bug: /^bug/,
+              fix: /^fix/,
+              chore: /^chore/,
+              feat: /^feat/,
+              build: /^build/,
+              ci: /^ci/,
+              refactor: /^refactor/,
+              "breaking-change": /!:/,
+            };
+
+            const labels = Object.entries(config).reduce(
+              (acc, cur) => (context.payload.pull_request.title.match(cur[1]) 
+                ? [...acc, cur[0]] : acc),
+              []
+            );
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: labels
+              });
+            }
+          result-encoding: string
