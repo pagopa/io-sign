@@ -3,7 +3,7 @@
     "es2021": true,
     "node": true
   },
-  "ignorePatterns": ["Dangerfile.js"],
+  "ignorePatterns": ["Dangerfile.js", "qtsp-models", "models"],
   "extends": ["@pagopa/eslint-config/recommended"],
   "overrides": [
     {

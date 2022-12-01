@@ -21,6 +21,7 @@ import {
   CosmosConfig,
   getCosmosConfigFromEnvironment,
 } from "../infra/azure/cosmos/config";
+import { getQtspConfigFromEnvironment, QtspConfig } from "../infra/qtsp/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -31,6 +32,7 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
   }),
+  qtsp: QtspConfig,
   uploadedStorageContainerName: t.string,
   validatedStorageContainerName: t.string,
   filledModulesStorageContainerName: t.string,
@@ -49,6 +51,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
+    qtsp: getQtspConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -59,6 +62,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
     },
+    qtsp: config.qtsp,
     uploadedStorageContainerName: "uploaded-documents",
     validatedStorageContainerName: "validated-documents",
     filledModulesStorageContainerName: "filled-modules",

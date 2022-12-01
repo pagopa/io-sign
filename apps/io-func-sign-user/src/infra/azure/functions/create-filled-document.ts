@@ -24,7 +24,7 @@ import {
 } from "../../../app/use-cases/create-filled-document";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
-import { FilledDocumentToApiModel } from "../../http/encoder/filled-document";
+import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 
 import { makeGetBlobUrl } from "../storage/blob";
