@@ -56,7 +56,7 @@ export const makeGetToken =
         E.toError
       ),
       TE.filterOrElse(
-        (response) => is2xx(response),
+        is2xx,
         () => new Error("The attempt to get Namirial token failed.")
       ),
       TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
@@ -93,7 +93,7 @@ export const makeGetClauses =
         )
       ),
       TE.filterOrElse(
-        (response) => is2xx(response),
+        is2xx,
         () => new Error("The attempt to get Namirial clauses failed.")
       ),
       TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
