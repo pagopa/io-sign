@@ -11,12 +11,12 @@ import { error, success } from "@internal/io-sign/infra/http/response";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 
-import { QtspClient } from "../../qtsp/client";
+import { NamirialClient } from "../../namirial/client";
 
-const makeGetQtspClausesMetadataHandler = (qtspClient: QtspClient) => {
+const makeGetQtspClausesMetadataHandler = (namirialClient: NamirialClient) => {
   const getQtspClauses = () =>
     pipe(
-      qtspClient.getClauses(),
+      namirialClient.getClauses(),
       TE.map((res) => ({
         clauses: res.clauses,
         documentUrl: res.document_link,
@@ -42,5 +42,6 @@ const makeGetQtspClausesMetadataHandler = (qtspClient: QtspClient) => {
   );
 };
 
-export const makeGetQtspClausesMetadataFunction = (qtspClient: QtspClient) =>
-  pipe(makeGetQtspClausesMetadataHandler(qtspClient), azure.unsafeRun);
+export const makeGetQtspClausesMetadataFunction = (
+  namirialClient: NamirialClient
+) => pipe(makeGetQtspClausesMetadataHandler(namirialClient), azure.unsafeRun);
