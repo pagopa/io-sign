@@ -8,6 +8,10 @@
     "build": "turbo run build --no-daemon",
     "code-review": "turbo run typecheck lint test"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "devDependencies": {
     "turbo": "^1.6.3"
   }
