@@ -25,9 +25,9 @@ jobs:
           node-version: 16
           registry-url: "https://registry.npmjs.org"
           scope: "@io-sign"
-      - run: npm ci
-      - run: npm run generate:api-models -w ${{ github.event.inputs.package }} --if-present
-      - run: npm run build -w ${{ github.event.inputs.package }}
-      - run: "npm publish -w ${{ github.event.inputs.package }} --access=public"
+      - run: yarn
+      - run: yarn workspace ${{ github.event.inputs.package }} generate:api-models
+      - run: yarn workspace ${{ github.event.inputs.package }} build
+      - run: "yarn workspace ${{ github.event.inputs.package }} publish --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
