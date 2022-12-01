@@ -28,6 +28,6 @@ jobs:
       - run: yarn
       - run: yarn workspace ${{ github.event.inputs.package }} generate:api-models
       - run: yarn workspace ${{ github.event.inputs.package }} build
-      - run: "yarn workspace ${{ github.event.inputs.package }} publish --access=public"
+      - run: "yarn workspace ${{ github.event.inputs.package }} npm publish --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
