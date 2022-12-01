@@ -17,7 +17,7 @@
     "test": "jest --coverage",
     "typecheck": "tsc",
     "start": "func start",
-    "pack": "npm-pack-zip --destination dist/ --add-version",
+    "build:package": "npm-pack-zip --add-version",
     "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
   },
   "dependencies": {

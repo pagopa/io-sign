@@ -9,6 +9,7 @@ obj
 models
 node_modules
 .turbo
+*.zip
 
 .pnp.*
 .yarn/*
