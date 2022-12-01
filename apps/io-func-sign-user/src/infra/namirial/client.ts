@@ -1,8 +1,7 @@
 import { agent } from "@pagopa/ts-commons";
-
-import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import {
   AbortableFetch,
@@ -12,7 +11,9 @@ import {
 
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
+import * as TE from "fp-ts/lib/TaskEither";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { NamirialConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 
@@ -20,79 +21,91 @@ const NamirialToken = t.type({
   access: NonEmptyString,
   refresh: NonEmptyString,
 });
-
 type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
-const httpApiFetch = agent.getHttpFetch(process.env);
-const abortableFetch = AbortableFetch(httpApiFetch);
-const contentType = "application/json";
-
 const is2xx = (r: Response): boolean => r.status >= 200 && r.status < 300;
-const responseToJson = (errorDetail: string) => (response: Response) =>
-  is2xx(response)
-    ? response.json()
-    : Promise.reject(
-        `${errorDetail}\nResponse status code: ${response.status}`
-      );
 
-export class NamirialClient {
-  private config: NamirialConfig;
-  private fetchWithTimeout;
+const getFetchWithTimeout = (
+  requestTimeoutMs: Millisecond = 5000 as Millisecond,
+  env = process.env
+) =>
+  pipe(
+    setFetchTimeout(
+      requestTimeoutMs,
+      pipe(env, agent.getHttpFetch, AbortableFetch)
+    ),
+    toFetch
+  );
 
-  constructor(config: NamirialConfig) {
-    this.config = config;
-    this.fetchWithTimeout = toFetch(
-      setFetchTimeout(
-        this.config.requestTimeoutMs as Millisecond,
-        abortableFetch
+export const makeGetToken =
+  (fetchWithTimeout = getFetchWithTimeout()) =>
+  ({ basePath, username, password }: NamirialConfig) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          fetchWithTimeout(`${basePath}/api/token/`, {
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+        E.toError
+      ),
+      TE.filterOrElse(
+        (response) => is2xx(response),
+        () => new Error("The attempt to get Namirial token failed.")
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
+      TE.chainEitherKW(
+        flow(
+          NamirialToken.decode,
+          E.mapLeft(
+            (errs) =>
+              new Error(
+                `Invalid format for Namirial token: ${readableReport(errs)}`
+              )
+          )
+        )
       )
     );
-  }
-  public getClauses = () =>
-    this.getToken()
-      .then((token) =>
-        this.fetchWithTimeout(`${this.config.basePath}/api/tos/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": contentType,
-            Authorization: `Bearer ${token.access}`,
-          },
-        })
-      )
-      .then(
-        responseToJson(
-          "The attempt to retrieve the the clauses from the QTSP failed"
-        )
-      )
-      .then((responseJson) =>
-        pipe(
-          ClausesMetadata.decode(responseJson),
-          E.map((decoded) => Promise.resolve(decoded)),
-          E.getOrElse((e) => Promise.reject(e))
-        )
-      );
 
-  private getToken = () =>
-    this.fetchWithTimeout(`${this.config.basePath}/api/token/`, {
-      body: JSON.stringify({
-        username: this.config.username,
-        password: this.config.password,
-      }),
-      method: "POST",
-      headers: {
-        "Content-Type": contentType,
-      },
-    })
-      .then(
-        responseToJson(
-          "The attempt to retrieve the the auth token from the QTSP failed"
+export const makeGetClauses =
+  (fetchWithTimeout = getFetchWithTimeout()) =>
+  (getToken: ReturnType<typeof makeGetToken>) =>
+  (config: NamirialConfig) =>
+    pipe(
+      getToken(config),
+      TE.chain((token) =>
+        TE.tryCatch(
+          () =>
+            fetchWithTimeout(`${config.basePath}/api/tos/`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token.access}`,
+              },
+            }),
+          E.toError
+        )
+      ),
+      TE.filterOrElse(
+        (response) => is2xx(response),
+        () => new Error("The attempt to get Namirial clauses failed.")
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
+      TE.chainEitherKW(
+        flow(
+          ClausesMetadata.decode,
+          E.mapLeft(
+            (errs) =>
+              new Error(
+                `Invalid format for Namirial clauses: ${readableReport(errs)}`
+              )
+          )
         )
       )
-      .then((responseJson) =>
-        pipe(
-          NamirialToken.decode(responseJson),
-          E.map((decoded) => Promise.resolve(decoded)),
-          E.getOrElse((e) => Promise.reject(e))
-        )
-      );
-}
+    );

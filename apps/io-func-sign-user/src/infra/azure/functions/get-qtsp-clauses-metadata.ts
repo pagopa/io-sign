@@ -10,12 +10,11 @@ import { error, success } from "@internal/io-sign/infra/http/response";
 
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
+import { makeGetClauses, makeGetToken } from "../../namirial/client";
+import { NamirialConfig } from "../../namirial/config";
 
-import { NamirialClient } from "../../namirial/client";
-import { makeGetQtspClausesMetadata } from "../../../app/use-cases/get-qts-clauses-metadata";
-
-const makeGetQtspClausesMetadataHandler = (namirialClient: NamirialClient) => {
-  const getQtspClauses = makeGetQtspClausesMetadata(namirialClient);
+const makeGetQtspClausesMetadataHandler = (config: NamirialConfig) => {
+  const getQtspClauses = makeGetClauses()(makeGetToken())(config);
 
   const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 
@@ -26,12 +25,22 @@ const makeGetQtspClausesMetadataHandler = (namirialClient: NamirialClient) => {
 
   return createHandler(
     decodeHttpRequest,
-    getQtspClauses,
+    () =>
+      pipe(
+        getQtspClauses,
+        TE.map((res) => ({
+          clauses: res.clauses,
+          documentUrl: res.document_link,
+          privacyUrl: res.privacy_link,
+          termsAndConditionsUrl: res.terms_and_conditions_link,
+          privacyText: res.privacy_text,
+          nonce: res.nonce,
+        }))
+      ),
     error,
     encodeHttpSuccessResponse
   );
 };
 
-export const makeGetQtspClausesMetadataFunction = (
-  namirialClient: NamirialClient
-) => pipe(makeGetQtspClausesMetadataHandler(namirialClient), azure.unsafeRun);
+export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
+  pipe(makeGetQtspClausesMetadataHandler(config), azure.unsafeRun);
