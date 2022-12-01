@@ -6,7 +6,8 @@
     "strict": true,
     "skipLibCheck": true,
     "rootDir": "src",
-    "noEmit": true,
-    "sourceMap": true
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true
   }
 }

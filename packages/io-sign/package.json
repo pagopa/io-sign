@@ -2,23 +2,22 @@
   "name": "@io-sign/io-sign",
   "version": "0.9.0-beta.2",
   "repository": "https://github.com/pagopa/io-sign",
-  "type": "module",
   "exports": {
-    "./": "./dist/"
+    "./": "./lib/"
   },
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/*"
+        "./lib/*"
       ]
     }
   },
   "files": [
-    "dist"
+    "lib"
   ],
   "dependencies": {
     "@pagopa/io-functions-commons": "^26.2.1",
-    "@pagopa/io-functions-services-sdk": "^3.16.0",
+    "@pagopa/io-functions-services-sdk": "^3.22.0",
     "@pagopa/ts-commons": "^10.10.0",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.19",
@@ -26,6 +25,7 @@
     "ulid": "^2.3.0"
   },
   "devDependencies": {
+    "@jest/globals": "^29.3.1",
     "@pagopa/eslint-config": "^3.0.0",
     "@pagopa/handler-kit": "^0.4.2",
     "@pagopa/openapi-codegen-ts": "^12.0.2",
@@ -38,11 +38,11 @@
   },
   "scripts": {
     "test": "jest --coverage",
-    "typecheck": "tsc",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
-    "build": "tsup-node",
+    "build": "tsc",
     "generate:api-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders"
   }
 }
