@@ -10,8 +10,7 @@
     "test": "vitest run",
     "typecheck": "tsc",
     "start": "func start",
-    "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models",
-    "generate:api-models-qtsp": "gen-api-models --api-spec ./src/infra/qtsp/openapi.yaml --out-dir ./src/infra/qtsp/models --client --request-types --response-decoders"
+    "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
   },
   "dependencies": {
     "@azure/cosmos": "^3.17.1",
