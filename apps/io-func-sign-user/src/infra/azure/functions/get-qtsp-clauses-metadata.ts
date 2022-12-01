@@ -12,20 +12,10 @@ import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 
 import { NamirialClient } from "../../namirial/client";
+import { makeGetQtspClausesMetadata } from "../../../app/use-cases/get-qts-clauses-metadata";
 
 const makeGetQtspClausesMetadataHandler = (namirialClient: NamirialClient) => {
-  const getQtspClauses = () =>
-    pipe(
-      namirialClient.getClauses(),
-      TE.map((res) => ({
-        clauses: res.clauses,
-        documentUrl: res.document_link,
-        privacyUrl: res.privacy_link,
-        termsAndConditionsUrl: res.terms_and_conditions_link,
-        privacyText: res.privacy_text,
-        nonce: res.nonce,
-      }))
-    );
+  const getQtspClauses = makeGetQtspClausesMetadata(namirialClient);
 
   const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 
