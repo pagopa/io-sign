@@ -61,7 +61,7 @@ export class NamirialClient {
   /*
    * Retrieve TOS and clauses (ClausesMetadata) from QTSP
    */
-  public getClauses = () =>
+  public getClauses = (): Promise<ClausesMetadata> =>
     this.getToken()
       .then((token) =>
         this.fetchWithTimeout(`${this.config.basePath}/api/tos/`, {
@@ -76,7 +76,7 @@ export class NamirialClient {
       )
       .then(validateWithPromise(ClausesMetadata));
 
-  private getToken = () =>
+  private getToken = (): Promise<NamirialToken> =>
     this.fetchWithTimeout(`${this.config.basePath}/api/token/`, {
       body: JSON.stringify({
         username: this.config.username,
