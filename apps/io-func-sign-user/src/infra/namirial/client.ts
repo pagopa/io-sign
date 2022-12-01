@@ -2,7 +2,7 @@ import { agent } from "@pagopa/ts-commons";
 
 import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { pipe } from "fp-ts/lib/function";
+import { flow } from "fp-ts/lib/function";
 
 import {
   AbortableFetch,
@@ -25,15 +25,24 @@ type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
-const contentType = "application/json";
+
+const getAuthHeaders = (accessToken: NonEmptyString) => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${accessToken}`,
+});
 
 const is2xx = (r: Response): boolean => r.status >= 200 && r.status < 300;
 const responseToJson = (errorDetail: string) => (response: Response) =>
   is2xx(response)
     ? response.json()
-    : Promise.reject(
-        `${errorDetail}\nResponse status code: ${response.status}`
-      );
+    : Promise.reject(`${errorDetail} Response status code: ${response.status}`);
+
+const validateWithPromise = <T>(schema: t.Decoder<unknown, T>) =>
+  flow(
+    schema.decode,
+    E.map((decoded) => Promise.resolve(decoded)),
+    E.getOrElse((e) => Promise.reject(e))
+  );
 
 export class NamirialClient {
   private config: NamirialConfig;
@@ -48,29 +57,24 @@ export class NamirialClient {
       )
     );
   }
+
+  /*
+   * Retrieve TOS and clauses (ClausesMetadata) from QTSP
+   */
   public getClauses = () =>
     this.getToken()
       .then((token) =>
         this.fetchWithTimeout(`${this.config.basePath}/api/tos/`, {
           method: "GET",
-          headers: {
-            "Content-Type": contentType,
-            Authorization: `Bearer ${token.access}`,
-          },
+          headers: getAuthHeaders(token.access),
         })
       )
       .then(
         responseToJson(
-          "The attempt to retrieve the the clauses from the QTSP failed"
+          "The attempt to retrieve the the clauses from the QTSP failed."
         )
       )
-      .then((responseJson) =>
-        pipe(
-          ClausesMetadata.decode(responseJson),
-          E.map((decoded) => Promise.resolve(decoded)),
-          E.getOrElse((e) => Promise.reject(e))
-        )
-      );
+      .then(validateWithPromise(ClausesMetadata));
 
   private getToken = () =>
     this.fetchWithTimeout(`${this.config.basePath}/api/token/`, {
@@ -80,19 +84,13 @@ export class NamirialClient {
       }),
       method: "POST",
       headers: {
-        "Content-Type": contentType,
+        "Content-Type": "application/json",
       },
     })
       .then(
         responseToJson(
-          "The attempt to retrieve the the auth token from the QTSP failed"
+          "The attempt to retrieve the the auth token from the QTSP failed."
         )
       )
-      .then((responseJson) =>
-        pipe(
-          NamirialToken.decode(responseJson),
-          E.map((decoded) => Promise.resolve(decoded)),
-          E.getOrElse((e) => Promise.reject(e))
-        )
-      );
+      .then(validateWithPromise(NamirialToken));
 }
