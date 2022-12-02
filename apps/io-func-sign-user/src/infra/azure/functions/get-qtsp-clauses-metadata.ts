@@ -8,12 +8,12 @@ import { createHandler } from "@pagopa/handler-kit";
 
 import { error, success } from "@internal/io-sign/infra/http/response";
 
+import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
 import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
-import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 
 const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
