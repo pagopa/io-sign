@@ -44,6 +44,18 @@ yarn build
 yarn workspace WORKSPACE_NAME start
 ```
 
+## Release management
+
+This project uses [changesets](https://github.com/changesets/changesets) to automate updating package versions, and changelogs.
+
+Each Pull Request that includes changes that require a version bump should include a `changeset` file that describe that changes.
+
+To create a new `changeset` file run the following command from the project root:
+
+```bash
+yarn changeset
+```
+
 ## Useful commands
 
 This project uses `yarn@3` with workspaces to manage projects and dependencies. Here is a list of useful commands to work in this repo.
