@@ -30,7 +30,6 @@ export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
       () =>
         pipe(
           getQtspClausesWithToken(config),
-          TE.mapLeft((e) => new HttpBadRequestError(e.message)),
           TE.map(NamirialClausesToQtspClauses.encode)
         ),
       error,
