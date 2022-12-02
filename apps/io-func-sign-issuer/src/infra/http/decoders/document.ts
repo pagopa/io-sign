@@ -1,4 +1,4 @@
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
@@ -9,9 +9,9 @@ import * as E from "fp-ts/lib/Either";
 import * as tx from "io-ts-types";
 
 import * as t from "io-ts";
-import { DocumentMetadata } from "@internal/io-sign/document";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 
-import { SignatureField } from "@internal/io-sign/document";
+import { SignatureField } from "@io-sign/io-sign/document";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 

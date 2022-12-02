@@ -4,15 +4,15 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as RE from "fp-ts/lib/ReaderEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { createHandler } from "@pagopa/handler-kit";
 
-import { CosmosClient, Database as CosmosDatabase } from "@azure/cosmos";
-import { validate } from "@internal/io-sign/validation";
-import { error } from "@internal/io-sign/infra/http/response";
+import { Database as CosmosDatabase } from "@azure/cosmos";
+import { validate } from "@io-sign/io-sign/validation";
+import { error } from "@io-sign/io-sign/infra/http/response";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
 import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";
@@ -23,7 +23,6 @@ import {
 } from "../cosmos/signature-request";
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-import { getConfigFromEnvironment } from "../../../app/config";
 
 const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
@@ -71,21 +70,7 @@ const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-
-export const run = pipe(
-  makeSetSignatureRequestStatusHandler(database),
+export const makeSetSignatureRequestStatusFunction = flow(
+  makeSetSignatureRequestStatusHandler,
   azure.unsafeRun
 );

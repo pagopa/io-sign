@@ -39,13 +39,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "npm"
+          cache: "yarn"
 
       - name: Install dependencies
-        run: npm install
+        run: yarn
 
       - name: "Generate API models"
-        run: npm run generate:api-models --workspaces --if-present
+        run: yarn workspaces foreach run generate:api-models
 
       - name: "Code review"
-        run: npm run code-review
+        run: yarn run code-review

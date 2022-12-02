@@ -1,5 +1,5 @@
-import { Document, DocumentId } from "@internal/io-sign/document";
-import { Id, id as newId } from "@internal/io-sign/id";
+import { Document, DocumentId } from "@io-sign/io-sign/document";
+import { Id, id as newId } from "@io-sign/io-sign/id";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
 
@@ -8,7 +8,7 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
 import { pipe } from "fp-ts/lib/function";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { getDocument, SignatureRequest } from "./signature-request";
 import { Issuer } from "./issuer";

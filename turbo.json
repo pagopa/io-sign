@@ -4,21 +4,23 @@
     "build": {
       "inputs": ["src/**/*.ts"],
       "outputs": ["dist/**"],
-      "dependsOn": ["^typecheck", "^test"]
+      "dependsOn": ["^build"]
     },
     "typecheck": {
       "inputs": ["src/**/*.ts"],
-      "outputs": []
+      "outputs": [],
+      "dependsOn": ["^build"]
     },
+    "format": {},
     "lint": {
       "inputs": ["src/**/*.ts"],
       "outputs": []
     },
-    "format": {},
     "test": {
       "inputs": ["src/**/*.spec.ts", "src/**/*.test.ts"],
       "outputs": [],
-      "outputMode": "hash-only"
+      "outputMode": "hash-only",
+      "dependsOn": ["^build"]
     }
   }
 }

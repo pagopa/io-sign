@@ -1,6 +1,6 @@
 import * as E from "io-ts/lib/Encoder";
 
-import { Document, DocumentMetadata } from "@internal/io-sign/document";
+import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import { DocumentDetailView as DocumentApiModel } from "../models/DocumentDetailView";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 

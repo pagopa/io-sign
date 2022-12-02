@@ -10,13 +10,13 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
 
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
   GetUploadMetadata,
   InsertUploadMetadata,
   UploadMetadata,
   UpsertUploadMetadata,
 } from "../../../upload";
-import { toCosmosDatabaseError } from "./errors";
 
 const NewUploadMetadata = t.intersection([UploadMetadata, BaseModel]);
 type NewUploadMetadata = t.TypeOf<typeof NewUploadMetadata>;

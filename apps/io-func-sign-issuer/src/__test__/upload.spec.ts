@@ -1,6 +1,6 @@
-import { it, describe, expect } from "vitest";
+import { it, describe, expect } from "@jest/globals";
 
-import { id as newId } from "@internal/io-sign/id";
+import { id as newId } from "@io-sign/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
@@ -9,7 +9,7 @@ import { pipe } from "fp-ts/lib/function";
 
 import { head } from "fp-ts/lib/Array";
 
-import { newSigner } from "@internal/io-sign/signer";
+import { newSigner } from "@io-sign/io-sign/signer";
 
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";

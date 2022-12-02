@@ -1,8 +1,8 @@
-import { Database as CosmosDatabase, CosmosClient } from "@azure/cosmos";
+import { Database as CosmosDatabase } from "@azure/cosmos";
 
-import { flow, pipe, identity } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
@@ -13,15 +13,14 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { path } from "@pagopa/handler-kit/lib/http";
-import { error, success } from "@internal/io-sign/infra/http/response";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Dossier } from "../../../dossier";
 import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-import { getConfigFromEnvironment } from "../../../app/config";
 
 import { DossierToApiModel } from "../../http/encoders/dossier";
 
@@ -65,18 +64,7 @@ const makeGetDossierHandler = (database: CosmosDatabase) => {
   );
 };
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
+export const makeGetDossierFunction = flow(
+  makeGetDossierHandler,
+  azure.unsafeRun
 );
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
-
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
-const database = cosmosClient.database(config.azure.cosmos.dbName);
-
-export const run = pipe(makeGetDossierHandler(database), azure.unsafeRun);
