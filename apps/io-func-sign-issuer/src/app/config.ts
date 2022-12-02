@@ -7,11 +7,11 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import {
   PdvTokenizerConfig,
   getPdvTokenizerConfigFromEnvironment,
-} from "@internal/pdv-tokenizer/config";
+} from "@io-sign/io-sign/infra/pdv-tokenizer/config";
 import {
   IOServicesConfig,
   getIoServicesConfigFromEnvironment,
-} from "@internal/io-services/config";
+} from "@io-sign/io-sign/infra/io-services/config";
 import {
   StorageConfig,
   getStorageConfigFromEnvironment,

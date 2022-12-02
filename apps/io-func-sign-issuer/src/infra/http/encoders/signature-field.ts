@@ -2,7 +2,7 @@ import {
   SignatureField,
   SignatureFieldAttributes,
   SignatureFieldToBeCreatedAttributes,
-} from "@internal/io-sign/document";
+} from "@io-sign/io-sign/document";
 import * as E from "io-ts/lib/Encoder";
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";

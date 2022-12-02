@@ -13,7 +13,7 @@ import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,

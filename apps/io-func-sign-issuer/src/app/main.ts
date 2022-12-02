@@ -1,7 +1,7 @@
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
-import { createIOApiClient } from "@internal/io-services/client";
-import { createPdvTokenizerClient } from "@internal/pdv-tokenizer/client";
+import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
 import * as E from "fp-ts/lib/Either";
 import { pipe, identity } from "fp-ts/lib/function";

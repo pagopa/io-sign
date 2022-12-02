@@ -5,8 +5,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe, flow, identity, constVoid } from "fp-ts/lib/function";
 
-import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { ContainerClient } from "@azure/storage-blob";
 
 import { makeFetchWithTimeout } from "../../http/fetch-timeout";

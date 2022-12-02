@@ -1,4 +1,4 @@
-import { Signer } from "@internal/io-sign/signer";
+import { Signer } from "@io-sign/io-sign/signer";
 
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";

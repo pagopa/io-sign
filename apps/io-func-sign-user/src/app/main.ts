@@ -1,11 +1,11 @@
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import { createPdvTokenizerClient } from "@internal/pdv-tokenizer/client";
+import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
-import { createIOApiClient } from "@internal/io-services/client";
+import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";

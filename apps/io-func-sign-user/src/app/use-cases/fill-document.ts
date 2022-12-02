@@ -2,10 +2,10 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@internal/io-sign/signer";
+import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 
-import { EntityNotFoundError } from "@internal/io-sign/error";
-import { Field, populatePdf } from "@internal/pdf-handler";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { Field, populatePdf } from "@io-sign/io-sign/infra/pdf";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";

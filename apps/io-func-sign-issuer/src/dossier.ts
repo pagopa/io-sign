@@ -7,8 +7,8 @@ import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
-import { Id, id as newId } from "@internal/io-sign/id";
-import { DocumentMetadata } from "@internal/io-sign/document";
+import { Id, id as newId } from "@io-sign/io-sign/id";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 
 import { Issuer } from "./issuer";
 

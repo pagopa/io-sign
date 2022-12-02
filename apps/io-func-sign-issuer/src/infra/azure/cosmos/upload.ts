@@ -10,7 +10,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
 
-import { toCosmosDatabaseError } from "@internal/io-sign/infra/azure/cosmos/errors";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
   GetUploadMetadata,
   InsertUploadMetadata,

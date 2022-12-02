@@ -5,15 +5,15 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 
 import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
-import { error, success } from "@internal/io-sign/infra/http/response";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 import { Database as CosmosDatabase } from "@azure/cosmos";
-import { makeSubmitMessageForUser } from "@internal/io-services/message";
-import { IOApiClient } from "@internal/io-services/client";
-import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
+import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
+import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
-import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import { NotificationDetailView } from "../../http/models/NotificationDetailView";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";

@@ -1,5 +1,3 @@
-import { Notification } from "@internal/io-sign/notification";
-
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
 
 import * as TE from "fp-ts/lib/TaskEither";
@@ -7,15 +5,11 @@ import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
-import {
-  HttpBadRequestError,
-  HttpError,
-} from "@internal/io-sign/infra/http/errors";
+import { Notification } from "../../notification";
+import { HttpBadRequestError, HttpError } from "../http/errors";
 
-import {
-  ActionNotAllowedError,
-  TooManyRequestsError,
-} from "@internal/io-sign/error";
+import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
+
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
 

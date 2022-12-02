@@ -7,12 +7,12 @@ import * as azure from "@pagopa/handler-kit/lib/azure";
 import { flow, pipe } from "fp-ts/lib/function";
 import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { Document } from "@internal/io-sign/document";
+import { Document } from "@io-sign/io-sign/document";
 import { createHandler } from "@pagopa/handler-kit";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
-import { validate } from "@internal/io-sign/validation";
-import { error, success } from "@internal/io-sign/infra/http/response";
+import { validate } from "@io-sign/io-sign/validation";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { UploadUrl } from "../../http/models/UploadUrl";
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 

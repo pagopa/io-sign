@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "@jest/globals";
 import * as t from "io-ts";
 import { success, created, error } from "../response";
 
-describe.concurrent("response", () => {
+describe("response", () => {
   describe("success", () => {
     it("should create a response with 200 as status code", () => {
       const res = success(t.string)("Success!");

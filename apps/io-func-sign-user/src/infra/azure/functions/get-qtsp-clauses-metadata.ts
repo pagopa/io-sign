@@ -6,9 +6,9 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { createHandler } from "@pagopa/handler-kit";
 
-import { error, success } from "@internal/io-sign/infra/http/response";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 
-import { HttpError } from "@internal/io-sign/infra/http/errors";
+import { HttpError } from "@io-sign/io-sign/infra/http/errors";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";

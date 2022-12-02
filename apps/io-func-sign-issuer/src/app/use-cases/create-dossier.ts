@@ -1,6 +1,6 @@
 import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 
-import { DocumentMetadata } from "@internal/io-sign/document";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 
 import { Dossier, InsertDossier, newDossier } from "../../dossier";
 import { Issuer } from "../../issuer";

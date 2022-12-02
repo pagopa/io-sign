@@ -1,10 +1,10 @@
 import * as t from "io-ts";
 
-import { Id, newId } from "@internal/io-sign/id";
+import { Id, newId } from "@io-sign/io-sign/id";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
-import { EntityNotFoundError } from "@internal/io-sign/error";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 export const Issuer = t.type({
   id: Id,

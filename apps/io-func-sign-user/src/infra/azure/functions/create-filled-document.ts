@@ -1,7 +1,7 @@
 import { createHandler } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { created, error } from "@internal/io-sign/infra/http/response";
+import { created, error } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
@@ -11,13 +11,13 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
-import { validate } from "@internal/io-sign/validation";
+import { validate } from "@io-sign/io-sign/validation";
 
 import { ContainerClient } from "@azure/storage-blob";
 
 import { QueueClient } from "@azure/storage-queue";
-import { makeGetFiscalCodeBySignerId } from "@internal/pdv-tokenizer/signer";
-import { PdvTokenizerClientWithApiKey } from "@internal/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,

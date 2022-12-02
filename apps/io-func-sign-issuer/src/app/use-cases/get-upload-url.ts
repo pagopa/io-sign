@@ -1,5 +1,5 @@
-import { Document } from "@internal/io-sign/document";
-import { ActionNotAllowedError } from "@internal/io-sign/error";
+import { Document } from "@io-sign/io-sign/document";
+import { ActionNotAllowedError } from "@io-sign/io-sign/error";
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import { SignatureRequest } from "../../signature-request";
