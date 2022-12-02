@@ -26,7 +26,9 @@ const encodeHttpSuccessResponse = flow(
 
 const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 
-const mapQtspClausesToApi = (res: ClausesMetadata): QtspClausesMetadata => ({
+const NamirialClausesToQtspClauses = (
+  res: ClausesMetadata
+): QtspClausesMetadata => ({
   clauses: res.clauses,
   documentUrl: res.document_link,
   privacyUrl: res.privacy_link,
@@ -42,7 +44,11 @@ export const makeGetQtspClausesMetadataFunction = (
   pipe(
     createHandler(
       decodeHttpRequest,
-      () => pipe(getQtspClausesWithToken(config), TE.map(mapQtspClausesToApi)),
+      () =>
+        pipe(
+          getQtspClausesWithToken(config),
+          TE.map(NamirialClausesToQtspClauses)
+        ),
       error,
       encodeHttpSuccessResponse
     ),
