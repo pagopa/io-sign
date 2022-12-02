@@ -8,7 +8,7 @@ import { createHandler } from "@pagopa/handler-kit";
 
 import { error, success } from "@internal/io-sign/infra/http/response";
 
-import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
+import { HttpError } from "@internal/io-sign/infra/http/errors";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
@@ -32,7 +32,7 @@ export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
         pipe(
           getQtspClausesWithToken(config),
           TE.map(NamirialClausesToQtspClauses.encode),
-          TE.mapLeft((e) => new HttpBadRequestError(e.message))
+          TE.mapLeft((e) => new HttpError(e.message))
         ),
       error,
       encodeHttpSuccessResponse
