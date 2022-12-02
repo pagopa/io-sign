@@ -532,13 +532,6 @@ components:
       properties:
         id:
           $ref: "#/components/schemas/Id"
-        status:
-          type: string
-          enum:
-            - WAIT_FOR_UPLOAD
-            - WAIT_FOR_VALIDATION
-            - READY
-            - REJECTED
         metadata:
           $ref: "#/components/schemas/DocumentMetadata"
         created_at:
@@ -556,15 +549,27 @@ components:
       allOf:
         - $ref: "#/components/schemas/Document"
         - type: object
+          properties:
+            status:
+              type: string
+              enum:
+                - WAIT_FOR_UPLOAD
+          required:
+            - status
 
     DocumentToBeValidated:
       allOf:
         - $ref: "#/components/schemas/Document"
         - type: object
           properties:
+            status:
+              type: string
+              enum:
+                - WAIT_FOR_VALIDATION
             uploaded_at:
               $ref: "#/components/schemas/Timestamp"
           required:
+            - status
             - uploaded_at
 
     DocumentReady:
@@ -572,12 +577,17 @@ components:
         - $ref: "#/components/schemas/Document"
         - type: object
           properties:
+            status:
+              type: string
+              enum:
+                - READY
             uploaded_at:
               $ref: "#/components/schemas/Timestamp"
             url:
               type: string
               format: uri
           required:
+            - status
             - uploaded_at
             - url
 
@@ -586,6 +596,10 @@ components:
         - $ref: "#/components/schemas/Document"
         - type: object
           properties:
+            status:
+              type: string
+              enum:
+                - REJECTED
             uploaded_at:
               $ref: "#/components/schemas/Timestamp"
             rejected_at:
@@ -593,6 +607,7 @@ components:
             reject_reason:
               type: string
           required:
+            - status
             - uploaded_at
             - rejected_at
             - reject_reason

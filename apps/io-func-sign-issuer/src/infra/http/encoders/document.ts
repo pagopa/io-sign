@@ -4,7 +4,11 @@ import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import { DocumentDetailView as DocumentApiModel } from "../models/DocumentDetailView";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
-import { StatusEnum as DocumentStatusEnum } from "../models/Document";
+import { StatusEnum as ToBeUploadedStatusEnum } from "../models/DocumentToBeUploaded";
+import { StatusEnum as ToBeValidatedStatusEnum } from "../models/DocumentToBeValidated";
+import { StatusEnum as ReadyStatusEnum } from "../models/DocumentReady";
+import { StatusEnum as RejectedStatusEnum } from "../models/DocumentRejected";
+
 import { SignatureFieldToApiModel } from "./signature-field";
 
 export const DocumentMetadataToApiModel: E.Encoder<
@@ -17,16 +21,22 @@ export const DocumentMetadataToApiModel: E.Encoder<
   }),
 };
 
-const toApiModelEnum = (status: Document["status"]): DocumentStatusEnum => {
+const toApiModelEnum = (
+  status: Document["status"]
+):
+  | ReadyStatusEnum
+  | RejectedStatusEnum
+  | ToBeUploadedStatusEnum
+  | ToBeValidatedStatusEnum => {
   switch (status) {
     case "READY":
-      return DocumentStatusEnum.READY;
+      return ReadyStatusEnum.READY;
     case "REJECTED":
-      return DocumentStatusEnum.REJECTED;
+      return RejectedStatusEnum.REJECTED;
     case "WAIT_FOR_UPLOAD":
-      return DocumentStatusEnum.WAIT_FOR_UPLOAD;
+      return ToBeUploadedStatusEnum.WAIT_FOR_UPLOAD;
     case "WAIT_FOR_VALIDATION":
-      return DocumentStatusEnum.WAIT_FOR_VALIDATION;
+      return ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION;
   }
 };
 
