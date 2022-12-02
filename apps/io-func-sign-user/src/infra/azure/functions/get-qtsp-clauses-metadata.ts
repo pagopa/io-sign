@@ -12,12 +12,9 @@ import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
-import { ClausesMetadata } from "../../namirial/clauses-metadata";
-import { QtspClausesMetadata } from "../../../qtsp-clauses-metadata";
+import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-causes-metadata";
 
-const defaultGetQtspClausesWithToken = makeGetClausesWithToken()(
-  makeGetToken()
-);
+const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
 const encodeHttpSuccessResponse = flow(
   QtspClausesMetadataToApiModel.encode,
@@ -26,28 +23,14 @@ const encodeHttpSuccessResponse = flow(
 
 const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 
-const NamirialClausesToQtspClauses = (
-  res: ClausesMetadata
-): QtspClausesMetadata => ({
-  clauses: res.clauses,
-  documentUrl: res.document_link,
-  privacyUrl: res.privacy_link,
-  termsAndConditionsUrl: res.terms_and_conditions_link,
-  privacyText: res.privacy_text,
-  nonce: res.nonce,
-});
-
-export const makeGetQtspClausesMetadataFunction = (
-  config: NamirialConfig,
-  getQtspClausesWithToken = defaultGetQtspClausesWithToken
-) =>
+export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
   pipe(
     createHandler(
       decodeHttpRequest,
       () =>
         pipe(
           getQtspClausesWithToken(config),
-          TE.map(NamirialClausesToQtspClauses)
+          TE.map(NamirialClausesToQtspClauses.encode)
         ),
       error,
       encodeHttpSuccessResponse
