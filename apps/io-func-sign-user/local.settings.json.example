@@ -11,5 +11,8 @@
     "IoServicesSubscriptionKey": "IO_SERVICES_API_SUBSCRIPTION_KEY",
     "PdvTokenizerApiBasePath": "PDV_TOKENIZER_SERVICES_API_URL",
     "PdvTokenizerApiKey": "PDV_TOKENIZER_SERVICES_API_KEY",
+    "NamirialApiBasePath": "NAMIRIAL_API_BASE_PATH",
+    "NamirialUsername": "NAMIRIAL_USERNAME",
+    "NamirialPassword": "NAMIRIAL_PASSWORD"
   }
 }
