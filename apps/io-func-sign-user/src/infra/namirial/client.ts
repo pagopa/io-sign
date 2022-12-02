@@ -15,7 +15,8 @@ const NamirialToken = t.type({
 });
 type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
-const is2xx = (r: Response): boolean => r.status >= 200 && r.status < 300;
+const isSuccessful = (r: Response): boolean =>
+  r.status >= 200 && r.status < 300;
 
 export const makeGetToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
@@ -36,7 +37,7 @@ export const makeGetToken =
         E.toError
       ),
       TE.filterOrElse(
-        is2xx,
+        isSuccessful,
         () => new Error("The attempt to get Namirial token failed.")
       ),
       TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
@@ -73,7 +74,7 @@ export const makeGetClauses =
         )
       ),
       TE.filterOrElse(
-        is2xx,
+        isSuccessful,
         () => new Error("The attempt to get Namirial clauses failed.")
       ),
       TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
