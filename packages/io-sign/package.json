@@ -1,19 +1,19 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "0.9.0-beta.3",
+  "version": "0.9.0-beta.4",
   "repository": "https://github.com/pagopa/io-sign",
   "exports": {
-    "./": "./lib/"
+    "./": "./dist/"
   },
   "typesVersions": {
     "*": {
       "*": [
-        "./lib/*"
+        "./dist/*"
       ]
     }
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "dependencies": {
     "@pagopa/io-functions-commons": "^26.2.1",
@@ -46,5 +46,5 @@
     "build": "tsc",
     "generate:api-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders"
   },
-  "stableVersion": "0.9.0-beta.2"
+  "stableVersion": "0.9.0-beta.3"
 }
