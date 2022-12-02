@@ -5,7 +5,7 @@
     "test": "turbo run test --no-daemon",
     "format": "turbo run format --no-daemon",
     "build": "turbo run build --no-daemon",
-    "code-review": "turbo run build lint"
+    "code-review": "turbo run typecheck lint test"
   },
   "workspaces": [
     "packages/*",
