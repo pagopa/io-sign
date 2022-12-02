@@ -10,11 +10,11 @@ import { error, success } from "@internal/io-sign/infra/http/response";
 
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
-import { makeGetClauses, makeGetToken } from "../../namirial/client";
+import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
 
 const makeGetQtspClausesMetadataHandler = (config: NamirialConfig) => {
-  const getQtspClauses = makeGetClauses()(makeGetToken())(config);
+  const getQtspClauses = makeGetClausesWithToken()(makeGetToken())(config);
 
   const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 

@@ -1,19 +1,11 @@
-import { agent } from "@pagopa/ts-commons";
 import * as t from "io-ts";
 import * as E from "fp-ts/lib/Either";
 import { flow, pipe } from "fp-ts/lib/function";
 
-import {
-  AbortableFetch,
-  setFetchTimeout,
-  toFetch,
-} from "@pagopa/ts-commons/lib/fetch";
-
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
+import { makeFetchWithTimeout } from "../http/fetch-timeout";
 import { NamirialConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 
@@ -25,20 +17,8 @@ type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
 const is2xx = (r: Response): boolean => r.status >= 200 && r.status < 300;
 
-const getFetchWithTimeout = (
-  requestTimeoutMs: Millisecond = 5000 as Millisecond,
-  env = process.env
-) =>
-  pipe(
-    setFetchTimeout(
-      requestTimeoutMs,
-      pipe(env, agent.getHttpFetch, AbortableFetch)
-    ),
-    toFetch
-  );
-
 export const makeGetToken =
-  (fetchWithTimeout = getFetchWithTimeout()) =>
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
   ({ basePath, username, password }: NamirialConfig) =>
     pipe(
       TE.tryCatch(
@@ -74,11 +54,11 @@ export const makeGetToken =
     );
 
 export const makeGetClauses =
-  (fetchWithTimeout = getFetchWithTimeout()) =>
-  (getToken: ReturnType<typeof makeGetToken>) =>
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
   (config: NamirialConfig) =>
+  (token: NamirialToken) =>
     pipe(
-      getToken(config),
+      TE.of(token),
       TE.chain((token) =>
         TE.tryCatch(
           () =>
@@ -109,3 +89,9 @@ export const makeGetClauses =
         )
       )
     );
+
+export const makeGetClausesWithToken =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  (getToken: ReturnType<typeof makeGetToken>) =>
+  (config: NamirialConfig) =>
+    pipe(getToken(config), TE.chain(makeGetClauses(fetchWithTimeout)(config)));
