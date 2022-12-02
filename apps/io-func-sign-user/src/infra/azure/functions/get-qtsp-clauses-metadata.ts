@@ -13,6 +13,7 @@ import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMeta
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
 import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
+import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 
 const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
@@ -30,7 +31,8 @@ export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
       () =>
         pipe(
           getQtspClausesWithToken(config),
-          TE.map(NamirialClausesToQtspClauses.encode)
+          TE.map(NamirialClausesToQtspClauses.encode),
+          TE.mapLeft((e) => new HttpBadRequestError(e.message))
         ),
       error,
       encodeHttpSuccessResponse
