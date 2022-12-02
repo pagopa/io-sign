@@ -1,4 +1,4 @@
-import { Document } from "@io-sign/io-sign/document";
+import { Document, DocumentId } from "@io-sign/io-sign/document";
 import { Id, id as newId } from "@io-sign/io-sign/id";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
@@ -16,7 +16,7 @@ import { Issuer } from "./issuer";
 export const UploadMetadata = t.intersection([
   t.type({
     id: Id,
-    documentId: Document.types[0].props.id,
+    documentId: DocumentId,
     signatureRequestId: SignatureRequest.types[0].props.id,
     issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
