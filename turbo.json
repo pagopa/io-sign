@@ -8,8 +8,7 @@
     },
     "typecheck": {
       "inputs": ["src/**/*.ts"],
-      "outputs": [],
-      "dependsOn": ["^build"]
+      "outputs": []
     },
     "lint": {
       "inputs": ["src/**/*.ts"],
