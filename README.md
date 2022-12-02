@@ -28,7 +28,7 @@ Once these tools are installed, to test the `Azure Functions` locally:
 # to install the dependencies
 yarn
 # to generate the TypeScript models based on OpenAPI specs
-yarn workspaces foreach generate:api-models
+yarn workspaces foreach run generate:api-models
 # to build all projects
 yarn build
 ```
