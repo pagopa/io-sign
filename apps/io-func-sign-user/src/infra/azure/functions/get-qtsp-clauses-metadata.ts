@@ -12,7 +12,7 @@ import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
-import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-causes-metadata";
+import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
 
 const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
