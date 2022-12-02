@@ -1,13 +1,11 @@
-# Publish NPM package
-
-name: "Publish NPM package"
+name: "Publish to NPM"
 
 on:
   workflow_dispatch:
     inputs:
       package:
         type: choice
-        description: What package to deploy
+        description: List of packages to deploy
         options:
           - "@io-sign/io-sign"
 
