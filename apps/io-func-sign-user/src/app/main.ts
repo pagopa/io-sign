@@ -10,6 +10,7 @@ import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
+import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -59,4 +60,8 @@ export const FillDocument = makeFillDocumentFunction(
 export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
   pdvTokenizerClient,
   ioApiClient
+);
+
+export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
+  config.namirial
 );

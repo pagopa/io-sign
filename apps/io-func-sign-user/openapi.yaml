@@ -84,6 +84,24 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
+  /qtsp/clauses:
+    get:
+      operationId: getQtspClausesMetadata
+      summary: Get clauses list and MRC from QTSP
+      tags:
+        - QTSP Clauses
+      responses:
+        "200":
+          description: The QTSP clauses list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QtspClausesMetadataDetailView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
 components:
   securitySchemes:
     FunctionsKey:
@@ -250,3 +268,38 @@ components:
           $ref: "#/components/schemas/Id"
       required:
         - id
+
+    QtspClause:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 1
+      required:
+        - text
+
+    QtspClausesMetadataDetailView:
+      type: object
+      properties:
+        clauses:
+          type: array
+          items:
+            $ref: "#/components/schemas/QtspClause"
+          minItems: 1
+          uniqueItems: true
+        document_url:
+          type: string
+          format: url
+        privacy_url:
+          type: string
+          format: url
+        privacy_text:
+          type: string
+          minLength: 1
+        terms_and_conditions_url:
+          type: string
+          format: url
+        nonce:
+          type: string
+          format: base64
+          minLength: 1
