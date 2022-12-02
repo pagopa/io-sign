@@ -1,18 +1,11 @@
-import { agent } from "@pagopa/ts-commons";
-
-import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { flow } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
+import { flow, pipe } from "fp-ts/lib/function";
 
-import {
-  AbortableFetch,
-  setFetchTimeout,
-  toFetch,
-} from "@pagopa/ts-commons/lib/fetch";
-
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
-
+import * as TE from "fp-ts/lib/TaskEither";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { readableReport } from "@pagopa/ts-commons/lib/reporters";
+import { makeFetchWithTimeout } from "../http/fetch-timeout";
 import { NamirialConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 
@@ -20,77 +13,86 @@ const NamirialToken = t.type({
   access: NonEmptyString,
   refresh: NonEmptyString,
 });
-
 type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
-const httpApiFetch = agent.getHttpFetch(process.env);
-const abortableFetch = AbortableFetch(httpApiFetch);
+const isSuccessful = (r: Response): boolean =>
+  r.status >= 200 && r.status < 300;
 
-const getAuthHeaders = (accessToken: NonEmptyString) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${accessToken}`,
-});
-
-const is2xx = (r: Response): boolean => r.status >= 200 && r.status < 300;
-const responseToJson = (errorDetail: string) => (response: Response) =>
-  is2xx(response)
-    ? response.json()
-    : Promise.reject(`${errorDetail} Response status code: ${response.status}`);
-
-const validateWithPromise = <T>(schema: t.Decoder<unknown, T>) =>
-  flow(
-    schema.decode,
-    E.map((decoded) => Promise.resolve(decoded)),
-    E.getOrElse((e) => Promise.reject(e))
-  );
-
-export class NamirialClient {
-  private config: NamirialConfig;
-  private fetchWithTimeout;
-
-  constructor(config: NamirialConfig) {
-    this.config = config;
-    this.fetchWithTimeout = toFetch(
-      setFetchTimeout(
-        this.config.requestTimeoutMs as Millisecond,
-        abortableFetch
+export const makeGetToken =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  ({ basePath, username, password }: NamirialConfig) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          fetchWithTimeout(`${basePath}/api/token/`, {
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }),
+        E.toError
+      ),
+      TE.filterOrElse(
+        isSuccessful,
+        () => new Error("The attempt to get Namirial token failed.")
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
+      TE.chainEitherKW(
+        flow(
+          NamirialToken.decode,
+          E.mapLeft(
+            (errs) =>
+              new Error(
+                `Invalid format for Namirial token: ${readableReport(errs)}`
+              )
+          )
+        )
       )
     );
-  }
 
-  /*
-   * Retrieve TOS and clauses (ClausesMetadata) from QTSP
-   */
-  public getClauses = (): Promise<ClausesMetadata> =>
-    this.getToken()
-      .then((token) =>
-        this.fetchWithTimeout(`${this.config.basePath}/api/tos/`, {
-          method: "GET",
-          headers: getAuthHeaders(token.access),
-        })
-      )
-      .then(
-        responseToJson(
-          "The attempt to retrieve the the clauses from the QTSP failed."
+export const makeGetClauses =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  ({ basePath }: NamirialConfig) =>
+  (token: NamirialToken) =>
+    pipe(
+      TE.of(token),
+      TE.chain((token) =>
+        TE.tryCatch(
+          () =>
+            fetchWithTimeout(`${basePath}/api/tos/`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token.access}`,
+              },
+            }),
+          E.toError
+        )
+      ),
+      TE.filterOrElse(
+        isSuccessful,
+        () => new Error("The attempt to get Namirial clauses failed.")
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
+      TE.chainEitherKW(
+        flow(
+          ClausesMetadata.decode,
+          E.mapLeft(
+            (errs) =>
+              new Error(
+                `Invalid format for Namirial clauses: ${readableReport(errs)}`
+              )
+          )
         )
       )
-      .then(validateWithPromise(ClausesMetadata));
+    );
 
-  private getToken = (): Promise<NamirialToken> =>
-    this.fetchWithTimeout(`${this.config.basePath}/api/token/`, {
-      body: JSON.stringify({
-        username: this.config.username,
-        password: this.config.password,
-      }),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(
-        responseToJson(
-          "The attempt to retrieve the the auth token from the QTSP failed."
-        )
-      )
-      .then(validateWithPromise(NamirialToken));
-}
+export const makeGetClausesWithToken =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  (getToken: ReturnType<typeof makeGetToken>) =>
+  (config: NamirialConfig) =>
+    pipe(getToken(config), TE.chain(makeGetClauses(fetchWithTimeout)(config)));

@@ -11,7 +11,6 @@ import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/creat
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
-import { NamirialClient } from "../infra/namirial/client";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -34,8 +33,6 @@ const documentsToFillQueue = new QueueClient(
   config.azure.storage.connectionString,
   config.documentsToFillQueueName
 );
-
-const namirialClient = new NamirialClient(config.namirial);
 
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
@@ -65,5 +62,6 @@ export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
   ioApiClient
 );
 
-export const GetQtspClausesMetadata =
-  makeGetQtspClausesMetadataFunction(namirialClient);
+export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
+  config.namirial
+);

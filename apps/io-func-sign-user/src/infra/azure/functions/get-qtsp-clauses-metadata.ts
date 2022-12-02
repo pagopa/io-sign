@@ -8,30 +8,34 @@ import { createHandler } from "@pagopa/handler-kit";
 
 import { error, success } from "@internal/io-sign/infra/http/response";
 
+import { HttpBadRequestError } from "@internal/io-sign/infra/http/errors";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
+import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
+import { NamirialConfig } from "../../namirial/config";
+import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
 
-import { NamirialClient } from "../../namirial/client";
-import { makeGetQtspClausesMetadata } from "../../../app/use-cases/get-qts-clauses-metadata";
+const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
-const makeGetQtspClausesMetadataHandler = (namirialClient: NamirialClient) => {
-  const getQtspClauses = makeGetQtspClausesMetadata(namirialClient);
+const encodeHttpSuccessResponse = flow(
+  QtspClausesMetadataToApiModel.encode,
+  success(QtspClausesMetadataDetailView)
+);
 
-  const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
+const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
 
-  const encodeHttpSuccessResponse = flow(
-    QtspClausesMetadataToApiModel.encode,
-    success(QtspClausesMetadataDetailView)
+export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
+  pipe(
+    createHandler(
+      decodeHttpRequest,
+      () =>
+        pipe(
+          getQtspClausesWithToken(config),
+          TE.map(NamirialClausesToQtspClauses.encode),
+          TE.mapLeft((e) => new HttpBadRequestError(e.message))
+        ),
+      error,
+      encodeHttpSuccessResponse
+    ),
+    azure.unsafeRun
   );
-
-  return createHandler(
-    decodeHttpRequest,
-    getQtspClauses,
-    error,
-    encodeHttpSuccessResponse
-  );
-};
-
-export const makeGetQtspClausesMetadataFunction = (
-  namirialClient: NamirialClient
-) => pipe(makeGetQtspClausesMetadataHandler(namirialClient), azure.unsafeRun);
