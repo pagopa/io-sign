@@ -21,25 +21,6 @@ export const DocumentMetadataToApiModel: E.Encoder<
   }),
 };
 
-const toApiModelEnum = (
-  status: Document["status"]
-):
-  | ReadyStatusEnum
-  | RejectedStatusEnum
-  | ToBeUploadedStatusEnum
-  | ToBeValidatedStatusEnum => {
-  switch (status) {
-    case "READY":
-      return ReadyStatusEnum.READY;
-    case "REJECTED":
-      return RejectedStatusEnum.REJECTED;
-    case "WAIT_FOR_UPLOAD":
-      return ToBeUploadedStatusEnum.WAIT_FOR_UPLOAD;
-    case "WAIT_FOR_VALIDATION":
-      return ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION;
-  }
-};
-
 export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
   encode: ({
     id,
@@ -50,7 +31,6 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
   }) => {
     const commonFields = {
       id,
-      status: toApiModelEnum(additionals.status),
       metadata: DocumentMetadataToApiModel.encode(metadata),
       created_at,
       updated_at,
@@ -59,12 +39,14 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
       case "WAIT_FOR_VALIDATION": {
         return {
           ...commonFields,
+          status: ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION,
           uploaded_at: additionals.uploadedAt,
         };
       }
       case "READY": {
         return {
           ...commonFields,
+          status: ReadyStatusEnum.READY,
           uploaded_at: additionals.uploadedAt,
           url: additionals.url,
         };
@@ -72,13 +54,17 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
       case "REJECTED": {
         return {
           ...commonFields,
+          status: RejectedStatusEnum.REJECTED,
           uploaded_at: additionals.uploadedAt,
           rejected_at: additionals.rejectedAt,
           reject_reason: additionals.rejectReason,
         };
       }
       default: {
-        return commonFields;
+        return {
+          status: ToBeUploadedStatusEnum.WAIT_FOR_UPLOAD,
+          ...commonFields,
+        };
       }
     }
   },
