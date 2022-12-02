@@ -2,6 +2,13 @@
   "name": "io-func-sign-user",
   "version": "0.1.0",
   "private": true,
+  "files": [
+    "**/function.json",
+    "dist",
+    "host.json",
+    "extensions.csproj"
+  ],
+  "bundledDependencies": true,
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",

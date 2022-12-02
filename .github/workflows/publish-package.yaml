@@ -5,7 +5,7 @@ on:
     inputs:
       package:
         type: choice
-        description: List of packages to deploy
+        description: NPM package to publish
         options:
           - "@io-sign/io-sign"
 

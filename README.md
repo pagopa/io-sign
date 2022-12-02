@@ -1,5 +1,7 @@
 # io-sign ✍️
 
+[![Code Review](https://github.com/pagopa/io-sign/actions/workflows/code-review.yaml/badge.svg?branch=main)](https://github.com/pagopa/io-sign/actions/workflows/code-review.yaml)
+
 `io-sign` is the [IO platform](https://io.italia.it) _feature_ that allows citizens to sign digitally documents and contracts sent by public administration.
 
 This repository contains the code that composes the `io-sign` back-end, that is organized into two microservices:
