@@ -55,14 +55,14 @@ export const makeGetToken =
 
 export const makeGetClauses =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  (config: NamirialConfig) =>
+  ({ basePath }: NamirialConfig) =>
   (token: NamirialToken) =>
     pipe(
       TE.of(token),
       TE.chain((token) =>
         TE.tryCatch(
           () =>
-            fetchWithTimeout(`${config.basePath}/api/tos/`, {
+            fetchWithTimeout(`${basePath}/api/tos/`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
