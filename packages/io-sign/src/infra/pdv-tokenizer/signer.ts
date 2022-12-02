@@ -4,12 +4,11 @@ import * as O from "fp-ts/lib/Option";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow } from "fp-ts/lib/function";
 
-import { PdvTokenizerClientWithApiKey } from "./client";
-
 import { GetFiscalCodeBySignerId, GetSignerByFiscalCode } from "../../signer";
 
 import { TooManyRequestsError } from "../../error";
 import { HttpBadRequestError } from "../http/errors";
+import { PdvTokenizerClientWithApiKey } from "./client";
 
 export const makeGetSignerByFiscalCode =
   (clientPayload: PdvTokenizerClientWithApiKey): GetSignerByFiscalCode =>

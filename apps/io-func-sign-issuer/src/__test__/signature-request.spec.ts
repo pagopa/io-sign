@@ -3,11 +3,10 @@ import { describe, it, test, expect } from "@jest/globals";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import { addDays, isEqual, subDays } from "date-fns/fp";
+import { newSigner } from "@io-sign/io-sign/signer";
 import { newIssuer } from "../issuer";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
-
-import { newSigner } from "@io-sign/io-sign/signer";
 
 const issuer = newIssuer("my-sub-id");
 
