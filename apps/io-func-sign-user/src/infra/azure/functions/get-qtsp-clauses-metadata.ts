@@ -12,35 +12,39 @@ import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
+import { ClausesMetadata } from "../../namirial/clauses-metadata";
+import { QtspClausesMetadata } from "../../../qtsp-clauses-metadata";
 
-const makeGetQtspClausesMetadataHandler = (config: NamirialConfig) => {
-  const getQtspClauses = makeGetClausesWithToken()(makeGetToken())(config);
+const defaultGetQtspClausesWithToken = makeGetClausesWithToken()(
+  makeGetToken()
+);
 
-  const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
+const encodeHttpSuccessResponse = flow(
+  QtspClausesMetadataToApiModel.encode,
+  success(QtspClausesMetadataDetailView)
+);
 
-  const encodeHttpSuccessResponse = flow(
-    QtspClausesMetadataToApiModel.encode,
-    success(QtspClausesMetadataDetailView)
+const decodeHttpRequest = flow(azure.fromHttpRequest, TE.fromEither);
+
+const mapQtspClausesToApi = (res: ClausesMetadata): QtspClausesMetadata => ({
+  clauses: res.clauses,
+  documentUrl: res.document_link,
+  privacyUrl: res.privacy_link,
+  termsAndConditionsUrl: res.terms_and_conditions_link,
+  privacyText: res.privacy_text,
+  nonce: res.nonce,
+});
+
+export const makeGetQtspClausesMetadataFunction = (
+  config: NamirialConfig,
+  getQtspClausesWithToken = defaultGetQtspClausesWithToken
+) =>
+  pipe(
+    createHandler(
+      decodeHttpRequest,
+      () => pipe(getQtspClausesWithToken(config), TE.map(mapQtspClausesToApi)),
+      error,
+      encodeHttpSuccessResponse
+    ),
+    azure.unsafeRun
   );
-
-  return createHandler(
-    decodeHttpRequest,
-    () =>
-      pipe(
-        getQtspClauses,
-        TE.map((res) => ({
-          clauses: res.clauses,
-          documentUrl: res.document_link,
-          privacyUrl: res.privacy_link,
-          termsAndConditionsUrl: res.terms_and_conditions_link,
-          privacyText: res.privacy_text,
-          nonce: res.nonce,
-        }))
-      ),
-    error,
-    encodeHttpSuccessResponse
-  );
-};
-
-export const makeGetQtspClausesMetadataFunction = (config: NamirialConfig) =>
-  pipe(makeGetQtspClausesMetadataHandler(config), azure.unsafeRun);
