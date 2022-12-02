@@ -24,17 +24,18 @@ import {
   UploadUrl,
 } from "../../../upload";
 
-export const defaultBlobGenerateSasUrlOptions: BlobGenerateSasUrlOptions = {
-  permissions: BlobSASPermissions.parse("racw"),
-  startsOn: new Date(),
-  expiresOn: addMinutes(new Date(), 15),
-  contentType: "application/pdf",
-  protocol: SASProtocol.HttpsAndHttp,
-};
+export const defaultBlobGenerateSasUrlOptions =
+  (): BlobGenerateSasUrlOptions => ({
+    permissions: BlobSASPermissions.parse("racw"),
+    startsOn: new Date(),
+    expiresOn: addMinutes(new Date(), 15),
+    contentType: "application/pdf",
+    protocol: SASProtocol.HttpsAndHttp,
+  });
 
 const generateSasUrlFromBlob = (blobClient: BlobClient) =>
   TE.tryCatch(
-    () => blobClient.generateSasUrl(defaultBlobGenerateSasUrlOptions),
+    () => blobClient.generateSasUrl(defaultBlobGenerateSasUrlOptions()),
     () => new Error("unable to generate sas blablabla")
   );
 
