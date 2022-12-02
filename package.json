@@ -4,7 +4,6 @@
   "scripts": {
     "test": "turbo run test --no-daemon",
     "format": "turbo run format --no-daemon",
-    "lint": "npm run lint --ws",
     "build": "turbo run build --no-daemon",
     "code-review": "turbo run build lint"
   },
