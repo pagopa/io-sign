@@ -11,7 +11,6 @@ import { DocumentToSign } from "../../document-to-sign";
 
 import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest } from "../../infra/namirial/signature-request";
-import { QtspCreateSignatureToApiModel } from "../../infra/namirial/encoders/signature-request";
 
 import {
   mockPublicKey,
@@ -36,7 +35,6 @@ export const makeCreateSignature =
     creatQtspSignatureRequest: CreateSignatureRequest
   ) =>
   ({
-    signatureRequestId,
     signer,
     qtspClauses,
     documentsSignature,
@@ -61,10 +59,8 @@ export const makeCreateSignature =
         signature: mockSignature,
         nonce: qtspClauses.nonce,
         documentsToSign: documentsSignature.map((el) => ({
-          urlIn:
-            "https://iosigndev.blob.core.windows.net/signed-documents/test.pdf?sp=racw&st=2022-11-24T11:15:33Z&se=2022-12-31T19:15:33Z&spr=https&sv=2021-06-08&sr=c&sig=dhLJOk87phN7qY8CYNFJkPMiO7wODiKu4X7alYqncvo%3D" as NonEmptyString,
-          urlOut:
-            "https://iosigndev.blob.core.windows.net/signed-documents/test-signed.pdf?sp=racw&st=2022-11-24T11:15:33Z&se=2022-12-31T19:15:33Z&spr=https&sv=2021-06-08&sr=c&sig=dhLJOk87phN7qY8CYNFJkPMiO7wODiKu4X7alYqncvo%3D" as NonEmptyString,
+          urlIn: "https://mockedurl.com/test.pdf" as NonEmptyString,
+          urlOut: "https://mockedurl.com/test-signed.pdf" as NonEmptyString,
           signatureFields: el.signatureFields,
         })),
       })),
