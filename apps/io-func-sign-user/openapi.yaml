@@ -100,6 +100,37 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
+  /signatures:
+    post:
+      operationId: createSignature
+      summary: Create a Signature from SignatureRequest
+      tags:
+        - Signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSignatureBody"
+      parameters:
+        - in: header
+          name: x-iosign-signer-id
+          schema:
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "201":
+          description: Signature created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     FunctionsKey:
@@ -301,3 +332,144 @@ components:
           type: string
           format: base64
           minLength: 1
+      required:
+        - clauses
+        - document_url
+        - privacy_url
+        - privacy_text
+        - terms_and_conditions_url
+        - nonce
+
+    PublicKey:
+      type: string
+      format: base64url
+      minLength: 1
+      description: PEM public key encoded in base64
+
+    SpidAssertion:
+      type: string
+      format: base64url
+      minLength: 1
+      description: SPID assertion encoded in base64
+
+    Clause:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+          enum: ["REQUIRED", "UNFAIR", "OPTIONAL"]
+      required:
+        - title
+        - type
+
+    ExistingSignatureFieldAttrs:
+      type: object
+      properties:
+        unique_name:
+          type: string
+          minLength: 1
+      required:
+        - unique_name
+
+    SignatureFieldToBeCreatedAttrs:
+      type: object
+      properties:
+        bottom_left:
+          type: object
+          properties:
+            x: { type: number, minimum: 0 }
+            y: { type: number, minimum: 0 }
+          required:
+            - x
+            - y
+        top_right:
+          type: object
+          properties:
+            x: { type: number, minimum: 0 }
+            y: { type: number, minimum: 0 }
+          required:
+            - x
+            - y
+        page:
+          type: number
+          minimum: 0
+      required:
+        - bottom_left
+        - page
+        - top_right
+
+    SignatureFieldAttrs:
+      oneOf:
+        - $ref: "#/components/schemas/ExistingSignatureFieldAttrs"
+        - $ref: "#/components/schemas/SignatureFieldToBeCreatedAttrs"
+
+    SignatureField:
+      type: object
+      properties:
+        attrs:
+          $ref: "#/components/schemas/SignatureFieldAttrs"
+        clause:
+          $ref: "#/components/schemas/Clause"
+      required:
+        - attrs
+        - clause
+
+    DocumentToSign:
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: ulid
+          minLength: 1
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+      required:
+        - document_id
+        - signature_fields
+
+    QtspClauses:
+      type: object
+      properties:
+        accepted_clauses:
+          type: array
+          items:
+            $ref: "#/components/schemas/QtspClause"
+          minItems: 1
+          uniqueItems: true
+        filled_document_url:
+          type: string
+          format: url
+          minLength: 1
+        nonce:
+          type: string
+          format: base64
+          minLength: 1
+      required:
+        - accepted_clauses
+        - filled_document_url
+        - nonce
+
+    CreateSignatureBody:
+      type: object
+      properties:
+        signature_request_id:
+          $ref: "#/components/schemas/Id"
+        email:
+          $ref: "#/components/schemas/Email"
+        documents_to_sign:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentToSign"
+          minItems: 1
+          uniqueItems: true
+        qtsp_clauses:
+          $ref: "#/components/schemas/QtspClauses"
+      required:
+        - signature_request_id
+        - email
+        - documents_to_sign
+        - qtsp_clauses

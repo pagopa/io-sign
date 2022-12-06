@@ -1,6 +1,6 @@
 import * as E from "io-ts/lib/Encoder";
 
-import { QtspClausesMetadata } from "../../../qtsp-clauses-metadata";
+import { QtspClausesMetadata } from "../../../qtsp";
 
 import { QtspClausesMetadataDetailView } from "../models/QtspClausesMetadataDetailView";
 
@@ -17,9 +17,9 @@ export const QtspClausesMetadataToApiModel: E.Encoder<
     nonce,
   }) => ({
     clauses,
-    document_url: documentUrl.href,
-    privacy_url: privacyUrl.href,
-    terms_and_conditions_url: termsAndConditionsUrl.href,
+    document_url: documentUrl,
+    privacy_url: privacyUrl,
+    terms_and_conditions_url: termsAndConditionsUrl,
     privacy_text: privacyText,
     nonce,
   }),

@@ -1,6 +1,6 @@
 import * as E from "io-ts/lib/Encoder";
-import { QtspClausesMetadata } from "../../../qtsp-clauses-metadata";
-import { ClausesMetadata } from "../../namirial/clauses-metadata";
+import { QtspClausesMetadata } from "../../../qtsp";
+import { ClausesMetadata } from "../../namirial/types/clauses-metadata";
 
 export const NamirialClausesToQtspClauses: E.Encoder<
   QtspClausesMetadata,
