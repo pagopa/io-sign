@@ -41,6 +41,23 @@ describe("Document", () => {
         )
       ).toBeInstanceOf(Error);
     });
+    describe('Given a "REJECTED" document', () => {
+      it("should remove rejectedAt and rejectedReason properties", () => {
+        const hasRejectedProperties = pipe(
+          newDocument(metadata),
+          startValidation,
+          E.chain(
+            markAsRejected("Test if the state machine resets the attributes")
+          ),
+          E.chain(startValidation),
+          E.map(
+            (document) => "rejectAt" in document || "rejectReason" in document
+          ),
+          E.getOrElse(() => false)
+        );
+        expect(hasRejectedProperties).toBe(false);
+      });
+    });
   });
   describe("markAsReady", () => {
     it('should not mark as "READY" a document in "WAIT_FOR_UPLOAD" or "REJECTED" status', () => {
