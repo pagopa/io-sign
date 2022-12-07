@@ -74,13 +74,10 @@ paths:
                 $ref: "#/components/schemas/FilledDocumentDetailView"
         "400":
           description: Validation error.
-          $ref: "#/components/responses/ProblemJson"
         "401":
           description: Bearer token null or expired.
-          $ref: "#/components/responses/ProblemJson"
         "404":
           description: Resource not found.
-          $ref: "#/components/responses/ProblemJson"
         "500":
           $ref: "#/components/responses/ProblemJson"
 
