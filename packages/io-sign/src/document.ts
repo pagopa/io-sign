@@ -25,12 +25,12 @@ const ClauseType = t.keyof({
 
 const ClauseTitle = WithinRangeString(5, 80);
 
-const Clause = t.type({
+export const Clause = t.type({
   title: ClauseTitle,
   type: ClauseType,
 });
 
-type Clause = t.TypeOf<typeof Clause>;
+export type Clause = t.TypeOf<typeof Clause>;
 
 export const isRequired = (c: Clause) => c.type !== "OPTIONAL";
 
@@ -99,7 +99,7 @@ const DocumentToBeValidated = t.type({
 
 export type DocumentToBeValidated = t.TypeOf<typeof DocumentToBeValidated>;
 
-const DocumentReady = t.type({
+export const DocumentReady = t.type({
   ...commonFields,
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
