@@ -73,23 +73,22 @@ export const makeCreateSignature =
         })),
       })),
       TE.chain(creatQtspSignatureRequest),
-      TE.chainW((qtspResponse) =>
-        qtspResponse.status === "CREATED"
-          ? pipe(
-              newSignature(signer, signatureRequestId, qtspResponse.id),
-              insertSignature
-            )
-          : qtspResponse.last_error !== null
-          ? TE.left(
-              new ActionNotAllowedError(
-                `An error occurred while the QTSP was creating the signature. ${qtspResponse.last_error.detail}`
+      TE.filterOrElse(
+        (qtspResponse) => qtspResponse.status === "CREATED",
+        (e) =>
+          e.last_error !== null
+            ? new ActionNotAllowedError(
+                `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
               )
-            )
-          : TE.left(
-              new ActionNotAllowedError(
+            : new ActionNotAllowedError(
                 "An error occurred while the QTSP was creating the signature."
               )
-            )
+      ),
+      TE.chainW((qtspResponse) =>
+        pipe(
+          newSignature(signer, signatureRequestId, qtspResponse.id),
+          insertSignature
+        )
       ),
       TE.chainFirst((signature) =>
         pipe(
