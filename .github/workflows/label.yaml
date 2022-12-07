@@ -35,6 +35,7 @@ jobs:
               feat: /^feat/,
               build: /^build/,
               ci: /^ci/,
+              test: /^test/,
               refactor: /^refactor/,
               "breaking-change": /!:/,
             };
