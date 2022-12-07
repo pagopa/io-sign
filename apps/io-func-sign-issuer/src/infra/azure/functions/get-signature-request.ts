@@ -11,14 +11,15 @@ import { createHandler } from "@pagopa/handler-kit";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { SignatureRequestDetailView } from "../../http/models/SignatureRequestDetailView";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeGetSignatureRequestHandler = (db: CosmosDatabase) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const requireSignatureRequest = makeRequireSignatureRequest(
-    mockGetIssuerBySubscriptionId,
+    getIssuerBySubscriptionId,
     getSignatureRequest
   );
 

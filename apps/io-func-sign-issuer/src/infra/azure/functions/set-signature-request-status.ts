@@ -21,17 +21,17 @@ import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
-
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const markRequestAsReady = makeMarkRequestAsReady(upsertSignatureRequest);
 
   const requireSignatureRequest = makeRequireSignatureRequest(
-    mockGetIssuerBySubscriptionId,
+    getIssuerBySubscriptionId,
     getSignatureRequest
   );
 

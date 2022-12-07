@@ -30,10 +30,11 @@ import {
 
 import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
   const getDossier = makeGetDossier(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const insertSignatureRequest = makeInsertSignatureRequest(db);
 
@@ -63,7 +64,7 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
     CreateSignatureRequestPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      issuer: makeRequireIssuer(mockGetIssuerBySubscriptionId),
+      issuer: makeRequireIssuer(getIssuerBySubscriptionId),
       body: RTE.fromReaderEither(requireCreateSignatureRequestBody),
     }),
     RTE.bindW("dossier", ({ issuer, body }) =>

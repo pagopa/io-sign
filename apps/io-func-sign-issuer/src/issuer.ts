@@ -5,10 +5,11 @@ import { Id } from "@io-sign/io-sign/id";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const Issuer = t.type({
   id: Id,
-  subscriptionId: t.string,
+  subscriptionId: NonEmptyString,
   externalId: t.string,
   version: t.string,
   email: t.string,
