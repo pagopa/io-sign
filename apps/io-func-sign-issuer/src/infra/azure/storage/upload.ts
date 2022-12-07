@@ -1,20 +1,19 @@
-import {
-  BlobClient,
-  ContainerClient,
-  SASProtocol,
-  BlobSASPermissions,
-  BlobGenerateSasUrlOptions,
-} from "@azure/storage-blob";
+import { BlobClient, ContainerClient } from "@azure/storage-blob";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
 
-import { addMinutes } from "date-fns";
-
 import { validate } from "@io-sign/io-sign/validation";
 import { toError } from "fp-ts/lib/Either";
 
+import {
+  defaultBlobGenerateSasUrlOptions,
+  withPermissions,
+  withExpireInMinutes,
+  generateSasUrlFromBlob,
+  blobExists,
+} from "@io-sign/io-sign/infra/azure/storage/blob";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -24,36 +23,15 @@ import {
   UploadUrl,
 } from "../../../upload";
 
-export const defaultBlobGenerateSasUrlOptions =
-  (): BlobGenerateSasUrlOptions => ({
-    permissions: BlobSASPermissions.parse("racw"),
-    startsOn: new Date(),
-    expiresOn: addMinutes(new Date(), 15),
-    contentType: "application/pdf",
-    protocol: SASProtocol.HttpsAndHttp,
-  });
-
-const generateSasUrlFromBlob = (blobClient: BlobClient) =>
-  TE.tryCatch(
-    () => blobClient.generateSasUrl(defaultBlobGenerateSasUrlOptions()),
-    () => new Error("unable to generate sas blablabla")
-  );
-
-const blobExists = (blobClient: BlobClient) =>
-  TE.tryCatch(
-    () => blobClient.exists(),
-    () => new Error("unable to clalal")
-  );
-
 const deleteBlobIfExists = (blobClient: BlobClient) =>
   pipe(
     TE.tryCatch(
       () => blobClient.deleteIfExists(),
-      () => new Error("Unable to delete the blob")
+      () => new Error("Unable to delete the blob.")
     ),
     TE.filterOrElse(
       (response) => response.succeeded === true,
-      () => new Error("The specified blob does not exists")
+      () => new Error("The specified blob does not exists.")
     ),
     TE.map(() => blobClient.name) // TODO: quale è lo scopo?
   );
@@ -82,8 +60,14 @@ export const makeGetUploadUrl =
   (metadata) =>
     pipe(
       containerClient.getBlobClient(metadata.id),
-      generateSasUrlFromBlob,
-      TE.chainEitherKW(validate(UploadUrl, "invalid url supplied"))
+      generateSasUrlFromBlob(
+        pipe(
+          defaultBlobGenerateSasUrlOptions(),
+          withPermissions("racw"),
+          withExpireInMinutes(15)
+        )
+      ),
+      TE.chainEitherKW(validate(UploadUrl, "Invalid SAS Url generated."))
     );
 
 export const makeIsUploaded =

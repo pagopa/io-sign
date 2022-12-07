@@ -1,19 +1,24 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
+
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-import { Notification } from "@io-sign/io-sign/notification";
+
 import {
   SubmitMessageForUser,
   withFiscalCode,
 } from "@io-sign/io-sign/infra/io-services/message";
+
 import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+
+import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
 } from "../../signature-request";
+
 import { Dossier, GetDossier } from "../../dossier";
 
 export type SendNotificationPayload = {
@@ -52,53 +57,54 @@ const makeMessage =
       )
     );
 
-const SignatureRequestReadyToNotify = t.type({
-  status: t.literal("READY"),
-  notification: t.undefined,
-});
+const SignatureRequestReadyToNotify = t.intersection([
+  SignatureRequestToBeSigned,
+  t.type({
+    dossierId: Dossier.props.id,
+    notication: t.undefined,
+  }),
+]);
 
 export const makeSendNotification =
   (
     submitMessage: SubmitMessageForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    upsertSignatureRequest: UpsertSignatureRequest,
-    getDossier: GetDossier
+    getDossier: GetDossier,
+    upsertSignatureRequest: UpsertSignatureRequest
   ) =>
   ({ signatureRequest }: SendNotificationPayload) =>
     pipe(
-      signatureRequest,
-      validate(
-        SignatureRequestReadyToNotify,
-        "Notification can only be sent if the signature request is READY and it has not already been sent!"
-      ),
-      TE.fromEither,
-      TE.chain(() => getFiscalCodeBySignerId(signatureRequest.signerId)),
-      TE.chain(
-        TE.fromOption(
-          () =>
-            new EntityNotFoundError(
-              "The tax code associated with this signer is not valid!"
-            )
-        )
-      ),
-      TE.chain((fiscalCode) =>
-        pipe(
+      sequenceS(TE.ApplySeq)({
+        signatureRequest: pipe(
           signatureRequest,
-          makeMessage(getDossier),
-          TE.map(withFiscalCode(fiscalCode))
-        )
+          validate(
+            SignatureRequestReadyToNotify,
+            "Notification can only be sent if the signature request is WAIT_FOR_SIGNATURE and it has not already been sent!"
+          ),
+          TE.fromEither
+        ),
+        notification: pipe(
+          getFiscalCodeBySignerId(signatureRequest.signerId),
+          TE.chain(
+            TE.fromOption(
+              () =>
+                new EntityNotFoundError(
+                  "The tax code associated with this signer is not valid!"
+                )
+            )
+          ),
+          TE.chain((fiscalCode) =>
+            pipe(
+              signatureRequest,
+              makeMessage(getDossier),
+              TE.map(withFiscalCode(fiscalCode))
+            )
+          ),
+          TE.chain(submitMessage)
+        ),
+      }),
+      TE.chainFirst(({ signatureRequest }) =>
+        upsertSignatureRequest(signatureRequest)
       ),
-      TE.chain(submitMessage),
-      TE.chain((notification) =>
-        pipe(
-          {
-            ...signatureRequest,
-            notification,
-          },
-          upsertSignatureRequest
-        )
-      ),
-      TE.map(
-        (signatureRequest) => signatureRequest.notification as Notification
-      )
+      TE.map(({ notification }) => notification)
     );

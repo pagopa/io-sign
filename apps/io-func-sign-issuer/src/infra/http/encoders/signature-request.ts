@@ -9,23 +9,6 @@ import { SignatureRequest } from "../../../signature-request";
 import { DocumentToApiModel } from "./document";
 import { NotificationToApiModel } from "./notification";
 
-const toApiModelEnum = (
-  type: SignatureRequest["status"]
-): SignatureRequestStatusEnum => {
-  switch (type) {
-    case "DRAFT":
-      return SignatureRequestStatusEnum.DRAFT;
-    case "READY":
-      return SignatureRequestStatusEnum.READY;
-    case "WAIT_FOR_SIGNATURE":
-      return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
-    case "SIGNED":
-      return SignatureRequestStatusEnum.SIGNED;
-    case "REJECTED":
-      return SignatureRequestStatusEnum.REJECTED;
-  }
-};
-
 export const SignatureRequestToApiModel: E.Encoder<
   SignatureRequestApiModel,
   SignatureRequest
@@ -38,45 +21,55 @@ export const SignatureRequestToApiModel: E.Encoder<
     updatedAt: updated_at,
     expiresAt: expires_at,
     documents,
-    notification,
-    ...extras
+    ...extra
   }) => {
     const commonFields = {
       id,
       dossier_id,
       signer_id,
-      status: toApiModelEnum(extras.status),
       created_at,
       updated_at,
       expires_at,
       documents: documents.map(DocumentToApiModel.encode),
-      notification:
-        notification !== undefined
-          ? NotificationToApiModel.encode(notification)
-          : undefined,
-      // here we have to handle the dynamic QR Code
-      qr_code_url: [
-        SignatureRequestStatusEnum.DRAFT,
-        SignatureRequestStatusEnum.READY,
-      ].includes(toApiModelEnum(extras.status))
-        ? undefined
-        : "https://place-holder.com/qr-code",
     };
-    switch (extras.status) {
-      case "SIGNED": {
+    switch (extra.status) {
+      case "DRAFT": {
         return {
           ...commonFields,
-          signed_at: extras.signedAt,
+          status: SignatureRequestStatusEnum.DRAFT,
+        };
+      }
+      case "WAIT_FOR_SIGNATURE": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+          notification:
+            extra.notification !== undefined
+              ? NotificationToApiModel.encode(extra.notification)
+              : undefined,
+          qr_code_url: extra.qrCodeUrl,
+        };
+      }
+      case "READY": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.READY,
         };
       }
       case "REJECTED": {
         return {
           ...commonFields,
-          reject_reason: extras.rejectedReason,
+          status: SignatureRequestStatusEnum.REJECTED,
+          reject_at: extra.rejectedAt,
+          reject_reason: extra.rejectReason,
         };
       }
-      default: {
-        return commonFields;
+      case "SIGNED": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.SIGNED,
+          signed_at: extra.signedAt,
+        };
       }
     }
   },
