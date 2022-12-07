@@ -1,3 +1,5 @@
+import { Database as CosmosDatabase } from "@azure/cosmos";
+
 import { createHandler } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
@@ -26,21 +28,27 @@ import { makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
 import { makeCreateSignatureRequestWithToken } from "../../namirial/signature-request";
 
-import { SignatureRequest as NamirialSignatureRequest } from "../../namirial/types/signature-request";
+import { makeInsertSignature } from "../cosmos/signature";
+
+import { SignatureToApiModel } from "../../http/encoders/signature";
+import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
+  db: CosmosDatabase,
   qtspConfig: NamirialConfig
 ) => {
-  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
-    makeGetToken()
-  )(qtspConfig);
+  const getFiscalCodeBySignerId = pipe(tokenizer, makeGetFiscalCodeBySignerId);
+  const creatQtspSignatureRequest = pipe(
+    qtspConfig,
+    makeCreateSignatureRequestWithToken()(makeGetToken())
+  );
+  const insertSignature = pipe(db, makeInsertSignature);
 
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
-    creatQtspSignatureRequest
+    creatQtspSignatureRequest,
+    insertSignature
   );
 
   const requireCreateSignatureBody = flow(
@@ -85,7 +93,10 @@ const makeCreateSignatureHandler = (
     TE.chain(requireCreateSignaturePayload)
   );
 
-  const encodeHttpSuccessResponse = flow(created(NamirialSignatureRequest));
+  const encodeHttpSuccessResponse = flow(
+    SignatureToApiModel.encode,
+    created(SignatureDetailView)
+  );
 
   return createHandler(
     decodeHttpRequest,
@@ -95,11 +106,7 @@ const makeCreateSignatureHandler = (
   );
 };
 
-export const makeCreateSignatureFunction = (
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey,
-  qtspConfig: NamirialConfig
-) =>
-  pipe(
-    makeCreateSignatureHandler(pdvTokenizerClient, qtspConfig),
-    azure.unsafeRun
-  );
+export const makeCreateSignatureFunction = flow(
+  makeCreateSignatureHandler,
+  azure.unsafeRun
+);

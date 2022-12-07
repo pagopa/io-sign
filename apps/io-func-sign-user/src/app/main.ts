@@ -5,6 +5,7 @@ import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/c
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
+import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
@@ -24,6 +25,9 @@ if (configOrError instanceof Error) {
 }
 
 const config = configOrError;
+
+const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
@@ -69,5 +73,6 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
 
 export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
+  database,
   config.namirial
 );

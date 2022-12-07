@@ -124,6 +124,10 @@ paths:
       responses:
         "201":
           description: Signature created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureDetailView"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -226,6 +230,12 @@ components:
             An absolute URI that identifies the specific occurrence of the
             problem. It may or may not yield further information if
             dereferenced.
+    Timestamp:
+      type: string
+      format: UTCISODateFromString
+      description: A date-time field in ISO-8601 format and UTC timezone.
+      x-import: "@pagopa/ts-commons/lib/dates"
+      example: "2018-10-13T00:00:00.000Z"
 
     Id:
       type: string
@@ -455,3 +465,28 @@ components:
         - email
         - documents_to_sign
         - qtsp_clauses
+
+    SignatureDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        signature_request_id:
+          $ref: "#/components/schemas/Id"
+        qtsp_signature_request_id:
+          $ref: "#/components/schemas/Id"
+        status:
+          type: string
+          enum: ["CREATED", "READY", "WAITING", "COMPLETED", "FAILED"]
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+
+      required:
+        - id
+        - signature_request_id
+        - qtsp_signature_request_id
+        - status
+        - created_at
+        - updated_at

@@ -6,12 +6,16 @@ import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import {
+  ActionNotAllowedError,
+  EntityNotFoundError,
+} from "@io-sign/io-sign/error";
 import { DocumentToSign } from "../../document-to-sign";
 
 import { QtspClauses } from "../../qtsp";
-import { CreateSignatureRequest } from "../../infra/namirial/signature-request";
+import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
 
+import { InsertSignature, newSignature } from "../../signature";
 import {
   mockPublicKey,
   mockSignature,
@@ -32,9 +36,11 @@ export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
 export const makeCreateSignature =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    creatQtspSignatureRequest: CreateSignatureRequest
+    creatQtspSignatureRequest: CreateQtspSignatureRequest,
+    insertSignature: InsertSignature
   ) =>
   ({
+    signatureRequestId,
     signer,
     qtspClauses,
     documentsSignature,
@@ -64,5 +70,23 @@ export const makeCreateSignature =
           signatureFields: el.signatureFields,
         })),
       })),
-      TE.chain(creatQtspSignatureRequest)
+      TE.chain(creatQtspSignatureRequest),
+      TE.chainW((qtspResponse) =>
+        qtspResponse.status === "CREATED"
+          ? pipe(
+              newSignature(signer, signatureRequestId, qtspResponse.id),
+              insertSignature
+            )
+          : qtspResponse.last_error !== null
+          ? TE.left(
+              new ActionNotAllowedError(
+                `An error occurred while the QTSP was creating the signature. ${qtspResponse.last_error.detail}`
+              )
+            )
+          : TE.left(
+              new ActionNotAllowedError(
+                "An error occurred while the QTSP was creating the signature."
+              )
+            )
+      )
     );
