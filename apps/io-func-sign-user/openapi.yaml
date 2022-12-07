@@ -226,12 +226,6 @@ components:
             An absolute URI that identifies the specific occurrence of the
             problem. It may or may not yield further information if
             dereferenced.
-    Timestamp:
-      type: string
-      format: UTCISODateFromString
-      description: A date-time field in ISO-8601 format and UTC timezone.
-      x-import: "@pagopa/ts-commons/lib/dates"
-      example: "2018-10-13T00:00:00.000Z"
 
     Id:
       type: string
@@ -339,18 +333,6 @@ components:
         - privacy_text
         - terms_and_conditions_url
         - nonce
-
-    PublicKey:
-      type: string
-      format: base64url
-      minLength: 1
-      description: PEM public key encoded in base64
-
-    SpidAssertion:
-      type: string
-      format: base64url
-      minLength: 1
-      description: SPID assertion encoded in base64
 
     Clause:
       type: object
