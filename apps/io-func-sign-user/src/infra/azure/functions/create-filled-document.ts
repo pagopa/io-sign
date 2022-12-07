@@ -22,7 +22,7 @@ import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
 } from "../../../app/use-cases/create-filled-document";
-import { makeRequireSigner } from "../../http/decoder/signer";
+import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
@@ -62,7 +62,7 @@ const makeCreateFilledDocumentHandler = (
     CreateFilledDocumentPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      signer: RTE.fromReaderEither(makeRequireSigner),
+      signer: RTE.fromReaderEither(requireSigner),
       body: RTE.fromReaderEither(requireCreateFilledDocumentBody),
     }),
     RTE.map(({ signer, body: { documentUrl, email, familyName, name } }) => ({
