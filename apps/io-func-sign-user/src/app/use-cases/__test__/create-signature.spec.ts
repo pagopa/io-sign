@@ -4,7 +4,7 @@
  */
 import * as TE from "fp-ts/lib/TaskEither";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-import { describe, expect, it, jest } from "@jest/globals";
+import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { some } from "fp-ts/lib/Option";
 import { newId } from "@io-sign/io-sign/id";
@@ -20,6 +20,10 @@ const getFiscalCodeBySignerId = jest.fn<GetFiscalCodeBySignerId>();
 const creatQtspSignatureRequest = jest.fn<CreateSignatureRequest>();
 const insertSignature = jest.fn<InsertSignature>();
 const enqueueSignature = jest.fn<EnqueueMessage>();
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe("makeCreateSignature", () => {
   it("should return a valid CreateSignaturePayload", async () => {
