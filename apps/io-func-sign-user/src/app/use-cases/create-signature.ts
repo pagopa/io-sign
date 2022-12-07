@@ -34,6 +34,9 @@ export const CreateSignaturePayload = t.type({
 
 export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
 
+/** Send a signature request to QTSP, create the Signature entity
+ *  and enqueue Signature for future validation
+ */
 export const makeCreateSignature =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,

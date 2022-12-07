@@ -41,12 +41,12 @@ const makeCreateSignatureHandler = (
   qtspQueue: QueueClient,
   qtspConfig: NamirialConfig
 ) => {
-  const getFiscalCodeBySignerId = pipe(tokenizer, makeGetFiscalCodeBySignerId);
-  const creatQtspSignatureRequest = pipe(
-    qtspConfig,
-    makeCreateSignatureRequestWithToken()(makeGetToken())
-  );
-  const insertSignature = pipe(db, makeInsertSignature);
+  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
+    makeGetToken()
+  )(qtspConfig);
+
+  const insertSignature = makeInsertSignature(db);
   const enqueueSignature = makeEnqueueMessage(qtspQueue);
 
   const createSignature = makeCreateSignature(
