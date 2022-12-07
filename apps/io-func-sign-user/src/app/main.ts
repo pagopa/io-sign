@@ -39,6 +39,11 @@ const documentsToFillQueue = new QueueClient(
   config.documentsToFillQueueName
 );
 
+const qtspQueue = new QueueClient(
+  config.azure.storage.connectionString,
+  config.qtspQueueName
+);
+
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
@@ -74,5 +79,6 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
 export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
   database,
+  qtspQueue,
   config.namirial
 );

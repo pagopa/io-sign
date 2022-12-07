@@ -16,6 +16,7 @@ import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
 
 import { InsertSignature, newSignature } from "../../signature";
+import { EnqueueMessage } from "../../infra/azure/storage/queue";
 import {
   mockPublicKey,
   mockSignature,
@@ -37,7 +38,8 @@ export const makeCreateSignature =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     creatQtspSignatureRequest: CreateQtspSignatureRequest,
-    insertSignature: InsertSignature
+    insertSignature: InsertSignature,
+    enqueueSignature: EnqueueMessage
   ) =>
   ({
     signatureRequestId,
@@ -88,5 +90,15 @@ export const makeCreateSignature =
                 "An error occurred while the QTSP was creating the signature."
               )
             )
+      ),
+      TE.chainFirst((signature) =>
+        pipe(
+          {
+            signatureId: signature.id,
+            signerId: signature.signerId,
+          },
+          JSON.stringify,
+          enqueueSignature
+        )
       )
     );

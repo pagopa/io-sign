@@ -15,6 +15,7 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
+import { QueueClient } from "@azure/storage-queue";
 import { makeRequireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -32,10 +33,12 @@ import { makeInsertSignature } from "../cosmos/signature";
 
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
+import { makeEnqueueMessage } from "../storage/queue";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   db: CosmosDatabase,
+  qtspQueue: QueueClient,
   qtspConfig: NamirialConfig
 ) => {
   const getFiscalCodeBySignerId = pipe(tokenizer, makeGetFiscalCodeBySignerId);
@@ -44,11 +47,13 @@ const makeCreateSignatureHandler = (
     makeCreateSignatureRequestWithToken()(makeGetToken())
   );
   const insertSignature = pipe(db, makeInsertSignature);
+  const enqueueSignature = makeEnqueueMessage(qtspQueue);
 
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
     creatQtspSignatureRequest,
-    insertSignature
+    insertSignature,
+    enqueueSignature
   );
 
   const requireCreateSignatureBody = flow(
