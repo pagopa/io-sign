@@ -20,8 +20,6 @@ import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-
 import { DossierToApiModel } from "../../http/encoders/dossier";
 import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
