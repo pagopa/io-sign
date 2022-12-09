@@ -2,11 +2,11 @@ import { validate } from "@io-sign/io-sign/validation";
 
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
-
-import * as tx from "io-ts-types";
+import * as RA from "fp-ts/lib/ReadonlyArray";
+import * as A from "fp-ts/lib/Array";
 
 import * as t from "io-ts";
 
@@ -18,10 +18,8 @@ import { DocumentToSign as DocumentToSignApiModel } from "../models/DocumentToSi
 
 import { CreateSignatureBody } from "../models/CreateSignatureBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
-import { SignatureFieldToApiModel } from "../encoders/signature-field";
 
-import { DocumentToSign, SignatureField } from "../../../document-to-sign";
-import { DocumentToSignToApiModel } from "../encoders/document-signature";
+import { DocumentToSign, SignatureField } from "../../../signature-field";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -38,7 +36,7 @@ const toClauseType = (
 
 export const SignatureFieldFromApiModel = new t.Type<
   SignatureField,
-  SignatureFieldApiModel,
+  SignatureField,
   SignatureFieldApiModel
 >(
   "SignatureFieldFromApiModel",
@@ -58,14 +56,23 @@ export const SignatureFieldFromApiModel = new t.Type<
               NonEmptyString.decode(attrs.unique_name),
               E.map((uniqueName) => ({ uniqueName }))
             )
-          : E.right(attrs),
+          : pipe(
+              attrs,
+              E.of,
+              E.map((attrs) => ({
+                bottomLeft: attrs.bottom_left,
+                topRight: attrs.top_right,
+                page: attrs.page,
+              }))
+            ),
     }),
-  SignatureFieldToApiModel.encode
+
+  identity
 );
 
 export const DocumentToSignFromApiModel = new t.Type<
   DocumentToSign,
-  DocumentToSignApiModel,
+  DocumentToSign,
   DocumentToSignApiModel
 >(
   "DocumentToSignFromApiModel",
@@ -73,13 +80,15 @@ export const DocumentToSignFromApiModel = new t.Type<
   ({ document_id, signature_fields }, _ctx) =>
     pipe(
       signature_fields,
-      t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
+      RA.map(SignatureFieldFromApiModel.decode),
+      RA.toArray,
+      A.sequence(E.Applicative),
       E.map((signatureFields) => ({
         documentId: document_id,
         signatureFields,
       }))
     ),
-  DocumentToSignToApiModel.encode
+  identity
 );
 
 export const requireDocumentsSignature = flow(
@@ -87,9 +96,10 @@ export const requireDocumentsSignature = flow(
   validate(CreateSignatureBody),
   E.map((body) => body.documents_to_sign),
   E.chain(
-    validate(
-      tx.nonEmptyArray(DocumentToSignApiModel.pipe(DocumentToSignFromApiModel)),
-      "Invalid document to sign"
+    flow(
+      RA.map(DocumentToSignFromApiModel.decode),
+      RA.sequence(E.Applicative),
+      E.chainW(validate(t.array(DocumentToSign), "Invalid document to sign"))
     )
   )
 );

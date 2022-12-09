@@ -10,13 +10,13 @@ import {
   ActionNotAllowedError,
   EntityNotFoundError,
 } from "@io-sign/io-sign/error";
-import { DocumentToSign } from "../../document-to-sign";
 
 import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
 
 import { InsertSignature, newSignature } from "../../signature";
 import { EnqueueMessage } from "../../infra/azure/storage/queue";
+import { DocumentToSign } from "../../signature-field";
 import { mockPublicKey, mockSignature, mockSignedTos } from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({

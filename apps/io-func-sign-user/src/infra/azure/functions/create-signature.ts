@@ -16,7 +16,7 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { QueueClient } from "@azure/storage-queue";
-import { makeRequireSigner } from "../../http/decoder/signer";
+import { requireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
 import { requireQtspClauses } from "../../http/decoder/qtsp-clause";
@@ -73,7 +73,7 @@ const makeCreateSignatureHandler = (
     CreateSignaturePayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      signer: RTE.fromReaderEither(makeRequireSigner),
+      signer: RTE.fromReaderEither(requireSigner),
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),

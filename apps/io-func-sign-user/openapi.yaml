@@ -453,8 +453,13 @@ components:
           type: string
           format: ulid
           minLength: 1
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
       required:
         - document_id
+        - signature_fields
 
     DocumentMetadata:
       type: object
