@@ -89,7 +89,7 @@ export const makeSendNotification =
             TE.fromOption(
               () =>
                 new EntityNotFoundError(
-                  "The tax code associated with this signer is not valid!"
+                  "The fiscal code associated with this signer is not valid!"
                 )
             )
           ),
