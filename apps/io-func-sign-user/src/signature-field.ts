@@ -30,8 +30,8 @@ export const toSignatureFieldToBeCreatedAttributes = ({
 }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
   bottomLeft: coordinates,
   topRight: {
-    x: coordinates.x + size.w.valueOf(),
-    y: coordinates.y + size.h.valueOf(),
+    x: coordinates.x + size.w,
+    y: coordinates.y + size.h,
   },
   page,
 });

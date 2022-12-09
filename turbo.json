@@ -14,7 +14,7 @@
     "format": {},
     "lint": {
       "inputs": ["src/**/*.ts"],
-      "outputs": []
+      "outputs": ["^build"]
     },
     "test": {
       "inputs": ["src/**/*.spec.ts", "src/**/*.test.ts"],
