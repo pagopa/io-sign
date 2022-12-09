@@ -13,18 +13,22 @@ import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { validate } from "../validation";
 import { EntityNotFoundError } from "../error";
 
-export const PdfMetadata = t.type({
-  title: t.string,
-  creationDate: IsoDateFromString,
-  modificationDate: IsoDateFromString,
-  pages: t.array(
-    t.type({
-      number: NonNegativeNumber,
-      width: NonNegativeNumber,
-      height: NonNegativeNumber,
-    })
-  ),
-});
+export const PdfMetadata = t.intersection([
+  t.type({
+    pages: t.array(
+      t.type({
+        number: NonNegativeNumber,
+        width: NonNegativeNumber,
+        height: NonNegativeNumber,
+      })
+    ),
+  }),
+  t.partial({
+    title: t.string,
+    creationDate: IsoDateFromString,
+    modificationDate: IsoDateFromString,
+  }),
+]);
 
 export type PdfMetadata = t.TypeOf<typeof PdfMetadata>;
 
