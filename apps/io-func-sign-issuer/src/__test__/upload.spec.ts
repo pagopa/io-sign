@@ -11,9 +11,9 @@ import { head } from "fp-ts/lib/Array";
 
 import { newSigner } from "@io-sign/io-sign/signer";
 
+import { newIssuer } from "@io-sign/io-sign/issuer";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
-import { newIssuer } from "../issuer";
 import { newDossier } from "../dossier";
 
 describe("UploadMetadata", () => {
@@ -24,10 +24,12 @@ describe("UploadMetadata", () => {
       {
         title: "document #1",
         signatureFields: [],
+        pages: [],
       },
       {
         title: "document #2",
         signatureFields: [],
+        pages: [],
       },
     ]);
 

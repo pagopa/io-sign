@@ -6,11 +6,14 @@ import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { CosmosClient } from "@azure/cosmos";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
+import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -24,6 +27,9 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
+const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const database = cosmosClient.database(config.azure.cosmos.dbName);
+
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   config.filledModulesStorageContainerName
@@ -32,6 +38,16 @@ const filledContainerClient = new ContainerClient(
 const documentsToFillQueue = new QueueClient(
   config.azure.storage.connectionString,
   config.documentsToFillQueueName
+);
+
+const onWaitForSignatureQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "on-signature-request-wait-for-signature"
+);
+
+const validatedContainerClient = new ContainerClient(
+  config.azure.storage.connectionString,
+  "validated-documents"
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
@@ -64,4 +80,14 @@ export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
 
 export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
   config.namirial
+);
+
+export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
+  database,
+  onWaitForSignatureQueueClient
+);
+
+export const GetSignatureRequest = makeGetSignatureRequestFunction(
+  database,
+  validatedContainerClient
 );

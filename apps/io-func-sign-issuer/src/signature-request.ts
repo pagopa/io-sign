@@ -7,12 +7,9 @@ import * as O from "fp-ts/lib/Option";
 import * as t from "io-ts";
 
 import { Signer } from "@io-sign/io-sign/signer";
-import { Notification } from "@io-sign/io-sign/notification";
 
-import { pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
-
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
 
@@ -21,37 +18,38 @@ import {
   startValidation,
   markAsReady as setReadyStatus,
   markAsRejected as setRejectedStatus,
+  DocumentReady,
+  DocumentMetadata,
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
-import { Dossier } from "./dossier";
-import { Issuer } from "./issuer";
+import {
+  SignatureRequestReady,
+  SignatureRequestToBeSigned,
+  SignatureRequestRejected,
+  SignatureRequestSigned,
+  makeSignatureRequestVariant,
+} from "@io-sign/io-sign/signature-request";
 
-export const SignatureRequest = t.intersection([
+import { Dossier } from "./dossier";
+
+export const SignatureRequestDraft = makeSignatureRequestVariant(
+  "DRAFT",
   t.type({
-    id: Id,
-    issuerId: Issuer.props.id,
-    signerId: Signer.props.id,
-    dossierId: Dossier.props.id,
-    status: t.keyof({
-      DRAFT: null,
-      READY: null,
-      WAIT_FOR_SIGNATURE: null,
-      SIGNED: null,
-      REJECTED: null,
-    }),
-    createdAt: IsoDateFromString,
-    updatedAt: IsoDateFromString,
-    expiresAt: IsoDateFromString,
     documents: t.array(Document),
-  }),
-  t.partial({
-    notification: Notification,
-    signedAt: IsoDateFromString,
-    rejectedReason: t.string,
-  }),
+  })
+);
+
+export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
+
+export const SignatureRequest = t.union([
+  SignatureRequestDraft,
+  SignatureRequestReady,
+  SignatureRequestToBeSigned,
+  SignatureRequestRejected,
+  SignatureRequestSigned,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -82,9 +80,13 @@ export const newSignatureRequest = (
 class InvalidExpiryDateError extends Error {
   name = "InvalidExpireDateError";
   constructor() {
-    super("Invalid expiry date provided");
+    super("Invalid expire date.");
   }
 }
+
+const documentNotFoundError = new EntityNotFoundError(
+  "The specified document does not exists."
+);
 
 const isExpiryDateValid = (expiryDate: Date) => (request: SignatureRequest) =>
   pipe(request.createdAt, isBefore(expiryDate));
@@ -103,29 +105,26 @@ export const withExpiryDate =
       }))
     );
 
-export const getDocument =
-  (id: Document["id"]) => (request: SignatureRequest) =>
-    pipe(
-      request.documents,
-      findFirst((document) => document.id === id)
-    );
-
-const documentNotFoundError = new EntityNotFoundError("Document");
+export const getDocument = (id: Document["id"]) =>
+  flow(
+    (request: SignatureRequest) => request.documents,
+    findFirst((document: Document) => document.id === id)
+  );
 
 export const replaceDocument =
-  (id: Document["id"], updated: Document) =>
-  (request: SignatureRequest): O.Option<SignatureRequest> =>
+  (id: Document["id"], updated: Document) => (request: SignatureRequestDraft) =>
     pipe(
       request.documents,
-      findIndex((document) => document.id === id),
+      findIndex((document: Document) => document.id === id),
       O.chain((index) => pipe(request.documents, updateAt(index, updated))),
-      O.map((documents) => ({
-        ...request,
-        documents,
-      }))
+      O.map((documents) => ({ ...request, documents }))
     );
 
-export const canBeMarkedAsReady = (request: SignatureRequest) =>
+export const canBeMarkedAsReady = (
+  request: SignatureRequest
+): request is SignatureRequest & {
+  documents: DocumentReady[];
+} =>
   request.status === "DRAFT" &&
   request.documents.every((document) => document.status === "READY");
 
@@ -135,6 +134,7 @@ type Action_MARK_AS_READY = {
 
 type Action_MARK_AS_WAIT_FOR_SIGNATURE = {
   name: "MARK_AS_WAIT_FOR_SIGNATURE";
+  qrCodeUrl: string;
 };
 
 type Action_MARK_AS_SIGNED = {
@@ -153,6 +153,7 @@ type Action_MARK_DOCUMENT_AS_READY = {
   payload: {
     documentId: Document["id"];
     url: string;
+    pages: DocumentMetadata["pages"];
   };
 };
 
@@ -197,7 +198,9 @@ const dispatch =
 // TODO: REMOVE DUPLICATE CODE, extract utilities
 const onDraftStatus =
   (action: SignatureRequestAction) =>
-  (request: SignatureRequest): E.Either<Error, SignatureRequest> => {
+  (
+    request: SignatureRequestDraft
+  ): E.Either<Error, SignatureRequestDraft | SignatureRequestReady> => {
     switch (action.name) {
       case "MARK_AS_READY":
         if (canBeMarkedAsReady(request)) {
@@ -229,7 +232,7 @@ const onDraftStatus =
           request,
           getDocument(action.payload.documentId),
           E.fromOption(() => documentNotFoundError),
-          E.chain(setReadyStatus(action.payload.url)),
+          E.chain(setReadyStatus(action.payload.url, action.payload.pages)),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
@@ -254,6 +257,7 @@ const onDraftStatus =
             )
           )
         );
+        return E.right(request);
       default:
         return E.left(
           new ActionNotAllowedError(
@@ -265,7 +269,9 @@ const onDraftStatus =
 
 const onReadyStatus =
   (action: SignatureRequestAction) =>
-  (request: SignatureRequest): E.Either<Error, SignatureRequest> => {
+  (
+    request: SignatureRequestReady
+  ): E.Either<Error, SignatureRequestToBeSigned> => {
     switch (action.name) {
       case "MARK_AS_READY":
         return E.left(
@@ -277,6 +283,8 @@ const onReadyStatus =
         return E.right({
           ...request,
           status: "WAIT_FOR_SIGNATURE",
+          // TODO: [SFEQS-946] make the QR Code dynamic
+          qrCodeUrl: "https://place-holder.com/qr-code",
         });
       default:
         return E.left(
@@ -289,11 +297,14 @@ const onReadyStatus =
 
 const onWaitForSignatureStatus =
   (action: SignatureRequestAction) =>
-  (request: SignatureRequest): E.Either<Error, SignatureRequest> => {
+  (
+    request: SignatureRequestToBeSigned
+  ): E.Either<Error, SignatureRequestSigned> => {
     if (action.name === "MARK_AS_SIGNED") {
       return E.right({
         ...request,
         status: "SIGNED",
+        signedAt: new Date(),
       });
     }
     return E.left(
@@ -303,17 +314,40 @@ const onWaitForSignatureStatus =
     );
   };
 
-export const markAsReady = dispatch({ name: "MARK_AS_READY" });
-export const markAsWaitForSignature = dispatch({
-  name: "MARK_AS_WAIT_FOR_SIGNATURE",
-});
+export const markAsReady = (
+  request: SignatureRequest
+): E.Either<Error, SignatureRequestReady & { dossierId: Dossier["id"] }> =>
+  pipe(
+    dispatch({ name: "MARK_AS_READY" })(request),
+    E.filterOrElse(
+      (
+        request
+      ): request is SignatureRequestReady & { dossierId: Dossier["id"] } =>
+        request.status === "READY",
+      () => new Error("Unable to mark the Signature Request as READY")
+    )
+  );
+
+export const markAsWaitForSignature = (qrCodeUrl: string) =>
+  dispatch({
+    name: "MARK_AS_WAIT_FOR_SIGNATURE",
+    qrCodeUrl,
+  });
+
 export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
 
 export const startValidationOnDocument = (documentId: Document["id"]) =>
   dispatch({ name: "START_DOCUMENT_VALIDATION", payload: { documentId } });
 
-export const markDocumentAsReady = (documentId: Document["id"], url: string) =>
-  dispatch({ name: "MARK_DOCUMENT_AS_READY", payload: { documentId, url } });
+export const markDocumentAsReady = (
+  documentId: Document["id"],
+  url: string,
+  pages: DocumentMetadata["pages"]
+) =>
+  dispatch({
+    name: "MARK_DOCUMENT_AS_READY",
+    payload: { documentId, url, pages },
+  });
 
 export const markDocumentAsRejected = (
   documentId: Document["id"],
@@ -335,3 +369,7 @@ export type InsertSignatureRequest = (
 export type UpsertSignatureRequest = (
   request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
+
+export type NotifySignatureRequestReadyEvent = (
+  requestReady: SignatureRequestReady
+) => TE.TaskEither<Error, string>;

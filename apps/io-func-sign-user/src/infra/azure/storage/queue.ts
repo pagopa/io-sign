@@ -4,6 +4,7 @@ import { toError } from "fp-ts/lib/Either";
 import { QueueClient } from "@azure/storage-queue";
 
 export type EnqueueMessage = (message: string) => TE.TaskEither<Error, string>;
+
 export const makeEnqueueMessage =
   (queueClient: QueueClient): EnqueueMessage =>
   (message: string) =>

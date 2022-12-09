@@ -2,8 +2,8 @@ import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import { Dossier, InsertDossier, newDossier } from "../../dossier";
-import { Issuer } from "../../issuer";
 
 export type CreateDossierPayload = {
   issuer: Issuer;

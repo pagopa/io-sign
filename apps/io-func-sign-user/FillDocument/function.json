@@ -3,6 +3,7 @@
   "bindings": [
     {
       "name": "documentsToFill",
+      "direction": "in",
       "type": "queueTrigger",
       "queueName": "waiting-for-documents-to-fill",
       "connection": "StorageAccountConnectionString"

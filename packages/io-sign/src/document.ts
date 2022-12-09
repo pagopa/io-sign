@@ -25,12 +25,12 @@ const ClauseType = t.keyof({
 
 const ClauseTitle = WithinRangeString(5, 80);
 
-const Clause = t.type({
+export const Clause = t.type({
   title: ClauseTitle,
   type: ClauseType,
 });
 
-type Clause = t.TypeOf<typeof Clause>;
+export type Clause = t.TypeOf<typeof Clause>;
 
 export const isRequired = (c: Clause) => c.type !== "OPTIONAL";
 
@@ -71,6 +71,13 @@ export type SignatureField = t.TypeOf<typeof SignatureField>;
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 15),
   signatureFields: t.array(SignatureField),
+  pages: t.array(
+    t.type({
+      number: NonNegativeNumber,
+      width: NonNegativeNumber,
+      height: NonNegativeNumber,
+    })
+  ),
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
@@ -99,7 +106,7 @@ const DocumentToBeValidated = t.type({
 
 export type DocumentToBeValidated = t.TypeOf<typeof DocumentToBeValidated>;
 
-const DocumentReady = t.type({
+export const DocumentReady = t.type({
   ...commonFields,
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
@@ -135,6 +142,17 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   updatedAt: new Date(),
 });
 
+export const updateMetadataPage =
+  (pages: DocumentMetadata["pages"]) =>
+  (document: DocumentReady): DocumentReady => ({
+    ...document,
+    metadata: {
+      signatureFields: document.metadata.signatureFields,
+      title: document.metadata.title,
+      pages,
+    },
+  });
+
 type Action_START_VALIDATION = {
   name: "START_VALIDATION";
 };
@@ -143,6 +161,7 @@ type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
   payload: {
     url: string;
+    pages: DocumentMetadata["pages"];
   };
 };
 
@@ -210,12 +229,14 @@ const onWaitForValidationStatus =
   ): E.Either<Error, DocumentReady | DocumentRejected> => {
     switch (action.name) {
       case "MARK_AS_READY":
-        return E.right({
-          ...document,
-          status: "READY",
-          url: action.payload.url,
-          updatedAt: new Date(),
-        });
+        return E.right(
+          updateMetadataPage(action.payload.pages)({
+            ...document,
+            status: "READY",
+            url: action.payload.url,
+            updatedAt: new Date(),
+          })
+        );
       case "MARK_AS_REJECTED": {
         return E.right({
           ...document,
@@ -264,11 +285,12 @@ export const startValidation = dispatch({
   name: "START_VALIDATION",
 });
 
-export const markAsReady = (url: string) =>
+export const markAsReady = (url: string, pages: DocumentMetadata["pages"]) =>
   dispatch({
     name: "MARK_AS_READY",
     payload: {
       url,
+      pages,
     },
   });
 

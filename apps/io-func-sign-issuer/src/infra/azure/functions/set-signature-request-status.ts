@@ -11,6 +11,8 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { createHandler } from "@pagopa/handler-kit";
 
 import { Database as CosmosDatabase } from "@azure/cosmos";
+import { QueueClient } from "@azure/storage-queue";
+
 import { validate } from "@io-sign/io-sign/validation";
 import { error } from "@io-sign/io-sign/infra/http/response";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
@@ -23,18 +25,25 @@ import {
 } from "../cosmos/signature-request";
 
 import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
+import { makeNotifySignatureRequestReadyEvent } from "../storage/signature-request";
 
-const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
+const makeSetSignatureRequestStatusHandler = (
+  db: CosmosDatabase,
+  onSignatureRequestReadyQueueClient: QueueClient
+) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
-
-  const markRequestAsReady = makeMarkRequestAsReady(upsertSignatureRequest);
-
+  const notifySignatureRequestReadyEvent = makeNotifySignatureRequestReadyEvent(
+    onSignatureRequestReadyQueueClient
+  );
+  const markRequestAsReady = makeMarkRequestAsReady(
+    upsertSignatureRequest,
+    notifySignatureRequestReadyEvent
+  );
   const requireSignatureRequest = makeRequireSignatureRequest(
     mockGetIssuerBySubscriptionId,
     getSignatureRequest
   );
-
   const requireSetSignatureRequestStatusBody: RE.ReaderEither<
     HttpRequest,
     Error,
@@ -66,11 +75,18 @@ const makeSetSignatureRequestStatusHandler = (db: CosmosDatabase) => {
     decodeHttpRequest,
     markRequestAsReady,
     error,
-    () => void 0
+    () => undefined
   );
 };
 
-export const makeSetSignatureRequestStatusFunction = flow(
-  makeSetSignatureRequestStatusHandler,
-  azure.unsafeRun
-);
+export const makeSetSignatureRequestStatusFunction = (
+  database: CosmosDatabase,
+  onSignatureRequestReadyQueueClient: QueueClient
+) =>
+  pipe(
+    makeSetSignatureRequestStatusHandler(
+      database,
+      onSignatureRequestReadyQueueClient
+    ),
+    azure.unsafeRun
+  );
