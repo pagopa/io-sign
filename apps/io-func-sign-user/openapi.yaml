@@ -477,6 +477,7 @@ components:
       required:
         - id
         - status
+        - dossier_id
         - signer_id
         - expires_at
         - documents
