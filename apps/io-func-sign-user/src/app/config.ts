@@ -40,11 +40,6 @@ export const Config = t.type({
   }),
   mock: MockConfig,
   namirial: NamirialConfig,
-  uploadedStorageContainerName: t.string,
-  validatedStorageContainerName: t.string,
-  filledModulesStorageContainerName: t.string,
-  documentsToFillQueueName: t.string,
-  qtspQueueName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -73,10 +68,5 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     },
     mock: config.mock,
     namirial: config.namirial,
-    uploadedStorageContainerName: "uploaded-documents",
-    validatedStorageContainerName: "validated-documents",
-    filledModulesStorageContainerName: "filled-modules",
-    documentsToFillQueueName: "waiting-for-documents-to-fill",
-    qtspQueueName: "waiting-for-qtsp",
   }))
 );
