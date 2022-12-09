@@ -8,7 +8,7 @@ import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, withHeader } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -18,6 +18,7 @@ import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { ValidUrl } from "@pagopa/ts-commons/lib/url";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
@@ -80,10 +81,13 @@ const makeCreateFilledDocumentHandler = (
     TE.chain(requireCreateFilledDocumentPayload)
   );
 
-  const encodeHttpSuccessResponse = flow(
-    FilledDocumentToApiModel.encode,
-    created(FilledDocumentDetailView)
-  );
+  const encodeHttpSuccessResponse = (response: { url: ValidUrl }) =>
+    pipe(
+      response,
+      FilledDocumentToApiModel.encode,
+      created(FilledDocumentDetailView),
+      withHeader("Location", response.url.href)
+    );
 
   return createHandler(
     decodeHttpRequest,
