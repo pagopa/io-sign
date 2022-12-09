@@ -307,3 +307,9 @@ components:
           type: string
           format: base64
           minLength: 1
+      required:
+        - clauses
+        - document_url
+        - privacy_url
+        - terms_and_conditions_url
+        - nonce
