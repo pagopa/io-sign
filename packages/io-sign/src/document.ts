@@ -47,7 +47,11 @@ export const SignatureFieldToBeCreatedAttributes = t.type({
     x: t.number,
     y: t.number,
   }),
-  page: NonNegativeNumber,
+  page: t.type({
+    number: NonNegativeNumber,
+    width: NonNegativeNumber,
+    height: NonNegativeNumber,
+  }),
   size: t.type({
     w: NonNegativeNumber,
     h: NonNegativeNumber,

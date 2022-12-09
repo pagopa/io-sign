@@ -26,7 +26,7 @@ export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
 export const toSignatureFieldToBeCreatedAttributes = ({
   coordinates,
   size,
-  page,
+  page: { number: page },
 }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
   bottomLeft: coordinates,
   topRight: {

@@ -50,7 +50,7 @@ export const SignatureFieldToApiModel: E.Encoder<
       ({ uniqueName: unique_name }) => ({
         unique_name,
       }),
-      ({ coordinates, size, page }) => ({
+      ({ coordinates, size, page: { number: page } }) => ({
         coordinates,
         size,
         page,

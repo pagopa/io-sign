@@ -23,6 +23,7 @@ import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -59,7 +60,18 @@ export const SignatureFieldFromApiModel = new t.Type<
               NonEmptyString.decode(attrs.unique_name),
               E.map((uniqueName) => ({ uniqueName }))
             )
-          : E.right(attrs),
+          : pipe(
+              NonNegativeNumber.decode(0),
+              E.map((defaultSize) => ({
+                coordinates: attrs.coordinates,
+                page: {
+                  number: attrs.page,
+                  width: defaultSize,
+                  height: defaultSize,
+                },
+                size: attrs.size,
+              }))
+            ),
     }),
   SignatureFieldToApiModel.encode
 );
