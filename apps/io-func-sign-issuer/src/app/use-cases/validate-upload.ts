@@ -2,6 +2,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { sequenceS } from "fp-ts/lib/Apply";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -18,6 +19,7 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 
+// TODO: [SFEQS-1216] this function cannot be aware of an infra module (@io-sign/io-sign/infra/pdf)
 export const makeValidateUpload =
   (
     getSignatureRequest: GetSignatureRequest,
@@ -45,41 +47,46 @@ export const makeValidateUpload =
       TE.chain(upsertSignatureRequest),
       TE.chain((signatureRequest) =>
         pipe(
-          uploadMetadata.url,
-          TE.fromNullable(new Error("Not found: url in upload metadata")),
-          TE.chainFirst(() =>
-            pipe(
-              isUploaded(uploadMetadata.id),
-              TE.filterOrElse(
-                identity,
-                () => new Error("Unable to find the uploaded document")
-              ),
-
+          sequenceS(TE.ApplySeq)({
+            metadata: pipe(
+              uploadMetadata.url,
+              TE.fromNullable(new Error("Not found: url in upload metadata")),
               TE.chain(() =>
                 pipe(
-                  uploadMetadata.id,
-                  downloadDocumentUploadedFromBlobStorage,
-                  TE.chain(getPdfMetadata),
+                  isUploaded(uploadMetadata.id),
+                  TE.filterOrElse(
+                    identity,
+                    () => new Error("Unable to find the uploaded document")
+                  ),
                   TE.chain(() =>
                     pipe(
-                      {
-                        ...uploadMetadata,
-                        validated: true,
-                        updatedAt: new Date(),
-                      },
-                      upsertUploadMetadata
+                      downloadDocumentUploadedFromBlobStorage(
+                        uploadMetadata.id
+                      ),
+                      TE.chain(getPdfMetadata)
                     )
                   )
                 )
               )
-            )
-          ),
-          TE.chain(moveUploadedDocument(uploadMetadata.documentId)),
-          TE.chainEitherK((url) =>
+            ),
+            url: pipe(
+              uploadMetadata.url,
+              TE.fromNullable(new Error("Url not found in upload metadata")),
+              TE.chain(moveUploadedDocument(uploadMetadata.documentId))
+            ),
+          }),
+          TE.chainEitherK(({ metadata: { pages }, url }) =>
             pipe(
               signatureRequest,
-              markDocumentAsReady(uploadMetadata.documentId, url)
+              markDocumentAsReady(uploadMetadata.documentId, url, pages)
             )
+          ),
+          TE.chainFirst(() =>
+            upsertUploadMetadata({
+              ...uploadMetadata,
+              validated: true,
+              updatedAt: new Date(),
+            })
           ),
           TE.altW(() =>
             pipe(

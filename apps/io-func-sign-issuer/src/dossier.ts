@@ -10,7 +10,7 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { Id, id as newId } from "@io-sign/io-sign/id";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 
-import { Issuer } from "./issuer";
+import { Issuer } from "@io-sign/io-sign/issuer";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
 

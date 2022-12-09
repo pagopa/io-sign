@@ -9,14 +9,26 @@ import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { validate } from "../validation";
 import { EntityNotFoundError } from "../error";
 
-export const PdfMetadata = t.partial({
-  title: t.string,
-  creationDate: IsoDateFromString,
-  modificationDate: IsoDateFromString,
-});
+export const PdfMetadata = t.intersection([
+  t.type({
+    pages: t.array(
+      t.type({
+        number: NonNegativeNumber,
+        width: NonNegativeNumber,
+        height: NonNegativeNumber,
+      })
+    ),
+  }),
+  t.partial({
+    title: t.string,
+    creationDate: IsoDateFromString,
+    modificationDate: IsoDateFromString,
+  }),
+]);
 
 export type PdfMetadata = t.TypeOf<typeof PdfMetadata>;
 
@@ -37,6 +49,10 @@ export const getPdfMetadata = (buffer: Buffer) =>
       title: pdfDocument.getTitle(),
       creationDate: pdfDocument.getCreationDate(),
       modificationDate: pdfDocument.getModificationDate(),
+      pages: pdfDocument.getPages().map((page, number) => ({
+        ...page.getSize(),
+        number,
+      })),
     })),
     TE.chainEitherKW(
       validate(PdfMetadata, "Failed to extract metadata from pdf file!")

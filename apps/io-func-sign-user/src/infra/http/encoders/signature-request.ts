@@ -1,4 +1,5 @@
 import * as E from "io-ts/lib/Encoder";
+
 import {
   SignatureRequestDetailView as SignatureRequestApiModel,
   StatusEnum as SignatureRequestStatusEnum,
@@ -6,8 +7,7 @@ import {
 
 import { SignatureRequest } from "../../../signature-request";
 
-import { DocumentToApiModel } from "./document";
-import { NotificationToApiModel } from "./notification";
+import { DocumentReadyToDetailView } from "./document";
 
 export const SignatureRequestToApiModel: E.Encoder<
   SignatureRequestApiModel,
@@ -15,8 +15,8 @@ export const SignatureRequestToApiModel: E.Encoder<
 > = {
   encode: ({
     id,
-    dossierId: dossier_id,
     signerId: signer_id,
+    dossierId: dossier_id,
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
@@ -25,35 +25,19 @@ export const SignatureRequestToApiModel: E.Encoder<
   }) => {
     const commonFields = {
       id,
-      dossier_id,
       signer_id,
+      dossier_id,
       created_at,
       updated_at,
       expires_at,
-      documents: documents.map(DocumentToApiModel.encode),
+      documents: documents.map(DocumentReadyToDetailView.encode),
     };
     switch (extra.status) {
-      case "DRAFT": {
-        return {
-          ...commonFields,
-          status: SignatureRequestStatusEnum.DRAFT,
-        };
-      }
       case "WAIT_FOR_SIGNATURE": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-          notification:
-            extra.notification !== undefined
-              ? NotificationToApiModel.encode(extra.notification)
-              : undefined,
           qr_code_url: extra.qrCodeUrl,
-        };
-      }
-      case "READY": {
-        return {
-          ...commonFields,
-          status: SignatureRequestStatusEnum.READY,
         };
       }
       case "REJECTED": {

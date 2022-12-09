@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newSigner } from "@io-sign/io-sign/signer";
-import { newIssuer } from "../issuer";
+import { newIssuer } from "@io-sign/io-sign/issuer";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
 
@@ -14,10 +14,12 @@ const dossier = newDossier(issuer, "My dossier", [
   {
     title: "document #1",
     signatureFields: [],
+    pages: [],
   },
   {
     title: "document #2",
     signatureFields: [],
+    pages: [],
   },
 ]);
 
