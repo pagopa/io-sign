@@ -311,5 +311,6 @@ components:
         - clauses
         - document_url
         - privacy_url
+        - privacy_text
         - terms_and_conditions_url
         - nonce
