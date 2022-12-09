@@ -86,7 +86,7 @@ const makeCreateFilledDocumentHandler = (
       response,
       FilledDocumentToApiModel.encode,
       created(FilledDocumentDetailView),
-      withHeader("location", response.url.href)
+      withHeader("Location", response.url.href)
     );
 
   return createHandler(
