@@ -1,4 +1,4 @@
-import { validate } from "@io-sign/io-sign/validation";
+import { validate, ValidationError } from "@io-sign/io-sign/validation";
 
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
@@ -99,7 +99,17 @@ export const requireDocumentsSignature = flow(
     flow(
       RA.map(DocumentToSignFromApiModel.decode),
       RA.sequence(E.Applicative),
-      E.chainW(validate(t.array(DocumentToSign), "Invalid document to sign"))
+      E.mapLeft(
+        (errors) =>
+          new ValidationError(
+            errors.map((error) =>
+              error.message !== undefined
+                ? error.message
+                : "Document to sign not valid!"
+            )
+          )
+      ),
+      E.chainW(validate(t.array(DocumentToSign), "Invalid documents to sign"))
     )
   )
 );
