@@ -339,6 +339,13 @@ components:
           type: string
           format: base64
           minLength: 1
+      required:
+        - clauses
+        - document_url
+        - privacy_url
+        - privacy_text
+        - terms_and_conditions_url
+        - nonce
 
     Clause:
       type: object
