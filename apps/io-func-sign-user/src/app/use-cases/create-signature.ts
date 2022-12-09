@@ -17,12 +17,7 @@ import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infr
 
 import { InsertSignature, newSignature } from "../../signature";
 import { EnqueueMessage } from "../../infra/azure/storage/queue";
-import {
-  mockPublicKey,
-  mockSignature,
-  mockSignedTos,
-  mockSpidAssertion,
-} from "./__mocks__/qtsp";
+import { mockPublicKey, mockSignature, mockSignedTos } from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({
   signatureRequestId: NonEmptyString,
@@ -30,6 +25,7 @@ export const CreateSignaturePayload = t.type({
   qtspClauses: QtspClauses,
   documentsSignature: t.array(DocumentToSign),
   email: EmailString,
+  spidAssertion: NonEmptyString,
 });
 
 export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
@@ -50,6 +46,7 @@ export const makeCreateSignature =
     qtspClauses,
     documentsSignature,
     email,
+    spidAssertion,
   }: CreateSignaturePayload) =>
     pipe(
       signer.id,
@@ -63,7 +60,7 @@ export const makeCreateSignature =
       TE.map((fiscalCode) => ({
         fiscalCode,
         publicKey: mockPublicKey,
-        spidAssertion: mockSpidAssertion,
+        spidAssertion,
         email,
         documentLink: qtspClauses.filledDocumentUrl,
         tosSignature: mockSignedTos,

@@ -34,12 +34,14 @@ import { makeInsertSignature } from "../cosmos/signature";
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 import { makeEnqueueMessage } from "../storage/queue";
+import { MockConfig } from "../../../app/use-cases/__mocks__/config";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   db: CosmosDatabase,
   qtspQueue: QueueClient,
-  qtspConfig: NamirialConfig
+  qtspConfig: NamirialConfig,
+  mockConfig: MockConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
@@ -88,6 +90,7 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         email,
         signatureRequestId,
+        spidAssertion: mockConfig.spidAssertionMock,
       })
     )
   );

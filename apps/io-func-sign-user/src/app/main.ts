@@ -80,5 +80,6 @@ export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
   database,
   qtspQueue,
-  config.namirial
+  config.namirial,
+  config.mock
 );
