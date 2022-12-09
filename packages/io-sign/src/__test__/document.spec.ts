@@ -13,6 +13,7 @@ import {
 const metadata: DocumentMetadata = {
   title: "my test document",
   signatureFields: [],
+  pages: [],
 };
 
 describe("Document", () => {

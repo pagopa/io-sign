@@ -1,5 +1,4 @@
 import * as t from "io-ts";
-
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
   Clause,
@@ -23,21 +22,23 @@ export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
   typeof SignatureFieldToBeCreatedAttributes
 >;
 
-export const toSignatureFieldToBeCreatedAttributes = ({
-  coordinates,
-  size,
-  page: { number: page, height },
-}: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
-  bottomLeft: {
-    x: coordinates.x,
-    y: height - coordinates.y + size.h,
-  },
-  topRight: {
-    x: coordinates.x + size.w,
-    y: height - coordinates.y,
-  },
-  page,
-});
+export const toSignatureFieldToBeCreatedAttributes =
+  (pageHeight: NonNegativeNumber) =>
+  ({
+    coordinates,
+    size,
+    page,
+  }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
+    bottomLeft: {
+      x: coordinates.x,
+      y: pageHeight - coordinates.y + size.h,
+    },
+    topRight: {
+      x: coordinates.x + size.w,
+      y: pageHeight - coordinates.y,
+    },
+    page,
+  });
 
 export const SignatureField = t.type({
   attributes: t.union([

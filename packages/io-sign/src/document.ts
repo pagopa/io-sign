@@ -3,8 +3,6 @@
 import * as t from "io-ts";
 
 import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
-import { lookup } from "fp-ts/lib/Array";
 
 import {
   WithinRangeString,
@@ -49,11 +47,7 @@ export const SignatureFieldToBeCreatedAttributes = t.type({
     x: t.number,
     y: t.number,
   }),
-  page: t.type({
-    number: NonNegativeNumber,
-    width: NonNegativeNumber,
-    height: NonNegativeNumber,
-  }),
+  page: NonNegativeNumber,
   size: t.type({
     w: NonNegativeNumber,
     h: NonNegativeNumber,
@@ -77,6 +71,13 @@ export type SignatureField = t.TypeOf<typeof SignatureField>;
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 15),
   signatureFields: t.array(SignatureField),
+  pages: t.array(
+    t.type({
+      number: NonNegativeNumber,
+      width: NonNegativeNumber,
+      height: NonNegativeNumber,
+    })
+  ),
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
@@ -142,27 +143,13 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
 });
 
 export const updateMetadataPage =
-  (pages: Array<SignatureFieldToBeCreatedAttributes["page"]>) =>
+  (pages: DocumentMetadata["pages"]) =>
   (document: DocumentReady): DocumentReady => ({
     ...document,
     metadata: {
-      signatureFields: document.metadata.signatureFields.map(
-        ({ attributes, clause }) => ({
-          clause,
-          attributes: SignatureFieldToBeCreatedAttributes.is(attributes)
-            ? pipe(
-                pages,
-                lookup(attributes.page.number),
-                O.map((page) => ({
-                  ...attributes,
-                  page,
-                })),
-                O.getOrElse(() => attributes)
-              )
-            : attributes,
-        })
-      ),
+      signatureFields: document.metadata.signatureFields,
       title: document.metadata.title,
+      pages,
     },
   });
 
@@ -174,7 +161,7 @@ type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
   payload: {
     url: string;
-    pages: Array<SignatureFieldToBeCreatedAttributes["page"]>;
+    pages: DocumentMetadata["pages"];
   };
 };
 
@@ -298,10 +285,7 @@ export const startValidation = dispatch({
   name: "START_VALIDATION",
 });
 
-export const markAsReady = (
-  url: string,
-  pages: Array<SignatureFieldToBeCreatedAttributes["page"]>
-) =>
+export const markAsReady = (url: string, pages: DocumentMetadata["pages"]) =>
   dispatch({
     name: "MARK_AS_READY",
     payload: {

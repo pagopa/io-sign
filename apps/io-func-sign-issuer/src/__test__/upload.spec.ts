@@ -24,10 +24,12 @@ describe("UploadMetadata", () => {
       {
         title: "document #1",
         signatureFields: [],
+        pages: [],
       },
       {
         title: "document #2",
         signatureFields: [],
+        pages: [],
       },
     ]);
 

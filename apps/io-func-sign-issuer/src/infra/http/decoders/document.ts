@@ -16,7 +16,7 @@ import { SignatureField } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { sequenceS } from "fp-ts/lib/Apply";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
@@ -60,18 +60,7 @@ export const SignatureFieldFromApiModel = new t.Type<
               NonEmptyString.decode(attrs.unique_name),
               E.map((uniqueName) => ({ uniqueName }))
             )
-          : pipe(
-              NonNegativeNumber.decode(0),
-              E.map((defaultSize) => ({
-                coordinates: attrs.coordinates,
-                page: {
-                  number: attrs.page,
-                  width: defaultSize,
-                  height: defaultSize,
-                },
-                size: attrs.size,
-              }))
-            ),
+          : E.right(attrs),
     }),
   SignatureFieldToApiModel.encode
 );
@@ -87,7 +76,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
     pipe(
       signature_fields,
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
-      E.map((signatureFields) => ({ title, signatureFields }))
+      E.map((signatureFields) => ({ title, signatureFields, pages: [] }))
     ),
   DocumentMetadataToApiModel.encode
 );
