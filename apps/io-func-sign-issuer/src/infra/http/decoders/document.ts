@@ -16,6 +16,7 @@ import { SignatureField } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { sequenceS } from "fp-ts/lib/Apply";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
@@ -23,7 +24,6 @@ import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 const toClauseType = (
   type: ClauseTypeEnum
