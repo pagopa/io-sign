@@ -16,6 +16,7 @@ export const SignatureRequestToApiModel: E.Encoder<
   encode: ({
     id,
     signerId: signer_id,
+    dossierId: dossier_id,
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
@@ -25,6 +26,7 @@ export const SignatureRequestToApiModel: E.Encoder<
     const commonFields = {
       id,
       signer_id,
+      dossier_id,
       created_at,
       updated_at,
       expires_at,
