@@ -26,12 +26,15 @@ export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
 export const toSignatureFieldToBeCreatedAttributes = ({
   coordinates,
   size,
-  page: { number: page },
+  page: { number: page, height },
 }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
-  bottomLeft: coordinates,
+  bottomLeft: {
+    x: coordinates.x,
+    y: height - coordinates.y,
+  },
   topRight: {
     x: coordinates.x + size.w,
-    y: coordinates.y + size.h,
+    y: height - coordinates.y + size.h,
   },
   page,
 });

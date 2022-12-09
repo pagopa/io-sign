@@ -19,6 +19,7 @@ import {
   markAsReady as setReadyStatus,
   markAsRejected as setRejectedStatus,
   DocumentReady,
+  SignatureFieldToBeCreatedAttributes,
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -152,6 +153,7 @@ type Action_MARK_DOCUMENT_AS_READY = {
   payload: {
     documentId: Document["id"];
     url: string;
+    pages: Array<SignatureFieldToBeCreatedAttributes["page"]>;
   };
 };
 
@@ -230,7 +232,7 @@ const onDraftStatus =
           request,
           getDocument(action.payload.documentId),
           E.fromOption(() => documentNotFoundError),
-          E.chain(setReadyStatus(action.payload.url)),
+          E.chain(setReadyStatus(action.payload.url, action.payload.pages)),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
@@ -337,8 +339,15 @@ export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
 export const startValidationOnDocument = (documentId: Document["id"]) =>
   dispatch({ name: "START_DOCUMENT_VALIDATION", payload: { documentId } });
 
-export const markDocumentAsReady = (documentId: Document["id"], url: string) =>
-  dispatch({ name: "MARK_DOCUMENT_AS_READY", payload: { documentId, url } });
+export const markDocumentAsReady = (
+  documentId: Document["id"],
+  url: string,
+  pages: Array<SignatureFieldToBeCreatedAttributes["page"]>
+) =>
+  dispatch({
+    name: "MARK_DOCUMENT_AS_READY",
+    payload: { documentId, url, pages },
+  });
 
 export const markDocumentAsRejected = (
   documentId: Document["id"],

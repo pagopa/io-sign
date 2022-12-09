@@ -3,6 +3,8 @@
 import * as t from "io-ts";
 
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { lookup } from "fp-ts/lib/Array";
 
 import {
   WithinRangeString,
@@ -139,6 +141,31 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   updatedAt: new Date(),
 });
 
+export const updateMetadataPage =
+  (pages: Array<SignatureFieldToBeCreatedAttributes["page"]>) =>
+  (document: DocumentReady): DocumentReady => ({
+    ...document,
+    metadata: {
+      signatureFields: document.metadata.signatureFields.map(
+        ({ attributes, clause }) => ({
+          clause,
+          attributes: SignatureFieldToBeCreatedAttributes.is(attributes)
+            ? pipe(
+                pages,
+                lookup(attributes.page.number),
+                O.map((page) => ({
+                  ...attributes,
+                  page,
+                })),
+                O.getOrElse(() => attributes)
+              )
+            : attributes,
+        })
+      ),
+      title: document.metadata.title,
+    },
+  });
+
 type Action_START_VALIDATION = {
   name: "START_VALIDATION";
 };
@@ -147,6 +174,7 @@ type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
   payload: {
     url: string;
+    pages: Array<SignatureFieldToBeCreatedAttributes["page"]>;
   };
 };
 
@@ -214,12 +242,14 @@ const onWaitForValidationStatus =
   ): E.Either<Error, DocumentReady | DocumentRejected> => {
     switch (action.name) {
       case "MARK_AS_READY":
-        return E.right({
-          ...document,
-          status: "READY",
-          url: action.payload.url,
-          updatedAt: new Date(),
-        });
+        return E.right(
+          updateMetadataPage(action.payload.pages)({
+            ...document,
+            status: "READY",
+            url: action.payload.url,
+            updatedAt: new Date(),
+          })
+        );
       case "MARK_AS_REJECTED": {
         return E.right({
           ...document,
@@ -268,11 +298,15 @@ export const startValidation = dispatch({
   name: "START_VALIDATION",
 });
 
-export const markAsReady = (url: string) =>
+export const markAsReady = (
+  url: string,
+  pages: Array<SignatureFieldToBeCreatedAttributes["page"]>
+) =>
   dispatch({
     name: "MARK_AS_READY",
     payload: {
       url,
+      pages,
     },
   });
 
