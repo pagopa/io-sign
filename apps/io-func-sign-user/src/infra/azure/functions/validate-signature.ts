@@ -18,6 +18,10 @@ import { makeGetSignature, makeUpsertSignature } from "../cosmos/signature";
 import { makeGetToken } from "../../namirial/client";
 import { makeGetSignatureRequestWithToken } from "../../namirial/signature-request";
 import { NamirialConfig } from "../../namirial/config";
+import {
+  makeGetSignatureRequest,
+  makeUpsertSignatureRequest,
+} from "../cosmos/signature-request";
 
 const makeValidateSignatureHandler = (
   db: Database,
@@ -27,6 +31,8 @@ const makeValidateSignatureHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getSignature = makeGetSignature(db);
   const upsertSignature = makeUpsertSignature(db);
+  const getSignatureRequest = makeGetSignatureRequest(db);
+  const upsertSignatureRequest = makeUpsertSignatureRequest(db);
 
   const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
     makeGetToken()
@@ -36,6 +42,8 @@ const makeValidateSignatureHandler = (
     getFiscalCodeBySignerId,
     getSignature,
     upsertSignature,
+    getSignatureRequest,
+    upsertSignatureRequest,
     getQtspSignatureRequest
   );
 

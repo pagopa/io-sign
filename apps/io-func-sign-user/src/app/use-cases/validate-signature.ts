@@ -7,13 +7,18 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
-
+import { sequenceS } from "fp-ts/lib/Apply";
+import { markAsRejected } from "../../signature-request";
 import {
   GetSignature,
   SignatureStatus,
   UpsertSignature,
 } from "../../signature";
 import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
+import {
+  GetSignatureRequest,
+  UpsertSignatureRequest,
+} from "../../signature-request";
 
 export const ValidateSignaturePayload = t.type({
   signatureId: NonEmptyString,
@@ -30,6 +35,8 @@ export const makeValidateSignature =
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     getSignature: GetSignature,
     upsertSignature: UpsertSignature,
+    getSignatureRequest: GetSignatureRequest,
+    upsertSignatureRequest: UpsertSignatureRequest,
     getQtspSignatureRequest: GetQtspSignatureRequest
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) =>
@@ -43,25 +50,50 @@ export const makeValidateSignature =
       ),
       TE.chainW((signature) =>
         pipe(
-          getQtspSignatureRequest(signature.qtspSignatureRequestId),
-          TE.chainW((qtspSignatureRequest) => {
+          sequenceS(TE.ApplicativeSeq)({
+            qtspSignatureRequest: getQtspSignatureRequest(
+              signature.qtspSignatureRequestId
+            ),
+            signatureRequest: pipe(
+              signature.signerId,
+              getSignatureRequest(signature.signatureRequestId),
+              TE.chainW(
+                TE.fromOption(
+                  () => new EntityNotFoundError("Signature Request not found.")
+                )
+              )
+            ),
+          }),
+
+          TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
             switch (qtspSignatureRequest.status) {
               case "CREATED":
-              case "READY":
               case "WAITING":
+                return TE.left(new Error("Signature not ready yet. Retry!"));
+              case "READY":
               case "COMPLETED":
                 return TE.right(signature);
               case "FAILED":
+                const rejectedReason =
+                  qtspSignatureRequest.last_error !== null
+                    ? qtspSignatureRequest.last_error.detail
+                    : "Rejected reason not found!";
+
                 return pipe(
                   {
                     ...signature,
                     status: SignatureStatus.FAILED,
-                    rejectedReason:
-                      qtspSignatureRequest.last_error !== null
-                        ? qtspSignatureRequest.last_error.detail
-                        : "Rejected reason not found!",
+                    rejectedReason,
                   },
-                  upsertSignature
+                  upsertSignature,
+                  TE.chainFirst(() =>
+                    pipe(
+                      signatureRequest,
+                      markAsRejected(rejectedReason),
+                      TE.fromEither,
+                      TE.chain(upsertSignatureRequest)
+                    )
+                  )
                 );
               default:
                 return pipe(
@@ -70,7 +102,15 @@ export const makeValidateSignature =
                     status: SignatureStatus.FAILED,
                     rejectedReason: "Invalid response status from QTSP!",
                   },
-                  upsertSignature
+                  upsertSignature,
+                  TE.chainFirst(() =>
+                    pipe(
+                      signatureRequest,
+                      markAsRejected("Invalid response status from QTSP!"),
+                      TE.fromEither,
+                      TE.chain(upsertSignatureRequest)
+                    )
+                  )
                 );
             }
           })
