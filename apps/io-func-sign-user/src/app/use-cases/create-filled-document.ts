@@ -12,8 +12,9 @@ import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 
 import { FilledDocumentUrl } from "../../filled-document";
-import { GetBlobUrl } from "../../infra/azure/storage/blob";
+
 import { EnqueueMessage } from "../../infra/azure/storage/queue";
+import { GetSasFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
 
 export const CreateFilledDocumentPayload = t.type({
   signer: Signer,
@@ -32,7 +33,7 @@ export type CreateFilledDocumentPayload = t.TypeOf<
  */
 export const makeCreateFilledDocumentUrl =
   (
-    getFilledDocumentUrl: GetBlobUrl,
+    getSasFilledDocumentUrl: GetSasFilledDocumentUrl,
     enqueueDocumentToFill: EnqueueMessage,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId
   ) =>
@@ -54,15 +55,7 @@ export const makeCreateFilledDocumentUrl =
             new EntityNotFoundError("Fiscal code not found for this signer!")
         )
       ),
-      TE.chain(() =>
-        pipe(
-          filledDocumentFileName,
-          getFilledDocumentUrl,
-          TE.fromOption(
-            () => new EntityNotFoundError("Unable to generate callback url!")
-          )
-        )
-      ),
+      TE.chain(() => getSasFilledDocumentUrl(filledDocumentFileName)),
       TE.chainFirst(() =>
         pipe(
           {

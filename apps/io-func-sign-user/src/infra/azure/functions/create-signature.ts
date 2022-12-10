@@ -38,7 +38,7 @@ import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 import { makeEnqueueMessage } from "../storage/queue";
 import { MockConfig } from "../../../app/use-cases/__mocks__/config";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { GetDocumentUrl, getDocumentUrl } from "../../../document-url";
+import { GetDocumentUrl, getDocumentUrl } from "../storage/document-url";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,

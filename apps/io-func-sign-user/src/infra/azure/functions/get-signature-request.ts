@@ -18,7 +18,7 @@ import { SignatureRequestToApiModel } from "../../http/encoders/signature-reques
 import { makeRequireSignatureRequest } from "../../http/decoder/signature-request";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { SignatureRequest } from "../../../signature-request";
-import { toDocumentWithSasUrl } from "../../../document-url";
+import { toDocumentWithSasUrl } from "../storage/document-url";
 
 const grantReadAccessToDocuments = (request: SignatureRequest) =>
   pipe(

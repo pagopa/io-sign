@@ -5,6 +5,7 @@ import { created, error } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
@@ -20,6 +21,13 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { ValidUrl } from "@pagopa/ts-commons/lib/url";
 import {
+  defaultBlobGenerateSasUrlOptions,
+  generateSasUrlFromBlob,
+  withPermissions,
+  withExpireInMinutes,
+  getBlobClient,
+} from "@io-sign/io-sign/infra/azure/storage/blob";
+import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
 } from "../../../app/use-cases/create-filled-document";
@@ -28,20 +36,39 @@ import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocument
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 
-import { makeGetBlobUrl } from "../storage/blob";
 import { makeEnqueueMessage } from "../storage/queue";
+
+export type GetSasFilledDocumentUrl = (
+  filledDocumentBlobName: string
+) => TE.TaskEither<Error, string>;
 
 const makeCreateFilledDocumentHandler = (
   filledContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
   tokenizer: PdvTokenizerClientWithApiKey
 ) => {
-  const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
+  const getSasFilledDocumentUrl: GetSasFilledDocumentUrl = (
+    filledDocumentBlobName: string
+  ) =>
+    pipe(
+      filledDocumentBlobName,
+      getBlobClient,
+      RTE.chainTaskEitherK(
+        generateSasUrlFromBlob(
+          pipe(
+            defaultBlobGenerateSasUrlOptions(),
+            withPermissions("r"),
+            withExpireInMinutes(120)
+          )
+        )
+      )
+    )(filledContainerClient);
+
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
-    getFilledDocumentUrl,
+    getSasFilledDocumentUrl,
     enqueueDocumentToFill,
     getFiscalCodeBySignerId
   );

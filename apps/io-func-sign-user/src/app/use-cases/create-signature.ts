@@ -22,7 +22,7 @@ import { InsertSignature, newSignature } from "../../signature";
 import { EnqueueMessage } from "../../infra/azure/storage/queue";
 import { DocumentToSign } from "../../signature-field";
 import { GetSignatureRequest } from "../../signature-request";
-import { GetDocumentUrl } from "../../document-url";
+import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
 import { mockPublicKey, mockSignature, mockSignedTos } from "./__mocks__/qtsp";
 
