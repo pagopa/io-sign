@@ -8,7 +8,7 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { markAsRejected } from "../../signature-request";
+import { markAsRejected, markAsSigned } from "../../signature-request";
 import {
   GetSignature,
   SignatureStatus,
@@ -72,7 +72,22 @@ export const makeValidateSignature =
                 return TE.left(new Error("Signature not ready yet. Retry!"));
               case "READY":
               case "COMPLETED":
-                return TE.right(signature);
+                return pipe(
+                  {
+                    ...signature,
+                    status: SignatureStatus.COMPLETED,
+                  },
+                  upsertSignature,
+                  // TODO: the url of the signature request must be changed
+                  TE.chainFirst(() =>
+                    pipe(
+                      signatureRequest,
+                      markAsSigned,
+                      TE.fromEither,
+                      TE.chain(upsertSignatureRequest)
+                    )
+                  )
+                );
               case "FAILED":
                 const rejectedReason =
                   qtspSignatureRequest.last_error !== null
