@@ -10,6 +10,7 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 
 import { Database } from "@azure/cosmos";
 
+import { ContainerClient } from "@azure/storage-blob";
 import {
   makeValidateSignature,
   ValidateSignaturePayload,
@@ -22,10 +23,12 @@ import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
+import { makeGetBlobUrl } from "../storage/blob";
 
 const makeValidateSignatureHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
+  signedContainerClient: ContainerClient,
   qtspConfig: NamirialConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
@@ -33,6 +36,7 @@ const makeValidateSignatureHandler = (
   const upsertSignature = makeUpsertSignature(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
+  const getSignedDocumentUrl = makeGetBlobUrl(signedContainerClient);
 
   const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
     makeGetToken()
@@ -41,6 +45,7 @@ const makeValidateSignatureHandler = (
   const validateSignature = makeValidateSignature(
     getFiscalCodeBySignerId,
     getSignature,
+    getSignedDocumentUrl,
     upsertSignature,
     getSignatureRequest,
     upsertSignatureRequest,
