@@ -5,9 +5,6 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { flow, identity, constVoid } from "fp-ts/lib/function";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-
 import { Database } from "@azure/cosmos";
 
 import { ContainerClient } from "@azure/storage-blob";
@@ -27,11 +24,9 @@ import { makeGetBlobUrl } from "../storage/blob";
 
 const makeValidateSignatureHandler = (
   db: Database,
-  tokenizer: PdvTokenizerClientWithApiKey,
   signedContainerClient: ContainerClient,
   qtspConfig: NamirialConfig
 ) => {
-  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getSignature = makeGetSignature(db);
   const upsertSignature = makeUpsertSignature(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -43,7 +38,6 @@ const makeValidateSignatureHandler = (
   )(qtspConfig);
 
   const validateSignature = makeValidateSignature(
-    getFiscalCodeBySignerId,
     getSignature,
     getSignedDocumentUrl,
     upsertSignature,

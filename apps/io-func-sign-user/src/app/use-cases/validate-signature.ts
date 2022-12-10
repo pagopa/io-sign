@@ -1,7 +1,6 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
@@ -61,7 +60,6 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
 // TODO [SFEQS-1156]: Add sending message
 export const makeValidateSignature =
   (
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     getSignature: GetSignature,
     getSignedDocumentUrl: GetBlobUrl,
     upsertSignature: UpsertSignature,

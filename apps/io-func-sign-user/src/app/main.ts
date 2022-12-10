@@ -117,7 +117,6 @@ export const GetSignatureRequest = makeGetSignatureRequestFunction(
 
 export const ValidateSignature = makeValidateSignatureFunction(
   database,
-  pdvTokenizerClient,
   signedContainerClient,
   config.namirial
 );
