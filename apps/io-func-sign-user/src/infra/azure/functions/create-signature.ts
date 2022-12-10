@@ -16,6 +16,8 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { QueueClient } from "@azure/storage-queue";
+import { ContainerClient } from "@azure/storage-blob";
+import { DocumentReady } from "@io-sign/io-sign/document";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -35,15 +37,20 @@ import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 import { makeEnqueueMessage } from "../storage/queue";
 import { MockConfig } from "../../../app/use-cases/__mocks__/config";
+import { makeGetSignatureRequest } from "../cosmos/signature-request";
+import { GetDocumentUrl, getDocumentUrl } from "../../../document-url";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   db: CosmosDatabase,
   qtspQueue: QueueClient,
+  validatedContainerClient: ContainerClient,
+  signedContainerClient: ContainerClient,
   qtspConfig: NamirialConfig,
   mockConfig: MockConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const getSignatureRequest = makeGetSignatureRequest(db);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
     makeGetToken()
   )(qtspConfig);
@@ -51,11 +58,21 @@ const makeCreateSignatureHandler = (
   const insertSignature = makeInsertSignature(db);
   const enqueueSignature = makeEnqueueMessage(qtspQueue);
 
+  const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
+    pipe(document, getDocumentUrl("r", 10))(validatedContainerClient);
+
+  const getUploadSignedDocumentUrl: GetDocumentUrl = (
+    document: DocumentReady
+  ) => pipe(document, getDocumentUrl("racw", 10))(signedContainerClient);
+
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
     creatQtspSignatureRequest,
     insertSignature,
-    enqueueSignature
+    enqueueSignature,
+    getSignatureRequest,
+    getDownloadDocumentUrl,
+    getUploadSignedDocumentUrl
   );
 
   const requireCreateSignatureBody = flow(

@@ -57,6 +57,11 @@ const validatedContainerClient = new ContainerClient(
   "validated-documents"
 );
 
+const signedContainerClient = new ContainerClient(
+  config.azure.storage.connectionString,
+  "signed-documents"
+);
+
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
@@ -93,6 +98,8 @@ export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
   database,
   qtspQueue,
+  validatedContainerClient,
+  signedContainerClient,
   config.namirial,
   config.mock
 );
