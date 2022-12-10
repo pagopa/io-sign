@@ -9,7 +9,7 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import { Signer } from "@io-sign/io-sign/signer";
 
-enum SignatureStatus {
+export enum SignatureStatus {
   CREATED = "CREATED",
   READY = "READY",
   WAITING = "WAITING",
@@ -25,15 +25,20 @@ const SignatureStatusV = t.keyof({
   [SignatureStatus.FAILED]: null,
 });
 
-export const Signature = t.type({
-  id: Id,
-  signerId: Signer.props.id,
-  signatureRequestId: Id,
-  qtspSignatureRequestId: Id,
-  status: SignatureStatusV,
-  createdAt: IsoDateFromString,
-  updatedAt: IsoDateFromString,
-});
+export const Signature = t.intersection([
+  t.type({
+    id: Id,
+    signerId: Signer.props.id,
+    signatureRequestId: Id,
+    qtspSignatureRequestId: Id,
+    status: SignatureStatusV,
+    createdAt: IsoDateFromString,
+    updatedAt: IsoDateFromString,
+  }),
+  t.partial({
+    rejectedReason: t.string,
+  }),
+]);
 
 export type Signature = t.TypeOf<typeof Signature>;
 
@@ -58,3 +63,7 @@ export type InsertSignature = (
 export type GetSignature = (
   signatureId: Signature["id"]
 ) => (signerId: Signer["id"]) => TE.TaskEither<Error, O.Option<Signature>>;
+
+export type UpsertSignature = (
+  signature: Signature
+) => TE.TaskEither<Error, Signature>;

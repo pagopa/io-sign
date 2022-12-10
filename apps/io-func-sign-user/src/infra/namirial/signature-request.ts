@@ -5,7 +5,11 @@ import { makeFetchWithTimeout } from "../http/fetch-timeout";
 import { QtspCreateSignaturePayload } from "../../qtsp";
 import { NamirialConfig } from "./config";
 
-import { makeCreateSignatureRequest, makeGetToken } from "./client";
+import {
+  makeCreateSignatureRequest,
+  makeGetSignatureRequest,
+  makeGetToken,
+} from "./client";
 import { QtspCreateSignatureToApiModel } from "./encoders/signature-request";
 import { SignatureRequest } from "./types/signature-request";
 
@@ -25,6 +29,24 @@ export const makeCreateSignatureRequestWithToken =
           createSignaturePayload,
           QtspCreateSignatureToApiModel.encode,
           makeCreateSignatureRequest(fetchWithTimeout)(config)(token)
+        )
+      )
+    );
+
+export type GetSignatureRequest = (
+  signatureRequestId: SignatureRequest["id"]
+) => TE.TaskEither<Error, SignatureRequest>;
+
+export const makeGetSignatureRequestWithToken =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  (getToken: ReturnType<typeof makeGetToken>) =>
+  (config: NamirialConfig) =>
+  (signatureRequestId: SignatureRequest["id"]) =>
+    pipe(
+      getToken(config),
+      TE.chain((token) =>
+        makeGetSignatureRequest(fetchWithTimeout)(config)(token)(
+          signatureRequestId
         )
       )
     );

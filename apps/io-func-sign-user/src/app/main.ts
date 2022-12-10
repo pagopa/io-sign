@@ -16,6 +16,7 @@ import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
+import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -112,4 +113,10 @@ export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
   validatedContainerClient
+);
+
+export const ValidateSignature = makeValidateSignatureFunction(
+  database,
+  pdvTokenizerClient,
+  config.namirial
 );

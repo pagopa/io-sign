@@ -148,6 +148,46 @@ export const makeCreateSignatureRequest =
       )
     );
 
+export const makeGetSignatureRequest =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  ({ basePath }: NamirialConfig) =>
+  (token: NamirialToken) =>
+  (signatureRequestId: SignatureRequest["id"]) =>
+    pipe(
+      TE.of(token),
+      TE.chain((token) =>
+        TE.tryCatch(
+          () =>
+            fetchWithTimeout(`${basePath}/api/requests/${signatureRequestId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token.access}`,
+              },
+            }),
+          E.toError
+        )
+      ),
+      TE.filterOrElse(
+        isSuccessful,
+        () => new Error("The attempt to get Namirial signature request failed.")
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
+      TE.chainEitherKW(
+        flow(
+          SignatureRequest.decode,
+          E.mapLeft(
+            (errs) =>
+              new Error(
+                `Invalid format for Namirial signature request : ${readableReport(
+                  errs
+                )}`
+              )
+          )
+        )
+      )
+    );
+
 export const makeGetClausesWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   (getToken: ReturnType<typeof makeGetToken>) =>
