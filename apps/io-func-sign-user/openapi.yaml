@@ -128,7 +128,7 @@ paths:
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
       responses:
-        "201":
+        "200":
           description: Signature created
           content:
             application/json:

@@ -4,7 +4,7 @@ import { createHandler } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { created, error } from "@io-sign/io-sign/infra/http/response";
+import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -120,7 +120,7 @@ const makeCreateSignatureHandler = (
 
   const encodeHttpSuccessResponse = flow(
     SignatureToApiModel.encode,
-    created(SignatureDetailView)
+    success(SignatureDetailView)
   );
 
   return createHandler(
