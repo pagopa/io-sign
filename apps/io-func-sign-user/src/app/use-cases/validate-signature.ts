@@ -24,7 +24,7 @@ export type ValidateSignaturePayload = t.TypeOf<
   typeof ValidateSignaturePayload
 >;
 
-// TODO [SFEQS-1156]: Retrieve signed files from QTSP and sending message
+// TODO: [SFEQS-1156] Retrieve signed files from QTSP and sending message
 export const makeValidateSignature =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
