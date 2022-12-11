@@ -14,7 +14,7 @@ import * as t from "io-ts";
 import { FilledDocumentUrl } from "../../filled-document";
 
 import { EnqueueMessage } from "../../infra/azure/storage/queue";
-import { GetSasFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
+import { GetFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
 
 export const CreateFilledDocumentPayload = t.type({
   signer: Signer,
@@ -33,7 +33,7 @@ export type CreateFilledDocumentPayload = t.TypeOf<
  */
 export const makeCreateFilledDocumentUrl =
   (
-    getSasFilledDocumentUrl: GetSasFilledDocumentUrl,
+    getFilledDocumentUrl: GetFilledDocumentUrl,
     enqueueDocumentToFill: EnqueueMessage,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId
   ) =>
@@ -55,7 +55,7 @@ export const makeCreateFilledDocumentUrl =
             new EntityNotFoundError("Fiscal code not found for this signer!")
         )
       ),
-      TE.chain(() => getSasFilledDocumentUrl(filledDocumentFileName)),
+      TE.chain(() => getFilledDocumentUrl(filledDocumentFileName)),
       TE.chainFirst(() =>
         pipe(
           {

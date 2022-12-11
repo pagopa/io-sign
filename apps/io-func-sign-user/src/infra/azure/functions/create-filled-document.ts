@@ -38,7 +38,7 @@ import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetail
 
 import { makeEnqueueMessage } from "../storage/queue";
 
-export type GetSasFilledDocumentUrl = (
+export type GetFilledDocumentUrl = (
   filledDocumentBlobName: string
 ) => TE.TaskEither<Error, string>;
 
@@ -50,7 +50,7 @@ const makeCreateFilledDocumentHandler = (
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
-  const getSasFilledDocumentUrl: GetSasFilledDocumentUrl = (
+  const getFilledDocumentUrl: GetFilledDocumentUrl = (
     filledDocumentBlobName: string
   ) =>
     pipe(
@@ -68,7 +68,7 @@ const makeCreateFilledDocumentHandler = (
     )(filledContainerClient);
 
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
-    getSasFilledDocumentUrl,
+    getFilledDocumentUrl,
     enqueueDocumentToFill,
     getFiscalCodeBySignerId
   );
