@@ -34,7 +34,7 @@ export const requireQtspClauses = flow(
         E.map((qtspClauses) => qtspClauses.accepted_clauses),
         E.chain(
           validate(
-            tx.nonEmptyArray(QtspClauseApiModel.pipe(QtspClauseFromApiModel)),
+            tx.nonEmptyArray(QtspClause),
             "Invalid qtsp accepted clauses"
           )
         )

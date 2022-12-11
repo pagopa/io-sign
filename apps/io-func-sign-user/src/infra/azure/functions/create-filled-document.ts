@@ -27,15 +27,13 @@ import {
   withExpireInMinutes,
   getBlobClient,
 } from "@io-sign/io-sign/infra/azure/storage/blob";
-import {
-  CreateFilledDocumentPayload,
-  makeCreateFilledDocumentUrl,
-} from "../../../app/use-cases/create-filled-document";
+import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 import { makeNotifyDocumentToFill } from "../storage/document-to-fill";
+import { CreateFilledDocumentPayload } from "../../../filled-document";
 
 export type GetFilledDocumentUrl = (
   filledDocumentBlobName: string
