@@ -5,10 +5,11 @@ import { created, error } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, withHeader } from "@pagopa/handler-kit/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -18,29 +19,56 @@ import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { ValidUrl } from "@pagopa/ts-commons/lib/url";
+import {
+  defaultBlobGenerateSasUrlOptions,
+  generateSasUrlFromBlob,
+  withPermissions,
+  withExpireInMinutes,
+  getBlobClient,
+} from "@io-sign/io-sign/infra/azure/storage/blob";
 import {
   CreateFilledDocumentPayload,
   makeCreateFilledDocumentUrl,
 } from "../../../app/use-cases/create-filled-document";
-import { makeRequireSigner } from "../../http/decoder/signer";
+import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
 
-import { makeGetBlobUrl } from "../storage/blob";
 import { makeEnqueueMessage } from "../storage/queue";
+
+export type GetSasFilledDocumentUrl = (
+  filledDocumentBlobName: string
+) => TE.TaskEither<Error, string>;
 
 const makeCreateFilledDocumentHandler = (
   filledContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
   tokenizer: PdvTokenizerClientWithApiKey
 ) => {
-  const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
   const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
+  const getSasFilledDocumentUrl: GetSasFilledDocumentUrl = (
+    filledDocumentBlobName: string
+  ) =>
+    pipe(
+      filledDocumentBlobName,
+      getBlobClient,
+      RTE.chainTaskEitherK(
+        generateSasUrlFromBlob(
+          pipe(
+            defaultBlobGenerateSasUrlOptions(),
+            withPermissions("r"),
+            withExpireInMinutes(120)
+          )
+        )
+      )
+    )(filledContainerClient);
+
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
-    getFilledDocumentUrl,
+    getSasFilledDocumentUrl,
     enqueueDocumentToFill,
     getFiscalCodeBySignerId
   );
@@ -62,7 +90,7 @@ const makeCreateFilledDocumentHandler = (
     CreateFilledDocumentPayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      signer: RTE.fromReaderEither(makeRequireSigner),
+      signer: RTE.fromReaderEither(requireSigner),
       body: RTE.fromReaderEither(requireCreateFilledDocumentBody),
     }),
     RTE.map(({ signer, body: { documentUrl, email, familyName, name } }) => ({
@@ -80,10 +108,13 @@ const makeCreateFilledDocumentHandler = (
     TE.chain(requireCreateFilledDocumentPayload)
   );
 
-  const encodeHttpSuccessResponse = flow(
-    FilledDocumentToApiModel.encode,
-    created(FilledDocumentDetailView)
-  );
+  const encodeHttpSuccessResponse = (response: { url: ValidUrl }) =>
+    pipe(
+      response,
+      FilledDocumentToApiModel.encode,
+      created(FilledDocumentDetailView),
+      withHeader("Location", response.url.href)
+    );
 
   return createHandler(
     decodeHttpRequest,

@@ -1,5 +1,7 @@
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
+import { QueueClient } from "@azure/storage-queue";
+
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
@@ -16,6 +18,7 @@ import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
 import { makeSetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { makeValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 
 import { getConfigFromEnvironment } from "./config";
 
@@ -45,12 +48,17 @@ const ioApiClient = createIOApiClient(
 
 const uploadedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  config.uploadedStorageContainerName
+  "uploaded-documents"
 );
 
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  config.validatedStorageContainerName
+  "validated-documents"
+);
+
+const onSignatureRequestReadyQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "on-signature-request-ready"
 );
 
 export const Info = makeInfoFunction();
@@ -61,8 +69,12 @@ export const GetDossier = makeGetDossierFunction(database);
 export const CreateSignatureRequest =
   makeCreateSignatureRequestFunction(database);
 export const GetSignatureRequest = makeGetSignatureRequestFunction(database);
-export const SetSignatureRequestStatus =
-  makeSetSignatureRequestStatusFunction(database);
+export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
+  database,
+  onSignatureRequestReadyQueueClient
+);
+export const MarkAsWaitForSignature =
+  makeRequestAsWaitForSignatureFunction(database);
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,

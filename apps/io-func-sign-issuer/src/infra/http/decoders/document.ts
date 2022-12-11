@@ -16,6 +16,7 @@ import { SignatureField } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { sequenceS } from "fp-ts/lib/Apply";
+
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
@@ -75,7 +76,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
     pipe(
       signature_fields,
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
-      E.map((signatureFields) => ({ title, signatureFields }))
+      E.map((signatureFields) => ({ title, signatureFields, pages: [] }))
     ),
   DocumentMetadataToApiModel.encode
 );

@@ -10,7 +10,7 @@ import * as t from "io-ts";
 
 export const SignatureCoordinate = t.type({
   page: NonNegativeNumber,
-  position: t.array(NonNegativeNumber),
+  position: t.array(t.number),
 });
 
 export type SignatureCoordinate = t.TypeOf<typeof SignatureCoordinate>;

@@ -1,0 +1,19 @@
+{
+  "disabled": true,
+  "bindings": [
+    {
+      "name": "signatureToValidate",
+      "direction": "in",
+      "type": "queueTrigger",
+      "queueName": "waiting-for-qtsp",
+      "connection": "StorageAccountConnectionString"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "ValidateSignature",
+  "retry": {
+        "strategy": "fixedDelay",
+        "maxRetryCount": 1,
+        "delayInterval": "00:00:10"
+    }
+}

@@ -3,7 +3,8 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetIssuerBySubscriptionId, Issuer } from "../../issuer";
+import { Issuer } from "@io-sign/io-sign/issuer";
+import { GetIssuerBySubscriptionId } from "../../issuer";
 
 export const mockGetIssuerBySubscriptionId: GetIssuerBySubscriptionId = (
   subscriptionId

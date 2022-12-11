@@ -5,23 +5,24 @@ import * as E from "io-ts/lib/Encoder";
 import { option } from "fp-ts";
 import { SignatureFieldAttributes } from "@io-sign/io-sign/document";
 import { QtspCreateSignaturePayload, QtspDocumentToSign } from "../../../qtsp";
-import {
-  SignatureField,
-  SignatureFieldToBeCreatedAttributes,
-} from "../../../document-to-sign";
+
 import {
   CreateSignatureRequestBody as CreateSignatureRequestApiModel,
   DocumentToSign as DocumentToSignApiModel,
   SignatureCoordinate as SignatureCoordinateApiModel,
 } from "../types/signature-request";
+import {
+  SignatureField,
+  SignatureFieldToBeCreatedAttributes,
+} from "../../../signature-field";
 
 const SignatureFieldToBeCreatedToApiModel: E.Encoder<
   SignatureCoordinateApiModel,
   SignatureFieldToBeCreatedAttributes
 > = {
-  encode: ({ bottom_left, top_right, page }) => ({
+  encode: ({ bottomLeft, topRight, page }) => ({
     page,
-    position: [bottom_left.x, bottom_left.y, top_right.x, top_right.y],
+    position: [bottomLeft.x, bottomLeft.y, topRight.x, topRight.y],
   }),
 };
 

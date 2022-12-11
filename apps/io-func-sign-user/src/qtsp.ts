@@ -5,7 +5,7 @@ import {
 } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
-import { SignatureField } from "./document-to-sign";
+import { SignatureField } from "./signature-field";
 
 interface IMinMaxArray<T> extends Array<T> {
   readonly minMaxArray: unique symbol;

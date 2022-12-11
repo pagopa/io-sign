@@ -16,7 +16,6 @@ import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
-
 import {
   CosmosConfig,
   getCosmosConfigFromEnvironment,
@@ -25,6 +24,10 @@ import {
   getNamirialConfigFromEnvironment,
   NamirialConfig,
 } from "../infra/namirial/config";
+import {
+  getMockConfigFromEnvironment,
+  MockConfig,
+} from "./use-cases/__mocks__/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -35,12 +38,8 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
   }),
+  mock: MockConfig,
   namirial: NamirialConfig,
-  uploadedStorageContainerName: t.string,
-  validatedStorageContainerName: t.string,
-  filledModulesStorageContainerName: t.string,
-  documentsToFillQueueName: t.string,
-  qtspQueueName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -56,6 +55,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
+    mock: getMockConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -66,11 +66,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
     },
+    mock: config.mock,
     namirial: config.namirial,
-    uploadedStorageContainerName: "uploaded-documents",
-    validatedStorageContainerName: "validated-documents",
-    filledModulesStorageContainerName: "filled-modules",
-    documentsToFillQueueName: "waiting-for-documents-to-fill",
-    qtspQueueName: "waiting-for-qtsp",
   }))
 );

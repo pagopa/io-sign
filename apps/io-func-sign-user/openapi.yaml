@@ -29,6 +29,12 @@ paths:
       responses:
         "201":
           description: Filled document created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: url
+              description: Callback url.
           content:
             application/json:
               schema:
@@ -122,7 +128,7 @@ paths:
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
       responses:
-        "201":
+        "200":
           description: Signature created
           content:
             application/json:
@@ -134,6 +140,41 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/Unexpected"
+
+  /signature-requests/{id}:
+    get:
+      operationId: getSignatureRequestById
+      summary: Get a Signature Request By Id
+      tags:
+        - Signature Request
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            description: Entity Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+        - in: header
+          name: x-iosign-signer-id
+          schema:
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "200":
+          description: The Signature Request detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestDetailView"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   securitySchemes:
@@ -371,16 +412,16 @@ components:
         bottom_left:
           type: object
           properties:
-            x: { type: number, minimum: 0 }
-            y: { type: number, minimum: 0 }
+            x: { type: number }
+            y: { type: number }
           required:
             - x
             - y
         top_right:
           type: object
           properties:
-            x: { type: number, minimum: 0 }
-            y: { type: number, minimum: 0 }
+            x: { type: number }
+            y: { type: number }
           required:
             - x
             - y
@@ -421,6 +462,19 @@ components:
             $ref: "#/components/schemas/SignatureField"
       required:
         - document_id
+        - signature_fields
+
+    DocumentMetadata:
+      type: object
+      properties:
+        title:
+          type: string
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+      required:
+        - title
         - signature_fields
 
     QtspClauses:
@@ -482,11 +536,68 @@ components:
           $ref: "#/components/schemas/Timestamp"
         updated_at:
           $ref: "#/components/schemas/Timestamp"
-
       required:
         - id
         - signature_request_id
         - qtsp_signature_request_id
         - status
+
+    DocumentDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        metadata:
+          $ref: "#/components/schemas/DocumentMetadata"
+        url:
+          type: string
+          format: uri
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - metadata
+        - url
+        - created_at
+        - updated_at
+
+    SignatureRequestDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        status:
+          type: string
+          x-extensible-enum:
+            - WAIT_FOR_SIGNATURE
+            - WAIT_FOR_QTSP
+            - SIGNED
+            - REJECTED
+        dossier_id:
+          $ref: "#/components/schemas/Id"
+        signer_id:
+          $ref: "#/components/schemas/Id"
+        expires_at:
+          $ref: "#/components/schemas/Timestamp"
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentDetailView"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        qr_code_url:
+          type: string
+          format: uri
+      required:
+        - id
+        - status
+        - dossier_id
+        - signer_id
+        - expires_at
+        - documents
         - created_at
         - updated_at

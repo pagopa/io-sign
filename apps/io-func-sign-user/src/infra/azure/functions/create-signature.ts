@@ -4,7 +4,7 @@ import { createHandler } from "@pagopa/handler-kit";
 import * as azure from "@pagopa/handler-kit/lib/azure";
 import { HttpRequest } from "@pagopa/handler-kit/lib/http";
 
-import { created, error } from "@io-sign/io-sign/infra/http/response";
+import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -16,7 +16,9 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { QueueClient } from "@azure/storage-queue";
-import { makeRequireSigner } from "../../http/decoder/signer";
+import { ContainerClient } from "@azure/storage-blob";
+import { DocumentReady } from "@io-sign/io-sign/document";
+import { requireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
 import { requireQtspClauses } from "../../http/decoder/qtsp-clause";
@@ -34,14 +36,21 @@ import { makeInsertSignature } from "../cosmos/signature";
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 import { makeEnqueueMessage } from "../storage/queue";
+import { MockConfig } from "../../../app/use-cases/__mocks__/config";
+import { makeGetSignatureRequest } from "../cosmos/signature-request";
+import { GetDocumentUrl, getDocumentUrl } from "../storage/document-url";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   db: CosmosDatabase,
   qtspQueue: QueueClient,
-  qtspConfig: NamirialConfig
+  validatedContainerClient: ContainerClient,
+  signedContainerClient: ContainerClient,
+  qtspConfig: NamirialConfig,
+  mockConfig: MockConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const getSignatureRequest = makeGetSignatureRequest(db);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
     makeGetToken()
   )(qtspConfig);
@@ -49,11 +58,21 @@ const makeCreateSignatureHandler = (
   const insertSignature = makeInsertSignature(db);
   const enqueueSignature = makeEnqueueMessage(qtspQueue);
 
+  const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
+    pipe(document, getDocumentUrl("r", 10))(validatedContainerClient);
+
+  const getUploadSignedDocumentUrl: GetDocumentUrl = (
+    document: DocumentReady
+  ) => pipe(document, getDocumentUrl("racw", 10))(signedContainerClient);
+
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
     creatQtspSignatureRequest,
     insertSignature,
-    enqueueSignature
+    enqueueSignature,
+    getSignatureRequest,
+    getDownloadDocumentUrl,
+    getUploadSignedDocumentUrl
   );
 
   const requireCreateSignatureBody = flow(
@@ -71,7 +90,7 @@ const makeCreateSignatureHandler = (
     CreateSignaturePayload
   > = pipe(
     sequenceS(RTE.ApplyPar)({
-      signer: RTE.fromReaderEither(makeRequireSigner),
+      signer: RTE.fromReaderEither(requireSigner),
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),
@@ -88,6 +107,7 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         email,
         signatureRequestId,
+        spidAssertion: mockConfig.spidAssertionMock,
       })
     )
   );
@@ -100,7 +120,7 @@ const makeCreateSignatureHandler = (
 
   const encodeHttpSuccessResponse = flow(
     SignatureToApiModel.encode,
-    created(SignatureDetailView)
+    success(SignatureDetailView)
   );
 
   return createHandler(
