@@ -42,6 +42,13 @@ export const Signature = t.intersection([
 
 export type Signature = t.TypeOf<typeof Signature>;
 
+export const SignatureNotification = t.type({
+  signatureId: Id,
+  signerId: Signer.props.id,
+});
+
+export type SignatureNotification = t.TypeOf<typeof SignatureNotification>;
+
 export const newSignature = (
   signer: Signer,
   signatureRequestId: Id,
@@ -67,3 +74,7 @@ export type GetSignature = (
 export type UpsertSignature = (
   signature: Signature
 ) => TE.TaskEither<Error, Signature>;
+
+export type NotifySignatureReadyEvent = (
+  signatureNotification: SignatureNotification
+) => TE.TaskEither<Error, string>;
