@@ -35,10 +35,11 @@ import { makeInsertSignature } from "../cosmos/signature";
 
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
-import { makeEnqueueMessage } from "../storage/queue";
+
 import { MockConfig } from "../../../app/use-cases/__mocks__/config";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { GetDocumentUrl, getDocumentUrl } from "../storage/document-url";
+import { makeNotifySignatureReadyEvent } from "../storage/signature";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
@@ -56,7 +57,7 @@ const makeCreateSignatureHandler = (
   )(qtspConfig);
 
   const insertSignature = makeInsertSignature(db);
-  const enqueueSignature = makeEnqueueMessage(qtspQueue);
+  const notifySignature = makeNotifySignatureReadyEvent(qtspQueue);
 
   const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
     pipe(document, getDocumentUrl("r", 10))(validatedContainerClient);
@@ -69,7 +70,7 @@ const makeCreateSignatureHandler = (
     getFiscalCodeBySignerId,
     creatQtspSignatureRequest,
     insertSignature,
-    enqueueSignature,
+    notifySignature,
     getSignatureRequest,
     getDownloadDocumentUrl,
     getUploadSignedDocumentUrl

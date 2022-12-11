@@ -26,6 +26,6 @@ export type DocumentToFillNotification = t.TypeOf<
   typeof DocumentToFillNotification
 >;
 
-export type NotifySignatureReadyEvent = (
+export type NotifyDocumentToFillEvent = (
   documentToFillNotification: DocumentToFillNotification
 ) => TE.TaskEither<Error, string>;

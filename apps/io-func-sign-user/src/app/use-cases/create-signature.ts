@@ -18,8 +18,12 @@ import { validate } from "@io-sign/io-sign/validation";
 import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
 
-import { InsertSignature, newSignature } from "../../signature";
-import { EnqueueMessage } from "../../infra/azure/storage/queue";
+import {
+  InsertSignature,
+  newSignature,
+  NotifySignatureReadyEvent,
+} from "../../signature";
+
 import { DocumentToSign } from "../../signature-field";
 import { GetSignatureRequest } from "../../signature-request";
 import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
@@ -94,7 +98,7 @@ export const makeCreateSignature =
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     creatQtspSignatureRequest: CreateQtspSignatureRequest,
     insertSignature: InsertSignature,
-    enqueueSignature: EnqueueMessage,
+    notifySignatureReadyEvent: NotifySignatureReadyEvent,
     getSignatureRequest: GetSignatureRequest,
     getDownloadDocumentUrl: GetDocumentUrl,
     getUploadSignedDocumentUrl: GetDocumentUrl
@@ -181,8 +185,7 @@ export const makeCreateSignature =
             signatureId: signature.id,
             signerId: signature.signerId,
           },
-          JSON.stringify,
-          enqueueSignature
+          notifySignatureReadyEvent
         )
       )
     );

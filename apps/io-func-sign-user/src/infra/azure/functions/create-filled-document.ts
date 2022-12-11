@@ -35,8 +35,7 @@ import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
-
-import { makeEnqueueMessage } from "../storage/queue";
+import { makeNotifyDocumentToFill } from "../storage/document-to-fill";
 
 export type GetFilledDocumentUrl = (
   filledDocumentBlobName: string
@@ -47,7 +46,7 @@ const makeCreateFilledDocumentHandler = (
   documentsToFillQueue: QueueClient,
   tokenizer: PdvTokenizerClientWithApiKey
 ) => {
-  const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
+  const notifyDocumentToFill = makeNotifyDocumentToFill(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const getFilledDocumentUrl: GetFilledDocumentUrl = (
@@ -69,7 +68,7 @@ const makeCreateFilledDocumentHandler = (
 
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
     getFilledDocumentUrl,
-    enqueueDocumentToFill,
+    notifyDocumentToFill,
     getFiscalCodeBySignerId
   );
 

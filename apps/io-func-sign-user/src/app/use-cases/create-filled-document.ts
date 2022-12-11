@@ -11,9 +11,11 @@ import { validate } from "@io-sign/io-sign/validation";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 
-import { FilledDocumentUrl } from "../../filled-document";
+import {
+  FilledDocumentUrl,
+  NotifyDocumentToFillEvent,
+} from "../../filled-document";
 
-import { EnqueueMessage } from "../../infra/azure/storage/queue";
 import { GetFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
 
 export const CreateFilledDocumentPayload = t.type({
@@ -34,7 +36,7 @@ export type CreateFilledDocumentPayload = t.TypeOf<
 export const makeCreateFilledDocumentUrl =
   (
     getFilledDocumentUrl: GetFilledDocumentUrl,
-    enqueueDocumentToFill: EnqueueMessage,
+    notifyDocumentToFill: NotifyDocumentToFillEvent,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId
   ) =>
   ({
@@ -59,15 +61,14 @@ export const makeCreateFilledDocumentUrl =
       TE.chainFirst(() =>
         pipe(
           {
-            signer,
+            signer: signer.id,
             email,
             familyName,
             name,
             filledDocumentFileName,
             documentUrl,
           },
-          JSON.stringify,
-          enqueueDocumentToFill
+          notifyDocumentToFill
         )
       ),
       TE.chainEitherKW((callbackDocumentUrl) =>
