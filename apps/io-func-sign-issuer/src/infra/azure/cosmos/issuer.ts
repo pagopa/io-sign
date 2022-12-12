@@ -11,7 +11,9 @@ import {
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
-import { Issuer, GetIssuerBySubscriptionId } from "../../../issuer";
+
+import { Issuer } from "@io-sign/io-sign/issuer";
+import { GetIssuerBySubscriptionId } from "../../../issuer";
 
 const NewIssuer = t.intersection([Issuer, BaseModel]);
 type NewIssuer = t.TypeOf<typeof NewIssuer>;

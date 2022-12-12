@@ -7,13 +7,11 @@ import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
-import { Issuer } from "../issuer";
+import { Issuer } from "@io-sign/io-sign/issuer";
 
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
-  externalId: "ext_id",
-  version: "10",
   email: "info@enpacl-pec.it",
   address: "Viale Del Caravaggio, 78 - 00147 Roma (RM)",
   description: "descrizione dell'ente",

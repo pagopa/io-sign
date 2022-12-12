@@ -11,19 +11,17 @@ import { head } from "fp-ts/lib/Array";
 
 import { newSigner } from "@io-sign/io-sign/signer";
 
-import { newIssuer } from "@io-sign/io-sign/issuer";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
 import { newDossier } from "../dossier";
-import { Issuer } from "../issuer";
+
+import { Issuer } from "@io-sign/io-sign/issuer";
 
 describe("UploadMetadata", () => {
   describe("newUploadMetadata", () => {
     const issuer: Issuer = {
       id: newId(),
       subscriptionId: newId(),
-      externalId: "ext_id",
-      version: "10",
       email: "info@enpacl-pec.it",
       address: "Viale Del Caravaggio, 78 - 00147 Roma (RM)",
       description: "descrizione dell'ente",
