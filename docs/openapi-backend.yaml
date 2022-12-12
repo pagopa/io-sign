@@ -31,9 +31,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/SignatureRequestDetailView"
         "403":
-          $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/ProblemJson"
         "404":
-          $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/ProblemJson"
 
   /qtsp/clauses:
     get:
@@ -47,11 +47,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QtspClausesMetadata"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
+                $ref: "#/components/schemas/QtspClausesMetadataDetailView"
+        "401":
+          $ref: "#/components/responses/ProblemJson"
+        "500":
+          $ref: "#/components/responses/ProblemJson"
 
   /qtsp/clauses/filled_document:
     post:
@@ -73,9 +73,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/FilledDocumentDetailView"
         "400":
-          $ref: "#/components/responses/BadRequest"
-        "403":
-          $ref: "#/components/responses/Forbidden"
+          description: Validation error.
+        "401":
+          description: Bearer token null or expired.
+        "404":
+          description: Resource not found.
+        "500":
+          $ref: "#/components/responses/ProblemJson"
 
   /signatures:
     post:
@@ -93,9 +97,11 @@ paths:
         "201":
           description: Signature created
         "400":
-          $ref: "#/components/responses/BadRequest"
+          $ref: "#/components/responses/ProblemJson"
         "403":
-          $ref: "#/components/responses/Forbidden"
+          $ref: "#/components/responses/ProblemJson"
+        "500":
+          $ref: "#/components/responses/ProblemJson"
 
 components:
   securitySchemes:
@@ -104,14 +110,8 @@ components:
       name: Authorization
       in: header
   responses:
-    NotFound:
-      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/NotFound"
-    BadRequest:
-      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/BadRequest"
-    Forbidden:
-      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/Forbidden"
-    Unexpected:
-      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-sign/v1.0.0-RELEASE/openapi-issuer.yaml#/components/responses/Unexpected"
+    ProblemJson:
+      $ref: "https://raw.githubusercontent.com/pagopa/io-functions-commons/v21.0.1/openapi/definitions.yaml#/ProblemJson"
   schemas:
     Id:
       type: string
@@ -218,18 +218,20 @@ components:
         - UNFAIR
         - OPTIONAL
 
+    SignatureFieldAttrs:
+      oneOf:
+        - $ref: "#/components/schemas/ExistingSignatureFieldAttrs"
+        - $ref: "#/components/schemas/SignatureFieldToBeCreatedAttrs"
+
     SignatureField:
       type: object
       properties:
         attrs:
-          type: object
-          oneOf:
-            - $ref: "#/components/schemas/ExistingSignatureFieldAttrs"
-            - $ref: "#/components/schemas/SignatureFieldToBeCreatedAttrs"
+          $ref: "#/components/schemas/SignatureFieldAttrs"
         clause:
           $ref: "#/components/schemas/Clause"
       required:
-        - unique_name
+        - attrs
         - clause
 
     SignatureRequestDetailView:
@@ -286,7 +288,7 @@ components:
             - uploaded_at
             - url
 
-    QtspClausesMetadata:
+    QtspClausesMetadataDetailView:
       type: object
       properties:
         clauses:
@@ -297,18 +299,20 @@ components:
           uniqueItems: true
         document_url:
           type: string
-          format: uri
+          format: url
         privacy_url:
           type: string
           format: url
         privacy_text:
           type: string
+          minLength: 1
         terms_and_conditions_url:
           type: string
-          format: uri
+          format: url
         nonce:
           type: string
           format: base64
+          minLength: 1
 
       required:
         - clauses
@@ -316,38 +320,16 @@ components:
         - privacy_url
         - privacy_text
         - terms_and_conditions_url
+        - nonce
 
     QtspClause:
       type: object
       properties:
         text:
           type: string
+          minLength: 1
       required:
         - text
-
-    PublicKeyDigest:
-      type: string
-      format: base64url
-      description: Hash of PEM public key encoded in base64
-
-    DocumentSignature:
-      type: object
-      properties:
-        document_id:
-          type: string
-          format: ulid
-        signature:
-          type: string
-          format: base64url
-          description: Signature of document digest concatenated with document clauses
-        signature_fields:
-          type: array
-          items:
-            $ref: "#/components/schemas/SignatureField"
-      required:
-        - document_id
-        - signature
-        - signature_fields
 
     QtspClauses:
       type: object
@@ -360,39 +342,48 @@ components:
           uniqueItems: true
         filled_document_url:
           type: string
-          format: uri
-        signature:
-          type: string
-          format: base64url
-          description: Signature of MRC digest concatenated with QTSP accepted clauses
+          format: url
+          minLength: 1
         nonce:
           type: string
           format: base64
+          minLength: 1
       required:
         - accepted_clauses
         - filled_document_url
-        - signature
         - nonce
+
+    DocumentToSign:
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: ulid
+          minLength: 1
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+      required:
+        - document_id
+        - signature_fields
 
     CreateSignatureBody:
       type: object
       properties:
         signature_request_id:
           $ref: "#/components/schemas/Id"
-        public_key_digest:
-          $ref: "#/components/schemas/PublicKeyDigest"
-        document_signatures:
+        documents_to_sign:
           type: array
           items:
-            $ref: "#/components/schemas/DocumentSignature"
+            $ref: "#/components/schemas/DocumentToSign"
           minItems: 1
           uniqueItems: true
         qtsp_clauses:
           $ref: "#/components/schemas/QtspClauses"
       required:
         - signature_request_id
-        - public_key_digest
-        - document_signatures
+        - documents_to_sign
         - qtsp_clauses
 
     CreateFilledDocumentBody:

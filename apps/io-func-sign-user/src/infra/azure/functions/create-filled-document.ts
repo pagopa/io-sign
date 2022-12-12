@@ -5,6 +5,7 @@ import { created, error } from "@io-sign/io-sign/infra/http/response";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
@@ -20,29 +21,52 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { ValidUrl } from "@pagopa/ts-commons/lib/url";
 import {
-  CreateFilledDocumentPayload,
-  makeCreateFilledDocumentUrl,
-} from "../../../app/use-cases/create-filled-document";
+  defaultBlobGenerateSasUrlOptions,
+  generateSasUrlFromBlob,
+  withPermissions,
+  withExpireInMinutes,
+  getBlobClient,
+} from "@io-sign/io-sign/infra/azure/storage/blob";
+import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";
+import { makeNotifyDocumentToFill } from "../storage/document-to-fill";
+import { CreateFilledDocumentPayload } from "../../../filled-document";
 
-import { makeGetBlobUrl } from "../storage/blob";
-import { makeEnqueueMessage } from "../storage/queue";
+export type GetFilledDocumentUrl = (
+  filledDocumentBlobName: string
+) => TE.TaskEither<Error, string>;
 
 const makeCreateFilledDocumentHandler = (
   filledContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
   tokenizer: PdvTokenizerClientWithApiKey
 ) => {
-  const getFilledDocumentUrl = makeGetBlobUrl(filledContainerClient);
-  const enqueueDocumentToFill = makeEnqueueMessage(documentsToFillQueue);
+  const notifyDocumentToFill = makeNotifyDocumentToFill(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+
+  const getFilledDocumentUrl: GetFilledDocumentUrl = (
+    filledDocumentBlobName: string
+  ) =>
+    pipe(
+      filledDocumentBlobName,
+      getBlobClient,
+      RTE.chainTaskEitherK(
+        generateSasUrlFromBlob(
+          pipe(
+            defaultBlobGenerateSasUrlOptions(),
+            withPermissions("r"),
+            withExpireInMinutes(120)
+          )
+        )
+      )
+    )(filledContainerClient);
 
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
     getFilledDocumentUrl,
-    enqueueDocumentToFill,
+    notifyDocumentToFill,
     getFiscalCodeBySignerId
   );
 

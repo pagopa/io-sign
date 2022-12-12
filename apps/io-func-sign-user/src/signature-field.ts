@@ -5,6 +5,7 @@ import {
   SignatureFieldAttributes,
   SignatureFieldToBeCreatedAttributes as AttributesWithCoordsAndSize,
 } from "@io-sign/io-sign/document";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const SignatureFieldToBeCreatedAttributes = t.type({
   bottomLeft: t.type({
@@ -49,3 +50,9 @@ export const SignatureField = t.type({
 });
 
 export type SignatureField = t.TypeOf<typeof SignatureField>;
+
+export const DocumentToSign = t.type({
+  documentId: NonEmptyString,
+  signatureFields: t.array(SignatureField),
+});
+export type DocumentToSign = t.TypeOf<typeof DocumentToSign>;

@@ -106,6 +106,41 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
+  /signatures:
+    post:
+      operationId: createSignature
+      summary: Create a Signature from SignatureRequest
+      tags:
+        - Signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSignatureBody"
+      parameters:
+        - in: header
+          name: x-iosign-signer-id
+          schema:
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "200":
+          description: Signature created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
   /signature-requests/{id}:
     get:
       operationId: getSignatureRequestById
@@ -414,6 +449,21 @@ components:
         - attrs
         - clause
 
+    DocumentToSign:
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: ulid
+          minLength: 1
+        signature_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureField"
+      required:
+        - document_id
+        - signature_fields
+
     DocumentMetadata:
       type: object
       properties:
@@ -426,6 +476,71 @@ components:
       required:
         - title
         - signature_fields
+
+    QtspClauses:
+      type: object
+      properties:
+        accepted_clauses:
+          type: array
+          items:
+            $ref: "#/components/schemas/QtspClause"
+          minItems: 1
+          uniqueItems: true
+        filled_document_url:
+          type: string
+          format: url
+          minLength: 1
+        nonce:
+          type: string
+          format: base64
+          minLength: 1
+      required:
+        - accepted_clauses
+        - filled_document_url
+        - nonce
+
+    CreateSignatureBody:
+      type: object
+      properties:
+        signature_request_id:
+          $ref: "#/components/schemas/Id"
+        email:
+          $ref: "#/components/schemas/Email"
+        documents_to_sign:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentToSign"
+          minItems: 1
+          uniqueItems: true
+        qtsp_clauses:
+          $ref: "#/components/schemas/QtspClauses"
+      required:
+        - signature_request_id
+        - email
+        - documents_to_sign
+        - qtsp_clauses
+
+    SignatureDetailView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        signature_request_id:
+          $ref: "#/components/schemas/Id"
+        qtsp_signature_request_id:
+          $ref: "#/components/schemas/Id"
+        status:
+          type: string
+          enum: ["CREATED", "READY", "WAITING", "COMPLETED", "FAILED"]
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - signature_request_id
+        - qtsp_signature_request_id
+        - status
 
     DocumentDetailView:
       type: object
