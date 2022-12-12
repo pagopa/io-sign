@@ -7,21 +7,8 @@ import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Field, populatePdf } from "@io-sign/io-sign/infra/pdf";
 
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import * as t from "io-ts";
-
 import { UploadBlob } from "../../infra/azure/storage/blob";
-
-import { CreateFilledDocumentPayload } from "./create-filled-document";
-
-export const FillDocumentPayload = t.intersection([
-  CreateFilledDocumentPayload,
-  t.type({
-    filledDocumentFileName: NonEmptyString,
-  }),
-]);
-
-export type FillDocumentPayload = t.TypeOf<typeof FillDocumentPayload>;
+import { FillDocumentPayload } from "../../filled-document";
 
 // these types define the fields inside the PDF file to be enhanced
 // TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]

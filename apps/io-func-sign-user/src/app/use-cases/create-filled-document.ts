@@ -2,38 +2,28 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
+import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { validate } from "@io-sign/io-sign/validation";
 
-import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import * as t from "io-ts";
+import {
+  CreateFilledDocumentPayload,
+  FillDocumentPayload,
+  FilledDocumentUrl,
+  NotifyDocumentToFillEvent,
+} from "../../filled-document";
 
-import { FilledDocumentUrl } from "../../filled-document";
-import { GetBlobUrl } from "../../infra/azure/storage/blob";
-import { EnqueueMessage } from "../../infra/azure/storage/queue";
-
-export const CreateFilledDocumentPayload = t.type({
-  signer: Signer,
-  documentUrl: NonEmptyString,
-  email: EmailString,
-  familyName: NonEmptyString,
-  name: NonEmptyString,
-});
-
-export type CreateFilledDocumentPayload = t.TypeOf<
-  typeof CreateFilledDocumentPayload
->;
+import { GetFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
 
 /** Create and return the storage path (URL) for the ToS document.
  * The caller of this API is expected to poll on it since the endpoint will return 404 until the ToS document gets processed.
  */
 export const makeCreateFilledDocumentUrl =
   (
-    getFilledDocumentUrl: GetBlobUrl,
-    enqueueDocumentToFill: EnqueueMessage,
+    getFilledDocumentUrl: GetFilledDocumentUrl,
+    notifyDocumentToFill: NotifyDocumentToFillEvent,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId
   ) =>
   ({
@@ -54,15 +44,7 @@ export const makeCreateFilledDocumentUrl =
             new EntityNotFoundError("Fiscal code not found for this signer!")
         )
       ),
-      TE.chain(() =>
-        pipe(
-          filledDocumentFileName,
-          getFilledDocumentUrl,
-          TE.fromOption(
-            () => new EntityNotFoundError("Unable to generate callback url!")
-          )
-        )
-      ),
+      TE.chain(() => getFilledDocumentUrl(filledDocumentFileName)),
       TE.chainFirst(() =>
         pipe(
           {
@@ -73,8 +55,12 @@ export const makeCreateFilledDocumentUrl =
             filledDocumentFileName,
             documentUrl,
           },
-          JSON.stringify,
-          enqueueDocumentToFill
+          validate(
+            FillDocumentPayload,
+            "Invalid document to fill notification payload"
+          ),
+          TE.fromEither,
+          TE.chain(notifyDocumentToFill)
         )
       ),
       TE.chainEitherKW((callbackDocumentUrl) =>

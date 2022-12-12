@@ -16,6 +16,7 @@ import {
   SignatureRequest,
   GetSignatureRequest,
   InsertSignatureRequest,
+  UpsertSignatureRequest,
 } from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
@@ -59,5 +60,14 @@ export const makeInsertSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.create(signatureRequest),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+
+export const makeUpsertSignatureRequest =
+  (db: cosmos.Database): UpsertSignatureRequest =>
+  (signatureRequest) =>
+    pipe(
+      new SignatureRequestModel(db),
+      (model) => model.upsert(signatureRequest),
       TE.mapLeft(toCosmosDatabaseError)
     );

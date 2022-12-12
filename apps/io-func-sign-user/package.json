@@ -21,6 +21,7 @@
     "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
   },
   "dependencies": {
+    "@azure/cosmos": "^3.17.2",
     "@azure/storage-blob": "^12.12.0",
     "@azure/storage-queue": "^12.11.0",
     "@io-sign/io-sign": "^0.9.0-beta.4",
@@ -28,7 +29,10 @@
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/ts-commons": "^10.10.0",
     "fp-ts": "^2.13.1",
-    "io-ts": "^2.2.19"
+    "io-ts": "^2.2.19",
+    "io-ts-types": "^0.5.19",
+    "monocle-ts": "^2.3.13",
+    "newtype-ts": "^0.3.5"
   },
   "devDependencies": {
     "@azure/cosmos": "^3.17.2",

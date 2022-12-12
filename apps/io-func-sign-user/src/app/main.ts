@@ -5,15 +5,18 @@ import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/c
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
-import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { CosmosClient } from "@azure/cosmos";
+import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
+import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
+import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -32,12 +35,17 @@ const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  config.filledModulesStorageContainerName
+  "filled-modules"
 );
 
 const documentsToFillQueue = new QueueClient(
   config.azure.storage.connectionString,
-  config.documentsToFillQueueName
+  "waiting-for-documents-to-fill"
+);
+
+const qtspQueue = new QueueClient(
+  config.azure.storage.connectionString,
+  "waiting-for-qtsp"
 );
 
 const onWaitForSignatureQueueClient = new QueueClient(
@@ -48,6 +56,11 @@ const onWaitForSignatureQueueClient = new QueueClient(
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
+);
+
+const signedContainerClient = new ContainerClient(
+  config.azure.storage.connectionString,
+  "signed-documents"
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
@@ -82,6 +95,16 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
   config.namirial
 );
 
+export const CreateSignature = makeCreateSignatureFunction(
+  pdvTokenizerClient,
+  database,
+  qtspQueue,
+  validatedContainerClient,
+  signedContainerClient,
+  config.namirial,
+  config.mock
+);
+
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
   onWaitForSignatureQueueClient
@@ -90,4 +113,12 @@ export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
   validatedContainerClient
+);
+
+export const ValidateSignature = makeValidateSignatureFunction(
+  ioApiClient,
+  pdvTokenizerClient,
+  database,
+  signedContainerClient,
+  config.namirial
 );

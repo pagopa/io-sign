@@ -12,10 +12,8 @@ import { ContainerClient } from "@azure/storage-blob";
 import { makeFetchWithTimeout } from "../../http/fetch-timeout";
 
 import { makeUploadBlob } from "../storage/blob";
-import {
-  FillDocumentPayload,
-  makeFillDocument,
-} from "../../../app/use-cases/fill-document";
+import { makeFillDocument } from "../../../app/use-cases/fill-document";
+import { FillDocumentPayload } from "../../../filled-document";
 
 const makeFillDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
