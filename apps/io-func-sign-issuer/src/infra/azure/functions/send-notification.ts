@@ -46,8 +46,8 @@ const makeSendNotificationHandler = (
   const sendNotification = makeSendNotification(
     submitMessage,
     getFiscalCodeBySignerId,
-    upsertSignatureRequest,
-    getDossier
+    getDossier,
+    upsertSignatureRequest
   );
 
   const requireSignatureRequest = makeRequireSignatureRequest(

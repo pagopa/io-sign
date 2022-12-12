@@ -4,7 +4,7 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { flow } from "fp-ts/lib/function";
 import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { DocumentId } from "@io-sign/io-sign/document";
@@ -78,11 +78,7 @@ const makeGetUploadUrlHandler = (
   );
 };
 
-export const makeGetUploadUrlFunction = (
-  database: CosmosDatabase,
-  uploadedContainerClient: ContainerClient
-) =>
-  pipe(
-    makeGetUploadUrlHandler(database, uploadedContainerClient),
-    azure.unsafeRun
-  );
+export const makeGetUploadUrlFunction = flow(
+  makeGetUploadUrlHandler,
+  azure.unsafeRun
+);

@@ -7,8 +7,8 @@ import { pipe, flow } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
-  Issuer,
   GetIssuerBySubscriptionId,
   issuerNotFoundError,
 } from "../../../issuer";

@@ -31,8 +31,6 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
   }),
-  uploadedStorageContainerName: t.string,
-  validatedStorageContainerName: t.string,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -57,7 +55,5 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
     },
-    uploadedStorageContainerName: "uploaded-documents",
-    validatedStorageContainerName: "validated-documents",
   }))
 );
