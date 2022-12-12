@@ -63,21 +63,15 @@ export type CreateSignatureRequestBody = t.TypeOf<
   typeof CreateSignatureRequestBody
 >;
 
-enum SignatureRequestStatus {
-  CREATED = "CREATED",
-  READY = "READY",
-  WAITING = "WAITING",
-  COMPLETED = "COMPLETED",
-  FAILED = "FAILED",
-}
-
 const SignatureRequestStatusV = t.keyof({
-  [SignatureRequestStatus.CREATED]: null,
-  [SignatureRequestStatus.READY]: null,
-  [SignatureRequestStatus.WAITING]: null,
-  [SignatureRequestStatus.COMPLETED]: null,
-  [SignatureRequestStatus.FAILED]: null,
+  CREATED: null,
+  READY: null,
+  WAITING: null,
+  COMPLETED: null,
+  FAILED: null,
 });
+
+export type SignatureRequestStatus = t.TypeOf<typeof SignatureRequestStatusV>;
 
 export const SignatureRequest = t.type({
   id: NonEmptyString,

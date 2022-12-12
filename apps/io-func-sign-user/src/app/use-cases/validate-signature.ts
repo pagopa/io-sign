@@ -11,12 +11,7 @@ import {
   markAsSigned,
   SignatureRequest,
 } from "../../signature-request";
-import {
-  GetSignature,
-  Signature,
-  SignatureStatus,
-  UpsertSignature,
-} from "../../signature";
+import { GetSignature, Signature, UpsertSignature } from "../../signature";
 import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
 import {
   GetSignatureRequest,
@@ -43,7 +38,7 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
     pipe(
       {
         ...signature,
-        status: SignatureStatus.FAILED,
+        status: "FAILED",
         rejectedReason,
       },
       upsertSignature,
@@ -133,7 +128,7 @@ export const makeValidateSignature =
                   // Upsert signature
                   TE.map(() => ({
                     ...signature,
-                    status: SignatureStatus.COMPLETED,
+                    status: "COMPLETED" as const,
                   })),
                   TE.chain(upsertSignature),
                   TE.alt(() =>

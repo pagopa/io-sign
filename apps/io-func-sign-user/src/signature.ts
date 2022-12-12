@@ -9,21 +9,15 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import { Signer } from "@io-sign/io-sign/signer";
 
-export enum SignatureStatus {
-  CREATED = "CREATED",
-  READY = "READY",
-  WAITING = "WAITING",
-  COMPLETED = "COMPLETED",
-  FAILED = "FAILED",
-}
-
 const SignatureStatusV = t.keyof({
-  [SignatureStatus.CREATED]: null,
-  [SignatureStatus.READY]: null,
-  [SignatureStatus.WAITING]: null,
-  [SignatureStatus.COMPLETED]: null,
-  [SignatureStatus.FAILED]: null,
+  CREATED: null,
+  READY: null,
+  WAITING: null,
+  COMPLETED: null,
+  FAILED: null,
 });
+
+export type SignatureStatus = t.TypeOf<typeof SignatureStatusV>;
 
 export const Signature = t.intersection([
   t.type({
@@ -58,7 +52,7 @@ export const newSignature = (
   signerId: signer.id,
   signatureRequestId,
   qtspSignatureRequestId,
-  status: SignatureStatus.CREATED,
+  status: "CREATED",
   createdAt: new Date(),
   updatedAt: new Date(),
 });
