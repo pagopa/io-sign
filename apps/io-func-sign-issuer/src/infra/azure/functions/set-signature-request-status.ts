@@ -24,7 +24,7 @@ import {
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 import { makeNotifySignatureRequestReadyEvent } from "../storage/signature-request";
 
 const makeSetSignatureRequestStatusHandler = (
@@ -33,6 +33,8 @@ const makeSetSignatureRequestStatusHandler = (
 ) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
+
   const notifySignatureRequestReadyEvent = makeNotifySignatureRequestReadyEvent(
     onSignatureRequestReadyQueueClient
   );
@@ -41,7 +43,7 @@ const makeSetSignatureRequestStatusHandler = (
     notifySignatureRequestReadyEvent
   );
   const requireSignatureRequest = makeRequireSignatureRequest(
-    mockGetIssuerBySubscriptionId,
+    getIssuerBySubscriptionId,
     getSignatureRequest
   );
   const requireSetSignatureRequestStatusBody: RE.ReaderEither<

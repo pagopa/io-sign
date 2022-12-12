@@ -16,7 +16,6 @@ import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokeniz
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import { NotificationDetailView } from "../../http/models/NotificationDetailView";
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
 import {
   makeGetSignatureRequest,
@@ -30,6 +29,7 @@ import {
 } from "../../../app/use-cases/send-notification";
 import { NotificationToApiModel } from "../../http/encoders/notification";
 import { makeGetDossier } from "../cosmos/dossier";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,
@@ -38,6 +38,7 @@ const makeSendNotificationHandler = (
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getDossier = makeGetDossier(db);
@@ -50,7 +51,7 @@ const makeSendNotificationHandler = (
   );
 
   const requireSignatureRequest = makeRequireSignatureRequest(
-    mockGetIssuerBySubscriptionId,
+    getIssuerBySubscriptionId,
     getSignatureRequest
   );
 

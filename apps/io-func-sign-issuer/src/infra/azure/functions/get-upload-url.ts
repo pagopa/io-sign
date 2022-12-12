@@ -14,7 +14,6 @@ import { ContainerClient } from "@azure/storage-blob";
 import { validate } from "@io-sign/io-sign/validation";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { UploadUrl } from "../../http/models/UploadUrl";
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 
@@ -28,6 +27,7 @@ import {
 import { UploadUrlToApiModel } from "../../http/encoders/upload";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,
@@ -35,11 +35,12 @@ const makeGetUploadUrlHandler = (
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const insertUploadMetadata = makeInsertUploadMetadata(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const getUploadUrlFromBlobStorage = makeGetUploadUrl(containerClient);
 
   const requireSignatureRequest = makeRequireSignatureRequest(
-    mockGetIssuerBySubscriptionId,
+    getIssuerBySubscriptionId,
     getSignatureRequest
   );
 

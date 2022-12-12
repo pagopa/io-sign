@@ -20,14 +20,14 @@ import { makeGetDossier } from "../cosmos/dossier";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { DossierDetailView } from "../../http/models/DossierDetailView";
 
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
-
 import { DossierToApiModel } from "../../http/encoders/dossier";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeGetDossierHandler = (database: CosmosDatabase) => {
   const getDossier = makeGetDossier(database);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(database);
 
-  const requireIssuer = makeRequireIssuer(mockGetIssuerBySubscriptionId);
+  const requireIssuer = makeRequireIssuer(getIssuerBySubscriptionId);
 
   const requireDossierId = flow(
     path("dossierId"),

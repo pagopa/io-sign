@@ -26,12 +26,13 @@ import { requireDocumentsMetadata } from "../../http/decoders/document";
 import { DossierToApiModel } from "../../http/encoders/dossier";
 
 import { makeInsertDossier } from "../cosmos/dossier";
-import { mockGetIssuerBySubscriptionId } from "../../__mocks__/issuer";
 import { CreateDossierBody } from "../../http/models/CreateDossierBody";
 import { Dossier } from "../../../dossier";
+import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const requireDossierTitle = flow(
     (req: HttpRequest) => req.body,
@@ -45,7 +46,7 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
     Error,
     CreateDossierPayload
   > = sequenceS(RTE.ApplyPar)({
-    issuer: makeRequireIssuer(mockGetIssuerBySubscriptionId),
+    issuer: makeRequireIssuer(getIssuerBySubscriptionId),
     title: RTE.fromReaderEither(requireDossierTitle),
     documentsMetadata: RTE.fromReaderEither(requireDocumentsMetadata),
   });
