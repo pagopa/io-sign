@@ -5,9 +5,9 @@ import * as E from "fp-ts/lib/Either";
 import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
+import { Issuer } from "@io-sign/io-sign/issuer";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
-import { Issuer } from "@io-sign/io-sign/issuer";
 
 const issuer: Issuer = {
   id: newId(),

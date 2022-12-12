@@ -11,11 +11,10 @@ import { head } from "fp-ts/lib/Array";
 
 import { newSigner } from "@io-sign/io-sign/signer";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
 import { newDossier } from "../dossier";
-
-import { Issuer } from "@io-sign/io-sign/issuer";
 
 describe("UploadMetadata", () => {
   describe("newUploadMetadata", () => {
