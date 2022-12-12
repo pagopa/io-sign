@@ -1,6 +1,6 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "0.9.0-beta.4",
+  "version": "0.9.0",
   "repository": "https://github.com/pagopa/io-sign",
   "exports": {
     "./": "./dist/"
