@@ -23,6 +23,9 @@ type NamirialToken = t.TypeOf<typeof NamirialToken>;
 const isSuccessful = (r: Response): boolean =>
   r.status >= 200 && r.status < 300;
 
+const defaultHeader = {
+  "Content-Type": "application/json",
+};
 export const makeGetToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   ({ basePath, username, password }: NamirialConfig) =>
@@ -35,10 +38,7 @@ export const makeGetToken =
               password,
             }),
             method: "POST",
-            headers: {
-              // eslint-disable-next-line sonarjs/no-duplicate-string
-              "Content-Type": "application/json",
-            },
+            headers: defaultHeader,
           }),
         E.toError
       ),
@@ -72,7 +72,7 @@ export const makeGetClauses =
             fetchWithTimeout(`${basePath}/api/tos/`, {
               method: "GET",
               headers: {
-                "Content-Type": "application/json",
+                ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
               },
             }),
@@ -110,7 +110,7 @@ export const makeCreateSignatureRequest =
             fetchWithTimeout(`${basePath}/api/requests/`, {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
+                ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
               },
               body: JSON.stringify(body),
@@ -161,7 +161,7 @@ export const makeGetSignatureRequest =
             fetchWithTimeout(`${basePath}/api/requests/${signatureRequestId}`, {
               method: "GET",
               headers: {
-                "Content-Type": "application/json",
+                ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
               },
             }),
