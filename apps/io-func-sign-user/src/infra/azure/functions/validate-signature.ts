@@ -8,6 +8,11 @@ import { flow, identity, constVoid } from "fp-ts/lib/function";
 import { Database } from "@azure/cosmos";
 
 import { ContainerClient } from "@azure/storage-blob";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
+
 import {
   makeValidateSignature,
   ValidateSignaturePayload,
@@ -23,6 +28,8 @@ import {
 import { makeGetBlobUrl } from "../storage/blob";
 
 const makeValidateSignatureHandler = (
+  ioApiClient: IOApiClient,
+  tokenizer: PdvTokenizerClientWithApiKey,
   db: Database,
   signedContainerClient: ContainerClient,
   qtspConfig: NamirialConfig
@@ -32,12 +39,16 @@ const makeValidateSignatureHandler = (
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignedDocumentUrl = makeGetBlobUrl(signedContainerClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
     makeGetToken()
   )(qtspConfig);
 
   const validateSignature = makeValidateSignature(
+    submitMessage,
+    getFiscalCodeBySignerId,
     getSignature,
     getSignedDocumentUrl,
     upsertSignature,
