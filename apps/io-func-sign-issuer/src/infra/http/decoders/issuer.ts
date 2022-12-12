@@ -8,9 +8,8 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
-import { GetIssuerBySubscriptionId } from "../../../issuer";
-
 import { HttpUnauthorizedError } from "@io-sign/io-sign/infra/http/errors";
+import { GetIssuerBySubscriptionId } from "../../../issuer";
 
 const requireSubscriptionId = (req: HttpRequest) =>
   pipe(
