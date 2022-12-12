@@ -32,7 +32,7 @@ import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
 const makeCreateDossierHandler = (db: CosmosDatabase) => {
   const createDossierUseCase = pipe(db, makeInsertDossier, makeCreateDossier);
-  const getIssuerBySucriptionId = makeGetIssuerBySubscriptionId(db);
+  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
   const requireDossierTitle = flow(
     (req: HttpRequest) => req.body,
@@ -46,7 +46,7 @@ const makeCreateDossierHandler = (db: CosmosDatabase) => {
     Error,
     CreateDossierPayload
   > = sequenceS(RTE.ApplyPar)({
-    issuer: makeRequireIssuer(getIssuerBySucriptionId),
+    issuer: makeRequireIssuer(getIssuerBySubscriptionId),
     title: RTE.fromReaderEither(requireDossierTitle),
     documentsMetadata: RTE.fromReaderEither(requireDocumentsMetadata),
   });

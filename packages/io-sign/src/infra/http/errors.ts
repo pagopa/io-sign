@@ -30,6 +30,12 @@ export class HttpTooManyRequestsError extends HttpError {
   title = "Too many request";
 }
 
+export class HttpUnauthorizedError extends HttpError {
+  status = 401;
+  title = "Unauthorized";
+  message = "You must provide a valid API key to access this resource.";
+}
+
 export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
   "HttpErrorFromError",
   isHttpError,

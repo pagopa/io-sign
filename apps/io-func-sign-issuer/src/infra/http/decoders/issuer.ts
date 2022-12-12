@@ -8,10 +8,9 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
-import {
-  GetIssuerBySubscriptionId,
-  issuerNotFoundError,
-} from "../../../issuer";
+import { GetIssuerBySubscriptionId } from "../../../issuer";
+
+import { HttpUnauthorizedError } from "@io-sign/io-sign/infra/http/errors";
 
 const requireSubscriptionId = (req: HttpRequest) =>
   pipe(
@@ -28,5 +27,5 @@ export const makeRequireIssuer = (
     requireSubscriptionId,
     TE.fromEither,
     TE.chain(getIssuerBySubscriptionId),
-    TE.chain(TE.fromOption(() => issuerNotFoundError))
+    TE.chainW(TE.fromOption(() => new HttpUnauthorizedError()))
   );
