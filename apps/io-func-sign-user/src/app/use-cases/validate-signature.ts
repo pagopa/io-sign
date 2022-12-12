@@ -52,7 +52,6 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
       )
     );
 
-// TODO [SFEQS-1156]: Add sending message
 export const makeValidateSignature =
   (
     getSignature: GetSignature,
