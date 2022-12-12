@@ -10,7 +10,7 @@ import {
   CreateSignatureRequestBody as CreateSignatureRequestApiModel,
   DocumentToSign as DocumentToSignApiModel,
   SignatureCoordinate as SignatureCoordinateApiModel,
-} from "../types/signature-request";
+} from "../signature-request";
 import {
   SignatureField,
   SignatureFieldToBeCreatedAttributes,

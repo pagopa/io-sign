@@ -8,11 +8,11 @@ import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
 import { makeFetchWithTimeout } from "../http/fetch-timeout";
 import { NamirialConfig } from "./config";
-import { ClausesMetadata } from "./types/clauses-metadata";
+import { ClausesMetadata } from "./clauses-metadata";
 import {
   CreateSignatureRequestBody as CreateSignatureRequestBody,
   SignatureRequest,
-} from "./types/signature-request";
+} from "./signature-request";
 
 const NamirialToken = t.type({
   access: NonEmptyString,
