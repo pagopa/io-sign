@@ -28,7 +28,11 @@ import { DocumentToSign } from "../../signature-field";
 import { GetSignatureRequest } from "../../signature-request";
 import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
-import { mockPublicKey, mockSignature, mockSignedTos } from "./__mocks__/qtsp";
+import {
+  mockPublicKey,
+  mockSignature,
+  mockTosSignature,
+} from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({
   signatureRequestId: NonEmptyString,
@@ -148,15 +152,16 @@ export const makeCreateSignature =
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
+        tosSignature: pipe(qtspClauses, mockTosSignature),
       }),
 
-      TE.map(({ fiscalCode, documentsToSign }) => ({
+      TE.map(({ fiscalCode, documentsToSign, tosSignature }) => ({
         fiscalCode,
-        publicKey: mockPublicKey,
+        publicKey: mockPublicKey(),
         spidAssertion,
         email,
         documentLink: qtspClauses.filledDocumentUrl,
-        tosSignature: mockSignedTos,
+        tosSignature,
         signature: mockSignature,
         nonce: qtspClauses.nonce,
         documentsToSign,

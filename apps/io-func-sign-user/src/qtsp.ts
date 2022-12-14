@@ -56,13 +56,13 @@ export type QtspDocumentToSign = t.TypeOf<typeof QtspDocumentToSign>;
 
 export const QtspCreateSignaturePayload = t.type({
   fiscalCode: FiscalCode,
-  publicKey: NonEmptyString,
+  publicKey: t.string,
   spidAssertion: NonEmptyString,
   email: EmailString,
   documentLink: NonEmptyString,
   nonce: NonEmptyString,
-  tosSignature: NonEmptyString,
-  signature: NonEmptyString,
+  tosSignature: t.string,
+  signature: t.string,
   documentsToSign: t.array(QtspDocumentToSign),
 });
 export type QtspCreateSignaturePayload = t.TypeOf<
