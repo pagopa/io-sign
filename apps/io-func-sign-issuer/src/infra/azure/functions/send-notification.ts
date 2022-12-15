@@ -28,8 +28,10 @@ import {
   SendNotificationPayload,
 } from "../../../app/use-cases/send-notification";
 import { NotificationToApiModel } from "../../http/encoders/notification";
-import { makeGetDossier } from "../cosmos/dossier";
+
 import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
+import { makeRequireIssuer } from "../../http/decoders/issuer";
+import { makeGetDossier } from "../cosmos/dossier";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,
@@ -46,8 +48,8 @@ const makeSendNotificationHandler = (
   const sendNotification = makeSendNotification(
     submitMessage,
     getFiscalCodeBySignerId,
-    getDossier,
-    upsertSignatureRequest
+    upsertSignatureRequest,
+    getDossier
   );
 
   const requireSignatureRequest = makeRequireSignatureRequest(
@@ -61,6 +63,7 @@ const makeSendNotificationHandler = (
     SendNotificationPayload
   > = sequenceS(RTE.ApplyPar)({
     signatureRequest: requireSignatureRequest,
+    issuer: makeRequireIssuer(getIssuerBySubscriptionId),
   });
 
   const decodeHttpRequest = flow(

@@ -14,6 +14,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -23,39 +24,32 @@ import { Dossier, GetDossier } from "../../dossier";
 
 export type SendNotificationPayload = {
   signatureRequest: SignatureRequest;
+  issuer: Issuer;
 };
 
 // TODO: this is a mock
 const mockMessage =
-  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
+  (issuer: Issuer, dossier: Dossier) =>
+  (signatureRequest: SignatureRequest) => ({
     content: {
-      subject: `Richiesta di firma`,
-      markdown: `---\n- SignatureRequestId: \`${
+      subject: `${issuer.description} - ${dossier.title} - Firma`,
+      markdown: `---\nit:\n    cta_1: \n        text: "Vai ai documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
-      }\`\n- n. documents: \`${
-        signatureRequest.documents.length
-      }\`\n- expiresAt: \`${
-        signatureRequest.expiresAt ? signatureRequest.expiresAt : "never"
-      }\`\n- dossier: \`${dossier.id}\`\n- docs: \`${JSON.stringify(
-        signatureRequest.documents
-      )}\`\n `,
+      }"\nen:\n    cta_1: \n        text: "Go to the documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+        signatureRequest.id
+      }"\n---\n**${
+        issuer.description
+      }** ha richiesto la firma dei documenti relativi a **${
+        dossier.title
+      }**.\n\n\nPuoi leggere e firmare i documenti direttamente in app: ti basterà confermare l'operazione con il **codice di sblocco** o \nl'**autenticazione biometrica** del tuo dispositivo.\n\n\nTi ricordiamo che la richiesta di firma scadrà il **${
+        signatureRequest.expiresAt.toISOString().split("T")[0]
+      }** pertanto ti invitiamo a firmare il prima possibile.\n`,
     },
   });
 
 const makeMessage =
-  (getDossier: GetDossier) => (signatureRequest: SignatureRequest) =>
-    pipe(
-      sequenceS(TE.ApplySeq)({
-        dossier: pipe(
-          signatureRequest.issuerId,
-          getDossier(signatureRequest.dossierId),
-          TE.chain(TE.fromOption(() => new Error("Invalid dossier")))
-        ),
-      }),
-      TE.chainW(({ dossier }) =>
-        pipe(signatureRequest, mockMessage(dossier), TE.right)
-      )
-    );
+  (issuer: Issuer, dossier: Dossier) => (signatureRequest: SignatureRequest) =>
+    pipe(signatureRequest, mockMessage(issuer, dossier), TE.right);
 
 const SignatureRequestReadyToNotify = t.intersection([
   SignatureRequestToBeSigned,
@@ -69,10 +63,10 @@ export const makeSendNotification =
   (
     submitMessage: SubmitMessageForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    getDossier: GetDossier,
-    upsertSignatureRequest: UpsertSignatureRequest
+    upsertSignatureRequest: UpsertSignatureRequest,
+    getDossier: GetDossier
   ) =>
-  ({ signatureRequest }: SendNotificationPayload) =>
+  ({ signatureRequest, issuer }: SendNotificationPayload) =>
     pipe(
       sequenceS(TE.ApplySeq)({
         signatureRequest: pipe(
@@ -84,19 +78,33 @@ export const makeSendNotification =
           TE.fromEither
         ),
         notification: pipe(
-          getFiscalCodeBySignerId(signatureRequest.signerId),
-          TE.chain(
-            TE.fromOption(
-              () =>
-                new EntityNotFoundError(
-                  "The fiscal code associated with this signer is not valid!"
+          sequenceS(TE.ApplicativeSeq)({
+            fiscalCode: pipe(
+              getFiscalCodeBySignerId(signatureRequest.signerId),
+              TE.chain(
+                TE.fromOption(
+                  () =>
+                    new EntityNotFoundError(
+                      "The fiscal code associated with this signer is not valid!"
+                    )
                 )
-            )
-          ),
-          TE.chain((fiscalCode) =>
+              )
+            ),
+            dossier: pipe(
+              issuer.id,
+              getDossier(signatureRequest.dossierId),
+              TE.chain(
+                TE.fromOption(
+                  () => new EntityNotFoundError("Dossier not found!")
+                )
+              )
+            ),
+          }),
+
+          TE.chainW(({ fiscalCode, dossier }) =>
             pipe(
               signatureRequest,
-              makeMessage(getDossier),
+              makeMessage(issuer, dossier),
               TE.map(withFiscalCode(fiscalCode))
             )
           ),
