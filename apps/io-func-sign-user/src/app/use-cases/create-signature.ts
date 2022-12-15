@@ -29,6 +29,7 @@ import { GetSignatureRequest } from "../../signature-request";
 import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
 import {
+  mockFiscalCode,
   mockPublicKey,
   mockSignature,
   mockTosSignature,
@@ -164,8 +165,8 @@ export const makeCreateSignature =
           }))
         )
       ),
-      TE.map(({ fiscalCode, documentsToSign, tosSignature, signature }) => ({
-        fiscalCode,
+      TE.map(({ documentsToSign, tosSignature, signature }) => ({
+        fiscalCode: mockFiscalCode,
         publicKey: mockPublicKey(),
         spidAssertion,
         email,

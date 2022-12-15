@@ -7,6 +7,7 @@ import * as E from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
 
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { makeFetchWithTimeout } from "../../../infra/http/fetch-timeout";
 import { QtspClauses, QtspCreateSignaturePayload } from "../../../qtsp";
 
@@ -29,6 +30,8 @@ const kp1 = rs.KEYUTIL.generateKeypair("EC", "secp256k1");
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const prvhex = kp1.prvKeyObj.prvKeyHex;
+
+export const mockFiscalCode = "GRSFNC93A22A509H" as FiscalCode;
 
 export const mockPublicKey = () =>
   rs.KEYUTIL.getPEM(kp1.pubKeyObj).replace(/\r\n/g, "\\n");
