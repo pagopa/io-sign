@@ -18,6 +18,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -104,7 +105,13 @@ const makeCreateSignatureHandler = (
         body: { email, signatureRequestId },
       }) => ({
         signer,
-        qtspClauses,
+        qtspClauses: {
+          ...qtspClauses,
+          // TODO: [SFEQS-1237] workaround for WAF
+          filledDocumentUrl: qtspClauses.filledDocumentUrl.includes("http://")
+            ? qtspClauses.filledDocumentUrl
+            : (("https://" + qtspClauses.filledDocumentUrl) as NonEmptyString),
+        },
         documentsSignature,
         email,
         signatureRequestId,

@@ -108,72 +108,75 @@ export const makeValidateSignature =
           }),
 
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
-            if (qtspSignatureRequest.last_error !== null) {
-              return pipe(
-                qtspSignatureRequest.last_error.detail,
-                markSignatureAndSignatureRequestAsRejected(
-                  signature,
-                  signatureRequest
-                )
-              );
-            } else {
-              switch (qtspSignatureRequest.status) {
-                case "CREATED":
-                case "WAITING":
-                  return TE.left(new Error("Signature not ready yet. Retry!"));
-                case "READY":
-                case "COMPLETED":
-                  return pipe(
-                    // Upsert signatureRequest documents url with signed url
-                    signatureRequest.documents,
-                    A.map((document) =>
-                      pipe(
-                        getSignedDocumentUrl(document.id),
-                        TE.fromOption(
-                          () =>
-                            new Error(
-                              `Signed document with id: ${document.id} not found`
-                            )
-                        ),
-                        TE.map((documentUrl) => ({
-                          ...document,
-                          url: documentUrl,
-                        }))
-                      )
-                    ),
-                    A.sequence(TE.ApplicativeSeq),
-                    TE.map((documents) => ({
-                      ...signatureRequest,
-                      documents,
-                    })),
-                    TE.chainEitherK(markAsSigned),
-                    TE.chain(upsertSignatureRequest),
-                    TE.chain(mockSendNotification),
-                    // Upsert signature
-                    TE.map(() => ({
-                      ...signature,
-                      status: "COMPLETED" as const,
-                    })),
-                    TE.chain(upsertSignature),
-                    TE.alt(() =>
-                      pipe(
-                        "Signed document not found!",
-                        markSignatureAndSignatureRequestAsRejected(
-                          signature,
-                          signatureRequest
-                        )
+            switch (qtspSignatureRequest.status) {
+              case "CREATED":
+              case "WAITING":
+                return TE.left(new Error("Signature not ready yet. Retry!"));
+              case "READY":
+              case "COMPLETED":
+                return pipe(
+                  // Upsert signatureRequest documents url with signed url
+                  signatureRequest.documents,
+                  A.map((document) =>
+                    pipe(
+                      getSignedDocumentUrl(document.id),
+                      TE.fromOption(
+                        () =>
+                          new Error(
+                            `Signed document with id: ${document.id} not found`
+                          )
+                      ),
+                      TE.map((documentUrl) => ({
+                        ...document,
+                        url: documentUrl,
+                      }))
+                    )
+                  ),
+                  A.sequence(TE.ApplicativeSeq),
+                  TE.map((documents) => ({
+                    ...signatureRequest,
+                    documents,
+                  })),
+                  TE.chainEitherK(markAsSigned),
+                  TE.chain(upsertSignatureRequest),
+                  TE.chain(mockSendNotification),
+                  // Upsert signature
+                  TE.map(() => ({
+                    ...signature,
+                    status: "COMPLETED" as const,
+                  })),
+                  TE.chain(upsertSignature),
+                  TE.alt(() =>
+                    pipe(
+                      "Signed document not found!",
+                      markSignatureAndSignatureRequestAsRejected(
+                        signature,
+                        signatureRequest
                       )
                     )
-                  );
-                default:
-                  return pipe(
-                    "Invalid response status from QTSP!",
-                    markSignatureAndSignatureRequestAsRejected(
-                      signature,
-                      signatureRequest
-                    )
-                  );
-              }
+                  )
+                );
+              case "FAILED":
+                const errorDetail =
+                  qtspSignatureRequest.last_error !== null
+                    ? qtspSignatureRequest.last_error.detail
+                    : "Invalid response status from QTSP!";
+                return pipe(
+                  errorDetail,
+                  markSignatureAndSignatureRequestAsRejected(
+                    signature,
+                    signatureRequest
+                  )
+                );
+
+              default:
+                return pipe(
+                  "Invalid response status from QTSP!",
+                  markSignatureAndSignatureRequestAsRejected(
+                    signature,
+                    signatureRequest
+                  )
+                );
             }
           })
         )
