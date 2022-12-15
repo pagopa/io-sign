@@ -24,6 +24,7 @@ const getFileDigest = (
 
 const ec = new rs.KJUR.crypto.ECDSA({ curve: "secp256k1" });
 const kp1 = rs.KEYUTIL.generateKeypair("EC", "secp256k1");
+
 // The value in hexadecimal cannot be accessed directly and there is no function to do so. Therefore I disabled the controls!
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
