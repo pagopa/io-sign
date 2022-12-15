@@ -80,10 +80,10 @@ export const mockSignature = (
                   "-" +
                   signatureField.attributes.topRight.x +
                   "-" +
-                  signatureField.attributes.topRight.x +
-                  "-"
+                  signatureField.attributes.topRight.y
             )
             .join("+");
+          console.log(attributes);
           return hash + "+" + attributes;
         })
       )
