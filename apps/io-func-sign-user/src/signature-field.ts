@@ -31,12 +31,12 @@ export const toSignatureFieldToBeCreatedAttributes =
     page,
   }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
     bottomLeft: {
-      x: coordinates.x,
-      y: pageHeight - coordinates.y + size.h,
+      x: Math.round(coordinates.x),
+      y: Math.round(pageHeight - coordinates.y -  size.h),
     },
     topRight: {
-      x: coordinates.x + size.w,
-      y: pageHeight - coordinates.y,
+      x: Math.round(coordinates.x + size.w),
+      y: Math.round(pageHeight - coordinates.y),
     },
     page,
   });
