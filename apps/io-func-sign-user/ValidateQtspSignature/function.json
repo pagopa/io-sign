@@ -13,7 +13,7 @@
   "entryPoint": "ValidateSignature",
   "retry": {
         "strategy": "fixedDelay",
-        "maxRetryCount": 1,
-        "delayInterval": "00:00:10"
+        "maxRetryCount": 2,
+        "delayInterval": "00:00:30"
     }
 }

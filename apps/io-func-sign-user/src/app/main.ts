@@ -112,7 +112,8 @@ export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
 
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
-  validatedContainerClient
+  validatedContainerClient,
+  signedContainerClient
 );
 
 export const ValidateSignature = makeValidateSignatureFunction(

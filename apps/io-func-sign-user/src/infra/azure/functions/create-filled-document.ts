@@ -27,6 +27,7 @@ import {
   withExpireInMinutes,
   getBlobClient,
 } from "@io-sign/io-sign/infra/azure/storage/blob";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
@@ -92,7 +93,19 @@ const makeCreateFilledDocumentHandler = (
     }),
     RTE.map(({ signer, body: { documentUrl, email, familyName, name } }) => ({
       signer,
-      documentUrl,
+      // TODO: [SFEQS-1237] workaround for WAF
+      documentUrl: documentUrl.includes("https://")
+        ? documentUrl
+        : pipe(
+            E.tryCatch(
+              () => Buffer.from(documentUrl, "base64").toString(),
+              E.toError
+            ),
+            E.chainW(
+              validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
+            ),
+            E.getOrElse(() => documentUrl)
+          ),
       email,
       familyName,
       name,

@@ -41,7 +41,7 @@ export const DocumentToSign = t.type({
 export type DocumentToSign = t.TypeOf<typeof DocumentToSign>;
 
 export const Signature = t.type({
-  signed_challenge: NonEmptyString,
+  signed_challenge: t.string,
   signatures_type: t.literal("PADES"),
   documents_to_sign: t.array(DocumentToSign),
 });
@@ -50,12 +50,12 @@ export type Signature = t.TypeOf<typeof Signature>;
 
 export const CreateSignatureRequestBody = t.type({
   fiscal_code: FiscalCode,
-  public_key: NonEmptyString,
+  public_key: t.string,
   SAML_assertion: NonEmptyString,
   email: EmailString,
   document_link: NonEmptyString,
   nonce: NonEmptyString,
-  tos_signature: NonEmptyString,
+  tos_signature: t.string,
   signatures: Signature,
 });
 
