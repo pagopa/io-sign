@@ -111,8 +111,8 @@ export const makeValidateSignature =
             switch (qtspSignatureRequest.status) {
               case "CREATED":
               case "WAITING":
-                return TE.left(new Error("Signature not ready yet. Retry!"));
               case "READY":
+                return TE.left(new Error("Signature not ready yet. Retry!"));
               case "COMPLETED":
                 return pipe(
                   // Upsert signatureRequest documents url with signed url

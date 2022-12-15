@@ -30,7 +30,8 @@ const grantReadAccessToDocuments = (request: SignatureRequest) =>
 
 const makeGetSignatureRequestHandler = (
   db: Database,
-  containerClient: ContainerClient
+  validatedContainerClient: ContainerClient,
+  signedContainerClient: ContainerClient
 ) => {
   const requireSignatureRequest = pipe(
     makeGetSignatureRequest(db),
@@ -47,7 +48,13 @@ const makeGetSignatureRequestHandler = (
   );
   return createHandler(
     decodeHttpRequest,
-    (request) => pipe(containerClient, grantReadAccessToDocuments(request)),
+    (request) =>
+      pipe(
+        request.status === "SIGNED"
+          ? signedContainerClient
+          : validatedContainerClient,
+        grantReadAccessToDocuments(request)
+      ),
     error,
     encodeHttpSuccessResponse
   );

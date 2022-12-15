@@ -108,9 +108,22 @@ const makeCreateSignatureHandler = (
         qtspClauses: {
           ...qtspClauses,
           // TODO: [SFEQS-1237] workaround for WAF
-          filledDocumentUrl: qtspClauses.filledDocumentUrl.includes("http://")
+          filledDocumentUrl: qtspClauses.filledDocumentUrl.includes("https://")
             ? qtspClauses.filledDocumentUrl
-            : (("https://" + qtspClauses.filledDocumentUrl) as NonEmptyString),
+            : pipe(
+                E.tryCatch(
+                  () =>
+                    Buffer.from(
+                      qtspClauses.filledDocumentUrl,
+                      "base64"
+                    ).toString(),
+                  E.toError
+                ),
+                E.chainW(
+                  validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
+                ),
+                E.getOrElse(() => qtspClauses.filledDocumentUrl)
+              ),
         },
         documentsSignature,
         email,

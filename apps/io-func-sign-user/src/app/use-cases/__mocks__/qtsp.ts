@@ -1,14 +1,14 @@
 import * as crypto from "crypto";
 import * as rs from "jsrsasign";
 
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as cryptoJS from "crypto-js";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
 
 import { makeFetchWithTimeout } from "../../../infra/http/fetch-timeout";
-import { QtspClauses } from "../../../qtsp";
+import { QtspClauses, QtspCreateSignaturePayload } from "../../../qtsp";
 
 const getFileDigest = (url: string) => {
   const fetchWithTimeout = makeFetchWithTimeout();
@@ -56,5 +56,44 @@ export const mockTosSignature = (qtspClauses: QtspClauses) =>
     )
   );
 
-export const mockSignature =
-  "MEUCIQDl1JDRRzaJq+Gn1NMkq0j5ajX94faDjrVPC3BGqy069gIgbts4/L9tagID9uEstAk4Eqa7/3Gxzo6XMi62rVifoa8=" as NonEmptyString;
+export const mockSignature = (
+  documentsToSign: QtspCreateSignaturePayload["documentsToSign"]
+) =>
+  pipe(
+    documentsToSign,
+    A.map((document) =>
+      pipe(
+        getFileDigest(document.urlIn),
+        TE.map((hash) => {
+          const attributes = document.signatureFields
+            .map((signatureField) =>
+              "uniqueName" in signatureField.attributes
+                ? signatureField.attributes.uniqueName
+                : // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  signatureField.attributes.page +
+                  "-" +
+                  signatureField.attributes.bottomLeft.x +
+                  "-" +
+                  signatureField.attributes.bottomLeft.y +
+                  "-" +
+                  signatureField.attributes.topRight.x +
+                  "-" +
+                  signatureField.attributes.topRight.x +
+                  "-"
+            )
+            .join("+");
+          return hash + "+" + attributes;
+        })
+      )
+    ),
+    A.sequence(TE.ApplicativeSeq),
+    TE.map((chellenges) => chellenges.join("+")),
+    TE.map((challenge) => challenge.replace(/\r\n/g, "")),
+    TE.map((challenge) =>
+      crypto.createHash("sha256").update(challenge).digest("hex")
+    ),
+    TE.map((challengeHashHex) => ec.signHex(challengeHashHex, prvhex)),
+    TE.map((signatureHex) =>
+      cryptoJS.enc.Base64.stringify(cryptoJS.enc.Hex.parse(signatureHex))
+    )
+  );

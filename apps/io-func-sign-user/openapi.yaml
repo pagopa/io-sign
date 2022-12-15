@@ -303,9 +303,10 @@ components:
       type: object
       properties:
         document_url:
+          description: Base64 encoded document url
           type: string
           minLength: 1
-          format: url
+          format: byte
         email:
           $ref: "#/components/schemas/Email"
         name:

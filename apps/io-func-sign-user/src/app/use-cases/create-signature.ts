@@ -154,15 +154,24 @@ export const makeCreateSignature =
         ),
         tosSignature: pipe(qtspClauses, mockTosSignature),
       }),
-
-      TE.map(({ fiscalCode, documentsToSign, tosSignature }) => ({
+      TE.chain((sequence) =>
+        pipe(
+          sequence.documentsToSign,
+          mockSignature,
+          TE.map((signature) => ({
+            ...sequence,
+            signature,
+          }))
+        )
+      ),
+      TE.map(({ fiscalCode, documentsToSign, tosSignature, signature }) => ({
         fiscalCode,
         publicKey: mockPublicKey(),
         spidAssertion,
         email,
         documentLink: qtspClauses.filledDocumentUrl,
         tosSignature,
-        signature: mockSignature,
+        signature,
         nonce: qtspClauses.nonce,
         documentsToSign,
       })),
