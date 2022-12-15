@@ -10,20 +10,21 @@ import { pipe } from "fp-ts/lib/function";
 import { makeFetchWithTimeout } from "../../../infra/http/fetch-timeout";
 import { QtspClauses, QtspCreateSignaturePayload } from "../../../qtsp";
 
-const getFileDigest = (url: string) => {
-  const fetchWithTimeout = makeFetchWithTimeout();
-
-  return pipe(
+const getFileDigest = (
+  url: string,
+  fetchWithTimeout = makeFetchWithTimeout()
+) =>
+  pipe(
     TE.tryCatch(() => fetchWithTimeout(url), E.toError),
     TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
     TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
     TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
     TE.map((buffer) => crypto.createHash("sha256").update(buffer).digest("hex"))
   );
-};
 
 const ec = new rs.KJUR.crypto.ECDSA({ curve: "secp256k1" });
 const kp1 = rs.KEYUTIL.generateKeypair("EC", "secp256k1");
+// The value in hexadecimal cannot be accessed directly and there is no function to do so. Therefore I disabled the controls!
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const prvhex = kp1.prvKeyObj.prvKeyHex;

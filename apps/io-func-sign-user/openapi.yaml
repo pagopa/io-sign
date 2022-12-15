@@ -490,9 +490,10 @@ components:
           minItems: 1
           uniqueItems: true
         filled_document_url:
+          description: Base64 encoded url
           type: string
-          format: url
           minLength: 1
+          format: byte
         nonce:
           type: string
           format: base64
