@@ -50,7 +50,7 @@ export type Signature = t.TypeOf<typeof Signature>;
 
 export const CreateSignatureRequestBody = t.type({
   fiscal_code: FiscalCode,
-  public_key: NonEmptyString,
+  public_key: t.string,
   SAML_assertion: NonEmptyString,
   email: EmailString,
   document_link: NonEmptyString,
