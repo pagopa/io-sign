@@ -40,6 +40,14 @@ export const SignatureRequestToApiModel: E.Encoder<
           qr_code_url: extra.qrCodeUrl,
         };
       }
+      case "WAIT_FOR_QTSP": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
+          qr_code_url: extra.qrCodeUrl,
+          send_to_qtsp_at: extra.sendToQtspAt,
+        };
+      }
       case "REJECTED": {
         return {
           ...commonFields,

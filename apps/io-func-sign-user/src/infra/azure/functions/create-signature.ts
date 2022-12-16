@@ -38,7 +38,10 @@ import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 
 import { MockConfig } from "../../../app/use-cases/__mocks__/config";
-import { makeGetSignatureRequest } from "../cosmos/signature-request";
+import {
+  makeGetSignatureRequest,
+  makeUpsertSignatureRequest,
+} from "../cosmos/signature-request";
 import { GetDocumentUrl, getDocumentUrl } from "../storage/document-url";
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
 
@@ -58,6 +61,7 @@ const makeCreateSignatureHandler = (
   )(qtspConfig);
 
   const insertSignature = makeInsertSignature(db);
+  const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const notifySignature = makeNotifySignatureReadyEvent(qtspQueue);
 
   const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
@@ -74,7 +78,8 @@ const makeCreateSignatureHandler = (
     notifySignature,
     getSignatureRequest,
     getDownloadDocumentUrl,
-    getUploadSignedDocumentUrl
+    getUploadSignedDocumentUrl,
+    upsertSignatureRequest
   );
 
   const requireCreateSignatureBody = flow(
