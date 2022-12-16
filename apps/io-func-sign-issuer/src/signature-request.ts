@@ -186,7 +186,7 @@ const dispatch =
       case "SIGNED":
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited because the signature request has already been signed"
+            `${action.name} is prohibited because the signature request has already been signed`
           )
         );
       default:
@@ -211,7 +211,7 @@ const onDraftStatus =
         }
         return E.left(
           new ActionNotAllowedError(
-            "This operation is not possible unless all documents are READY."
+            `${action.name} is not possible unless all documents are READY`
           )
         );
       case "START_DOCUMENT_VALIDATION":
@@ -261,7 +261,7 @@ const onDraftStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the signature request is in DRAFT status"
+            `${action.name} is prohibited if the signature request is in DRAFT status`
           )
         );
     }
@@ -289,7 +289,7 @@ const onReadyStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the signature request is in READY status"
+            `${action.name} is prohibited if the signature request is in READY status`
           )
         );
     }
@@ -309,7 +309,7 @@ const onWaitForSignatureStatus =
     }
     return E.left(
       new ActionNotAllowedError(
-        "This operation is prohibited if the signature request is in WAIT_FOR_SIGNATURE status"
+        `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`
       )
     );
   };

@@ -70,7 +70,7 @@ const dispatch =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited because the signature request has already been signed"
+            `${action.name} is prohibited because the signature request has already been signed`
           )
         );
     }
@@ -101,7 +101,7 @@ const onWaitForSignatureStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the signature request is in WAIT_FOR_SIGNATURE status"
+            `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`
           )
         );
     }
@@ -129,7 +129,7 @@ const onWaitForQtspStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the signature request is in WAIT_FOR_QTSP status"
+            `${action.name} is prohibited if the signature request is in WAIT_FOR_QTSP status`
           )
         );
     }
