@@ -69,7 +69,7 @@ export const SignatureField = t.type({
 export type SignatureField = t.TypeOf<typeof SignatureField>;
 
 export const DocumentMetadata = t.type({
-  title: WithinRangeString(3, 15),
+  title: WithinRangeString(3, 60),
   signatureFields: t.array(SignatureField),
   pages: t.array(
     t.type({
