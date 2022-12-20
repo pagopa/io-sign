@@ -58,6 +58,23 @@ export type SignatureRequestToBeSigned = t.TypeOf<
   typeof SignatureRequestToBeSigned
 >;
 
+export const SignatureRequestWaitForQtsp = makeSignatureRequestVariant(
+  "WAIT_FOR_QTSP",
+  t.intersection([
+    t.type({
+      qrCodeUrl: t.string,
+      documents: t.array(DocumentReady),
+    }),
+    t.partial({
+      notification: Notification,
+    }),
+  ])
+);
+
+export type SignatureRequestWaitForQtsp = t.TypeOf<
+  typeof SignatureRequestWaitForQtsp
+>;
+
 export const SignatureRequestSigned = makeSignatureRequestVariant(
   "SIGNED",
   t.type({

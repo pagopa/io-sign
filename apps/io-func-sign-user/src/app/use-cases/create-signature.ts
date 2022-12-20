@@ -25,7 +25,11 @@ import {
 } from "../../signature";
 
 import { DocumentToSign } from "../../signature-field";
-import { GetSignatureRequest } from "../../signature-request";
+import {
+  GetSignatureRequest,
+  markAsWaitForQtsp,
+  UpsertSignatureRequest,
+} from "../../signature-request";
 import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
 import {
@@ -106,7 +110,8 @@ export const makeCreateSignature =
     notifySignatureReadyEvent: NotifySignatureReadyEvent,
     getSignatureRequest: GetSignatureRequest,
     getDownloadDocumentUrl: GetDocumentUrl,
-    getUploadSignedDocumentUrl: GetDocumentUrl
+    getUploadSignedDocumentUrl: GetDocumentUrl,
+    upsertSignatureRequest: UpsertSignatureRequest
   ) =>
   ({
     signatureRequestId,
@@ -192,6 +197,22 @@ export const makeCreateSignature =
         pipe(
           newSignature(signer, signatureRequestId, qtspResponse.id),
           insertSignature
+        )
+      ),
+      TE.chainFirst(() =>
+        pipe(
+          signer.id,
+          getSignatureRequest(signatureRequestId),
+          TE.chain(
+            TE.fromOption(
+              () =>
+                new EntityNotFoundError(
+                  `Signature request ${signatureRequestId} not found`
+                )
+            )
+          ),
+          TE.chainEitherK(markAsWaitForQtsp),
+          TE.chain(upsertSignatureRequest)
         )
       ),
       TE.chainFirst((signature) =>
