@@ -89,7 +89,6 @@ const onWaitForSignatureStatus =
         return E.right({
           ...request,
           status: "WAIT_FOR_QTSP",
-          sendToQtspAt: new Date(),
         });
       case "MARK_AS_REJECTED":
         return E.right({

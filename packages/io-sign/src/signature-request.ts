@@ -64,7 +64,6 @@ export const SignatureRequestWaitForQtsp = makeSignatureRequestVariant(
     t.type({
       qrCodeUrl: t.string,
       documents: t.array(DocumentReady),
-      sendToQtspAt: IsoDateFromString,
     }),
     t.partial({
       notification: Notification,
