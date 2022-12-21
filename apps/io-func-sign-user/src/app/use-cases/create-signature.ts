@@ -33,9 +33,9 @@ import {
 import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
 import {
-  mockFiscalCode,
   mockPublicKey,
   mockSignature,
+  mockSpidAssertion,
   mockTosSignature,
 } from "./__mocks__/qtsp";
 
@@ -159,6 +159,10 @@ export const makeCreateSignature =
           A.sequence(TE.ApplicativeSeq)
         ),
         tosSignature: pipe(qtspClauses, mockTosSignature),
+        mockedSpidAssertion: pipe(
+          qtspClauses,
+          mockSpidAssertion()(spidAssertion)
+        ),
       }),
       TE.chain((sequence) =>
         pipe(
@@ -170,17 +174,25 @@ export const makeCreateSignature =
           }))
         )
       ),
-      TE.map(({ documentsToSign, tosSignature, signature }) => ({
-        fiscalCode: mockFiscalCode,
-        publicKey: mockPublicKey(),
-        spidAssertion,
-        email,
-        documentLink: qtspClauses.filledDocumentUrl,
-        tosSignature,
-        signature,
-        nonce: qtspClauses.nonce,
-        documentsToSign,
-      })),
+      TE.map(
+        ({
+          documentsToSign,
+          tosSignature,
+          signature,
+          fiscalCode,
+          mockedSpidAssertion,
+        }) => ({
+          fiscalCode,
+          publicKey: mockPublicKey(),
+          spidAssertion: mockedSpidAssertion,
+          email,
+          documentLink: qtspClauses.filledDocumentUrl,
+          tosSignature,
+          signature,
+          nonce: qtspClauses.nonce,
+          documentsToSign,
+        })
+      ),
       TE.chain(creatQtspSignatureRequest),
       TE.filterOrElse(
         (qtspResponse) => qtspResponse.status === "CREATED",
