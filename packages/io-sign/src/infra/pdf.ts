@@ -66,15 +66,7 @@ export type Field = {
 
 const populate = (form: PDFForm) => (field: Field) =>
   pipe(
-    E.tryCatch(
-      () => form.getTextField(field.fieldName),
-      (e) =>
-        e instanceof Error
-          ? new EntityNotFoundError(e.message)
-          : new EntityNotFoundError(
-              "An error occurred while attempting to access the pdf field."
-            )
-    ),
+    E.tryCatch(() => form.getTextField(field.fieldName), E.toError),
     E.map((textField) => textField.setText(field.fieldValue))
   );
 
@@ -82,16 +74,7 @@ const getFieldValue =
   (form: PDFForm) =>
   (fieldName: string): E.Either<EntityNotFoundError, Field> =>
     pipe(
-      E.tryCatch(
-        () => form.getTextField(fieldName),
-        // eslint-disable-next-line sonarjs/no-identical-functions
-        (e) =>
-          e instanceof Error
-            ? new EntityNotFoundError(e.message)
-            : new EntityNotFoundError(
-                "An error occurred while attempting to access the pdf field."
-              )
-      ),
+      E.tryCatch(() => form.getTextField(fieldName), E.toError),
       E.chain((textField) =>
         pipe(
           textField.getText(),
