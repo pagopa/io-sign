@@ -72,11 +72,41 @@ const populate = (form: PDFForm) => (field: Field) =>
         e instanceof Error
           ? new EntityNotFoundError(e.message)
           : new EntityNotFoundError(
-              "An error occurred while attempting to access the pdf fields."
+              "An error occurred while attempting to access the pdf field."
             )
     ),
     E.map((textField) => textField.setText(field.fieldValue))
   );
+
+const getFieldValue =
+  (form: PDFForm) =>
+  (fieldName: string): E.Either<EntityNotFoundError, Field> =>
+    pipe(
+      E.tryCatch(
+        () => form.getTextField(fieldName),
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        (e) =>
+          e instanceof Error
+            ? new EntityNotFoundError(e.message)
+            : new EntityNotFoundError(
+                "An error occurred while attempting to access the pdf field."
+              )
+      ),
+      E.chain((textField) =>
+        pipe(
+          textField.getText(),
+          E.fromNullable(
+            new EntityNotFoundError(
+              "An error occurred while attempting to access the pdf field content."
+            )
+          ),
+          E.map((value) => ({
+            fieldName,
+            fieldValue: value,
+          }))
+        )
+      )
+    );
 
 export const populatePdf = (pdfFields: Field[]) => (buffer: Buffer) =>
   pipe(
@@ -91,3 +121,16 @@ export const populatePdf = (pdfFields: Field[]) => (buffer: Buffer) =>
     ),
     TE.chain((pdfDocument) => TE.tryCatch(() => pdfDocument.save(), toError))
   );
+
+export const getPdfFieldsValue =
+  (pdfFieldsName: string[]) => (buffer: Buffer) =>
+    pipe(
+      buffer,
+      loadPdf,
+      TE.chainEitherK((pdfDocument) =>
+        pipe(
+          pdfFieldsName,
+          A.traverse(E.Applicative)(getFieldValue(pdfDocument.getForm()))
+        )
+      )
+    );

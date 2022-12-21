@@ -7,7 +7,9 @@ import * as E from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/function";
 
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { getPdfFieldsValue } from "@io-sign/io-sign/infra/pdf";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { validate } from "@io-sign/io-sign/validation";
 import { makeFetchWithTimeout } from "../../../infra/http/fetch-timeout";
 import { QtspClauses, QtspCreateSignaturePayload } from "../../../qtsp";
 
@@ -31,10 +33,46 @@ const kp1 = rs.KEYUTIL.generateKeypair("EC", "secp256k1");
 // @ts-ignore
 const prvhex = kp1.prvKeyObj.prvKeyHex;
 
-export const mockFiscalCode = "GRSFNC93A22A509H" as FiscalCode;
-
 export const mockPublicKey = () =>
   rs.KEYUTIL.getPEM(kp1.pubKeyObj).replace(/\r\n/g, "\\n");
+
+export const mockSpidAssertion =
+  (fetchWithTimeout = makeFetchWithTimeout()) =>
+  (spidAssertion: NonEmptyString) =>
+  (qtspClauses: QtspClauses) =>
+    pipe(
+      TE.tryCatch(
+        () => fetchWithTimeout(qtspClauses.filledDocumentUrl),
+        E.toError
+      ),
+      TE.chain((response) => TE.tryCatch(() => response.blob(), E.toError)),
+      TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
+      TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
+      TE.chain(
+        getPdfFieldsValue([
+          "QUADROB_name",
+          "QUADROB_lastname",
+          "QUADROB_email",
+          "QUADROB_fiscalcode",
+        ])
+      ),
+      TE.map((fields) => {
+        const saml = Buffer.from(spidAssertion, "base64").toString("utf-8");
+        return pipe(
+          fields,
+          A.reduce(saml, (finalSaml, current) =>
+            finalSaml.replace(
+              current.fieldName,
+              current.fieldValue.toUpperCase()
+            )
+          ),
+          (decoded) => Buffer.from(decoded, "utf-8").toString("base64")
+        );
+      }),
+      TE.chainEitherKW(
+        validate(NonEmptyString, "Invalid mocked SAML assertion")
+      )
+    );
 
 export const mockTosSignature = (qtspClauses: QtspClauses) =>
   pipe(
