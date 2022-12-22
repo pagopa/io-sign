@@ -3,6 +3,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { format } from "date-fns";
 
 import {
   SubmitMessageForUser,
@@ -33,17 +34,18 @@ const mockMessage =
   (signatureRequest: SignatureRequest) => ({
     content: {
       subject: `${issuer.description} - ${dossier.title} - Firma`,
-      markdown: `---\nit:\n    cta_1: \n        text: "Vai ai documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
-      }"\nen:\n    cta_1: \n        text: "Go to the documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+      }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
-      }"\n---\n**${
+      }"\n---\nL'ente ${
         issuer.description
-      }** ha richiesto la firma dei documenti relativi a **${
+      } ha **richiesto la tua firma** su alcuni documenti relativi a ${
         dossier.title
-      }**.\n\n\nPuoi leggere e firmare i documenti direttamente in app: ti basterà confermare l'operazione con il **codice di sblocco** o \nl'**autenticazione biometrica** del tuo dispositivo.\n\n\nTi ricordiamo che la richiesta di firma scadrà il **${
-        signatureRequest.expiresAt.toISOString().split("T")[0]
-      }** pertanto ti invitiamo a firmare il prima possibile.\n`,
+      }.\n\n\nHai tempo fino al ${format(
+        signatureRequest.expiresAt,
+        "dd/MM/yyyy"
+      )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.`,
     },
   });
 
