@@ -33,7 +33,7 @@ const mockMessage =
   (issuer: Issuer, dossier: Dossier) =>
   (signatureRequest: SignatureRequest) => ({
     content: {
-      subject: `${issuer.description} - ${dossier.title} - Firma`,
+      subject: `${issuer.description} - ${dossier.title} - Richiesta di Firma`,
       markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
       }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
