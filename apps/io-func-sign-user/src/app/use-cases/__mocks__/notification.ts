@@ -15,15 +15,15 @@ import { SignatureRequest } from "../../../signature-request";
 // TODO: this is a mock
 const mockSuccessMessage = (signatureRequest: SignatureRequest) => ({
   content: {
-    subject: `Documenti firmati con successo`,
-    markdown: `---\nit:\n    cta_1: \n        text: "Vai ai documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: "Go to the documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nI documenti che hai firmato sono pronti.\n\n\nHai **90** giorni dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo. \n`,
+    subject: `Documenti firmati`,
+    markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nI documenti che hai firmato sono pronti.\n\n\nHai **90** giorni dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n`,
   },
 });
 
 const mockErrorMessage = (signatureRequest: SignatureRequest) => ({
   content: {
-    subject: `Errore durante la firma`,
-    markdown: `---\nit:\n    cta_1: \n        text: "Vai ai documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: "Go to the documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nA causa di un problema tecnico la firma non è andata a buon fine.\n\n\nVai ai documenti e firma di nuovo. Se il problema si ripete, contatta l'assistenza.\n`,
+    subject: `Errore firma`,
+    markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nA causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nVai ai documenti e firmali di nuovo. Se il problema si ripete, contatta l'assistenza.\n`,
   },
 });
 
