@@ -250,7 +250,7 @@ export const makeCreateSignature =
         !canBeCreated
           ? TE.left(
               new ActionNotAllowedError(
-                "This signature request is in a state that does not allow a siganture to be created!"
+                "Signature can only be created if the signature request is inWAIT_FOR_SIGNATURE or REJECTED status!"
               )
             )
           : createSignatureRequest
