@@ -67,6 +67,8 @@ const dispatch =
         return pipe(request, onWaitForSignatureStatus(action));
       case "WAIT_FOR_QTSP":
         return pipe(request, onWaitForQtspStatus(action));
+      case "REJECTED":
+        return pipe(request, onRejectedStatus(action));
       default:
         return E.left(
           new ActionNotAllowedError(
@@ -101,6 +103,27 @@ const onWaitForSignatureStatus =
         return E.left(
           new ActionNotAllowedError(
             `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`
+          )
+        );
+    }
+  };
+
+const onRejectedStatus =
+  (action: SignatureRequestAction) =>
+  (
+    request: SignatureRequestRejected
+  ): E.Either<Error, SignatureRequestWaitForQtsp> => {
+    // eslint-disable-next-line sonarjs/no-small-switch
+    switch (action.name) {
+      case "MARK_AS_WAIT_FOR_QTSP":
+        return E.right({
+          ...request,
+          status: "WAIT_FOR_QTSP",
+        });
+      default:
+        return E.left(
+          new ActionNotAllowedError(
+            `${action.name} is prohibited if the signature request is in REJECTED status`
           )
         );
     }

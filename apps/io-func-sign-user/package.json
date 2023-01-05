@@ -16,7 +16,7 @@
     "lint:fix": "eslint --fix \"src/**\"",
     "test": "jest --coverage",
     "typecheck": "tsc",
-    "start": "func start",
+    "start": "func start  --port 7072",
     "build:package": "npm-pack-zip --add-version",
     "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
   },
