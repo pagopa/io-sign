@@ -164,3 +164,6 @@ export const markAsRejected = (reason: string) =>
     name: "MARK_AS_REJECTED",
     payload: { reason },
   });
+
+export const canBeWaitForQtsp = (request: SignatureRequest) =>
+  pipe(request, dispatch({ name: "MARK_AS_WAIT_FOR_QTSP" }), E.isRight);
