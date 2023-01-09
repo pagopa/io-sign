@@ -26,6 +26,7 @@ import {
 
 import { DocumentToSign } from "../../signature-field";
 import {
+  canBeWaitForQtsp,
   GetSignatureRequest,
   markAsWaitForQtsp,
   UpsertSignatureRequest,
@@ -130,7 +131,20 @@ export const makeCreateSignature =
       )(signer.id)
     );
 
-    return pipe(
+    const retrieveSignatureRequest = pipe(
+      signer.id,
+      getSignatureRequest(signatureRequestId),
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new EntityNotFoundError(
+              `Signature request ${signatureRequestId} not found`
+            )
+        )
+      )
+    );
+
+    const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
         fiscalCode: pipe(
           signer.id,
@@ -213,16 +227,7 @@ export const makeCreateSignature =
       ),
       TE.chainFirst(() =>
         pipe(
-          signer.id,
-          getSignatureRequest(signatureRequestId),
-          TE.chain(
-            TE.fromOption(
-              () =>
-                new EntityNotFoundError(
-                  `Signature request ${signatureRequestId} not found`
-                )
-            )
-          ),
+          retrieveSignatureRequest,
           TE.chainEitherK(markAsWaitForQtsp),
           TE.chain(upsertSignatureRequest)
         )
@@ -235,6 +240,20 @@ export const makeCreateSignature =
           },
           notifySignatureReadyEvent
         )
+      )
+    );
+
+    return pipe(
+      retrieveSignatureRequest,
+      TE.map(canBeWaitForQtsp),
+      TE.chain((canBeCreated) =>
+        !canBeCreated
+          ? TE.left(
+              new ActionNotAllowedError(
+                "Signature can only be created if the signature request is in WAIT_FOR_SIGNATURE or REJECTED status!"
+              )
+            )
+          : createSignatureRequest
       )
     );
   };

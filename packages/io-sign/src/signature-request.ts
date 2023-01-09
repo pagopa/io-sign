@@ -90,6 +90,7 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
   t.type({
     rejectedAt: IsoDateFromString,
     rejectReason: t.string,
+    qrCodeUrl: t.string,
     documents: t.array(DocumentReady),
   })
 );
