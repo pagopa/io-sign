@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 0.10.1
+
+### Patch Changes
+
+- f5b5f67: Patch signature notification message
+- fc69f72: Changed notification message
+- Updated dependencies [12100f7]
+- Updated dependencies [78ae07d]
+- Updated dependencies [22fee87]
+  - @io-sign/io-sign@0.9.1
+
 ## 0.10.0
 
 ### Minor Changes
