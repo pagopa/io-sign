@@ -10,7 +10,7 @@ import { pipe } from "fp-ts/lib/function";
 import { getPdfFieldsValue } from "@io-sign/io-sign/infra/pdf";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { validate } from "@io-sign/io-sign/validation";
-import { makeFetchWithTimeout } from "../../../infra/http/fetch-timeout";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { QtspClauses, QtspCreateSignaturePayload } from "../../../qtsp";
 
 const getFileDigest = (

@@ -6,7 +6,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
-import { makeFetchWithTimeout } from "../http/fetch-timeout";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { NamirialConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
@@ -14,11 +14,11 @@ import {
   SignatureRequest,
 } from "./signature-request";
 
-const NamirialToken = t.type({
+export const NamirialToken = t.type({
   access: NonEmptyString,
   refresh: NonEmptyString,
 });
-type NamirialToken = t.TypeOf<typeof NamirialToken>;
+export type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
 const isSuccessful = (r: Response): boolean =>
   r.status >= 200 && r.status < 300;

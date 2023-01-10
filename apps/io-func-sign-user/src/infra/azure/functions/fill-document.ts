@@ -9,7 +9,7 @@ import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokeniz
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { ContainerClient } from "@azure/storage-blob";
 
-import { makeFetchWithTimeout } from "../../http/fetch-timeout";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 
 import { makeUploadBlob } from "../storage/blob";
 import { makeFillDocument } from "../../../app/use-cases/fill-document";

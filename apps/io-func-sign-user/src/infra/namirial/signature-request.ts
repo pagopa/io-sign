@@ -11,7 +11,7 @@ import {
 
 import * as t from "io-ts";
 
-import { makeFetchWithTimeout } from "../http/fetch-timeout";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { QtspCreateSignaturePayload } from "../../qtsp";
 import { NamirialConfig } from "./config";
 

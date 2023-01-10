@@ -19,6 +19,7 @@ export type PdvTokenizerClient = Client;
 export type PdvTokenizerClientWithApiKey = {
   client: PdvTokenizerClient;
   apiKey: NonEmptyString;
+  baseUrl: NonEmptyString;
 };
 
 export const createPdvTokenizerClient = (
@@ -34,4 +35,5 @@ export const createPdvTokenizerClient = (
     basePath: "/tokenizer/v1/",
   }),
   apiKey: apiKey as NonEmptyString,
+  baseUrl: baseUrl as NonEmptyString,
 });

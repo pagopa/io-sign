@@ -52,7 +52,7 @@ export const makeSubmitMessageForUser =
       TE.chain(() =>
         TE.tryCatch(
           () =>
-            ioApiClient.submitMessageforUserWithFiscalCodeInBody({
+            ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message,
             }),
           E.toError
