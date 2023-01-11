@@ -12,7 +12,7 @@ export type AzureCosmosProblemSource = "AzureCosmosDB";
 
 export const makeAzureCosmosDbHealthCheck = (
   db: Database
-): HealthCheck<AzureCosmosProblemSource, true> =>
+): HealthCheck<AzureCosmosProblemSource> =>
   pipe(
     TE.tryCatch(
       () => db.client.getDatabaseAccount(),

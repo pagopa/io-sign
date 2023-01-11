@@ -16,7 +16,7 @@ export type AzureStorageProblemSource =
 
 export const makeAzureStorageContainerHealthCheck = (
   container: ContainerClient
-): HealthCheck<AzureStorageProblemSource, true> =>
+): HealthCheck<AzureStorageProblemSource> =>
   pipe(
     TE.tryCatch(
       () => container.getProperties(),
@@ -27,7 +27,7 @@ export const makeAzureStorageContainerHealthCheck = (
 
 export const makeAzureStorageQueueHealthCheck = (
   queue: QueueClient
-): HealthCheck<AzureStorageProblemSource, true> =>
+): HealthCheck<AzureStorageProblemSource> =>
   pipe(
     TE.tryCatch(
       () => queue.getProperties(),
