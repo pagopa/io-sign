@@ -1,5 +1,6 @@
 ---
 "io-func-sign-user": minor
+"io-func-sign-issuer": minor
 "@io-sign/io-sign": minor
 ---
 
