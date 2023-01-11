@@ -61,7 +61,14 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
-export const Info = makeInfoFunction();
+export const Info = makeInfoFunction(
+  pdvTokenizerClientWithApiKey,
+  ioApiClient,
+  database,
+  uploadedContainerClient,
+  validatedContainerClient,
+  onSignatureRequestReadyQueueClient
+);
 
 export const CreateDossier = makeCreateDossierFunction(database);
 export const GetDossier = makeGetDossierFunction(database);
