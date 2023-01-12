@@ -73,7 +73,18 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
-export const Info = makeInfoFunction();
+export const Info = makeInfoFunction(
+  config.namirial,
+  pdvTokenizerClient,
+  ioApiClient,
+  database,
+  filledContainerClient,
+  validatedContainerClient,
+  signedContainerClient,
+  documentsToFillQueue,
+  qtspQueue,
+  onWaitForSignatureQueueClient
+);
 
 export const CreateFilledDocument = makeCreateFilledDocumentFunction(
   filledContainerClient,

@@ -21,7 +21,7 @@ export const makeRetriveUserProfileSenderAllowed =
     pipe(
       TE.tryCatch(
         () =>
-          ioApiClient.getProfile({
+          ioApiClient.client.getProfile({
             fiscal_code,
           }),
         E.toError
