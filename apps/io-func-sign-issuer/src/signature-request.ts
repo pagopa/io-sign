@@ -33,8 +33,8 @@ import {
   makeSignatureRequestVariant,
 } from "@io-sign/io-sign/signature-request";
 
-import { Dossier } from "./dossier";
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { Dossier } from "./dossier";
 
 export const SignatureRequestDraft = makeSignatureRequestVariant(
   "DRAFT",

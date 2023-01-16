@@ -6,9 +6,9 @@ import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
-import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 const issuer: Issuer = {
   id: newId(),

@@ -12,10 +12,10 @@ import { head } from "fp-ts/lib/Array";
 import { newSigner } from "@io-sign/io-sign/signer";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
 import { newDossier } from "../dossier";
-import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 describe("UploadMetadata", () => {
   describe("newUploadMetadata", () => {
