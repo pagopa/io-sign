@@ -48,7 +48,7 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
         return t.success(new HttpNotFoundError(e.message));
       case "ActionNotAllowedError":
         return t.success(new HttpBadRequestError(e.message));
-      case "InvalidExpiryDateError":
+      case "InvalidExpireDateError":
         return t.success(new HttpBadRequestError(e.message));
       case "TooManyRequestsError":
         return t.success(new HttpTooManyRequestsError(e.message));

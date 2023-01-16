@@ -261,7 +261,6 @@ const onDraftStatus =
             )
           )
         );
-        return E.right(request);
       default:
         return E.left(
           new ActionNotAllowedError(
