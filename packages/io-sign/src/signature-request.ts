@@ -1,6 +1,7 @@
 import * as t from "io-ts";
 
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { Id } from "./id";
 import { Signer } from "./signer";
@@ -12,6 +13,9 @@ const SignatureRequest = t.type({
   id: Id,
   signerId: Signer.props.id,
   issuerId: Issuer.props.id,
+  // TODO: [SFEQS-1028] issuerEmail and IssuerDescription are temp properties, waiting to implement the integration with Selfcare.
+  issuerEmail: EmailString,
+  issuerDescription: NonEmptyString,
   dossierId: Id,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,

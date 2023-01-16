@@ -20,6 +20,8 @@ export const SignatureRequestToApiModel: E.Encoder<
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
+    issuerEmail: email,
+    issuerDescription: description,
     documents,
     ...extra
   }) => {
@@ -31,6 +33,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       updated_at,
       expires_at,
       documents: documents.map(DocumentReadyToDetailView.encode),
+      issuer: {
+        email,
+        description,
+      },
     };
     switch (extra.status) {
       case "WAIT_FOR_SIGNATURE": {

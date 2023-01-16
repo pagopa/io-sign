@@ -1,15 +1,15 @@
 import * as t from "io-ts";
 
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { Id } from "./id";
 
 export const Issuer = t.type({
   id: Id,
   subscriptionId: NonEmptyString,
-  email: t.string,
+  email: EmailString,
   address: t.string,
-  description: t.string,
+  description: NonEmptyString,
   taxCode: t.string,
   vatNumber: t.string,
 });
