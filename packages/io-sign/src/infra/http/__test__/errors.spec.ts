@@ -70,11 +70,11 @@ describe("errors", () => {
       expect(isHttpBadRequest).toBe(true);
     });
     it("should parse an InvalidExpiryDateError as HttpBadRequest", () => {
-      const invalidExpiryDateError = new (class extends Error {
-        name = "InvalidExpiryDateError";
+      const InvalidExpireDateError = new (class extends Error {
+        name = "InvalidExpireDateError";
       })("Action not allowed");
       const isHttpBadRequest = pipe(
-        HttpErrorFromError.decode(invalidExpiryDateError),
+        HttpErrorFromError.decode(InvalidExpireDateError),
         E.mapLeft(() => false),
         E.filterOrElse(
           (e) => e.name === "HttpError",
