@@ -14,6 +14,7 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { pipe } from "fp-ts/lib/function";
+import { enumType } from "@pagopa/ts-commons/lib/types";
 import { ActionNotAllowedError } from "./error";
 import { id, Id } from "./id";
 
@@ -68,6 +69,11 @@ export const SignatureField = t.type({
 
 export type SignatureField = t.TypeOf<typeof SignatureField>;
 
+export enum FormFieldTypeEnum {
+  "SIGNATURE" = "SIGNATURE",
+  "OTHER" = "OTHER",
+}
+
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 60),
   signatureFields: t.array(SignatureField),
@@ -80,7 +86,7 @@ export const DocumentMetadata = t.type({
   ),
   formFields: t.array(
     t.type({
-      type: t.string,
+      type: enumType<FormFieldTypeEnum>(FormFieldTypeEnum, "type"),
       name: t.string,
     })
   ),

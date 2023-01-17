@@ -7,6 +7,7 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { sequenceS } from "fp-ts/lib/Apply";
 import {
   DocumentMetadata,
+  FormFieldTypeEnum,
   SignatureFieldAttributes,
 } from "@io-sign/io-sign/document";
 
@@ -46,13 +47,26 @@ const validateSignatureFieldsWithDocumentMetadata =
       A.map((signatureField) => signatureField.attributes),
       A.map((attributes) =>
         SignatureFieldAttributes.is(attributes)
-          ? attributes.uniqueName in formFields.map((field) => field.name)
-            ? E.right(true)
-            : E.left(
-                new Error(
-                  `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document`
-                )
+          ? pipe(
+              formFields,
+              A.filter((field) => field.name === attributes.uniqueName),
+              A.head,
+              E.fromOption(
+                () =>
+                  new Error(
+                    `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document`
+                  )
+              ),
+              E.chain((field) =>
+                field.type === FormFieldTypeEnum.SIGNATURE
+                  ? E.right(true)
+                  : E.left(
+                      new Error(
+                        `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field`
+                      )
+                    )
               )
+            )
           : pipe(
               pages,
               A.filter((p) => p.number === attributes.page),

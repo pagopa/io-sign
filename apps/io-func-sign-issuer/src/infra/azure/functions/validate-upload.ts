@@ -1,6 +1,7 @@
 import { constVoid, flow, identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as A from "fp-ts/lib/Array";
 
 import * as t from "io-ts";
 
@@ -16,6 +17,7 @@ import { createHandler } from "@pagopa/handler-kit";
 import { validate } from "@io-sign/io-sign/validation";
 import { getPdfMetadata as makeGetPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 
+import { FormFieldTypeEnum } from "@io-sign/io-sign/document";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
@@ -97,7 +99,16 @@ const makeValidateUploadHandler = (
     makeGetPdfMetadata,
     TE.map((metadata) => ({
       pages: metadata.pages,
-      formFields: metadata.fields,
+      formFields: pipe(
+        metadata.fields,
+        A.map((field) => ({
+          name: field.name,
+          type:
+            field.type === "PDFSignature"
+              ? FormFieldTypeEnum.SIGNATURE
+              : FormFieldTypeEnum.OTHER,
+        }))
+      ),
     }))
   );
 
