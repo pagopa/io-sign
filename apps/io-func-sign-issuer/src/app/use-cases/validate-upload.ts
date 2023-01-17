@@ -9,12 +9,16 @@ import {
   DocumentMetadata,
   FormFieldTypeEnum,
   SignatureFieldAttributes,
+  SignatureFieldToBeCreatedAttributes,
+  DocumentMetadataPage,
 } from "@io-sign/io-sign/document";
 
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
   IsUploaded,
+  markUploadMetadataAsValid,
   MoveUploadedDocument,
   UploadMetadata,
   UpsertUploadMetadata,
@@ -36,6 +40,70 @@ export type GetPdfMetadata = (buffer: Buffer) => TE.TaskEither<
   }
 >;
 
+const getPage =
+  (pageNumber: NonNegativeNumber) => (pages: DocumentMetadata["pages"]) =>
+    pipe(
+      pages,
+      A.filter((p) => p.number === pageNumber),
+      A.head
+    );
+
+const isFieldInsidePage =
+  (fieldAttributes: SignatureFieldToBeCreatedAttributes) =>
+  (page: DocumentMetadataPage) =>
+    fieldAttributes.coordinates.x + fieldAttributes.size.w < page.width &&
+    fieldAttributes.coordinates.y + fieldAttributes.size.h < page.height;
+
+const validateSignatureField =
+  (formFields: DocumentMetadata["formFields"]) =>
+  (attributes: SignatureFieldAttributes) =>
+    pipe(
+      formFields,
+      A.filter((field) => field.name === attributes.uniqueName),
+      A.head,
+      E.fromOption(() => [
+        new Error(
+          `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
+        ),
+      ]),
+      E.chain((field) =>
+        field.type === FormFieldTypeEnum.SIGNATURE
+          ? E.right(true)
+          : E.left([
+              new Error(
+                `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field.`
+              ),
+            ])
+      )
+    );
+
+const validateSignatureFieldToBeCreated =
+  (pages: DocumentMetadata["pages"]) =>
+  (attributes: SignatureFieldToBeCreatedAttributes) =>
+    pipe(
+      pages,
+      getPage(attributes.page),
+      E.fromOption(() => [
+        new Error(
+          `The page number in the dossier signature field (${attributes.page}) was not found in the uploaded document.`
+        ),
+      ]),
+      E.map(isFieldInsidePage(attributes)),
+      E.chain((isValid) =>
+        isValid
+          ? E.right(true)
+          : E.left([
+              new Error(
+                `The coordinates in the dossier are incompatible with the page size of the uploaded file.`
+              ),
+            ])
+      )
+    );
+
+const applicativeValidation = E.getApplicativeValidation(
+  A.getSemigroup<Error>()
+);
+
 const validateSignatureFieldsWithMetadata =
   (
     pages: DocumentMetadata["pages"],
@@ -47,48 +115,10 @@ const validateSignatureFieldsWithMetadata =
       A.map((signatureField) => signatureField.attributes),
       A.map((attributes) =>
         SignatureFieldAttributes.is(attributes)
-          ? pipe(
-              formFields,
-              A.filter((field) => field.name === attributes.uniqueName),
-              A.head,
-              E.fromOption(
-                () =>
-                  new Error(
-                    `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
-                  )
-              ),
-              E.chain((field) =>
-                field.type === FormFieldTypeEnum.SIGNATURE
-                  ? E.right(true)
-                  : E.left(
-                      new Error(
-                        `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field.`
-                      )
-                    )
-              )
-            )
-          : pipe(
-              pages,
-              A.filter((p) => p.number === attributes.page),
-              A.head,
-              E.fromOption(
-                () =>
-                  new Error(
-                    `The page number in the dossier signature field (${attributes.page}) was not found in the uploaded document.`
-                  )
-              ),
-              E.chain((page) =>
-                attributes.coordinates.x + attributes.size.w < page.width &&
-                attributes.coordinates.y + attributes.size.h < page.height
-                  ? E.right(true)
-                  : E.left(
-                      new Error(
-                        `The coordinates in the dossier are incompatible with the page size of the uploaded file.`
-                      )
-                    )
-              )
-            )
-      )
+          ? pipe(attributes, validateSignatureField(formFields))
+          : pipe(attributes, validateSignatureFieldToBeCreated(pages))
+      ),
+      A.sequence(applicativeValidation)
     );
 
 export const makeValidateUpload =
@@ -154,32 +184,33 @@ export const makeValidateUpload =
               E.fromOption(
                 () =>
                   new EntityNotFoundError(
-                    "The specified document does not exists."
+                    "No document was found with the specified document id."
                   )
               ),
               E.chain((document) =>
                 pipe(
                   document.metadata.signatureFields,
                   validateSignatureFieldsWithMetadata(pages, formFields),
-                  A.separate,
-                  (validationResults) =>
-                    pipe(validationResults.left, A.isEmpty)
-                      ? pipe(
-                          signatureRequest,
-                          markDocumentAsReady(
-                            uploadMetadata.documentId,
-                            url,
-                            pages,
-                            formFields
-                          )
+                  E.fold(
+                    (validationErrors) =>
+                      pipe(
+                        signatureRequest,
+                        markDocumentAsRejected(
+                          uploadMetadata.documentId,
+                          validationErrors.join("\n\n")
                         )
-                      : pipe(
-                          signatureRequest,
-                          markDocumentAsRejected(
-                            uploadMetadata.documentId,
-                            validationResults.left.join("\n\n")
-                          )
+                      ),
+                    () =>
+                      pipe(
+                        signatureRequest,
+                        markDocumentAsReady(
+                          uploadMetadata.documentId,
+                          url,
+                          pages,
+                          formFields
                         )
+                      )
+                  )
                 )
               )
             )
@@ -197,11 +228,12 @@ export const makeValidateUpload =
         )
       ),
       TE.chainFirst((signatureRequest) =>
-        upsertUploadMetadata({
-          ...uploadMetadata,
-          validated: signatureRequest.status === "READY",
-          updatedAt: new Date(),
-        })
+        pipe(
+          signatureRequest.status === "READY"
+            ? markUploadMetadataAsValid(uploadMetadata)
+            : uploadMetadata,
+          upsertUploadMetadata
+        )
       ),
       TE.chain(upsertSignatureRequest),
       TE.chain(() => deleteDocumentUploadedFromBlobStorage(uploadMetadata.id))

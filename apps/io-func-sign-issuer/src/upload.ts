@@ -54,6 +54,13 @@ export const newUploadMetadata =
       }))
     );
 
+export const markUploadMetadataAsValid = (uploadMetadata: UploadMetadata) =>
+  pipe({
+    ...uploadMetadata,
+    validated: true,
+    updatedAt: new Date(),
+  });
+
 export type InsertUploadMetadata = (
   uploadMetadata: UploadMetadata
 ) => TE.TaskEither<Error, UploadMetadata>;

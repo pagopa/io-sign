@@ -74,22 +74,26 @@ export enum FormFieldTypeEnum {
   "OTHER" = "OTHER",
 }
 
+export const DocumentMetadataPage = t.type({
+  number: NonNegativeNumber,
+  width: NonNegativeNumber,
+  height: NonNegativeNumber,
+});
+export type DocumentMetadataPage = t.TypeOf<typeof DocumentMetadataPage>;
+
+export const DocumentMetadataFormField = t.type({
+  type: enumType<FormFieldTypeEnum>(FormFieldTypeEnum, "type"),
+  name: t.string,
+});
+export type DocumentMetadataFormField = t.TypeOf<
+  typeof DocumentMetadataFormField
+>;
+
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 60),
   signatureFields: t.array(SignatureField),
-  pages: t.array(
-    t.type({
-      number: NonNegativeNumber,
-      width: NonNegativeNumber,
-      height: NonNegativeNumber,
-    })
-  ),
-  formFields: t.array(
-    t.type({
-      type: enumType<FormFieldTypeEnum>(FormFieldTypeEnum, "type"),
-      name: t.string,
-    })
-  ),
+  pages: t.array(DocumentMetadataPage),
+  formFields: t.array(DocumentMetadataFormField),
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
