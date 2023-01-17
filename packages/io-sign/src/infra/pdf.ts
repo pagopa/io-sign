@@ -22,6 +22,12 @@ export const PdfMetadata = t.intersection([
         height: NonNegativeNumber,
       })
     ),
+    fields: t.array(
+      t.type({
+        type: t.string,
+        name: t.string,
+      })
+    ),
   }),
   t.partial({
     title: t.string,
@@ -41,7 +47,9 @@ const loadPdf = (buffer: Buffer) =>
     toError
   );
 
-export const getPdfMetadata = (buffer: Buffer) =>
+export const getPdfMetadata = (
+  buffer: Buffer
+): TE.TaskEither<Error, PdfMetadata> =>
   pipe(
     buffer,
     loadPdf,
@@ -53,6 +61,13 @@ export const getPdfMetadata = (buffer: Buffer) =>
         ...page.getSize(),
         number,
       })),
+      fields: pdfDocument
+        .getForm()
+        .getFields()
+        .map((field) => ({
+          type: field.constructor.name,
+          name: field.getName(),
+        })),
     })),
     TE.chainEitherKW(
       validate(PdfMetadata, "Failed to extract metadata from pdf file!")
