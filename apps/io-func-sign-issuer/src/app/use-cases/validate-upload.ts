@@ -50,7 +50,7 @@ const isFieldInsidePage =
     fieldAttributes.coordinates.x + fieldAttributes.size.w < page.width &&
     fieldAttributes.coordinates.y + fieldAttributes.size.h < page.height;
 
-const validateSignatureField =
+export const validateSignatureField =
   (formFields: PdfDocumentMetadata["formFields"]) =>
   (attributes: SignatureFieldAttributes) =>
     pipe(
@@ -65,7 +65,7 @@ const validateSignatureField =
       E.map(() => true)
     );
 
-const validateSignatureFieldToBeCreated =
+export const validateSignatureFieldToBeCreated =
   (pages: PdfDocumentMetadata["pages"]) =>
   (attributes: SignatureFieldToBeCreatedAttributes) =>
     pipe(
@@ -92,7 +92,7 @@ const applicativeValidation = E.getApplicativeValidation(
   A.getSemigroup<Error>()
 );
 
-const validateSignatureFieldsWithMetadata =
+export const validateSignatureFieldsWithMetadata =
   (pdfDocumentMetadata: PdfDocumentMetadata) =>
   (signatureFields: DocumentMetadata["signatureFields"]) =>
     pipe(
