@@ -60,7 +60,7 @@ export const SignatureRequestToApiModel: E.Encoder<
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.REJECTED,
-          reject_at: extra.rejectedAt,
+          rejected_at: extra.rejectedAt,
           reject_reason: extra.rejectReason,
         };
       }

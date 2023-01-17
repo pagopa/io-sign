@@ -363,6 +363,8 @@ components:
       properties:
         title:
           type: string
+          minLength: 5
+          maxLength: 80
         type:
           type: string
           enum: ["REQUIRED", "UNFAIR", "OPTIONAL"]
@@ -422,6 +424,8 @@ components:
       properties:
         title:
           type: string
+          minLength: 3
+          maxLength: 60
         signature_fields:
           type: array
           items:
@@ -649,6 +653,8 @@ components:
         updated_at:
           $ref: "#/components/schemas/Timestamp"
         signed_at:
+          $ref: "#/components/schemas/Timestamp"
+        rejected_at:
           $ref: "#/components/schemas/Timestamp"
         reject_reason:
           type: string
