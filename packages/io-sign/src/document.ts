@@ -158,7 +158,7 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   updatedAt: new Date(),
 });
 
-export const updatePdfDocument =
+export const updatePdfDocumentMetadata =
   (pdfDocumentMetadata: PdfDocumentMetadata) =>
   (document: DocumentReady): DocumentReady => ({
     ...document,
@@ -246,7 +246,7 @@ const onWaitForValidationStatus =
     switch (action.name) {
       case "MARK_AS_READY":
         return E.right(
-          updatePdfDocument(action.payload.pdfDocumentMetadata)({
+          updatePdfDocumentMetadata(action.payload.pdfDocumentMetadata)({
             ...document,
             status: "READY",
             url: action.payload.url,
