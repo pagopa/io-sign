@@ -12,6 +12,7 @@ import { head } from "fp-ts/lib/Array";
 import { newSigner } from "@io-sign/io-sign/signer";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
 import { newDossier } from "../dossier";
@@ -21,9 +22,9 @@ describe("UploadMetadata", () => {
     const issuer: Issuer = {
       id: newId(),
       subscriptionId: newId(),
-      email: "info@enpacl-pec.it",
+      email: "info@enpacl-pec.it" as EmailString,
       address: "Viale Del Caravaggio, 78 - 00147 Roma (RM)",
-      description: "descrizione dell'ente",
+      description: "descrizione dell'ente" as NonEmptyString,
       taxCode: "80119170589",
       vatNumber: "80119170589",
     };
@@ -41,7 +42,7 @@ describe("UploadMetadata", () => {
       },
     ]);
 
-    const request = newSignatureRequest(dossier, newSigner());
+    const request = newSignatureRequest(dossier, newSigner(), issuer);
 
     it("should create an UploadMetadata record only if the specified document exists", () => {
       const metaForFirstDocument = pipe(

@@ -3,6 +3,8 @@ import { describe, it, expect } from "@jest/globals";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { newId } from "@io-sign/io-sign/id";
 import {
   markAsRejected,
@@ -16,6 +18,8 @@ const signatureRequest: SignatureRequest = {
   id: newId(),
   dossierId: newId(),
   issuerId: newId(),
+  issuerEmail: "issuer@io-sign-mail.it" as EmailString,
+  issuerDescription: "Mocked Issuer" as NonEmptyString,
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

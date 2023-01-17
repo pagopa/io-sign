@@ -1,4 +1,5 @@
 import { Signer } from "@io-sign/io-sign/signer";
+import { Issuer } from "@io-sign/io-sign/issuer";
 
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -16,13 +17,14 @@ export type CreateSignatureRequestPayload = {
   dossier: Dossier;
   signer: Signer;
   expiresAt: O.Option<Date>;
+  issuer: Issuer;
 };
 
 export const makeCreateSignatureRequest =
   (insertSignatureRequest: InsertSignatureRequest) =>
-  ({ dossier, signer, expiresAt }: CreateSignatureRequestPayload) =>
+  ({ dossier, signer, expiresAt, issuer }: CreateSignatureRequestPayload) =>
     pipe(
-      newSignatureRequest(dossier, signer),
+      newSignatureRequest(dossier, signer, issuer),
       withExpiryDate(pipe(expiresAt, O.getOrElse(defaultExpiryDate))),
       TE.fromEither,
       TE.chain(insertSignatureRequest)
