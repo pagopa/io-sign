@@ -76,7 +76,12 @@ export const DocumentMetadataFromApiModel = new t.Type<
     pipe(
       signature_fields,
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
-      E.map((signatureFields) => ({ title, signatureFields, pages: [] }))
+      E.map((signatureFields) => ({
+        title,
+        signatureFields,
+        pages: [],
+        formFields: [],
+      }))
     ),
   DocumentMetadataToApiModel.encode
 );

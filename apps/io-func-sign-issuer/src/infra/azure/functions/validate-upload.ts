@@ -14,12 +14,17 @@ import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 
 import { validate } from "@io-sign/io-sign/validation";
+import { getPdfMetadata as makeGetPdfMetadata } from "@io-sign/io-sign/infra/pdf";
+
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
 } from "../cosmos/upload";
 
-import { makeValidateUpload } from "../../../app/use-cases/validate-upload";
+import {
+  GetPdfMetadata,
+  makeValidateUpload,
+} from "../../../app/use-cases/validate-upload";
 
 import {
   makeGetSignatureRequest,
@@ -88,6 +93,14 @@ const makeValidateUploadHandler = (
 
   const requireUploadMetadata = makeRequireUploadMetadata(getUploadMetadata);
 
+  const getPdfMetadata: GetPdfMetadata = flow(
+    makeGetPdfMetadata,
+    TE.map((metadata) => ({
+      pages: metadata.pages,
+      formFields: metadata.fields,
+    }))
+  );
+
   const validateUpload = makeValidateUpload(
     getSignatureRequest,
     upsertSignatureRequest,
@@ -95,7 +108,8 @@ const makeValidateUploadHandler = (
     moveUploadedDocument,
     downloadDocumentUploadedFromBlobStorage,
     deleteDocumentUploadedFromBlobStorage,
-    upsertUploadMetadata
+    upsertUploadMetadata,
+    getPdfMetadata
   );
 
   const decodeRequest = flow(

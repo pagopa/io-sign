@@ -9,7 +9,7 @@ import {
   DocumentMetadata,
   SignatureFieldAttributes,
 } from "@io-sign/io-sign/document";
-import { getPdfMetadata, PdfMetadata } from "@io-sign/io-sign/infra/pdf";
+
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -27,16 +27,26 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 
+export type GetPdfMetadata = (buffer: Buffer) => TE.TaskEither<
+  Error,
+  {
+    pages: DocumentMetadata["pages"];
+    formFields: DocumentMetadata["formFields"];
+  }
+>;
+
 const validateSignatureFieldsWithPdfMetadata =
-  (pdfMetadata: PdfMetadata) =>
+  (
+    pages: DocumentMetadata["pages"],
+    formFields: DocumentMetadata["formFields"]
+  ) =>
   (signatureFields: DocumentMetadata["signatureFields"]) =>
     pipe(
       signatureFields,
       A.map((signatureField) => signatureField.attributes),
       A.map((attributes) =>
         SignatureFieldAttributes.is(attributes)
-          ? attributes.uniqueName in
-            pdfMetadata.fields.map((field) => field.name)
+          ? attributes.uniqueName in formFields.map((field) => field.name)
             ? E.right(true)
             : E.left(
                 new Error(
@@ -44,7 +54,7 @@ const validateSignatureFieldsWithPdfMetadata =
                 )
               )
           : pipe(
-              pdfMetadata.pages,
+              pages,
               A.filter((p) => p.number === attributes.page),
               A.head,
               E.fromOption(
@@ -67,7 +77,6 @@ const validateSignatureFieldsWithPdfMetadata =
       )
     );
 
-// TODO: [SFEQS-1216] this function cannot be aware of an infra module (@io-sign/io-sign/infra/pdf)
 export const makeValidateUpload =
   (
     getSignatureRequest: GetSignatureRequest,
@@ -76,7 +85,8 @@ export const makeValidateUpload =
     moveUploadedDocument: MoveUploadedDocument,
     downloadDocumentUploadedFromBlobStorage: DownloadUploadDocument,
     deleteDocumentUploadedFromBlobStorage: DeleteUploadDocument,
-    upsertUploadMetadata: UpsertUploadMetadata
+    upsertUploadMetadata: UpsertUploadMetadata,
+    getPdfMetadata: GetPdfMetadata
   ) =>
   (uploadMetadata: UploadMetadata) =>
     pipe(
@@ -123,7 +133,7 @@ export const makeValidateUpload =
               TE.chain(moveUploadedDocument(uploadMetadata.documentId))
             ),
           }),
-          TE.chainEitherK(({ metadata, url }) =>
+          TE.chainEitherK(({ metadata: { pages, formFields }, url }) =>
             pipe(
               signatureRequest,
               getDocument(uploadMetadata.documentId),
@@ -136,7 +146,7 @@ export const makeValidateUpload =
               E.chain((document) =>
                 pipe(
                   document.metadata.signatureFields,
-                  validateSignatureFieldsWithPdfMetadata(metadata),
+                  validateSignatureFieldsWithPdfMetadata(pages, formFields),
                   A.separate,
                   (validationResults) =>
                     pipe(validationResults.left, A.isEmpty)
@@ -145,7 +155,8 @@ export const makeValidateUpload =
                           markDocumentAsReady(
                             uploadMetadata.documentId,
                             url,
-                            metadata.pages
+                            pages,
+                            formFields
                           )
                         )
                       : pipe(

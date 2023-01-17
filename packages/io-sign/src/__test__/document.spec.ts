@@ -14,6 +14,7 @@ const metadata: DocumentMetadata = {
   title: "my test document",
   signatureFields: [],
   pages: [],
+  formFields: [],
 };
 
 describe("Document", () => {
@@ -66,7 +67,7 @@ describe("Document", () => {
       expect(
         pipe(
           document,
-          markAsReady("https://my.document.url", []),
+          markAsReady("https://my.document.url", [], []),
           E.getOrElseW(identity)
         )
       ).toBeInstanceOf(Error);
@@ -82,7 +83,7 @@ describe("Document", () => {
       expect(
         pipe(
           rejectedDocument,
-          E.chain(markAsReady("https://my.document.url", [])),
+          E.chain(markAsReady("https://my.document.url", [], [])),
           E.getOrElseW(identity)
         )
       ).toBeInstanceOf(Error);

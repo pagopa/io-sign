@@ -33,11 +33,13 @@ describe("UploadMetadata", () => {
         title: "document #1",
         signatureFields: [],
         pages: [],
+        formFields: [],
       },
       {
         title: "document #2",
         signatureFields: [],
         pages: [],
+        formFields: [],
       },
     ]);
 

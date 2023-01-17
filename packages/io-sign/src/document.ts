@@ -78,6 +78,12 @@ export const DocumentMetadata = t.type({
       height: NonNegativeNumber,
     })
   ),
+  formFields: t.array(
+    t.type({
+      type: t.string,
+      name: t.string,
+    })
+  ),
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
@@ -142,14 +148,18 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   updatedAt: new Date(),
 });
 
-export const updateMetadataPage =
-  (pages: DocumentMetadata["pages"]) =>
+export const updateMetadataPageAndFields =
+  (
+    pages: DocumentMetadata["pages"],
+    formFields: DocumentMetadata["formFields"]
+  ) =>
   (document: DocumentReady): DocumentReady => ({
     ...document,
     metadata: {
       signatureFields: document.metadata.signatureFields,
       title: document.metadata.title,
       pages,
+      formFields,
     },
   });
 
@@ -162,6 +172,7 @@ type Action_MARK_AS_READY = {
   payload: {
     url: string;
     pages: DocumentMetadata["pages"];
+    formFields: DocumentMetadata["formFields"];
   };
 };
 
@@ -230,7 +241,10 @@ const onWaitForValidationStatus =
     switch (action.name) {
       case "MARK_AS_READY":
         return E.right(
-          updateMetadataPage(action.payload.pages)({
+          updateMetadataPageAndFields(
+            action.payload.pages,
+            action.payload.formFields
+          )({
             ...document,
             status: "READY",
             url: action.payload.url,
@@ -285,12 +299,17 @@ export const startValidation = dispatch({
   name: "START_VALIDATION",
 });
 
-export const markAsReady = (url: string, pages: DocumentMetadata["pages"]) =>
+export const markAsReady = (
+  url: string,
+  pages: DocumentMetadata["pages"],
+  formFields: DocumentMetadata["formFields"]
+) =>
   dispatch({
     name: "MARK_AS_READY",
     payload: {
       url,
       pages,
+      formFields,
     },
   });
 

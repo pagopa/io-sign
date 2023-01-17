@@ -154,6 +154,7 @@ type Action_MARK_DOCUMENT_AS_READY = {
     documentId: Document["id"];
     url: string;
     pages: DocumentMetadata["pages"];
+    formFields: DocumentMetadata["formFields"];
   };
 };
 
@@ -232,7 +233,13 @@ const onDraftStatus =
           request,
           getDocument(action.payload.documentId),
           E.fromOption(() => documentNotFoundError),
-          E.chain(setReadyStatus(action.payload.url, action.payload.pages)),
+          E.chain(
+            setReadyStatus(
+              action.payload.url,
+              action.payload.pages,
+              action.payload.formFields
+            )
+          ),
           E.map((updated) =>
             replaceDocument(action.payload.documentId, updated)(request)
           ),
@@ -341,11 +348,12 @@ export const startValidationOnDocument = (documentId: Document["id"]) =>
 export const markDocumentAsReady = (
   documentId: Document["id"],
   url: string,
-  pages: DocumentMetadata["pages"]
+  pages: DocumentMetadata["pages"],
+  formFields: DocumentMetadata["formFields"]
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_READY",
-    payload: { documentId, url, pages },
+    payload: { documentId, url, pages, formFields },
   });
 
 export const markDocumentAsRejected = (
