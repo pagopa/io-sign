@@ -36,7 +36,7 @@ export type GetPdfMetadata = (buffer: Buffer) => TE.TaskEither<
   }
 >;
 
-const validateSignatureFieldsWithDocumentMetadata =
+const validateSignatureFieldsWithMetadata =
   (
     pages: DocumentMetadata["pages"],
     formFields: DocumentMetadata["formFields"]
@@ -54,7 +54,7 @@ const validateSignatureFieldsWithDocumentMetadata =
               E.fromOption(
                 () =>
                   new Error(
-                    `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document`
+                    `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
                   )
               ),
               E.chain((field) =>
@@ -62,7 +62,7 @@ const validateSignatureFieldsWithDocumentMetadata =
                   ? E.right(true)
                   : E.left(
                       new Error(
-                        `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field`
+                        `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field.`
                       )
                     )
               )
@@ -160,10 +160,7 @@ export const makeValidateUpload =
               E.chain((document) =>
                 pipe(
                   document.metadata.signatureFields,
-                  validateSignatureFieldsWithDocumentMetadata(
-                    pages,
-                    formFields
-                  ),
+                  validateSignatureFieldsWithMetadata(pages, formFields),
                   A.separate,
                   (validationResults) =>
                     pipe(validationResults.left, A.isEmpty)
