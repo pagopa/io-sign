@@ -6,15 +6,16 @@ import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
 
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
-  email: "info@enpacl-pec.it",
+  email: "info@enpacl-pec.it" as EmailString,
   address: "Viale Del Caravaggio, 78 - 00147 Roma (RM)",
-  description: "descrizione dell'ente",
+  description: "descrizione dell'ente" as NonEmptyString,
   taxCode: "80119170589",
   vatNumber: "80119170589",
 };
@@ -37,11 +38,11 @@ const dossier = newDossier(issuer, "My dossier", [
 describe("SignatureRequest", () => {
   describe("newSignatureRequest", () => {
     it('should create a request with "DRAFT" status', () => {
-      const request = newSignatureRequest(dossier, newSigner());
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
       expect(request.status).toBe("DRAFT");
     });
     test('all documents should be created with "WAIT_FOR_UPLOAD" status', () => {
-      const request = newSignatureRequest(dossier, newSigner());
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
       expect(
         request.documents.every(
           (document) => document.status === "WAIT_FOR_UPLOAD"
@@ -55,7 +56,7 @@ describe("SignatureRequest", () => {
       const newExpiryDate = pipe(new Date(), addDays(4));
       expect(
         pipe(
-          newSignatureRequest(dossier, newSigner()),
+          newSignatureRequest(dossier, newSigner(), issuer),
           withExpiryDate(newExpiryDate),
           E.map((request) => request.expiresAt),
           E.map(isEqual(newExpiryDate)),
@@ -66,7 +67,7 @@ describe("SignatureRequest", () => {
     it("should return an error on invalid expiry date", () => {
       expect(
         pipe(
-          newSignatureRequest(dossier, newSigner()),
+          newSignatureRequest(dossier, newSigner(), issuer),
           withExpiryDate(pipe(new Date(), subDays(100))),
           E.isLeft
         )

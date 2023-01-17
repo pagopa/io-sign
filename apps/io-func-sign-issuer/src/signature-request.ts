@@ -33,6 +33,7 @@ import {
   makeSignatureRequestVariant,
 } from "@io-sign/io-sign/signature-request";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import { Dossier } from "./dossier";
 
 export const SignatureRequestDraft = makeSignatureRequestVariant(
@@ -58,10 +59,13 @@ export const defaultExpiryDate = () => pipe(new Date(), addDays(90));
 
 export const newSignatureRequest = (
   dossier: Dossier,
-  signer: Signer
+  signer: Signer,
+  issuer: Issuer
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
+  issuerEmail: issuer.email,
+  issuerDescription: issuer.description,
   signerId: signer.id,
   dossierId: dossier.id,
   status: "DRAFT",
