@@ -35,7 +35,7 @@ export type GetPdfMetadata = (buffer: Buffer) => TE.TaskEither<
   }
 >;
 
-const validateSignatureFieldsWithPdfMetadata =
+const validateSignatureFieldsWithDocumentMetadata =
   (
     pages: DocumentMetadata["pages"],
     formFields: DocumentMetadata["formFields"]
@@ -146,7 +146,10 @@ export const makeValidateUpload =
               E.chain((document) =>
                 pipe(
                   document.metadata.signatureFields,
-                  validateSignatureFieldsWithPdfMetadata(pages, formFields),
+                  validateSignatureFieldsWithDocumentMetadata(
+                    pages,
+                    formFields
+                  ),
                   A.separate,
                   (validationResults) =>
                     pipe(validationResults.left, A.isEmpty)
