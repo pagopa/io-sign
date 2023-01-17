@@ -2,41 +2,14 @@ import { PDFDocument, PDFForm } from "pdf-lib";
 
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
-import * as t from "io-ts";
 
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { validate } from "../validation";
 import { EntityNotFoundError } from "../error";
-
-export const PdfMetadata = t.intersection([
-  t.type({
-    pages: t.array(
-      t.type({
-        number: NonNegativeNumber,
-        width: NonNegativeNumber,
-        height: NonNegativeNumber,
-      })
-    ),
-    fields: t.array(
-      t.type({
-        type: t.string,
-        name: t.string,
-      })
-    ),
-  }),
-  t.partial({
-    title: t.string,
-    creationDate: IsoDateFromString,
-    modificationDate: IsoDateFromString,
-  }),
-]);
-
-export type PdfMetadata = t.TypeOf<typeof PdfMetadata>;
+import { PdfDocumentMetadata } from "../document";
 
 const loadPdf = (buffer: Buffer) =>
   TE.tryCatch(
@@ -49,19 +22,16 @@ const loadPdf = (buffer: Buffer) =>
 
 export const getPdfMetadata = (
   buffer: Buffer
-): TE.TaskEither<Error, PdfMetadata> =>
+): TE.TaskEither<Error, PdfDocumentMetadata> =>
   pipe(
     buffer,
     loadPdf,
     TE.map((pdfDocument) => ({
-      title: pdfDocument.getTitle(),
-      creationDate: pdfDocument.getCreationDate(),
-      modificationDate: pdfDocument.getModificationDate(),
       pages: pdfDocument.getPages().map((page, number) => ({
         ...page.getSize(),
         number,
       })),
-      fields: pdfDocument
+      formFields: pdfDocument
         .getForm()
         .getFields()
         .map((field) => ({
@@ -70,7 +40,7 @@ export const getPdfMetadata = (
         })),
     })),
     TE.chainEitherKW(
-      validate(PdfMetadata, "Failed to extract metadata from pdf file!")
+      validate(PdfDocumentMetadata, "Failed to extract metadata from pdf file!")
     )
   );
 
