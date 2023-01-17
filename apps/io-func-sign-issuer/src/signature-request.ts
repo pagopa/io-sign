@@ -19,7 +19,7 @@ import {
   markAsReady as setReadyStatus,
   markAsRejected as setRejectedStatus,
   DocumentReady,
-  DocumentMetadata,
+  PdfDocumentMetadata,
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -157,8 +157,7 @@ type Action_MARK_DOCUMENT_AS_READY = {
   payload: {
     documentId: Document["id"];
     url: string;
-    pages: DocumentMetadata["pages"];
-    formFields: DocumentMetadata["formFields"];
+    pdfDocumentMetadata: PdfDocumentMetadata;
   };
 };
 
@@ -240,8 +239,7 @@ const onDraftStatus =
           E.chain(
             setReadyStatus(
               action.payload.url,
-              action.payload.pages,
-              action.payload.formFields
+              action.payload.pdfDocumentMetadata
             )
           ),
           E.map((updated) =>
@@ -352,12 +350,11 @@ export const startValidationOnDocument = (documentId: Document["id"]) =>
 export const markDocumentAsReady = (
   documentId: Document["id"],
   url: string,
-  pages: DocumentMetadata["pages"],
-  formFields: DocumentMetadata["formFields"]
+  pdfDocumentMetadata: PdfDocumentMetadata
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_READY",
-    payload: { documentId, url, pages, formFields },
+    payload: { documentId, url, pdfDocumentMetadata },
   });
 
 export const markDocumentAsRejected = (

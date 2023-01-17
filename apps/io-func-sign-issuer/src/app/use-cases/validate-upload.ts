@@ -7,10 +7,10 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { sequenceS } from "fp-ts/lib/Apply";
 import {
   DocumentMetadata,
-  FormFieldTypeEnum,
   SignatureFieldAttributes,
   SignatureFieldToBeCreatedAttributes,
-  DocumentMetadataPage,
+  PdfDocumentMetadata,
+  PdfDocumentMetadataPage,
 } from "@io-sign/io-sign/document";
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
@@ -32,16 +32,12 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 
-export type GetPdfMetadata = (buffer: Buffer) => TE.TaskEither<
-  Error,
-  {
-    pages: DocumentMetadata["pages"];
-    formFields: DocumentMetadata["formFields"];
-  }
->;
+export type GetPdfMetadata = (
+  buffer: Buffer
+) => TE.TaskEither<Error, PdfDocumentMetadata>;
 
 const getPage =
-  (pageNumber: NonNegativeNumber) => (pages: DocumentMetadata["pages"]) =>
+  (pageNumber: NonNegativeNumber) => (pages: PdfDocumentMetadata["pages"]) =>
     pipe(
       pages,
       A.filter((p) => p.number === pageNumber),
@@ -50,12 +46,12 @@ const getPage =
 
 const isFieldInsidePage =
   (fieldAttributes: SignatureFieldToBeCreatedAttributes) =>
-  (page: DocumentMetadataPage) =>
+  (page: PdfDocumentMetadataPage) =>
     fieldAttributes.coordinates.x + fieldAttributes.size.w < page.width &&
     fieldAttributes.coordinates.y + fieldAttributes.size.h < page.height;
 
 const validateSignatureField =
-  (formFields: DocumentMetadata["formFields"]) =>
+  (formFields: PdfDocumentMetadata["formFields"]) =>
   (attributes: SignatureFieldAttributes) =>
     pipe(
       formFields,
@@ -66,19 +62,11 @@ const validateSignatureField =
           `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
         ),
       ]),
-      E.chain((field) =>
-        field.type === FormFieldTypeEnum.SIGNATURE
-          ? E.right(true)
-          : E.left([
-              new Error(
-                `The dossier signature field (${attributes.uniqueName}) doesn't appear to be a signature field.`
-              ),
-            ])
-      )
+      E.map(() => true)
     );
 
 const validateSignatureFieldToBeCreated =
-  (pages: DocumentMetadata["pages"]) =>
+  (pages: PdfDocumentMetadata["pages"]) =>
   (attributes: SignatureFieldToBeCreatedAttributes) =>
     pipe(
       pages,
@@ -105,18 +93,21 @@ const applicativeValidation = E.getApplicativeValidation(
 );
 
 const validateSignatureFieldsWithMetadata =
-  (
-    pages: DocumentMetadata["pages"],
-    formFields: DocumentMetadata["formFields"]
-  ) =>
+  (pdfDocumentMetadata: PdfDocumentMetadata) =>
   (signatureFields: DocumentMetadata["signatureFields"]) =>
     pipe(
       signatureFields,
       A.map((signatureField) => signatureField.attributes),
       A.map((attributes) =>
         SignatureFieldAttributes.is(attributes)
-          ? pipe(attributes, validateSignatureField(formFields))
-          : pipe(attributes, validateSignatureFieldToBeCreated(pages))
+          ? pipe(
+              attributes,
+              validateSignatureField(pdfDocumentMetadata.formFields)
+            )
+          : pipe(
+              attributes,
+              validateSignatureFieldToBeCreated(pdfDocumentMetadata.pages)
+            )
       ),
       A.sequence(applicativeValidation)
     );
@@ -150,7 +141,7 @@ export const makeValidateUpload =
       TE.chain((signatureRequest) =>
         pipe(
           sequenceS(TE.ApplySeq)({
-            metadata: pipe(
+            pdfDocumentMetadata: pipe(
               uploadMetadata.url,
               TE.fromNullable(new Error("Not found: url in upload metadata")),
               TE.chain(() =>
@@ -177,7 +168,7 @@ export const makeValidateUpload =
               TE.chain(moveUploadedDocument(uploadMetadata.documentId))
             ),
           }),
-          TE.chainEitherK(({ metadata: { pages, formFields }, url }) =>
+          TE.chainEitherK(({ pdfDocumentMetadata, url }) =>
             pipe(
               signatureRequest,
               getDocument(uploadMetadata.documentId),
@@ -190,7 +181,7 @@ export const makeValidateUpload =
               E.chain((document) =>
                 pipe(
                   document.metadata.signatureFields,
-                  validateSignatureFieldsWithMetadata(pages, formFields),
+                  validateSignatureFieldsWithMetadata(pdfDocumentMetadata),
                   E.fold(
                     (validationErrors) =>
                       pipe(
@@ -206,8 +197,7 @@ export const makeValidateUpload =
                         markDocumentAsReady(
                           uploadMetadata.documentId,
                           url,
-                          pages,
-                          formFields
+                          pdfDocumentMetadata
                         )
                       )
                   )
