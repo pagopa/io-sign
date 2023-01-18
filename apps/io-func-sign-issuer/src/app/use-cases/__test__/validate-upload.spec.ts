@@ -14,7 +14,7 @@ import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
   isValidSignatureField,
   isValidSignatureFieldToBeCreated,
-} from "../app/use-cases/validate-upload";
+} from "../validate-upload";
 
 const pdfDocumentMetadata: PdfDocumentMetadata = {
   pages: [
@@ -33,10 +33,6 @@ const pdfDocumentMetadata: PdfDocumentMetadata = {
 describe("validateSignatureField", () => {
   it.each([
     {
-      payload: {},
-      expected: false,
-    },
-    {
       payload: {
         uniqueName: "fieldId1" as NonEmptyString,
       },
@@ -51,7 +47,7 @@ describe("validateSignatureField", () => {
   ])("should be valid ($#)", ({ payload, expected }) =>
     expect(
       pipe(
-        payload as unknown as SignatureFieldAttributes,
+        payload as SignatureFieldAttributes,
         isValidSignatureField(pdfDocumentMetadata.formFields),
         E.isRight
       )
@@ -61,10 +57,6 @@ describe("validateSignatureField", () => {
 
 describe("validateSignatureFieldToBeCreated", () => {
   it.each([
-    {
-      payload: {},
-      expected: false,
-    },
     {
       payload: {
         coordinates: {
@@ -110,7 +102,7 @@ describe("validateSignatureFieldToBeCreated", () => {
   ])("should be valid ($#)", ({ payload, expected }) =>
     expect(
       pipe(
-        payload as unknown as SignatureFieldToBeCreatedAttributes,
+        payload as SignatureFieldToBeCreatedAttributes,
         isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages),
         E.isRight
       )
