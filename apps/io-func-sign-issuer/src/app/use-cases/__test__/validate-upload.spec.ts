@@ -11,6 +11,7 @@ import {
 } from "@io-sign/io-sign/document";
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { validate } from "@io-sign/io-sign/validation";
 import {
   isValidSignatureField,
   isValidSignatureFieldToBeCreated,
@@ -44,15 +45,15 @@ describe("validateSignatureField", () => {
       },
       expected: false,
     },
-  ])("should be valid ($#)", ({ payload, expected }) =>
-    expect(
-      pipe(
-        payload as SignatureFieldAttributes,
-        isValidSignatureField(pdfDocumentMetadata.formFields),
-        E.isRight
-      )
-    ).toBe(expected)
-  );
+  ])("should be valid ($#)", ({ payload, expected }) => {
+    const data = pipe(
+      payload,
+      validate(SignatureFieldAttributes),
+      E.chainW(isValidSignatureField(pdfDocumentMetadata.formFields)),
+      E.isRight
+    );
+    expect(data).toBe(expected);
+  });
 });
 
 describe("validateSignatureFieldToBeCreated", () => {
@@ -99,13 +100,13 @@ describe("validateSignatureFieldToBeCreated", () => {
       },
       expected: false,
     },
-  ])("should be valid ($#)", ({ payload, expected }) =>
-    expect(
-      pipe(
-        payload as SignatureFieldToBeCreatedAttributes,
-        isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages),
-        E.isRight
-      )
-    ).toBe(expected)
-  );
+  ])("should be valid ($#)", ({ payload, expected }) => {
+    const data = pipe(
+      payload,
+      validate(SignatureFieldToBeCreatedAttributes),
+      E.chainW(isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages)),
+      E.isRight
+    );
+    expect(data).toBe(expected);
+  });
 });

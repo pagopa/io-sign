@@ -51,7 +51,7 @@ const isFieldInsidePage =
 
 export const isValidSignatureField =
   (formFields: PdfDocumentMetadata["formFields"]) =>
-  (attributes: SignatureFieldAttributes) =>
+  (attributes: SignatureFieldAttributes): E.Either<Error[], boolean> =>
     pipe(
       formFields,
       A.findFirst((field) => field.name === attributes.uniqueName),
@@ -65,7 +65,9 @@ export const isValidSignatureField =
 
 export const isValidSignatureFieldToBeCreated =
   (pages: PdfDocumentMetadata["pages"]) =>
-  (attributes: SignatureFieldToBeCreatedAttributes) =>
+  (
+    attributes: SignatureFieldToBeCreatedAttributes
+  ): E.Either<Error[], boolean> =>
     pipe(
       pages,
       getPage(attributes.page),
@@ -92,7 +94,9 @@ const applicativeValidation = E.getApplicativeValidation(
 
 export const validateSignatureFieldsWithMetadata =
   (pdfDocumentMetadata: PdfDocumentMetadata) =>
-  (signatureFields: DocumentMetadata["signatureFields"]) =>
+  (
+    signatureFields: DocumentMetadata["signatureFields"]
+  ): E.Either<Error[], boolean[]> =>
     pipe(
       signatureFields,
       A.map((signatureField) => signatureField.attributes),
