@@ -40,8 +40,7 @@ const getPage =
   (pageNumber: NonNegativeNumber) => (pages: PdfDocumentMetadata["pages"]) =>
     pipe(
       pages,
-      A.filter((p) => p.number === pageNumber),
-      A.head
+      A.findFirst((p) => p.number === pageNumber)
     );
 
 const isFieldInsidePage =
@@ -50,13 +49,12 @@ const isFieldInsidePage =
     fieldAttributes.coordinates.x + fieldAttributes.size.w < page.width &&
     fieldAttributes.coordinates.y + fieldAttributes.size.h < page.height;
 
-export const validateSignatureField =
+export const isValidSignatureField =
   (formFields: PdfDocumentMetadata["formFields"]) =>
   (attributes: SignatureFieldAttributes) =>
     pipe(
       formFields,
-      A.filter((field) => field.name === attributes.uniqueName),
-      A.head,
+      A.findFirst((field) => field.name === attributes.uniqueName),
       E.fromOption(() => [
         new Error(
           `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
@@ -65,7 +63,7 @@ export const validateSignatureField =
       E.map(() => true)
     );
 
-export const validateSignatureFieldToBeCreated =
+export const isValidSignatureFieldToBeCreated =
   (pages: PdfDocumentMetadata["pages"]) =>
   (attributes: SignatureFieldToBeCreatedAttributes) =>
     pipe(
@@ -102,11 +100,11 @@ export const validateSignatureFieldsWithMetadata =
         SignatureFieldAttributes.is(attributes)
           ? pipe(
               attributes,
-              validateSignatureField(pdfDocumentMetadata.formFields)
+              isValidSignatureField(pdfDocumentMetadata.formFields)
             )
           : pipe(
               attributes,
-              validateSignatureFieldToBeCreated(pdfDocumentMetadata.pages)
+              isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages)
             )
       ),
       A.sequence(applicativeValidation)
