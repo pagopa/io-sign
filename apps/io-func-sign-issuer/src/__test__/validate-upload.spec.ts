@@ -14,7 +14,7 @@ import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
   isValidSignatureField,
   isValidSignatureFieldToBeCreated,
-} from "../validate-upload";
+} from "../app/use-cases/validate-upload";
 
 const pdfDocumentMetadata: PdfDocumentMetadata = {
   pages: [
