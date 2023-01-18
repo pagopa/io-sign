@@ -47,5 +47,8 @@ jobs:
       - name: "Generate API models"
         run: yarn workspaces foreach run generate:api-models
 
+      - name: "Run unit test"
+        run: yarn workspaces foreach run test
+
       - name: "Code review"
         run: yarn run code-review
