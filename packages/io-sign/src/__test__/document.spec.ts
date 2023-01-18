@@ -1,5 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
-
+import { describe, it, expect } from "vitest";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import {
