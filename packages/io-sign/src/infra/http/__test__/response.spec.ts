@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "@jest/globals";
 import * as t from "io-ts";
 import { success, created, error } from "../response";
 
