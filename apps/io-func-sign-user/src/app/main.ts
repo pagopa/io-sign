@@ -53,6 +53,16 @@ const onWaitForSignatureQueueClient = new QueueClient(
   "on-signature-request-wait-for-signature"
 );
 
+const onSignedQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "on-signature-request-signed"
+);
+
+const onRejectedQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "on-signature-request-rejected"
+);
+
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
@@ -132,5 +142,7 @@ export const ValidateSignature = makeValidateSignatureFunction(
   pdvTokenizerClient,
   database,
   signedContainerClient,
-  config.namirial
+  config.namirial,
+  onSignedQueueClient,
+  onRejectedQueueClient
 );

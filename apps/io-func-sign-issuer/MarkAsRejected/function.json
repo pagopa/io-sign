@@ -1,0 +1,14 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "queueTrigger",
+      "direction": "in",
+      "name": "signatureRequest",
+      "queueName": "on-signature-request-rejected",
+      "connection": "StorageAccountConnectionString"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "MarkAsRejected"
+}
