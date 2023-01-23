@@ -1,7 +1,6 @@
 import { constVoid, flow, identity, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
 import * as t from "io-ts";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
@@ -14,6 +13,8 @@ import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
 
 import { validate } from "@io-sign/io-sign/validation";
+import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
+
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
@@ -95,7 +96,8 @@ const makeValidateUploadHandler = (
     moveUploadedDocument,
     downloadDocumentUploadedFromBlobStorage,
     deleteDocumentUploadedFromBlobStorage,
-    upsertUploadMetadata
+    upsertUploadMetadata,
+    getPdfMetadata
   );
 
   const decodeRequest = flow(

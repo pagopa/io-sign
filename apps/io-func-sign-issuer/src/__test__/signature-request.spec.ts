@@ -24,12 +24,12 @@ const dossier = newDossier(issuer, "My dossier", [
   {
     title: "document #1",
     signatureFields: [],
-    pages: [],
+    pdfDocumentMetadata: { pages: [], formFields: [] },
   },
   {
     title: "document #2",
     signatureFields: [],
-    pages: [],
+    pdfDocumentMetadata: { pages: [], formFields: [] },
   },
 ]);
 

@@ -14,6 +14,7 @@ import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 
 import { pipe } from "fp-ts/lib/function";
+
 import { ActionNotAllowedError } from "./error";
 import { id, Id } from "./id";
 
@@ -68,16 +69,31 @@ export const SignatureField = t.type({
 
 export type SignatureField = t.TypeOf<typeof SignatureField>;
 
+export const PdfDocumentMetadataPage = t.type({
+  number: NonNegativeNumber,
+  width: NonNegativeNumber,
+  height: NonNegativeNumber,
+});
+export type PdfDocumentMetadataPage = t.TypeOf<typeof PdfDocumentMetadataPage>;
+
+export const PdfDocumentMetadataFormField = t.type({
+  type: t.literal("PDFSignature"),
+  name: t.string,
+});
+export type PdfDocumentMetadataFormField = t.TypeOf<
+  typeof PdfDocumentMetadataFormField
+>;
+
+export const PdfDocumentMetadata = t.type({
+  pages: t.array(PdfDocumentMetadataPage),
+  formFields: t.array(PdfDocumentMetadataFormField),
+});
+export type PdfDocumentMetadata = t.TypeOf<typeof PdfDocumentMetadata>;
+
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 60),
   signatureFields: t.array(SignatureField),
-  pages: t.array(
-    t.type({
-      number: NonNegativeNumber,
-      width: NonNegativeNumber,
-      height: NonNegativeNumber,
-    })
-  ),
+  pdfDocumentMetadata: PdfDocumentMetadata,
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
@@ -142,14 +158,14 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   updatedAt: new Date(),
 });
 
-export const updateMetadataPage =
-  (pages: DocumentMetadata["pages"]) =>
+export const updatePdfDocumentMetadata =
+  (pdfDocumentMetadata: PdfDocumentMetadata) =>
   (document: DocumentReady): DocumentReady => ({
     ...document,
     metadata: {
       signatureFields: document.metadata.signatureFields,
       title: document.metadata.title,
-      pages,
+      pdfDocumentMetadata,
     },
   });
 
@@ -161,7 +177,7 @@ type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
   payload: {
     url: string;
-    pages: DocumentMetadata["pages"];
+    pdfDocumentMetadata: PdfDocumentMetadata;
   };
 };
 
@@ -230,7 +246,7 @@ const onWaitForValidationStatus =
     switch (action.name) {
       case "MARK_AS_READY":
         return E.right(
-          updateMetadataPage(action.payload.pages)({
+          updatePdfDocumentMetadata(action.payload.pdfDocumentMetadata)({
             ...document,
             status: "READY",
             url: action.payload.url,
@@ -285,12 +301,15 @@ export const startValidation = dispatch({
   name: "START_VALIDATION",
 });
 
-export const markAsReady = (url: string, pages: DocumentMetadata["pages"]) =>
+export const markAsReady = (
+  url: string,
+  pdfDocumentMetadata: PdfDocumentMetadata
+) =>
   dispatch({
     name: "MARK_AS_READY",
     payload: {
       url,
-      pages,
+      pdfDocumentMetadata,
     },
   });
 
