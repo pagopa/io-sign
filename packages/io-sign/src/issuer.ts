@@ -9,6 +9,7 @@ export const Issuer = t.type({
   subscriptionId: NonEmptyString,
   email: EmailString,
   description: NonEmptyString,
+  // The need is to know if an issuer is in the experimental phase or not
   isTesting: t.boolean,
 });
 
