@@ -9,8 +9,14 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 import { SubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
 import {
+  SignatureRequestRejected,
+  SignatureRequestSigned,
+} from "@io-sign/io-sign/signature-request";
+import {
   markAsRejected,
   markAsSigned,
+  NotifySignatureRequestRejectedEvent,
+  NotifySignatureRequestSignedEvent,
   SignatureRequest,
 } from "../../signature-request";
 import { GetSignature, Signature, UpsertSignature } from "../../signature";
@@ -38,7 +44,8 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
   (
     upsertSignature: UpsertSignature,
     upsertSignatureRequest: UpsertSignatureRequest,
-    mockSendNotification: MockSendNotification
+    mockSendNotification: MockSendNotification,
+    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
   ) =>
   (signature: Signature, signatureRequest: SignatureRequest) =>
   (rejectedReason: string) =>
@@ -55,6 +62,9 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
           markAsRejected(rejectedReason),
           TE.fromEither,
           TE.chain(upsertSignatureRequest),
+          TE.chainFirst((r) =>
+            notifySignatureRequestRejectedEvent(r as SignatureRequestRejected)
+          ),
           TE.chain(mockSendNotification)
         )
       )
@@ -69,7 +79,9 @@ export const makeValidateSignature =
     upsertSignature: UpsertSignature,
     getSignatureRequest: GetSignatureRequest,
     upsertSignatureRequest: UpsertSignatureRequest,
-    getQtspSignatureRequest: GetQtspSignatureRequest
+    getQtspSignatureRequest: GetQtspSignatureRequest,
+    notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
+    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) => {
     const mockSendNotification = makeMockSendNotification(
@@ -80,7 +92,8 @@ export const makeValidateSignature =
       makeMarkSignatureAndSignatureRequestAsRejected(
         upsertSignature,
         upsertSignatureRequest,
-        mockSendNotification
+        mockSendNotification,
+        notifySignatureRequestRejectedEvent
       );
     return pipe(
       signerId,
@@ -133,11 +146,17 @@ export const makeValidateSignature =
                     )
                   ),
                   A.sequence(TE.ApplicativeSeq),
+
                   TE.map((documents) => ({
                     ...signatureRequest,
                     documents,
                   })),
                   TE.chainEitherK(markAsSigned),
+                  TE.chainFirst((r: SignatureRequest) =>
+                    notifySignatureRequestSignedEvent(
+                      r as SignatureRequestSigned
+                    )
+                  ),
                   TE.chain(upsertSignatureRequest),
                   TE.chain(mockSendNotification),
                   // Upsert signature
