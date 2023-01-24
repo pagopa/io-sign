@@ -23,10 +23,8 @@ describe("UploadMetadata", () => {
       id: newId(),
       subscriptionId: newId(),
       email: "info@enpacl-pec.it" as EmailString,
-      address: "Viale Del Caravaggio, 78 - 00147 Roma (RM)",
       description: "descrizione dell'ente" as NonEmptyString,
-      taxCode: "80119170589",
-      vatNumber: "80119170589",
+      environment: "TEST",
     };
 
     const dossier = newDossier(issuer, "My dossier", [
