@@ -8,10 +8,8 @@ export const Issuer = t.type({
   id: Id,
   subscriptionId: NonEmptyString,
   email: EmailString,
-  address: t.string,
   description: NonEmptyString,
-  taxCode: t.string,
-  vatNumber: t.string,
+  isTrying: t.boolean,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
