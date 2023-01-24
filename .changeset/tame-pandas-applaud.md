@@ -2,4 +2,4 @@
 "@io-sign/io-sign": patch
 ---
 
-Add isTesting to issuer data model
+Add environment to issuer data model

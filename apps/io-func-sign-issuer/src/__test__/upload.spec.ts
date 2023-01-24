@@ -24,7 +24,7 @@ describe("UploadMetadata", () => {
       subscriptionId: newId(),
       email: "info@enpacl-pec.it" as EmailString,
       description: "descrizione dell'ente" as NonEmptyString,
-      isTesting: true,
+      environment: "TEST",
     };
 
     const dossier = newDossier(issuer, "My dossier", [
