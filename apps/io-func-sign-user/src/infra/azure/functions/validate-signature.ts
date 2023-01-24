@@ -13,6 +13,7 @@ import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
 
+import { QueueClient } from "@azure/storage-queue";
 import {
   makeValidateSignature,
   ValidateSignaturePayload,
@@ -26,13 +27,19 @@ import {
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeGetBlobUrl } from "../storage/blob";
+import {
+  makeNotifySignatureRequestRejectedEvent,
+  makeNotifySignatureRequestSignedEvent,
+} from "../storage/signature-request";
 
 const makeValidateSignatureHandler = (
   ioApiClient: IOApiClient,
   tokenizer: PdvTokenizerClientWithApiKey,
   db: Database,
   signedContainerClient: ContainerClient,
-  qtspConfig: NamirialConfig
+  qtspConfig: NamirialConfig,
+  onSignedQueueClient: QueueClient,
+  onRejectedQueueClient: QueueClient
 ) => {
   const getSignature = makeGetSignature(db);
   const upsertSignature = makeUpsertSignature(db);
@@ -41,6 +48,10 @@ const makeValidateSignatureHandler = (
   const getSignedDocumentUrl = makeGetBlobUrl(signedContainerClient);
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const notifySignatureRequestSignedEvent =
+    makeNotifySignatureRequestSignedEvent(onSignedQueueClient);
+  const notifySignatureRequestRejectedEvent =
+    makeNotifySignatureRequestRejectedEvent(onRejectedQueueClient);
 
   const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
     makeGetToken()
@@ -54,7 +65,9 @@ const makeValidateSignatureHandler = (
     upsertSignature,
     getSignatureRequest,
     upsertSignatureRequest,
-    getQtspSignatureRequest
+    getQtspSignatureRequest,
+    notifySignatureRequestSignedEvent,
+    notifySignatureRequestRejectedEvent
   );
 
   const decodeQueueMessage = flow(

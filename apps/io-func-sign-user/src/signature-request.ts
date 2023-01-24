@@ -39,6 +39,14 @@ export type NotifySignatureRequestWaitForSignatureEvent = (
   requestToBeSigned: SignatureRequestToBeSigned
 ) => TE.TaskEither<Error, string>;
 
+export type NotifySignatureRequestSignedEvent = (
+  requestSigned: SignatureRequestSigned
+) => TE.TaskEither<Error, string>;
+
+export type NotifySignatureRequestRejectedEvent = (
+  requestRejected: SignatureRequestRejected
+) => TE.TaskEither<Error, string>;
+
 type Action_MARK_AS_SIGNED = {
   name: "MARK_AS_SIGNED";
 };

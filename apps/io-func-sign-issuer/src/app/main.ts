@@ -19,6 +19,8 @@ import { makeSendNotificationFunction } from "../infra/azure/functions/send-noti
 import { makeSetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { makeValidateUploadFunction } from "../infra/azure/functions/validate-upload";
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
+import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
+import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
 import { getConfigFromEnvironment } from "./config";
 
@@ -82,6 +84,10 @@ export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
 );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
+
+export const MarkAsRejected = makeRequestAsRejectedFunction(database);
+
+export const MarkAsSigned = makeRequestAsSignedFunction(database);
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,
