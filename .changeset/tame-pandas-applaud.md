@@ -2,4 +2,4 @@
 "@io-sign/io-sign": patch
 ---
 
-Add isTrying to issuer data model
+Add isTesting to issuer data model

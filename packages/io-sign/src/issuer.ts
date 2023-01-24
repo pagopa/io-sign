@@ -9,7 +9,7 @@ export const Issuer = t.type({
   subscriptionId: NonEmptyString,
   email: EmailString,
   description: NonEmptyString,
-  isTrying: t.boolean,
+  isTesting: t.boolean,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
