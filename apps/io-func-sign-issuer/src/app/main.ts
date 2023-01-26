@@ -1,6 +1,7 @@
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
+import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -38,6 +39,11 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
+const eventHubBillingClient = new EventHubProducerClient(
+  config.azure.eventHub.connectionString,
+  "billing"
+);
+
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
@@ -67,6 +73,7 @@ export const Info = makeInfoFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   database,
+  eventHubBillingClient,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient

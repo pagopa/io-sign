@@ -25,6 +25,7 @@ import {
   makeIOServicesHealthCheck,
 } from "@io-sign/io-sign/infra/io-services/health-check";
 
+import { EventHubProducerClient } from "@azure/event-hubs";
 import {
   AzureCosmosProblemSource,
   makeAzureCosmosDbHealthCheck,
@@ -34,10 +35,15 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
+import {
+  AzureEventHubProblemSource,
+  makeAzureEventHubHealthCheck,
+} from "../event-hub/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource
   | AzureStorageProblemSource
+  | AzureEventHubProblemSource
   | TokenizerProblemSource
   | IOServicesProblemSource;
 
@@ -51,6 +57,7 @@ export const makeInfoHandler = (
   pdvTokenizerClient: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
   db: Database,
+  eventHubBillingClient: EventHubProducerClient,
   uploadedContainerClient: ContainerClient,
   validatedContainerClient: ContainerClient,
   onSignatureRequestReadyQueueClient: QueueClient
@@ -63,6 +70,7 @@ export const makeInfoHandler = (
           makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
           makeIOServicesHealthCheck(ioApiClient)(),
           makeAzureCosmosDbHealthCheck(db),
+          makeAzureEventHubHealthCheck(eventHubBillingClient),
           makeAzureStorageContainerHealthCheck(uploadedContainerClient),
           makeAzureStorageContainerHealthCheck(validatedContainerClient),
           makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient),
