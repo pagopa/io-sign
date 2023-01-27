@@ -14,7 +14,7 @@ import {
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
-import { makeSendBillingEvent } from "../event-hub/event";
+import { makeSendBillingEvent } from "../event-hubs/data-lake";
 
 const makeRequestAsSignedHandler = (
   db: Database,

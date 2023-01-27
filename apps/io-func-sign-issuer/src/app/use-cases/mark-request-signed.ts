@@ -27,5 +27,14 @@ export const makeMarkRequestAsSigned =
       ),
       TE.chainEitherK(markAsSigned),
       TE.chain(upsertSignatureRequest),
-      TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent))
+      TE.chain(() =>
+        pipe(
+          request,
+          createBillingEvent(
+            request.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
+            request.issuerId
+          ),
+          sendBillingEvent
+        )
+      )
     );

@@ -1,22 +1,23 @@
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
-
 import { Id, newId } from "./id";
-import { Issuer, IssuerEnvironment } from "./issuer";
 import {
   SignatureRequestId,
   SignatureRequestSigned,
 } from "./signature-request";
 
-export const EventId = Id;
+const EventId = Id;
+
+export const PricingPlan = t.union([t.literal("FREE"), t.literal("DEFAULT")]);
+export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 const BaseEvent = t.type({
   id: EventId,
   signatureRequestId: SignatureRequestId,
-  issuerId: Issuer.props.id,
+  internalInstitutionId: Id,
   createdAt: IsoDateFromString,
-  issuerEnvironment: IssuerEnvironment,
+  pricingPlan: PricingPlan,
 });
 
 type BaseEvent = t.TypeOf<typeof BaseEvent>;
@@ -32,13 +33,13 @@ export type SendBillingEvent = (
   event: BillingEvent
 ) => TE.TaskEither<Error, BillingEvent>;
 
-export const createBillingEvent = (
-  signatureRequest: SignatureRequestSigned
-): BillingEvent => ({
-  id: newId(),
-  name: "io.sign.signature_request.signed",
-  signatureRequestId: signatureRequest.id,
-  issuerId: signatureRequest.issuerId,
-  createdAt: new Date(),
-  issuerEnvironment: signatureRequest.issuerEnvironment,
-});
+export const createBillingEvent =
+  (pricingPlan: PricingPlan, internalInstitutionId: Id) =>
+  (signatureRequest: SignatureRequestSigned): BillingEvent => ({
+    id: newId(),
+    name: "io.sign.signature_request.signed",
+    signatureRequestId: signatureRequest.id,
+    internalInstitutionId,
+    createdAt: new Date(),
+    pricingPlan,
+  });

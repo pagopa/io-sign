@@ -21,14 +21,17 @@ const signatureRequest: SignatureRequestSigned = {
   documents: [],
 };
 
+const internalInstitutionId = newId();
+
 describe("Event", () => {
   describe("createBillingEvent", () => {
     it('should create a new billing event with "io.sign.signature_request.signed" name', () => {
-      const event = createBillingEvent(signatureRequest);
+      const event = createBillingEvent(
+        "FREE",
+        internalInstitutionId
+      )(signatureRequest);
       expect(event.name).toBe("io.sign.signature_request.signed");
-      expect(event.signatureRequestId).toBe(signatureRequest.id);
-      expect(event.issuerId).toBe(signatureRequest.issuerId);
-      expect(event.issuerEnvironment).toBe(signatureRequest.issuerEnvironment);
+      expect(event.pricingPlan).toBe("FREE");
     });
   });
 });

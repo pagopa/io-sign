@@ -38,7 +38,7 @@ import {
 import {
   AzureEventHubProblemSource,
   makeAzureEventHubHealthCheck,
-} from "../event-hub/health-check";
+} from "../event-hubs/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource

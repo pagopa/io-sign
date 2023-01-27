@@ -40,7 +40,7 @@ const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHub.connectionString,
+  config.azure.eventHubs.connectionString,
   "billing"
 );
 

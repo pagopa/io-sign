@@ -10,7 +10,7 @@ export const EventHubConfig = t.type({
 
 type EventHubConfig = t.TypeOf<typeof EventHubConfig>;
 
-export const getEventHubConfigFromEnvironment: RE.ReaderEither<
+export const getEventHubsConfigFromEnvironment: RE.ReaderEither<
   NodeJS.ProcessEnv,
   Error,
   EventHubConfig
