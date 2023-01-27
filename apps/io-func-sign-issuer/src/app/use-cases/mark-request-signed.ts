@@ -1,4 +1,5 @@
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { createBillingEvent, SendBillingEvent } from "@io-sign/io-sign/event";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { pipe } from "fp-ts/lib/function";
 
@@ -13,7 +14,8 @@ import {
 export const makeMarkRequestAsSigned =
   (
     getSignatureRequest: GetSignatureRequest,
-    upsertSignatureRequest: UpsertSignatureRequest
+    upsertSignatureRequest: UpsertSignatureRequest,
+    sendBillingEvent: SendBillingEvent
   ) =>
   (request: SignatureRequestSigned) =>
     pipe(
@@ -24,5 +26,6 @@ export const makeMarkRequestAsSigned =
         )
       ),
       TE.chainEitherK(markAsSigned),
-      TE.chain(upsertSignatureRequest)
+      TE.chain(upsertSignatureRequest),
+      TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent))
     );

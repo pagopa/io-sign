@@ -8,13 +8,18 @@ import { identity, flow } from "fp-ts/lib/function";
 
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 
+import { EventHubProducerClient } from "@azure/event-hubs";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
+import { makeSendBillingEvent } from "../event-hub/event";
 
-const makeRequestAsSignedHandler = (db: Database) => {
+const makeRequestAsSignedHandler = (
+  db: Database,
+  eventHubBillingClient: EventHubProducerClient
+) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestSigned),
     TE.fromEither
@@ -22,9 +27,12 @@ const makeRequestAsSignedHandler = (db: Database) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
 
+  const sendBillingEvent = makeSendBillingEvent(eventHubBillingClient);
+
   const markAsSigned = makeMarkRequestAsSigned(
     getSignatureRequest,
-    upsertSignatureRequest
+    upsertSignatureRequest,
+    sendBillingEvent
   );
 
   return createHandler(

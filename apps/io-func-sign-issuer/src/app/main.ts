@@ -94,7 +94,10 @@ export const MarkAsWaitForSignature =
 
 export const MarkAsRejected = makeRequestAsRejectedFunction(database);
 
-export const MarkAsSigned = makeRequestAsSignedFunction(database);
+export const MarkAsSigned = makeRequestAsSignedFunction(
+  database,
+  eventHubBillingClient
+);
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,

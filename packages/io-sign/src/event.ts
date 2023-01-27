@@ -33,13 +33,12 @@ export type SendBillingEvent = (
 ) => TE.TaskEither<Error, BillingEvent>;
 
 export const createBillingEvent = (
-  signatureRequest: SignatureRequestSigned,
-  issuer: Issuer
+  signatureRequest: SignatureRequestSigned
 ): BillingEvent => ({
   id: newId(),
   name: "io.sign.signature_request.signed",
   signatureRequestId: signatureRequest.id,
-  issuerId: issuer.id,
+  issuerId: signatureRequest.issuerId,
   createdAt: new Date(),
-  issuerEnvironment: issuer.environment,
+  issuerEnvironment: signatureRequest.issuerEnvironment,
 });
