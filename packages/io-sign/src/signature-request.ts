@@ -7,7 +7,7 @@ import { Id } from "./id";
 import { Signer } from "./signer";
 import { DocumentReady } from "./document";
 import { Notification } from "./notification";
-import { Issuer } from "./issuer";
+import { Issuer, IssuerEnvironment } from "./issuer";
 
 const SignatureRequest = t.type({
   id: Id,
@@ -16,6 +16,7 @@ const SignatureRequest = t.type({
   // TODO: [SFEQS-1028] issuerEmail and IssuerDescription are temp properties, waiting to implement the integration with Selfcare.
   issuerEmail: EmailString,
   issuerDescription: NonEmptyString,
+  issuerEnvironment: IssuerEnvironment,
   dossierId: Id,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
