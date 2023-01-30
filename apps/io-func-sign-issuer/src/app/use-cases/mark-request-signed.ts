@@ -30,6 +30,10 @@ export const makeMarkRequestAsSigned =
       TE.chain(() =>
         pipe(
           request,
+          /*
+          The plan to use varies according to the environment used by the issuer.
+          If it is in a test environment the free plan should be used otherwise standard.
+          */
           createBillingEvent(
             request.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
             request.issuerId

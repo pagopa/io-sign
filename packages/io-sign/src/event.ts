@@ -9,9 +9,11 @@ import {
 
 const EventId = Id;
 
+// We currently only have a free testing plan and a paid standard plan
 export const PricingPlan = t.union([t.literal("FREE"), t.literal("DEFAULT")]);
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
+// This is the structure of an event that is used for billing and analytics
 const BaseEvent = t.type({
   id: EventId,
   signatureRequestId: SignatureRequestId,
