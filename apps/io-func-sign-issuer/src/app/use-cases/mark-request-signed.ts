@@ -1,9 +1,14 @@
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { createBillingEvent, SendBillingEvent } from "@io-sign/io-sign/event";
+import {
+  createBillingEventFromIssuer,
+  SendBillingEvent,
+} from "@io-sign/io-sign/event";
+
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
+import { GetIssuerById } from "../../issuer";
 
 import {
   UpsertSignatureRequest,
@@ -15,7 +20,8 @@ export const makeMarkRequestAsSigned =
   (
     getSignatureRequest: GetSignatureRequest,
     upsertSignatureRequest: UpsertSignatureRequest,
-    sendBillingEvent: SendBillingEvent
+    sendBillingEvent: SendBillingEvent,
+    getIssuerById: GetIssuerById
   ) =>
   (request: SignatureRequestSigned) =>
     pipe(
@@ -29,16 +35,13 @@ export const makeMarkRequestAsSigned =
       TE.chain(upsertSignatureRequest),
       TE.chain(() =>
         pipe(
-          request,
-          /*
-          The plan to use varies according to the environment used by the issuer.
-          If it is in a test environment the free plan should be used otherwise standard.
-          */
-          createBillingEvent(
-            request.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
-            request.issuerId
-          ),
-          sendBillingEvent
+          getIssuerById(request.issuerId),
+          TE.chain(
+            TE.fromOption(() => new EntityNotFoundError("Issuer not found!"))
+          )
         )
+      ),
+      TE.chain((issuer) =>
+        pipe(request, createBillingEventFromIssuer(issuer), sendBillingEvent)
       )
     );

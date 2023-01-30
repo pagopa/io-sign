@@ -1,16 +1,21 @@
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 import { Id, newId } from "./id";
 import {
   SignatureRequestId,
   SignatureRequestSigned,
 } from "./signature-request";
+import { Issuer } from "./issuer";
 
 const EventId = Id;
 
 // We currently only have a free testing plan and a paid standard plan
-export const PricingPlan = t.union([t.literal("FREE"), t.literal("DEFAULT")]);
+export const PricingPlan = t.keyof({
+  FREE: null,
+  DEFAULT: null,
+});
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 // This is the structure of an event that is used for billing and analytics
@@ -35,7 +40,7 @@ export type SendBillingEvent = (
   event: BillingEvent
 ) => TE.TaskEither<Error, BillingEvent>;
 
-export const createBillingEvent =
+const createBillingEvent =
   (pricingPlan: PricingPlan, internalInstitutionId: Id) =>
   (signatureRequest: SignatureRequestSigned): BillingEvent => ({
     id: newId(),
@@ -45,3 +50,18 @@ export const createBillingEvent =
     createdAt: new Date(),
     pricingPlan,
   });
+
+export const createBillingEventFromIssuer =
+  (issuer: Issuer) =>
+  (signatureRequest: SignatureRequestSigned): BillingEvent =>
+    pipe(
+      signatureRequest,
+      /*
+      The plan to use varies according to the environment used by the issuer.
+      If it is in a test environment the free plan should be used otherwise standard.
+      */
+      createBillingEvent(
+        issuer.environment === "TEST" ? "FREE" : "DEFAULT",
+        issuer.id
+      )
+    );
