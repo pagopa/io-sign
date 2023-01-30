@@ -21,11 +21,16 @@ import {
   CosmosConfig,
   getCosmosConfigFromEnvironment,
 } from "../infra/azure/cosmos/config";
+import {
+  EventHubConfig,
+  getEventHubsConfigFromEnvironment,
+} from "../infra/azure/event-hubs/config";
 
 export const Config = t.type({
   azure: t.type({
     storage: StorageConfig,
     cosmos: CosmosConfig,
+    eventHubs: EventHubConfig,
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
@@ -45,11 +50,13 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
+    eventHubs: getEventHubsConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
       storage: config.storage,
       cosmos: config.cosmos,
+      eventHubs: config.eventHubs,
     },
     pagopa: {
       tokenizer: config.tokenizer,

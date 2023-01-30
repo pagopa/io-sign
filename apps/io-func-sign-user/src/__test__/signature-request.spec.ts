@@ -20,6 +20,7 @@ const signatureRequest: SignatureRequest = {
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
+  issuerEnvironment: "TEST",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

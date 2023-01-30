@@ -22,7 +22,7 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import * as RA from "fp-ts/lib/ReadonlyArray";
-import { GetIssuerBySubscriptionId } from "../../../issuer";
+import { GetIssuerById, GetIssuerBySubscriptionId } from "../../../issuer";
 
 const NewIssuer = t.intersection([Issuer, BaseModel]);
 type NewIssuer = t.TypeOf<typeof NewIssuer>;
@@ -69,6 +69,32 @@ class IssuerModel extends CosmosdbModel<
       TE.map(RA.head)
     );
   }
+
+  findById(id: string): TE.TaskEither<CosmosErrors, O.Option<RetrievedIssuer>> {
+    return pipe(
+      TE.tryCatch(
+        () =>
+          pipe(
+            this.getQueryIterator({
+              parameters: [
+                {
+                  name: "@issuerId",
+                  value: id,
+                },
+              ],
+              query: `SELECT * FROM m WHERE m.id = @issuerId`,
+            }),
+            asyncIterableToArray
+          ),
+        toCosmosErrorResponse
+      ),
+      TE.map(RA.flatten),
+      TE.chainW(
+        flow(E.sequenceArray, E.mapLeft(CosmosDecodingError), TE.fromEither)
+      ),
+      TE.map(RA.head)
+    );
+  }
 }
 
 export const makeGetIssuerBySubscriptionId =
@@ -77,5 +103,14 @@ export const makeGetIssuerBySubscriptionId =
     pipe(
       new IssuerModel(db),
       (model) => model.findBySubscriptionId(subscriptionId),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+
+export const makeGetIssuerById =
+  (db: cosmos.Database): GetIssuerById =>
+  (id) =>
+    pipe(
+      new IssuerModel(db),
+      (model) => model.findById(id),
       TE.mapLeft(toCosmosDatabaseError)
     );
