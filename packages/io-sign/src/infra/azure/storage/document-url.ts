@@ -1,13 +1,10 @@
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";
+import { split } from "fp-ts/lib/string";
 
 import { pipe } from "fp-ts/lib/function";
 
-import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";
-
-import { split } from "fp-ts/lib/string";
-
-import { DocumentReady } from "@io-sign/io-sign/document";
+import * as RTE from "fp-ts/ReaderTaskEither";
+import { DocumentReady } from "../../../document";
 
 import {
   generateSasUrlFromBlob,
@@ -15,10 +12,10 @@ import {
   withExpireInMinutes,
   withPermissions,
   getBlobClient,
-} from "@io-sign/io-sign/infra/azure/storage/blob";
+} from "./blob";
 
 export const toDocumentWithSasUrl =
-  (permissions: string = "r", expireMminutes: number = 5) =>
+  (permissions: string = "r", expireInMinutes: number = 5) =>
   (document: DocumentReady) =>
     pipe(
       document.url,
@@ -30,7 +27,7 @@ export const toDocumentWithSasUrl =
           pipe(
             defaultBlobGenerateSasUrlOptions(),
             withPermissions(permissions),
-            withExpireInMinutes(expireMminutes)
+            withExpireInMinutes(expireInMinutes)
           )
         )
       ),
@@ -40,14 +37,10 @@ export const toDocumentWithSasUrl =
       }))
     );
 
-export type GetDocumentUrl = (
-  document: DocumentReady
-) => TE.TaskEither<Error, string>;
-
 export const getDocumentUrl =
-  (permissions: string, expireMminutes: number) => (document: DocumentReady) =>
+  (permissions: string, expireInMinutes: number) => (document: DocumentReady) =>
     pipe(
       document,
-      toDocumentWithSasUrl(permissions, expireMminutes),
+      toDocumentWithSasUrl(permissions, expireInMinutes),
       RTE.map((el) => el.url)
     );

@@ -64,6 +64,11 @@ const validatedContainerClient = new ContainerClient(
   "validated-documents"
 );
 
+const signedContainerClient = new ContainerClient(
+  config.azure.storage.connectionString,
+  "signed-documents"
+);
+
 const onSignatureRequestReadyQueueClient = new QueueClient(
   config.azure.storage.connectionString,
   "on-signature-request-ready"
@@ -84,7 +89,10 @@ export const GetDossier = makeGetDossierFunction(database);
 
 export const CreateSignatureRequest =
   makeCreateSignatureRequestFunction(database);
-export const GetSignatureRequest = makeGetSignatureRequestFunction(database);
+export const GetSignatureRequest = makeGetSignatureRequestFunction(
+  database,
+  signedContainerClient
+);
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
   onSignatureRequestReadyQueueClient
