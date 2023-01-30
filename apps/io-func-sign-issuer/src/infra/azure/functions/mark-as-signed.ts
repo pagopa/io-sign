@@ -15,7 +15,6 @@ import {
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
 import { makeSendBillingEvent } from "../event-hubs/event";
-import { makeGetIssuerById } from "../cosmos/issuer";
 
 const makeRequestAsSignedHandler = (
   db: Database,
@@ -27,15 +26,13 @@ const makeRequestAsSignedHandler = (
   );
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const getIssuerById = makeGetIssuerById(db);
 
   const sendBillingEvent = makeSendBillingEvent(eventHubBillingClient);
 
   const markAsSigned = makeMarkRequestAsSigned(
     getSignatureRequest,
     upsertSignatureRequest,
-    sendBillingEvent,
-    getIssuerById
+    sendBillingEvent
   );
 
   return createHandler(

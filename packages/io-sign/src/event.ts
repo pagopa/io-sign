@@ -1,13 +1,11 @@
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/function";
 import { Id, newId } from "./id";
 import {
   SignatureRequestId,
   SignatureRequestSigned,
 } from "./signature-request";
-import { Issuer } from "./issuer";
 
 const EventId = Id;
 
@@ -40,28 +38,14 @@ export type SendBillingEvent = (
   event: BillingEvent
 ) => TE.TaskEither<Error, BillingEvent>;
 
-const createBillingEvent =
-  (pricingPlan: PricingPlan, internalInstitutionId: Id) =>
-  (signatureRequest: SignatureRequestSigned): BillingEvent => ({
-    id: newId(),
-    name: "io.sign.signature_request.signed",
-    signatureRequestId: signatureRequest.id,
-    internalInstitutionId,
-    createdAt: new Date(),
-    pricingPlan,
-  });
-
-export const createBillingEventFromIssuer =
-  (issuer: Issuer) =>
-  (signatureRequest: SignatureRequestSigned): BillingEvent =>
-    pipe(
-      signatureRequest,
-      /*
-      The plan to use varies according to the environment used by the issuer.
-      If it is in a test environment the free plan should be used otherwise standard.
-      */
-      createBillingEvent(
-        issuer.environment === "TEST" ? "FREE" : "DEFAULT",
-        issuer.id
-      )
-    );
+export const createBillingEvent = (
+  signatureRequest: SignatureRequestSigned
+): BillingEvent => ({
+  id: newId(),
+  name: "io.sign.signature_request.signed",
+  signatureRequestId: signatureRequest.id,
+  internalInstitutionId: signatureRequest.issuerId,
+  createdAt: new Date(),
+  pricingPlan:
+    signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
+});
