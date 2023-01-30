@@ -15,6 +15,7 @@ import { Id } from "@io-sign/io-sign/id";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
+import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
 
@@ -31,7 +32,6 @@ import {
   markAsWaitForQtsp,
   UpsertSignatureRequest,
 } from "../../signature-request";
-import { GetDocumentUrl } from "../../infra/azure/storage/document-url";
 
 import {
   mockPublicKey,

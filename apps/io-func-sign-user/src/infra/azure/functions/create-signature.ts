@@ -19,6 +19,8 @@ import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
+import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { requireSigner } from "../../http/decoder/signer";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -42,7 +44,7 @@ import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
-import { GetDocumentUrl, getDocumentUrl } from "../storage/document-url";
+
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
 
 const makeCreateSignatureHandler = (

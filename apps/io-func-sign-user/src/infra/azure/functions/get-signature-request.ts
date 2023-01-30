@@ -13,12 +13,12 @@ import { ContainerClient } from "@azure/storage-blob";
 
 import { map, sequence } from "fp-ts/lib/Array";
 
+import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { SignatureRequestDetailView } from "../../http/models/SignatureRequestDetailView";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { makeRequireSignatureRequest } from "../../http/decoder/signature-request";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { SignatureRequest } from "../../../signature-request";
-import { toDocumentWithSasUrl } from "../storage/document-url";
 
 const grantReadAccessToDocuments = (request: SignatureRequest) =>
   pipe(
