@@ -19,17 +19,6 @@ export const NotificationMessage = t.type({
 });
 export type NotificationMessage = t.TypeOf<typeof NotificationMessage>;
 
-export type NotificationMessageWithFiscalCode = NotificationMessage & {
-  fiscal_code: FiscalCode;
-};
-
 export type SubmitNotificationForUser = (
-  messageWithFiscalCode: NotificationMessageWithFiscalCode
-) => TE.TaskEither<Error, Notification>;
-
-export const withFiscalCode =
-  (fiscalCode: FiscalCode) =>
-  (message: NotificationMessage): NotificationMessageWithFiscalCode => ({
-    ...message,
-    fiscal_code: fiscalCode,
-  });
+  fiscalCode: FiscalCode
+) => (message: NotificationMessage) => TE.TaskEither<Error, Notification>;

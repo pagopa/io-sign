@@ -3,8 +3,9 @@ import * as E from "fp-ts/lib/Either";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
+import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
 import {
-  NotificationMessageWithFiscalCode,
+  NotificationMessage,
   SubmitNotificationForUser,
 } from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
@@ -16,9 +17,10 @@ import { makeRetriveUserProfileSenderAllowed } from "./profile";
 
 export const makeSubmitMessageForUser =
   (ioApiClient: IOApiClient): SubmitNotificationForUser =>
-  (message: NotificationMessageWithFiscalCode) =>
+  (fiscalCode: FiscalCode) =>
+  (message: NotificationMessage) =>
     pipe(
-      message.fiscal_code,
+      fiscalCode,
       makeRetriveUserProfileSenderAllowed(ioApiClient),
       TE.filterOrElse(
         identity,
@@ -31,7 +33,10 @@ export const makeSubmitMessageForUser =
         TE.tryCatch(
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
-              message,
+              message: {
+                ...message,
+                fiscal_code: fiscalCode,
+              },
             }),
           E.toError
         )

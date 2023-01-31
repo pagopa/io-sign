@@ -3,10 +3,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 
-import {
-  SubmitNotificationForUser,
-  withFiscalCode,
-} from "@io-sign/io-sign/notification";
+import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -54,15 +51,14 @@ export const makeMockSendNotification =
                 )
             )
           ),
-          TE.map((fiscalCode) =>
+          TE.chain((fiscalCode) =>
             pipe(
               signatureRequest.status === "SIGNED"
                 ? mockSuccessMessage(signatureRequest)
                 : mockErrorMessage(signatureRequest),
-              withFiscalCode(fiscalCode)
+              submitNotification(fiscalCode)
             )
-          ),
-          TE.chain(submitNotification)
+          )
         ),
       }),
       TE.map(({ notification }) => notification)

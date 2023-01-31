@@ -5,10 +5,7 @@ import * as t from "io-ts";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 import { format } from "date-fns";
 
-import {
-  SubmitNotificationForUser,
-  withFiscalCode,
-} from "@io-sign/io-sign/notification";
+import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -106,10 +103,9 @@ export const makeSendNotification =
             pipe(
               signatureRequest,
               makeMessage(issuer, dossier),
-              TE.map(withFiscalCode(fiscalCode))
+              TE.chain(submitNotification(fiscalCode))
             )
-          ),
-          TE.chain(submitNotification)
+          )
         ),
       }),
       TE.chainFirst(({ signatureRequest }) =>
