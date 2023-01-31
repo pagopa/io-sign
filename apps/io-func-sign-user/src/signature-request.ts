@@ -98,12 +98,14 @@ const onWaitForSignatureStatus =
       case "MARK_AS_WAIT_FOR_QTSP":
         return E.right({
           ...request,
+          updatedAt: new Date(),
           status: "WAIT_FOR_QTSP",
         });
       case "MARK_AS_REJECTED":
         return E.right({
           ...request,
           status: "REJECTED",
+          updatedAt: new Date(),
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
         });
@@ -126,6 +128,7 @@ const onRejectedStatus =
       case "MARK_AS_WAIT_FOR_QTSP":
         return E.right({
           ...request,
+          updatedAt: new Date(),
           status: "WAIT_FOR_QTSP",
         });
       default:
@@ -146,6 +149,7 @@ const onWaitForQtspStatus =
       case "MARK_AS_SIGNED":
         return E.right({
           ...request,
+          updatedAt: new Date(),
           status: "SIGNED",
           signedAt: new Date(),
         });
@@ -153,6 +157,7 @@ const onWaitForQtspStatus =
         return E.right({
           ...request,
           status: "REJECTED",
+          updatedAt: new Date(),
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
         });
