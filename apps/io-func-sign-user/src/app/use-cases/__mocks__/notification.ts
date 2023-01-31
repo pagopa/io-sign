@@ -4,9 +4,10 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 
 import {
-  SubmitMessageForUser,
+  SubmitNotificationForUser,
   withFiscalCode,
-} from "@io-sign/io-sign/infra/io-services/message";
+} from "@io-sign/io-sign/notification";
+
 import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
@@ -15,7 +16,7 @@ import { SignatureRequest } from "../../../signature-request";
 // TODO: this is a mock
 const mockSuccessMessage = (signatureRequest: SignatureRequest) => ({
   content: {
-    subject: `Documenti firmati`,
+    subject: `${signatureRequest.issuerDescription} - Documenti firmati`,
     markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nI documenti che hai firmato sono pronti.\n\n\nHai **90** giorni dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n`,
   },
 });
@@ -37,7 +38,7 @@ export type MockSendNotification = (
 >;
 export const makeMockSendNotification =
   (
-    submitMessage: SubmitMessageForUser,
+    submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId
   ): MockSendNotification =>
   (signatureRequest: SignatureRequest) =>
@@ -61,7 +62,7 @@ export const makeMockSendNotification =
               withFiscalCode(fiscalCode)
             )
           ),
-          TE.chain(submitMessage)
+          TE.chain(submitNotification)
         ),
       }),
       TE.map(({ notification }) => notification)

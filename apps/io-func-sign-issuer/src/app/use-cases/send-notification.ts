@@ -6,9 +6,9 @@ import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
 import { format } from "date-fns";
 
 import {
-  SubmitMessageForUser,
+  SubmitNotificationForUser,
   withFiscalCode,
-} from "@io-sign/io-sign/infra/io-services/message";
+} from "@io-sign/io-sign/notification";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -28,8 +28,7 @@ export type SendNotificationPayload = {
   issuer: Issuer;
 };
 
-// TODO: this is a mock
-const mockMessage =
+const makeMessageContent =
   (issuer: Issuer, dossier: Dossier) =>
   (signatureRequest: SignatureRequest) => ({
     content: {
@@ -51,7 +50,7 @@ const mockMessage =
 
 const makeMessage =
   (issuer: Issuer, dossier: Dossier) => (signatureRequest: SignatureRequest) =>
-    pipe(signatureRequest, mockMessage(issuer, dossier), TE.right);
+    pipe(signatureRequest, makeMessageContent(issuer, dossier), TE.right);
 
 const SignatureRequestReadyToNotify = t.intersection([
   SignatureRequestToBeSigned,
@@ -63,7 +62,7 @@ const SignatureRequestReadyToNotify = t.intersection([
 
 export const makeSendNotification =
   (
-    submitMessage: SubmitMessageForUser,
+    submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     upsertSignatureRequest: UpsertSignatureRequest,
     getDossier: GetDossier
@@ -110,7 +109,7 @@ export const makeSendNotification =
               TE.map(withFiscalCode(fiscalCode))
             )
           ),
-          TE.chain(submitMessage)
+          TE.chain(submitNotification)
         ),
       }),
       TE.chainFirst(({ signatureRequest }) =>
