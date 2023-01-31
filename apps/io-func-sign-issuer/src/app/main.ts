@@ -104,6 +104,8 @@ export const MarkAsRejected = makeRequestAsRejectedFunction(database);
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
   database,
+  pdvTokenizerClientWithApiKey,
+  ioApiClient,
   eventHubBillingClient
 );
 

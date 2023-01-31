@@ -68,7 +68,7 @@ export const makeSendNotification =
       getDossier,
       requestToSignMessage
     );
-    pipe(
+    return pipe(
       sequenceS(TE.ApplySeq)({
         signatureRequest: pipe(
           signatureRequest,

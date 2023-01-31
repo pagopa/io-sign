@@ -6,8 +6,7 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-import { SubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
+
 import {
   SignatureRequestRejected,
   SignatureRequestSigned,
@@ -26,10 +25,6 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 import { GetBlobUrl } from "../../infra/azure/storage/blob";
-import {
-  makeMockSendNotification,
-  MockSendNotification,
-} from "./__mocks__/notification";
 
 export const ValidateSignaturePayload = t.type({
   signatureId: NonEmptyString,
@@ -44,7 +39,6 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
   (
     upsertSignature: UpsertSignature,
     upsertSignatureRequest: UpsertSignatureRequest,
-    mockSendNotification: MockSendNotification,
     notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
   ) =>
   (signature: Signature, signatureRequest: SignatureRequest) =>
@@ -64,16 +58,13 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
           TE.chain(upsertSignatureRequest),
           TE.chainFirst((r) =>
             notifySignatureRequestRejectedEvent(r as SignatureRequestRejected)
-          ),
-          TE.chain(mockSendNotification)
+          )
         )
       )
     );
 
 export const makeValidateSignature =
   (
-    submitMessage: SubmitMessageForUser,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     getSignature: GetSignature,
     getSignedDocumentUrl: GetBlobUrl,
     upsertSignature: UpsertSignature,
@@ -84,15 +75,10 @@ export const makeValidateSignature =
     notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) => {
-    const mockSendNotification = makeMockSendNotification(
-      submitMessage,
-      getFiscalCodeBySignerId
-    );
     const markSignatureAndSignatureRequestAsRejected =
       makeMarkSignatureAndSignatureRequestAsRejected(
         upsertSignature,
         upsertSignatureRequest,
-        mockSendNotification,
         notifySignatureRequestRejectedEvent
       );
     return pipe(
@@ -158,7 +144,6 @@ export const makeValidateSignature =
                     )
                   ),
                   TE.chain(upsertSignatureRequest),
-                  TE.chain(mockSendNotification),
                   // Upsert signature
                   TE.map(() => ({
                     ...signature,

@@ -138,8 +138,6 @@ export const GetSignatureRequest = makeGetSignatureRequestFunction(
 );
 
 export const ValidateSignature = makeValidateSignatureFunction(
-  ioApiClient,
-  pdvTokenizerClient,
   database,
   signedContainerClient,
   config.namirial,
