@@ -100,7 +100,11 @@ export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
 
-export const MarkAsRejected = makeRequestAsRejectedFunction(database);
+export const MarkAsRejected = makeRequestAsRejectedFunction(
+  database,
+  pdvTokenizerClientWithApiKey,
+  ioApiClient
+);
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
   database,
