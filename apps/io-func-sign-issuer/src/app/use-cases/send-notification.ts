@@ -11,8 +11,9 @@ import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
-import { Issuer } from "@io-sign/io-sign/issuer";
+import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request";
+
+import { DocumentReady } from "@io-sign/io-sign/document";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -22,20 +23,18 @@ import { Dossier, GetDossier } from "../../dossier";
 
 export type SendNotificationPayload = {
   signatureRequest: SignatureRequest;
-  issuer: Issuer;
 };
 
 const makeMessageContent =
-  (issuer: Issuer, dossier: Dossier) =>
-  (signatureRequest: SignatureRequest) => ({
+  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
     content: {
-      subject: `${issuer.description} - ${dossier.title} - Richiesta di Firma`,
+      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di Firma`,
       markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
       }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
       }"\n---\nL'ente ${
-        issuer.description
+        signatureRequest.issuerDescription
       } ha **richiesto la tua firma** su alcuni documenti relativi a ${
         dossier.title
       }.\n\n\nHai tempo fino al ${format(
@@ -45,17 +44,14 @@ const makeMessageContent =
     },
   });
 
-const makeMessage =
-  (issuer: Issuer, dossier: Dossier) => (signatureRequest: SignatureRequest) =>
-    pipe(signatureRequest, makeMessageContent(issuer, dossier), TE.right);
-
-const SignatureRequestReadyToNotify = t.intersection([
-  SignatureRequestToBeSigned,
+const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
+  "WAIT_FOR_SIGNATURE",
   t.type({
-    dossierId: Dossier.props.id,
-    notication: t.undefined,
-  }),
-]);
+    qrCodeUrl: t.string,
+    documents: t.array(DocumentReady),
+    notification: t.undefined,
+  })
+);
 
 export const makeSendNotification =
   (
@@ -64,7 +60,7 @@ export const makeSendNotification =
     upsertSignatureRequest: UpsertSignatureRequest,
     getDossier: GetDossier
   ) =>
-  ({ signatureRequest, issuer }: SendNotificationPayload) =>
+  ({ signatureRequest }: SendNotificationPayload) =>
     pipe(
       sequenceS(TE.ApplySeq)({
         signatureRequest: pipe(
@@ -89,7 +85,7 @@ export const makeSendNotification =
               )
             ),
             dossier: pipe(
-              issuer.id,
+              signatureRequest.issuerId,
               getDossier(signatureRequest.dossierId),
               TE.chain(
                 TE.fromOption(
@@ -102,14 +98,21 @@ export const makeSendNotification =
           TE.chainW(({ fiscalCode, dossier }) =>
             pipe(
               signatureRequest,
-              makeMessage(issuer, dossier),
+              makeMessageContent(dossier),
+              TE.fromNullable(new Error("Invalid message content")),
               TE.chain(submitNotification(fiscalCode))
             )
           )
         ),
       }),
-      TE.chainFirst(({ signatureRequest }) =>
-        upsertSignatureRequest(signatureRequest)
+      TE.chainFirst(({ signatureRequest, notification }) =>
+        pipe(
+          {
+            ...signatureRequest,
+            notification,
+          },
+          upsertSignatureRequest
+        )
       ),
       TE.map(({ notification }) => notification)
     );
