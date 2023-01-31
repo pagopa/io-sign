@@ -82,22 +82,32 @@ export type SignatureRequestWaitForQtsp = t.TypeOf<
 
 export const SignatureRequestSigned = makeSignatureRequestVariant(
   "SIGNED",
-  t.type({
-    signedAt: IsoDateFromString,
-    documents: t.array(DocumentReady),
-  })
+  t.intersection([
+    t.type({
+      signedAt: IsoDateFromString,
+      documents: t.array(DocumentReady),
+    }),
+    t.partial({
+      notification: Notification,
+    }),
+  ])
 );
 
 export type SignatureRequestSigned = t.TypeOf<typeof SignatureRequestSigned>;
 
 export const SignatureRequestRejected = makeSignatureRequestVariant(
   "REJECTED",
-  t.type({
-    rejectedAt: IsoDateFromString,
-    rejectReason: t.string,
-    qrCodeUrl: t.string,
-    documents: t.array(DocumentReady),
-  })
+  t.intersection([
+    t.type({
+      rejectedAt: IsoDateFromString,
+      rejectReason: t.string,
+      qrCodeUrl: t.string,
+      documents: t.array(DocumentReady),
+    }),
+    t.partial({
+      notification: Notification,
+    }),
+  ])
 );
 
 export type SignatureRequestRejected = t.TypeOf<
