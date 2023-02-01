@@ -55,7 +55,7 @@ export const makeMarkRequestAsRejected =
         pipe(
           request,
           sendRejectedNotification,
-          // Sending the notification might fail, but I still want to be able to terminate the pipe.
+          // This is a fire-and-forget operation
           TE.altW(() => TE.right(request))
         )
       )

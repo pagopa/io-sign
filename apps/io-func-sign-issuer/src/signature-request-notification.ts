@@ -38,7 +38,7 @@ export const makeSendSignatureRequestNotification =
             TE.fromOption(
               () =>
                 new EntityNotFoundError(
-                  "The fiscal code associated with this signer is not valid!"
+                  "The fiscal code associated with this signer is not valid."
                 )
             )
           )
