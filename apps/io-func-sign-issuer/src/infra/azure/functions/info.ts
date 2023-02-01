@@ -58,6 +58,7 @@ export const makeInfoHandler = (
   ioApiClient: IOApiClient,
   db: Database,
   eventHubBillingClient: EventHubProducerClient,
+  eventHubAnalyticsClient: EventHubProducerClient,
   uploadedContainerClient: ContainerClient,
   validatedContainerClient: ContainerClient,
   onSignatureRequestReadyQueueClient: QueueClient
@@ -71,6 +72,7 @@ export const makeInfoHandler = (
           makeIOServicesHealthCheck(ioApiClient)(),
           makeAzureCosmosDbHealthCheck(db),
           makeAzureEventHubHealthCheck(eventHubBillingClient),
+          makeAzureEventHubHealthCheck(eventHubAnalyticsClient),
           makeAzureStorageContainerHealthCheck(uploadedContainerClient),
           makeAzureStorageContainerHealthCheck(validatedContainerClient),
           makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient),
