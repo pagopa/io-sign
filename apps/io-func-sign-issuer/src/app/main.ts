@@ -40,8 +40,13 @@ const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHubs.connectionString,
+  config.azure.eventHubs.billingConnectionString,
   "billing"
+);
+
+const eventHubAnalyticsClient = new EventHubProducerClient(
+  config.azure.eventHubs.analyticsConnectionString,
+  "analytics"
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -79,6 +84,7 @@ export const Info = makeInfoFunction(
   ioApiClient,
   database,
   eventHubBillingClient,
+  eventHubAnalyticsClient,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
