@@ -29,7 +29,7 @@ import {
 const requestToSignMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
     content: {
-      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di Firma`,
+      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di firma`,
       markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
         signatureRequest.id
       }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
@@ -41,7 +41,7 @@ const requestToSignMessage: MakeMessageContent =
       }.\n\n\nHai tempo fino al ${format(
         signatureRequest.expiresAt,
         "dd/MM/yyyy"
-      )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.`,
+      )} per firmare: per farlo, ti servirà il **codice di sblocco** dell'app o il tuo **riconoscimento biometrico**.`,
     },
   });
 

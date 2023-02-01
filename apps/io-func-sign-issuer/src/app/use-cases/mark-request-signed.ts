@@ -25,7 +25,7 @@ const signedMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
     content: {
       subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Documenti firmati`,
-      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nI documenti che hai firmato sono pronti.\n\n\nHai **90** giorni dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n`,
+      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nI documenti che hai firmato sono pronti!\n\n\nHai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n`,
     },
   });
 
