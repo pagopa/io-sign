@@ -23,15 +23,13 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
-import {
-  makeSendNotification,
-  SendNotificationPayload,
-} from "../../../app/use-cases/send-notification";
+import { makeSendNotification } from "../../../app/use-cases/send-notification";
 import { NotificationToApiModel } from "../../http/encoders/notification";
 
 import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { makeGetDossier } from "../cosmos/dossier";
+import { SendNotificationPayload } from "../../../signature-request-notification";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,

@@ -59,6 +59,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       case "REJECTED": {
         return {
           ...commonFields,
+          notification:
+            extra.notification !== undefined
+              ? NotificationToApiModel.encode(extra.notification)
+              : undefined,
           status: SignatureRequestStatusEnum.REJECTED,
           rejected_at: extra.rejectedAt,
           reject_reason: extra.rejectReason,
@@ -67,6 +71,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       case "SIGNED": {
         return {
           ...commonFields,
+          notification:
+            extra.notification !== undefined
+              ? NotificationToApiModel.encode(extra.notification)
+              : undefined,
           status: SignatureRequestStatusEnum.SIGNED,
           signed_at: extra.signedAt,
         };

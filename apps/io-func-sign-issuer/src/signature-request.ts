@@ -219,6 +219,7 @@ const onDraftStatus =
           return E.right({
             ...request,
             status: "READY",
+            updatedAt: new Date(),
           });
         }
         return E.left(
@@ -301,6 +302,7 @@ const onReadyStatus =
           status: "WAIT_FOR_SIGNATURE",
           // TODO: [SFEQS-946] make the QR Code dynamic
           qrCodeUrl: "https://place-holder.com/qr-code",
+          updatedAt: new Date(),
         });
       default:
         return E.left(
@@ -321,6 +323,7 @@ const onWaitForSignatureStatus =
         ...request,
         status: "SIGNED",
         signedAt: new Date(),
+        updatedAt: new Date(),
       });
     }
     if (action.name === "MARK_AS_REJECTED") {
@@ -329,6 +332,7 @@ const onWaitForSignatureStatus =
         status: "REJECTED",
         rejectedAt: action.rejectedAt,
         rejectReason: action.rejectReason,
+        updatedAt: new Date(),
       });
     }
     return E.left(

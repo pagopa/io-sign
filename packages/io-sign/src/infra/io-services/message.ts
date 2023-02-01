@@ -1,11 +1,13 @@
-import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
-import { Notification } from "../../notification";
+import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
+import {
+  NotificationMessage,
+  SubmitNotificationForUser,
+} from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
 
 import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
@@ -13,34 +15,12 @@ import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
 
-export const newNewMessage = (
-  subject: string,
-  markdown: string
-): NewMessage => ({
-  content: {
-    subject,
-    markdown,
-  },
-});
-
-type NewMessageWithFiscalCode = NewMessage & { fiscal_code: FiscalCode };
-
-export const withFiscalCode =
-  (fiscalCode: FiscalCode) =>
-  (message: NewMessage): NewMessageWithFiscalCode => ({
-    ...message,
-    fiscal_code: fiscalCode,
-  });
-
-export type SubmitMessageForUser = (
-  message: NewMessageWithFiscalCode
-) => TE.TaskEither<Error, Notification>;
-
 export const makeSubmitMessageForUser =
-  (ioApiClient: IOApiClient): SubmitMessageForUser =>
-  (message: NewMessageWithFiscalCode) =>
+  (ioApiClient: IOApiClient): SubmitNotificationForUser =>
+  (fiscalCode: FiscalCode) =>
+  (message: NotificationMessage) =>
     pipe(
-      message.fiscal_code,
+      fiscalCode,
       makeRetriveUserProfileSenderAllowed(ioApiClient),
       TE.filterOrElse(
         identity,
@@ -53,7 +33,10 @@ export const makeSubmitMessageForUser =
         TE.tryCatch(
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
-              message,
+              message: {
+                ...message,
+                fiscal_code: fiscalCode,
+              },
             }),
           E.toError
         )

@@ -8,10 +8,6 @@ import { flow, identity, constVoid } from "fp-ts/lib/function";
 import { Database } from "@azure/cosmos";
 
 import { ContainerClient } from "@azure/storage-blob";
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/message";
 
 import { QueueClient } from "@azure/storage-queue";
 import {
@@ -33,8 +29,6 @@ import {
 } from "../storage/signature-request";
 
 const makeValidateSignatureHandler = (
-  ioApiClient: IOApiClient,
-  tokenizer: PdvTokenizerClientWithApiKey,
   db: Database,
   signedContainerClient: ContainerClient,
   qtspConfig: NamirialConfig,
@@ -46,8 +40,6 @@ const makeValidateSignatureHandler = (
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignedDocumentUrl = makeGetBlobUrl(signedContainerClient);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
-  const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const notifySignatureRequestSignedEvent =
     makeNotifySignatureRequestSignedEvent(onSignedQueueClient);
   const notifySignatureRequestRejectedEvent =
@@ -58,8 +50,6 @@ const makeValidateSignatureHandler = (
   )(qtspConfig);
 
   const validateSignature = makeValidateSignature(
-    submitMessage,
-    getFiscalCodeBySignerId,
     getSignature,
     getSignedDocumentUrl,
     upsertSignature,
