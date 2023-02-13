@@ -41,7 +41,9 @@ const requestToSignMessage: MakeMessageContent =
       }.\n\n\nHai tempo fino al ${format(
         signatureRequest.expiresAt,
         "dd/MM/yyyy"
-      )} per firmare: per farlo, ti servirà il **codice di sblocco** dell'app o il tuo **riconoscimento biometrico**.`,
+      )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
+        signatureRequest.issuerEmail
+      }](mailto:${signatureRequest.issuerEmail}).`,
     },
   });
 
