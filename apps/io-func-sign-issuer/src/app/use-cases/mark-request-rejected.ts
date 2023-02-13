@@ -21,8 +21,8 @@ import {
 const rejectedMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
     content: {
-      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Errore firma`,
-      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nA causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nVai ai documenti e firmali di nuovo. Se il problema si ripete, contatta l'assistenza.\n`,
+      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - C'è un problema con la firma`,
+      markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a [${signatureRequest.issuerEmail}](mailto:${signatureRequest.issuerEmail}).`,
     },
   });
 
