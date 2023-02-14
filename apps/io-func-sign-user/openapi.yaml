@@ -178,6 +178,91 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /messages/{signature_request_id}:
+    get:
+      operationId: getThirdPartyMessageDetails
+      summary: Retrieve a Third Party message with signature request documents
+      tags:
+        - Third Party Message
+      parameters:
+        - in: path
+          name: signature_request_id
+          schema:
+            type: string
+            description: Entity Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+        - in: header
+          name: fiscal_code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: The Third Party message detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThirdPartyMessage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /messages/{signature_request_id}/{document_id}:
+    get:
+      operationId: getThirdPartyMessageAttachment
+      summary: Retrieve a Third Party message attachment (document)
+      tags:
+        - Third Party Message
+      parameters:
+        - in: path
+          name: signature_request_id
+          schema:
+            type: string
+            description: Signature request Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+        - in: path
+          name: document_id
+          schema:
+            type: string
+            description: Document Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAA
+          required: true
+        - in: header
+          name: fiscal_code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: The Third Party message detail
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     FunctionsKey:
@@ -618,3 +703,30 @@ components:
         - documents
         - created_at
         - updated_at
+
+    ThirdPartyMessage:
+      type: object
+      properties:
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ThirdPartyAttachment"
+
+    ThirdPartyAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        content_type:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - url
