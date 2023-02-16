@@ -205,8 +205,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ThirdPartyMessage"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -218,8 +216,8 @@ paths:
 
   /messages/{signature_request_id}/{document_id}:
     get:
-      operationId: getThirdPartyMessageAttachment
-      summary: Retrieve a Third Party message attachment (document)
+      operationId: getThirdPartyMessageAttachmentContent
+      summary: Retrieve a Third Party message attachment content (document)
       tags:
         - Third Party Message
       parameters:
@@ -250,8 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
+                $ref: "#/components/schemas/ThirdPartyMessageAttachmentContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -711,6 +708,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ThirdPartyAttachment"
+      required:
+        - attachments
 
     ThirdPartyAttachment:
       type: object
@@ -730,3 +729,7 @@ components:
       required:
         - id
         - url
+
+    ThirdPartyMessageAttachmentContent:
+      type: string
+      format: binary

@@ -5428,6 +5428,7 @@ __metadata:
     "@types/jsrsasign": ^10.5.4
     azure-functions-core-tools: ^4.0.4895
     crypto-js: ^4.1.1
+    date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
     io-ts: ^2.2.19

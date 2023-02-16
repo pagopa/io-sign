@@ -17,6 +17,8 @@ import { makeCreateSignatureFunction } from "../infra/azure/functions/create-sig
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
+import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
+import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -144,3 +146,13 @@ export const ValidateSignature = makeValidateSignatureFunction(
   onSignedQueueClient,
   onRejectedQueueClient
 );
+
+export const GetThirdPartyMessageDetails =
+  makeGetThirdPartyMessageDetailsFunction(pdvTokenizerClient, database);
+
+export const GetThirdPartyMessageAttachmentContent =
+  makeGetThirdPartyMessageAttachmentContentFunction(
+    pdvTokenizerClient,
+    database,
+    signedContainerClient
+  );

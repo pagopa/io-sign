@@ -29,6 +29,7 @@
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/ts-commons": "^10.10.0",
     "crypto-js": "^4.1.1",
+    "date-fns": "^2.29.3",
     "fp-ts": "^2.13.1",
     "io-ts": "^2.2.19",
     "io-ts-types": "^0.5.19",

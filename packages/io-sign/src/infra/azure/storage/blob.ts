@@ -63,3 +63,13 @@ export const generateSasUrlFromBlob = (options: BlobGenerateSasUrlOptions) =>
       )
     )
   );
+
+export const downloadContentFromBlob = pipe(
+  RTE.ask<BlobClient>(),
+  RTE.chainTaskEitherK((blobClient) =>
+    TE.tryCatch(
+      () => blobClient.downloadToBuffer(),
+      () => new Error("Unable to download content for the specified Blob.")
+    )
+  )
+);
