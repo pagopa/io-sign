@@ -91,7 +91,7 @@ describe("getSignedDocumentContent", () => {
 });
 
 describe("signedNoMoreThan90DaysAgo", () => {
-  it('should not return an error for a signature request signed more than 89 days ago"', () => {
+  it('should not return an error for a signature request signed 89 days ago"', () => {
     const oldSignatureRequest = {
       ...signatureRequest,
       signedAt: addDays(signatureRequest.signedAt, -89),
@@ -101,7 +101,7 @@ describe("signedNoMoreThan90DaysAgo", () => {
     ).toBe(true);
   });
 
-  it('should return an error for a signature request signed more than 90 days ago"', () => {
+  it('should return an error for a signature request signed 90 days ago"', () => {
     const oldSignatureRequest = {
       ...signatureRequest,
       signedAt: addDays(signatureRequest.signedAt, -90),
