@@ -47,8 +47,7 @@ export const makeGetSignedDocumentContent =
       TE.chain((signatureRequest) =>
         pipe(
           signatureRequest.documents,
-          A.filter((document) => document.id === documentId),
-          A.head,
+          A.findFirst((document) => document.id === documentId),
           TE.fromOption(
             () =>
               new EntityNotFoundError(
