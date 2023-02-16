@@ -36,7 +36,7 @@ paths:
                 format: url
               description: Callback url.
           content:
-            application/pdf:
+            application/json:
               schema:
                 $ref: "#/components/schemas/FilledDocumentDetailView"
         "400":
@@ -246,7 +246,7 @@ paths:
         "200":
           description: The Third Party message detail
           content:
-            application/json:
+            application/pdf:
               schema:
                 $ref: "#/components/schemas/ThirdPartyMessageAttachmentContent"
         "400":
