@@ -81,7 +81,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
       getSignedDocumentContent(signatureRequest, documentId),
     error,
     (buffer) => ({
-      // body is of type string, but buffer.toString appends some extra characters which corrupt the final file even with byte-encoding.
+      // body must be of type string, but buffer.toString appends some extra characters which corrupt the final file even with byte-encoding.
       body: buffer as unknown as string,
       statusCode: 200,
       headers: {

@@ -36,7 +36,7 @@ paths:
                 format: url
               description: Callback url.
           content:
-            application/json:
+            application/pdf:
               schema:
                 $ref: "#/components/schemas/FilledDocumentDetailView"
         "400":

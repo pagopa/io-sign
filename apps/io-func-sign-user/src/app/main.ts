@@ -18,7 +18,7 @@ import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/cre
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
-import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments";
+import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
