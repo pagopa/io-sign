@@ -54,6 +54,10 @@ export const error = (e: Error) =>
   pipe(
     HttpErrorFromError.decode(e),
     E.orElse(() => E.right(e)),
+    E.map((e) => {
+      console.log(e);
+      return e;
+    }),
     E.map(
       flow(toProblemDetail, response, (res) =>
         pipe(res, withStatusCode(res.body.status))

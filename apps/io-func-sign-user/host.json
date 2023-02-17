@@ -1,8 +1,30 @@
 {
   "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "default": "Debug",
+      "Function.Info": "Debug"
+    },
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "maxTelemetryItemsPerSecond": 5,
+        "includedTypes": "PageView;Trace;Dependency;Request",
+        "excludedTypes": "Exception;Event;CustomEvent"
+      }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[2.*, 3.0.0)"
+  },
   "extensions": {
     "http": {
       "routePrefix": "api/v1/sign"
+    },
+    "tracing": {
+      "traceInputsAndOutputs": false,
+      "traceReplayEvents": false
     },
     "queues": {
       "maxPollingInterval": "00:00:05.000"
