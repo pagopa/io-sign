@@ -1,12 +1,12 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as A from "fp-ts/lib/Array";
 
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { Document } from "@io-sign/io-sign/document";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import {
+  getDocument,
   SignatureRequest,
   signedNoMoreThan90DaysAgo,
 } from "../../signature-request";
@@ -20,8 +20,8 @@ export const makeGetSignedDocumentContent =
       TE.fromEither,
       TE.chain((signatureRequest) =>
         pipe(
-          signatureRequest.documents,
-          A.findFirst((document) => document.id === documentId),
+          signatureRequest,
+          getDocument(documentId),
           TE.fromOption(
             () =>
               new EntityNotFoundError(
