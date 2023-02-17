@@ -2,11 +2,12 @@ import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { Document } from "@io-sign/io-sign/document";
+import { Document, DocumentReady } from "@io-sign/io-sign/document";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
+import { getDocument } from "@io-sign/io-sign/signature-request";
+import { validate } from "@io-sign/io-sign/validation";
 import {
-  getDocument,
   SignatureRequest,
   signedNoMoreThan90DaysAgo,
 } from "../../signature-request";
@@ -27,6 +28,9 @@ export const makeGetSignedDocumentContent =
               new EntityNotFoundError(
                 "The specified documentID does not exists."
               )
+          ),
+          TE.chainEitherKW(
+            validate(DocumentReady, "The document must be in READY status.")
           ),
           TE.chain(getDocumentContent)
         )

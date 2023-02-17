@@ -5,8 +5,6 @@ import {
   SignatureRequestWaitForQtsp,
 } from "@io-sign/io-sign/signature-request";
 
-import { Document } from "@io-sign/io-sign/document";
-
 import { Id } from "@io-sign/io-sign/id";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -14,13 +12,12 @@ import * as O from "fp-ts/lib/Option";
 import { differenceInDays } from "date-fns";
 
 import * as t from "io-ts";
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import {
   ActionNotAllowedError,
   EntityNotFoundError,
 } from "@io-sign/io-sign/error";
 import { validate } from "@io-sign/io-sign/validation";
-import { findFirst } from "fp-ts/lib/Array";
 
 export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
@@ -211,10 +208,4 @@ export const signedNoMoreThan90DaysAgo = (
               )
       )
     )
-  );
-
-export const getDocument = (id: Document["id"]) =>
-  flow(
-    (request: SignatureRequest) => request.documents,
-    findFirst((document: Document) => document.id === id)
   );

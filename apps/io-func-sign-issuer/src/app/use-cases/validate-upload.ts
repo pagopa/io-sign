@@ -14,6 +14,7 @@ import {
 } from "@io-sign/io-sign/document";
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import { getDocument } from "@io-sign/io-sign/signature-request";
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -24,7 +25,6 @@ import {
   UpsertUploadMetadata,
 } from "../../upload";
 import {
-  getDocument,
   GetSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
