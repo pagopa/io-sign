@@ -14,7 +14,7 @@ import { ContainerClient } from "@azure/storage-blob";
 
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { error } from "@io-sign/io-sign/infra/http/response";
+import { error, successBuffer } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
 import { Document, DocumentReady } from "@io-sign/io-sign/document";
 import { DocumentId } from "@io-sign/io-sign/document";
@@ -80,15 +80,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
     ({ signatureRequest, documentId }) =>
       getSignedDocumentContent(signatureRequest, documentId),
     error,
-    (buffer) => ({
-      // body must be of type string, but buffer.toString appends some extra characters which corrupt the final file even with byte-encoding.
-      body: buffer as unknown as string,
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Length": Buffer.byteLength(buffer).toString(),
-      },
-    })
+    successBuffer("application/pdf")
   );
 };
 
