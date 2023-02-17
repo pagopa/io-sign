@@ -24,6 +24,9 @@ import {
 import { requireSigner } from "./signer";
 import { requireFiscalCode } from "./fiscal-code";
 
+const signatureRequestNotFoundError = () =>
+  new EntityNotFoundError("The specified Signature Request does not exists.");
+
 export const makeRequireSignatureRequest = (
   getSignatureRequest: GetSignatureRequest
 ): RTE.ReaderTaskEither<HttpRequest, Error, SignatureRequest> =>
@@ -36,14 +39,7 @@ export const makeRequireSignatureRequest = (
     RTE.chainTaskEitherK(({ signer, signatureRequestId }) =>
       pipe(signer.id, getSignatureRequest(signatureRequestId))
     ),
-    RTE.chainW(
-      RTE.fromOption(
-        () =>
-          new EntityNotFoundError(
-            "The specified Signature Request does not exists."
-          )
-      )
-    )
+    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError))
   );
 
 export const makeRequireSignatureRequestByFiscalCode = (
@@ -70,13 +66,5 @@ export const makeRequireSignatureRequestByFiscalCode = (
         TE.chain(getSignatureRequest(signatureRequestId))
       )
     ),
-    RTE.chainW(
-      RTE.fromOption(
-        // eslint-disable-next-line sonarjs/no-identical-functions
-        () =>
-          new EntityNotFoundError(
-            "The specified Signature Request does not exists."
-          )
-      )
-    )
+    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError))
   );
