@@ -48,7 +48,7 @@ export const makeRequireSignatureRequestByFiscalCode = (
 ): RTE.ReaderTaskEither<HttpRequest, Error, SignatureRequest> =>
   pipe(
     sequenceS(RE.Apply)({
-      fiscalCode: flow(requireFiscalCode),
+      fiscalCode: requireFiscalCode,
       signatureRequestId: requireSignatureRequestIdFromPath,
     }),
     RTE.fromReaderEither,
