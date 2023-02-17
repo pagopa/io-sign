@@ -14,7 +14,7 @@ import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoder/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../../http/encoders/signature-request";
 import { ThirdPartyMessage } from "../../http/models/ThirdPartyMessage";
-import { signedNoMoreThan90DaysAgo } from "../../../app/use-cases/get-signed-document-content";
+import { signedNoMoreThan90DaysAgo } from "../../../signature-request";
 
 const makeGetThirdPartyMessageDetailsHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,

@@ -9,15 +9,10 @@ import {
   WithinRangeString,
 } from "@pagopa/ts-commons/lib/strings";
 
-import { addDays } from "date-fns";
-
 import { newId } from "@io-sign/io-sign/id";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { DocumentReady } from "@io-sign/io-sign/document";
-import {
-  makeGetSignedDocumentContent,
-  signedNoMoreThan90DaysAgo,
-} from "../app/use-cases/get-signed-document-content";
+import { makeGetSignedDocumentContent } from "../app/use-cases/get-signed-document-content";
 
 const documentId = newId();
 
@@ -87,27 +82,5 @@ describe("getSignedDocumentContent", () => {
     return makeRequest.then((data) => {
       expect(pipe(data, E.isRight)).toBe(false);
     });
-  });
-});
-
-describe("signedNoMoreThan90DaysAgo", () => {
-  it('should not return an error for a signature request signed 89 days ago"', () => {
-    const oldSignatureRequest = {
-      ...signatureRequest,
-      signedAt: addDays(signatureRequest.signedAt, -89),
-    };
-    expect(
-      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
-    ).toBe(true);
-  });
-
-  it('should return an error for a signature request signed 90 days ago"', () => {
-    const oldSignatureRequest = {
-      ...signatureRequest,
-      signedAt: addDays(signatureRequest.signedAt, -90),
-    };
-    expect(
-      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
-    ).toBe(false);
   });
 });
