@@ -1,9 +1,15 @@
 import * as E from "io-ts/lib/Encoder";
 
+import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
+import { pipe } from "fp-ts/lib/function";
+import * as A from "fp-ts/lib/Array";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import {
   SignatureRequestDetailView as SignatureRequestApiModel,
   StatusEnum as SignatureRequestStatusEnum,
 } from "../models/SignatureRequestDetailView";
+
+import { ThirdPartyMessage as ThirdPartyMessageApiModel } from "../models/ThirdPartyMessage";
 
 import { SignatureRequest } from "../../../signature-request";
 
@@ -70,4 +76,21 @@ export const SignatureRequestToApiModel: E.Encoder<
       }
     }
   },
+};
+
+export const SignatureRequestToThirdPartyMessage: E.Encoder<
+  ThirdPartyMessageApiModel,
+  SignatureRequestSigned
+> = {
+  encode: ({ documents }) => ({
+    attachments: pipe(
+      documents,
+      A.map((document) => ({
+        id: document.id,
+        content_type: "application/pdf" as NonEmptyString,
+        name: document.metadata.title,
+        url: document.id,
+      }))
+    ),
+  }),
 };

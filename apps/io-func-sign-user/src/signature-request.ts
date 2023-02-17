@@ -9,10 +9,15 @@ import { Id } from "@io-sign/io-sign/id";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
+import { differenceInDays } from "date-fns";
 
 import * as t from "io-ts";
 import { pipe } from "fp-ts/lib/function";
-import { ActionNotAllowedError } from "@io-sign/io-sign/error";
+import {
+  ActionNotAllowedError,
+  EntityNotFoundError,
+} from "@io-sign/io-sign/error";
+import { validate } from "@io-sign/io-sign/validation";
 
 export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
@@ -180,3 +185,27 @@ export const markAsRejected = (reason: string) =>
 
 export const canBeWaitForQtsp = (request: SignatureRequest) =>
   pipe(request, dispatch({ name: "MARK_AS_WAIT_FOR_QTSP" }), E.isRight);
+
+export const signedNoMoreThan90DaysAgo = (
+  signatureRequest: SignatureRequest
+): E.Either<Error, SignatureRequestSigned> =>
+  pipe(
+    signatureRequest,
+    validate(
+      SignatureRequestSigned,
+      "The signature request must be in SIGNED status."
+    ),
+    E.chain((signatureRequest) =>
+      pipe(
+        differenceInDays(new Date(), signatureRequest.signedAt),
+        (difference) =>
+          difference < 90
+            ? E.right(signatureRequest)
+            : E.left(
+                new EntityNotFoundError(
+                  "More than 90 days have passed since signing."
+                )
+              )
+      )
+    )
+  );

@@ -8,7 +8,7 @@ import * as t from "io-ts";
 
 import { Signer } from "@io-sign/io-sign/signer";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
@@ -24,26 +24,18 @@ import {
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
+import { findIndex, updateAt } from "fp-ts/lib/Array";
 import {
   SignatureRequestReady,
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  makeSignatureRequestVariant,
+  SignatureRequestDraft,
+  getDocument,
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { Dossier } from "./dossier";
-
-export const SignatureRequestDraft = makeSignatureRequestVariant(
-  "DRAFT",
-  t.type({
-    documents: t.array(Document),
-  })
-);
-
-export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
 
 export const SignatureRequest = t.union([
   SignatureRequestDraft,
@@ -109,12 +101,6 @@ export const withExpiryDate =
         expiresAt: expiryDate,
       }))
     );
-
-export const getDocument = (id: Document["id"]) =>
-  flow(
-    (request: SignatureRequest) => request.documents,
-    findFirst((document: Document) => document.id === id)
-  );
 
 export const replaceDocument =
   (id: Document["id"], updated: Document) => (request: SignatureRequestDraft) =>

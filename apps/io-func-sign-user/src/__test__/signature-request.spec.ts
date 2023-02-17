@@ -5,13 +5,17 @@ import * as E from "fp-ts/lib/Either";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
+import { addDays } from "date-fns";
+
 import { newId } from "@io-sign/io-sign/id";
+import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import {
   markAsRejected,
   markAsSigned,
   markAsWaitForQtsp,
   SignatureRequest,
   canBeWaitForQtsp,
+  signedNoMoreThan90DaysAgo,
 } from "../signature-request";
 
 const signatureRequest: SignatureRequest = {
@@ -28,6 +32,22 @@ const signatureRequest: SignatureRequest = {
   status: "WAIT_FOR_SIGNATURE",
   documents: [],
   qrCodeUrl: "https://mock/qrcode",
+};
+
+const signatureRequestSigned: SignatureRequestSigned = {
+  id: newId(),
+  dossierId: newId(),
+  issuerId: newId(),
+  issuerEmail: "issuer@io-sign-mail.it" as EmailString,
+  issuerDescription: "Mocked Issuer" as NonEmptyString,
+  issuerEnvironment: "TEST",
+  signerId: newId(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  expiresAt: new Date(),
+  status: "SIGNED",
+  documents: [],
+  signedAt: new Date(),
 };
 
 describe("signatureRequest status change", () => {
@@ -78,6 +98,28 @@ describe("signatureRequest status change", () => {
         E.chain(markAsWaitForQtsp),
         E.isRight
       )
+    ).toBe(false);
+  });
+});
+
+describe("signedNoMoreThan90DaysAgo", () => {
+  it('should not return an error for a signature request signed 89 days ago"', () => {
+    const oldSignatureRequest = {
+      ...signatureRequestSigned,
+      signedAt: addDays(signatureRequestSigned.signedAt, -89),
+    };
+    expect(
+      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
+    ).toBe(true);
+  });
+
+  it('should return an error for a signature request signed 90 days ago"', () => {
+    const oldSignatureRequest = {
+      ...signatureRequestSigned,
+      signedAt: addDays(signatureRequestSigned.signedAt, -90),
+    };
+    expect(
+      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
     ).toBe(false);
   });
 });

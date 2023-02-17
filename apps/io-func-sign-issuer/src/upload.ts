@@ -12,8 +12,11 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { Issuer } from "@io-sign/io-sign/issuer";
 
-import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
-import { getDocument, SignatureRequest } from "./signature-request";
+import {
+  getDocument,
+  SignatureRequestId,
+} from "@io-sign/io-sign/signature-request";
+import { SignatureRequest } from "./signature-request";
 
 export const UploadMetadata = t.intersection([
   t.type({
