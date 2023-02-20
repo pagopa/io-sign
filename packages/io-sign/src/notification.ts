@@ -1,7 +1,8 @@
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { Id } from "./id";
 
 export const NotificationId = Id;
@@ -11,12 +12,23 @@ export const Notification = t.type({
 });
 export type Notification = t.TypeOf<typeof Notification>;
 
-export const NotificationMessage = t.type({
-  content: t.type({
+const NotificationContent = t.intersection([
+  t.type({
     subject: t.string,
     markdown: t.string,
   }),
+  t.partial({
+    third_party_data: t.type({
+      id: NonEmptyString,
+      has_attachments: t.boolean,
+    }),
+  }),
+]);
+
+export const NotificationMessage = t.type({
+  content: NotificationContent,
 });
+
 export type NotificationMessage = t.TypeOf<typeof NotificationMessage>;
 
 export type SubmitNotificationForUser = (

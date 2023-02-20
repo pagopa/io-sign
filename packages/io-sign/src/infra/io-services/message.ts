@@ -4,6 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
 import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
+import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
 import {
   NotificationMessage,
   SubmitNotificationForUser,
@@ -36,6 +37,7 @@ export const makeSubmitMessageForUser =
               message: {
                 ...message,
                 fiscal_code: fiscalCode,
+                feature_level_type: FeatureLevelTypeEnum.STANDARD,
               },
             }),
           E.toError
