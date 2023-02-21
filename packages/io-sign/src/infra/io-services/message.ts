@@ -35,11 +35,22 @@ export const makeSubmitMessageForUser =
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message: {
-                ...message,
+                content: {
+                  subject: message.subject,
+                  markdown: message.markdown,
+                  third_party_data:
+                    "signatureRequestId" in message
+                      ? {
+                          id: message.signatureRequestId,
+                          has_attachments: true,
+                        }
+                      : undefined,
+                },
                 fiscal_code: fiscalCode,
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but
                  * in any case we are enabled to use the attachments feature.
+                 * The user associated with the service has been added to a particular group on the APIM.
                  */
                 feature_level_type: FeatureLevelTypeEnum.STANDARD,
               },
