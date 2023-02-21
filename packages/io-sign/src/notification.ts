@@ -19,11 +19,12 @@ export const NotificationContent = t.type({
 
 export type NotificationContent = t.TypeOf<typeof NotificationContent>;
 
-export const NotificationContentWithAttachments = t.type({
-  subject: t.string,
-  markdown: t.string,
-  signatureRequestId: Id,
-});
+export const NotificationContentWithAttachments = t.intersection([
+  NotificationContent,
+  t.type({
+    signatureRequestId: Id,
+  }),
+]);
 
 export type NotificationContentWithAttachments = t.TypeOf<
   typeof NotificationContentWithAttachments
