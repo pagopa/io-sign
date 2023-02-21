@@ -9,6 +9,8 @@ import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
 import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
 import {
+  NotificationContent,
+  NotificationContentWithAttachments,
   NotificationMessage,
   SubmitNotificationForUser,
 } from "../../notification";
@@ -19,21 +21,29 @@ import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
 
-export const NotificationMessageToApiModel: Enc.Encoder<
+export const NotificationContentToApiModel: Enc.Encoder<
   NewMessage,
-  NotificationMessage
+  NotificationContent
 > = {
   encode: (message) => ({
     content: {
       subject: message.subject,
       markdown: message.markdown,
-      third_party_data:
-        "signatureRequestId" in message
-          ? {
-              id: message.signatureRequestId,
-              has_attachments: true,
-            }
-          : undefined,
+    },
+  }),
+};
+
+export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
+  NewMessage,
+  NotificationContentWithAttachments
+> = {
+  encode: (message) => ({
+    content: {
+      ...NotificationContentToApiModel.encode(message).content,
+      third_party_data: {
+        id: message.signatureRequestId,
+        has_attachments: true,
+      },
     },
   }),
 };
@@ -57,7 +67,9 @@ export const makeSubmitMessageForUser =
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message: {
-                ...NotificationMessageToApiModel.encode(message),
+                ...("signatureRequestId" in message
+                  ? NotificationContentWithAttachmentsToApiModel.encode(message)
+                  : NotificationContentToApiModel.encode(message)),
                 fiscal_code: fiscalCode,
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but
