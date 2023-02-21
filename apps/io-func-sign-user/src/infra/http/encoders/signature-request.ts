@@ -88,7 +88,7 @@ export const SignatureRequestToThirdPartyMessage: E.Encoder<
       A.map((document) => ({
         id: document.id,
         content_type: "application/pdf" as NonEmptyString,
-        name: document.metadata.title,
+        name: `${document.metadata.title}.pdf` as NonEmptyString,
         url: document.id,
       }))
     ),
