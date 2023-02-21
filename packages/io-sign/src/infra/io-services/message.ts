@@ -74,7 +74,7 @@ export const makeSubmitMessageForUser =
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but
                  * in any case we are enabled to use the attachments feature.
-                 * The user associated with the service has been added to a particular group on the APIM.
+                 * The user associated with the service has been added to a particular group (ApiThirdPartyMessageWrite) on the APIM.
                  */
                 feature_level_type: FeatureLevelTypeEnum.STANDARD,
               },
