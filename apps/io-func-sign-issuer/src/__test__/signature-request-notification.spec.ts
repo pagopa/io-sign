@@ -78,10 +78,8 @@ const mockGetDossier: GetDossier =
 
 const mockMakeMessageContent: MakeMessageContent =
   (_dossier: Dossier) => (_signatureRequest: SignatureRequest) => ({
-    content: {
-      subject: `Richiesta di Firma`,
-      markdown: `Message content`,
-    },
+    subject: `Richiesta di Firma`,
+    markdown: `Message content`,
   });
 
 describe("SignatureRequestNotification", () => {

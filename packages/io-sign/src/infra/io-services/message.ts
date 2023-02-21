@@ -1,10 +1,13 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
+import * as Enc from "io-ts/lib/Encoder";
+
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
 import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
 import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
+import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
 import {
   NotificationMessage,
   SubmitNotificationForUser,
@@ -15,6 +18,25 @@ import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
 
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
+
+export const NotificationMessageToApiModel: Enc.Encoder<
+  NewMessage,
+  NotificationMessage
+> = {
+  encode: (message) => ({
+    content: {
+      subject: message.subject,
+      markdown: message.markdown,
+      third_party_data:
+        "signatureRequestId" in message
+          ? {
+              id: message.signatureRequestId,
+              has_attachments: true,
+            }
+          : undefined,
+    },
+  }),
+};
 
 export const makeSubmitMessageForUser =
   (ioApiClient: IOApiClient): SubmitNotificationForUser =>
@@ -35,17 +57,7 @@ export const makeSubmitMessageForUser =
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message: {
-                content: {
-                  subject: message.subject,
-                  markdown: message.markdown,
-                  third_party_data:
-                    "signatureRequestId" in message
-                      ? {
-                          id: message.signatureRequestId,
-                          has_attachments: true,
-                        }
-                      : undefined,
-                },
+                ...NotificationMessageToApiModel.encode(message),
                 fiscal_code: fiscalCode,
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but
