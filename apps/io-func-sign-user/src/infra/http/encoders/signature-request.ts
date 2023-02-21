@@ -3,6 +3,8 @@ import * as E from "io-ts/lib/Encoder";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
+import * as S from "fp-ts/lib/string";
+
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import {
   SignatureRequestDetailView as SignatureRequestApiModel,
@@ -88,7 +90,9 @@ export const SignatureRequestToThirdPartyMessage: E.Encoder<
       A.map((document) => ({
         id: document.id,
         content_type: "application/pdf" as NonEmptyString,
-        name: `${document.metadata.title}.pdf` as NonEmptyString,
+        name: pipe(document.metadata.title, S.endsWith(".pdf"))
+          ? document.metadata.title
+          : `${document.metadata.title}.pdf`,
         url: document.id,
       }))
     ),
