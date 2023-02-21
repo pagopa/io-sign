@@ -1012,7 +1012,7 @@ __metadata:
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^0.4.2
     "@pagopa/io-functions-commons": ^26.2.1
-    "@pagopa/io-functions-services-sdk": ^3.22.0
+    "@pagopa/io-functions-services-sdk": ^3.27.0
     "@pagopa/openapi-codegen-ts": ^12.0.2
     "@pagopa/ts-commons": ^10.10.0
     "@rushstack/eslint-patch": ^1.2.0
@@ -1486,14 +1486,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/io-functions-services-sdk@npm:^3.22.0":
-  version: 3.24.0
-  resolution: "@pagopa/io-functions-services-sdk@npm:3.24.0"
+"@pagopa/io-functions-services-sdk@npm:^3.27.0":
+  version: 3.27.0
+  resolution: "@pagopa/io-functions-services-sdk@npm:3.27.0"
   dependencies:
     "@pagopa/ts-commons": ^10.0.0
     fp-ts: ^2.10.5
     io-ts: ^2.2.16
-  checksum: 125bdede9eb393faf289e453cb4ba4f29d284f2b66615841be83b3f7ebdc1d0a27ab2bff94a01fd1a3e4d0043f7f5ce5a6b6d602025a3edbc385bb348a6cab56
+  checksum: 1bfbad3050bf2ef4f766f567f94709e9d92bc368d83e2da871485c0afcbcb1f9ae682e24eeb2e4f9cc1fa7814edcb915180233b79ea734d94e52c114d0567fc8
   languageName: node
   linkType: hard
 

@@ -2,6 +2,8 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 import { SignatureRequestRejected } from "@io-sign/io-sign/signature-request";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { NotificationContent } from "@io-sign/io-sign/notification";
+
 import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
@@ -19,11 +21,10 @@ import {
 } from "../../signature-request-notification";
 
 const rejectedMessage: MakeMessageContent =
-  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    content: {
-      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - C'è un problema con la firma`,
-      markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a [${signatureRequest.issuerEmail}](mailto:${signatureRequest.issuerEmail}).`,
-    },
+  (dossier: Dossier) =>
+  (signatureRequest: SignatureRequest): NotificationContent => ({
+    subject: `${signatureRequest.issuerDescription} - ${dossier.title} - C'è un problema con la firma`,
+    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a [${signatureRequest.issuerEmail}](mailto:${signatureRequest.issuerEmail}).`,
   });
 
 export const makeMarkRequestAsRejected =
