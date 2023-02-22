@@ -17,6 +17,11 @@ import { SignatureRequest } from "../../../signature-request";
 
 import { DocumentReadyToDetailView } from "./document";
 
+const addPdfExtension = (fileName: NonEmptyString) =>
+  pipe(fileName, S.endsWith(".pdf"))
+    ? fileName
+    : (`${fileName}.pdf` as NonEmptyString);
+
 export const SignatureRequestToApiModel: E.Encoder<
   SignatureRequestApiModel,
   SignatureRequest
@@ -90,9 +95,7 @@ export const SignatureRequestToThirdPartyMessage: E.Encoder<
       A.map((document) => ({
         id: document.id,
         content_type: "application/pdf" as NonEmptyString,
-        name: pipe(document.metadata.title, S.endsWith(".pdf"))
-          ? document.metadata.title
-          : `${document.metadata.title}.pdf`,
+        name: addPdfExtension(document.metadata.title),
         url: document.id,
       }))
     ),
