@@ -1,0 +1,23 @@
+{
+  "name": "ts-cli",
+  "version": "1.0.0",
+  "description": "A cli for io sign issuer",
+  "type": "module",
+  "exports": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-cli": "node dist/index.js"
+  },
+  "author": "Filippo Tenaglia",
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/core": "^0.0.30-alpha.0",
+    "@types/inquirer": "^9.0.3",
+    "@types/keypress.js": "^2.1.1",
+    "@types/node": "^18.11.18",
+    "axios": "^1.3.1",
+    "dotenv": "^16.0.3",
+    "inquirer": "^9.1.4",
+    "keypress": "^0.2.1"
+  }
+}
