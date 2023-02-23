@@ -1,0 +1,39 @@
+{
+  "name": "io-sign-client-sdk",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/my-element.es.js",
+  "exports": {
+    ".": "./dist/my-element.es.js"
+  },
+  "types": "types/my-element.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc",
+    "build": "vite build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "lit": "^2.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@mdx-js/react": "^1.6.22",
+    "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-docs": "^6.5.16",
+    "@storybook/addon-essentials": "^6.5.16",
+    "@storybook/addon-links": "^6.5.16",
+    "@storybook/builder-vite": "^0.4.0",
+    "@storybook/web-components": "^6.5.16",
+    "babel-loader": "^8.3.0",
+    "lit-html": "^2.6.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  }
+}
