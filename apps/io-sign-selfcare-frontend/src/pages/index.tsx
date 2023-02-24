@@ -1,4 +1,7 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
 import CommonHeader from "@/components/CommonHeader/CommonHeader";
+import Footer from "@/components/Footer/Footer";
 import { Box, Grid } from "@mui/material";
 import { JwtUser } from "@pagopa/mui-italia";
 
@@ -37,8 +40,18 @@ export default function Home() {
         <Grid container direction="row" flexGrow={1}>
           MESSAGE HERE
         </Grid>
-        <Box gridArea="footer">FOOTER HERE</Box>
+        <Box gridArea="footer">
+          <Footer loggedUser={true} />
+        </Box>
       </Box>
     </>
   );
 }
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  return {
+    props: {
+      locale,
+      ...(await serverSideTranslations(locale, ["common"])),
+    },
+  };
+};

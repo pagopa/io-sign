@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { HeaderAccount } from "@pagopa/mui-italia/dist/components/HeaderAccount/HeaderAccount";
 import { RootLinkType, JwtUser } from "@pagopa/mui-italia";
-
+import { CONFIG } from "../../config";
 type HeaderProps = {
   /** The logged user or false if there is not a valid session */
   loggedUser: JwtUser | false;
@@ -16,15 +16,14 @@ type HeaderProps = {
 };
 
 const rootLink: RootLinkType = {
-  label: "PagoPA S.p.A.",
-  href: "https://www.pagopa.it",
+  label: CONFIG.HEADER.LABEL,
+  href: CONFIG.HEADER.LINK.ROOTLINK,
   ariaLabel: "Link: vai al sito di PagoPA S.p.A.",
   title: "Sito di PagoPA S.p.A.",
 };
 
-const selfCareLogoutUrl = "https://selfcare.pagopa.it/auth/logout";
+const selfCareLogoutUrl = CONFIG.SELFCARE.LOGOUTLINK;
 
-/** SelfCare Header component */
 const CommonHeader = ({
   loggedUser,
   assistanceEmail,
