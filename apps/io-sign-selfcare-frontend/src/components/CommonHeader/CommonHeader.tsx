@@ -9,7 +9,7 @@ type HeaderProps = {
   assistanceEmail: string;
   /** The function that will be called when the rendered logout button is pressed; if undefined, no logout button will be rendered; otherwise, it will redirect to the logout page on click. The logout path can be changed by altering the value in `CONFIG.logout` located inside the `index.tsx` file. */
   onExit?: (exitAction: () => void) => void;
-  /** If false hides login button  */
+  /** If false hides login button. If not indicated (undefined) it is equivalent to true.  */
   enableLogin?: boolean;
   /** If false hides assistance button */
   enableAssistanceButton?: boolean;
