@@ -4,7 +4,7 @@ import {
   FooterLinksType,
   PreLoginFooterLinksType,
 } from "@pagopa/mui-italia/dist/components/Footer/Footer";
-import { i18n, Trans, useTranslation } from "next-i18next";
+import { Trans, useTranslation } from "next-i18next";
 
 import { LANGUAGES, pagoPALink } from "./FooterConfig";
 
@@ -19,8 +19,7 @@ export default function Footer({
   productsJsonUrl,
   onExit = (exitAction) => exitAction(),
 }: FooterProps) {
-  const { t } = useTranslation();
-
+  const { t, i18n } = useTranslation();
   const preLoginLinks: PreLoginFooterLinksType = {
     aboutUs: {
       title: undefined,

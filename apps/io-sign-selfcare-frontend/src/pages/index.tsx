@@ -1,82 +1,25 @@
-import { useRouter } from "next/router";
-import Head from "next/head";
+import Router, { useRouter } from "next/router";
+import { useEffect } from "react";
+import i18nextConfig from "../../next-i18next.config";
 
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+const { locales, defaultLocale } = i18nextConfig.i18n;
 
-import CommonHeader from "@/components/CommonHeader/CommonHeader";
-import Footer from "@/components/Footer/Footer";
-
-import { Box, Button, Stack, Typography } from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { JwtUser } from "@pagopa/mui-italia";
-
-import { CONFIG } from "@/config";
-
-const loggedUserMock: JwtUser = {
-  id: "thisIsAMockedUser",
-};
-
-const assistanceEmail = CONFIG.ASSISTANCE.MAIL;
-
+/* Although nextJs supports automatic redirection, it is necessary to configure it manually
+ * as i18 is not compatible with the export of static sites.
+ * https://github.com/vercel/next.js/issues/18318
+ */
 export default function Home() {
   const router = useRouter();
-  return (
-    <>
-      <Head>
-        <title>Firma con IO - Adesione terminata</title>
-        <meta
-          name="description"
-          content="Portale di backoffice per il prodotto Firma con IO"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-        }}
-      >
-        <Box gridArea="header">
-          <CommonHeader
-            loggedUser={loggedUserMock}
-            assistanceEmail={assistanceEmail}
-          />
-        </Box>
-        <Stack
-          alignItems="center"
-          direction="column"
-          justifyContent="center"
-          flexGrow={1}
-          spacing={2}
-        >
-          <CheckCircleOutlineIcon color="secondary" sx={{ fontSize: 60 }} />
-          <Typography variant="h4">Il tuo ente ha aderito</Typography>
-          <Typography variant="body1" align="center">
-            Se non hai ricevuto l’email con le indicazioni e le API Key,
-            <br />
-            contatta il tuo referente PagoPA o scrivi a<br />
-            <a href={`mailto:${assistanceEmail}`}>{assistanceEmail}</a>
-          </Typography>
-          <Box sx={{ pt: 2 }} onClick={() => router.back()}>
-            <Button variant="outlined">Indietro</Button>
-          </Box>
-        </Stack>
-
-        <Box gridArea="footer">
-          <Footer loggedUser={true} />
-        </Box>
-      </Box>
-    </>
-  );
+  useEffect(() => {
+    for (const locale of locales) {
+      for (const lang of navigator.languages) {
+        if (lang.startsWith(locale)) {
+          Router.push("/" + locale);
+          return;
+        }
+      }
+    }
+    Router.push("/" + defaultLocale);
+    return;
+  }, [router]);
 }
-export const getStaticProps = async ({ locale }: { locale: string }) => {
-  return {
-    props: {
-      locale,
-      ...(await serverSideTranslations(locale, ["common"])),
-    },
-  };
-};

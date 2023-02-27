@@ -38,8 +38,12 @@ export const CONFIG = {
   },
   SELFCARE: {
     LOGOUTLINK: "https://selfcare.pagopa.it/auth/logout",
+    DASHBOARDLINK: "https://selfcare.pagopa.it/dashboard/",
   },
   ASSISTANCE: {
     MAIL: "firmaconio-tech@pagopa.it",
+  },
+  IOSIGN: {
+    NAME: "Firma con IO",
   },
 };
