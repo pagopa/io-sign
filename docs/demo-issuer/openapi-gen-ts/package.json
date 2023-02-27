@@ -29,6 +29,7 @@
     "@inquirer/core": "^0.0.30-alpha.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^18.11.18",
+    "dotenv": "^16.0.3",
     "es6-promise": "^4.2.4",
     "inquirer": "^8.0.0",
     "url-parse": "^1.4.3",

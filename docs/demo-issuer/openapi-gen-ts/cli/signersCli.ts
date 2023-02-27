@@ -11,6 +11,8 @@ import {
   IsomorphicFetchHttpLibrary,
 } from "../http/http";
 import { SignerApiRequestFactory } from "../apis/SignerApi";
+import { applySecurityAuthentication } from "./config";
+
 export const callSigners = async () => {
   const configuration = createConfiguration();
   const apiInstance = new SignerApiRequestFactory(configuration);
@@ -37,6 +39,8 @@ export const callSigners = async () => {
   apiInstance
     .getSignerByFiscalCode(body)
     .then((data: RequestContext) => {
+	applySecurityAuthentication(data)
+    .then((data: RequestContext) => {
 		console.log(data);
       instance
         .send(data)
@@ -44,6 +48,8 @@ export const callSigners = async () => {
         .then((data: any) => {
           console.log(data);
         })
+        .catch((error: any) => console.error(error));
+    })
         .catch((error: any) => console.error(error));
     })
     .catch((error: any) => console.error(error));
