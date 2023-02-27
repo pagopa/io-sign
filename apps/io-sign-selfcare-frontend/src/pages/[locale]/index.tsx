@@ -1,16 +1,15 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import CommonHeader from "@/components/CommonHeader/CommonHeader";
-import Footer from "@/components/Footer/Footer";
-
 import { Box, Button, Stack, Typography } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { JwtUser } from "@pagopa/mui-italia";
+import { Trans, useTranslation } from "next-i18next";
+import CommonHeader from "@/components/CommonHeader/CommonHeader";
+import Footer from "@/components/Footer/Footer";
 
 import { CONFIG } from "@/config";
 import { getStaticPaths, makeStaticProps } from "@/static";
-import { Trans, useTranslation } from "next-i18next";
 
 const loggedUserMock: JwtUser = {
   id: "thisIsAMockedUser",

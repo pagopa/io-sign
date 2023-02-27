@@ -1,4 +1,3 @@
-import { CONFIG } from "@/config";
 import {
   Footer as MuiItaliaFooter,
   FooterLinksType,
@@ -7,6 +6,7 @@ import {
 import { Trans, useTranslation } from "next-i18next";
 
 import { LANGUAGES, pagoPALink } from "./FooterConfig";
+import { CONFIG } from "@/config";
 
 type FooterProps = {
   loggedUser: boolean;
@@ -21,7 +21,7 @@ export default function Footer({
 }: FooterProps) {
   const { t, i18n } = useTranslation();
 
-  //These links are empty because we will only use the postLogin part for now
+  // These links are empty because we will only use the postLogin part for now
   const preLoginLinks: PreLoginFooterLinksType = {
     aboutUs: {
       title: undefined,
@@ -37,7 +37,7 @@ export default function Footer({
       links: [],
     },
   };
-  const postLoginLinks: Array<FooterLinksType> = [
+  const postLoginLinks: FooterLinksType[] = [
     {
       label: t("common.footer.postLoginLinks.privacyPolicy"),
       href: CONFIG.FOOTER.LINK.PRIVACYPOLICY,
@@ -70,7 +70,7 @@ export default function Footer({
       legalInfo={companyLegalInfo}
       loggedUser={loggedUser}
       onExit={onExit}
-      languages={LANGUAGES as any}
+      languages={LANGUAGES}
       onLanguageChanged={(language: string) => i18n?.changeLanguage(language)}
       currentLangCode="it"
       productsJsonUrl={productsJsonUrl}

@@ -1,10 +1,11 @@
 import Router, { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import i18nextConfig from "../../next-i18next.config";
+import { useEffect } from "react";
 
 import * as RA from "fp-ts/lib/ReadOnlyArray";
 import * as O from "fp-ts/lib/Option";
-import { identity, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
+
+import i18nextConfig from "../../next-i18next.config";
 
 const { locales, defaultLocale } = i18nextConfig.i18n;
 
@@ -27,8 +28,6 @@ export default function Home() {
       ),
       O.getOrElse(() => defaultLocale)
     );
-    Router.push("/" + defaultBrowserLanguage);
-
-    return;
+    void Router.push("/" + defaultBrowserLanguage);
   }, [router]);
 }

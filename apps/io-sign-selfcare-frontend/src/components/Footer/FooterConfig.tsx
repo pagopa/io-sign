@@ -1,5 +1,5 @@
-import { CONFIG } from "@/config";
 import { CompanyLinkType } from "@pagopa/mui-italia";
+import { CONFIG } from "@/config";
 
 export type LangCode = "it" | "en";
 

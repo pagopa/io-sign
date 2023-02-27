@@ -30,25 +30,21 @@ const CommonHeader = ({
   enableLogin = true,
   onExit = (exitAction) => exitAction(),
   enableAssistanceButton = true,
-}: HeaderProps) => {
-  return (
-    <Fragment>
-      <header>
-        <HeaderAccount
-          rootLink={rootLink}
-          loggedUser={loggedUser}
-          onAssistanceClick={() =>
-            onExit(() => window.location.assign(`mailto:${assistanceEmail}`))
-          }
-          onLogout={() =>
-            onExit(() => window.location.assign(selfCareLogoutUrl))
-          }
-          enableLogin={enableLogin}
-          enableAssistanceButton={enableAssistanceButton}
-        />
-      </header>
-    </Fragment>
-  );
-};
+}: HeaderProps) => (
+  <Fragment>
+    <header>
+      <HeaderAccount
+        rootLink={rootLink}
+        loggedUser={loggedUser}
+        onAssistanceClick={() =>
+          onExit(() => window.location.assign(`mailto:${assistanceEmail}`))
+        }
+        onLogout={() => onExit(() => window.location.assign(selfCareLogoutUrl))}
+        enableLogin={enableLogin}
+        enableAssistanceButton={enableAssistanceButton}
+      />
+    </header>
+  </Fragment>
+);
 
 export default CommonHeader;
