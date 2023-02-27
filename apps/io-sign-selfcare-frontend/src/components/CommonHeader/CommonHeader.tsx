@@ -5,9 +5,9 @@ import { CONFIG } from "../../config";
 type HeaderProps = {
   /** The logged user or false if there is not a valid session */
   loggedUser: JwtUser | false;
-  /** The email to which the assistance button will ask to send an email, if the user is not logged in, otherwise it will be redirect to the assistance form */
+  /** If the user is not signed in, the support button will prompt him to send an email to this address; otherwise, it will lead him to the aid form. */
   assistanceEmail: string;
-  /** The function to be invoked when pressing the rendered logout button, if not defined it will redirect to the logout page, if setted to null it will no render the logout button. It's possible to modify the logout path changing the value in CONFIG.logout inside the index.tsx file */
+  /** The function that will be called when the rendered logout button is pressed; if undefined, no logout button will be rendered; otherwise, it will redirect to the logout page on click. The logout path can be changed by altering the value in `CONFIG.logout` located inside the `index.tsx` file. */
   onExit?: (exitAction: () => void) => void;
   /** If false hides login button  */
   enableLogin?: boolean;

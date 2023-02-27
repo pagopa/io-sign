@@ -82,7 +82,7 @@
       },
       "thanksYouPage": {
          "title": "Il tuo ente ha aderito",
-         "content": " Se non hai ricevuto l’email con le indicazioni e le API Key,<br/>contatta il tuo referente PagoPA o scrivi a"
+         "content": "Se non hai ricevuto l’email con le indicazioni e le API Key,<br/>contatta il tuo referente PagoPA o scrivi a"
       }
    }
 }

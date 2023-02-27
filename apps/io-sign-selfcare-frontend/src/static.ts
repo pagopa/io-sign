@@ -1,16 +1,18 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import i18nextConfig from "../next-i18next.config";
 
-export const getI18nPaths = () =>
-  i18nextConfig.i18n.locales.map((lng) => ({
+// Return a path array for each supported language
+const createI18PathArray = (supportedLanguages: string[]) =>
+  supportedLanguages.map((lng) => ({
     params: {
       locale: lng,
     },
   }));
 
+//  Indicate which paths should be created on build time (returning a paths array) without fallback.
 export const getStaticPaths = () => ({
   fallback: false,
-  paths: getI18nPaths(),
+  paths: createI18PathArray(i18nextConfig.i18n.locales),
 });
 
 export async function getI18nProps(locale: string, ns: string[]) {

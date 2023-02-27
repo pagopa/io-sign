@@ -2,4 +2,4 @@
 "io-sign-selfcare-frontend": minor
 ---
 
-First release
+Initial release of the developer portal "thank you page"

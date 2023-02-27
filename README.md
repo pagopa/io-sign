@@ -11,7 +11,7 @@ This repository contains the code that composes the `io-sign` back-end, that is 
 
 These services are deployed as `Azure Function App`, and use the `Node.js` Azure runtime.
 
-It also contains `io-sign-selfcare-frontend` the frontend for self-care integration which is implemented in `Next.js` with [mui-italia](https://github.com/pagopa/mui-italia) template.
+It also contains `io-sign-selfcare-frontend` the frontend for self-care integration.
 
 ## Prerequisites
 

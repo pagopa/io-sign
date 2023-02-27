@@ -25,7 +25,7 @@ export default function Home() {
           O.isSome
         )
       ),
-      O.fold(() => defaultLocale, identity)
+      O.getOrElse(() => defaultLocale)
     );
     Router.push("/" + defaultBrowserLanguage);
 
