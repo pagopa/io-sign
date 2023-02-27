@@ -15,11 +15,6 @@ resource "azuread_application_federated_identity_credential" "environment_cd" {
   subject               = "repo:${var.github.org}/${var.github.repository}:environment:${var.env}-cd"
 }
 
-resource "azuread_directory_role_assignment" "environment_cd_directory_readers" {
-  role_id             = azuread_directory_role.directory_readers.template_id
-  principal_object_id = azuread_service_principal.environment_cd.object_id
-}
-
 resource "azurerm_role_assignment" "environment_cd_subscription" {
   for_each             = toset(var.environment_cd_roles.subscription)
   scope                = data.azurerm_subscription.current.id
@@ -27,9 +22,10 @@ resource "azurerm_role_assignment" "environment_cd_subscription" {
   principal_id         = azuread_service_principal.environment_cd.object_id
 }
 
-resource "azurerm_role_assignment" "environment_cd_tfstate_inf" {
-  scope                = data.azurerm_storage_account.tfstate_inf.id
-  role_definition_name = "Storage Blob Data Contributor"
+resource "azurerm_role_assignment" "environment_cd_resource_group" {
+  for_each             = { for entry in local.environment_cd_resource_group_roles : "${entry.role}.${entry.resource_group}" => entry }
+  scope                = data.azurerm_resource_group.environment_cd_resource_groups[each.value.resource_group].id
+  role_definition_name = each.value.role
   principal_id         = azuread_service_principal.environment_cd.object_id
 }
 

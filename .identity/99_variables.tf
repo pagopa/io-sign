@@ -23,6 +23,17 @@ variable "env_short" {
   }
 }
 
+variable "domain" {
+  type = string
+  description = "The applicative domain"
+  validation {
+    condition = (
+      length(var.domain) < 6
+    )
+    error_message = "Max length is 6 chars."
+  }
+}
+
 variable "github" {
   type = object({
     org        = string
@@ -35,24 +46,10 @@ variable "github" {
   }
 }
 
-variable "environment_ci_roles" {
-  type = object({
-    subscription = list(string)
-  })
-  description = "GitHub Continous Integration roles"
-}
-
-variable "github_repository_environment_ci" {
-  type = object({
-    protected_branches     = bool
-    custom_branch_policies = bool
-  })
-  description = "GitHub Continous Integration roles"
-}
-
 variable "environment_cd_roles" {
   type = object({
-    subscription = list(string)
+    subscription    = list(string)
+    resource_groups = map(list(string))
   })
   description = "GitHub Continous Delivery roles"
 }
