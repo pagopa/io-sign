@@ -1,3 +1,7 @@
+/* this information should be generic for each product but as of today
+ * there is no common package that can be used. There is a discussion about it on the forum.
+ * https://github.com/pagopa/engineering/discussions/14
+ */
 export const CONFIG = {
   FOOTER: {
     LINK: {
@@ -30,10 +34,12 @@ export const CONFIG = {
     LABEL: "PagoPA S.p.A.",
     LINK: {
       ROOTLINK: "https://www.pagopa.it/",
-      PRODUCTURL: "/dashboard",
     },
   },
   SELFCARE: {
     LOGOUTLINK: "https://selfcare.pagopa.it/auth/logout",
+  },
+  ASSISTANCE: {
+    MAIL: "firmaconio-tech@pagopa.it",
   },
 };

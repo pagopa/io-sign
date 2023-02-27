@@ -1,21 +1,29 @@
+import { useRouter } from "next/router";
+import Head from "next/head";
+
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import CommonHeader from "@/components/CommonHeader/CommonHeader";
 import Footer from "@/components/Footer/Footer";
-import { Box, Grid } from "@mui/material";
+
+import { Box, Button, Stack, Typography } from "@mui/material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { JwtUser } from "@pagopa/mui-italia";
 
-import Head from "next/head";
+import { CONFIG } from "@/config";
 
 const loggedUserMock: JwtUser = {
   id: "thisIsAMockedUser",
 };
 
+const assistanceEmail = CONFIG.ASSISTANCE.MAIL;
+
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
-        <title>Firma con IO - DevPortal</title>
+        <title>Firma con IO - Adesione terminata</title>
         <meta
           name="description"
           content="Portale di backoffice per il prodotto Firma con IO"
@@ -34,12 +42,29 @@ export default function Home() {
         <Box gridArea="header">
           <CommonHeader
             loggedUser={loggedUserMock}
-            assistanceEmail={"firmaconio-tech@pagopa.it"}
+            assistanceEmail={assistanceEmail}
           />
         </Box>
-        <Grid container direction="row" flexGrow={1}>
-          MESSAGE HERE
-        </Grid>
+        <Stack
+          alignItems="center"
+          direction="column"
+          justifyContent="center"
+          flexGrow={1}
+          spacing={2}
+        >
+          <CheckCircleOutlineIcon color="secondary" sx={{ fontSize: 60 }} />
+          <Typography variant="h4">Il tuo ente ha aderito</Typography>
+          <Typography variant="body1" align="center">
+            Se non hai ricevuto l’email con le indicazioni e le API Key,
+            <br />
+            contatta il tuo referente PagoPA o scrivi a<br />
+            <a href={`mailto:${assistanceEmail}`}>{assistanceEmail}</a>
+          </Typography>
+          <Box sx={{ pt: 2 }} onClick={() => router.back()}>
+            <Button variant="outlined">Indietro</Button>
+          </Box>
+        </Stack>
+
         <Box gridArea="footer">
           <Footer loggedUser={true} />
         </Box>
