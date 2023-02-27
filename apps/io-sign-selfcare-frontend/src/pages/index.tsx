@@ -15,7 +15,7 @@ const { locales, defaultLocale } = i18nextConfig.i18n;
 export default function Home() {
   const router = useRouter();
   useEffect(() => {
-    const selectedLang = pipe(
+    const currentLanguage = pipe(
       locales,
       RA.findFirst((currentLang) =>
         pipe(
@@ -28,7 +28,7 @@ export default function Home() {
       ),
       O.fold(() => defaultLocale, identity)
     );
-    Router.push("/" + selectedLang);
+    Router.push("/" + currentLanguage);
 
     return;
   }, [router]);
