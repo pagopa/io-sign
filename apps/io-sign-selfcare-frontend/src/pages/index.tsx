@@ -1,5 +1,5 @@
 import Router, { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import i18nextConfig from "../../next-i18next.config";
 
 import * as RA from "fp-ts/lib/ReadOnlyArray";
@@ -14,21 +14,20 @@ const { locales, defaultLocale } = i18nextConfig.i18n;
  */
 export default function Home() {
   const router = useRouter();
+
   useEffect(() => {
-    const currentLanguage = pipe(
+    const defaultBrowserLanguage = pipe(
       locales,
-      RA.findFirst((currentLang) =>
+      RA.findFirst((locale) =>
         pipe(
           navigator.languages,
-          RA.findFirst((navigatorLang) =>
-            navigatorLang.startsWith(currentLang)
-          ),
+          RA.findFirst((navigatorLang) => navigatorLang.startsWith(locale)),
           O.isSome
         )
       ),
       O.fold(() => defaultLocale, identity)
     );
-    Router.push("/" + currentLanguage);
+    Router.push("/" + defaultBrowserLanguage);
 
     return;
   }, [router]);
