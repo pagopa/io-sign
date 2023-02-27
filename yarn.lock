@@ -6600,6 +6600,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     eslint: 8.34.0
     eslint-config-next: 13.2.1
+    fp-ts: ^2.13.1
     i18next: ^22.4.10
     next: 13.2.1
     next-i18next: ^13.1.5

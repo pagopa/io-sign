@@ -13,13 +13,15 @@ type FooterProps = {
   productsJsonUrl?: string;
   onExit?: (exitAction: () => void) => void;
 };
-declare const window: any;
+
 export default function Footer({
   loggedUser,
   productsJsonUrl,
   onExit = (exitAction) => exitAction(),
 }: FooterProps) {
   const { t, i18n } = useTranslation();
+
+  //These links are empty because we will only use the postLogin part for now
   const preLoginLinks: PreLoginFooterLinksType = {
     aboutUs: {
       title: undefined,

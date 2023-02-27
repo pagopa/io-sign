@@ -2,6 +2,10 @@ import Router, { useRouter } from "next/router";
 import { useEffect } from "react";
 import i18nextConfig from "../../next-i18next.config";
 
+import * as RA from "fp-ts/lib/ReadOnlyArray";
+import * as O from "fp-ts/lib/Option";
+import { identity, pipe } from "fp-ts/lib/function";
+
 const { locales, defaultLocale } = i18nextConfig.i18n;
 
 /* Although nextJs supports automatic redirection, it is necessary to configure it manually
@@ -11,15 +15,21 @@ const { locales, defaultLocale } = i18nextConfig.i18n;
 export default function Home() {
   const router = useRouter();
   useEffect(() => {
-    for (const locale of locales) {
-      for (const lang of navigator.languages) {
-        if (lang.startsWith(locale)) {
-          Router.push("/" + locale);
-          return;
-        }
-      }
-    }
-    Router.push("/" + defaultLocale);
+    const selectedLang = pipe(
+      locales,
+      RA.findFirst((currentLang) =>
+        pipe(
+          navigator.languages,
+          RA.findFirst((navigatorLang) =>
+            navigatorLang.startsWith(currentLang)
+          ),
+          O.isSome
+        )
+      ),
+      O.fold(() => defaultLocale, identity)
+    );
+    Router.push("/" + selectedLang);
+
     return;
   }, [router]);
 }
