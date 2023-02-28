@@ -9,7 +9,7 @@ export const CONFIG = {
       PRIVACYPOLICY: "https://www.pagopa.it/it/privacy-policy/",
       TERMSANDCONDITIONS:
         "https://www.pagopa.it/it/termini-e-condizioni-di-utilizzo-del-sito/",
-      PROTECTIONOFPERSONALDATA:
+      protectionOfPersonalData:
         "https://privacyportal-de.onetrust.com/webform/77f17844-04c3-4969-a11d-462ee77acbe1/9ab6533d-be4a-482e-929a-0d8d2ab29df8",
       ABOUTUS: "https://www.pagopa.it/it/societa/chi-siamo/",
       MEDIA: "https://www.pagopa.it/it/",

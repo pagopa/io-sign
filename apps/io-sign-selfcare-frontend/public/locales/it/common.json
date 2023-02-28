@@ -22,7 +22,7 @@
                "links":{
                   "aboutUs":"PagoPA S.p.A.",
                   "media":"Media",
-                  "workwithud":"Lavora con noi"
+                  "workWithUs":"Lavora con noi"
                }
             },
             "resources":{
@@ -30,13 +30,13 @@
                "links":{
                   "privacyPolicy":"Privacy Policy",
                   "certifications":"Certificazioni",
-                  "informationsecurity":"Sicurezza delle informazioni",
-                  "protectionofpersonaldata":"Diritto alla protezione dei dati personali",
+                  "informationSecurity":"Sicurezza delle informazioni",
+                  "protectionOfPersonalData":"Diritto alla protezione dei dati personali",
                   "cookie":"Preferenze Cookie",
-                  "termsandconditions":"Termini e Condizioni",
-                  "transparentcompany":"Società trasparente",
+                  "termsAndConditions":"Termini e Condizioni",
+                  "transparentCompany":"Società trasparente",
                   "disclosurePolicy":"Responsible Disclosure Policy",
-                  "Model321":"Modello 321"
+                  "model321":"Modello 321"
                }
             },
             "followUs":{
@@ -45,8 +45,8 @@
          },
          "postLoginLinks":{
             "privacyPolicy":"Privacy policy",
-            "protectionofpersonaldata":"Diritto alla protezione dei dati personali",
-            "termsandconditions":"Termini e Condizioni"
+            "protectionOfPersonalData":"Diritto alla protezione dei dati personali",
+            "termsAndConditions":"Termini e Condizioni"
          }
       },
       "header":{

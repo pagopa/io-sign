@@ -45,13 +45,13 @@ export default function Footer({
       linkType: "internal",
     },
     {
-      label: t("common.footer.postLoginLinks.protectionofpersonaldata"),
-      href: CONFIG.FOOTER.LINK.PROTECTIONOFPERSONALDATA,
+      label: t("common.footer.postLoginLinks.protectionOfPersonalData"),
+      href: CONFIG.FOOTER.LINK.protectionOfPersonalData,
       ariaLabel: "Vai al link: Diritto alla protezione dei dati personali",
       linkType: "internal",
     },
     {
-      label: t("common.footer.postLoginLinks.termsandconditions"),
+      label: t("common.footer.postLoginLinks.termsAndConditions"),
       href: CONFIG.FOOTER.LINK.TERMSANDCONDITIONS,
       ariaLabel: "Vai al link: Termini e condizioni",
       linkType: "internal",
