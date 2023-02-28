@@ -1975,9 +1975,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/mui-italia@npm:^0.8.12":
-  version: 0.8.12
-  resolution: "@pagopa/mui-italia@npm:0.8.12"
+"@pagopa/mui-italia@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "@pagopa/mui-italia@npm:0.9.1"
   dependencies:
     "@fontsource/dm-mono": ^4.5.10
     "@fontsource/titillium-web": ^4.5.9
@@ -1993,7 +1993,7 @@ __metadata:
     "@mui/system": ^5.10.8
     react: ^17.0.0
     react-dom: ^17.0.0
-  checksum: c911536273bb6eb7d9ed5267762c968f50c52dc1a7c249b02fd86c116fbba546c97a19f835ea2bb9cf33ebeac2c4659fa958e1b6a7c464c51177493d40183b65
+  checksum: 0d0e0cbd5497679e8d192b128156f427b5dcb3c72a785e20f9308adda30bb65f7c3c24eb7f602c22c10d7b32816fcf43ed0303eb2e4acf2eabdd13d605379c70
   languageName: node
   linkType: hard
 
@@ -6509,7 +6509,7 @@ __metadata:
     "@mui/lab": ^5.0.0-alpha.120
     "@mui/material": ^5.11.10
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/mui-italia": ^0.8.12
+    "@pagopa/mui-italia": ^0.9.1
     "@rushstack/eslint-patch": ^1.2.0
     "@types/node": 18.14.1
     "@types/react": 18.0.28

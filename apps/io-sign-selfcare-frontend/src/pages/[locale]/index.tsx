@@ -2,8 +2,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 
 import { Box, Button, Stack, Typography } from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { JwtUser } from "@pagopa/mui-italia";
+import { IllusPaymentCompleted, JwtUser } from "@pagopa/mui-italia";
 import { Trans, useTranslation } from "next-i18next";
 import CommonHeader from "@/components/CommonHeader/CommonHeader";
 import Footer from "@/components/Footer/Footer";
@@ -52,7 +51,7 @@ export default function Home() {
           flexGrow={1}
           spacing={2}
         >
-          <CheckCircleOutlineIcon color="secondary" sx={{ fontSize: 60 }} />
+          <IllusPaymentCompleted />
           <Typography variant="h4">
             {t("common.thanksYouPage.title")}
           </Typography>
