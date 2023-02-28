@@ -9,7 +9,7 @@ const createI18PathArray = (supportedLanguages: string[]) =>
     },
   }));
 
-//  Indicate which paths should be created on build time (returning a paths array) without fallback.
+//  Indicate which paths should be created at build time (returning a paths array) without a fallback.
 export const getStaticPaths = () => ({
   fallback: false,
   paths: createI18PathArray(i18nextConfig.i18n.locales),
