@@ -60,10 +60,7 @@ export default function Home() {
             <br />
             <a href={`mailto:${assistanceEmail}`}>{assistanceEmail}</a>
           </Typography>
-          <Box
-            sx={{ pt: 2 }}
-            onClick={() => router.push(CONFIG.SELFCARE.DASHBOARDLINK)}
-          >
+          <Box sx={{ pt: 2 }} onClick={() => router.back()}>
             <Button variant="outlined">
               {t("common.backComponent.label")}
             </Button>
