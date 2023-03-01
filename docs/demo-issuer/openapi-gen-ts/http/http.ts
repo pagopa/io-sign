@@ -1,6 +1,7 @@
 import { Observable, from } from '../rxjsStub';
 
 export * from './isomorphic-fetch';
+export * from './isomorphic-fetchPromise';
 
 /**
  * Represents an HTTP method.
