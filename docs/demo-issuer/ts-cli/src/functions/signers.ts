@@ -3,7 +3,6 @@ import inquirer from "inquirer";
 import { postSigner } from "./../apis/signers.js";
 
 export const callSigners = async () => {
-//  const answerSigners = await createPrompt([
   const answerSigners = await inquirer.prompt([
     {
       type: "input",

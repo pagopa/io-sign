@@ -1,9 +1,9 @@
 import { AxiosError, AxiosResponse } from "axios";
-
+import { mainMenu } from "./../index.js";
 export async function printResponse(response: Promise<AxiosResponse>) {
-  try {
-    console.log(response.data);
-  } catch (error) {
+response.then((res) => {
+	console.log(res.data);
+}).catch((error) => {
     if (error instanceof AxiosError) {
       if (error.response) {
         console.error(error.response.data);
@@ -18,5 +18,7 @@ export async function printResponse(response: Promise<AxiosResponse>) {
     } else {
 		console.error("Unexpected error:", error);
 	}
-  }
+  });
+  	  mainMenu();
+
 }
