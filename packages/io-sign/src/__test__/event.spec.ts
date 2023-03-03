@@ -4,15 +4,25 @@ import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { createBillingEvent } from "../event";
 
 import { newId } from "../id";
+import { Issuer } from "../issuer";
 import { SignatureRequestSigned } from "../signature-request";
+
+const issuer: Issuer = {
+  id: newId(),
+  subscriptionId: newId(),
+  email: "issuer@io-sign-mail.it" as EmailString,
+  description: "Mocked Issuer" as NonEmptyString,
+  internalInstitutionId: newId(),
+  environment: "TEST",
+};
 
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
   issuerId: newId(),
-  issuerEmail: "issuer@io-sign-mail.it" as EmailString,
-  issuerDescription: "Mocked Issuer" as NonEmptyString,
-  issuerEnvironment: "TEST",
+  issuerEmail: issuer.email,
+  issuerDescription: issuer.description,
+  issuerEnvironment: issuer.environment,
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -25,7 +35,7 @@ const signatureRequest: SignatureRequestSigned = {
 describe("Event", () => {
   describe("createBillingEvent", () => {
     it('should create a new billing event with "io.sign.signature_request.signed" name', () => {
-      const event = createBillingEvent(signatureRequest);
+      const event = createBillingEvent(issuer)(signatureRequest);
       expect(event.name).toBe("io.sign.signature_request.signed");
       expect(event.pricingPlan).toBe("FREE");
     });

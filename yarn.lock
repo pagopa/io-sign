@@ -1454,6 +1454,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pagopa/handler-kit@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@pagopa/handler-kit@npm:0.5.1"
+  dependencies:
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.19
+  checksum: 6c8db72df2d3efc916256cb6bb2aaa0c47617663f4ae21cef477af2fddb53ff75f8ca8457268bd1e485ba58b1fae7af2b8d58d897492a505c71615ceca77568c
+  languageName: node
+  linkType: hard
+
 "@pagopa/io-functions-commons@npm:^26.2.1":
   version: 26.2.1
   resolution: "@pagopa/io-functions-commons@npm:26.2.1"
@@ -5387,7 +5397,7 @@ __metadata:
     "@io-sign/io-sign": ^0.9.0
     "@jest/globals": ^29.3.1
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/handler-kit": ^0.4.2
+    "@pagopa/handler-kit": ^0.5.1
     "@pagopa/io-functions-commons": ^26.2.1
     "@pagopa/openapi-codegen-ts": ^12.0.2
     "@pagopa/ts-commons": ^10.10.0

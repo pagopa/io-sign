@@ -6,6 +6,7 @@ import {
   SignatureRequestId,
   SignatureRequestSigned,
 } from "./signature-request";
+import { Issuer } from "./issuer";
 
 const EventId = Id;
 
@@ -38,14 +39,13 @@ export type SendBillingEvent = (
   event: BillingEvent
 ) => TE.TaskEither<Error, BillingEvent>;
 
-export const createBillingEvent = (
-  signatureRequest: SignatureRequestSigned
-): BillingEvent => ({
-  id: newId(),
-  name: "io.sign.signature_request.signed",
-  signatureRequestId: signatureRequest.id,
-  internalInstitutionId: signatureRequest.issuerId,
-  createdAt: new Date(),
-  pricingPlan:
-    signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
-});
+export const createBillingEvent =
+  (issuer: Issuer) =>
+  (signatureRequest: SignatureRequestSigned): BillingEvent => ({
+    id: newId(),
+    name: "io.sign.signature_request.signed",
+    signatureRequestId: signatureRequest.id,
+    internalInstitutionId: issuer.internalInstitutionId,
+    createdAt: new Date(),
+    pricingPlan: issuer.environment === "TEST" ? "FREE" : "DEFAULT",
+  });

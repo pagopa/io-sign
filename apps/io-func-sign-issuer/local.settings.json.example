@@ -13,5 +13,6 @@
     "IoServicesSubscriptionKey": "IO_SERVICES_API_SUBSCRIPTION_KEY",
     "PdvTokenizerApiBasePath": "PDV_TOKENIZER_SERVICES_API_URL",
     "PdvTokenizerApiKey": "PDV_TOKENIZER_SERVICES_API_KEY",
+    "SelfCareEventHubConnectionString": "SELF_CARE_EVENT_HUB_CONNECTION_STRING",
   }
 }

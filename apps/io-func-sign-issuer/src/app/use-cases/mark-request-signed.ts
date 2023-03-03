@@ -9,6 +9,7 @@ import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { NotificationContentWithAttachments } from "@io-sign/io-sign/notification";
+import { sequenceS } from "fp-ts/lib/Apply";
 import { Dossier, GetDossier } from "../../dossier";
 
 import {
@@ -21,6 +22,7 @@ import {
   MakeMessageContent,
   makeSendSignatureRequestNotification,
 } from "../../signature-request-notification";
+import { GetIssuerById } from "../../issuer";
 
 const signedMessage: MakeMessageContent =
   (dossier: Dossier) =>
@@ -37,7 +39,8 @@ export const makeMarkRequestAsSigned =
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    sendBillingEvent: SendBillingEvent
+    sendBillingEvent: SendBillingEvent,
+    getIssuerById: GetIssuerById
   ) =>
   (request: SignatureRequestSigned) => {
     const sendSignedNotification = makeSendSignatureRequestNotification(
@@ -47,22 +50,42 @@ export const makeMarkRequestAsSigned =
       signedMessage
     );
     return pipe(
-      pipe(request.issuerId, getSignatureRequest(request.id)),
-      TE.chain(
-        TE.fromOption(
-          () => new EntityNotFoundError("Signature Request not found.")
-        )
-      ),
-      TE.chainEitherK(markAsSigned),
-      TE.chain(upsertSignatureRequest),
-      TE.chainW(() =>
+      sequenceS(TE.ApplicativeSeq)({
+        signatureRequest: pipe(
+          request.issuerId,
+          getSignatureRequest(request.id),
+          TE.chain(
+            TE.fromOption(
+              () => new EntityNotFoundError("Signature Request not found.")
+            )
+          )
+        ),
+        issuer: pipe(
+          request.issuerId,
+          getIssuerById,
+          TE.chain(
+            TE.fromOption(() => new EntityNotFoundError("Issuer not found."))
+          )
+        ),
+      }),
+      TE.chain(({ signatureRequest, issuer }) =>
         pipe(
-          request,
-          sendSignedNotification,
-          // This is a fire-and-forget operation
-          TE.altW(() => TE.right(request))
+          signatureRequest,
+          markAsSigned,
+          TE.fromEither,
+          TE.chain(upsertSignatureRequest),
+          TE.chainW(() =>
+            pipe(
+              request,
+              sendSignedNotification,
+              // This is a fire-and-forget operation
+              TE.altW(() => TE.right(request))
+            )
+          ),
+          TE.chain(() =>
+            pipe(request, createBillingEvent(issuer), sendBillingEvent)
+          )
         )
-      ),
-      TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent))
+      )
     );
   };

@@ -33,6 +33,7 @@ import {
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
+  internalInstitutionId: newId(),
   email: "info@enpacl-pec.it" as EmailString,
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",

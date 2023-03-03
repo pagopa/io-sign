@@ -10,3 +10,7 @@ export type GetIssuerBySubscriptionId = (
 export type GetIssuerById = (
   id: Issuer["id"]
 ) => TE.TaskEither<Error, O.Option<Issuer>>;
+
+export type GetIssuerByInternalInstitutionId = (
+  internalInstitutionId: Issuer["internalInstitutionId"]
+) => TE.TaskEither<Error, O.Option<Issuer>>;
