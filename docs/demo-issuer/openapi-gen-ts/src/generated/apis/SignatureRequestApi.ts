@@ -319,49 +319,49 @@ export class SignatureRequestApiResponseProcessor {
         if (isCodeInRange("200", response.httpStatusCode)) {
             const body: string = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
+                "string", "string"
             ) as string;
             return body;
         }
         if (isCodeInRange("400", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "Validation error on body", body, response.headers);
         }
         if (isCodeInRange("401", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "Unauthorized", body, response.headers);
         }
         if (isCodeInRange("403", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "You don&#39;t have enough privileges to perform this action", body, response.headers);
         }
         if (isCodeInRange("404", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "The specified resource was not found", body, response.headers);
         }
         if (isCodeInRange("429", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "Too Many Requests", body, response.headers);
         }
         if (isCodeInRange("0", response.httpStatusCode)) {
             const body: ProblemDetail = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "ProblemDetail", ""
+                "ProblemDetail", "string"
             ) as ProblemDetail;
             throw new ApiException<ProblemDetail>(response.httpStatusCode, "Unexpected error", body, response.headers);
         }
@@ -370,7 +370,7 @@ export class SignatureRequestApiResponseProcessor {
         if (response.httpStatusCode >= 200 && response.httpStatusCode <= 299) {
             const body: string = ObjectSerializer.deserialize(
                 ObjectSerializer.parse(await response.body.text(), contentType),
-                "string", ""
+                "string", "string"
             ) as string;
             return body;
         }

@@ -7,7 +7,7 @@ import { Configuration } from '../configuration'
 export const COLLECTION_FORMATS = {
     csv: ",",
     ssv: " ",
-    tsv: "/t",
+    tsv: "\t",
     pipes: "|",
 };
 
