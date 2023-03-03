@@ -18,14 +18,12 @@ export class IsomorphicFetchHttpLibraryPromise implements PromiseHttpLibrary {
             resp.headers.forEach((value: string, name: string) => {
               headers[name] = value;
             });
-
             const body = {
               text: () => resp.text(),
               binary: () => resp.blob()
             };
             return new ResponseContext(resp.status, headers, body);
         });
-
         return resultPromise;
 
     }

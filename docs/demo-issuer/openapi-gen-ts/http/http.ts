@@ -204,6 +204,7 @@ export class ResponseContext {
      * Return as string if possible, otherwise as binary.
      */
     public getBodyAsAny(): Promise<string | Blob | undefined> {
+		console.log("getBodyAsAny");
         try {
             return this.body.text();
         } catch {}
