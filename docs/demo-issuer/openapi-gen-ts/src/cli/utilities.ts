@@ -1,15 +1,9 @@
 import * as dotenv from 'dotenv';
-import { Configuration, createConfiguration } from "../configuration";
-import { GetSignerByFiscalCodeBody } from "../models/GetSignerByFiscalCodeBody";
-import { SignerDetailView } from "../models/SignerDetailView";
 import {
   RequestContext,
-  HttpMethod,
   ResponseContext,
-  HttpFile,
   IsomorphicFetchHttpLibrary,
-} from "../http/http";
-
+} from "./../generated/http/http";
 dotenv.config();
 export type EndpointResponse = {
   status: number;

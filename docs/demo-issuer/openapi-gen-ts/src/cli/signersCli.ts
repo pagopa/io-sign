@@ -1,16 +1,9 @@
 const inquirer = require("inquirer");
-import { Configuration, createConfiguration } from "../configuration";
-import { GetSignerByFiscalCodeBody } from "../models/GetSignerByFiscalCodeBody";
-import { SignerDetailView } from "../models/SignerDetailView";
-import {
-  RequestContext,
-  HttpMethod,
-  ResponseContext,
-  HttpFile,
-  IsomorphicFetchHttpLibrary,
-} from "../http/http";
-import { SignerApiRequestFactory } from "../apis/SignerApi";
+import { Configuration, createConfiguration } from "./../generated/configuration";
+import { GetSignerByFiscalCodeBody } from "./../generated/models/GetSignerByFiscalCodeBody";
+import { SignerApiRequestFactory } from "./../generated/apis/SignerApi";
 import { createResponse, EndpointResponse } from "./utilities";
+import { RequestContext } from "./../generated/http/http";
 
 export const callSigners = async () => {
   const configuration = createConfiguration();
