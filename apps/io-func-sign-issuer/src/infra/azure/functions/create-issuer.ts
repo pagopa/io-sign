@@ -4,7 +4,6 @@ import { Database as CosmosDatabase } from "@azure/cosmos";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
-import * as T from "fp-ts/lib/Task";
 
 import { identity, flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
@@ -36,20 +35,14 @@ const makeValidateUploadHandler = (db: CosmosDatabase) => {
     E.map(ioSignContractToIssuer.encode),
     TE.fromEither,
     TE.chain(checkIssuerWithSameInternalInstitutionId),
-    TE.chain(insertIssuer)
+    TE.chain(insertIssuer),
+    // This is a fire-and-forget operation
+    TE.altW(() => TE.right(undefined))
   );
 
   return createHandler(
     getContractsFromEventHub,
-    flow(
-      RA.map(createIssuerFromContract),
-      RA.sequence(T.ApplicativePar),
-      /* Because contracts are processed in batches, some may not belong to the io-sign-prod;
-       * therefore, the entire batch must be processed and not have a break even if only one error occurs.
-       */
-      T.map(RA.rights),
-      TE.fromTask
-    ),
+    flow(RA.map(createIssuerFromContract), RA.sequence(TE.ApplicativePar)),
     identity,
     () => undefined
   );
