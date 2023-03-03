@@ -7,10 +7,10 @@ import {
   HttpMethod,
   ResponseContext,
   HttpFile,
-  IsomorphicFetchHttpLibraryPromise,
+  IsomorphicFetchHttpLibrary,
 } from "../http/http";
 import { SignerApiRequestFactory } from "../apis/SignerApi";
-import { applySecurityAuthentication } from "./config";
+import { createResponse, EndpointResponse } from "./utilities";
 
 export const callSigners = async () => {
   const configuration = createConfiguration();
@@ -33,24 +33,14 @@ export const callSigners = async () => {
     fiscalCode: answerSigners.fiscalCode,
   };
 
-  let instance = new IsomorphicFetchHttpLibraryPromise();
-
   apiInstance
     .getSignerByFiscalCode(body)
     .then((data: RequestContext) => {
-	applySecurityAuthentication(data)
-    .then((data: RequestContext) => {
-      instance
-        .send(data)
-        .then((data: ResponseContext) => {
-			data.getBodyAsAny().then((body) => {
-		console.log(JSON.stringify(body));
+	createResponse(data)
+    .then((data: EndpointResponse) => {
+		console.log(data);
         })
         .catch((error: any) => console.error(error));
         })
         .catch((error: any) => console.error(error));
-    })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
 };
