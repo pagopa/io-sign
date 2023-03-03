@@ -14,7 +14,7 @@ export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
       S.Monoid.concat("TEMP-", institution.taxCode)
     ) as NonEmptyString,
     internalInstitutionId: internalIstitutionID,
-    // TODO: [SFEQS-...] This email must be replaced with the support-mail of the issuer not yet on self-care
+    // TODO: [SFEQS-1486] This email must be replaced with the support-mail of the issuer not yet on self-care
     email: institution.digitalAddress,
     description: institution.description,
     // Initially all newly created issuer will be in a test phase.
