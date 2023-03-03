@@ -42,8 +42,11 @@ export const callSigners = async () => {
     .then((data: RequestContext) => {
       instance
         .send(data)
-        .then((data: any) => {
-		console.log(JSON.stringify(data));
+        .then((data: ResponseContext) => {
+			data.getBodyAsAny().then((body) => {
+		console.log(JSON.stringify(body));
+        })
+        .catch((error: any) => console.error(error));
         })
         .catch((error: any) => console.error(error));
     })
