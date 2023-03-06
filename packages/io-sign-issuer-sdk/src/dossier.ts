@@ -23,7 +23,7 @@ import {
   clauseAttrsHeightCoordsQuestion,
   clauseAttrsWidthCoordsQuestion,
   clauseAttrsPageCoordsQuestion,
-} from "./questionsCli";
+} from "./questions";
 
 export const callDossiers = async () => {
   const answerDossiers = await inquirer.prompt([

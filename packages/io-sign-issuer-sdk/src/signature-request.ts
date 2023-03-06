@@ -13,7 +13,7 @@ import {
   createSignatureRequestQuestion,
   changeSignatureRequestStatusQuestion,
   signatureRequestFirstQuestion,
-} from "./questionsCli";
+} from "./questions";
 
 export const callSignatureRequests = async () => {
   const answerSignatureRequests = await inquirer.prompt([

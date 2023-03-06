@@ -1,12 +1,13 @@
 import inquirer from "inquirer";
 
-import { callSigners } from "./src/signerCli";
-import { callDossiers } from "./src/dossierCli";
-import { callSignatureRequests } from "./src/signatureRequestCli";
+import { callSigners } from "./src/signer";
+import { callDossiers } from "./src/dossier";
+import { callSignatureRequests } from "./src/signature-request";
 
 console.log(
   "Benvenuto nella CLI utilizzata dagli enti per integrarsi con Firma con IO"
 );
+
 const mainMenu = async () => {
   const answers = await inquirer.prompt([
     {
