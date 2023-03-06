@@ -50,6 +50,6 @@ export class ServerConfiguration<T extends { [key: string]: string }> implements
     }
 }
 
-export const server1 = new ServerConfiguration<{  }>("https://api-internal.io.italia.it/api/v1/sign", {  })
+export const server1 = new ServerConfiguration<{  }>("https://api.io.pagopa.it/api/v1/sign", {  })
 
 export const servers = [server1];

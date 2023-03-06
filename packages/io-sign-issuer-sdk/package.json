@@ -1,11 +1,10 @@
 {
-  "name": "",
+  "name": "@io-sign/io-sign-issuer-sdk",
   "version": "",
-  "description": "OpenAPI client for ",
-  "author": "OpenAPI-Generator Contributors",
+  "description": "Issuer SDK for io-sign",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
+    "url": "https://github.com/pagopa/io-sign"
   },
   "keywords": [
     "fetch",
@@ -21,11 +20,17 @@
   },
   "typings": "./dist/index.d.ts",
   "scripts": {
+    "start-cli": "node dist/index.js",
+    "test": "jest --coverage",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
-    "prepare": "npm run build",
-    "start-cli": "node dist/mainCli.js"
+    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript -o ../io-sign-api-client"
   },
   "dependencies": {
+    "@io-sign/io-sign-api-client": "^0.1.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^18.11.18",
     "dotenv": "^16.0.3",
