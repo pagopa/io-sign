@@ -89,7 +89,7 @@ class IssuerModel extends CosmosdbModel<
                   value: internalInstitutionId,
                 },
               ],
-              query: `SELECT * FROM m WHERE m.${internalInstitutionIdKey} = @internalInstitutionIdKey`,
+              query: `SELECT TOP 1 * FROM m WHERE m.${internalInstitutionIdKey} = @internalInstitutionIdKey`,
             }),
             asyncIterableToArray
           ),

@@ -9,7 +9,9 @@ import { IoSignContract } from "./contract";
 export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
   encode: ({ internalIstitutionID, institution }) => ({
     id: newId(),
-    // See [IO-SIGN-RFC-SUB-ID]
+    /* Temporarily the subscriptionId is associated with the VAT number of the issuer by prepending the string "TEST-".
+     * See: [IO-SIGN-RFC-SUB-ID]
+     */
     subscriptionId: pipe(
       S.Monoid.concat("TEMP-", institution.taxCode)
     ) as NonEmptyString,

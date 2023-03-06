@@ -19,7 +19,7 @@ import {
   makeInsertIssuer,
 } from "../cosmos/issuer";
 
-const makeValidateUploadHandler = (db: CosmosDatabase) => {
+const makeCreateIssuerHandler = (db: CosmosDatabase) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
     TE.fromEither
@@ -29,6 +29,7 @@ const makeValidateUploadHandler = (db: CosmosDatabase) => {
     makeCheckIssuerWithSameInternalInstitutionId(db);
   const insertIssuer = makeInsertIssuer(db);
 
+  // TODO: [SFEQS-1490] Add a retry if the insert fails
   const createIssuerFromContract = flow(
     contractActive,
     E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
@@ -49,4 +50,4 @@ const makeValidateUploadHandler = (db: CosmosDatabase) => {
 };
 
 export const makeCreateIssuerFunction = (database: CosmosDatabase) =>
-  pipe(makeValidateUploadHandler(database), azure.unsafeRun);
+  pipe(makeCreateIssuerHandler(database), azure.unsafeRun);
