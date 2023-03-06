@@ -1,4 +1,7 @@
-const inquirer = require('inquirer');import { callSigners } from './cli/signersCli';
+const inquirer = require("inquirer");
+import { callSigners } from './cli/signerCli';
+import { callDossiers } from './cli/dossierCli';
+import { callSignatureRequests } from './cli/signatureRequestCli';
 
 console.log('Benvenuto nella CLI utilizzata dagli enti per integrarsi con Firma con IO');
 const mainMenu = async () => {
@@ -13,6 +16,14 @@ const mainMenu = async () => {
   switch (answers.command) {
     case 'signers':
        await callSigners();
+	  mainMenu();
+      break;
+    case 'dossiers':
+       await callDossiers();
+	  mainMenu();
+      break;
+    case 'signature-requests':
+       await callSignatureRequests();
 	  mainMenu();
       break;
     default:

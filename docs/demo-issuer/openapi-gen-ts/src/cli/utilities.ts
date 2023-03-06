@@ -52,3 +52,17 @@ applySecurityAuthentication(req)
 });
 		return task;
 	}
+
+export function isNotNull(value: string) {
+        if (!value) {
+          return "Il valore non può essere nullo.";
+        }
+        return true;
+};
+
+export function isNotNumber(value: string) {
+      if (!Number.isInteger(Number(value))) {
+        return "Il valore deve essere un numero intero.";
+      }
+      return true;
+    };

@@ -26,7 +26,6 @@
     "start-cli": "node dist/mainCli.js"
   },
   "dependencies": {
-    "@inquirer/core": "^0.0.30-alpha.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^18.11.18",
     "dotenv": "^16.0.3",
