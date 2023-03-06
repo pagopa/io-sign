@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 DossierApi.md
 README.md
 SignatureRequestApi.md
@@ -44,7 +43,6 @@ models/SignatureFieldToBeCreatedAttrsSize.ts
 models/SignatureRequestDetailView.ts
 models/SignerDetailView.ts
 models/all.ts
-package.json
 rxjsStub.ts
 servers.ts
 tsconfig.json
