@@ -23,6 +23,7 @@ import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
+import { makeGetDocumentValidationFunction } from "../infra/azure/functions/get-document-validation";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -140,3 +141,5 @@ export const ValidateUpload = makeValidateUploadFunction(
   uploadedContainerClient,
   validatedContainerClient
 );
+
+export const GetDocumentValidation = makeGetDocumentValidationFunction();

@@ -2333,6 +2333,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/parse-multipart@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@types/parse-multipart@npm:1.0.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 5283a2296c180f3eecefd08dbc1e94989f38321b815a8e1ba391c01d05a83779b43e86e13221f354e913628e4fd4683b49ef5cdfc1fadd037f44c785ba4f50a3
+  languageName: node
+  linkType: hard
+
 "@types/prettier@npm:^2.1.5":
   version: 2.7.1
   resolution: "@types/prettier@npm:2.7.1"
@@ -6446,6 +6455,7 @@ __metadata:
     "@pagopa/openapi-codegen-ts": ^12.0.2
     "@pagopa/ts-commons": ^10.10.0
     "@rushstack/eslint-patch": ^1.2.0
+    "@types/parse-multipart": ^1.0.0
     azure-functions-core-tools: ^4.0.4895
     date-fns: ^2.29.3
     eslint: ^8.28.0
@@ -6456,6 +6466,7 @@ __metadata:
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
     npm-pack-zip: ^1.3.0
+    parse-multipart: ^1.0.4
     prettier: 2.7.1
     ts-jest: ^29.0.3
     tsup: ^6.4.0
@@ -9043,6 +9054,13 @@ __metadata:
     json-parse-even-better-errors: ^2.3.0
     lines-and-columns: ^1.1.6
   checksum: 62085b17d64da57f40f6afc2ac1f4d95def18c4323577e1eced571db75d9ab59b297d1d10582920f84b15985cbfc6b6d450ccbf317644cfa176f3ed982ad87e2
+  languageName: node
+  linkType: hard
+
+"parse-multipart@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "parse-multipart@npm:1.0.4"
+  checksum: 0ea158a6dce3ee5c263b865ec8877c12b2d8d4a7dc60fc48615620cc55e46ecdcf3e96893a0ccbd79bf30387db45aa199a6701e3b6ba38a09079f9e0f5391b1c
   languageName: node
   linkType: hard
 

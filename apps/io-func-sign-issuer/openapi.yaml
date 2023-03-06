@@ -261,6 +261,41 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /document-validation:
+    post:
+      operationId: getDocumentValidation
+      tags:
+        - Utils
+      summary: Validate PDF document from a given metadata object
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/GetDocumentValidationBody"
+            encoding:
+              document_metadata:
+                contentType: "application/json"
+              document:
+                contentType: "application/pdf"
+      responses:
+        "200":
+          description: The result of validation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentValidation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "422":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     SubscriptionKey:
@@ -682,3 +717,21 @@ components:
           type: string
       required:
         - io_message_id
+
+    GetDocumentValidationBody:
+      type: object
+      properties:
+        document_metadata:
+          $ref: "#/components/schemas/DocumentMetadata"
+        document:
+          type: string
+          format: binary
+      required:
+        - document_metadata
+        - document
+
+    DocumentValidation:
+      type: object
+      properties:
+        is_valid:
+          type: boolean
