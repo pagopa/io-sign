@@ -1,13 +1,13 @@
 import inquirer from "inquirer";
 
 import { createConfiguration } from "@io-sign/io-sign-api-client/configuration";
-import { createResponse, EndpointResponse } from "./utilities";
 import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
 import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";
 import { SignatureField } from "@io-sign/io-sign-api-client/models/SignatureField";
 import { SignatureFieldAttrs } from "@io-sign/io-sign-api-client/models/SignatureFieldAttrs";
 import { DossierApiRequestFactory } from "@io-sign/io-sign-api-client/apis/DossierApi";
+import { createResponse, EndpointResponse } from "./utilities";
 import {
   dossierIdQuestion,
   dossierTitleQuestion,
@@ -48,7 +48,8 @@ const callNewDossier = async () => {
     dossierTitleQuestion,
     numberOfDocumentsQuestion,
   ]);
-  let body: CreateDossierBody = {
+
+  const body: CreateDossierBody = {
     title: answerPostDossier.title,
     documentsMetadata: [],
   };
@@ -57,7 +58,7 @@ const callNewDossier = async () => {
     console.log(
       "Document " + i + " of " + answerPostDossier.number_of_documents
     );
-    let document: DocumentMetadata = await newDocument();
+    const document: DocumentMetadata = await newDocument();
     body.documentsMetadata.push(document);
   }
 
@@ -78,12 +79,14 @@ const newDocument = async () => {
     documentTitleQuestion,
     numberOfSignaturesQuestion,
   ]);
-  let document: DocumentMetadata = {
+
+  const document: DocumentMetadata = {
     title: answerNewDocument.document_title,
     signatureFields: [],
   };
+
   for (let i = 0; i < answerNewDocument.number_of_signatures; i++) {
-    let signature: SignatureField = await newSignature();
+    const signature: SignatureField = await newSignature();
     document.signatureFields.push(signature);
   }
   return document;
@@ -106,8 +109,8 @@ const newSignature = async () => {
   } else {
     attrs = await addCoords();
   }
-  let signature: SignatureField = {
-    attrs: attrs,
+  const signature: SignatureField = {
+    attrs,
     clause: {
       title: answerNewSignature.clause_title,
       type: answerNewSignature.clause_type,
@@ -124,7 +127,7 @@ const addCoords = async () => {
     clauseAttrsWidthCoordsQuestion,
     clauseAttrsPageCoordsQuestion,
   ]);
-  let attrs: SignatureFieldAttrs = {
+  const attrs: SignatureFieldAttrs = {
     uniqueName: "",
     coordinates: { x: answerAddCoords.x_coords, y: answerAddCoords.y_coords },
     page: answerAddCoords.page_corrds,
@@ -135,7 +138,7 @@ const addCoords = async () => {
 
 const addUniqueName = async () => {
   const answerAddUniqueName = await inquirer.prompt([clauseAttrsIdQuestion]);
-  let attrs: SignatureFieldAttrs = {
+  const attrs: SignatureFieldAttrs = {
     uniqueName: answerAddUniqueName.id,
     coordinates: { x: 0, y: 0 },
     page: 0,

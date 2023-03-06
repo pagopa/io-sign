@@ -1,10 +1,10 @@
 import inquirer from "inquirer";
 
 import { createConfiguration } from "@io-sign/io-sign-api-client/configuration";
-import { createResponse, EndpointResponse } from "./utilities";
 import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
 import { SignatureRequestApiRequestFactory } from "@io-sign/io-sign-api-client/apis/SignatureRequestApi";
 import { CreateSignatureRequestBody } from "@io-sign/io-sign-api-client/models/CreateSignatureRequestBody";
+import { createResponse, EndpointResponse } from "./utilities";
 import {
   signatureRequestIdQuestion,
   dossierIdQuestion,
@@ -130,7 +130,7 @@ const callCreateSignatureRequest = async () => {
     createSignatureRequestQuestion,
   ]);
   if (answerCreateSignatureRequest.isReady) {
-    let body: CreateSignatureRequestBody = {
+    const body: CreateSignatureRequestBody = {
       dossierId: answerCreateSignatureRequest.dossier_id,
       signerId: answerCreateSignatureRequest.signer_id,
       expiresAt: answerCreateSignatureRequest.expires_at,
