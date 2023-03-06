@@ -4,7 +4,7 @@ export const fiscalCodeQuestion = {
   type: "input",
   name: "fiscalCode",
   message: "Inserisci il codice fiscale:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -26,7 +26,7 @@ export const signatureRequestIdQuestion = {
   type: "input",
   name: "id",
   message: "Inserisci l'ID della signature request:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -35,7 +35,7 @@ export const dossierIdQuestion = {
   type: "input",
   name: "doc_id",
   message: "Inserisci l'id del documento:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -50,7 +50,7 @@ export const signerIdQuestion = {
   type: "input",
   name: "signer_id",
   message: "Inserisci il signer id recuperato in precedenza:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -71,7 +71,7 @@ export const dossierTitleQuestion = {
   type: "input",
   name: "title",
   message: "Inserisci il titolo del dossier:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -80,7 +80,7 @@ export const documentTitleQuestion = {
   type: "input",
   name: "document_title",
   message: "Inserisci il titolo del documento:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -89,7 +89,7 @@ export const numberOfDocumentsQuestion = {
   type: "input",
   name: "number_of_documents",
   message: "Quanti documenti vuoi aggiungere?",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
   default: 1,
@@ -99,7 +99,7 @@ export const numberOfSignaturesQuestion = {
   type: "input",
   name: "number_of_signatures",
   message: "Quante firme contiene?",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
   default: 1,
@@ -109,7 +109,7 @@ export const clauseAttrsIdQuestion = {
   type: "input",
   name: "id",
   message: "Inserisci l'identificativo della firma:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -118,7 +118,7 @@ export const clauseTitleQuestion = {
   type: "input",
   name: "clause_title",
   message: "Inserisci il titolo della clausola:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNull(value);
   },
 };
@@ -147,7 +147,7 @@ export const clauseAttrsXCoordsQuestion = {
   type: "input",
   name: "x_coords",
   message: "Inserisci la coordinata X:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
 };
@@ -155,7 +155,7 @@ export const clauseAttrsYCoordsQuestion = {
   type: "input",
   name: "y_coords",
   message: "Inserisci la coordinata Y:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
 };
@@ -163,7 +163,7 @@ export const clauseAttrsWidthCoordsQuestion = {
   type: "input",
   name: "width_coords",
   message: "Inserisci la larghezza:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
 };
@@ -172,7 +172,7 @@ export const clauseAttrsHeightCoordsQuestion = {
   type: "input",
   name: "height_coords",
   message: "Inserisci l'altezza:",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
 };
@@ -181,7 +181,7 @@ export const clauseAttrsPageCoordsQuestion = {
   type: "input",
   name: "page_coords",
   message: "Inserisci il numero di pagina (la prima pagina è 0):",
-  validate: function (value: string) {
+  validate(value: string) {
     return isNotNumber(value);
   },
 };

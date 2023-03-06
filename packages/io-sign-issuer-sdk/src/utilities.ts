@@ -24,14 +24,14 @@ function applySecurityAuthentication(
 }
 
 export function createResponse(req: RequestContext): Promise<EndpointResponse> {
-  let instance = new IsomorphicFetchHttpLibrary();
-  let response: EndpointResponse = {
+  const instance = new IsomorphicFetchHttpLibrary();
+  const response: EndpointResponse = {
     status: 1,
     headers: {},
     body: {},
   };
 
-  let task = new Promise<EndpointResponse>((resolve, reject) => {
+  return new Promise<EndpointResponse>((resolve, reject) => {
     applySecurityAuthentication(req)
       .then((data: RequestContext) => {
         instance
@@ -58,7 +58,6 @@ export function createResponse(req: RequestContext): Promise<EndpointResponse> {
         reject(error);
       });
   });
-  return task;
 }
 
 export function isNotNull(value: string) {
