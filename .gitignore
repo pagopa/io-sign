@@ -6,7 +6,8 @@ local.settings.json
 coverage
 bin
 obj
-models
+apps/*/models
+packages/*/models
 node_modules
 .turbo
 *.zip
