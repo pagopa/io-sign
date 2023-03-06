@@ -5,7 +5,7 @@ import { createResponse, EndpointResponse } from "./utilities";
 import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
 import { GetSignerByFiscalCodeBody } from "@io-sign/io-sign-api-client/models/GetSignerByFiscalCodeBody";
 import { SignerApiRequestFactory } from "@io-sign/io-sign-api-client/apis/SignerApi";
-import { fiscalCodeQuestion } from "./questionsCli";
+import { fiscalCodeQuestion } from "./questions";
 
 export const callSigners = async () => {
   const configuration = createConfiguration();
