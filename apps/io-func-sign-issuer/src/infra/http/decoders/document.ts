@@ -45,7 +45,7 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  ({ clause: { title, type }, attrs }, _ctx) =>
+  ({ clause: { title, type }, attrs }) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
@@ -72,9 +72,9 @@ export const DocumentMetadataFromApiModel = new t.Type<
 >(
   "DocumentMetadataFromApiModel",
   DocumentMetadata.is,
-  ({ title, signature_fields }, _ctx) =>
+  ({ title, signature_fields }) =>
     pipe(
-      signature_fields,
+      signature_fields ?? [],
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
       E.map((signatureFields) => ({
         title,
