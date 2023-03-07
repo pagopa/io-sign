@@ -430,10 +430,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SignatureField"
-
       required:
         - title
-        - signature_fields
 
     DocumentMetadataList:
       type: array
