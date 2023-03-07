@@ -23,6 +23,7 @@ import {
   SubmitNotificationForUser,
 } from "@io-sign/io-sign/notification";
 import { validate } from "@io-sign/io-sign/validation";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { Dossier, GetDossier, newDossier } from "../dossier";
 import { newSignatureRequest, SignatureRequest } from "../signature-request";
 import {
@@ -41,12 +42,12 @@ const issuer: Issuer = {
 const dossier = newDossier(issuer, "My dossier", [
   {
     title: "document #1",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
   {
     title: "document #2",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
 ]);

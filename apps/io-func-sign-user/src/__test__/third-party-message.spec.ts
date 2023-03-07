@@ -11,7 +11,7 @@ import {
 
 import { newId } from "@io-sign/io-sign/id";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
-import { DocumentReady } from "@io-sign/io-sign/document";
+import { DocumentMetadata, DocumentReady } from "@io-sign/io-sign/document";
 import { makeGetSignedDocumentContent } from "../app/use-cases/get-signed-document-content";
 
 const documentId = newId();
@@ -47,7 +47,7 @@ const signatureRequest: SignatureRequestSigned = {
               type: "REQUIRED",
             },
           },
-        ],
+        ] as DocumentMetadata["signatureFields"],
         pdfDocumentMetadata: {
           pages: [],
           formFields: [],
