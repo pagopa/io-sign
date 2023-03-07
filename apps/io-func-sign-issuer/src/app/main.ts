@@ -55,8 +55,8 @@ const eventHubAnalyticsClient = new EventHubProducerClient(
 
 const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
   EventHubConsumerClient.defaultConsumerGroupName,
-  config.pagopa.selfCare.eventHubConnectionString,
-  config.pagopa.selfCare.eventHubContractsName
+  config.pagopa.selfCare.eventHub.connectionString,
+  config.pagopa.selfCare.eventHub.contractsName
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
