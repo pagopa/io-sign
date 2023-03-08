@@ -1,5 +1,4 @@
 import inquirer from "inquirer";
-
 import { createConfiguration } from "@io-sign/io-sign-api-client/configuration";
 import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
@@ -54,7 +53,7 @@ const callNewDossier = async () => {
     documentsMetadata: [],
   };
 
-  for (let i = 1; i <= answerPostDossier.number_of_documents; i++) {
+  for (let i: number = 1; i <= answerPostDossier.number_of_documents; i++) {
     console.log(
       "Document " + i + " of " + answerPostDossier.number_of_documents
     );
