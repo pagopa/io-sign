@@ -21,50 +21,50 @@ const TOS_CHALLENGE_HEADER_NAME = "x-pagopa-lollipop-custom-tos-challenge";
 const SIGN_CHALLENGE_HEADER_NAME = "x-pagopa-lollipop-custom-sign-challenge";
 const MOCKED_NONCE = "mockedNonce";
 const CRYPTO_ALG = "ES256";
+const CRYPTO_CURVE = "P-256";
 
-const ec = new rs.KJUR.crypto.ECDSA({ curve: "P-256" });
-const kp1 = rs.KEYUTIL.generateKeypair("EC", "P-256");
+const ec = new rs.KJUR.crypto.ECDSA({ curve: CRYPTO_CURVE });
+const kp1 = rs.KEYUTIL.generateKeypair("EC", CRYPTO_CURVE);
+export const pemPublicKey = rs.KEYUTIL.getPEM(kp1.pubKeyObj);
 
 // The value in hexadecimal cannot be accessed directly and there is no function to do so. Therefore I disabled the controls!
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const prvhex = kp1.prvKeyObj.prvKeyHex;
 
-type ValueWithParams = {
+type LollipopMock = {
   value: string;
   signatureParams: string;
 };
 
-const pemPublicKey = () => rs.KEYUTIL.getPEM(kp1.pubKeyObj);
-
-const jwkPublicKey = () =>
+export const convertPemToJwkPublicKey = (publicKey: string) =>
   pipe(
-    TE.tryCatch(() => jose.importSPKI(pemPublicKey(), CRYPTO_ALG), E.toError),
+    TE.tryCatch(() => jose.importSPKI(publicKey, CRYPTO_ALG), E.toError),
     TE.chain((ecPublicKey) =>
       TE.tryCatch(() => jose.exportJWK(ecPublicKey), E.toError)
     )
   );
 
-export const publicKeyToBase64 = () =>
+export const convertPemToBase64JwkPublicKey = (publicKey: string) =>
   pipe(
-    jwkPublicKey(),
+    convertPemToJwkPublicKey(publicKey),
     TE.map((jwk) => JSON.stringify(jwk)),
     TE.map((jwkString) => Buffer.from(jwkString, "utf-8").toString("base64"))
   );
 
-const getSignatureParams = (
+const mockSignatureParams = (
   headerName: string,
   timestamp: number,
   nonce: string
 ) =>
   `("${headerName}");created=${timestamp};nonce="${nonce}";alg="ecdsa-p256-sha256";keyid="${MOCK_KEY_ID}"`;
 
-const createValueToSign =
+const mockValueToSign =
   (headerName: string, timestamp: number, nonce: string) =>
-  (hexValue: string): ValueWithParams => {
-    const signatureParams = getSignatureParams(headerName, timestamp, nonce);
+  (hexValue: string): LollipopMock => {
+    const signatureParams = mockSignatureParams(headerName, timestamp, nonce);
     return {
-      signatureParams: getSignatureParams(headerName, timestamp, nonce),
+      signatureParams: mockSignatureParams(headerName, timestamp, nonce),
       value: `"${headerName}": ${hexValue}\n"@signature-params": ${signatureParams}`,
     };
   };
@@ -78,10 +78,10 @@ const sign = (value: string) =>
     E.map((signatureHex) => cryptoJS.enc.Base64.stringify(signatureHex))
   );
 
-const signatureSequence = (valueWithParams: ValueWithParams) =>
+const signatureSequence = (lollipop: LollipopMock) =>
   sequenceS(E.Applicative)({
-    value: pipe(valueWithParams.value, sign),
-    signatureParams: E.of(valueWithParams.signatureParams),
+    value: pipe(lollipop.value, sign),
+    signatureParams: E.of(lollipop.signatureParams),
   });
 
 const getCurrentTimeStamp = () => Math.floor(Date.now() / 1000);
@@ -98,9 +98,9 @@ const getFileDigest = (
     TE.map((buffer) => crypto.createHash("sha256").update(buffer).digest("hex"))
   );
 
-const getPublicKeyThumbprint = () =>
+const getPublicKeyThumbprint = (pem: string) =>
   pipe(
-    jwkPublicKey(),
+    convertPemToJwkPublicKey(pem),
     TE.chain((jwk) =>
       TE.tryCatch(() => jose.calculateJwkThumbprint(jwk), E.toError)
     )
@@ -129,7 +129,7 @@ export const mockSpidAssertion =
             ])
           )
         ),
-        publicKeyThumbprint: getPublicKeyThumbprint(),
+        publicKeyThumbprint: getPublicKeyThumbprint(pemPublicKey),
       }),
 
       TE.map(({ fields, publicKeyThumbprint }) => {
@@ -175,7 +175,7 @@ export const mockTosSignature = (qtspClauses: QtspClauses) =>
       crypto.createHash("sha256").update(tosChallenge).digest("hex")
     ),
     TE.map(
-      createValueToSign(
+      mockValueToSign(
         TOS_CHALLENGE_HEADER_NAME,
         getCurrentTimeStamp(),
         qtspClauses.nonce
@@ -220,7 +220,7 @@ export const mockSignature = (
       crypto.createHash("sha256").update(challenge).digest("hex")
     ),
     TE.map(
-      createValueToSign(
+      mockValueToSign(
         SIGN_CHALLENGE_HEADER_NAME,
         getCurrentTimeStamp(),
         MOCKED_NONCE

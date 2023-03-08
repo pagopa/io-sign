@@ -34,11 +34,12 @@ import {
 } from "../../signature-request";
 
 import {
+  convertPemToBase64JwkPublicKey,
   mockSignature,
   mockSignatureInput,
   mockSpidAssertion,
   mockTosSignature,
-  publicKeyToBase64,
+  pemPublicKey,
 } from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({
@@ -147,7 +148,7 @@ export const makeCreateSignature =
 
     const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
-        publicKey: publicKeyToBase64(),
+        publicKey: convertPemToBase64JwkPublicKey(pemPublicKey),
         fiscalCode: pipe(
           signer.id,
           getFiscalCodeBySignerId,
