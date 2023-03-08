@@ -65,7 +65,7 @@ const mockValueToSign =
   (hexValue: string): LollipopMock => {
     const signatureParams = mockSignatureParams(headerName, timestamp, nonce);
     return {
-      signatureParams: mockSignatureParams(headerName, timestamp, nonce),
+      signatureParams,
       value: `"${headerName}": ${hexValue}\n"@signature-params": ${signatureParams}`,
     };
   };
