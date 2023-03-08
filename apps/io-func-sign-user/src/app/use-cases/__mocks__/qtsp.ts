@@ -38,9 +38,6 @@ type LollipopMock = {
   signatureParams: string;
 };
 
-const utfToBase64 = (value: string) =>
-  Buffer.from(value, "utf-8").toString("base64");
-
 export const convertPemToJwkPublicKey = (publicKey: string) =>
   pipe(
     TE.tryCatch(() => jose.importSPKI(publicKey, CRYPTO_ALG), E.toError),
@@ -53,7 +50,7 @@ export const convertPemToBase64JwkPublicKey = (publicKey: string) =>
   pipe(
     convertPemToJwkPublicKey(publicKey),
     TE.map(JSON.stringify),
-    TE.map(utfToBase64)
+    TE.map((jwk) => Buffer.from(jwk, "utf-8").toString("base64"))
   );
 
 const mockSignatureParams = (
@@ -78,8 +75,8 @@ const sign = (value: string) =>
     crypto.createHash("sha256").update(value).digest("hex"),
     E.fromNullable(new Error("Unable to create hash during signature")),
     E.map((hexValue) => ec.signHex(hexValue, prvhex)),
-    E.map(cryptoJS.enc.Hex.parse),
-    E.map(cryptoJS.enc.Base64.stringify)
+    E.map((signature) => cryptoJS.enc.Hex.parse(signature)),
+    E.map((signatureHex) => cryptoJS.enc.Base64.stringify(signatureHex))
   );
 
 const signatureSequence = (lollipop: LollipopMock) =>
@@ -151,7 +148,7 @@ export const mockSpidAssertion =
               "INRESPONSETO_FIELD",
               `sha256-${publicKeyThumbprint}`
             ),
-          utfToBase64
+          (saml) => Buffer.from(saml, "utf-8").toString("base64")
         );
       }),
       TE.chainEitherKW(
@@ -239,5 +236,6 @@ export const mockSignatureInput = (
 ): NonEmptyString =>
   pipe(
     `sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=${getCurrentTimeStamp()};nonce="${MOCKED_NONCE}";alg="${LOLLIPOP_ALG}";keyid="${MOCK_KEY_ID}",sig2=${tosSignatureInput},sig3=${signSignatureInput}`,
-    (signatureInput) => utfToBase64(signatureInput) as NonEmptyString
+    (signatureInput) =>
+      Buffer.from(signatureInput, "utf-8").toString("base64") as NonEmptyString
   );
