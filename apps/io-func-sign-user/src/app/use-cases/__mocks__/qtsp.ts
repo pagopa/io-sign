@@ -49,7 +49,7 @@ export const convertPemToJwkPublicKey = (publicKey: string) =>
 export const convertPemToBase64JwkPublicKey = (publicKey: string) =>
   pipe(
     convertPemToJwkPublicKey(publicKey),
-    TE.map((jwk) => JSON.stringify(jwk)),
+    TE.map(JSON.stringify),
     TE.map((jwkString) => Buffer.from(jwkString, "utf-8").toString("base64"))
   );
 
