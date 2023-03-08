@@ -1,4 +1,6 @@
 import * as crypto from "crypto";
+import * as rs from "jsrsasign";
+import * as cryptoJS from "crypto-js";
 
 import * as jose from "jose";
 
@@ -20,10 +22,35 @@ const SIGN_CHALLENGE_HEADER_NAME = "x-pagopa-lollipop-custom-sign-challenge";
 const MOCKED_NONCE = "mockedNonce";
 const CRYPTO_ALG = "ES256";
 
+const ec = new rs.KJUR.crypto.ECDSA({ curve: "P-256" });
+const kp1 = rs.KEYUTIL.generateKeypair("EC", "P-256");
+
+// The value in hexadecimal cannot be accessed directly and there is no function to do so. Therefore I disabled the controls!
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const prvhex = kp1.prvKeyObj.prvKeyHex;
+
 type ValueWithParams = {
   value: string;
   signatureParams: string;
 };
+
+const pemPublicKey = () => rs.KEYUTIL.getPEM(kp1.pubKeyObj);
+
+const jwkPublicKey = () =>
+  pipe(
+    TE.tryCatch(() => jose.importSPKI(pemPublicKey(), CRYPTO_ALG), E.toError),
+    TE.chain((ecPublicKey) =>
+      TE.tryCatch(() => jose.exportJWK(ecPublicKey), E.toError)
+    )
+  );
+
+export const publicKeyToBase64 = () =>
+  pipe(
+    jwkPublicKey(),
+    TE.map((jwk) => JSON.stringify(jwk)),
+    TE.map((jwkString) => Buffer.from(jwkString, "utf-8").toString("base64"))
+  );
 
 const getSignatureParams = (
   headerName: string,
@@ -42,23 +69,20 @@ const createValueToSign =
     };
   };
 
-const sign = (privateKey: jose.KeyLike) => (value: string) =>
+const sign = (value: string) =>
   pipe(
-    TE.tryCatch(
-      () =>
-        new jose.CompactSign(new TextEncoder().encode(value))
-          .setProtectedHeader({ alg: CRYPTO_ALG })
-          .sign(privateKey),
-      E.toError
-    )
+    crypto.createHash("sha256").update(value).digest("hex"),
+    E.fromNullable(new Error("Unable to create hash during signature")),
+    E.map((hexValue) => ec.signHex(hexValue, prvhex)),
+    E.map((signature) => cryptoJS.enc.Hex.parse(signature)),
+    E.map((signatureHex) => cryptoJS.enc.Base64.stringify(signatureHex))
   );
 
-const signatureSequence =
-  (privateKey: jose.KeyLike) => (valueWithParams: ValueWithParams) =>
-    sequenceS(TE.ApplicativeSeq)({
-      value: pipe(valueWithParams.value, sign(privateKey)),
-      signatureParams: TE.of(valueWithParams.signatureParams),
-    });
+const signatureSequence = (valueWithParams: ValueWithParams) =>
+  sequenceS(E.Applicative)({
+    value: pipe(valueWithParams.value, sign),
+    signatureParams: E.of(valueWithParams.signatureParams),
+  });
 
 const getCurrentTimeStamp = () => Math.floor(Date.now() / 1000);
 
@@ -74,21 +98,9 @@ const getFileDigest = (
     TE.map((buffer) => crypto.createHash("sha256").update(buffer).digest("hex"))
   );
 
-export const generateMockKeyPair = TE.tryCatch(
-  () => jose.generateKeyPair(CRYPTO_ALG),
-  E.toError
-);
-
-export const publicKeyToBase64 = (publicKey: jose.KeyLike) =>
+const getPublicKeyThumbprint = () =>
   pipe(
-    TE.tryCatch(() => jose.exportJWK(publicKey), E.toError),
-    TE.map(JSON.stringify),
-    TE.map((jwk) => Buffer.from(jwk, "utf-8").toString("base64"))
-  );
-
-const getPublicKeyThumbprint = (publicKey: jose.KeyLike) =>
-  pipe(
-    TE.tryCatch(() => jose.exportJWK(publicKey), E.toError),
+    jwkPublicKey(),
     TE.chain((jwk) =>
       TE.tryCatch(() => jose.calculateJwkThumbprint(jwk), E.toError)
     )
@@ -96,7 +108,7 @@ const getPublicKeyThumbprint = (publicKey: jose.KeyLike) =>
 
 export const mockSpidAssertion =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  (spidAssertion: NonEmptyString, publicKey: jose.KeyLike) =>
+  (spidAssertion: NonEmptyString) =>
   (qtspClauses: QtspClauses) =>
     pipe(
       sequenceS(TE.ApplicativeSeq)({
@@ -117,7 +129,7 @@ export const mockSpidAssertion =
             ])
           )
         ),
-        publicKeyThumbprint: getPublicKeyThumbprint(publicKey),
+        publicKeyThumbprint: getPublicKeyThumbprint(),
       }),
 
       TE.map(({ fields, publicKeyThumbprint }) => {
@@ -143,88 +155,79 @@ export const mockSpidAssertion =
       )
     );
 
-export const mockTosSignature =
-  (privateKey: jose.KeyLike) => (qtspClauses: QtspClauses) =>
-    pipe(
-      qtspClauses.filledDocumentUrl,
-      getFileDigest,
-      TE.map(
-        (documentDigest) =>
-          qtspClauses.nonce +
-          "+" +
-          documentDigest +
-          qtspClauses.acceptedClauses.reduce(
-            (finalString, currentClause) =>
-              finalString + "+" + currentClause.text,
-            ""
-          )
-      ),
-      TE.map((tos) => tos.replace(/\r\n/g, "")),
-      TE.map((tosChallenge) =>
-        crypto.createHash("sha256").update(tosChallenge).digest("hex")
-      ),
-      TE.map(
-        createValueToSign(
-          TOS_CHALLENGE_HEADER_NAME,
-          getCurrentTimeStamp(),
-          qtspClauses.nonce
+export const mockTosSignature = (qtspClauses: QtspClauses) =>
+  pipe(
+    qtspClauses.filledDocumentUrl,
+    getFileDigest,
+    TE.map(
+      (documentDigest) =>
+        qtspClauses.nonce +
+        "+" +
+        documentDigest +
+        qtspClauses.acceptedClauses.reduce(
+          (finalString, currentClause) =>
+            finalString + "+" + currentClause.text,
+          ""
         )
-      ),
-      TE.chain(signatureSequence(privateKey)),
-      TE.map((challenge) => ({
-        ...challenge,
-        value: Buffer.from(challenge.value, "utf-8").toString("base64"),
-      }))
-    );
+    ),
+    TE.map((tos) => tos.replace(/\r\n/g, "")),
+    TE.map((tosChallenge) =>
+      crypto.createHash("sha256").update(tosChallenge).digest("hex")
+    ),
+    TE.map(
+      createValueToSign(
+        TOS_CHALLENGE_HEADER_NAME,
+        getCurrentTimeStamp(),
+        qtspClauses.nonce
+      )
+    ),
+    TE.chainEitherK(signatureSequence)
+  );
 
-export const mockSignature =
-  (privateKey: jose.KeyLike) =>
-  (documentsToSign: QtspCreateSignaturePayload["documentsToSign"]) =>
-    pipe(
-      documentsToSign,
-      A.map((document) =>
-        pipe(
-          getFileDigest(document.urlIn),
-          TE.map((hash) => {
-            const attributes = document.signatureFields
-              .map((signatureField) =>
-                "uniqueName" in signatureField.attributes
-                  ? signatureField.attributes.uniqueName
-                  : // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                    signatureField.attributes.page +
-                    "-" +
-                    signatureField.attributes.bottomLeft.x +
-                    "-" +
-                    signatureField.attributes.bottomLeft.y +
-                    "-" +
-                    signatureField.attributes.topRight.x +
-                    "-" +
-                    signatureField.attributes.topRight.y
-              )
-              .join("+");
-            return hash + "+" + attributes;
-          })
-        )
-      ),
-      A.sequence(TE.ApplicativeSeq),
-      TE.map((chellenges) => chellenges.join("+")),
-      TE.map((challenge) => challenge.replace(/\r\n/g, "")),
-      TE.map((challenge) =>
-        crypto.createHash("sha256").update(challenge).digest("hex")
-      ),
-      TE.map(
-        createValueToSign(
-          SIGN_CHALLENGE_HEADER_NAME,
-          getCurrentTimeStamp(),
-          MOCKED_NONCE
-        )
-      ),
-      TE.chain(signatureSequence(privateKey)),
-      TE.map((challenge) => ({
-        ...challenge,
-        value: Buffer.from(challenge.value, "utf-8").toString("base64"),
-      }))
-    );
+export const mockSignature = (
+  documentsToSign: QtspCreateSignaturePayload["documentsToSign"]
+) =>
+  pipe(
+    documentsToSign,
+    A.map((document) =>
+      pipe(
+        getFileDigest(document.urlIn),
+        TE.map((hash) => {
+          const attributes = document.signatureFields
+            .map((signatureField) =>
+              "uniqueName" in signatureField.attributes
+                ? signatureField.attributes.uniqueName
+                : // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+                  signatureField.attributes.page +
+                  "-" +
+                  signatureField.attributes.bottomLeft.x +
+                  "-" +
+                  signatureField.attributes.bottomLeft.y +
+                  "-" +
+                  signatureField.attributes.topRight.x +
+                  "-" +
+                  signatureField.attributes.topRight.y
+            )
+            .join("+");
+          return hash + "+" + attributes;
+        })
+      )
+    ),
+    A.sequence(TE.ApplicativeSeq),
+    TE.map((chellenges) => chellenges.join("+")),
+    TE.map((challenge) => challenge.replace(/\r\n/g, "")),
+    TE.map((challenge) =>
+      crypto.createHash("sha256").update(challenge).digest("hex")
+    ),
+    TE.map(
+      createValueToSign(
+        SIGN_CHALLENGE_HEADER_NAME,
+        getCurrentTimeStamp(),
+        MOCKED_NONCE
+      )
+    ),
+    TE.chainEitherK(signatureSequence)
+  );
 
 export const mockSignatureInput = (
   tosSignatureInput: string,

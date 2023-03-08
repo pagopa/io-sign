@@ -34,7 +34,6 @@ import {
 } from "../../signature-request";
 
 import {
-  generateMockKeyPair,
   mockSignature,
   mockSignatureInput,
   mockSpidAssertion,
@@ -147,56 +146,48 @@ export const makeCreateSignature =
     );
 
     const createSignatureRequest = pipe(
-      generateMockKeyPair,
-      TE.chain((generatedKeys) =>
-        pipe(
-          sequenceS(TE.ApplicativeSeq)({
-            publicKey: publicKeyToBase64(generatedKeys.publicKey),
-            fiscalCode: pipe(
-              signer.id,
-              getFiscalCodeBySignerId,
-              TE.chain(
-                TE.fromOption(
-                  () =>
-                    new EntityNotFoundError(
-                      "Fiscal code not found for this signer!"
-                    )
+      sequenceS(TE.ApplicativeSeq)({
+        publicKey: publicKeyToBase64(),
+        fiscalCode: pipe(
+          signer.id,
+          getFiscalCodeBySignerId,
+          TE.chain(
+            TE.fromOption(
+              () =>
+                new EntityNotFoundError(
+                  "Fiscal code not found for this signer!"
                 )
-              )
-            ),
-            documentsToSign: pipe(
-              documentsSignature,
-              A.map((documentSignature) =>
-                pipe(
-                  documentSignature.documentId,
-                  getDocumentUrlForSignature,
-                  TE.map((documentUrl) => ({
-                    ...documentUrl,
-                    signatureFields: documentSignature.signatureFields,
-                  }))
-                )
-              ),
-              A.sequence(TE.ApplicativeSeq)
-            ),
-            tosSignature: pipe(
-              qtspClauses,
-              mockTosSignature(generatedKeys.privateKey)
-            ),
-            mockedSpidAssertion: pipe(
-              qtspClauses,
-              mockSpidAssertion()(spidAssertion, generatedKeys.publicKey)
-            ),
-          }),
-          TE.chain((sequence) =>
-            pipe(
-              sequence.documentsToSign,
-              mockSignature(generatedKeys.privateKey),
-              TE.map((signature) => ({
-                ...sequence,
-                signature,
-              }))
             )
           )
+        ),
+        documentsToSign: pipe(
+          documentsSignature,
+          A.map((documentSignature) =>
+            pipe(
+              documentSignature.documentId,
+              getDocumentUrlForSignature,
+              TE.map((documentUrl) => ({
+                ...documentUrl,
+                signatureFields: documentSignature.signatureFields,
+              }))
+            )
+          ),
+          A.sequence(TE.ApplicativeSeq)
+        ),
+        tosSignature: pipe(qtspClauses, mockTosSignature),
+        mockedSpidAssertion: pipe(
+          qtspClauses,
+          mockSpidAssertion()(spidAssertion)
+        ),
+      }),
+      TE.chain((sequence) =>
+        pipe(
+          sequence.documentsToSign,
+          mockSignature,
+          TE.map((signature) => ({
+            ...sequence,
+            signature,
+          }))
         )
       ),
       TE.map(
