@@ -75,8 +75,8 @@ const sign = (value: string) =>
     crypto.createHash("sha256").update(value).digest("hex"),
     E.fromNullable(new Error("Unable to create hash during signature")),
     E.map((hexValue) => ec.signHex(hexValue, prvhex)),
-    E.map((signature) => cryptoJS.enc.Hex.parse(signature)),
-    E.map((signatureHex) => cryptoJS.enc.Base64.stringify(signatureHex))
+    E.map(cryptoJS.enc.Hex.parse),
+    E.map(cryptoJS.enc.Base64.stringify)
   );
 
 const signatureSequence = (lollipop: LollipopMock) =>
