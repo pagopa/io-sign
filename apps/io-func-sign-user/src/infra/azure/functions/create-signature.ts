@@ -154,7 +154,7 @@ const makeCreateSignatureHandler = (
   return createHandler(
     decodeHttpRequest,
     createSignature,
-    console.error,
+    error,
     encodeHttpSuccessResponse
   );
 };
