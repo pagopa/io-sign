@@ -181,22 +181,6 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/LollipopSignature"
-        - name: x-pagopa-lollipop-custom-tos-challange
-          in: header
-          description: The tos challenge to sign.
-          required: true
-          schema:
-            type: string
-            example: f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
-            minLength: 1
-        - name: x-pagopa-lollipop-custom-sign-challenge
-          in: header
-          description: The challenge to sign concerning documents.
-          required: true
-          schema:
-            type: string
-            example: f46a0523e83e2c45b3b948e76bb6617d35e0159f9ae2ccf27865efb5d390f8aa
-            minLength: 1
       responses:
         "200":
           description: Signature created
