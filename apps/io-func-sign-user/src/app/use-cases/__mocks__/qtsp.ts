@@ -22,6 +22,7 @@ const SIGN_CHALLENGE_HEADER_NAME = "x-pagopa-lollipop-custom-sign-challenge";
 const MOCKED_NONCE = "mockedNonce";
 const CRYPTO_ALG = "ES256";
 const CRYPTO_CURVE = "P-256";
+const LOLLIPOP_ALG = "ecdsa-p256-sha256";
 
 const ec = new rs.KJUR.crypto.ECDSA({ curve: CRYPTO_CURVE });
 const kp1 = rs.KEYUTIL.generateKeypair("EC", CRYPTO_CURVE);
@@ -57,7 +58,7 @@ const mockSignatureParams = (
   timestamp: number,
   nonce: string
 ) =>
-  `("${headerName}");created=${timestamp};nonce="${nonce}";alg="ecdsa-p256-sha256";keyid="${MOCK_KEY_ID}"`;
+  `("${headerName}");created=${timestamp};nonce="${nonce}";alg="${LOLLIPOP_ALG}";keyid="${MOCK_KEY_ID}"`;
 
 const mockValueToSign =
   (headerName: string, timestamp: number, nonce: string) =>
@@ -234,7 +235,7 @@ export const mockSignatureInput = (
   signSignatureInput: string
 ): NonEmptyString =>
   pipe(
-    `sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=${getCurrentTimeStamp()};nonce="${MOCKED_NONCE}";alg="ecdsa-p256-sha256";keyid="${MOCK_KEY_ID}",sig2=${tosSignatureInput},sig3=${signSignatureInput}`,
+    `sig1=("content-digest" "content-type" "x-pagopa-lollipop-original-method" "x-pagopa-lollipop-original-url");created=${getCurrentTimeStamp()};nonce="${MOCKED_NONCE}";alg="${LOLLIPOP_ALG}";keyid="${MOCK_KEY_ID}",sig2=${tosSignatureInput},sig3=${signSignatureInput}`,
     (signatureInput) =>
       Buffer.from(signatureInput, "utf-8").toString("base64") as NonEmptyString
   );
