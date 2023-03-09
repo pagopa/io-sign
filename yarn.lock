@@ -2298,6 +2298,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node-jose@npm:^1.1.10":
+  version: 1.1.10
+  resolution: "@types/node-jose@npm:1.1.10"
+  dependencies:
+    "@types/node": "*"
+  checksum: a6cfb9fa1c9a748ef3edd461f93f944f853d8e1cde3b8e860662830ae50aa4adc98015754c12dbd41a1e0d1950ac8be6e2e4daaac0cdea59ea084164a382937c
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 18.11.10
   resolution: "@types/node@npm:18.11.10"
@@ -6480,6 +6489,7 @@ __metadata:
     "@rushstack/eslint-patch": ^1.2.0
     "@types/crypto-js": ^4.1.1
     "@types/jsrsasign": ^10.5.4
+    "@types/node-jose": ^1.1.10
     azure-functions-core-tools: ^4.0.4895
     crypto-js: ^4.1.1
     date-fns: ^2.29.3
@@ -6488,6 +6498,7 @@ __metadata:
     io-ts: ^2.2.19
     io-ts-types: ^0.5.19
     jest: ^29.3.1
+    jose: ^4.13.1
     jsrsasign: ^10.6.1
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
@@ -7511,6 +7522,13 @@ __metadata:
   bin:
     jest: bin/jest.js
   checksum: 613f4ec657b14dd84c0056b2fef1468502927fd551bef0b19d4a91576a609678fb316c6a5b5fc6120dd30dd4ff4569070ffef3cb507db9bb0260b28ddaa18d7a
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.13.1":
+  version: 4.13.1
+  resolution: "jose@npm:4.13.1"
+  checksum: 89be959573beee69bd443493887d78799fd42340b45afa2c6681beda30314bcdfa5575f6977203c199e4c3e0ec2fc18d3c94745e7f0d59db51dedfae0efee63d
   languageName: node
   linkType: hard
 

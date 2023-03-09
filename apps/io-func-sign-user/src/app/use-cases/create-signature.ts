@@ -34,10 +34,12 @@ import {
 } from "../../signature-request";
 
 import {
-  mockPublicKey,
+  convertPemToBase64JwkPublicKey,
   mockSignature,
+  mockSignatureInput,
   mockSpidAssertion,
   mockTosSignature,
+  pemPublicKey,
 } from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({
@@ -146,6 +148,7 @@ export const makeCreateSignature =
 
     const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
+        publicKey: convertPemToBase64JwkPublicKey(pemPublicKey),
         fiscalCode: pipe(
           signer.id,
           getFiscalCodeBySignerId,
@@ -190,6 +193,7 @@ export const makeCreateSignature =
       ),
       TE.map(
         ({
+          publicKey,
           documentsToSign,
           tosSignature,
           signature,
@@ -197,14 +201,18 @@ export const makeCreateSignature =
           mockedSpidAssertion,
         }) => ({
           fiscalCode,
-          publicKey: mockPublicKey(),
+          publicKey,
           spidAssertion: mockedSpidAssertion,
           email,
           documentLink: qtspClauses.filledDocumentUrl,
-          tosSignature,
-          signature,
+          tosSignature: tosSignature.value,
+          signature: signature.value,
           nonce: qtspClauses.nonce,
           documentsToSign,
+          signatureInput: mockSignatureInput(
+            tosSignature.signatureParams,
+            signature.signatureParams
+          ),
         })
       ),
       TE.chain(creatQtspSignatureRequest),
