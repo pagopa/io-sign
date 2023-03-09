@@ -181,6 +181,22 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/LollipopSignature"
+        - name: x-pagopa-lollipop-custom-tos-challenge
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The tos challenge to sign by the client with its private key.
+            minLength: 1
+            example: 3f6886fbf080d1d2574e93a8ded56caa55df5ce094a40ad1956ac5c0d6c4ebc8
+        - name: x-pagopa-lollipop-custom-sign-challenge
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The challenge related to documents to sign by the client with its private key.
+            minLength: 1
+            example: ace93f266621e137200ec0d70b33119eca0874386c53f6c588ab8fc07a0b6f89
       responses:
         "200":
           description: Signature created
