@@ -21,19 +21,19 @@ const mainMenu = async () => {
   switch (answers.command) {
     case "signers":
       await callSigners();
-      mainMenu();
+      await mainMenu();
       break;
     case "dossiers":
       await callDossiers();
-      mainMenu();
+      await mainMenu();
       break;
     case "signature-requests":
       await callSignatureRequests();
-      mainMenu();
+      await mainMenu();
       break;
     default:
       process.exit(0);
   }
 };
 
-mainMenu();
+await mainMenu();

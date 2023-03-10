@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { createConfiguration } from "@io-sign/io-sign-api-client/configuration";
+import { createConfiguration } from "@io-sign/io-sign-api-client";
 import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
 import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";
