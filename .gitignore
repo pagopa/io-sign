@@ -7,7 +7,7 @@ coverage
 bin
 obj
 apps/*/models
-packages/*/models
+packages/io-sign/*/models
 node_modules
 .turbo
 *.zip
