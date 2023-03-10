@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { createConfiguration, DossierApi } from "@io-sign/io-sign-api-client";
+import { Configuration, DossierApi } from "@io-sign/io-sign-api-client";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
 import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";
 import { SignatureField } from "@io-sign/io-sign-api-client/models/SignatureField";
@@ -21,7 +21,7 @@ import {
   clauseAttrsPageCoordsQuestion,
 } from "./questions";
 
-export const callDossiers = async () => {
+export const callDossiers = async (configuration: Configuration) => {
   const answerDossiers = await inquirer.prompt([
     {
       type: "confirm",
@@ -30,21 +30,13 @@ export const callDossiers = async () => {
     },
   ]);
   if (answerDossiers.new) {
-    await callNewDossier();
+    await callNewDossier(configuration);
   } else {
-    await callGetDossier();
+    await callGetDossier(configuration);
   }
 };
 
-const callNewDossier = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
-
+const callNewDossier = async (configuration: Configuration) => {
   const api = new DossierApi(configuration);
 
   const answerPostDossier = await inquirer.prompt([
@@ -57,11 +49,11 @@ const callNewDossier = async (
     documentsMetadata: [],
   };
 
+  // eslint-disable-next-line functional/no-let
   for (let i = 1; i <= answerPostDossier.number_of_documents; i++) {
-    console.log(
-      "Document " + i + " of " + answerPostDossier.number_of_documents
-    );
+    console.log(`Document ${i} of ${answerPostDossier.number_of_documents}`);
     const document = await newDocument();
+    // eslint-disable-next-line functional/immutable-data
     body.documentsMetadata.push(document);
   }
 
@@ -79,8 +71,10 @@ const newDocument = async () => {
     signatureFields: [],
   };
 
+  // eslint-disable-next-line functional/no-let
   for (let i = 0; i < answerNewDocument.number_of_signatures; i++) {
     const signature: SignatureField = await newSignature();
+    // eslint-disable-next-line functional/immutable-data
     document.signatureFields.push(signature);
   }
   return document;
@@ -136,14 +130,7 @@ const addUniqueName = async () => {
   return attrs;
 };
 
-const callGetDossier = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callGetDossier = async (configuration: Configuration) => {
   const api = new DossierApi(configuration);
   const answerGetDossier = await inquirer.prompt([
     {

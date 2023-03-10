@@ -1,11 +1,11 @@
-export function isNotNull(value: string) {
+function isNotNull(value: string) {
   if (value === null || value === undefined) {
     return "Il valore non può essere nullo.";
   }
   return true;
 }
 
-export function isNotNumber(value: string) {
+function isNotNumber(value: string) {
   if (!Number.isInteger(Number(value))) {
     return "Il valore deve essere un numero intero.";
   }

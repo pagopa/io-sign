@@ -9,6 +9,12 @@ module.exports = {
   ignorePatterns: ["**/models/*.ts", "*.yaml"],
   overrides: [
     {
+      files: ["**/*.ts"],
+      rules: {
+        "no-console": "off",
+      },
+    },
+    {
       files: ["**/*.spec.ts"],
       rules: {
         "functional/no-let": "off",

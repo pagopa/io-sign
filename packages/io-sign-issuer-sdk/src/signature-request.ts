@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 
 import {
-  createConfiguration,
+  Configuration,
   SignatureRequestApi,
 } from "@io-sign/io-sign-api-client";
 import { CreateSignatureRequestBody } from "@io-sign/io-sign-api-client/models/CreateSignatureRequestBody";
@@ -15,37 +15,30 @@ import {
   signatureRequestFirstQuestion,
 } from "./questions";
 
-export const callSignatureRequests = async () => {
+export const callSignatureRequests = async (configuration: Configuration) => {
   const answerSignatureRequests = await inquirer.prompt([
     signatureRequestFirstQuestion,
   ]);
   switch (answerSignatureRequests.command) {
     case "getSignatureRequest":
-      await callGetSignatureRequest();
+      await callGetSignatureRequest(configuration);
       break;
     case "getDocumentUploadUrl":
-      await callGetDocumentUploadUrl();
+      await callGetDocumentUploadUrl(configuration);
       break;
     case "sendNotification":
-      await callSendNotification();
+      await callSendNotification(configuration);
       break;
     case "setSignatureRequestStatus":
-      await callSetSignatureRequestStatus();
+      await callSetSignatureRequestStatus(configuration);
       break;
     case "createSignatureRequest":
-      await callCreateSignatureRequest();
+      await callCreateSignatureRequest(configuration);
       break;
   }
 };
 
-const callGetSignatureRequest = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callGetSignatureRequest = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerGetSignatureRequest = await inquirer.prompt([
     signatureRequestIdQuestion,
@@ -53,14 +46,7 @@ const callGetSignatureRequest = async (
   return api.getSignatureRequest(answerGetSignatureRequest.id);
 };
 
-const callGetDocumentUploadUrl = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callGetDocumentUploadUrl = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerGetDocumentUploadUrl = await inquirer.prompt([
     signatureRequestIdQuestion,
@@ -72,14 +58,7 @@ const callGetDocumentUploadUrl = async (
   );
 };
 
-const callSendNotification = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callSendNotification = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerSendNotification = await inquirer.prompt([
     signatureRequestIdQuestion,
@@ -87,14 +66,7 @@ const callSendNotification = async (
   return api.sendNotification(answerSendNotification.req_id);
 };
 
-const callSetSignatureRequestStatus = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callSetSignatureRequestStatus = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerSetSignatureRequestStatus = await inquirer.prompt([
     signatureRequestIdQuestion,
@@ -108,14 +80,7 @@ const callSetSignatureRequestStatus = async (
   }
 };
 
-const callCreateSignatureRequest = async (
-  SubscriptionKey = process.env.SUBSCRIPTION_KEY
-) => {
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
-  });
+const callCreateSignatureRequest = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerCreateSignatureRequest = await inquirer.prompt([
     dossierIdQuestion,
