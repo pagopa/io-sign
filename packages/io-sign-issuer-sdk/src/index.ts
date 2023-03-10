@@ -36,4 +36,4 @@ const mainMenu = async () => {
   }
 };
 
-await mainMenu();
+mainMenu().catch(console.error);

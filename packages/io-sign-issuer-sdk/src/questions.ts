@@ -1,4 +1,16 @@
-import { isNotNull, isNotNumber } from "./utilities";
+export function isNotNull(value: string) {
+  if (value === null || value === undefined) {
+    return "Il valore non può essere nullo.";
+  }
+  return true;
+}
+
+export function isNotNumber(value: string) {
+  if (!Number.isInteger(Number(value))) {
+    return "Il valore deve essere un numero intero.";
+  }
+  return true;
+}
 
 export const fiscalCodeQuestion = {
   type: "input",
@@ -81,7 +93,7 @@ export const documentTitleQuestion = {
   name: "document_title",
   message: "Inserisci il titolo del documento:",
   validate(value: string) {
-    return isNotNull(value);
+    return value !== null;
   },
 };
 
@@ -110,7 +122,7 @@ export const clauseAttrsIdQuestion = {
   name: "id",
   message: "Inserisci l'identificativo della firma:",
   validate(value: string) {
-    return isNotNull(value);
+    return value !== null;
   },
 };
 
@@ -151,6 +163,7 @@ export const clauseAttrsXCoordsQuestion = {
     return isNotNumber(value);
   },
 };
+
 export const clauseAttrsYCoordsQuestion = {
   type: "input",
   name: "y_coords",
@@ -159,6 +172,7 @@ export const clauseAttrsYCoordsQuestion = {
     return isNotNumber(value);
   },
 };
+
 export const clauseAttrsWidthCoordsQuestion = {
   type: "input",
   name: "width_coords",

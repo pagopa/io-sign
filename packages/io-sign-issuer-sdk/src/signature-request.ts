@@ -1,10 +1,10 @@
 import inquirer from "inquirer";
 
-import { createConfiguration } from "@io-sign/io-sign-api-client";
-import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
-import { SignatureRequestApiRequestFactory } from "@io-sign/io-sign-api-client/apis/SignatureRequestApi";
+import {
+  createConfiguration,
+  SignatureRequestApi,
+} from "@io-sign/io-sign-api-client";
 import { CreateSignatureRequestBody } from "@io-sign/io-sign-api-client/models/CreateSignatureRequestBody";
-import { createResponse, EndpointResponse } from "./utilities";
 import {
   signatureRequestIdQuestion,
   dossierIdQuestion,
@@ -38,91 +38,85 @@ export const callSignatureRequests = async () => {
   }
 };
 
-const callGetSignatureRequest = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new SignatureRequestApiRequestFactory(configuration);
+const callGetSignatureRequest = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new SignatureRequestApi(configuration);
   const answerGetSignatureRequest = await inquirer.prompt([
     signatureRequestIdQuestion,
   ]);
-  apiInstance
-    .getSignatureRequest(answerGetSignatureRequest.id)
-    .then((data: RequestContext) => {
-      createResponse(data)
-        .then((data: EndpointResponse) => {
-          console.log(data);
-        })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
+  return api.getSignatureRequest(answerGetSignatureRequest.id);
 };
 
-const callGetDocumentUploadUrl = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new SignatureRequestApiRequestFactory(configuration);
+const callGetDocumentUploadUrl = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new SignatureRequestApi(configuration);
   const answerGetDocumentUploadUrl = await inquirer.prompt([
     signatureRequestIdQuestion,
     dossierIdQuestion,
   ]);
-  apiInstance
-    .getDocumentUploadUrl(
-      answerGetDocumentUploadUrl.req_id,
-      answerGetDocumentUploadUrl.doc_id
-    )
-    .then((data: RequestContext) => {
-      createResponse(data)
-        .then((data: EndpointResponse) => {
-          console.log(data);
-        })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
+  return api.getDocumentUploadUrl(
+    answerGetDocumentUploadUrl.req_id,
+    answerGetDocumentUploadUrl.doc_id
+  );
 };
 
-const callSendNotification = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new SignatureRequestApiRequestFactory(configuration);
+const callSendNotification = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new SignatureRequestApi(configuration);
   const answerSendNotification = await inquirer.prompt([
     signatureRequestIdQuestion,
   ]);
-  apiInstance
-    .sendNotification(answerSendNotification.req_id)
-    .then((data: RequestContext) => {
-      createResponse(data)
-        .then((data: EndpointResponse) => {
-          console.log(data);
-        })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
+  return api.sendNotification(answerSendNotification.req_id);
 };
 
-const callSetSignatureRequestStatus = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new SignatureRequestApiRequestFactory(configuration);
+const callSetSignatureRequestStatus = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new SignatureRequestApi(configuration);
   const answerSetSignatureRequestStatus = await inquirer.prompt([
     signatureRequestIdQuestion,
     changeSignatureRequestStatusQuestion,
   ]);
   if (answerSetSignatureRequestStatus.isReady) {
-    apiInstance
-      .setSignatureRequestStatus(
-        answerSetSignatureRequestStatus.req_id,
-        "READY"
-      )
-      .then((data: RequestContext) => {
-        createResponse(data)
-          .then((data: EndpointResponse) => {
-            console.log(data);
-          })
-          .catch((error: any) => console.error(error));
-      })
-      .catch((error: any) => console.error(error));
+    return api.setSignatureRequestStatus(
+      answerSetSignatureRequestStatus.req_id,
+      "READY"
+    );
   }
 };
 
-const callCreateSignatureRequest = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new SignatureRequestApiRequestFactory(configuration);
+const callCreateSignatureRequest = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new SignatureRequestApi(configuration);
   const answerCreateSignatureRequest = await inquirer.prompt([
     dossierIdQuestion,
     signerIdQuestion,
@@ -135,15 +129,6 @@ const callCreateSignatureRequest = async () => {
       signerId: answerCreateSignatureRequest.signer_id,
       expiresAt: answerCreateSignatureRequest.expires_at,
     };
-    apiInstance
-      .createSignatureRequest(body)
-      .then((data: RequestContext) => {
-        createResponse(data)
-          .then((data: EndpointResponse) => {
-            console.log(data);
-          })
-          .catch((error: any) => console.error(error));
-      })
-      .catch((error: any) => console.error(error));
+    return api.createSignatureRequest(body);
   }
 };

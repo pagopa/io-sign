@@ -1,12 +1,9 @@
 import inquirer from "inquirer";
-import { createConfiguration } from "@io-sign/io-sign-api-client";
-import { RequestContext } from "@io-sign/io-sign-api-client/http/http";
+import { createConfiguration, DossierApi } from "@io-sign/io-sign-api-client";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
 import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";
 import { SignatureField } from "@io-sign/io-sign-api-client/models/SignatureField";
 import { SignatureFieldAttrs } from "@io-sign/io-sign-api-client/models/SignatureFieldAttrs";
-import { DossierApiRequestFactory } from "@io-sign/io-sign-api-client/apis/DossierApi";
-import { createResponse, EndpointResponse } from "./utilities";
 import {
   dossierIdQuestion,
   dossierTitleQuestion,
@@ -39,9 +36,16 @@ export const callDossiers = async () => {
   }
 };
 
-const callNewDossier = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new DossierApiRequestFactory(configuration);
+const callNewDossier = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+
+  const api = new DossierApi(configuration);
 
   const answerPostDossier = await inquirer.prompt([
     dossierTitleQuestion,
@@ -53,24 +57,15 @@ const callNewDossier = async () => {
     documentsMetadata: [],
   };
 
-  for (let i: number = 1; i <= answerPostDossier.number_of_documents; i++) {
+  for (let i = 1; i <= answerPostDossier.number_of_documents; i++) {
     console.log(
       "Document " + i + " of " + answerPostDossier.number_of_documents
     );
-    const document: DocumentMetadata = await newDocument();
+    const document = await newDocument();
     body.documentsMetadata.push(document);
   }
 
-  apiInstance
-    .createDossier(body)
-    .then((data: RequestContext) => {
-      createResponse(data)
-        .then((data: EndpointResponse) => {
-          console.log(data);
-        })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
+  return api.createDossier(body);
 };
 
 const newDocument = async () => {
@@ -97,17 +92,12 @@ const newSignature = async () => {
     clauseTypeQuestion,
     clauseAttrsTypeQuestion,
   ]);
-  let attrs: SignatureFieldAttrs = {
-    uniqueName: "",
-    coordinates: { x: 0, y: 0 },
-    page: 0,
-    size: { w: 0, h: 0 },
-  };
-  if (answerNewSignature.command == "id univoco") {
-    attrs = await addUniqueName();
-  } else {
-    attrs = await addCoords();
-  }
+
+  const attrs =
+    0 === "id univoco".localeCompare(answerNewSignature.command)
+      ? await addUniqueName()
+      : await addCoords();
+
   const signature: SignatureField = {
     attrs,
     clause: {
@@ -146,22 +136,19 @@ const addUniqueName = async () => {
   return attrs;
 };
 
-const callGetDossier = async () => {
-  const configuration = createConfiguration();
-  const apiInstance = new DossierApiRequestFactory(configuration);
+const callGetDossier = async (
+  SubscriptionKey = process.env.SUBSCRIPTION_KEY
+) => {
+  const configuration = createConfiguration({
+    authMethods: {
+      SubscriptionKey,
+    },
+  });
+  const api = new DossierApi(configuration);
   const answerGetDossier = await inquirer.prompt([
     {
       dossierIdQuestion,
     },
   ]);
-  apiInstance
-    .getDossier(answerGetDossier.id)
-    .then((data: RequestContext) => {
-      createResponse(data)
-        .then((data: EndpointResponse) => {
-          console.log(data);
-        })
-        .catch((error: any) => console.error(error));
-    })
-    .catch((error: any) => console.error(error));
+  return api.getDossier(answerGetDossier.id);
 };
