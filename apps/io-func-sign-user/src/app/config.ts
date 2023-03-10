@@ -25,6 +25,10 @@ import {
   NamirialConfig,
 } from "../infra/namirial/config";
 import {
+  getLollipopConfigFromEnvironment,
+  LollipopConfig,
+} from "../infra/lollipop/config";
+import {
   getMockConfigFromEnvironment,
   MockConfig,
 } from "./use-cases/__mocks__/config";
@@ -37,6 +41,7 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
+    lollipop: LollipopConfig,
   }),
   mock: MockConfig,
   namirial: NamirialConfig,
@@ -55,6 +60,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
+    lollipop: getLollipopConfigFromEnvironment,
     mock: getMockConfigFromEnvironment,
   }),
   RE.map((config) => ({
@@ -65,6 +71,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
+      lollipop: config.lollipop,
     },
     mock: config.mock,
     namirial: config.namirial,
