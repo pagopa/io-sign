@@ -46,9 +46,13 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
+import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
+import { LollipopApiClient } from "../../lollipop/client";
+import { makeGetSamlAssertion } from "../../lollipop/assertion";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
+  lollipopApiClient: LollipopApiClient,
   db: CosmosDatabase,
   qtspQueue: QueueClient,
   validatedContainerClient: ContainerClient,
@@ -57,6 +61,7 @@ const makeCreateSignatureHandler = (
   mockConfig: MockConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const getSamlAssertion = makeGetSamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
     makeGetToken()
@@ -103,13 +108,33 @@ const makeCreateSignatureHandler = (
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),
+      lollipopParams: RTE.fromReaderEither(
+        requireCreateSignatureLollipopParams
+      ),
     }),
+    RTE.chainTaskEitherK((sequence) =>
+      pipe(
+        getSamlAssertion(
+          sequence.lollipopParams.assertionRef,
+          sequence.lollipopParams.jwtAuthorization,
+          sequence.lollipopParams.assertionType
+        ),
+        TE.map((samlAssertion) => ({
+          ...sequence,
+          lollipopParams: {
+            ...sequence.lollipopParams,
+            samlAssertion,
+          },
+        }))
+      )
+    ),
     RTE.map(
       ({
         signer,
         documentsSignature,
         qtspClauses,
         body: { email, signatureRequestId },
+        lollipopParams,
       }) => ({
         signer,
         qtspClauses: {
@@ -136,6 +161,13 @@ const makeCreateSignatureHandler = (
         email,
         signatureRequestId,
         spidAssertion: mockConfig.spidAssertionMock,
+        signatureValidationParams: {
+          signatureInput: lollipopParams.signatureInput,
+          publicKey: lollipopParams.publicKey,
+          samlAssertion: lollipopParams.samlAssertion,
+          tosSignature: "MOCK OF TOS ASSERTION" as NonEmptyString,
+          challengeSignature: "MOCK OF CHALLENGE ASSERTION" as NonEmptyString,
+        },
       })
     )
   );
@@ -153,7 +185,10 @@ const makeCreateSignatureHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    createSignature,
+    (params) => {
+      console.log(params.signatureValidationParams);
+      return createSignature(params);
+    },
     error,
     encodeHttpSuccessResponse
   );

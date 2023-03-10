@@ -127,6 +127,7 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
 
 export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
+  lollipopApiClient,
   database,
   qtspQueue,
   validatedContainerClient,

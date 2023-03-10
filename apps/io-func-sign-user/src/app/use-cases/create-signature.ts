@@ -23,6 +23,7 @@ import {
   InsertSignature,
   newSignature,
   NotifySignatureReadyEvent,
+  SignatureValidationParams,
 } from "../../signature";
 
 import { DocumentToSign } from "../../signature-field";
@@ -34,12 +35,10 @@ import {
 } from "../../signature-request";
 
 import {
-  convertPemToBase64JwkPublicKey,
   mockSignature,
   mockSignatureInput,
   mockSpidAssertion,
   mockTosSignature,
-  pemPublicKey,
 } from "./__mocks__/qtsp";
 
 export const CreateSignaturePayload = t.type({
@@ -49,6 +48,7 @@ export const CreateSignaturePayload = t.type({
   documentsSignature: t.array(DocumentToSign),
   email: EmailString,
   spidAssertion: NonEmptyString,
+  signatureValidationParams: SignatureValidationParams,
 });
 
 export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
@@ -123,6 +123,7 @@ export const makeCreateSignature =
     documentsSignature,
     email,
     spidAssertion,
+    signatureValidationParams,
   }: CreateSignaturePayload) => {
     const getDocumentUrlForSignature = pipe(
       signatureRequestId,
@@ -148,7 +149,6 @@ export const makeCreateSignature =
 
     const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
-        publicKey: convertPemToBase64JwkPublicKey(pemPublicKey),
         fiscalCode: pipe(
           signer.id,
           getFiscalCodeBySignerId,
@@ -193,7 +193,6 @@ export const makeCreateSignature =
       ),
       TE.map(
         ({
-          publicKey,
           documentsToSign,
           tosSignature,
           signature,
@@ -201,7 +200,7 @@ export const makeCreateSignature =
           mockedSpidAssertion,
         }) => ({
           fiscalCode,
-          publicKey,
+          publicKey: signatureValidationParams.publicKey,
           spidAssertion: mockedSpidAssertion,
           email,
           documentLink: qtspClauses.filledDocumentUrl,
