@@ -1,4 +1,4 @@
-import inquirer from "inquirer";
+import * as inquirer from "inquirer";
 import { Configuration, DossierApi } from "@io-sign/io-sign-api-client";
 import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
 import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";

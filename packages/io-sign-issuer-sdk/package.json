@@ -6,12 +6,6 @@
     "type": "git",
     "url": "https://github.com/pagopa/io-sign"
   },
-  "keywords": [
-    "fetch",
-    "typescript",
-    "openapi-client",
-    "openapi-generator"
-  ],
   "license": "Unlicense",
   "main": "./dist/index.js",
   "type": "commonjs",
@@ -31,11 +25,9 @@
   },
   "dependencies": {
     "@io-sign/io-sign-api-client": "^0.1.0",
-    "@types/inquirer": "^9.0.3",
-    "@types/node": "^18.11.18",
     "dotenv": "^16.0.3",
     "es6-promise": "^4.2.4",
-    "inquirer": "^8.0.0",
+    "inquirer": "^8.0.3",
     "url-parse": "^1.4.3",
     "whatwg-fetch": "^3.0.0"
   },
@@ -43,6 +35,8 @@
     "@jest/globals": "^29.3.1",
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.2.0",
+    "@types/inquirer": "^8.0.3",
+    "@types/node": "^18.11.18",
     "@types/url-parse": "1.4.4",
     "eslint": "^8.28.0",
     "jest": "^29.3.1",

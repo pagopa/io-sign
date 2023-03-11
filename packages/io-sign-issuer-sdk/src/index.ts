@@ -1,5 +1,4 @@
-import inquirer from "inquirer";
-
+import * as inquirer from "inquirer";
 import { createConfiguration } from "@io-sign/io-sign-api-client";
 import { callSigners } from "./signer";
 import { callDossiers } from "./dossier";

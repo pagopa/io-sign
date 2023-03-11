@@ -1,4 +1,4 @@
-import inquirer from "inquirer";
+import * as inquirer from "inquirer";
 
 import { Configuration, SignerApi } from "@io-sign/io-sign-api-client";
 import { GetSignerByFiscalCodeBody } from "@io-sign/io-sign-api-client/models/GetSignerByFiscalCodeBody";
