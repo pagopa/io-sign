@@ -5,11 +5,17 @@ import { callSigners } from "./signer";
 import { callDossiers } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
 
+const subscriptionKey = process.env.SUBSCRIPTION_KEY;
+
+if (subscriptionKey === undefined || subscriptionKey === null) {
+  throw new Error("Missing Subscription Key");
+}
+
 console.log(
   "Benvenuto nella CLI utilizzata dagli enti per integrarsi con Firma con IO"
 );
 
-const mainMenu = async (SubscriptionKey = process.env.SUBSCRIPTION_KEY) => {
+const mainMenu = async (SubscriptionKey: string = subscriptionKey) => {
   const answers = await inquirer.prompt([
     {
       type: "list",
