@@ -21,13 +21,14 @@
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
-    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript -o ../io-sign-api-client"
+    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
   },
   "dependencies": {
-    "@io-sign/io-sign-api-client": "^0.1.0",
+    "@io-sign/io-sign-api-client": "^1.0.0",
     "dotenv": "^16.0.3",
     "es6-promise": "^4.2.4",
     "inquirer": "^8.0.3",
+    "node-fetch": "^3.3.1",
     "url-parse": "^1.4.3",
     "whatwg-fetch": "^3.0.0"
   },

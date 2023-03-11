@@ -1,5 +1,6 @@
 import * as inquirer from "inquirer";
-import { createConfiguration } from "@io-sign/io-sign-api-client";
+import { Configuration } from "@io-sign/io-sign-api-client";
+import * as fetch from "isomorphic-fetch";
 import { callSigners } from "./signer";
 import { callDossiers } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
@@ -18,10 +19,9 @@ const mainMenu = async (SubscriptionKey = process.env.SUBSCRIPTION_KEY) => {
     },
   ]);
 
-  const configuration = createConfiguration({
-    authMethods: {
-      SubscriptionKey,
-    },
+  const configuration = new Configuration({
+    apiKey: SubscriptionKey,
+    fetchApi: fetch,
   });
 
   switch (answers.command) {

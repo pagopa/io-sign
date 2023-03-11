@@ -1,9 +1,12 @@
 import * as inquirer from "inquirer";
-import { Configuration, DossierApi } from "@io-sign/io-sign-api-client";
-import { CreateDossierBody } from "@io-sign/io-sign-api-client/models/CreateDossierBody";
-import { DocumentMetadata } from "@io-sign/io-sign-api-client/models/DocumentMetadata";
-import { SignatureField } from "@io-sign/io-sign-api-client/models/SignatureField";
-import { SignatureFieldAttrs } from "@io-sign/io-sign-api-client/models/SignatureFieldAttrs";
+import {
+  Configuration,
+  DossierApi,
+  DocumentMetadata,
+  SignatureField,
+  SignatureFieldAttrs,
+  CreateDossierBody,
+} from "@io-sign/io-sign-api-client";
 import {
   dossierIdQuestion,
   dossierTitleQuestion,
@@ -44,7 +47,7 @@ const callNewDossier = async (configuration: Configuration) => {
     numberOfDocumentsQuestion,
   ]);
 
-  const body: CreateDossierBody = {
+  const createDossierBody: CreateDossierBody = {
     title: answerPostDossier.title,
     documentsMetadata: [],
   };
@@ -54,10 +57,10 @@ const callNewDossier = async (configuration: Configuration) => {
     console.log(`Document ${i} of ${answerPostDossier.number_of_documents}`);
     const document = await newDocument();
     // eslint-disable-next-line functional/immutable-data
-    body.documentsMetadata.push(document);
+    createDossierBody.documentsMetadata.push(document);
   }
 
-  return api.createDossier(body);
+  return api.createDossier({ createDossierBody });
 };
 
 const newDocument = async () => {

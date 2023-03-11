@@ -3,8 +3,8 @@ import * as inquirer from "inquirer";
 import {
   Configuration,
   SignatureRequestApi,
+  CreateSignatureRequestBody,
 } from "@io-sign/io-sign-api-client";
-import { CreateSignatureRequestBody } from "@io-sign/io-sign-api-client/models/CreateSignatureRequestBody";
 import {
   signatureRequestIdQuestion,
   dossierIdQuestion,
@@ -73,10 +73,10 @@ const callSetSignatureRequestStatus = async (configuration: Configuration) => {
     changeSignatureRequestStatusQuestion,
   ]);
   if (answerSetSignatureRequestStatus.isReady) {
-    return api.setSignatureRequestStatus(
-      answerSetSignatureRequestStatus.req_id,
-      "READY"
-    );
+    return api.setSignatureRequestStatus({
+      id: answerSetSignatureRequestStatus.req_id,
+      body: "READY",
+    });
   }
 };
 
@@ -89,11 +89,11 @@ const callCreateSignatureRequest = async (configuration: Configuration) => {
     createSignatureRequestQuestion,
   ]);
   if (answerCreateSignatureRequest.isReady) {
-    const body: CreateSignatureRequestBody = {
+    const createSignatureRequestBody: CreateSignatureRequestBody = {
       dossierId: answerCreateSignatureRequest.dossier_id,
       signerId: answerCreateSignatureRequest.signer_id,
       expiresAt: answerCreateSignatureRequest.expires_at,
     };
-    return api.createSignatureRequest(body);
+    return api.createSignatureRequest({ createSignatureRequestBody });
   }
 };
