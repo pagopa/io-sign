@@ -8,12 +8,12 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import { LollipopSignature } from "../http/models/LollipopSignature";
 import { LollipopSignatureInput } from "../http/models/LollipopSignatureInput";
 
-const getRegexFromSignatureId = (signatureId: string) =>
+const getSignRegexFromSignatureId = (signatureId: string) =>
   new RegExp(`${signatureId}:[A-Za-z0-9+/=]*:?`);
 
 /* Given a LollipopSignature es: `sig1=:SIGNATURE_1:,sig2=:SIGNATURE_2:,sig3=:....` and a signatureInput like:
- * `sig1=("content-type").....,sig2=("CUSTOM_HEADER_NAME");created=...,sig3=("CUSTOM_HEADER_NAME_2");created=...`
- * return the signature (es: SIGNATURE_2) associated with the single header name (es: CUSTOM_HEADER_NAME)
+ * `sig1=("content-type").....,sig2=("CUSTOM_HEADER_NAME_1");created=...,sig3=("CUSTOM_HEADER_NAME_2");created=...`
+ * return the signature (es: SIGNATURE_2) associated with the single header name (es: CUSTOM_HEADER_NAME_1)
  */
 export const getSignatureFromSingleHeaderName = (
   signatureInput: LollipopSignatureInput,
@@ -30,7 +30,11 @@ export const getSignatureFromSingleHeaderName = (
     ),
     RA.head,
     O.chain(
-      flow(getRegexFromSignatureId, (re) => re.exec(sigantures), O.fromNullable)
+      flow(
+        getSignRegexFromSignatureId,
+        (re) => re.exec(sigantures),
+        O.fromNullable
+      )
     ),
     O.chain(RA.head),
     O.chain(
