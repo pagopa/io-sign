@@ -39,7 +39,6 @@ import { makeInsertSignature } from "../cosmos/signature";
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 
-import { MockConfig } from "../../../app/use-cases/__mocks__/config";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
@@ -58,8 +57,7 @@ const makeCreateSignatureHandler = (
   qtspQueue: QueueClient,
   validatedContainerClient: ContainerClient,
   signedContainerClient: ContainerClient,
-  qtspConfig: NamirialConfig,
-  mockConfig: MockConfig
+  qtspConfig: NamirialConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getSamlAssertion = makeGetSamlAssertion(lollipopApiClient);
@@ -191,11 +189,10 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         email,
         signatureRequestId,
-        spidAssertion: mockConfig.spidAssertionMock,
         signatureValidationParams: {
           signatureInput: lollipopParams.signatureInput,
           publicKeyBase64: lollipopParams.publicKey,
-          samlAssertionBase64: lollipopParams.samlAssertion,
+          samlAssertion: lollipopParams.samlAssertion,
           tosSignature: lollipopParams.tosSignature,
           challengeSignature: lollipopParams.challengeSignature,
         },

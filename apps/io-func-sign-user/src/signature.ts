@@ -84,7 +84,7 @@ export const SignatureValidationParams = t.type({
   // This is the signature of the challenge relating to the documents to be signed and the related clauses
   challengeSignature: NonEmptyString,
   publicKeyBase64: NonEmptyString,
-  samlAssertionBase64: NonEmptyString,
+  samlAssertion: NonEmptyString,
 });
 
 export type SignatureValidationParams = t.TypeOf<

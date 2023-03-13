@@ -28,10 +28,6 @@ import {
   getLollipopConfigFromEnvironment,
   LollipopConfig,
 } from "../infra/lollipop/config";
-import {
-  getMockConfigFromEnvironment,
-  MockConfig,
-} from "./use-cases/__mocks__/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -43,7 +39,6 @@ export const Config = t.type({
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
   }),
-  mock: MockConfig,
   namirial: NamirialConfig,
 });
 
@@ -61,7 +56,6 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
     lollipop: getLollipopConfigFromEnvironment,
-    mock: getMockConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -73,7 +67,6 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       ioServices: config.ioServices,
       lollipop: config.lollipop,
     },
-    mock: config.mock,
     namirial: config.namirial,
   }))
 );

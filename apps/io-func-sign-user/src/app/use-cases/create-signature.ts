@@ -40,7 +40,6 @@ export const CreateSignaturePayload = t.type({
   qtspClauses: QtspClauses,
   documentsSignature: t.array(DocumentToSign),
   email: EmailString,
-  spidAssertion: NonEmptyString,
   signatureValidationParams: SignatureValidationParams,
 });
 
@@ -171,7 +170,10 @@ export const makeCreateSignature =
       TE.map(({ documentsToSign, fiscalCode }) => ({
         fiscalCode,
         publicKey: signatureValidationParams.publicKeyBase64,
-        spidAssertion: signatureValidationParams.samlAssertionBase64,
+        spidAssertion: Buffer.from(
+          signatureValidationParams.samlAssertion,
+          "utf-8"
+        ).toString("base64") as NonEmptyString,
         email,
         documentLink: qtspClauses.filledDocumentUrl,
         tosSignature: signatureValidationParams.tosSignature,

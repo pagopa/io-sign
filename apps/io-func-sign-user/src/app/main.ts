@@ -132,8 +132,7 @@ export const CreateSignature = makeCreateSignatureFunction(
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
-  config.namirial,
-  config.mock
+  config.namirial
 );
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
