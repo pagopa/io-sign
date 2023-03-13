@@ -5,17 +5,25 @@ import { callSigners } from "./signer";
 import { callDossiers } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
 
+const apiPath = process.env.API_PATH;
 const subscriptionKey = process.env.SUBSCRIPTION_KEY;
 
 if (subscriptionKey === undefined || subscriptionKey === null) {
   throw new Error("Missing Subscription Key");
 }
 
+if (apiPath === undefined || apiPath === null) {
+  throw new Error("Missing api path");
+}
+
 console.log(
   "Benvenuto nella CLI utilizzata dagli enti per integrarsi con Firma con IO"
 );
 
-const mainMenu = async (SubscriptionKey: string = subscriptionKey) => {
+const mainMenu = async (
+  SubscriptionKey: string = subscriptionKey,
+  ApiPath: string = apiPath
+) => {
   const answers = await inquirer.prompt([
     {
       type: "list",
@@ -26,6 +34,7 @@ const mainMenu = async (SubscriptionKey: string = subscriptionKey) => {
   ]);
 
   const configuration = new Configuration({
+    basePath: ApiPath,
     apiKey: SubscriptionKey,
     fetchApi: fetch,
   });

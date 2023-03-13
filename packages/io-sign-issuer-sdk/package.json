@@ -14,7 +14,7 @@
   },
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "start-cli": "node dist/index.js",
+    "start-cli": "dotenv node dist/index.js",
     "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -25,9 +25,11 @@
   },
   "dependencies": {
     "@io-sign/io-sign-api-client": "^1.0.0",
+    "@types/isomorphic-fetch": "^0.0.36",
     "dotenv": "^16.0.3",
     "es6-promise": "^4.2.4",
     "inquirer": "^8.0.3",
+    "isomorphic-fetch": "^3.0.0",
     "node-fetch": "^3.3.1",
     "url-parse": "^1.4.3",
     "whatwg-fetch": "^3.0.0"
