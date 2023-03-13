@@ -121,15 +121,7 @@ const makeCreateSignatureHandler = (
               sequence.lollipopParams.signature,
               "x-pagopa-lollipop-custom-tos-challenge"
             ),
-            TE.fromOption(
-              () => new Error("Signature of tos challenge not found")
-            ),
-            TE.chainEitherKW(
-              validate(
-                NonEmptyString,
-                "Signature of tos challenge is not a valid string"
-              )
-            )
+            TE.fromEither
           ),
           challengeSignature: pipe(
             getSignatureFromSingleHeaderName(
@@ -137,13 +129,7 @@ const makeCreateSignatureHandler = (
               sequence.lollipopParams.signature,
               "x-pagopa-lollipop-custom-sign-challenge"
             ),
-            TE.fromOption(() => new Error("Signature of challenge not found")),
-            TE.chainEitherKW(
-              validate(
-                NonEmptyString,
-                "Signature of challenge is not a valid string"
-              )
-            )
+            TE.fromEither
           ),
         }),
         TE.map(({ samlAssertion, tosSignature, challengeSignature }) => ({

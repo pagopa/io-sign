@@ -1,7 +1,8 @@
 import { describe, it, expect } from "@jest/globals";
 
 import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
+
 import { getSignatureFromSingleHeaderName } from "../signature";
 import { LollipopSignatureInput } from "../../http/models/LollipopSignatureInput";
 import { LollipopSignature } from "../../http/models/LollipopSignature";
@@ -20,7 +21,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
           sigantures,
           "x-pagopa-lollipop-custom-tos-challenge"
         ),
-        O.getOrElse(() => "INVALID")
+        E.getOrElse(() => "INVALID")
       )
     ).toBe(
       "MEUCIBt8MzxjCdoTJiIqvQ0HAMKwXPahqjhK1k3iXj8fS6OLAiEA5WvRTvb/BVQwTUud+bcoNLSgBGoH/s4MwDY8Oom/+7E="
@@ -34,7 +35,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
           sigantures,
           "x-pagopa-lollipop-custom-sign-challenge"
         ),
-        O.getOrElse(() => "INVALID")
+        E.getOrElse(() => "INVALID")
       )
     ).toBe(
       "MEYCIQDKfk8cVxZaW/cZpTH82IjG0PCxbqlRZFa88/Tpwb2RMgIhAMkvojd6p8M2JE84EtiGu+O18W28MhcyCMbTd032JY/M"
@@ -48,7 +49,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
           sigantures,
           "x-pagopa-lollipop-custom-invalid"
         ),
-        O.getOrElse(() => "INVALID")
+        E.getOrElse(() => "INVALID")
       )
     ).toBe("INVALID");
   });
