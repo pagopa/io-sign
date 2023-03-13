@@ -8,6 +8,7 @@ import {
   HttpNotFoundError,
 } from "@io-sign/io-sign/infra/http/errors";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { validate } from "@io-sign/io-sign/validation";
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
 import { LollipopJWTAuthorization } from "../http/models/LollipopJWTAuthorization";
 import { LollipopApiClient } from "./client";
@@ -32,7 +33,7 @@ export const isAssertionSaml =
   (assertion: LCUserInfo): assertion is SamlUserInfo =>
     type === AssertionTypeEnum.SAML && SamlUserInfo.is(assertion);
 
-export const makeGetSamlAssertion =
+export const makeGetBase64SamlAssertion =
   (lollipopClient: LollipopApiClient): GetSamlAssertion =>
   ({ assertionRef, jwtAuthorization, assertionType }) =>
     pipe(
@@ -73,5 +74,9 @@ export const makeGetSamlAssertion =
         isAssertionSaml(assertionType)(assertion)
           ? TE.of(assertion.response_xml)
           : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`))
+      ),
+      TE.map((assertion) => Buffer.from(assertion, "utf-8").toString("base64")),
+      TE.chainEitherKW(
+        validate(NonEmptyString, "Saml assertion is not a valid")
       )
     );

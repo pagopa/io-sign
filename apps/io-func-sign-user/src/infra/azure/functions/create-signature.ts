@@ -47,7 +47,7 @@ import {
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
 import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
 import { LollipopApiClient } from "../../lollipop/client";
-import { makeGetSamlAssertion } from "../../lollipop/assertion";
+import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 const makeCreateSignatureHandler = (
@@ -60,7 +60,7 @@ const makeCreateSignatureHandler = (
   qtspConfig: NamirialConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
-  const getSamlAssertion = makeGetSamlAssertion(lollipopApiClient);
+  const getBase64SamlAssertion = makeGetBase64SamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
     makeGetToken()
@@ -114,7 +114,7 @@ const makeCreateSignatureHandler = (
     RTE.chainTaskEitherK((sequence) =>
       pipe(
         sequenceS(TE.ApplySeq)({
-          samlAssertion: getSamlAssertion(sequence.lollipopParams),
+          samlAssertionBase64: getBase64SamlAssertion(sequence.lollipopParams),
           tosSignature: pipe(
             getSignatureFromHeaderName(
               sequence.lollipopParams.signatureInput,
@@ -132,11 +132,11 @@ const makeCreateSignatureHandler = (
             TE.fromEither
           ),
         }),
-        TE.map(({ samlAssertion, tosSignature, challengeSignature }) => ({
+        TE.map(({ samlAssertionBase64, tosSignature, challengeSignature }) => ({
           ...sequence,
           lollipopParams: {
             ...sequence.lollipopParams,
-            samlAssertion,
+            samlAssertionBase64,
             tosSignature,
             challengeSignature,
           },
@@ -178,7 +178,7 @@ const makeCreateSignatureHandler = (
         signatureValidationParams: {
           signatureInput: lollipopParams.signatureInput,
           publicKeyBase64: lollipopParams.publicKey,
-          samlAssertion: lollipopParams.samlAssertion,
+          samlAssertionBase64: lollipopParams.samlAssertionBase64,
           tosSignature: lollipopParams.tosSignature,
           challengeSignature: lollipopParams.challengeSignature,
         },

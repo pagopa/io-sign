@@ -85,7 +85,7 @@ export const SignatureValidationParams = t.type({
   challengeSignature: NonEmptyString,
   publicKeyBase64: NonEmptyString,
   // SPID/CIE saml assertion. OIDC is not supported yet.
-  samlAssertion: NonEmptyString,
+  samlAssertionBase64: NonEmptyString,
 });
 
 export type SignatureValidationParams = t.TypeOf<
