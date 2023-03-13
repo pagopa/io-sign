@@ -48,7 +48,7 @@ import { makeNotifySignatureReadyEvent } from "../storage/signature";
 import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
 import { LollipopApiClient } from "../../lollipop/client";
 import { makeGetSamlAssertion } from "../../lollipop/assertion";
-import { getSignatureFromSingleHeaderName } from "../../lollipop/signature";
+import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
@@ -116,7 +116,7 @@ const makeCreateSignatureHandler = (
         sequenceS(TE.ApplySeq)({
           samlAssertion: getSamlAssertion(sequence.lollipopParams),
           tosSignature: pipe(
-            getSignatureFromSingleHeaderName(
+            getSignatureFromHeaderName(
               sequence.lollipopParams.signatureInput,
               sequence.lollipopParams.signature,
               "x-pagopa-lollipop-custom-tos-challenge"
@@ -124,7 +124,7 @@ const makeCreateSignatureHandler = (
             TE.fromEither
           ),
           challengeSignature: pipe(
-            getSignatureFromSingleHeaderName(
+            getSignatureFromHeaderName(
               sequence.lollipopParams.signatureInput,
               sequence.lollipopParams.signature,
               "x-pagopa-lollipop-custom-sign-challenge"

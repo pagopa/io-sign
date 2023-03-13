@@ -3,7 +3,7 @@ import { describe, it, expect } from "@jest/globals";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
-import { getSignatureFromSingleHeaderName } from "../signature";
+import { getSignatureFromHeaderName } from "../signature";
 import { LollipopSignatureInput } from "../../http/models/LollipopSignatureInput";
 import { LollipopSignature } from "../../http/models/LollipopSignature";
 
@@ -16,7 +16,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
   it("should return correct signature for x-pagopa-lollipop-custom-tos-challenge", () => {
     expect(
       pipe(
-        getSignatureFromSingleHeaderName(
+        getSignatureFromHeaderName(
           signatureInput,
           sigantures,
           "x-pagopa-lollipop-custom-tos-challenge"
@@ -30,7 +30,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
   it("should return correct signature for x-pagopa-lollipop-custom-sign-challenge", () => {
     expect(
       pipe(
-        getSignatureFromSingleHeaderName(
+        getSignatureFromHeaderName(
           signatureInput,
           sigantures,
           "x-pagopa-lollipop-custom-sign-challenge"
@@ -44,7 +44,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
   it("should fail for x-pagopa-lollipop-custom-invalid", () => {
     expect(
       pipe(
-        getSignatureFromSingleHeaderName(
+        getSignatureFromHeaderName(
           signatureInput,
           sigantures,
           "x-pagopa-lollipop-custom-invalid"

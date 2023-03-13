@@ -18,7 +18,7 @@ const getSignRegexFromSignatureId = (signatureId: string) =>
  * `sig1=("content-type").....,sig2=("CUSTOM_HEADER_NAME_1");created=...,sig3=("CUSTOM_HEADER_NAME_2");created=...`
  * return the signature (es: SIGNATURE_2) associated with the single header name (es: CUSTOM_HEADER_NAME_1)
  */
-export const getSignatureFromSingleHeaderName = (
+export const getSignatureFromHeaderName = (
   signatureInput: LollipopSignatureInput,
   sigantures: LollipopSignature,
   headerName: string
