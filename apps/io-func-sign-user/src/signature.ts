@@ -84,6 +84,7 @@ export const SignatureValidationParams = t.type({
   // This is the signature of the challenge relating to the documents to be signed and the related clauses
   challengeSignature: NonEmptyString,
   publicKeyBase64: NonEmptyString,
+  // SPID/CIE saml assertion. OIDC is not supported yet.
   samlAssertion: NonEmptyString,
 });
 
