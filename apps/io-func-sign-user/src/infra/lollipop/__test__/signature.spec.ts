@@ -20,7 +20,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
           sigantures,
           "x-pagopa-lollipop-custom-tos-challenge"
         ),
-        O.getOrElse(() => "")
+        O.getOrElse(() => "INVALID")
       )
     ).toBe(
       "MEUCIBt8MzxjCdoTJiIqvQ0HAMKwXPahqjhK1k3iXj8fS6OLAiEA5WvRTvb/BVQwTUud+bcoNLSgBGoH/s4MwDY8Oom/+7E="
@@ -34,10 +34,22 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
           sigantures,
           "x-pagopa-lollipop-custom-sign-challenge"
         ),
-        O.getOrElse(() => "")
+        O.getOrElse(() => "INVALID")
       )
     ).toBe(
       "MEYCIQDKfk8cVxZaW/cZpTH82IjG0PCxbqlRZFa88/Tpwb2RMgIhAMkvojd6p8M2JE84EtiGu+O18W28MhcyCMbTd032JY/M"
     );
+  });
+  it("should fail for x-pagopa-lollipop-custom-invalid", () => {
+    expect(
+      pipe(
+        getSignatureFromSingleHeaderName(
+          signatureInput,
+          sigantures,
+          "x-pagopa-lollipop-custom-invalid"
+        ),
+        O.getOrElse(() => "INVALID")
+      )
+    ).toBe("INVALID");
   });
 });
