@@ -76,7 +76,5 @@ export const makeGetBase64SamlAssertion =
           : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`))
       ),
       TE.map((assertion) => Buffer.from(assertion, "utf-8").toString("base64")),
-      TE.chainEitherKW(
-        validate(NonEmptyString, "Saml assertion is not a valid")
-      )
+      TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid"))
     );
