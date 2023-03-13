@@ -8,6 +8,7 @@ import {
   HttpNotFoundError,
 } from "@io-sign/io-sign/infra/http/errors";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { validate } from "@io-sign/io-sign/validation";
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
 import { LollipopJWTAuthorization } from "../http/models/LollipopJWTAuthorization";
 import { LollipopApiClient } from "./client";
@@ -16,11 +17,16 @@ import { AssertionType, AssertionTypeEnum } from "./models/AssertionType";
 import { LCUserInfo } from "./models/LCUserInfo";
 import { SamlUserInfo } from "./models/SamlUserInfo";
 
-export type GetSamlAssertion = (
-  assertionRef: LollipopAssertionRef,
-  jwtAuthorization: LollipopJWTAuthorization,
-  assertionType: AssertionType
-) => TE.TaskEither<Error, NonEmptyString>;
+type LollipopParamsForSaml = {
+  assertionRef: LollipopAssertionRef;
+  jwtAuthorization: LollipopJWTAuthorization;
+  assertionType: AssertionType;
+};
+export type GetSamlAssertion = ({
+  assertionRef,
+  jwtAuthorization,
+  assertionType,
+}: LollipopParamsForSaml) => TE.TaskEither<Error, NonEmptyString>;
 
 export const isAssertionSaml =
   (type: AssertionType) =>
@@ -29,11 +35,7 @@ export const isAssertionSaml =
 
 export const makeGetSamlAssertion =
   (lollipopClient: LollipopApiClient): GetSamlAssertion =>
-  (
-    assertionRef: LollipopAssertionRef,
-    jwtAuthorization: LollipopJWTAuthorization,
-    assertionType: AssertionType
-  ) =>
+  ({ assertionRef, jwtAuthorization, assertionType }) =>
     pipe(
       TE.tryCatch(
         () =>
@@ -72,5 +74,11 @@ export const makeGetSamlAssertion =
         isAssertionSaml(assertionType)(assertion)
           ? TE.of(assertion.response_xml)
           : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`))
+      ),
+      TE.map((assertion) => Buffer.from(assertion, "utf-8").toString("base64")),
+      TE.chainEitherKW(
+        flow(
+          validate(NonEmptyString, "Unable to convert SAML assertion to base64")
+        )
       )
     );

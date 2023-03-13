@@ -49,6 +49,7 @@ import { makeNotifySignatureReadyEvent } from "../storage/signature";
 import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
 import { LollipopApiClient } from "../../lollipop/client";
 import { makeGetSamlAssertion } from "../../lollipop/assertion";
+import { getSignatureFromSingleHeaderName } from "../../lollipop/signature";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
@@ -114,16 +115,46 @@ const makeCreateSignatureHandler = (
     }),
     RTE.chainTaskEitherK((sequence) =>
       pipe(
-        getSamlAssertion(
-          sequence.lollipopParams.assertionRef,
-          sequence.lollipopParams.jwtAuthorization,
-          sequence.lollipopParams.assertionType
-        ),
-        TE.map((samlAssertion) => ({
+        sequenceS(TE.ApplySeq)({
+          samlAssertion: getSamlAssertion(sequence.lollipopParams),
+          tosSignature: pipe(
+            getSignatureFromSingleHeaderName(
+              sequence.lollipopParams.signatureInput,
+              sequence.lollipopParams.signature,
+              "x-pagopa-lollipop-custom-tos-challenge"
+            ),
+            TE.fromOption(
+              () => new Error("Signature of tos challenge not found")
+            ),
+            TE.chainEitherKW(
+              validate(
+                NonEmptyString,
+                "Signature of tos challenge is not a valid string"
+              )
+            )
+          ),
+          challengeSignature: pipe(
+            getSignatureFromSingleHeaderName(
+              sequence.lollipopParams.signatureInput,
+              sequence.lollipopParams.signature,
+              "x-pagopa-lollipop-custom-sign-challenge"
+            ),
+            TE.fromOption(() => new Error("Signature of challenge not found")),
+            TE.chainEitherKW(
+              validate(
+                NonEmptyString,
+                "Signature of challenge is not a valid string"
+              )
+            )
+          ),
+        }),
+        TE.map(({ samlAssertion, tosSignature, challengeSignature }) => ({
           ...sequence,
           lollipopParams: {
             ...sequence.lollipopParams,
             samlAssertion,
+            tosSignature,
+            challengeSignature,
           },
         }))
       )
@@ -163,10 +194,10 @@ const makeCreateSignatureHandler = (
         spidAssertion: mockConfig.spidAssertionMock,
         signatureValidationParams: {
           signatureInput: lollipopParams.signatureInput,
-          publicKey: lollipopParams.publicKey,
-          samlAssertion: lollipopParams.samlAssertion,
-          tosSignature: "MOCK OF TOS ASSERTION" as NonEmptyString,
-          challengeSignature: "MOCK OF CHALLENGE ASSERTION" as NonEmptyString,
+          publicKeyBase64: lollipopParams.publicKey,
+          samlAssertionBase64: lollipopParams.samlAssertion,
+          tosSignature: lollipopParams.tosSignature,
+          challengeSignature: lollipopParams.challengeSignature,
         },
       })
     )
@@ -185,10 +216,7 @@ const makeCreateSignatureHandler = (
 
   return createHandler(
     decodeHttpRequest,
-    (params) => {
-      console.log(params.signatureValidationParams);
-      return createSignature(params);
-    },
+    createSignature,
     error,
     encodeHttpSuccessResponse
   );

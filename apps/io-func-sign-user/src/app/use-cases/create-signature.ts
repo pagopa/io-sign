@@ -34,13 +34,6 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 
-import {
-  mockSignature,
-  mockSignatureInput,
-  mockSpidAssertion,
-  mockTosSignature,
-} from "./__mocks__/qtsp";
-
 export const CreateSignaturePayload = t.type({
   signatureRequestId: NonEmptyString,
   signer: Signer,
@@ -122,7 +115,6 @@ export const makeCreateSignature =
     qtspClauses,
     documentsSignature,
     email,
-    spidAssertion,
     signatureValidationParams,
   }: CreateSignaturePayload) => {
     const getDocumentUrlForSignature = pipe(
@@ -175,45 +167,22 @@ export const makeCreateSignature =
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
-        tosSignature: pipe(qtspClauses, mockTosSignature),
-        mockedSpidAssertion: pipe(
-          qtspClauses,
-          mockSpidAssertion()(spidAssertion)
-        ),
       }),
-      TE.chain((sequence) =>
-        pipe(
-          sequence.documentsToSign,
-          mockSignature,
-          TE.map((signature) => ({
-            ...sequence,
-            signature,
-          }))
-        )
-      ),
-      TE.map(
-        ({
-          documentsToSign,
-          tosSignature,
-          signature,
-          fiscalCode,
-          mockedSpidAssertion,
-        }) => ({
-          fiscalCode,
-          publicKey: signatureValidationParams.publicKey,
-          spidAssertion: mockedSpidAssertion,
-          email,
-          documentLink: qtspClauses.filledDocumentUrl,
-          tosSignature: tosSignature.value,
-          signature: signature.value,
-          nonce: qtspClauses.nonce,
-          documentsToSign,
-          signatureInput: mockSignatureInput(
-            tosSignature.signatureParams,
-            signature.signatureParams
-          ),
-        })
-      ),
+      TE.map(({ documentsToSign, fiscalCode }) => ({
+        fiscalCode,
+        publicKey: signatureValidationParams.publicKeyBase64,
+        spidAssertion: signatureValidationParams.samlAssertionBase64,
+        email,
+        documentLink: qtspClauses.filledDocumentUrl,
+        tosSignature: signatureValidationParams.tosSignature,
+        signature: signatureValidationParams.challengeSignature,
+        nonce: qtspClauses.nonce,
+        documentsToSign,
+        signatureInput: Buffer.from(
+          signatureValidationParams.signatureInput,
+          "utf-8"
+        ).toString("base64") as NonEmptyString,
+      })),
       TE.chain(creatQtspSignatureRequest),
       TE.filterOrElse(
         (qtspResponse) => qtspResponse.status === "CREATED",
