@@ -64,6 +64,7 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
     ).toBe("INVALID");
   });
 });
+
 describe("lollipop infra: getSignaturePrefixFromHeaderName", () => {
   it("should return correct signature prefix for x-pagopa-lollipop-custom-tos-challenge header name", () => {
     expect(
