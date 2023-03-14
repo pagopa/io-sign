@@ -12,7 +12,7 @@ import { LollipopSignature } from "../http/models/LollipopSignature";
 import { LollipopSignatureInput } from "../http/models/LollipopSignatureInput";
 
 const getSignRegexFromSignaturePrefix = (signaturePrefix: string) =>
-  new RegExp(`${signaturePrefix}:([^:]*):?`);
+  new RegExp(`${signaturePrefix}:([^:]+)`);
 
 /* Given a LollipopSignature es: `sig1=:SIGNATURE_1:,sig2=:SIGNATURE_2:,sig3=:....` and a signatureInput like:
  * `sig1=("content-type").....,sig2=("CUSTOM_HEADER_NAME_1");created=...,sig3=("CUSTOM_HEADER_NAME_2");created=...`
@@ -46,12 +46,7 @@ export const getSignatureFromHeaderName = (
       )
     ),
     // Given the regex result extracts the first group: SomeValue
-    O.chain(
-      flow(
-        RA.filterWithIndex((matchIndex) => matchIndex === 1),
-        RA.head
-      )
-    ),
+    O.chain(RA.lookup(1)),
     E.fromOption(
       () => new Error(`Signature of "${headerName}" header not found`)
     ),
