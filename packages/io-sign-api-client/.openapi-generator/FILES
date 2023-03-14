@@ -1,6 +1,8 @@
 .gitignore
 .npmignore
+.openapi-generator-ignore
 README.md
+package.json
 src/apis/DossierApi.ts
 src/apis/SignatureRequestApi.ts
 src/apis/SignerApi.ts
