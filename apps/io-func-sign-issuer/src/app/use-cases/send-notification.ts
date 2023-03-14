@@ -28,23 +28,21 @@ import {
 
 const requestToSignMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    content: {
-      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di firma`,
-      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
-        signatureRequest.id
-      }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
-        signatureRequest.id
-      }"\n---\nL'ente ${
-        signatureRequest.issuerDescription
-      } ha **richiesto la tua firma** su alcuni documenti relativi a ${
-        dossier.title
-      }.\n\n\nHai tempo fino al ${format(
-        signatureRequest.expiresAt,
-        "dd/MM/yyyy"
-      )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
-        signatureRequest.issuerEmail
-      }](mailto:${signatureRequest.issuerEmail}).`,
-    },
+    subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di firma`,
+    markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+      signatureRequest.id
+    }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+      signatureRequest.id
+    }"\n---\nL'ente ${
+      signatureRequest.issuerDescription
+    } ha **richiesto la tua firma** su alcuni documenti relativi a ${
+      dossier.title
+    }.\n\n\nHai tempo fino al ${format(
+      signatureRequest.expiresAt,
+      "dd/MM/yyyy"
+    )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
+      signatureRequest.issuerEmail
+    }](mailto:${signatureRequest.issuerEmail}).`,
   });
 
 const SignatureRequestReadyToNotify = makeSignatureRequestVariant(

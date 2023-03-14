@@ -1,10 +1,16 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
+import * as Enc from "io-ts/lib/Encoder";
+
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
 import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
+import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
+import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
 import {
+  NotificationContent,
+  NotificationContentWithAttachments,
   NotificationMessage,
   SubmitNotificationForUser,
 } from "../../notification";
@@ -14,6 +20,33 @@ import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
 
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
+
+export const NotificationContentToApiModel: Enc.Encoder<
+  NewMessage,
+  NotificationContent
+> = {
+  encode: (message) => ({
+    content: {
+      subject: message.subject,
+      markdown: message.markdown,
+    },
+  }),
+};
+
+export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
+  NewMessage,
+  NotificationContentWithAttachments
+> = {
+  encode: (message) => ({
+    content: {
+      ...NotificationContentToApiModel.encode(message).content,
+      third_party_data: {
+        id: message.signatureRequestId,
+        has_attachments: true,
+      },
+    },
+  }),
+};
 
 export const makeSubmitMessageForUser =
   (ioApiClient: IOApiClient): SubmitNotificationForUser =>
@@ -34,8 +67,16 @@ export const makeSubmitMessageForUser =
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message: {
-                ...message,
+                ...("signatureRequestId" in message
+                  ? NotificationContentWithAttachmentsToApiModel.encode(message)
+                  : NotificationContentToApiModel.encode(message)),
                 fiscal_code: fiscalCode,
+                /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
+                 * In our case we have not adhered to any agreement therefore the field remains STANDARD but
+                 * in any case we are enabled to use the attachments feature.
+                 * The user associated with the service has been added to a particular group (ApiThirdPartyMessageWrite) on the APIM.
+                 */
+                feature_level_type: FeatureLevelTypeEnum.STANDARD,
               },
             }),
           E.toError

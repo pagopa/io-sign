@@ -90,9 +90,23 @@ export const PdfDocumentMetadata = t.type({
 });
 export type PdfDocumentMetadata = t.TypeOf<typeof PdfDocumentMetadata>;
 
+export interface SignatureFieldsBrand {
+  readonly SignatureFields: unique symbol;
+}
+
+export const SignatureFields = t.brand(
+  t.array(SignatureField),
+  (
+    signatureFields
+  ): signatureFields is t.Branded<SignatureField[], SignatureFieldsBrand> =>
+    signatureFields.length === 0 ||
+    signatureFields.some((field) => field.clause.type !== "OPTIONAL"),
+  "SignatureFields"
+);
+
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 60),
-  signatureFields: t.array(SignatureField),
+  signatureFields: SignatureFields,
   pdfDocumentMetadata: PdfDocumentMetadata,
 });
 

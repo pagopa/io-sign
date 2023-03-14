@@ -11,16 +11,20 @@ This repository contains the code that composes the `io-sign` back-end, that is 
 
 These services are deployed as `Azure Function App`, and use the `Node.js` Azure runtime.
 
-## Local development
+It also contains `io-sign-selfcare-frontend` the frontend for self-care integration.
 
-In order to run the `io-sign` back-end locally you need the following tool installed on your machine.
+## Prerequisites
+
+In order to run the `io-sign` back-end/front-end locally you need the following tool installed on your machine.
 
 - `Node.js 16`
 - `yarn 3`
 
 The preferred way to set up the local environment is using [nodenv](https://github.com/nodenv/nodenv) to manage `Node.js` installation and `corepack` (included with `Node.js`) to manage the installation of `yarn`.
 
-Once these tools are installed, to test the `Azure Functions` locally:
+## Backend local development
+
+To test the `Azure Functions` locally:
 
 1. **Setup the Environment Variables.** Create a file called `local.settings.json` in each `Azure Functions App` folder (`./apps/*`) valued according to the environment variables listed in `local.settings.json.example`.
 
@@ -35,13 +39,23 @@ yarn workspaces foreach run generate:api-models
 yarn build
 ```
 
-3. **Run the Azure Function App**. Run (from the root folder) the following command
+## Frontend local development
+
+To test the `webapp` locally:
+
+1. **Install the project (if you haven't already).** Run from the root folder the following commands.
 
 ```bash
-# replace WORKSPACE_NAME with
-# - io-func-sign-issuer
-# - io-func-sign-user
-yarn workspace WORKSPACE_NAME start
+# to install the dependencies
+yarn
+# to build all projects
+yarn build
+```
+
+2. **Run the Web App**. Run (from the root folder) the following command
+
+```bash
+yarn workspace io-sign-selfcare-frontend dev
 ```
 
 ## Release management
@@ -91,7 +105,7 @@ yarn workspace @io-sign/io-sign add -D jest
 yarn workspace foreach add io-ts
 ```
 
-### Build the deployment package (for upload on Azure)
+### Build the backend deployment package (for upload on Azure)
 
 This command generates a deployment package (`ZIP`), in the workspace folder, with bundled dependencies, ready to be deployed on Azure.
 
@@ -100,4 +114,12 @@ yarn workspace WORKSPACE_NAME run build:package
 
 # example
 yarn workspace io-func-sign-issuer run build:package
+```
+
+### Build the frontend deployment package (for upload on Azure)
+
+This command generates static frontend files inside the `out` folder which can then be uploaded to a static website:
+
+```bash
+yarn workspace io-sign-selfcare-frontend run export
 ```
