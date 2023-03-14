@@ -15,10 +15,6 @@ import { LollipopSignatureInput } from "../http/models/LollipopSignatureInput";
 export type LollipopSignaturePrefix = t.TypeOf<typeof LollipopSignaturePrefix>;
 export const LollipopSignaturePrefix = PatternString("^sig[0-9]+=");
 
-const getSignRegexFromSignaturePrefix = (
-  signaturePrefix: LollipopSignaturePrefix
-) => new RegExp(`${signaturePrefix}:([^:]+)`);
-
 /* Given a signature input: sig1=("FooBar"),sig2=("DeadBeef")
  * and the header name: FooBar
  * return the signature prefix with index: sig1=
@@ -49,8 +45,7 @@ export const getSignatureFromPrefix =
   (signatures: LollipopSignature) =>
   (signaturePrefix: LollipopSignaturePrefix) =>
     pipe(
-      getSignRegexFromSignaturePrefix(signaturePrefix),
-      (re) => re.exec(signatures),
+      new RegExp(`${signaturePrefix}:([^:]+)`).exec(signatures),
       O.fromNullable,
       O.chain(RA.lookup(1))
     );
