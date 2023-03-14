@@ -30,7 +30,32 @@ const requireParameterFromHeader =
       )
     );
 
-export const requireBasicLollipopParams = (request: HttpRequest) =>
+export const BasicLollipopParams = t.type({
+  signatureInput: LollipopSignatureInput,
+  signature: LollipopSignature,
+  jwtAuthorization: LollipopJWTAuthorization,
+  assertionRef: LollipopAssertionRef,
+  assertionType: AssertionType,
+  publicKey: LollipopPublicKey,
+});
+
+export type BasicLollipopParams = t.TypeOf<typeof BasicLollipopParams>;
+
+export const CreateSignatureLollipopParams = t.intersection([
+  BasicLollipopParams,
+  t.type({
+    tosChallenge: NonEmptyString,
+    signChallenge: NonEmptyString,
+  }),
+]);
+
+export type CreateSignatureLollipopParams = t.TypeOf<
+  typeof CreateSignatureLollipopParams
+>;
+
+export const requireBasicLollipopParams = (
+  request: HttpRequest
+): E.Either<Error, BasicLollipopParams> =>
   pipe(
     sequenceS(E.Applicative)({
       signatureInput: pipe(
@@ -72,11 +97,13 @@ export const requireBasicLollipopParams = (request: HttpRequest) =>
     })
   );
 
-export const requireCreateSignatureLollipopParams = (request: HttpRequest) =>
+export const requireCreateSignatureLollipopParams = (
+  request: HttpRequest
+): E.Either<Error, CreateSignatureLollipopParams> =>
   pipe(
     request,
     requireBasicLollipopParams,
-    E.chain((lollipopBasic) =>
+    E.chainW((lollipopBasic) =>
       pipe(
         sequenceS(E.Applicative)({
           tosChallenge: pipe(

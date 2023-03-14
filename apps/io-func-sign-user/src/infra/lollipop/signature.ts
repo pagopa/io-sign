@@ -12,7 +12,7 @@ import { LollipopSignature } from "../http/models/LollipopSignature";
 import { LollipopSignatureInput } from "../http/models/LollipopSignatureInput";
 
 const getSignRegexFromSignaturePrefix = (signaturePrefix: string) =>
-  new RegExp(`${signaturePrefix}:[A-Za-z0-9+/=]*:?`);
+  new RegExp(`${signaturePrefix}:([^:]*):?`);
 
 /* Given a LollipopSignature es: `sig1=:SIGNATURE_1:,sig2=:SIGNATURE_2:,sig3=:....` and a signatureInput like:
  * `sig1=("content-type").....,sig2=("CUSTOM_HEADER_NAME_1");created=...,sig3=("CUSTOM_HEADER_NAME_2");created=...`
@@ -24,11 +24,9 @@ export const getSignatureFromHeaderName = (
   headerName: string
 ) =>
   pipe(
-    /* signatureInput field contains the parameters of all the signatures (sig1, sig2, ...) separated by comma
-     * each one associated with one or more headers. Here therefore for each signatureParam a filter is first applied
-     * to obtain signatureParam associated with a single header-name and subsequently a map is made to obtain only
-     * the signature prefix (e.g. sig1=)
-     */
+    // Given a signature input: sig1=("FooBar"),sig2=("DeadBeef")
+    // and the header name: FooBar
+    // return the signature prefix with index: sig1=
     signatureInput,
     S.split(","),
     RA.filterMapWithIndex((index: number, signatureInput: string) =>
@@ -37,6 +35,9 @@ export const getSignatureFromHeaderName = (
         : O.none
     ),
     RA.head,
+    // Given a signatures string: sig1=:SomeValue:,sig2=:SomeOtherValue:
+    // and the signature prefix with index: sig1=
+    // extract a regex match: sig1=:SomeValue: and a regex group: SomeValue
     O.chain(
       flow(
         getSignRegexFromSignaturePrefix,
@@ -44,11 +45,10 @@ export const getSignatureFromHeaderName = (
         O.fromNullable
       )
     ),
-    O.chain(RA.head),
+    // Given the regex result extracts the first group: SomeValue
     O.chain(
       flow(
-        S.split(/[::]/),
-        RA.filterWithIndex((i) => i === 1),
+        RA.filterWithIndex((group) => group === 1),
         RA.head
       )
     ),
