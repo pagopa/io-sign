@@ -25,9 +25,9 @@ import {
   NamirialConfig,
 } from "../infra/namirial/config";
 import {
-  getMockConfigFromEnvironment,
-  MockConfig,
-} from "./use-cases/__mocks__/config";
+  getLollipopConfigFromEnvironment,
+  LollipopConfig,
+} from "../infra/lollipop/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -37,8 +37,8 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
+    lollipop: LollipopConfig,
   }),
-  mock: MockConfig,
   namirial: NamirialConfig,
 });
 
@@ -55,7 +55,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
-    mock: getMockConfigFromEnvironment,
+    lollipop: getLollipopConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -65,8 +65,8 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
+      lollipop: config.lollipop,
     },
-    mock: config.mock,
     namirial: config.namirial,
   }))
 );

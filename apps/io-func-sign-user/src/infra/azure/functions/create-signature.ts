@@ -39,24 +39,28 @@ import { makeInsertSignature } from "../cosmos/signature";
 import { SignatureToApiModel } from "../../http/encoders/signature";
 import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 
-import { MockConfig } from "../../../app/use-cases/__mocks__/config";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
+import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
+import { LollipopApiClient } from "../../lollipop/client";
+import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
+import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
+  lollipopApiClient: LollipopApiClient,
   db: CosmosDatabase,
   qtspQueue: QueueClient,
   validatedContainerClient: ContainerClient,
   signedContainerClient: ContainerClient,
-  qtspConfig: NamirialConfig,
-  mockConfig: MockConfig
+  qtspConfig: NamirialConfig
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const getBase64SamlAssertion = makeGetBase64SamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
     makeGetToken()
@@ -103,13 +107,49 @@ const makeCreateSignatureHandler = (
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),
+      lollipopParams: RTE.fromReaderEither(
+        requireCreateSignatureLollipopParams
+      ),
     }),
+    RTE.chainTaskEitherK((sequence) =>
+      pipe(
+        sequenceS(TE.ApplySeq)({
+          samlAssertionBase64: getBase64SamlAssertion(sequence.lollipopParams),
+          tosSignature: pipe(
+            getSignatureFromHeaderName(
+              sequence.lollipopParams.signatureInput,
+              sequence.lollipopParams.signature,
+              "x-pagopa-lollipop-custom-tos-challenge"
+            ),
+            TE.fromEither
+          ),
+          challengeSignature: pipe(
+            getSignatureFromHeaderName(
+              sequence.lollipopParams.signatureInput,
+              sequence.lollipopParams.signature,
+              "x-pagopa-lollipop-custom-sign-challenge"
+            ),
+            TE.fromEither
+          ),
+        }),
+        TE.map(({ samlAssertionBase64, tosSignature, challengeSignature }) => ({
+          ...sequence,
+          lollipopParams: {
+            ...sequence.lollipopParams,
+            samlAssertionBase64,
+            tosSignature,
+            challengeSignature,
+          },
+        }))
+      )
+    ),
     RTE.map(
       ({
         signer,
         documentsSignature,
         qtspClauses,
         body: { email, signatureRequestId },
+        lollipopParams,
       }) => ({
         signer,
         qtspClauses: {
@@ -135,7 +175,13 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         email,
         signatureRequestId,
-        spidAssertion: mockConfig.spidAssertionMock,
+        signatureValidationParams: {
+          signatureInput: lollipopParams.signatureInput,
+          publicKeyBase64: lollipopParams.publicKey,
+          samlAssertionBase64: lollipopParams.samlAssertionBase64,
+          tosSignature: lollipopParams.tosSignature,
+          challengeSignature: lollipopParams.challengeSignature,
+        },
       })
     )
   );
