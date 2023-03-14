@@ -177,7 +177,7 @@ const makeCreateSignatureHandler = (
         signatureRequestId,
         signatureValidationParams: {
           signatureInput: lollipopParams.signatureInput,
-          publicKeyBase64: lollipopParams.publicKey,
+          publicKey: lollipopParams.publicKey,
           samlAssertionBase64: lollipopParams.samlAssertionBase64,
           tosSignature: lollipopParams.tosSignature,
           challengeSignature: lollipopParams.challengeSignature,

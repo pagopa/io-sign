@@ -170,7 +170,7 @@ export const makeCreateSignature =
       }),
       TE.map(({ documentsToSign, fiscalCode }) => ({
         fiscalCode,
-        publicKey: signatureValidationParams.publicKeyBase64,
+        publicKey: signatureValidationParams.publicKey,
         spidAssertion: signatureValidationParams.samlAssertionBase64,
         email,
         documentLink: qtspClauses.filledDocumentUrl,
@@ -192,6 +192,24 @@ export const makeCreateSignature =
           E.map((signatureInput) => ({
             ...createSignaturePayload,
             signatureInput,
+          }))
+        )
+      ),
+      TE.chainEitherKW((createSignaturePayload) =>
+        pipe(
+          Buffer.from(createSignaturePayload.publicKey, "base64").toString(
+            "utf-8"
+          ),
+          JSON.parse,
+          (jsonKey) =>
+            Buffer.from(JSON.stringify(jsonKey), "utf-8").toString("base64"),
+          validate(
+            NonEmptyString,
+            "Unable to convert publicKey to base64 string"
+          ),
+          E.map((publicKey) => ({
+            ...createSignaturePayload,
+            publicKey,
           }))
         )
       ),
