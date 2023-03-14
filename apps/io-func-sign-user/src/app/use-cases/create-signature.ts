@@ -3,6 +3,7 @@ import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import * as A from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
@@ -177,11 +178,23 @@ export const makeCreateSignature =
         signature: signatureValidationParams.challengeSignature,
         nonce: qtspClauses.nonce,
         documentsToSign,
-        signatureInput: Buffer.from(
-          signatureValidationParams.signatureInput,
-          "utf-8"
-        ).toString("base64") as NonEmptyString,
+        signatureInput: signatureValidationParams.signatureInput,
       })),
+      TE.chainEitherKW((createSignaturePayload) =>
+        pipe(
+          Buffer.from(createSignaturePayload.signatureInput, "utf-8").toString(
+            "base64"
+          ),
+          validate(
+            NonEmptyString,
+            "Unable to convert signatureInput to base64 string"
+          ),
+          E.map((signatureInput) => ({
+            ...createSignaturePayload,
+            signatureInput,
+          }))
+        )
+      ),
       TE.chain(creatQtspSignatureRequest),
       TE.filterOrElse(
         (qtspResponse) => qtspResponse.status === "CREATED",
