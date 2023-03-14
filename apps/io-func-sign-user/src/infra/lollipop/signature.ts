@@ -25,8 +25,8 @@ export const getSignatureFromHeaderName = (
 ) =>
   pipe(
     /* signatureInput field contains the parameters of all the signatures (sig1, sig2, ...) separated by comma
-     * each one associated with one or more headers. Here therefore for each signatureParams a filter is first applied
-     * to obtain signatureParam associated with a single header name and subsequently a map is made to obtain only
+     * each one associated with one or more headers. Here therefore for each signatureParam a filter is first applied
+     * to obtain signatureParam associated with a single header-name and subsequently a map is made to obtain only
      * the signature prefix (e.g. sig1=)
      */
     signatureInput,
