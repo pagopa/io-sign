@@ -37,7 +37,7 @@ export const getSignatureFromHeaderName = (
     RA.head,
     // Given a signatures string: sig1=:SomeValue:,sig2=:SomeOtherValue:
     // and the signature prefix with index: sig1=
-    // extract a regex match: sig1=:SomeValue: and a regex group: SomeValue
+    // extract a regex match: [sig1=:SomeValue:, SomeValue]
     O.chain(
       flow(
         getSignRegexFromSignaturePrefix,
@@ -48,7 +48,7 @@ export const getSignatureFromHeaderName = (
     // Given the regex result extracts the first group: SomeValue
     O.chain(
       flow(
-        RA.filterWithIndex((group) => group === 1),
+        RA.filterWithIndex((matchIndex) => matchIndex === 1),
         RA.head
       )
     ),
