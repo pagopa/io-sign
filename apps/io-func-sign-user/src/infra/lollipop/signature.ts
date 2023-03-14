@@ -37,16 +37,15 @@ export const getSignatureFromHeaderName = (
     RA.head,
     // Given a signatures string: sig1=:SomeValue:,sig2=:SomeOtherValue:
     // and the signature prefix with index: sig1=
-    // extract a regex match: [sig1=:SomeValue:, SomeValue]
+    // extract the value part: SomeValue
     O.chain(
       flow(
         getSignRegexFromSignaturePrefix,
         (re) => re.exec(signatures),
-        O.fromNullable
+        O.fromNullable,
+        O.chain(RA.lookup(1))
       )
     ),
-    // Given the regex result extracts the first group: SomeValue
-    O.chain(RA.lookup(1)),
     E.fromOption(
       () => new Error(`Signature of "${headerName}" header not found`)
     ),
