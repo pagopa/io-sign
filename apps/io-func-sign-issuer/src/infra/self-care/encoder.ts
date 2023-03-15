@@ -21,5 +21,6 @@ export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
     description: institution.description,
     // Initially all newly created issuer will be in a test phase.
     environment: "TEST",
+    vatNumber: institution.taxCode,
   }),
 };
