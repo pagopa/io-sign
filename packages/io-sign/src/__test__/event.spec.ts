@@ -24,6 +24,7 @@ const signatureRequest: SignatureRequestSigned = {
   issuerEmail: issuer.email,
   issuerDescription: issuer.description,
   issuerEnvironment: issuer.environment,
+  issuerInternalInstitutionId: newId(),
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -36,7 +37,7 @@ const signatureRequest: SignatureRequestSigned = {
 describe("Event", () => {
   describe("createBillingEvent", () => {
     it('should create a new billing event with "io.sign.signature_request.signed" name', () => {
-      const event = createBillingEvent(issuer)(signatureRequest);
+      const event = createBillingEvent(signatureRequest);
       expect(event.name).toBe("io.sign.signature_request.signed");
       expect(event.pricingPlan).toBe("FREE");
     });
