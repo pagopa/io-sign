@@ -23,6 +23,8 @@ import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
+export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
+
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(

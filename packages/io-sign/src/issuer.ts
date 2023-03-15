@@ -17,6 +17,7 @@ export const Issuer = t.type({
   description: NonEmptyString,
   // The need is to know if an issuer is in the experimental phase or not
   environment: IssuerEnvironment,
+  vatNumber: NonEmptyString,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
