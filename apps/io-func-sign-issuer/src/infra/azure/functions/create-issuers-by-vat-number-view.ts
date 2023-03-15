@@ -10,9 +10,9 @@ import { validate } from "@io-sign/io-sign/validation";
 import * as t from "io-ts";
 import { RetrievedIssuer } from "../cosmos/issuer";
 
-export const run: AzureFunction = (_, documents: unknown) =>
+export const run: AzureFunction = (_, items: unknown) =>
   pipe(
-    documents,
+    items,
     validate(t.array(RetrievedIssuer)),
     E.map(
       A.map((issuer) => ({
