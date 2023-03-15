@@ -27,8 +27,8 @@ import { GetIssuerById, GetIssuerBySubscriptionId } from "../../../issuer";
 const NewIssuer = t.intersection([Issuer, BaseModel]);
 type NewIssuer = t.TypeOf<typeof NewIssuer>;
 
-const RetrievedIssuer = t.intersection([Issuer, CosmosResource]);
-type RetrievedIssuer = t.TypeOf<typeof RetrievedIssuer>;
+export const RetrievedIssuer = t.intersection([Issuer, CosmosResource]);
+export type RetrievedIssuer = t.TypeOf<typeof RetrievedIssuer>;
 
 const partitionKey = "subscriptionId" as const;
 

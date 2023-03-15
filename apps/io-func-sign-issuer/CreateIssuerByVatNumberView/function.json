@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "type": "cosmosDBTrigger",
+      "name": "items",
+      "direction": "in",
+      "leaseCollectionName": "issuers-leases",
+      "connectionStringSetting": "CosmosDbConnectionString",
+      "databaseName": "%CosmosDbDatabaseName%",
+      "collectionName": "issuers",
+      "createLeaseCollectionIfNotExists": true,
+      "startFromBeginning": true
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "connectionStringSetting": "CosmosDbConnectionString",
+      "databaseName": "%CosmosDbDatabaseName%",
+      "collectionName": "issuers-by-vat-number",
+      "createIfNotExists": false,
+      "name": "$return"
+    }
+  ],
+  "scriptFile": "../dist/main.js",
+  "entryPoint": "CreateIssuerByVatNumberView"
+}
