@@ -6,6 +6,7 @@ import { pipe } from "fp-ts/lib/function";
 import { newId } from "@io-sign/io-sign/id";
 import { IoSignContract } from "./contract";
 
+// Create an Issuer entity from a self-care contract
 export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
   encode: ({ internalIstitutionID, institution }) => ({
     id: newId(),
