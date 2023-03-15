@@ -39,13 +39,19 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
+import { LollipopApiClient } from "../../lollipop/client";
+import {
+  LollipopApiClientProblemSource,
+  makeLollipopClientHealthCheck,
+} from "../../lollipop/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource
   | AzureStorageProblemSource
   | TokenizerProblemSource
   | IOServicesProblemSource
-  | NamirialProblemSource;
+  | NamirialProblemSource
+  | LollipopApiClientProblemSource;
 
 const InfoDetailView = t.string;
 const applicativeValidation = TE.getApplicativeTaskValidation(
@@ -57,6 +63,7 @@ export const makeInfoHandler = (
   namirialConfig: NamirialConfig,
   pdvTokenizerClient: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  lollipopApiClient: LollipopApiClient,
   db: Database,
   filledContainerClient: ContainerClient,
   validatedContainerClient: ContainerClient,
@@ -70,6 +77,7 @@ export const makeInfoHandler = (
     () =>
       pipe(
         [
+          makeLollipopClientHealthCheck(lollipopApiClient)(),
           makeNamirialHealthCheck(namirialConfig),
           makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
           makeIOServicesHealthCheck(ioApiClient)(),

@@ -7,6 +7,7 @@ import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
 
@@ -17,17 +18,18 @@ const issuer: Issuer = {
   email: "info@enpacl-pec.it" as EmailString,
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
+  vatNumber: "15376271001" as NonEmptyString,
 };
 
 const dossier = newDossier(issuer, "My dossier", [
   {
     title: "document #1",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
   {
     title: "document #2",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
 ]);

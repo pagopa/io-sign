@@ -14,6 +14,7 @@ const issuer: Issuer = {
   description: "Mocked Issuer" as NonEmptyString,
   internalInstitutionId: newId(),
   environment: "TEST",
+  vatNumber: "IT01234567" as NonEmptyString,
 };
 
 const signatureRequest: SignatureRequestSigned = {

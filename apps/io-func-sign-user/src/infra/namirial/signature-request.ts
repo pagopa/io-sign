@@ -57,6 +57,7 @@ export const CreateSignatureRequestBody = t.type({
   nonce: NonEmptyString,
   tos_signature: t.string,
   signatures: Signature,
+  signature_input: NonEmptyString,
 });
 
 export type CreateSignatureRequestBody = t.TypeOf<

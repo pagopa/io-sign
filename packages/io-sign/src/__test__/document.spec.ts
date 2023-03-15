@@ -3,16 +3,23 @@ import { describe, it, expect } from "@jest/globals";
 import { identity, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import {
+  NonEmptyString,
+  WithinRangeString,
+} from "@pagopa/ts-commons/lib/strings";
+import {
   DocumentMetadata,
   newDocument,
   startValidation,
   markAsReady,
   markAsRejected,
+  SignatureFields,
+  SignatureField,
 } from "../document";
+import { newId } from "../id";
 
 const metadata: DocumentMetadata = {
   title: "my test document",
-  signatureFields: [],
+  signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
   pdfDocumentMetadata: { pages: [], formFields: [] },
 };
 
@@ -91,6 +98,58 @@ describe("Document", () => {
           E.getOrElseW(identity)
         )
       ).toBeInstanceOf(Error);
+    });
+  });
+});
+
+describe("SignatureFields", () => {
+  it("can be empty", () => {
+    const result = SignatureFields.decode([]);
+    expect(E.isRight(result)).toBe(true);
+  });
+  it("should include at least one mandatory signature", () => {
+    const newMockedSignatureField = (
+      type: SignatureField["clause"]["type"]
+    ): SignatureField => {
+      const title = `field-${newId()}`;
+      return {
+        attributes: {
+          uniqueName: title as NonEmptyString,
+        },
+        clause: {
+          title: title as WithinRangeString<5, 80>,
+          type,
+        },
+      };
+    };
+    const testTable: Array<{
+      input: Array<SignatureField["clause"]["type"]>;
+      isValid: boolean;
+    }> = [
+      {
+        input: ["OPTIONAL", "OPTIONAL", "UNFAIR"],
+        isValid: true,
+      },
+      {
+        input: ["OPTIONAL", "OPTIONAL", "OPTIONAL"],
+        isValid: false,
+      },
+      {
+        input: ["REQUIRED", "OPTIONAL"],
+        isValid: true,
+      },
+      {
+        input: ["OPTIONAL"],
+        isValid: false,
+      },
+      {
+        input: ["UNFAIR", "REQUIRED"],
+        isValid: true,
+      },
+    ];
+    testTable.forEach(({ input, isValid }) => {
+      const result = SignatureFields.decode(input.map(newMockedSignatureField));
+      expect(E.isRight(result)).toBe(isValid);
     });
   });
 });

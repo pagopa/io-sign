@@ -9,7 +9,7 @@ import * as E from "fp-ts/lib/Either";
 import * as tx from "io-ts-types";
 
 import * as t from "io-ts";
-import { DocumentMetadata } from "@io-sign/io-sign/document";
+import { DocumentMetadata, SignatureFields } from "@io-sign/io-sign/document";
 
 import { SignatureField } from "@io-sign/io-sign/document";
 
@@ -45,7 +45,7 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  ({ clause: { title, type }, attrs }, _ctx) =>
+  ({ clause: { title, type }, attrs }) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
@@ -72,10 +72,11 @@ export const DocumentMetadataFromApiModel = new t.Type<
 >(
   "DocumentMetadataFromApiModel",
   DocumentMetadata.is,
-  ({ title, signature_fields }, _ctx) =>
+  ({ title, signature_fields }) =>
     pipe(
-      signature_fields,
+      signature_fields ?? [],
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
+      E.chain(SignatureFields.decode),
       E.map((signatureFields) => ({
         title,
         signatureFields,

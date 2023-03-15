@@ -14,6 +14,8 @@
     "NamirialApiBasePath": "NAMIRIAL_API_BASE_PATH",
     "NamirialUsername": "NAMIRIAL_USERNAME",
     "NamirialPassword": "NAMIRIAL_PASSWORD",
+    "LollipopApiBasePath": "LOLLIPOP_API_BASE_PATH",
+    "LollipopApiKey": "LOLLIPOP_API_KEY",
     "SpidAssertionMock": "MOCK_SPID_ASSERTION"
   }
 }
