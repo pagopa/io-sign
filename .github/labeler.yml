@@ -5,3 +5,4 @@ io-sign-selfcare-frontend: apps/io-sign-selfcare-frontend/**/*
 internal: packages/**/*
 docs: docs/**/*
 ci: .github/workflows/**/*
+changeset: .changeset/**/*
