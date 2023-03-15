@@ -3,6 +3,10 @@ import * as O from "fp-ts/lib/Option";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 
+export type GetIssuerByVatNumber = (
+  vatNumber: Issuer["vatNumber"]
+) => TE.TaskEither<Error, O.Option<Issuer>>;
+
 export type GetIssuerBySubscriptionId = (
   subscriptionId: Issuer["subscriptionId"]
 ) => TE.TaskEither<Error, O.Option<Issuer>>;

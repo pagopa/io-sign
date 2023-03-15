@@ -23,10 +23,10 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 import { Issuer } from "@io-sign/io-sign/issuer";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import {
-  GetIssuerById,
-  GetIssuerByInternalInstitutionId,
   GetIssuerBySubscriptionId,
+  GetIssuerByVatNumber,
 } from "../../../issuer";
+import { IssuerByVatNumberModel } from "./issuer-by-vat-number";
 
 const NewIssuer = t.intersection([Issuer, BaseModel]);
 type NewIssuer = t.TypeOf<typeof NewIssuer>;
@@ -35,7 +35,6 @@ export const RetrievedIssuer = t.intersection([Issuer, CosmosResource]);
 export type RetrievedIssuer = t.TypeOf<typeof RetrievedIssuer>;
 
 const partitionKey = "subscriptionId" as const;
-const internalInstitutionIdKey = "internalInstitutionId" as const;
 
 class IssuerModel extends CosmosdbModel<
   Issuer,
@@ -74,61 +73,30 @@ class IssuerModel extends CosmosdbModel<
       TE.map(RA.head)
     );
   }
-
-  findByInternalInstitutionId(
-    internalInstitutionId: string
-  ): TE.TaskEither<CosmosErrors, O.Option<RetrievedIssuer>> {
-    return pipe(
-      TE.tryCatch(
-        () =>
-          pipe(
-            this.getQueryIterator({
-              parameters: [
-                {
-                  name: "@internalInstitutionIdKey",
-                  value: internalInstitutionId,
-                },
-              ],
-              query: `SELECT TOP 1 * FROM m WHERE m.${internalInstitutionIdKey} = @internalInstitutionIdKey`,
-            }),
-            asyncIterableToArray
-          ),
-        toCosmosErrorResponse
-      ),
-      TE.map(RA.flatten),
-      TE.chainW(
-        flow(E.sequenceArray, E.mapLeft(CosmosDecodingError), TE.fromEither)
-      ),
-      TE.map(RA.head)
-    );
-  }
-
-  findById(id: string): TE.TaskEither<CosmosErrors, O.Option<RetrievedIssuer>> {
-    return pipe(
-      TE.tryCatch(
-        () =>
-          pipe(
-            this.getQueryIterator({
-              parameters: [
-                {
-                  name: "@issuerId",
-                  value: id,
-                },
-              ],
-              query: `SELECT * FROM m WHERE m.id = @issuerId`,
-            }),
-            asyncIterableToArray
-          ),
-        toCosmosErrorResponse
-      ),
-      TE.map(RA.flatten),
-      TE.chainW(
-        flow(E.sequenceArray, E.mapLeft(CosmosDecodingError), TE.fromEither)
-      ),
-      TE.map(RA.head)
-    );
-  }
 }
+
+export const makeGetIssuerByVatNumber =
+  (db: cosmos.Database): GetIssuerByVatNumber =>
+  (vatNumber: Issuer["vatNumber"]) =>
+    pipe(
+      new IssuerByVatNumberModel(db),
+      (model) => model.find([vatNumber]),
+      TE.chain(
+        flow(
+          O.fold(
+            () => TE.of(O.none),
+            (issuerByVatNumber) =>
+              pipe(new IssuerModel(db), (model) =>
+                model.find([
+                  issuerByVatNumber.issuerId,
+                  issuerByVatNumber.subscriptionId,
+                ])
+              )
+          )
+        )
+      ),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
 
 export const makeGetIssuerBySubscriptionId =
   (db: cosmos.Database): GetIssuerBySubscriptionId =>
@@ -136,24 +104,6 @@ export const makeGetIssuerBySubscriptionId =
     pipe(
       new IssuerModel(db),
       (model) => model.findBySubscriptionId(subscriptionId),
-      TE.mapLeft(toCosmosDatabaseError)
-    );
-
-export const makeGetIssuerById =
-  (db: cosmos.Database): GetIssuerById =>
-  (id) =>
-    pipe(
-      new IssuerModel(db),
-      (model) => model.findById(id),
-      TE.mapLeft(toCosmosDatabaseError)
-    );
-
-export const makeGetIssuerByInternalInstitutionId =
-  (db: cosmos.Database): GetIssuerByInternalInstitutionId =>
-  (insternalInstitutionId) =>
-    pipe(
-      new IssuerModel(db),
-      (model) => model.findByInternalInstitutionId(insternalInstitutionId),
       TE.mapLeft(toCosmosDatabaseError)
     );
 
@@ -168,18 +118,14 @@ export const makeInsertIssuer =
 
 export type InsertIssuer = (issuer: Issuer) => TE.TaskEither<Error, Issuer>;
 
-export const makeCheckIssuerWithSameInternalInstitutionId =
+export const makeCheckIssuerWithSameVatNumber =
   (db: cosmos.Database) => (issuer: Issuer) =>
     pipe(
-      issuer.internalInstitutionId,
-      makeGetIssuerByInternalInstitutionId(db),
+      issuer.vatNumber,
+      makeGetIssuerByVatNumber(db),
       TE.chain((existentIssuer) =>
         O.isSome(existentIssuer)
-          ? TE.left(
-              new Error(
-                "An issuer already exists with this internalInstitutionId"
-              )
-            )
+          ? TE.left(new Error("An issuer already exists with this vatNumber"))
           : TE.right(issuer)
       )
     );

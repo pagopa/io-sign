@@ -15,7 +15,7 @@ import {
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
 import {
-  makeCheckIssuerWithSameInternalInstitutionId,
+  makeCheckIssuerWithSameVatNumber,
   makeInsertIssuer,
 } from "../cosmos/issuer";
 
@@ -25,8 +25,7 @@ const makeCreateIssuerHandler = (db: CosmosDatabase) => {
     TE.fromEither
   );
 
-  const checkIssuerWithSameInternalInstitutionId =
-    makeCheckIssuerWithSameInternalInstitutionId(db);
+  const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
   const insertIssuer = makeInsertIssuer(db);
 
   // TODO: [SFEQS-1490] Add a retry if the insert fails
@@ -35,7 +34,7 @@ const makeCreateIssuerHandler = (db: CosmosDatabase) => {
     E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
     E.map(ioSignContractToIssuer.encode),
     TE.fromEither,
-    TE.chain(checkIssuerWithSameInternalInstitutionId),
+    TE.chain(checkIssuerWithSameVatNumber),
     TE.chain(insertIssuer),
     // This is a fire-and-forget operation
     TE.altW(() => TE.right(undefined))

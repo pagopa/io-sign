@@ -22,7 +22,7 @@ import {
   MakeMessageContent,
   makeSendSignatureRequestNotification,
 } from "../../signature-request-notification";
-import { GetIssuerById } from "../../issuer";
+import { GetIssuerByVatNumber } from "../../issuer";
 
 const signedMessage: MakeMessageContent =
   (dossier: Dossier) =>
@@ -40,7 +40,7 @@ export const makeMarkRequestAsSigned =
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     sendBillingEvent: SendBillingEvent,
-    getIssuerById: GetIssuerById
+    getIssuerByVatNumber: GetIssuerByVatNumber
   ) =>
   (request: SignatureRequestSigned) => {
     const sendSignedNotification = makeSendSignatureRequestNotification(
@@ -61,8 +61,8 @@ export const makeMarkRequestAsSigned =
           )
         ),
         issuer: pipe(
-          request.issuerId,
-          getIssuerById,
+          request.issuerVatNumber,
+          getIssuerByVatNumber,
           TE.chain(
             TE.fromOption(() => new EntityNotFoundError("Issuer not found."))
           )

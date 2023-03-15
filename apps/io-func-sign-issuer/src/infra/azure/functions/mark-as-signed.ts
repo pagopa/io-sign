@@ -20,7 +20,7 @@ import {
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
 import { makeSendBillingEvent } from "../event-hubs/event";
 import { makeGetDossier } from "../cosmos/dossier";
-import { makeGetIssuerById } from "../cosmos/issuer";
+import { makeGetIssuerByVatNumber } from "../cosmos/issuer";
 
 const makeRequestAsSignedHandler = (
   db: Database,
@@ -39,7 +39,7 @@ const makeRequestAsSignedHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const sendBillingEvent = makeSendBillingEvent(eventHubBillingClient);
-  const getIssuerById = makeGetIssuerById(db);
+  const getIssuerByVatNumber = makeGetIssuerByVatNumber(db);
 
   const markAsSigned = makeMarkRequestAsSigned(
     getDossier,
@@ -48,7 +48,7 @@ const makeRequestAsSignedHandler = (
     submitMessage,
     getFiscalCodeBySignerId,
     sendBillingEvent,
-    getIssuerById
+    getIssuerByVatNumber
   );
 
   return createHandler(
