@@ -24,6 +24,7 @@ import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
+export { run as CreateIssuerByIdView } from "../infra/azure/functions/create-issuers-by-id-view";
 
 import { getConfigFromEnvironment } from "./config";
 

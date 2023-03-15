@@ -5,7 +5,7 @@
       "name": "items",
       "direction": "in",
       "leaseCollectionName": "leases",
-      "leaseCollectionPrefix": "issuers-by-vat",
+      "leaseCollectionPrefix": "issuers-by-id",
       "connectionStringSetting": "CosmosDbConnectionString",
       "databaseName": "%CosmosDbDatabaseName%",
       "collectionName": "issuers",
@@ -17,11 +17,11 @@
       "direction": "out",
       "connectionStringSetting": "CosmosDbConnectionString",
       "databaseName": "%CosmosDbDatabaseName%",
-      "collectionName": "issuers-by-vat-number",
+      "collectionName": "issuers-by-id",
       "createIfNotExists": false,
       "name": "$return"
     }
   ],
   "scriptFile": "../dist/main.js",
-  "entryPoint": "CreateIssuerByVatNumberView"
+  "entryPoint": "CreateIssuerByIdView"
 }
