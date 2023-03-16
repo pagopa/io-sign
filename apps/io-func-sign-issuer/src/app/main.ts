@@ -154,4 +154,7 @@ export const ValidateUpload = makeValidateUploadFunction(
   validatedContainerClient
 );
 
-export const CreateIssuer = makeCreateIssuerFunction(database);
+export const CreateIssuer = makeCreateIssuerFunction(
+  database,
+  config.pagopa.selfCare
+);

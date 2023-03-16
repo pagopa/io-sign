@@ -8,37 +8,51 @@ import * as E from "fp-ts/lib/Either";
 import { identity, flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+
 import {
-  contractActive,
+  addSupportMailToIoSignContract,
+  GenericContract,
   GenericContracts,
   IoSignContract,
+  validateActiveContract,
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
 import {
   makeCheckIssuerWithSameVatNumber,
   makeInsertIssuer,
 } from "../cosmos/issuer";
+import { makeGetInstitutionById } from "../../self-care/client";
+import { SelfCareConfig } from "../../self-care/config";
 
-const makeCreateIssuerHandler = (db: CosmosDatabase) => {
+const makeCreateIssuerHandler = (
+  db: CosmosDatabase,
+  selfCareConfig: SelfCareConfig
+) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
     TE.fromEither
   );
 
+  const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
+    selfCareConfig
+  );
+
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
   const insertIssuer = makeInsertIssuer(db);
 
-  // TODO: [SFEQS-1490] Add a retry if the insert fails
-  const createIssuerFromContract = flow(
-    contractActive,
-    E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
-    E.map(ioSignContractToIssuer.encode),
-    TE.fromEither,
-    TE.chain(checkIssuerWithSameVatNumber),
-    TE.chain(insertIssuer),
-    // This is a fire-and-forget operation
-    TE.altW(() => TE.right(undefined))
-  );
+  const createIssuerFromContract = (contract: GenericContract) =>
+    pipe(
+      contract,
+      validateActiveContract,
+      E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
+      TE.fromEither,
+      TE.chain(addSupportMailToIoSignContract(getInstitutionById)),
+      TE.map(ioSignContractToIssuer.encode),
+      TE.chain(checkIssuerWithSameVatNumber),
+      // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
+      TE.foldW(() => TE.of(undefined), insertIssuer)
+    );
 
   return createHandler(
     getContractsFromEventHub,
@@ -48,5 +62,7 @@ const makeCreateIssuerHandler = (db: CosmosDatabase) => {
   );
 };
 
-export const makeCreateIssuerFunction = (database: CosmosDatabase) =>
-  pipe(makeCreateIssuerHandler(database), azure.unsafeRun);
+export const makeCreateIssuerFunction = flow(
+  makeCreateIssuerHandler,
+  azure.unsafeRun
+);
