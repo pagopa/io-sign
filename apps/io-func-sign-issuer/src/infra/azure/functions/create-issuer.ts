@@ -23,7 +23,7 @@ import {
 } from "../cosmos/issuer";
 import { makeGetInstitutionById } from "../../self-care/client";
 import { SelfCareConfig } from "../../self-care/config";
-import { SlackConfig } from "../../slack/config";
+import { slackChannelMap, SlackConfig } from "../../slack/config";
 import { makePostSlackMessage } from "../../slack/client";
 import { createNewIssuerMessage } from "../../slack/issuer-message";
 
@@ -57,8 +57,12 @@ const makeCreateIssuerHandler = (
         email: institution.supportEmail,
       })),
       TE.chain(insertIssuer),
-      // C03G0KJBU7N is the id of #si_firmaconio_tech channel
-      TE.chain(flow(createNewIssuerMessage, postSlackMessage("C03G0KJBU7N")))
+      TE.chain(
+        flow(
+          createNewIssuerMessage,
+          postSlackMessage(slackChannelMap.si_firmaconio_tech)
+        )
+      )
     );
 
   const createIssuerFromContract = (contract: GenericContract) =>

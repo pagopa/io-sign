@@ -23,3 +23,7 @@ export const getSlackConfigFromEnvironment: RE.ReaderEither<
   ),
   apiToken: readFromEnvironment("SlackApiToken"),
 });
+
+export const slackChannelMap = {
+  si_firmaconio_tech: "C03G0KJBU7N",
+};
