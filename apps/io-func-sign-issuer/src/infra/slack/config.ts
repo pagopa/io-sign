@@ -3,7 +3,7 @@ import * as t from "io-ts";
 import * as RE from "fp-ts/lib/ReaderEither";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { pipe } from "fp-ts/lib/function";
-import { readFromEnvironment } from "../env";
+import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const SlackConfig = t.type({
   apiBasePath: t.string,
