@@ -16,7 +16,6 @@
     "SelfCareEventHubConnectionString": "SELF_CARE_EVENT_HUB_CONNECTION_STRING",
     "SelfCareApiBasePath": "SELF_CARE_API_URL",
     "SelfCareApiKey": "SELF_CARE_API_KEY",
-    "SlackApiBasePath": "SLACK_API_BASE_PATH",
-    "SlackApiToken": "SLACK_API_BEARER_TOKEN"
+    "SlackWebhookUrl": "SLACK_WEBHOOK_URL",
   }
 }
