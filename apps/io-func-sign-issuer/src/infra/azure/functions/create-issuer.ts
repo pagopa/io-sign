@@ -23,10 +23,14 @@ import {
 } from "../cosmos/issuer";
 import { makeGetInstitutionById } from "../../self-care/client";
 import { SelfCareConfig } from "../../self-care/config";
+import { SlackConfig } from "../../slack/config";
+import { makePostSlackMessage } from "../../slack/client";
+import { createNewIssuerMessage } from "../../slack/issuer-message";
 
 const makeCreateIssuerHandler = (
   db: CosmosDatabase,
-  selfCareConfig: SelfCareConfig
+  selfCareConfig: SelfCareConfig,
+  slackConfig: SlackConfig
 ) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
@@ -35,6 +39,10 @@ const makeCreateIssuerHandler = (
 
   const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
     selfCareConfig
+  );
+
+  const postSlackMessage = makePostSlackMessage(makeFetchWithTimeout())(
+    slackConfig
   );
 
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
@@ -48,7 +56,9 @@ const makeCreateIssuerHandler = (
         ...issuer,
         email: institution.supportEmail,
       })),
-      TE.chain(insertIssuer)
+      TE.chain(insertIssuer),
+      // C03G0KJBU7N is the id of #si_firmaconio_tech channel
+      TE.chain(flow(createNewIssuerMessage, postSlackMessage("C03G0KJBU7N")))
     );
 
   const createIssuerFromContract = (contract: GenericContract) =>

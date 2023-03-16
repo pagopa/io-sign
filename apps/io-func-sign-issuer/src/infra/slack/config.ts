@@ -10,7 +10,7 @@ export const SlackConfig = t.type({
   apiToken: t.string,
 });
 
-type SlackConfig = t.TypeOf<typeof SlackConfig>;
+export type SlackConfig = t.TypeOf<typeof SlackConfig>;
 
 export const getSlackConfigFromEnvironment: RE.ReaderEither<
   NodeJS.ProcessEnv,
