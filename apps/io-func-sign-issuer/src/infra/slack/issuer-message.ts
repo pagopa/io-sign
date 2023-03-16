@@ -1,4 +1,8 @@
 import { Issuer } from "@io-sign/io-sign/issuer";
 
 export const createNewIssuerMessage = (issuer: Issuer) =>
-  `👋🏻 A new issuer has just been onboarded to io-sign!\n\nIssuer description: ${issuer.description}\nissuerId: \`${issuer.id}\`\nsubscriptionId: \`${issuer.subscriptionId}\``;
+  `👋🏻 A new issuer has just been onboarded to io-sign!\n\n
+  Description: ${issuer.description}\n
+  issuerId: \`${issuer.id}\`\n
+  subscriptionId: \`${issuer.subscriptionId}\`\n
+  supporEmail: \`${issuer.email}\``;
