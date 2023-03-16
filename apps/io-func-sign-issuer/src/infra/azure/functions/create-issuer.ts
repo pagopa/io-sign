@@ -9,8 +9,10 @@ import { identity, flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
   contractActive,
+  GenericContract,
   GenericContracts,
   IoSignContract,
 } from "../../self-care/contract";
@@ -38,27 +40,28 @@ const makeCreateIssuerHandler = (
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
   const insertIssuer = makeInsertIssuer(db);
 
-  // TODO: [SFEQS-1490] Add a retry if the insert fails
-  const createIssuerFromContract = flow(
-    contractActive,
-    E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
-    E.map(ioSignContractToIssuer.encode),
-    TE.fromEither,
-    TE.chain(checkIssuerWithSameVatNumber),
-    // Replace issuer email (which is a PEC readed from contract) with support-email retrieved via API
-    TE.chain((issuer) =>
-      pipe(
-        getInstitutionById(issuer.internalInstitutionId),
-        TE.map((institution) => ({
-          ...issuer,
-          email: institution.supportEmail,
-        }))
-      )
-    ),
-    TE.chain(insertIssuer),
-    // This is a fire-and-forget operation
-    TE.altW(() => TE.right(undefined))
-  );
+  const createIssuer = (issuer: Issuer) =>
+    pipe(
+      // Replace issuer email (which is a PEC readed from contract) with support-email retrieved via API
+      getInstitutionById(issuer.internalInstitutionId),
+      TE.map((institution) => ({
+        ...issuer,
+        email: institution.supportEmail,
+      })),
+      TE.chain(insertIssuer)
+    );
+
+  const createIssuerFromContract = (contract: GenericContract) =>
+    pipe(
+      contract,
+      contractActive,
+      E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
+      E.map(ioSignContractToIssuer.encode),
+      TE.fromEither,
+      TE.chain(checkIssuerWithSameVatNumber),
+      // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
+      TE.foldW(() => TE.of(undefined), createIssuer)
+    );
 
   return createHandler(
     getContractsFromEventHub,
