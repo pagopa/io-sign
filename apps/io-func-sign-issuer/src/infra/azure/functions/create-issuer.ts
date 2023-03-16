@@ -8,6 +8,7 @@ import * as E from "fp-ts/lib/Either";
 import { identity, flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import {
   contractActive,
   GenericContracts,
@@ -18,11 +19,20 @@ import {
   makeCheckIssuerWithSameVatNumber,
   makeInsertIssuer,
 } from "../cosmos/issuer";
+import { makeGetInstitutionById } from "../../self-care/client";
+import { SelfCareConfig } from "../../self-care/config";
 
-const makeCreateIssuerHandler = (db: CosmosDatabase) => {
+const makeCreateIssuerHandler = (
+  db: CosmosDatabase,
+  selfCareConfig: SelfCareConfig
+) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
     TE.fromEither
+  );
+
+  const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
+    selfCareConfig
   );
 
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
@@ -35,6 +45,15 @@ const makeCreateIssuerHandler = (db: CosmosDatabase) => {
     E.map(ioSignContractToIssuer.encode),
     TE.fromEither,
     TE.chain(checkIssuerWithSameVatNumber),
+    TE.chain((issuer) =>
+      pipe(
+        getInstitutionById(issuer.internalInstitutionId),
+        TE.map((institution) => ({
+          ...issuer,
+          email: institution.supportEmail,
+        }))
+      )
+    ),
     TE.chain(insertIssuer),
     // This is a fire-and-forget operation
     TE.altW(() => TE.right(undefined))
@@ -48,5 +67,7 @@ const makeCreateIssuerHandler = (db: CosmosDatabase) => {
   );
 };
 
-export const makeCreateIssuerFunction = (database: CosmosDatabase) =>
-  pipe(makeCreateIssuerHandler(database), azure.unsafeRun);
+export const makeCreateIssuerFunction = flow(
+  makeCreateIssuerHandler,
+  azure.unsafeRun
+);

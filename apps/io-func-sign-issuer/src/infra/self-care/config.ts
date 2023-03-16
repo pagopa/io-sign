@@ -20,7 +20,7 @@ export const SelfCareConfig = t.type({
   api: SelfCareApiConfig,
 });
 
-type SelfCareConfig = t.TypeOf<typeof SelfCareConfig>;
+export type SelfCareConfig = t.TypeOf<typeof SelfCareConfig>;
 
 export const getSelfCareConfigFromEnvironment: RE.ReaderEither<
   NodeJS.ProcessEnv,
