@@ -44,7 +44,7 @@ export const createBillingEvent = (
   id: newId(),
   name: "io.sign.signature_request.signed",
   signatureRequestId: signatureRequest.id,
-  internalInstitutionId: signatureRequest.issuerId,
+  internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
   createdAt: new Date(),
   pricingPlan:
     signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",

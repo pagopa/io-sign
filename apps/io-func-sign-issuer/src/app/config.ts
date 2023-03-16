@@ -25,6 +25,10 @@ import {
   EventHubConfig,
   getEventHubsConfigFromEnvironment,
 } from "../infra/azure/event-hubs/config";
+import {
+  getSelfCareConfigFromEnvironment,
+  SelfCareConfig,
+} from "../infra/self-care/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -35,6 +39,7 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
+    selfCare: SelfCareConfig,
   }),
 });
 
@@ -50,6 +55,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
+    selfCare: getSelfCareConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
   }),
   RE.map((config) => ({
@@ -61,6 +67,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
+      selfCare: config.selfCare,
     },
   }))
 );

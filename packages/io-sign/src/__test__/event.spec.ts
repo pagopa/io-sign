@@ -4,15 +4,27 @@ import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { createBillingEvent } from "../event";
 
 import { newId } from "../id";
+import { Issuer } from "../issuer";
 import { SignatureRequestSigned } from "../signature-request";
+
+const issuer: Issuer = {
+  id: newId(),
+  subscriptionId: newId(),
+  email: "issuer@io-sign-mail.it" as EmailString,
+  description: "Mocked Issuer" as NonEmptyString,
+  internalInstitutionId: newId(),
+  environment: "TEST",
+  vatNumber: "IT01234567" as NonEmptyString,
+};
 
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
   issuerId: newId(),
-  issuerEmail: "issuer@io-sign-mail.it" as EmailString,
-  issuerDescription: "Mocked Issuer" as NonEmptyString,
-  issuerEnvironment: "TEST",
+  issuerEmail: issuer.email,
+  issuerDescription: issuer.description,
+  issuerEnvironment: issuer.environment,
+  issuerInternalInstitutionId: newId(),
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

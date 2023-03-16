@@ -19,6 +19,7 @@ const SignatureRequest = t.type({
   // TODO: [SFEQS-1028] issuerEmail and IssuerDescription are temp properties, waiting to implement the integration with Selfcare.
   issuerEmail: EmailString,
   issuerDescription: NonEmptyString,
+  issuerInternalInstitutionId: Id,
   issuerEnvironment: IssuerEnvironment,
   dossierId: Id,
   createdAt: IsoDateFromString,
