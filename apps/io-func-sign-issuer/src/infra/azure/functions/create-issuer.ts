@@ -11,10 +11,10 @@ import { validate } from "@io-sign/io-sign/validation";
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import {
-  contractActive,
   GenericContract,
   GenericContracts,
   IoSignContract,
+  validateActiveContract,
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
 import {
@@ -42,7 +42,6 @@ const makeCreateIssuerHandler = (
 
   const createIssuer = (issuer: Issuer) =>
     pipe(
-      // Replace issuer email (which is a PEC readed from contract) with support-email retrieved via API
       getInstitutionById(issuer.internalInstitutionId),
       TE.map((institution) => ({
         ...issuer,
@@ -54,7 +53,7 @@ const makeCreateIssuerHandler = (
   const createIssuerFromContract = (contract: GenericContract) =>
     pipe(
       contract,
-      contractActive,
+      validateActiveContract,
       E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
       E.map(ioSignContractToIssuer.encode),
       TE.fromEither,

@@ -43,7 +43,7 @@ export type IoSignContract = t.TypeOf<typeof IoSignContract>;
 export const GenericContracts = t.array(GenericContract);
 export type GenericContracts = t.TypeOf<typeof GenericContracts>;
 
-export const contractActive = (
+export const validateActiveContract = (
   contract: GenericContract
 ): E.Either<Error, GenericContract> =>
   pipe(
