@@ -25,7 +25,7 @@ import {
 } from "../cosmos/issuer";
 import { makeGetInstitutionById } from "../../self-care/client";
 import { SelfCareConfig } from "../../self-care/config";
-import { slackChannelMap, SlackConfig } from "../../slack/config";
+import { SlackConfig } from "../../slack/config";
 import { makePostSlackMessage } from "../../slack/client";
 import { createNewIssuerMessage } from "../../slack/issuer-message";
 
@@ -54,7 +54,7 @@ const makeCreateIssuerHandler = (
     pipe(
       newIssuer,
       createNewIssuerMessage,
-      postSlackMessage(slackChannelMap.si_firmaconio_tech),
+      postSlackMessage,
       TE.map(() => newIssuer)
     );
 

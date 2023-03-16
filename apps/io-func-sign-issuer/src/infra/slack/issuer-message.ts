@@ -5,4 +5,4 @@ export const createNewIssuerMessage = (issuer: Issuer) =>
   Description: ${issuer.description}\n
   issuerId: \`${issuer.id}\`\n
   subscriptionId: \`${issuer.subscriptionId}\`\n
-  supporEmail: \`${issuer.email}\``;
+  supportEmail: \`${issuer.email}\``;
