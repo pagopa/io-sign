@@ -10,6 +10,7 @@ import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
   addSupportMailToIoSignContract,
   GenericContract,
@@ -27,7 +28,6 @@ import { SelfCareConfig } from "../../self-care/config";
 import { slackChannelMap, SlackConfig } from "../../slack/config";
 import { makePostSlackMessage } from "../../slack/client";
 import { createNewIssuerMessage } from "../../slack/issuer-message";
-import { Issuer } from "@io-sign/io-sign/issuer";
 
 const makeCreateIssuerHandler = (
   db: CosmosDatabase,
