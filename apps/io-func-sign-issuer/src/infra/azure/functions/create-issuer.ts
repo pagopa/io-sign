@@ -45,6 +45,7 @@ const makeCreateIssuerHandler = (
     E.map(ioSignContractToIssuer.encode),
     TE.fromEither,
     TE.chain(checkIssuerWithSameVatNumber),
+    // Replace issuer email (which is a PEC readed from contract) with support-email retrieved via API
     TE.chain((issuer) =>
       pipe(
         getInstitutionById(issuer.internalInstitutionId),
