@@ -19,6 +19,10 @@ export const SelfCareInstitution = t.type({
 
 export type SelfCareInstitution = t.TypeOf<typeof SelfCareInstitution>;
 
+export type GetInstitutionById = (
+  internalInstitutionId: GenericContract["internalIstitutionID"]
+) => TE.TaskEither<Error, SelfCareInstitution>;
+
 const isSuccessful = (r: Response): boolean =>
   r.status >= 200 && r.status < 300;
 
@@ -27,7 +31,7 @@ const defaultHeader = {
 };
 export const makeGetInstitutionById =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ api }: SelfCareConfig) =>
+  ({ api }: SelfCareConfig): GetInstitutionById =>
   (internalInstitutionId: GenericContract["internalIstitutionID"]) =>
     pipe(
       TE.tryCatch(

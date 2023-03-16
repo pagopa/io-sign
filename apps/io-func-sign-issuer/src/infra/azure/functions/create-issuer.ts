@@ -9,12 +9,13 @@ import { identity, flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import { Issuer } from "@io-sign/io-sign/issuer";
+
 import {
-  contractActive,
+  addSupportMailToIoSignContract,
   GenericContract,
   GenericContracts,
   IoSignContract,
+  validateActiveContract,
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
 import {
@@ -26,6 +27,7 @@ import { SelfCareConfig } from "../../self-care/config";
 import { slackChannelMap, SlackConfig } from "../../slack/config";
 import { makePostSlackMessage } from "../../slack/client";
 import { createNewIssuerMessage } from "../../slack/issuer-message";
+import { Issuer } from "@io-sign/io-sign/issuer";
 
 const makeCreateIssuerHandler = (
   db: CosmosDatabase,
@@ -48,33 +50,28 @@ const makeCreateIssuerHandler = (
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
   const insertIssuer = makeInsertIssuer(db);
 
-  const createIssuer = (issuer: Issuer) =>
+  const sendNewIssuerSlackMessage = (newIssuer: Issuer) =>
     pipe(
-      // Replace issuer email (which is a PEC readed from contract) with support-email retrieved via API
-      getInstitutionById(issuer.internalInstitutionId),
-      TE.map((institution) => ({
-        ...issuer,
-        email: institution.supportEmail,
-      })),
-      TE.chain(insertIssuer),
-      TE.chain(
-        flow(
-          createNewIssuerMessage,
-          postSlackMessage(slackChannelMap.si_firmaconio_tech)
-        )
-      )
+      newIssuer,
+      createNewIssuerMessage,
+      postSlackMessage(slackChannelMap.si_firmaconio_tech),
+      TE.map(() => newIssuer)
     );
 
   const createIssuerFromContract = (contract: GenericContract) =>
     pipe(
       contract,
-      contractActive,
+      validateActiveContract,
       E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
-      E.map(ioSignContractToIssuer.encode),
       TE.fromEither,
+      TE.chain(addSupportMailToIoSignContract(getInstitutionById)),
+      TE.map(ioSignContractToIssuer.encode),
       TE.chain(checkIssuerWithSameVatNumber),
       // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
-      TE.foldW(() => TE.of(undefined), createIssuer)
+      TE.foldW(
+        () => TE.of(undefined),
+        flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage))
+      )
     );
 
   return createHandler(

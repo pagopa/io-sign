@@ -4,11 +4,14 @@ import * as E from "io-ts/lib/Encoder";
 import * as S from "fp-ts/lib/string";
 import { pipe } from "fp-ts/lib/function";
 import { newId } from "@io-sign/io-sign/id";
-import { IoSignContract } from "./contract";
+import { IoSignContractWithSupportMail } from "./contract";
 
 // Create an Issuer entity from a self-care contract
-export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
-  encode: ({ internalIstitutionID, institution }) => ({
+export const ioSignContractToIssuer: E.Encoder<
+  Issuer,
+  IoSignContractWithSupportMail
+> = {
+  encode: ({ internalIstitutionID, institution, supportEmail }) => ({
     id: newId(),
     /* Temporarily the subscriptionId is associated with the VAT number of the issuer by prepending the string "TEMP-".
      * See: [IO-SIGN-RFC-SUB-ID]
@@ -17,7 +20,7 @@ export const ioSignContractToIssuer: E.Encoder<Issuer, IoSignContract> = {
       S.Monoid.concat("TEMP-", institution.taxCode)
     ) as NonEmptyString,
     internalInstitutionId: internalIstitutionID,
-    email: institution.digitalAddress,
+    email: supportEmail,
     description: institution.description,
     // Initially all newly created issuer will be in a test phase.
     environment: "TEST",
