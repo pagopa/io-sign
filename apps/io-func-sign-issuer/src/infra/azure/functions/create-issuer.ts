@@ -10,6 +10,7 @@ import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
   addSupportMailToIoSignContract,
   GenericContract,
@@ -24,10 +25,14 @@ import {
 } from "../cosmos/issuer";
 import { makeGetInstitutionById } from "../../self-care/client";
 import { SelfCareConfig } from "../../self-care/config";
+import { SlackConfig } from "../../slack/config";
+import { makePostSlackMessage } from "../../slack/client";
+import { createNewIssuerMessage } from "../../slack/issuer-message";
 
 const makeCreateIssuerHandler = (
   db: CosmosDatabase,
-  selfCareConfig: SelfCareConfig
+  selfCareConfig: SelfCareConfig,
+  slackConfig: SlackConfig
 ) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
@@ -38,8 +43,20 @@ const makeCreateIssuerHandler = (
     selfCareConfig
   );
 
+  const postSlackMessage = makePostSlackMessage(makeFetchWithTimeout())(
+    slackConfig
+  );
+
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
   const insertIssuer = makeInsertIssuer(db);
+
+  const sendNewIssuerSlackMessage = (newIssuer: Issuer) =>
+    pipe(
+      newIssuer,
+      createNewIssuerMessage,
+      postSlackMessage,
+      TE.map(() => newIssuer)
+    );
 
   const createIssuerFromContract = (contract: GenericContract) =>
     pipe(
@@ -51,7 +68,10 @@ const makeCreateIssuerHandler = (
       TE.map(ioSignContractToIssuer.encode),
       TE.chain(checkIssuerWithSameVatNumber),
       // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
-      TE.foldW(() => TE.of(undefined), insertIssuer)
+      TE.foldW(
+        () => TE.of(undefined),
+        flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage))
+      )
     );
 
   return createHandler(

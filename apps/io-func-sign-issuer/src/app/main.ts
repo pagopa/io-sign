@@ -156,5 +156,6 @@ export const ValidateUpload = makeValidateUploadFunction(
 
 export const CreateIssuer = makeCreateIssuerFunction(
   database,
-  config.pagopa.selfCare
+  config.pagopa.selfCare,
+  config.slack
 );
