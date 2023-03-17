@@ -3,11 +3,24 @@ import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import { EventHubProducerClient } from "@azure/event-hubs";
-import { BillingEvent, SendBillingEvent } from "../../../event";
+import {
+  createAnalyticsEvent,
+  EventName,
+  GenericEvent,
+  SendEvent,
+} from "../../../event";
+import {
+  SignatureRequestDraft,
+  SignatureRequestSigned,
+  SignatureRequestReady,
+  SignatureRequestToBeSigned,
+  SignatureRequestWaitForQtsp,
+  SignatureRequestRejected,
+} from "../../../signature-request";
 
-export const makeSendBillingEvent =
-  (client: EventHubProducerClient): SendBillingEvent =>
-  (event: BillingEvent) =>
+export const makeSendEvent =
+  (client: EventHubProducerClient): SendEvent =>
+  (event: GenericEvent) =>
     pipe(
       TE.tryCatch(() => client.createBatch(), E.toError),
       TE.chain((eventDataBatch) =>
@@ -19,4 +32,22 @@ export const makeSendBillingEvent =
         TE.tryCatch(() => client.sendBatch(eventDataBatch), E.toError)
       ),
       TE.map(() => event)
+    );
+
+export const makeCreateAndSendAnalyticsEvent =
+  (client: EventHubProducerClient) =>
+  (eventName: EventName) =>
+  (
+    signatureRequest:
+      | SignatureRequestDraft
+      | SignatureRequestSigned
+      | SignatureRequestReady
+      | SignatureRequestToBeSigned
+      | SignatureRequestWaitForQtsp
+      | SignatureRequestRejected
+  ) =>
+    pipe(
+      signatureRequest,
+      createAnalyticsEvent(eventName),
+      makeSendEvent(client)
     );

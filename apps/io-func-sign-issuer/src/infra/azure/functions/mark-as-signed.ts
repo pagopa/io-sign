@@ -13,7 +13,7 @@ import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/mes
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { makeSendBillingEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { makeSendEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
@@ -37,7 +37,7 @@ const makeRequestAsSignedHandler = (
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
-  const sendBillingEvent = makeSendBillingEvent(eventHubBillingClient);
+  const sendBillingEvent = makeSendEvent(eventHubBillingClient);
 
   const markAsSigned = makeMarkRequestAsSigned(
     getDossier,
