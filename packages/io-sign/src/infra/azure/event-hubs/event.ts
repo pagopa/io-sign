@@ -2,8 +2,8 @@ import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
-import { BillingEvent, SendBillingEvent } from "@io-sign/io-sign/event";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { BillingEvent, SendBillingEvent } from "../../../event";
 
 export const makeSendBillingEvent =
   (client: EventHubProducerClient): SendBillingEvent =>

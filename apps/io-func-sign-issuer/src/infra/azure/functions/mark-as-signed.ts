@@ -13,12 +13,12 @@ import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/mes
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { makeSendBillingEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
-import { makeSendBillingEvent } from "../event-hubs/event";
 import { makeGetDossier } from "../cosmos/dossier";
 
 const makeRequestAsSignedHandler = (

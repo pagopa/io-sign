@@ -13,6 +13,10 @@ import {
   getIoServicesConfigFromEnvironment,
 } from "@io-sign/io-sign/infra/io-services/config";
 import {
+  EventHubConfig,
+  getEventHubsConfigFromEnvironment,
+} from "@io-sign/io-sign/infra/azure/event-hubs/config";
+import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
@@ -21,10 +25,6 @@ import {
   CosmosConfig,
   getCosmosConfigFromEnvironment,
 } from "../infra/azure/cosmos/config";
-import {
-  EventHubConfig,
-  getEventHubsConfigFromEnvironment,
-} from "../infra/azure/event-hubs/config";
 import {
   getSelfCareConfigFromEnvironment,
   SelfCareConfig,
