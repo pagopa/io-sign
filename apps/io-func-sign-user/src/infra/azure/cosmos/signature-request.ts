@@ -22,6 +22,7 @@ import { pipe, flow } from "fp-ts/lib/function";
 
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
+import { ValidationError } from "@io-sign/io-sign/validation";
 import {
   SignatureRequest,
   GetSignatureRequest,
@@ -29,8 +30,6 @@ import {
   UpsertSignatureRequest,
   GetSignatureRequests,
 } from "../../../signature-request";
-
-import { ValidationError } from "@io-sign/io-sign/validation";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
 type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
