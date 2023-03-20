@@ -45,9 +45,10 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestToBeSigned
       | SignatureRequestWaitForQtsp
       | SignatureRequestRejected
-  ) =>
+  ): TE.TaskEither<Error, typeof signatureRequest> =>
     pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
-      makeSendEvent(client)
+      makeSendEvent(client),
+      TE.map(() => signatureRequest)
     );
