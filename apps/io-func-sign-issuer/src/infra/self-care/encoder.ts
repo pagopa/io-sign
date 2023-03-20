@@ -24,6 +24,7 @@ export const ioSignContractToIssuer: E.Encoder<
     description: institution.description,
     // Initially all newly created issuer will be in a test phase.
     environment: "TEST",
-    vatNumber: institution.taxCode,
+    vatNumber: institution.vatNumber,
+    taxCode: institution.taxCode,
   }),
 };

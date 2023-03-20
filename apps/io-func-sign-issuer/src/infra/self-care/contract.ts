@@ -17,6 +17,7 @@ const Institution = t.type({
   description: NonEmptyString,
   digitalAddress: EmailString,
   taxCode: NonEmptyString,
+  vatNumber: NonEmptyString,
 });
 
 const BaseContract = t.type({
