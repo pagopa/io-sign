@@ -6,10 +6,9 @@ import * as A from "fp-ts/lib/Array";
 import * as S from "fp-ts/lib/string";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import {
-  SignatureRequestDetailView as SignatureRequestApiModel,
-  StatusEnum as SignatureRequestStatusEnum,
-} from "../models/SignatureRequestDetailView";
+import { SignatureRequestDetailView as SignatureRequestApiModel } from "../models/SignatureRequestDetailView";
+
+import { SignatureRequestStatusEnum } from "../models/SignatureRequestStatus";
 
 import { ThirdPartyMessage as ThirdPartyMessageApiModel } from "../models/ThirdPartyMessage";
 
@@ -30,6 +29,7 @@ export const SignatureRequestToApiModel: E.Encoder<
     id,
     signerId: signer_id,
     dossierId: dossier_id,
+    dossierTitle: dossier_title,
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
@@ -42,6 +42,7 @@ export const SignatureRequestToApiModel: E.Encoder<
       id,
       signer_id,
       dossier_id,
+      dossier_title,
       created_at,
       updated_at,
       expires_at,

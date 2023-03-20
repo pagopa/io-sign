@@ -2,13 +2,23 @@ import {
   CosmosdbModel,
   BaseModel,
   CosmosResource,
+  toCosmosErrorResponse,
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
+
+import {
+  flattenAsyncIterable,
+  asyncIterableToArray,
+} from "@pagopa/io-functions-commons/dist/src/utils/async";
+
+import { failure } from "io-ts/PathReporter";
 
 import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as E from "fp-ts/lib/Either";
+import * as RA from "fp-ts/lib/ReadonlyArray";
 
 import * as cosmos from "@azure/cosmos";
-import { pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
@@ -17,7 +27,10 @@ import {
   GetSignatureRequest,
   InsertSignatureRequest,
   UpsertSignatureRequest,
+  GetSignatureRequests,
 } from "../../../signature-request";
+
+import { ValidationError } from "@io-sign/io-sign/validation";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
 type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
@@ -52,6 +65,38 @@ export const makeGetSignatureRequest =
       new SignatureRequestModel(db),
       (model) => model.find([id, signerId]),
       TE.mapLeft(toCosmosDatabaseError)
+    );
+
+export const makeGetSignatureRequests =
+  (db: cosmos.Database): GetSignatureRequests =>
+  (signerId) =>
+    pipe(
+      new SignatureRequestModel(db),
+      (model) =>
+        TE.tryCatch(
+          () =>
+            asyncIterableToArray(
+              flattenAsyncIterable(
+                model.getQueryIterator({
+                  parameters: [
+                    {
+                      name: "@signerId",
+                      value: signerId,
+                    },
+                  ],
+                  query: `SELECT * FROM m WHERE m.signerId = @signerId`,
+                })
+              )
+            ),
+          toCosmosErrorResponse
+        ),
+      TE.mapLeft(toCosmosDatabaseError),
+      TE.chainEitherKW(
+        flow(
+          RA.sequence(E.Applicative),
+          E.mapLeft((errors) => new ValidationError(failure(errors)))
+        )
+      )
     );
 
 export const makeInsertSignatureRequest =

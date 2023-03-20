@@ -62,6 +62,7 @@ export const newSignatureRequest = (
   issuerEnvironment: issuer.environment,
   signerId: signer.id,
   dossierId: dossier.id,
+  dossierTitle: dossier.title,
   status: "DRAFT",
   createdAt: new Date(),
   updatedAt: new Date(),

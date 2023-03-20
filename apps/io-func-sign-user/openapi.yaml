@@ -745,6 +745,8 @@ components:
             - description
         dossier_id:
           $ref: "#/components/schemas/Id"
+        dossier_title:
+          type: string
         signer_id:
           $ref: "#/components/schemas/Id"
         expires_at:
@@ -765,6 +767,7 @@ components:
         - status
         - issuer
         - dossier_id
+        - dossier_title
         - signer_id
         - expires_at
         - documents
