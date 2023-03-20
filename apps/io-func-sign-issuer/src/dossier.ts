@@ -11,12 +11,13 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
 
 export const Dossier = t.type({
   id: Id,
-  title: t.string,
+  title: NonEmptyString,
   issuerId: Issuer.props.id,
   documentsMetadata: DocumentsMetadata,
   createdAt: IsoDateFromString,

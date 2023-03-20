@@ -21,6 +21,7 @@ import {
 const signatureRequest: SignatureRequest = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Rilascio CIE" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
@@ -38,6 +39,7 @@ const signatureRequest: SignatureRequest = {
 const signatureRequestSigned: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Richiesta borsa di studio" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,

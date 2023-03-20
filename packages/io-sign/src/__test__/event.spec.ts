@@ -1,6 +1,7 @@
 import { describe, it, expect } from "@jest/globals";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { createBillingEvent } from "../event";
 
 import { newId } from "../id";
@@ -20,6 +21,7 @@ const issuer: Issuer = {
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Rilascio CIE" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: issuer.email,
   issuerDescription: issuer.description,
