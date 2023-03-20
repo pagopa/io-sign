@@ -719,6 +719,10 @@ components:
         - created_at
         - updated_at
 
+    DossierTitle:
+      type: string
+      minLength: 1
+
     SignatureRequestDetailView:
       type: object
       properties:
@@ -747,6 +751,7 @@ components:
           $ref: "#/components/schemas/Id"
         dossier_title:
           type: string
+          $ref: "#/components/schemas/DossierTitle"
         signer_id:
           $ref: "#/components/schemas/Id"
         expires_at:
