@@ -1,51 +1,45 @@
-import * as inquirer from "inquirer";
+//import * as inquirer from "inquirer";
 
 import {
   Configuration,
   SignatureRequestApi,
   CreateSignatureRequestBody,
+  GetSignatureRequestRequest
 } from "@io-sign/io-sign-api-client";
-import {
-  signatureRequestIdQuestion,
-  dossierIdQuestion,
-  signerIdQuestion,
-  expiresAtQuestion,
-  createSignatureRequestQuestion,
-  changeSignatureRequestStatusQuestion,
-  signatureRequestFirstQuestion,
-} from "./questions";
+//import {
+//  createSignatureRequestQuestion,
+//  changeSignatureRequestStatusQuestion,
+//} from "./questions";
 
-export const callSignatureRequests = async (configuration: Configuration) => {
-  const answerSignatureRequests = await inquirer.prompt([
-    signatureRequestFirstQuestion,
-  ]);
-  switch (answerSignatureRequests.command) {
-    case "getSignatureRequest":
-      await callGetSignatureRequest(configuration);
-      break;
-    case "getDocumentUploadUrl":
-      await callGetDocumentUploadUrl(configuration);
-      break;
-    case "sendNotification":
+export const callSignatureRequests = async (configuration: Configuration, signatureRequest: any) => {
+
+if (signatureRequest.id != null) {
+	const request: GetSignatureRequestRequest = {
+		id: signatureRequest.id
+	};
+      await callGetSignatureRequest(configuration, request);
+	  /*
+if(signatureRequest.documentId != null) {
+      await callGetDocumentUploadUrl(configuration, signatureRequest.id, signatureRequest.documentId);
+}
+if(signatureRequest.dossierId) {
+
       await callSendNotification(configuration);
-      break;
     case "setSignatureRequestStatus":
       await callSetSignatureRequestStatus(configuration);
-      break;
-    case "createSignatureRequest":
-      await callCreateSignatureRequest(configuration);
-      break;
+} else{
+      await callCreateSignatureRequest(configuration, signatureRequest);
+	  */
+  } else if (signatureRequest.signerId != null && signatureRequest.dossierId) {
+      await callCreateSignatureRequest(configuration, signatureRequest);
   }
 };
 
-const callGetSignatureRequest = async (configuration: Configuration) => {
+const callGetSignatureRequest = async (configuration: Configuration, request: GetSignatureRequestRequest) => {
   const api = new SignatureRequestApi(configuration);
-  const answerGetSignatureRequest = await inquirer.prompt([
-    signatureRequestIdQuestion,
-  ]);
-  return api.getSignatureRequest(answerGetSignatureRequest.id);
+  return api.getSignatureRequest(request);
 };
-
+/*
 const callGetDocumentUploadUrl = async (configuration: Configuration) => {
   const api = new SignatureRequestApi(configuration);
   const answerGetDocumentUploadUrl = await inquirer.prompt([
@@ -79,21 +73,13 @@ const callSetSignatureRequestStatus = async (configuration: Configuration) => {
     });
   }
 };
-
-const callCreateSignatureRequest = async (configuration: Configuration) => {
+*/
+const callCreateSignatureRequest = async (configuration: Configuration, signatureRequest: any) => {
   const api = new SignatureRequestApi(configuration);
-  const answerCreateSignatureRequest = await inquirer.prompt([
-    dossierIdQuestion,
-    signerIdQuestion,
-    expiresAtQuestion,
-    createSignatureRequestQuestion,
-  ]);
-  if (answerCreateSignatureRequest.isReady) {
     const createSignatureRequestBody: CreateSignatureRequestBody = {
-      dossierId: answerCreateSignatureRequest.dossier_id,
-      signerId: answerCreateSignatureRequest.signer_id,
-      expiresAt: answerCreateSignatureRequest.expires_at,
+      dossierId: signatureRequest.dossierId,
+      signerId: signatureRequest.signerId,
+//      expiresAt: answerCreateSignatureRequest.expires_at,
     };
     return api.createSignatureRequest({ createSignatureRequestBody });
-  }
 };

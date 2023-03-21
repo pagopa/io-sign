@@ -1,7 +1,7 @@
 {
-  "name": "@io-sign/io-sign-issuer-sdk",
+  "name": "io-sign-issuer-yaml",
   "version": "1.0.0",
-  "description": "Issuer SDK for io-sign",
+  "description": "Issuer SDK",
   "repository": {
     "type": "git",
     "url": "https://github.com/pagopa/io-sign"
@@ -27,7 +27,9 @@
     "@io-sign/io-sign-api-client": "^1.0.0",
     "dotenv": "^16.0.3",
     "inquirer": "^8.0.3",
-    "isomorphic-fetch": "^3.0.0"
+    "@types/node": "^18.15.3",
+    "isomorphic-fetch": "^3.0.0",
+    "read-yaml-file": "^2.1.0",
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

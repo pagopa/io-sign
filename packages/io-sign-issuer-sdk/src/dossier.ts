@@ -1,44 +1,26 @@
-import * as inquirer from "inquirer";
+//import * as inquirer from "inquirer";
 import {
   Configuration,
   DossierApi,
-  DocumentMetadata,
-  SignatureField,
-  SignatureFieldAttrs,
-  CreateDossierBody,
+  GetDossierRequest,
+//  DocumentMetadata,
+//  SignatureField,
+//  SignatureFieldAttrs,
+//  CreateDossierBody,
 } from "@io-sign/io-sign-api-client";
-import {
-  dossierIdQuestion,
-  dossierTitleQuestion,
-  documentTitleQuestion,
-  clauseAttrsIdQuestion,
-  clauseTitleQuestion,
-  clauseTypeQuestion,
-  numberOfDocumentsQuestion,
-  numberOfSignaturesQuestion,
-  clauseAttrsTypeQuestion,
-  clauseAttrsXCoordsQuestion,
-  clauseAttrsYCoordsQuestion,
-  clauseAttrsHeightCoordsQuestion,
-  clauseAttrsWidthCoordsQuestion,
-  clauseAttrsPageCoordsQuestion,
-} from "./questions";
 
-export const callDossiers = async (configuration: Configuration) => {
-  const answerDossiers = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "new",
-      message: "Ne vuoi creare uno nuovo?",
-    },
-  ]);
-  if (answerDossiers.new) {
-    await callNewDossier(configuration);
+export const callDossiers = async (configuration: Configuration, dossier: any) => {
+  if (dossier.id == null) {
+//    await callNewDossier(configuration, dossier);
   } else {
-    await callGetDossier(configuration);
+	  const request: GetDossierRequest = {
+	  id: dossier.id
+	  };
+
+    await callGetDossier(configuration, request);
   }
 };
-
+/*
 const callNewDossier = async (configuration: Configuration) => {
   const api = new DossierApi(configuration);
 
@@ -114,9 +96,8 @@ const addCoords = async () => {
     clauseAttrsPageCoordsQuestion,
   ]);
   const attrs: SignatureFieldAttrs = {
-    uniqueName: "",
     coordinates: { x: answerAddCoords.x_coords, y: answerAddCoords.y_coords },
-    page: answerAddCoords.page_corrds,
+    page: answerAddCoords.page_coords,
     size: { w: answerAddCoords.width_coords, h: answerAddCoords.height_coords },
   };
   return attrs;
@@ -126,19 +107,11 @@ const addUniqueName = async () => {
   const answerAddUniqueName = await inquirer.prompt([clauseAttrsIdQuestion]);
   const attrs: SignatureFieldAttrs = {
     uniqueName: answerAddUniqueName.id,
-    coordinates: { x: 0, y: 0 },
-    page: 0,
-    size: { w: 0, h: 0 },
   };
   return attrs;
 };
-
-const callGetDossier = async (configuration: Configuration) => {
+*/
+const callGetDossier = async (configuration: Configuration, request: GetDossierRequest) => {
   const api = new DossierApi(configuration);
-  const answerGetDossier = await inquirer.prompt([
-    {
-      dossierIdQuestion,
-    },
-  ]);
-  return api.getDossier(answerGetDossier.id);
+  return api.getDossier(request);
 };
