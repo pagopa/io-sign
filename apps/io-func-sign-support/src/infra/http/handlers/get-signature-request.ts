@@ -40,6 +40,8 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
     ),
     RTE.chainW(({ body, id }) =>
       pipe(
+        // the body can contain the "vat_number" of an issuer or
+        // the fiscal code of an user.
         "vat_number" in body
           ? pipe(
               getIssuerByVatNumber(body.vat_number),

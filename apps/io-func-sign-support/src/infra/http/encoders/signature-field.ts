@@ -31,6 +31,8 @@ const matchAttributes =
     ) => SignatureFieldToBeCreatedAttrs
   ) =>
   (attrs: SignatureField["attributes"]): SignatureFieldApiModel["attrs"] => {
+    // uniqueName act as discriminator between existing signature field
+    // and signature fields that should be created (by coordinates)
     if ("uniqueName" in attrs) {
       return onExisting(attrs);
     }

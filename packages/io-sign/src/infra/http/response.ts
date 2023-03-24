@@ -1,3 +1,9 @@
+// This module contains abstractions on an older version of handler-kit,
+// used by the "io-func-sign-issuer" and "io-func-sign-user" services.
+// It can be removed when the entire workspace will be migrated to the
+// stable version of handler-kit.
+// tracked-by: SFEQS-1545
+
 import {
   response,
   withStatusCode,
