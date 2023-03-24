@@ -25,6 +25,14 @@ import {
   EventHubConfig,
   getEventHubsConfigFromEnvironment,
 } from "../infra/azure/event-hubs/config";
+import {
+  getSelfCareConfigFromEnvironment,
+  SelfCareConfig,
+} from "../infra/self-care/config";
+import {
+  getSlackConfigFromEnvironment,
+  SlackConfig,
+} from "../infra/slack/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -35,7 +43,9 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
+    selfCare: SelfCareConfig,
   }),
+  slack: SlackConfig,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -50,7 +60,9 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
+    selfCare: getSelfCareConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
+    slack: getSlackConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -61,6 +73,8 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
+      selfCare: config.selfCare,
     },
+    slack: config.slack,
   }))
 );

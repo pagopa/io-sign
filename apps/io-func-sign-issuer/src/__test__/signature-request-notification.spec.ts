@@ -34,13 +34,14 @@ import {
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
+  internalInstitutionId: newId(),
   email: "info@enpacl-pec.it" as EmailString,
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
   vatNumber: "15376271001" as NonEmptyString,
 };
 
-const dossier = newDossier(issuer, "My dossier", [
+const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
   {
     title: "document #1",
     signatureFields: [] as unknown as DocumentMetadata["signatureFields"],

@@ -6,12 +6,15 @@ import {
   HealthCheck,
   toHealthProblems,
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
-import { EventHubProducerClient } from "@azure/event-hubs";
+import {
+  EventHubConsumerClient,
+  EventHubProducerClient,
+} from "@azure/event-hubs";
 
 export type AzureEventHubProblemSource = "AzureEventHub";
 
 export const makeAzureEventHubHealthCheck = (
-  client: EventHubProducerClient
+  client: EventHubProducerClient | EventHubConsumerClient
 ): HealthCheck<AzureEventHubProblemSource> =>
   pipe(
     TE.tryCatch(

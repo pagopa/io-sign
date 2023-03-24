@@ -1,7 +1,10 @@
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import { EventHubProducerClient } from "@azure/event-hubs";
+import {
+  EventHubConsumerClient,
+  EventHubProducerClient,
+} from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -23,6 +26,7 @@ import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
+import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { getConfigFromEnvironment } from "./config";
@@ -49,6 +53,12 @@ const eventHubBillingClient = new EventHubProducerClient(
 const eventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
+);
+
+const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
+  EventHubConsumerClient.defaultConsumerGroupName,
+  config.pagopa.selfCare.eventHub.connectionString,
+  config.pagopa.selfCare.eventHub.contractsName
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -87,6 +97,7 @@ export const Info = makeInfoFunction(
   database,
   eventHubBillingClient,
   eventHubAnalyticsClient,
+  eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
@@ -141,4 +152,10 @@ export const ValidateUpload = makeValidateUploadFunction(
   database,
   uploadedContainerClient,
   validatedContainerClient
+);
+
+export const CreateIssuer = makeCreateIssuerFunction(
+  database,
+  config.pagopa.selfCare,
+  config.slack
 );
