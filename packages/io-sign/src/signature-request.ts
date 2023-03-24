@@ -30,6 +30,8 @@ const SignatureRequest = t.type({
 
 export const SignatureRequestId = SignatureRequest.props.id;
 
+export type SignatureRequestId = t.TypeOf<typeof SignatureRequestId>;
+
 export const makeSignatureRequestVariant = <S extends string, A, O>(
   status: S,
   codec: t.Type<A, O>
