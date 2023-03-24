@@ -8,7 +8,7 @@ import { GetInstitutionById } from "./client";
 
 export const ContractState = t.union([
   t.literal("ACTIVE"),
-  t.literal("DELETED"),
+  t.literal("CLOSED"),
 ]);
 export type ContractState = t.TypeOf<typeof ContractState>;
 
@@ -17,7 +17,6 @@ const Institution = t.type({
   description: NonEmptyString,
   digitalAddress: EmailString,
   taxCode: NonEmptyString,
-  vatNumber: NonEmptyString,
 });
 
 const BaseContract = t.type({
@@ -25,6 +24,9 @@ const BaseContract = t.type({
   internalIstitutionID: NonEmptyString,
   state: ContractState,
   institution: Institution,
+  billing: t.type({
+    vatNumber: NonEmptyString,
+  }),
 });
 type BaseContract = t.TypeOf<typeof BaseContract>;
 
