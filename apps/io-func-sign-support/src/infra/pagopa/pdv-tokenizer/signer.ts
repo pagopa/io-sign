@@ -1,8 +1,8 @@
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import { SignerRepository } from "../../../signer";
 
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "../../../signer";
 
 export class PdvTokenizerSignerRepository implements SignerRepository {
   #client: PdvTokenizerClientWithApiKey;

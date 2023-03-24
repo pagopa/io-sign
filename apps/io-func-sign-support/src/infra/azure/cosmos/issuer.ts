@@ -12,12 +12,11 @@ import * as cosmos from "@azure/cosmos";
 
 import * as O from "fp-ts/Option";
 
-import { Issuer, IssuerRepository } from "../../../issuer";
-
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
 import { pipe } from "fp-ts/function";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { Issuer, IssuerRepository } from "../../../issuer";
 
 const IssuerByVatNumber = t.type({
   id: Issuer.props.vatNumber,

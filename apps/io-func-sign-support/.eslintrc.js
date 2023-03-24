@@ -6,7 +6,7 @@ module.exports = {
     node: true,
   },
   extends: ["@pagopa/eslint-config/recommended"],
-  ignorePatterns: ["**/models/*.ts", "*.yaml"],
+  ignorePatterns: ["**/models/*.ts", "*.yaml", "**/*.spec.ts"],
   overrides: [
     {
       files: ["**/*.spec.ts"],

@@ -8,8 +8,8 @@ import * as E from "fp-ts/Either";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-import { IssuerRepository, getIssuerByVatNumber } from "../issuer";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { IssuerRepository, getIssuerByVatNumber } from "../issuer";
 
 describe("getIssuerByVatNumber", () => {
   it('returns an "EntityNotFoundError" when the resource was not found', async () => {

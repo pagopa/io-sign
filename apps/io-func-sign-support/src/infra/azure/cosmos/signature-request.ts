@@ -10,16 +10,16 @@ import * as t from "io-ts";
 
 import * as cosmos from "@azure/cosmos";
 
-import {
-  SignatureRequestRepository,
-  SignatureRequest,
-} from "../../../signature-request";
 import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { Signer } from "@io-sign/io-sign/signer";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
 import { pipe } from "fp-ts/function";
+import {
+  SignatureRequestRepository,
+  SignatureRequest,
+} from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
 type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
@@ -52,6 +52,7 @@ class SignatureRequestFromSignerModel extends CosmosdbModel<
   RetrievedSignatureRequest,
   "signerId"
 > {
+  // eslint-disable-next-line sonarjs/no-identical-functions
   constructor(db: cosmos.Database) {
     super(
       db.container("signature-requests"),
@@ -75,14 +76,14 @@ export class CosmosDbSignatureRequestRepository
   getByIssuerId(id: SignatureRequestId, issuerId: Issuer["id"]) {
     return pipe(
       this.#issuer.find([id, issuerId]),
-      TE.mapLeft((e) => toCosmosDatabaseError(e))
+      TE.mapLeft(toCosmosDatabaseError)
     );
   }
 
   getBySignerId(id: SignatureRequestId, signerId: Signer["id"]) {
     return pipe(
       this.#signer.find([id, signerId]),
-      TE.mapLeft((e) => toCosmosDatabaseError(e))
+      TE.mapLeft(toCosmosDatabaseError)
     );
   }
 }

@@ -7,7 +7,6 @@ import { flow } from "fp-ts/function";
 
 // Encode domain errors to http errors
 const toHttpError = (e: Error): Error => {
-  console.log(1, e.name);
   if (e.name === "HttpError") {
     return e;
   }
@@ -62,7 +61,7 @@ export const toProblemJson = (e: Error): H.ProblemJson => {
 export const toErrorResponse = flow(toHttpError, toProblemJson, H.problemJson);
 
 export const logErrorAndReturnResponse = flow(
-  RTE.right<{}, Error, Error>,
+  RTE.right<object, Error, Error>,
   RTE.chainFirst((error) =>
     errorRTE("returning with an error response aa", { error })
   ),

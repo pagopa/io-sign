@@ -1,11 +1,4 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import {
-  SignatureRequestRepository,
-  SignatureRequest,
-} from "../../../../signature-request";
-import { SignerRepository } from "../../../../signer";
-
-import { GetSignatureRequestHandler } from "../get-signature-request";
 
 import * as TE from "fp-ts/TaskEither";
 import * as O from "fp-ts/Option";
@@ -14,11 +7,17 @@ import { newSigner } from "@io-sign/io-sign/signer";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { EmailString } from "@pagopa/ts-commons/lib/strings";
-import { Issuer, IssuerRepository } from "../../../../issuer";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
 import { pipe } from "fp-ts/lib/function";
+import { Issuer, IssuerRepository } from "../../../../issuer";
+import { GetSignatureRequestHandler } from "../get-signature-request";
+import { SignerRepository } from "../../../../signer";
+import {
+  SignatureRequestRepository,
+  SignatureRequest,
+} from "../../../../signature-request";
 
 describe("GetSignatureRequestHandler", () => {
   let signerRepository: SignerRepository;
@@ -244,7 +243,7 @@ describe("GetSignatureRequestHandler", () => {
       expect(run()).resolves.toEqual(
         expect.objectContaining({
           right: expect.objectContaining({
-            statusCode: statusCode,
+            statusCode,
           }),
         })
       );
