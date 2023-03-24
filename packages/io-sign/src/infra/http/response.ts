@@ -3,7 +3,7 @@ import {
   withStatusCode,
   withHeader,
   serializeToJSON,
-} from "@pagopa/handler-kit/lib/http";
+} from "handler-kit-legacy/lib/http";
 
 import { pipe, flow } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
