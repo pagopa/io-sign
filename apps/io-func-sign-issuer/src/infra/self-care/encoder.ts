@@ -11,7 +11,7 @@ export const ioSignContractToIssuer: E.Encoder<
   Issuer,
   IoSignContractWithSupportMail
 > = {
-  encode: ({ internalIstitutionID, institution, supportEmail }) => ({
+  encode: ({ internalIstitutionID, institution, supportEmail, billing }) => ({
     id: newId(),
     /* Temporarily the subscriptionId is associated with the VAT number of the issuer by prepending the string "TEMP-".
      * See: [IO-SIGN-RFC-SUB-ID]
@@ -24,7 +24,7 @@ export const ioSignContractToIssuer: E.Encoder<
     description: institution.description,
     // Initially all newly created issuer will be in a test phase.
     environment: "TEST",
-    vatNumber: institution.vatNumber,
+    vatNumber: billing.vatNumber,
     taxCode: institution.taxCode,
   }),
 };
