@@ -187,7 +187,7 @@ describe("GetSignatureRequestHandler", () => {
     );
   });
 
-  it.only("should return the right 4xx responses when the request body or the path param are malformed", () => {
+  it("should return the right 4xx responses when the request body or the path param are malformed", () => {
     const testTable: Array<{
       input: { body: unknown; path: Record<string, string> };
       statusCode: 400 | 422 | 404;
