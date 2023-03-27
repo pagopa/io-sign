@@ -12,6 +12,7 @@ import { CosmosDbSignatureRequestRepository } from "./azure/cosmos/signature-req
 import { PdvTokenizerSignerRepository } from "./pagopa/pdv-tokenizer/signer";
 
 import { GetSignatureRequestFunction } from "./azure/functions/get-signature-request";
+import { InfoFunction } from "./azure/functions/info";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -48,3 +49,5 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   signerRepository,
 });
+
+export const Info = InfoFunction({});
