@@ -25,8 +25,6 @@ import {
 
 import { failure } from "io-ts/PathReporter";
 
-import { errorsToReadableMessages } from "@pagopa/ts-commons/lib/reporters";
-
 import { Signer } from "@io-sign/io-sign/signer";
 import {
   SignatureRequest,

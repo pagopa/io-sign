@@ -1,8 +1,4 @@
 import { describe, expect, it, beforeAll } from "@jest/globals";
-import {
-  SignatureRequest,
-  SignatureRequestRepository,
-} from "../../../../signature-request";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
@@ -10,6 +6,10 @@ import * as H from "@pagopa/handler-kit";
 import * as TE from "fp-ts/TaskEither";
 import { newId } from "@io-sign/io-sign/id";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import {
+  SignatureRequest,
+  SignatureRequestRepository,
+} from "../../../../signature-request";
 
 import { GetSignatureRequestsHandler } from "../get-signature-requests";
 import { SignatureRequestToListView } from "../../encoders/signature-request";
