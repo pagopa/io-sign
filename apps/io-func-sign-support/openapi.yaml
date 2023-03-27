@@ -38,6 +38,21 @@ paths:
           $ref: "#/components/responses/HttpNotFound"
         500:
           $ref: "#/components/responses/HttpInternalServerError"
+  /info:
+    get:
+      operationId: Info
+      responses:
+        200:
+          description: it works
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
 
 components:
   requestBodies:
