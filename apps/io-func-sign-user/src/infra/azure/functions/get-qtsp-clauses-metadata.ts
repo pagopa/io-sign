@@ -1,4 +1,4 @@
-import { flow, pipe } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 
 import * as azure from "@pagopa/handler-kit/lib/azure";
 
@@ -41,7 +41,9 @@ const requireIssuerEnvironment = (req: HttpRequest) =>
       () =>
         new HttpBadRequestError("Missing x-iosign-issuer-environment in header")
     ),
-    E.chainW(validate(IssuerEnvironment, "Invalid issuer environment"))
+    // If the header is not set, always use the test environment.
+    E.fold(() => "TEST", identity),
+    validate(IssuerEnvironment, "Invalid issuer environment")
   );
 
 const getQtspClausesMetadataFunction = (config: NamirialConfig) => {
