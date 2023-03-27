@@ -1,26 +1,28 @@
-import { header, HttpRequest } from "@pagopa/handler-kit/lib/http";
-
-import { validate } from "@io-sign/io-sign/validation";
-
 import { pipe, flow } from "fp-ts/lib/function";
-
+import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
 
-import { Signer } from "@io-sign/io-sign/signer";
-import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
+import * as H from "@pagopa/handler-kit";
 
-const requireSignerId = (req: HttpRequest) =>
+import { Signer } from "@io-sign/io-sign/signer";
+
+export const requireSignerId = (req: H.HttpRequest) =>
   pipe(
-    req,
-    header("x-iosign-signer-id"),
+    req.headers,
+    lookup("x-iosign-signer-id"),
     E.fromOption(
-      () => new HttpBadRequestError("Missing x-iosign-signer-id in header")
+      () => new H.HttpBadRequestError("Missing x-iosign-signer-id in header")
     ),
-    E.chainW(validate(Signer.props.id, "Invalid signer id"))
+    E.chainW(
+      H.parse(
+        Signer.props.id,
+        "The content of x-iosign-signer-id is not a valid id"
+      )
+    )
   );
 
 export const requireSigner = flow(
   requireSignerId,
   E.map((id) => ({ id })),
-  E.chainW(validate(Signer, "Invalid signer."))
+  E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer"))
 );

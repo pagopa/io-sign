@@ -8,6 +8,7 @@ import {
 import { Id } from "@io-sign/io-sign/id";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 import { differenceInDays } from "date-fns";
 
@@ -18,6 +19,7 @@ import {
   EntityNotFoundError,
 } from "@io-sign/io-sign/error";
 import { validate } from "@io-sign/io-sign/validation";
+import { Signer } from "@io-sign/io-sign/signer";
 
 export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
@@ -51,6 +53,25 @@ export type NotifySignatureRequestSignedEvent = (
 export type NotifySignatureRequestRejectedEvent = (
   requestRejected: SignatureRequestRejected
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequestRepository = {
+  findBySignerId: (
+    signerId: Signer["id"]
+  ) => TE.TaskEither<Error, ReadonlyArray<SignatureRequest>>;
+};
+
+export const getSignatureRequestsBySignerId =
+  (
+    signerId: Signer["id"]
+  ): RTE.ReaderTaskEither<
+    {
+      signatureRequestRepository: SignatureRequestRepository;
+    },
+    Error,
+    ReadonlyArray<SignatureRequest>
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.findBySignerId(signerId);
 
 type Action_MARK_AS_SIGNED = {
   name: "MARK_AS_SIGNED";
