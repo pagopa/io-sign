@@ -2,5 +2,4 @@
 "io-func-sign-user": minor
 ---
 
-Added issuer-environment parameter in `GetSignatureRequest`
-Added `x-iosign-issuer-environment` header to `getQtspClauses`
+Added a configuration parameter to switch to the QTSP test environment, in order to test signatures.
