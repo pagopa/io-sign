@@ -88,7 +88,7 @@ export const SignatureRequestToApiModel: E.Encoder<
   },
 };
 
-export const toSignatureRequestStatusEnum = (
+const toSignatureRequestStatusEnum = (
   status: SignatureRequest["status"]
 ): SignatureRequestStatusEnum => {
   switch (status) {
