@@ -41,7 +41,7 @@ const requireIssuerEnvironment = (req: HttpRequest) =>
       () =>
         new HttpBadRequestError("Missing x-iosign-issuer-environment in header")
     ),
-    E.chainW(validate(IssuerEnvironment, "Invalid signature request id"))
+    E.chainW(validate(IssuerEnvironment, "Invalid issuer environment"))
   );
 
 const getQtspClausesMetadataFunction = (config: NamirialConfig) => {
