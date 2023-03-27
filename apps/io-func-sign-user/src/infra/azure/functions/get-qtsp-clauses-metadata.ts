@@ -41,7 +41,7 @@ const requireIssuerEnvironment = (req: HttpRequest) =>
       () =>
         new HttpBadRequestError("Missing x-iosign-issuer-environment in header")
     ),
-    // If the header is not set, always use the test environment.
+    // TODO: [SFEQS-1557] This default value must be removed when the app will be updated with the new specifications
     E.fold(() => "TEST", identity),
     validate(IssuerEnvironment, "Invalid issuer environment")
   );
