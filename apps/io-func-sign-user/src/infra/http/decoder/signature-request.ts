@@ -1,6 +1,6 @@
 import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
-import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
@@ -21,7 +21,7 @@ import {
   GetSignatureRequest,
   SignatureRequest,
 } from "../../../signature-request";
-import { requireSigner } from "./signer";
+import { requireSigner } from "./signer.old";
 import { requireFiscalCode } from "./fiscal-code";
 
 const signatureRequestNotFoundError = () =>

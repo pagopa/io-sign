@@ -1,5 +1,5 @@
-import { createHandler } from "@pagopa/handler-kit";
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
 
 import { created, error } from "@io-sign/io-sign/infra/http/response";
 
@@ -9,7 +9,7 @@ import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
-import { HttpRequest, withHeader } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, withHeader } from "handler-kit-legacy/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -29,7 +29,7 @@ import {
 } from "@io-sign/io-sign/infra/azure/storage/blob";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
-import { requireSigner } from "../../http/decoder/signer";
+import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";

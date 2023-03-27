@@ -1,8 +1,8 @@
 import { Database as CosmosDatabase } from "@azure/cosmos";
 
-import { createHandler } from "@pagopa/handler-kit";
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
@@ -21,7 +21,7 @@ import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
-import { requireSigner } from "../../http/decoder/signer";
+import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
 import { requireQtspClauses } from "../../http/decoder/qtsp-clause";
