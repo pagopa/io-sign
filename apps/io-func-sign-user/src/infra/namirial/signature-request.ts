@@ -12,8 +12,12 @@ import {
 import * as t from "io-ts";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 import { QtspCreateSignaturePayload } from "../../qtsp";
-import { NamirialConfig } from "./config";
+import {
+  getNamirialCredentialsFromIssuerEnvironment,
+  NamirialConfig,
+} from "./config";
 
 import {
   makeCreateSignatureRequest,
@@ -90,6 +94,8 @@ export const SignatureRequest = t.type({
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export type CreateSignatureRequest = (
+  issuerEnvironment: IssuerEnvironment
+) => (
   payload: QtspCreateSignaturePayload
 ) => TE.TaskEither<Error, SignatureRequest>;
 
@@ -97,32 +103,46 @@ export const makeCreateSignatureRequestWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   (getToken: ReturnType<typeof makeGetToken>) =>
   (config: NamirialConfig): CreateSignatureRequest =>
+  (issuerEnvironment: IssuerEnvironment) =>
   (createSignaturePayload: QtspCreateSignaturePayload) =>
     pipe(
-      getToken(config),
-      TE.chain((token) =>
+      config,
+      getNamirialCredentialsFromIssuerEnvironment(issuerEnvironment),
+      (config) =>
         pipe(
-          createSignaturePayload,
-          QtspCreateSignatureToApiModel.encode,
-          makeCreateSignatureRequest(fetchWithTimeout)(config)(token)
+          getToken(config),
+          TE.chain((token) =>
+            pipe(
+              createSignaturePayload,
+              QtspCreateSignatureToApiModel.encode,
+              makeCreateSignatureRequest(fetchWithTimeout)(config)(token)
+            )
+          )
         )
-      )
     );
 
 export type GetSignatureRequest = (
+  issuerEnvironment: IssuerEnvironment
+) => (
   signatureRequestId: SignatureRequest["id"]
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export const makeGetSignatureRequestWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   (getToken: ReturnType<typeof makeGetToken>) =>
-  (config: NamirialConfig) =>
+  (config: NamirialConfig): GetSignatureRequest =>
+  (issuerEnvironment: IssuerEnvironment) =>
   (signatureRequestId: SignatureRequest["id"]) =>
     pipe(
-      getToken(config),
-      TE.chain((token) =>
-        makeGetSignatureRequest(fetchWithTimeout)(config)(token)(
-          signatureRequestId
+      config,
+      getNamirialCredentialsFromIssuerEnvironment(issuerEnvironment),
+      (config) =>
+        pipe(
+          getToken(config),
+          TE.chain((token) =>
+            makeGetSignatureRequest(fetchWithTimeout)(config)(token)(
+              signatureRequestId
+            )
+          )
         )
-      )
     );

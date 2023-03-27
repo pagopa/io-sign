@@ -167,84 +167,95 @@ export const makeCreateSignature =
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
+        signatureRequest: retrieveSignatureRequest,
       }),
-      TE.map(({ documentsToSign, fiscalCode }) => ({
-        fiscalCode,
-        publicKey: signatureValidationParams.publicKey,
-        spidAssertion: signatureValidationParams.samlAssertionBase64,
-        email,
-        documentLink: qtspClauses.filledDocumentUrl,
-        tosSignature: signatureValidationParams.tosSignature,
-        signature: signatureValidationParams.challengeSignature,
-        nonce: qtspClauses.nonce,
-        documentsToSign,
-        signatureInput: signatureValidationParams.signatureInput,
-      })),
-      TE.chainEitherKW((createSignaturePayload) =>
+      TE.chain(({ documentsToSign, fiscalCode, signatureRequest }) =>
         pipe(
-          Buffer.from(createSignaturePayload.signatureInput, "utf-8").toString(
-            "base64"
+          TE.of({
+            fiscalCode,
+            publicKey: signatureValidationParams.publicKey,
+            spidAssertion: signatureValidationParams.samlAssertionBase64,
+            email,
+            documentLink: qtspClauses.filledDocumentUrl,
+            tosSignature: signatureValidationParams.tosSignature,
+            signature: signatureValidationParams.challengeSignature,
+            nonce: qtspClauses.nonce,
+            documentsToSign,
+            signatureInput: signatureValidationParams.signatureInput,
+          }),
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              Buffer.from(
+                createSignaturePayload.signatureInput,
+                "utf-8"
+              ).toString("base64"),
+              validate(
+                NonEmptyString,
+                "Unable to convert signatureInput to base64 string"
+              ),
+              E.map((signatureInput) => ({
+                ...createSignaturePayload,
+                signatureInput,
+              }))
+            )
           ),
-          validate(
-            NonEmptyString,
-            "Unable to convert signatureInput to base64 string"
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              Buffer.from(createSignaturePayload.publicKey, "base64").toString(
+                "utf-8"
+              ),
+              JSON.parse,
+              (jsonKey) =>
+                Buffer.from(JSON.stringify(jsonKey), "utf-8").toString(
+                  "base64"
+                ),
+              validate(
+                NonEmptyString,
+                "Unable to convert publicKey to base64 string"
+              ),
+              E.map((publicKey) => ({
+                ...createSignaturePayload,
+                publicKey,
+              }))
+            )
           ),
-          E.map((signatureInput) => ({
-            ...createSignaturePayload,
-            signatureInput,
-          }))
-        )
-      ),
-      TE.chainEitherKW((createSignaturePayload) =>
-        pipe(
-          Buffer.from(createSignaturePayload.publicKey, "base64").toString(
-            "utf-8"
+          TE.chain(
+            creatQtspSignatureRequest(signatureRequest.issuerEnvironment)
           ),
-          JSON.parse,
-          (jsonKey) =>
-            Buffer.from(JSON.stringify(jsonKey), "utf-8").toString("base64"),
-          validate(
-            NonEmptyString,
-            "Unable to convert publicKey to base64 string"
+          TE.filterOrElse(
+            (qtspResponse) => qtspResponse.status === "CREATED",
+            (e) =>
+              e.last_error !== null
+                ? new ActionNotAllowedError(
+                    `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
+                  )
+                : new ActionNotAllowedError(
+                    "An error occurred while the QTSP was creating the signature."
+                  )
           ),
-          E.map((publicKey) => ({
-            ...createSignaturePayload,
-            publicKey,
-          }))
-        )
-      ),
-      TE.chain(creatQtspSignatureRequest),
-      TE.filterOrElse(
-        (qtspResponse) => qtspResponse.status === "CREATED",
-        (e) =>
-          e.last_error !== null
-            ? new ActionNotAllowedError(
-                `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
-              )
-            : new ActionNotAllowedError(
-                "An error occurred while the QTSP was creating the signature."
-              )
-      ),
-      TE.chainW((qtspResponse) =>
-        pipe(
-          newSignature(signer, signatureRequestId, qtspResponse.id),
-          insertSignature
-        )
-      ),
-      TE.chainFirst(() =>
-        pipe(
-          retrieveSignatureRequest,
-          TE.chainEitherK(markAsWaitForQtsp),
-          TE.chain(upsertSignatureRequest)
-        )
-      ),
-      TE.chainFirst((signature) =>
-        pipe(
-          {
-            signatureId: signature.id,
-            signerId: signature.signerId,
-          },
-          notifySignatureReadyEvent
+          TE.chainW((qtspResponse) =>
+            pipe(
+              newSignature(signer, signatureRequestId, qtspResponse.id),
+              insertSignature
+            )
+          ),
+          TE.chainFirst(() =>
+            pipe(
+              signatureRequest,
+              markAsWaitForQtsp,
+              TE.fromEither,
+              TE.chain(upsertSignatureRequest)
+            )
+          ),
+          TE.chainFirst((signature) =>
+            pipe(
+              {
+                signatureId: signature.id,
+                signerId: signature.signerId,
+              },
+              notifySignatureReadyEvent
+            )
+          )
         )
       )
     );

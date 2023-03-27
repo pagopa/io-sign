@@ -12,7 +12,7 @@ import {
   isSuccessful,
   responseToJson,
 } from "@io-sign/io-sign/infra/client-utils";
-import { NamirialConfig } from "./config";
+import { NamirialCredentialsConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
   CreateSignatureRequestBody as CreateSignatureRequestBody,
@@ -27,7 +27,7 @@ export type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
 export const makeGetToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath, username, password }: NamirialConfig) =>
+  ({ basePath, username, password }: NamirialCredentialsConfig) =>
     pipe(
       TE.tryCatch(
         () =>
@@ -52,7 +52,7 @@ export const makeGetToken =
 
 export const makeGetClauses =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
     pipe(
       TE.of(token),
@@ -80,7 +80,7 @@ export const makeGetClauses =
 
 export const makeCreateSignatureRequest =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
   (body: CreateSignatureRequestBody) =>
     pipe(
@@ -136,7 +136,7 @@ export const makeCreateSignatureRequest =
 
 export const makeGetSignatureRequest =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
   (signatureRequestId: SignatureRequest["id"]) =>
     pipe(
@@ -169,5 +169,5 @@ export const makeGetSignatureRequest =
 export const makeGetClausesWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   (getToken: ReturnType<typeof makeGetToken>) =>
-  (config: NamirialConfig) =>
+  (config: NamirialCredentialsConfig) =>
     pipe(getToken(config), TE.chain(makeGetClauses(fetchWithTimeout)(config)));
