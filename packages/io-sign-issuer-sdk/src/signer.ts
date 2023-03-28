@@ -10,6 +10,5 @@ export const callSigners = async (configuration: Configuration, fiscalCode: stri
   const getSignerByFiscalCodeBody: GetSignerByFiscalCodeBody = {
     fiscalCode: fiscalCode,
   };
-
   return api.getSignerByFiscalCode({ getSignerByFiscalCodeBody });
 };

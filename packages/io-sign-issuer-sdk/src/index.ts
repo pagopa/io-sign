@@ -1,8 +1,9 @@
-import readYamlFile from 'read-yaml-file';
-import dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as YAML from 'yaml';
+import * as dotenv from 'dotenv';
 import * as fetch from "isomorphic-fetch";
 import { callSigners } from './signer';
-//import { callDossier } from './dossier';
+import { callDossiers } from './dossier';
 import { callSignatureRequests } from './signature-request';
 import { Configuration } from "@io-sign/io-sign-api-client";
 dotenv.config();
@@ -23,16 +24,19 @@ if (apiPath === undefined || apiPath === null) {
     fetchApi: fetch,
   });
 
-const data: any=readYamlFile.sync('./openapi.yaml'); //.then((result: any) => {
-	console.log(data);
+const file = fs.readFileSync('./file.yaml', 'utf8');
+const data = YAML.parse(file);
+
 	if (data.signatureRequest != null) {
-		await callSignatureRequests(configuration, data.signatureRequest);
+		 callSignatureRequests(configuration, data.signatureRequest).then((result) => console.log(result))
+		 .catch((err) => console.log(err));;
 	}
 	if (data.signer) {
-		await callSigners(configuration, data.signer);
+		callSigners(configuration, data.signer).then((result) => console.log(result))
+		 .catch((err) => console.log(err));;
+	}
+	if (data.dossier) {
+		callDossiers(configuration, data.dossier).then((result) => console.log(result))
+		 .catch((err) => console.log(err));;
 	}
 
-})
-//.catch((err) => {
-//	console.log(err);
-//});
