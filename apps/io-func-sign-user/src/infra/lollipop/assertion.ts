@@ -7,6 +7,9 @@ import {
   HttpBadRequestError,
   HttpNotFoundError,
 } from "@io-sign/io-sign/infra/http/errors";
+
+import { stringToBase64Encode } from "@io-sign/io-sign/utility";
+
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { validate } from "@io-sign/io-sign/validation";
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
@@ -75,6 +78,6 @@ export const makeGetBase64SamlAssertion =
           ? TE.of(assertion.response_xml)
           : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`))
       ),
-      TE.map((assertion) => Buffer.from(assertion, "utf-8").toString("base64")),
+      TE.chainEitherK(stringToBase64Encode),
       TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid"))
     );

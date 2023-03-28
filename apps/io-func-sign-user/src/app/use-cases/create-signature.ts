@@ -5,6 +5,7 @@ import * as t from "io-ts";
 import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as J from "fp-ts/Json";
 
 import { pipe, flow } from "fp-ts/lib/function";
 import {
@@ -13,6 +14,11 @@ import {
 } from "@io-sign/io-sign/error";
 
 import { Id } from "@io-sign/io-sign/id";
+
+import {
+  stringFromBase64Encode,
+  stringToBase64Encode,
+} from "@io-sign/io-sign/utility";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -185,13 +191,13 @@ export const makeCreateSignature =
           }),
           TE.chainEitherKW((createSignaturePayload) =>
             pipe(
-              Buffer.from(
-                createSignaturePayload.signatureInput,
-                "utf-8"
-              ).toString("base64"),
-              validate(
-                NonEmptyString,
-                "Unable to convert signatureInput to base64 string"
+              createSignaturePayload.signatureInput,
+              stringToBase64Encode,
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert signatureInput to base64 string"
+                )
               ),
               E.map((signatureInput) => ({
                 ...createSignaturePayload,
@@ -201,17 +207,17 @@ export const makeCreateSignature =
           ),
           TE.chainEitherKW((createSignaturePayload) =>
             pipe(
-              Buffer.from(createSignaturePayload.publicKey, "base64").toString(
-                "utf-8"
-              ),
-              JSON.parse,
-              (jsonKey) =>
-                Buffer.from(JSON.stringify(jsonKey), "utf-8").toString(
-                  "base64"
-                ),
-              validate(
-                NonEmptyString,
-                "Unable to convert publicKey to base64 string"
+              createSignaturePayload.publicKey,
+              stringFromBase64Encode,
+              E.chain(J.parse),
+              E.chain(J.stringify),
+              E.mapLeft(() => new Error("Unable to parse public key")),
+              E.chainW(stringToBase64Encode),
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert publicKey to base64 string"
+                )
               ),
               E.map((publicKey) => ({
                 ...createSignaturePayload,
