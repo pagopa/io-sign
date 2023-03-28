@@ -17,9 +17,7 @@ describe("Utility", () => {
       ).toBe("aGVsbG8gd29ybGQ=");
     });
     it("should not convert an invalid string", () => {
-      expect(
-        pipe(undefined as unknown as string, stringToBase64Encode, E.isLeft)
-      ).toBe(true);
+      expect(pipe(undefined, stringToBase64Encode, E.isLeft)).toBe(true);
     });
   });
 
@@ -34,9 +32,7 @@ describe("Utility", () => {
       ).toBe("hello world");
     });
     it("should not convert an invalid base64 string", () => {
-      expect(
-        pipe(undefined as unknown as string, stringFromBase64Encode, E.isLeft)
-      ).toBe(true);
+      expect(pipe(undefined, stringFromBase64Encode, E.isLeft)).toBe(true);
     });
   });
 });
