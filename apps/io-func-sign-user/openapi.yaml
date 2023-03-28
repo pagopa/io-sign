@@ -96,6 +96,16 @@ paths:
       summary: Get clauses list and MRC from QTSP
       tags:
         - QTSP Clauses
+      parameters:
+        - in: header
+          name: x-iosign-issuer-environment
+          schema:
+            type: string
+            description: Issuer environment
+            enum:
+              - TEST
+              - DEFAULT
+          required: true
       responses:
         "200":
           description: The QTSP clauses list
@@ -753,9 +763,12 @@ components:
             description:
               type: string
               minLength: 1
+            environment:
+              $ref: "#/components/schemas/IssuerEnvironment"
           required:
             - email
             - description
+            - environment
         dossier_id:
           $ref: "#/components/schemas/Id"
         dossier_title:
@@ -883,3 +896,9 @@ components:
     AssertionRefSha512:
       type: string
       pattern: ^(sha512-[A-Za-z0-9-_=]{1,88})$
+
+    IssuerEnvironment:
+      type: string
+      enum:
+        - TEST
+        - DEFAULT
