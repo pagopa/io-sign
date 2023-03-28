@@ -42,7 +42,7 @@ export const getNamirialConfigFromEnvironment: RE.ReaderEither<
     prod: {
       basePath: config.basePath,
       username: config.username,
-      password: config.username,
+      password: config.password,
     },
     test: {
       basePath: config.testBasePath,
