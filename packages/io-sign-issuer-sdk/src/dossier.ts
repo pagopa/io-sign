@@ -4,14 +4,13 @@ import {
   GetDossierRequest,
 } from "@io-sign/io-sign-api-client";
 
-export const callDossiers = async (configuration: Configuration, dossier: any) => {
-	  const request: GetDossierRequest = {
-	  id: dossier.id
-	  };
-
-    await callGetDossier(configuration, request);
-};
-const callGetDossier = async (configuration: Configuration, request: GetDossierRequest) => {
+export const callDossier = async (
+  configuration: Configuration,
+  dossier: GetDossierRequest
+) => {
+  const request: GetDossierRequest = {
+    id: dossier.id,
+  };
   const api = new DossierApi(configuration);
   return api.getDossier(request);
 };
