@@ -1,5 +1,5 @@
 {
-  "name": "io-sign-issuer-yaml",
+  "name": "@io-sign/io-sign-issuer-sdk",
   "version": "1.0.0",
   "description": "Issuer SDK",
   "repository": {
@@ -8,7 +8,6 @@
   },
   "license": "Unlicense",
   "main": "./dist/index.js",
-  "type": "commonjs",
   "exports": {
     ".": "./dist/index.js"
   },
@@ -25,7 +24,6 @@
   },
   "dependencies": {
     "@io-sign/io-sign-api-client": "^1.0.0",
-    "@types/node": "^18.15.3",
     "dotenv": "^16.0.3",
     "inquirer": "^8.0.3",
     "isomorphic-fetch": "^3.0.0"
