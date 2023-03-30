@@ -1,3 +1,5 @@
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { callSigners } from './signer';
 import {
   Configuration,
   SignatureRequestApi,
@@ -10,14 +12,28 @@ export const callSignatureRequests = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-  if (signatureRequest.id !== null) {
-    const request: GetSignatureRequestRequest = {
-      id: signatureRequest.id,
-    };
-    await getSignatureRequest(configuration, request);
-  } else if (signatureRequest.signerId != null && signatureRequest.dossierId) {
-    await createSignatureRequest(configuration, signatureRequest);
-  }
+  if (signatureRequest.id != null) {
+		if     (signatureRequest.documentId != null) {
+			await callGetDocumentUploadUrl(configuration, signatureRequest.id, signatureRequest.documentId);
+		} else if (signatureRequest.status != undefined && signatureRequest.status != "READY") {
+			await callSendNotification(configuration, signatureRequest.id);
+		} else if (signatureRequest.status != undefined && signatureRequest.status == "READY") {
+			await callSetSignatureRequestStatus(configuration, signatureRequest.id);
+		} else {
+			const request: GetSignatureRequestRequest = {
+				id: signatureRequest.id,
+			};
+			await getSignatureRequest(configuration, request);
+			}
+	} else if (signatureRequest.signerId != null && signatureRequest.dossierId) {
+	  console.log(signatureRequest);
+	  if (signatureRequest.signerId instanceof FiscalCode) {
+		  const signer= await callSigners(configuration, signatureRequest.signerId);
+signatureRequest.signerId = signer.id;
+	  }
+	  console.log(signatureRequest);
+//      await callCreateSignatureRequest(configuration, signatureRequest);
+	}
 };
 
 const getSignatureRequest = async (
@@ -41,3 +57,35 @@ const createSignatureRequest = async (
   };
   return api.createSignatureRequest({ createSignatureRequestBody });
 };
+
+const callGetDocumentUploadUrl = async (
+	configuration: Configuration, 
+	signatureRequestId: string, 
+	documentId: string
+) => {
+  const api = new SignatureRequestApi(configuration);
+  return api.getDocumentUploadUrl( {
+    "reqId": signatureRequestId,
+    "docId": documentId
+  });
+};
+
+const callSendNotification = async (
+	configuration: Configuration, 
+	signatureRequestId: string
+) => {
+  const api = new SignatureRequestApi(configuration);
+  return api.sendNotification({ "reqId": signatureRequestId });
+};
+
+const callSetSignatureRequestStatus = async (
+	configuration: Configuration, 
+	signatureRequestId: string
+) => {
+  const api = new SignatureRequestApi(configuration);
+    return api.setSignatureRequestStatus({
+      id: signatureRequestId,
+      body: "READY",
+    });
+};
+
