@@ -25,6 +25,7 @@
   "dependencies": {
     "@io-sign/io-sign-api-client": "^1.0.0",
     "@pagopa/io-functions-commons": "^26.2.1",
+    "@pagopa/ts-commons": "^11.0.0",
     "dotenv": "^16.0.3",
     "inquirer": "^8.0.3",
     "isomorphic-fetch": "^3.0.0"
