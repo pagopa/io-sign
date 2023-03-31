@@ -12,15 +12,16 @@ export const callSignatureRequests = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-  if (signatureRequest.id !== null) {
-    if (signatureRequest.documentId != null) {
+  if (signatureRequest.id) {
+	  console.log("id trovato");
+    if (signatureRequest.documentId) {
       await callGetDocumentUploadUrl(
         configuration,
         signatureRequest.id,
         signatureRequest.documentId
       );
     } else if (
-      signatureRequest.status !== undefined &&
+      signatureRequest.status &&
       signatureRequest.status !== "READY"
     ) {
       await callSendNotification(configuration, signatureRequest.id);
@@ -35,8 +36,7 @@ export const callSignatureRequests = async (
       };
       await getSignatureRequest(configuration, request);
     }
-  } else if (signatureRequest.signerId != null && signatureRequest.dossierId) {
-    console.log(signatureRequest);
+  } else if (signatureRequest.signerId && signatureRequest.dossierId) {
     if (FiscalCode.is(signatureRequest.signerId)) {
       const signer = await callSigners(
         configuration,
@@ -45,8 +45,7 @@ export const callSignatureRequests = async (
       // eslint-disable-next-line functional/immutable-data
       signatureRequest.signerId = signer.id;
     }
-    console.log(signatureRequest);
-    //      await callCreateSignatureRequest(configuration, signatureRequest);
+          await createSignatureRequest(configuration, signatureRequest);
   }
 };
 

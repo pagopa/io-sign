@@ -6,7 +6,7 @@ import { Configuration } from "@io-sign/io-sign-api-client";
 import { callSigners } from "./signer";
 import { callDossier } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
-
+import { APIMiddleware } from "./middleware";
 dotenv.config();
 
 const apiPath = process.env.API_PATH;
@@ -24,6 +24,9 @@ const configuration = new Configuration({
   basePath: apiPath,
   apiKey: subscriptionKey,
   fetchApi: fetch,
+  middleware: [
+  new APIMiddleware
+  ],
 });
 
 const file = fs.readFileSync("./file.yaml", "utf8");
@@ -31,18 +34,18 @@ const data = YAML.parse(file);
 
 if (data.signatureRequest != null) {
   callSignatureRequests(configuration, data.signatureRequest)
-    .then((result) => console.log(result))
-    .catch((err) => console.log(err));
+    .then((result) => console.log("Risultato signatureRequest:"+JSON.stringify(result, null, 2)))
+    .catch((err) => console.error("errore signature request: "+err));
 }
 
 if (data.signer) {
   callSigners(configuration, data.signer)
-    .then((result) => console.log(result))
-    .catch((err) => console.log(err));
+    .then((result) => console.log("risultato signer: "+JSON.stringify(result, null, 2)))
+    .catch((err) => console.error("errore signer: "+err));
 }
 
 if (data.dossier) {
   callDossier(configuration, data.dossier)
-    .then((result) => console.log(result))
-    .catch((err) => console.log(err));
+    .then((result) => console.log("risultato dossier: "+JSON.stringify(result, null, 2)))
+    .catch((err) => console.error("errore dossier: "+err));
 }
