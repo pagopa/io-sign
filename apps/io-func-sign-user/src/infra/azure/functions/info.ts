@@ -78,7 +78,8 @@ export const makeInfoHandler = (
       pipe(
         [
           makeLollipopClientHealthCheck(lollipopApiClient)(),
-          makeNamirialHealthCheck(namirialConfig),
+          makeNamirialHealthCheck(namirialConfig.prod),
+          makeNamirialHealthCheck(namirialConfig.test),
           makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
           makeIOServicesHealthCheck(ioApiClient)(),
           makeAzureCosmosDbHealthCheck(db),

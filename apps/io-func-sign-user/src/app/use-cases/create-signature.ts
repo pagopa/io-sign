@@ -5,6 +5,7 @@ import * as t from "io-ts";
 import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as J from "fp-ts/Json";
 
 import { pipe, flow } from "fp-ts/lib/function";
 import {
@@ -13,6 +14,11 @@ import {
 } from "@io-sign/io-sign/error";
 
 import { Id } from "@io-sign/io-sign/id";
+
+import {
+  stringFromBase64Encode,
+  stringToBase64Encode,
+} from "@io-sign/io-sign/utility";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -167,84 +173,95 @@ export const makeCreateSignature =
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
+        signatureRequest: retrieveSignatureRequest,
       }),
-      TE.map(({ documentsToSign, fiscalCode }) => ({
-        fiscalCode,
-        publicKey: signatureValidationParams.publicKey,
-        spidAssertion: signatureValidationParams.samlAssertionBase64,
-        email,
-        documentLink: qtspClauses.filledDocumentUrl,
-        tosSignature: signatureValidationParams.tosSignature,
-        signature: signatureValidationParams.challengeSignature,
-        nonce: qtspClauses.nonce,
-        documentsToSign,
-        signatureInput: signatureValidationParams.signatureInput,
-      })),
-      TE.chainEitherKW((createSignaturePayload) =>
+      TE.chain(({ documentsToSign, fiscalCode, signatureRequest }) =>
         pipe(
-          Buffer.from(createSignaturePayload.signatureInput, "utf-8").toString(
-            "base64"
+          TE.of({
+            fiscalCode,
+            publicKey: signatureValidationParams.publicKey,
+            spidAssertion: signatureValidationParams.samlAssertionBase64,
+            email,
+            documentLink: qtspClauses.filledDocumentUrl,
+            tosSignature: signatureValidationParams.tosSignature,
+            signature: signatureValidationParams.challengeSignature,
+            nonce: qtspClauses.nonce,
+            documentsToSign,
+            signatureInput: signatureValidationParams.signatureInput,
+          }),
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              createSignaturePayload.signatureInput,
+              stringToBase64Encode,
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert signatureInput to base64 string"
+                )
+              ),
+              E.map((signatureInput) => ({
+                ...createSignaturePayload,
+                signatureInput,
+              }))
+            )
           ),
-          validate(
-            NonEmptyString,
-            "Unable to convert signatureInput to base64 string"
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              createSignaturePayload.publicKey,
+              stringFromBase64Encode,
+              E.chain(J.parse),
+              E.chain(J.stringify),
+              E.mapLeft(() => new Error("Unable to parse public key")),
+              E.chainW(stringToBase64Encode),
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert publicKey to base64 string"
+                )
+              ),
+              E.map((publicKey) => ({
+                ...createSignaturePayload,
+                publicKey,
+              }))
+            )
           ),
-          E.map((signatureInput) => ({
-            ...createSignaturePayload,
-            signatureInput,
-          }))
-        )
-      ),
-      TE.chainEitherKW((createSignaturePayload) =>
-        pipe(
-          Buffer.from(createSignaturePayload.publicKey, "base64").toString(
-            "utf-8"
+          TE.chain(
+            creatQtspSignatureRequest(signatureRequest.issuerEnvironment)
           ),
-          JSON.parse,
-          (jsonKey) =>
-            Buffer.from(JSON.stringify(jsonKey), "utf-8").toString("base64"),
-          validate(
-            NonEmptyString,
-            "Unable to convert publicKey to base64 string"
+          TE.filterOrElse(
+            (qtspResponse) => qtspResponse.status === "CREATED",
+            (e) =>
+              e.last_error !== null
+                ? new ActionNotAllowedError(
+                    `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
+                  )
+                : new ActionNotAllowedError(
+                    "An error occurred while the QTSP was creating the signature."
+                  )
           ),
-          E.map((publicKey) => ({
-            ...createSignaturePayload,
-            publicKey,
-          }))
-        )
-      ),
-      TE.chain(creatQtspSignatureRequest),
-      TE.filterOrElse(
-        (qtspResponse) => qtspResponse.status === "CREATED",
-        (e) =>
-          e.last_error !== null
-            ? new ActionNotAllowedError(
-                `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
-              )
-            : new ActionNotAllowedError(
-                "An error occurred while the QTSP was creating the signature."
-              )
-      ),
-      TE.chainW((qtspResponse) =>
-        pipe(
-          newSignature(signer, signatureRequestId, qtspResponse.id),
-          insertSignature
-        )
-      ),
-      TE.chainFirst(() =>
-        pipe(
-          retrieveSignatureRequest,
-          TE.chainEitherK(markAsWaitForQtsp),
-          TE.chain(upsertSignatureRequest)
-        )
-      ),
-      TE.chainFirst((signature) =>
-        pipe(
-          {
-            signatureId: signature.id,
-            signerId: signature.signerId,
-          },
-          notifySignatureReadyEvent
+          TE.chainW((qtspResponse) =>
+            pipe(
+              newSignature(signer, signatureRequestId, qtspResponse.id),
+              insertSignature
+            )
+          ),
+          TE.chainFirst(() =>
+            pipe(
+              signatureRequest,
+              markAsWaitForQtsp,
+              TE.fromEither,
+              TE.chain(upsertSignatureRequest)
+            )
+          ),
+          TE.chainFirst((signature) =>
+            pipe(
+              {
+                signatureId: signature.id,
+                signerId: signature.signerId,
+              },
+              notifySignatureReadyEvent
+            )
+          )
         )
       )
     );

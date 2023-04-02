@@ -16,6 +16,7 @@ import { ThirdPartyMessage as ThirdPartyMessageApiModel } from "../models/ThirdP
 
 import { SignatureRequest } from "../../../signature-request";
 
+import { IssuerEnvironmentEnum } from "../models/IssuerEnvironment";
 import { DocumentReadyToDetailView } from "./document";
 
 const addPdfExtension = (fileName: NonEmptyString) =>
@@ -37,6 +38,7 @@ export const SignatureRequestToApiModel: E.Encoder<
     expiresAt: expires_at,
     issuerEmail: email,
     issuerDescription: description,
+    issuerEnvironment: environment,
     documents,
     ...extra
   }) => {
@@ -52,6 +54,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       issuer: {
         email,
         description,
+        environment:
+          environment === "TEST"
+            ? IssuerEnvironmentEnum.TEST
+            : IssuerEnvironmentEnum.DEFAULT,
       },
     };
     switch (extra.status) {

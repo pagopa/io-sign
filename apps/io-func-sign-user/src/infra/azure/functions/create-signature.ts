@@ -6,6 +6,7 @@ import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
+import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
@@ -158,14 +159,8 @@ const makeCreateSignatureHandler = (
           filledDocumentUrl: qtspClauses.filledDocumentUrl.includes("https://")
             ? qtspClauses.filledDocumentUrl
             : pipe(
-                E.tryCatch(
-                  () =>
-                    Buffer.from(
-                      qtspClauses.filledDocumentUrl,
-                      "base64"
-                    ).toString(),
-                  E.toError
-                ),
+                qtspClauses.filledDocumentUrl,
+                stringFromBase64Encode,
                 E.chainW(
                   validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
                 ),
