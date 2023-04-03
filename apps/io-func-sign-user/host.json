@@ -2,8 +2,8 @@
   "version": "2.0",
   "logging": {
     "logLevel": {
-      "default": "Debug",
-      "Function.Info": "Debug"
+      "default": "None",
+      "Function": "Error"
     },
     "applicationInsights": {
       "samplingSettings": {
