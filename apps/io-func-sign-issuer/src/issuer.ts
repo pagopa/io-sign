@@ -7,16 +7,12 @@ import { pipe } from "fp-ts/lib/function";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-type SearchField = "subscriptionId" | "vatNumber";
-
-type Payload<F extends SearchField> = F extends "subscriptionId"
-  ? Issuer["subscriptionId"]
-  : Issuer["vatNumber"];
-
-type IssuerRepository = {
-  getBy: <F extends SearchField>(
-    field: F,
-    p: Payload<F>
+export type IssuerRepository = {
+  getByVatNumber: (
+    vatNumber: Issuer["vatNumber"]
+  ) => TE.TaskEither<Error, O.Option<Issuer>>;
+  getBySubscriptionId: (
+    subscriptionId: Issuer["subscriptionId"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
 };
 
@@ -25,11 +21,17 @@ type IssuerEnvironment = {
 };
 
 const getIssuerByField =
-  <F extends SearchField>(field: F) =>
-  (p: Payload<F>): RTE.ReaderTaskEither<IssuerEnvironment, Error, Issuer> =>
+  <F extends "subscriptionId" | "vatNumber">(field: F) =>
+  (
+    p: F extends "subscriptionId"
+      ? Issuer["subscriptionId"]
+      : Issuer["vatNumber"]
+  ): RTE.ReaderTaskEither<IssuerEnvironment, Error, Issuer> =>
   ({ issuerRepository: repo }) =>
     pipe(
-      repo.getBy(field, p),
+      field === "subscriptionId"
+        ? repo.getBySubscriptionId(p)
+        : repo.getByVatNumber(p),
       TE.chain(
         TE.fromOption(
           () => new EntityNotFoundError("The specified issuer was not found")

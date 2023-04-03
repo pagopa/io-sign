@@ -3,14 +3,13 @@ import * as H from "@pagopa/handler-kit";
 import { ApplyPar, chainW, map, orElseW } from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";
+import { sequenceS } from "fp-ts/lib/Apply";
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { requireIssuer } from "../decoders/issuer";
 
-import { sequenceS } from "fp-ts/lib/Apply";
 import { getDossierById } from "../../../dossier";
 import { requireDossierId } from "../decoders/dossier";
 import { DossierToApiModel } from "../encoders/dossier";
-
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 export const GetDossierHandler = H.of((req: H.HttpRequest) =>
   pipe(

@@ -25,6 +25,7 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import {
   GetIssuerBySubscriptionId,
   GetIssuerByVatNumber,
+  IssuerRepository,
 } from "../../../issuer";
 import { IssuerByVatNumberModel } from "./issuer-by-vat-number";
 
@@ -75,6 +76,44 @@ class IssuerModel extends CosmosdbModel<
   }
 }
 
+export class CosmosDbIssuerRepository implements IssuerRepository {
+  #issuerModel: IssuerModel;
+  #issuerByVatNumberModel: IssuerByVatNumberModel;
+
+  constructor(db: cosmos.Database) {
+    this.#issuerModel = new IssuerModel(db);
+    this.#issuerByVatNumberModel = new IssuerByVatNumberModel(db);
+  }
+
+  getByVatNumber(vatNumber: Issuer["vatNumber"]) {
+    return pipe(
+      this.#issuerByVatNumberModel.find([vatNumber]),
+      TE.chain(
+        flow(
+          O.fold(
+            () => TE.of(O.none),
+            (issuerByVatNumber) =>
+              this.#issuerModel.find([
+                issuerByVatNumber.issuerId,
+                issuerByVatNumber.subscriptionId,
+              ])
+          )
+        )
+      ),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+  }
+
+  getBySubscriptionId(subscriptionId: Issuer["subscriptionId"]) {
+    return pipe(
+      this.#issuerModel.findBySubscriptionId(subscriptionId),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+  }
+}
+
+// LEGACY FUNCTIONS
+// This block can be removed when the entire app has been ported to handler-kit@1
 export const makeGetIssuerByVatNumber =
   (db: cosmos.Database): GetIssuerByVatNumber =>
   (vatNumber: Issuer["vatNumber"]) =>
@@ -97,7 +136,6 @@ export const makeGetIssuerByVatNumber =
       ),
       TE.mapLeft(toCosmosDatabaseError)
     );
-
 export const makeGetIssuerBySubscriptionId =
   (db: cosmos.Database): GetIssuerBySubscriptionId =>
   (subscriptionId) =>
@@ -106,6 +144,7 @@ export const makeGetIssuerBySubscriptionId =
       (model) => model.findBySubscriptionId(subscriptionId),
       TE.mapLeft(toCosmosDatabaseError)
     );
+// END
 
 export const makeInsertIssuer =
   (db: cosmos.Database): InsertIssuer =>

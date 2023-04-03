@@ -13,13 +13,13 @@ import {
   orElseW,
 } from "fp-ts/ReaderTaskEither";
 
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { requireIssuer } from "../decoders/issuer";
 import { CreateDossierBody } from "../models/CreateDossierBody";
 import { Dossier, insertDossier, newDossier } from "../../../dossier";
 
 import { DocumentsMetadataFromApiModel } from "../decoders/document";
 import { DossierToApiModel } from "../encoders/dossier";
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 const requireDossierBody = (req: H.HttpRequest) =>
   pipe(

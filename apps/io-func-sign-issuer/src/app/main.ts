@@ -27,6 +27,10 @@ import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-si
 import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
+import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
+import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
+import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
+import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -154,3 +158,16 @@ export const CreateIssuer = makeCreateIssuerFunction(
   config.pagopa.selfCare,
   config.slack
 );
+
+const issuerRepository = new CosmosDbIssuerRepository(database);
+const dossierRepository = new CosmosDbDossierRepository(database);
+
+export const GetDossier = GetDossierFunction({
+  issuerRepository,
+  dossierRepository,
+});
+
+export const CreateDossier = CreateDossierFunction({
+  issuerRepository,
+  dossierRepository,
+});
