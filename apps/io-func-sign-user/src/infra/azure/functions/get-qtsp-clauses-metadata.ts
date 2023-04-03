@@ -13,7 +13,7 @@ import {
   HttpBadRequestError,
   HttpError,
 } from "@io-sign/io-sign/infra/http/errors";
-import { header, HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { header, HttpRequest } from "handler-kit-legacy/lib/http";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
