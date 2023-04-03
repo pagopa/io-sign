@@ -2,13 +2,13 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import * as azure from "handler-kit-legacy/lib/azure";
 
 import { flow } from "fp-ts/lib/function";
-import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { DocumentId } from "@io-sign/io-sign/document";
-import { createHandler } from "@pagopa/handler-kit";
+import { createHandler } from "handler-kit-legacy";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { validate } from "@io-sign/io-sign/validation";

@@ -12,9 +12,7 @@ import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/c
 import * as E from "fp-ts/lib/Either";
 import { pipe, identity } from "fp-ts/lib/function";
 
-import { makeCreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeGetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
@@ -102,9 +100,6 @@ export const Info = makeInfoFunction(
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
 );
-
-export const CreateDossier = makeCreateDossierFunction(database);
-export const GetDossier = makeGetDossierFunction(database);
 
 export const CreateSignatureRequest =
   makeCreateSignatureRequestFunction(database);

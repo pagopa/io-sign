@@ -1,8 +1,8 @@
 import { validate } from "@io-sign/io-sign/validation";
 
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 
@@ -20,7 +20,6 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
-import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
@@ -86,16 +85,6 @@ export const DocumentMetadataFromApiModel = new t.Type<
   DocumentMetadataToApiModel.encode
 );
 
-export const requireDocumentsMetadata = flow(
-  (res: HttpRequest) => res.body,
-  validate(CreateDossierBody),
-  E.map((body) => body.documents_metadata),
-  E.chain(
-    validate(
-      tx.nonEmptyArray(
-        DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel)
-      ),
-      "Invalid document metadata"
-    )
-  )
+export const DocumentsMetadataFromApiModel = tx.nonEmptyArray(
+  DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel)
 );
