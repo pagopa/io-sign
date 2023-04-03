@@ -13,17 +13,13 @@ export const callSignatureRequests = async (
   signatureRequest: any
 ) => {
   if (signatureRequest.id) {
-	  console.log("id trovato");
     if (signatureRequest.documentId) {
       await callGetDocumentUploadUrl(
         configuration,
         signatureRequest.id,
         signatureRequest.documentId
       );
-    } else if (
-      signatureRequest.status &&
-      signatureRequest.status !== "READY"
-    ) {
+    } else if (signatureRequest.status && signatureRequest.status !== "READY") {
       await callSendNotification(configuration, signatureRequest.id);
     } else if (
       signatureRequest.status !== undefined &&
@@ -45,7 +41,7 @@ export const callSignatureRequests = async (
       // eslint-disable-next-line functional/immutable-data
       signatureRequest.signerId = signer.id;
     }
-          await createSignatureRequest(configuration, signatureRequest);
+    await createSignatureRequest(configuration, signatureRequest);
   }
 };
 
