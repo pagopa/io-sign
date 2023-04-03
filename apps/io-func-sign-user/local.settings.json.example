@@ -19,5 +19,7 @@
     "NamirialTestApiBasePath": "NAMIRIAL_TEST_API_BASE_PATH",
     "NamirialTestUsername": "NAMIRIAL_TEST_USERNAME",
     "NamirialTestPassword": "NAMIRIAL_TEST_PASSWORD"
+    "NODE_ENV": "development",
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
   }
 }

@@ -1,11 +1,11 @@
 import { flow, identity, pipe } from "fp-ts/lib/function";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import * as azure from "handler-kit-legacy/lib/azure";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import { createHandler } from "@pagopa/handler-kit";
+import { createHandler } from "handler-kit-legacy";
 
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 
@@ -13,7 +13,7 @@ import {
   HttpBadRequestError,
   HttpError,
 } from "@io-sign/io-sign/infra/http/errors";
-import { header, HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { header, HttpRequest } from "handler-kit-legacy/lib/http";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
