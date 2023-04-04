@@ -34,8 +34,11 @@ const data = YAML.parse(file);
 
 if (data.signatureRequest != null) {
   callSignatureRequests(configuration, data.signatureRequest)
-    .then((result) => console.log("Risultato signatureRequest:"+JSON.stringify(result, null, 2)))
-    .catch((err) => console.error("errore signature request: "+err));
+.then((result: any) => {
+  const res: Response= <Response>result;
+console.log("Risultato signatureRequest:"+JSON.stringify(res, null, 2));
+})
+.catch((err) => console.error("errore signature request: "+err));
 }
 
 if (data.signer) {

@@ -7,6 +7,6 @@ export class APIMiddleware implements Middleware {
     }
 
     post(context: ResponseContext): Promise<Response | void> {
-        return Promise.resolve(context);
+        return Promise.resolve(context.response);
     }
 }
