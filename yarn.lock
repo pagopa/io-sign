@@ -245,17 +245,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "@azure/functions@npm:3.5.1"
-  dependencies:
-    iconv-lite: ^0.6.3
-    long: ^4.0.0
-    uuid: ^8.3.0
-  checksum: f2616ae78ed57df195e7243efbc726163471b0dbe93b6e0b05410a3fe362220ce0eab93d18e218dacc51dc99e30a47bc991d451e60cf50be573a060046d5ad52
-  languageName: node
-  linkType: hard
-
 "@azure/logger@npm:^1.0.0":
   version: 1.0.3
   resolution: "@azure/logger@npm:1.0.3"
@@ -1352,7 +1341,6 @@ __metadata:
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
     "@azure/cosmos": ^3.17.1
-    "@azure/functions": ^3.5.1
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@jest/globals": ^29.3.1
@@ -2185,15 +2173,6 @@ __metadata:
   dependencies:
     fp-ts: ^2.13.1
   checksum: 49de4c1700c45dcf50cdac7178ae7044952d18bca69bac3fcb73c4cbcf16a69ce670e57cb9bb5ea525b62df4fd977e34b6914f87fb8eb9152386551f8b30391f
-  languageName: node
-  linkType: hard
-
-"@pagopa/logger@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@pagopa/logger@npm:1.0.1"
-  dependencies:
-    fp-ts: ^2.13.1
-  checksum: 616ba6e578e6efd7410b3f51d8828b1b190d89498008136f016cd4926a287be17570b8708205502af90ab7c9384d77a117315d3c3c5577a3f0248b3ed6d799fb
   languageName: node
   linkType: hard
 
@@ -7104,7 +7083,6 @@ __metadata:
   resolution: "io-func-sign-user@workspace:apps/io-func-sign-user"
   dependencies:
     "@azure/cosmos": ^3.17.2
-    "@azure/functions": ^3.5.1
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/io-sign": ^0.9.0
@@ -7113,7 +7091,6 @@ __metadata:
     "@pagopa/handler-kit": ^1.0.0
     "@pagopa/handler-kit-azure-func": ^1.0.0
     "@pagopa/io-functions-commons": ^26.2.1
-    "@pagopa/logger": ^1.0.1
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
