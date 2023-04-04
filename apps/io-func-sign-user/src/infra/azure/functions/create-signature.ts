@@ -25,6 +25,7 @@ import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-ur
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import * as L from "@pagopa/logger";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
+
 import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -203,12 +204,7 @@ const makeCreateSignatureHandler = (
   return createHandler(
     decodeHttpRequest,
     createSignature,
-    (e) => {
-      L.error("Uncaught error from handler", { error: e })({
-        logger: ConsoleLogger,
-      })();
-      return error(e);
-    },
+    error,
     encodeHttpSuccessResponse
   );
 };
