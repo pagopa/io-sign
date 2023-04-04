@@ -5,7 +5,7 @@ import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
 
 import { HttpRequest } from "handler-kit-legacy/lib/http";
 
-import { success, errorWithLog } from "@io-sign/io-sign/infra/http/response";
+import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
 import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
@@ -22,7 +22,7 @@ import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
@@ -197,7 +197,7 @@ const makeCreateSignatureHandler = (
   return createHandler(
     decodeHttpRequest,
     createSignature,
-    errorWithLog(ConsoleLogger),
+    error,
     encodeHttpSuccessResponse
   );
 };
