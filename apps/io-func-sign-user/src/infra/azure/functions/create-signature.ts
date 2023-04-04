@@ -117,7 +117,7 @@ const makeCreateSignatureHandler = (
       ),
     }),
     RTE.chainFirstIOK((params) =>
-      L.debug("createSignatureRequest with params", { params })({
+      L.debug("createSignature with params", { params })({
         logger: ConsoleLogger,
       })
     ),
@@ -150,7 +150,12 @@ const makeCreateSignatureHandler = (
             tosSignature,
             challengeSignature,
           },
-        }))
+        })),
+        TE.chainFirstIOK((lollipopParams) =>
+          L.debug("retrived lollipop params: ", { lollipopParams })({
+            logger: ConsoleLogger,
+          })
+        )
       )
     ),
     RTE.map(
@@ -186,6 +191,11 @@ const makeCreateSignatureHandler = (
           tosSignature: lollipopParams.tosSignature,
           challengeSignature: lollipopParams.challengeSignature,
         },
+      })
+    ),
+    RTE.chainFirstIOK((payload) =>
+      L.debug("createSignature with payload", { payload })({
+        logger: ConsoleLogger,
       })
     )
   );
