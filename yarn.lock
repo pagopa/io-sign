@@ -7100,6 +7100,7 @@ __metadata:
     "@pagopa/handler-kit": ^1.0.0
     "@pagopa/handler-kit-azure-func": ^1.0.0
     "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/logger": ^1.0.1
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0

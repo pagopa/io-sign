@@ -22,7 +22,8 @@ import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
-
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import * as L from "@pagopa/logger";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
@@ -114,6 +115,11 @@ const makeCreateSignatureHandler = (
         requireCreateSignatureLollipopParams
       ),
     }),
+    RTE.chainFirstIOK((params) =>
+      L.error("createSignatureRequest with params", { params })({
+        logger: ConsoleLogger,
+      })
+    ),
     RTE.chainTaskEitherK((sequence) =>
       pipe(
         sequenceS(TE.ApplySeq)({
