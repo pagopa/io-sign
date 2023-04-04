@@ -116,7 +116,7 @@ const makeCreateSignatureHandler = (
       ),
     }),
     RTE.chainFirstIOK((params) =>
-      L.error("createSignatureRequest with params", { params })({
+      L.debug("createSignatureRequest with params", { params })({
         logger: ConsoleLogger,
       })
     ),
