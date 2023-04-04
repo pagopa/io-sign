@@ -116,8 +116,13 @@ const makeCreateSignatureHandler = (
         requireCreateSignatureLollipopParams
       ),
     }),
+    RTE.chainFirstIOK(() =>
+      L.info("creating signature")({
+        logger: ConsoleLogger,
+      })
+    ),
     RTE.chainFirstIOK((params) =>
-      L.debug("createSignature with params", { params })({
+      L.debug("creating signature with params", { params })({
         logger: ConsoleLogger,
       })
     ),
@@ -194,7 +199,7 @@ const makeCreateSignatureHandler = (
       })
     ),
     RTE.chainFirstIOK((payload) =>
-      L.debug("createSignature with payload", { payload })({
+      L.debug("create signature payload", { payload })({
         logger: ConsoleLogger,
       })
     )
