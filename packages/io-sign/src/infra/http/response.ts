@@ -15,10 +15,9 @@ import { pipe, flow } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
 import * as t from "io-ts";
-import * as L from "@pagopa/logger";
+
 import { validate } from "../../validation";
 
-import { ConsoleLogger } from "../console-logger";
 import { HttpError, HttpErrorFromError } from "./errors";
 
 import { toProblemDetail } from "./problem-detail";
@@ -58,11 +57,8 @@ export const success = jsonResponse(200);
 export const created = jsonResponse(201);
 export const successBuffer = bufferResponse(200);
 
-export const error = (e: Error) => {
-  L.error("Uncaught error from handler", { error: e })({
-    logger: ConsoleLogger,
-  })();
-  return pipe(
+export const error = (e: Error) =>
+  pipe(
     HttpErrorFromError.decode(e),
     E.orElse(() => E.right(e)),
     E.map(
@@ -74,4 +70,3 @@ export const error = (e: Error) => {
     E.map(withHeader("Content-Type", "application/problem+json")),
     E.getOrElse(() => serializationProblem)
   );
-};

@@ -203,7 +203,12 @@ const makeCreateSignatureHandler = (
   return createHandler(
     decodeHttpRequest,
     createSignature,
-    error,
+    (e) => {
+      L.error("Uncaught error from handler", { error: e })({
+        logger: ConsoleLogger,
+      })();
+      return error(e);
+    },
     encodeHttpSuccessResponse
   );
 };
