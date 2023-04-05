@@ -16,7 +16,6 @@ const issuer: Issuer = {
   internalInstitutionId: newId(),
   environment: "TEST",
   vatNumber: "IT01234567" as NonEmptyString,
-  isInternal: false,
   department: "",
 };
 
@@ -28,7 +27,6 @@ const signatureRequest: SignatureRequestSigned = {
   issuerEmail: issuer.email,
   issuerDescription: issuer.description,
   issuerEnvironment: issuer.environment,
-  issuerIsInternal: issuer.isInternal,
   issuerInternalInstitutionId: newId(),
   issuerDepartment: issuer.department,
   signerId: newId(),

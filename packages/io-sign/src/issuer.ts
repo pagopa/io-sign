@@ -7,6 +7,7 @@ import { Id } from "./id";
 export const IssuerEnvironment = t.union([
   t.literal("TEST"),
   t.literal("DEFAULT"),
+  t.literal("INTERNAL"),
 ]);
 export type IssuerEnvironment = t.TypeOf<typeof IssuerEnvironment>;
 
@@ -19,7 +20,6 @@ export const Issuer = t.type({
   // The need is to know if an issuer is in the experimental phase or not
   environment: IssuerEnvironment,
   vatNumber: NonEmptyString,
-  isInternal: t.boolean,
   department: t.string,
 });
 
