@@ -18,7 +18,6 @@ export const ioSignContractToIssuer: E.Encoder<
     environment: "TEST",
     vatNumber: billing.vatNumber,
     taxCode: institution.taxCode,
-    isInternal: false,
     department: "",
   }),
 };

@@ -19,7 +19,6 @@ const issuer: Issuer = {
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
   vatNumber: "15376271001" as NonEmptyString,
-  isInternal: false,
   department: "",
 };
 
