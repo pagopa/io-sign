@@ -55,6 +55,8 @@ describe("GetSignatureRequestHandler", () => {
     issuerInternalInstitutionId: newId(),
     issuerDescription: "Università degli Studi di Vitest" as NonEmptyString,
     issuerEmail: "issuer+mail@unit.io.pagopa.it" as EmailString,
+    issuerIsInternal: false,
+    issuerDepartment: "",
   };
 
   const mocks = { signer, institution, issuer, user, signatureRequest };

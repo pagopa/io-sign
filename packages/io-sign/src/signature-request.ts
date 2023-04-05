@@ -21,6 +21,8 @@ const SignatureRequest = t.type({
   issuerDescription: NonEmptyString,
   issuerInternalInstitutionId: Id,
   issuerEnvironment: IssuerEnvironment,
+  issuerIsInternal: t.boolean,
+  issuerDepartment: t.string,
   dossierId: Id,
   dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,

@@ -23,6 +23,8 @@ const BaseEvent = t.type({
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
+  department: t.string,
+  isInternal: t.boolean,
 });
 
 type BaseEvent = t.TypeOf<typeof BaseEvent>;
@@ -48,4 +50,6 @@ export const createBillingEvent = (
   createdAt: new Date(),
   pricingPlan:
     signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
+  department: signatureRequest.issuerDepartment,
+  isInternal: signatureRequest.issuerIsInternal,
 });
