@@ -32,6 +32,7 @@ describe("GetSignatureRequestsHandler", () => {
       signerId: signer.id,
       dossierTitle: "Richiesta di firma" as NonEmptyString,
       issuerEnvironment: "TEST",
+      issuerDepartment: "",
       issuerInternalInstitutionId: newId(),
       issuerDescription: "Università degli Studi di Vitest" as NonEmptyString,
       issuerEmail: "issuer+mail@unit.io.pagopa.it" as EmailString,

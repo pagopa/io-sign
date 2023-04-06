@@ -13,6 +13,7 @@ const EventId = Id;
 export const PricingPlan = t.keyof({
   FREE: null,
   DEFAULT: null,
+  INTERNAL: null,
 });
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
@@ -23,6 +24,7 @@ const BaseEvent = t.type({
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
+  department: t.string,
 });
 
 type BaseEvent = t.TypeOf<typeof BaseEvent>;
@@ -47,5 +49,8 @@ export const createBillingEvent = (
   internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
   createdAt: new Date(),
   pricingPlan:
-    signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
+    signatureRequest.issuerEnvironment === "TEST"
+      ? "FREE"
+      : signatureRequest.issuerEnvironment,
+  department: signatureRequest.issuerDepartment,
 });
