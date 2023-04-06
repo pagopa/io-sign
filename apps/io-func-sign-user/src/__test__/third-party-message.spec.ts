@@ -25,6 +25,7 @@ const signatureRequest: SignatureRequestSigned = {
   issuerDescription: "Mocked Issuer" as NonEmptyString,
   issuerInternalInstitutionId: newId(),
   issuerEnvironment: "TEST",
+  issuerDepartment: "",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),
