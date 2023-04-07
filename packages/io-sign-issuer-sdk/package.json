@@ -20,21 +20,19 @@
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
-    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
+    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i ./../../apps/io-func-sign-issuer/openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
   },
   "dependencies": {
     "@io-sign/io-sign-api-client": "^1.0.0",
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/ts-commons": "^11.0.0",
     "dotenv": "^16.0.3",
-    "inquirer": "^8.0.3",
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.2.0",
-    "@types/inquirer": "^8.0.3",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/node": "^18.11.18",
     "eslint": "^8.28.0",
