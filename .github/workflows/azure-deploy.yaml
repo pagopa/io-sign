@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   ENV_SHORT: p
   FUNCTION_SLOT: staging
@@ -55,11 +59,11 @@ jobs:
       - name: Login
         id: login
         # from https://github.com/Azure/login/commits/master
-        uses: azure/login@a93d25c485f62949794ecdcb761b8327afb09d88
+        uses: azure/login@v1
         with:
-          client-id: ${{ env.AZURE_CLIENT_ID }}
-          tenant-id: ${{ env.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Function
         if: steps.workload.outputs.type == 'func'
@@ -82,7 +86,7 @@ jobs:
       - name: Cleanup GitHub Runner
         id: cleanup_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-cleanup-action/commits/main
-        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@63534a04613b420ce6474ccbb52ac7884129ff6f
+        uses: pagopa/github-self-hosted-runner-azure-cleanup-action@d4c7a8dc3e8ca7be7b71358fdeee17429e28fcc4
         with:
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
