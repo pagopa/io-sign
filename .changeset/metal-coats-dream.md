@@ -2,4 +2,4 @@
 "io-func-sign-support": patch
 ---
 
-Upgrated packages
+Upgraded @pagopa/handler-kit and @pagopa/logger packages

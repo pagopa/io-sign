@@ -2,4 +2,4 @@
 "io-func-sign-user": minor
 ---
 
-Added consoleLog to createSignature
+Added logging to the create-signature http handler
