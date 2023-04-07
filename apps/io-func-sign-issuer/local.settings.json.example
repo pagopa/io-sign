@@ -18,7 +18,6 @@
     "SelfCareApiKey": "SELF_CARE_API_KEY",
     "SlackWebhookUrl": "SLACK_WEBHOOK_URL",
     "NODE_ENV": "development",
-    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace",
-    "AzureFunctionsJobHost:logging:logLevel:Host.Function.Console": "Information"
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
   }
 }

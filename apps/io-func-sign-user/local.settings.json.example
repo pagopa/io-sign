@@ -20,7 +20,6 @@
     "NamirialTestUsername": "NAMIRIAL_TEST_USERNAME",
     "NamirialTestPassword": "NAMIRIAL_TEST_PASSWORD"
     "NODE_ENV": "development",
-    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace",
-    "AzureFunctionsJobHost:logging:logLevel:Host.Function.Console": "Information"
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
   }
 }
