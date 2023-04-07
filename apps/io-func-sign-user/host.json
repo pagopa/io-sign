@@ -2,8 +2,8 @@
   "version": "2.0",
   "logging": {
     "logLevel": {
-      "Function": "Error",
-      "Function.Console": "Information"
+      "Function": "Debug",
+      "Function.Console": "Debug"
     },
     "applicationInsights": {
       "samplingSettings": {
