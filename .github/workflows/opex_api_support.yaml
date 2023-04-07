@@ -1,0 +1,45 @@
+name: Opex Dashboard api_support
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/io-func-sign-support/openapi.yaml'
+      - '.github/workflows/opex_api_support.yaml'
+      - '.opex/api_support/**'
+
+env:
+  API_NAME: api_support
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  opex:
+    runs-on: ubuntu-22.04
+    environment: prod-opex
+    strategy:
+      matrix:
+        environment: [prod]
+    steps:
+      - name: Checkout
+        id: checkout
+        # from https://github.com/actions/checkout/commits/main
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # from https://github.com/pagopa/opex-dashboard-azure-action/
+      - uses: pagopa/opex-dashboard-azure-action@v1.1.0
+        with:
+          environment: ${{ matrix.environment }}
+          api-name: ${{ env.API_NAME }}
+          config: .opex/${{ env.API_NAME }}/env/${{ matrix.environment }}/config.yaml
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          # from https://github.com/pagopa/opex-dashboard-azure-action/pkgs/container/opex-dashboard-azure-action
+          docker-version: sha256:7e454c1892b2aaf3717782c07a2fa01504db5cc7d07979fae863dfc00a9f0173
