@@ -75,6 +75,6 @@ export const makeCreateAndSendAnalyticsEvent =
           )
         )
       )
-    )();
+    )().catch();
     return TE.of(signatureRequest);
   };
