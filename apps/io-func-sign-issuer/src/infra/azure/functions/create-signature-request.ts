@@ -124,11 +124,10 @@ const makeCreateSignatureRequestHandler = (
     decodeHttpRequest,
     flow(
       createSignatureRequest,
-      TE.chain((signatureRequest) =>
+      TE.chainFirstW((signatureRequest) =>
         pipe(
           signatureRequest,
-          createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED),
-          TE.map(() => signatureRequest)
+          createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED)
         )
       )
     ),

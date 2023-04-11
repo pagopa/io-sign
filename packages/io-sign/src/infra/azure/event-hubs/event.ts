@@ -48,12 +48,12 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestToBeSigned
       | SignatureRequestWaitForQtsp
       | SignatureRequestRejected
-  ): TE.TaskEither<Error, typeof signatureRequest> =>
-    pipe(
+  ): TE.TaskEither<Error, typeof signatureRequest> => {
+    // This is a fire and forget async operation
+    void pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
       makeSendEvent(client),
-      TE.map(() => signatureRequest),
       TE.chainFirstIOK(() =>
         L.debug("Send analytics event", {
           eventName,
@@ -62,8 +62,7 @@ export const makeCreateAndSendAnalyticsEvent =
           logger: ConsoleLogger,
         })
       ),
-      // This is a fire and forget operation
-      TE.alt(() =>
+      TE.altW(() =>
         pipe(
           TE.right(signatureRequest),
           TE.chainFirstIOK(() =>
@@ -73,10 +72,9 @@ export const makeCreateAndSendAnalyticsEvent =
             })({
               logger: ConsoleLogger,
             })
-          ),
-          TE.mapLeft(
-            () => new Error("Unable to send analytics event to datalake")
           )
         )
       )
-    );
+    )();
+    return TE.of(signatureRequest);
+  };
