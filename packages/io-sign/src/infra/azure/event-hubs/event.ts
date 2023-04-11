@@ -54,6 +54,14 @@ export const makeCreateAndSendAnalyticsEvent =
       createAnalyticsEvent(eventName),
       makeSendEvent(client),
       TE.map(() => signatureRequest),
+      TE.chainFirstIOK(() =>
+        L.debug("Send analytics event", {
+          eventName,
+          signatureRequest,
+        })({
+          logger: ConsoleLogger,
+        })
+      ),
       // This is a fire and forget operation
       TE.alt(() =>
         pipe(
