@@ -4,8 +4,6 @@ info:
   version: 0.0.1
 security:
   - FunctionsKey: []
-servers:
-  - url: https://app-backend.io.italia.it/api/v1/sign
 paths:
   /qtsp/clauses/filled_document:
     post:
