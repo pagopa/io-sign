@@ -1,4 +1,4 @@
-oa3_spec: apps/io-func-sign-user/openapi.yaml
+oa3_spec: https://raw.githubusercontent.com/pagopa/io-backend/master/api_io_sign.yaml
 name: opex_api_user
 location: West Europe
 timespan: 10m
