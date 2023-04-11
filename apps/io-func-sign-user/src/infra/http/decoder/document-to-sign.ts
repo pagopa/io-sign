@@ -1,6 +1,6 @@
 import { validate, ValidationError } from "@io-sign/io-sign/validation";
 
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { flow, identity, pipe } from "fp-ts/lib/function";
 

@@ -4,8 +4,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as t from "io-ts";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler, nopRequestDecoder } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
 
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { HttpError } from "@io-sign/io-sign/infra/http/errors";
@@ -78,7 +78,8 @@ export const makeInfoHandler = (
       pipe(
         [
           makeLollipopClientHealthCheck(lollipopApiClient)(),
-          makeNamirialHealthCheck(namirialConfig),
+          makeNamirialHealthCheck(namirialConfig.prod),
+          makeNamirialHealthCheck(namirialConfig.test),
           makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
           makeIOServicesHealthCheck(ioApiClient)(),
           makeAzureCosmosDbHealthCheck(db),

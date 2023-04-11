@@ -19,11 +19,13 @@ const documentId = newId();
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Richiesta Passaporto" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
   issuerInternalInstitutionId: newId(),
   issuerEnvironment: "TEST",
+  issuerDepartment: "",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "@jest/globals";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { createBillingEvent } from "../event";
 
 import { newId } from "../id";
@@ -15,16 +16,19 @@ const issuer: Issuer = {
   internalInstitutionId: newId(),
   environment: "TEST",
   vatNumber: "IT01234567" as NonEmptyString,
+  department: "",
 };
 
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Rilascio CIE" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: issuer.email,
   issuerDescription: issuer.description,
   issuerEnvironment: issuer.environment,
   issuerInternalInstitutionId: newId(),
+  issuerDepartment: issuer.department,
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

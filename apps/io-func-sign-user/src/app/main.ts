@@ -20,6 +20,8 @@ import { makeValidateSignatureFunction } from "../infra/azure/functions/validate
 import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
+import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -163,3 +165,11 @@ export const GetThirdPartyMessageAttachmentContent =
     database,
     signedContainerClient
   );
+
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database
+);
+
+export const GetSignatureRequests = GetSignatureRequestsFunction({
+  signatureRequestRepository,
+});
