@@ -50,5 +50,7 @@ export const makeCreateAndSendAnalyticsEvent =
       signatureRequest,
       createAnalyticsEvent(eventName),
       makeSendEvent(client),
-      TE.map(() => signatureRequest)
+      TE.map(() => signatureRequest),
+      // This is a fire and forget operation
+      TE.alt(() => TE.right(signatureRequest))
     );
