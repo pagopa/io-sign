@@ -48,12 +48,12 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestToBeSigned
       | SignatureRequestWaitForQtsp
       | SignatureRequestRejected
-  ): TE.TaskEither<Error, typeof signatureRequest> => {
-    // This is a fire and forget async operation
-    void pipe(
+  ): TE.TaskEither<Error, typeof signatureRequest> =>
+    pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
       makeSendEvent(client),
+      TE.map(() => signatureRequest),
       TE.chainFirstIOK(() =>
         L.debug("Send analytics event", {
           eventName,
@@ -62,6 +62,7 @@ export const makeCreateAndSendAnalyticsEvent =
           logger: ConsoleLogger,
         })
       ),
+      // This is a fire and forget operation
       TE.altW(() =>
         pipe(
           TE.right(signatureRequest),
@@ -75,6 +76,4 @@ export const makeCreateAndSendAnalyticsEvent =
           )
         )
       )
-    )().catch();
-    return TE.of(signatureRequest);
-  };
+    );
