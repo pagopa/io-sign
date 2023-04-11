@@ -11,6 +11,7 @@ import {
   SignatureRequestToBeSigned,
   SignatureRequestWaitForQtsp,
 } from "./signature-request";
+import { IssuerEnvironment } from "./issuer";
 
 const EventId = Id;
 
@@ -55,6 +56,10 @@ export const BillingEvent = t.intersection([
 
 export type BillingEvent = t.TypeOf<typeof BillingEvent>;
 
+export const pricingPlanFromIssuerEnvironment = (
+  issuerEnvironment: IssuerEnvironment
+) => (issuerEnvironment === "TEST" ? "FREE" : issuerEnvironment);
+
 export const createBillingEvent = (
   signatureRequest: SignatureRequestSigned
 ): BillingEvent => ({
@@ -63,10 +68,9 @@ export const createBillingEvent = (
   signatureRequestId: signatureRequest.id,
   internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
   createdAt: new Date(),
-  pricingPlan:
-    signatureRequest.issuerEnvironment === "TEST"
-      ? "FREE"
-      : signatureRequest.issuerEnvironment,
+  pricingPlan: pricingPlanFromIssuerEnvironment(
+    signatureRequest.issuerEnvironment
+  ),
   department: signatureRequest.issuerDepartment,
 });
 
@@ -96,9 +100,11 @@ export const createAnalyticsEvent =
     signatureRequestId: signatureRequest.id,
     internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
     createdAt: new Date(),
-    pricingPlan:
-      signatureRequest.issuerEnvironment === "TEST" ? "FREE" : "DEFAULT",
+    pricingPlan: pricingPlanFromIssuerEnvironment(
+      signatureRequest.issuerEnvironment
+    ),
     dossierId: signatureRequest.dossierId,
+    department: signatureRequest.issuerDepartment,
   });
 
 export type GenericEvent = BillingEvent | AnalyticsEvent;

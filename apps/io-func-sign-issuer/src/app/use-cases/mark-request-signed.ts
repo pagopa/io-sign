@@ -1,5 +1,5 @@
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { createBillingEvent, SendBillingEvent } from "@io-sign/io-sign/event";
+import { createBillingEvent, SendEvent } from "@io-sign/io-sign/event";
 import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
@@ -38,7 +38,7 @@ export const makeMarkRequestAsSigned =
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    sendBillingEvent: SendBillingEvent
+    sendBillingEvent: SendEvent
   ) =>
   (request: SignatureRequestSigned) => {
     const sendSignedNotification = makeSendSignatureRequestNotification(
