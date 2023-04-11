@@ -50,7 +50,7 @@ describe("EventHubs [infra]", () => {
     it("should always return a right TaskEither", async () => {
       const result = pipe(
         signatureRequest,
-        createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED)
+        createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED)
       );
       await expect(result()).resolves.toStrictEqual(E.right(signatureRequest));
     });
