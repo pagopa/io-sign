@@ -106,8 +106,10 @@ export const Info = makeInfoFunction(
 export const CreateDossier = makeCreateDossierFunction(database);
 export const GetDossier = makeGetDossierFunction(database);
 
-export const CreateSignatureRequest =
-  makeCreateSignatureRequestFunction(database);
+export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
+  database,
+  eventHubAnalyticsClient
+);
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
   signedContainerClient
