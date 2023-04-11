@@ -23,6 +23,10 @@ export const PricingPlan = t.keyof({
 });
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
+/*
+ * This mapping was decided together with the datalake team and is documented here:
+ * https://pagopa.atlassian.net/wiki/spaces/SFEQS/pages/552108033/Fatturazione
+ */
 export enum EventName {
   SIGNATURE_CREATED = "io.sign.signature_request.created",
   SIGNATURE_SIGNED = "io.sign.signature_request.signed",
