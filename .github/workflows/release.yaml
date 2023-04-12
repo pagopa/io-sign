@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.node-version'
+          node-version-file: ".node-version"
           cache: "yarn"
           cache-dependency-path: |
             yarn.lock
@@ -55,7 +55,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [ release ]
+    needs: [release]
     if: needs.release.outputs.published == 'true'
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -77,7 +77,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version-file: '.node-version'
+          node-version-file: ".node-version"
           cache: "yarn"
           cache-dependency-path: |
             yarn.lock
@@ -88,11 +88,8 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: Generate TypeScript models from OpenAPI
-        run: yarn workspace ${{ matrix.package.name }} run generate:api-models
-
       - name: Build
-        run: yarn workspace ${{ matrix.package.name }} run build
+        run: yarn build --filter ${{ matrix.package.name }}
 
       - name: Package
         run: yarn workspace ${{ matrix.package.name }} run build:package
