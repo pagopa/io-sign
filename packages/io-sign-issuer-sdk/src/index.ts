@@ -31,7 +31,6 @@ const configuration = new Configuration({
 
 const file = fs.readFileSync("./file.yaml", "utf8");
 const data = YAML.parse(file);
-
 if (data.signatureRequest != null) {
   callSignatureRequests(configuration, data.signatureRequest)
 .then((result: any) => {
