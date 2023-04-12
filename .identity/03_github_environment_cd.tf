@@ -13,10 +13,6 @@ resource "github_repository_environment" "github_repository_environment_cd" {
       )
     }
   }
-  deployment_branch_policy {
-    protected_branches     = var.github_repository_environment_cd.protected_branches
-    custom_branch_policies = var.github_repository_environment_cd.custom_branch_policies
-  }
 }
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
