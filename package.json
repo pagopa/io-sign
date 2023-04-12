@@ -5,7 +5,9 @@
     "test": "turbo run test --no-daemon",
     "format": "turbo run format --no-daemon",
     "build": "turbo run build --no-daemon",
-    "code-review": "turbo run typecheck lint test"
+    "code-review": "turbo run typecheck lint test",
+    "version": "changeset version && yarn install --mode update-lockfile",
+    "release": "changeset tag"
   },
   "workspaces": [
     "packages/*",
