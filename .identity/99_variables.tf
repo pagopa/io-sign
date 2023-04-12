@@ -24,7 +24,7 @@ variable "env_short" {
 }
 
 variable "domain" {
-  type = string
+  type        = string
   description = "The applicative domain"
   validation {
     condition = (
