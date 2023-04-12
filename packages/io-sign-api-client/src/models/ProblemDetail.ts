@@ -21,16 +21,16 @@ import { exists, mapValues } from '../runtime';
 export interface ProblemDetail {
     /**
      * An absolute URI that identifies the problem type. When dereferenced,
-     * it SHOULD provide human-readable documentation for the problem type
-     * (e.g., using HTML).
+it SHOULD provide human-readable documentation for the problem type
+(e.g., using HTML).
      * @type {string}
      * @memberof ProblemDetail
      */
     type?: string;
     /**
      * A short, summary of the problem type. Written in english and readable
-     * for engineers (usually not suited for non technical stakeholders and
-     * not localized); example: Service Unavailable
+for engineers (usually not suited for non technical stakeholders and
+not localized); example: Service Unavailable
      * @type {string}
      * @memberof ProblemDetail
      */
@@ -43,7 +43,7 @@ export interface ProblemDetail {
     status?: number;
     /**
      * A human readable explanation specific to this occurrence of the
-     * problem.
+problem.
      * @type {string}
      * @memberof ProblemDetail
      */

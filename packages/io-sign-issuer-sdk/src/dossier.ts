@@ -23,8 +23,13 @@ export const callDossier = async (
 
 const createDossier = async (
   configuration: Configuration,
-  dossier: CreateDossierRequest
+  dossier: any
 ) => {
   const api = new DossierApi(configuration);
-  return api.createDossier(dossier);
+
+const request: CreateDossierRequest  = {
+	"createDossierBody": dossier
+};
+
+  return api.createDossier(request);
 };
