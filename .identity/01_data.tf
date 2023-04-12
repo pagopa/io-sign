@@ -7,6 +7,15 @@ data "azurerm_resource_group" "github_runner_rg" {
   name = "${var.prefix}-${var.env_short}-github-runner-rg"
 }
 
+data "azurerm_resource_group" "dashboards" {
+  name = "dashboards"
+}
+
+data "azurerm_storage_account" "tfstate_app" {
+  name                = "tfapp${lower(replace(data.azurerm_subscription.current.display_name, "-", ""))}"
+  resource_group_name = "terraform-state-rg"
+}
+
 data "github_organization_teams" "all" {
   root_teams_only = true
   summary_only    = true
