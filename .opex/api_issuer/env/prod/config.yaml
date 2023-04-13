@@ -10,3 +10,76 @@ action_groups:
 overrides:
   hosts:
     - api.io.pagopa.it
+  endpoints:
+    /api/v1/sign/dossiers:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/dossiers/{id}:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signers:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signature-requests:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signature-requests/{id}:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signature-requests/{id}/status:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signature-requests/{req_id}/documents/{doc_id}/upload_url:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
+    /api/v1/sign/signature-requests/{req_id}/notification:
+      availability_threshold: 0.99
+      availability_evaluation_frequency: 10
+      availability_evaluation_time_window: 20
+      availability_event_occurrences: 1
+      response_time_threshold: 2
+      response_time_evaluation_frequency: 10
+      response_time_evaluation_time_window: 20
+      response_time_event_occurrences: 2
