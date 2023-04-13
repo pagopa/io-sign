@@ -10,3 +10,20 @@ action_groups:
 overrides:
   hosts:
     - api.io.pagopa.it
+  endpoints:
+    /dossiers:
+      response_time_threshold: 2
+    /dossiers/{id}:
+      response_time_threshold: 2
+    /signers:
+      response_time_threshold: 2
+    /signature-requests:
+      response_time_threshold: 2
+    /signature-requests/{id}:
+      response_time_threshold: 2
+    /signature-requests/{id}/status:
+      response_time_threshold: 2
+    /signature-requests/{req_id}/documents/{doc_id}/upload_url:
+      response_time_threshold: 2
+    /signature-requests/{req_id}/notification:
+      response_time_threshold: 2
