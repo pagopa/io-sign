@@ -5,9 +5,9 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
-import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 
 import { Database } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";

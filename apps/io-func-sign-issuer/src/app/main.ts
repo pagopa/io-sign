@@ -1,7 +1,10 @@
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import { EventHubProducerClient } from "@azure/event-hubs";
+import {
+  EventHubConsumerClient,
+  EventHubProducerClient,
+} from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -24,6 +27,9 @@ import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
 import { makeGetDocumentValidationFunction } from "../infra/azure/functions/get-document-validation";
+import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
+export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
+
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -48,6 +54,12 @@ const eventHubBillingClient = new EventHubProducerClient(
 const eventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
+);
+
+const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
+  EventHubConsumerClient.defaultConsumerGroupName,
+  config.pagopa.selfCare.eventHub.connectionString,
+  config.pagopa.selfCare.eventHub.contractsName
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -86,6 +98,7 @@ export const Info = makeInfoFunction(
   database,
   eventHubBillingClient,
   eventHubAnalyticsClient,
+  eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
@@ -94,8 +107,10 @@ export const Info = makeInfoFunction(
 export const CreateDossier = makeCreateDossierFunction(database);
 export const GetDossier = makeGetDossierFunction(database);
 
-export const CreateSignatureRequest =
-  makeCreateSignatureRequestFunction(database);
+export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
+  database,
+  eventHubAnalyticsClient
+);
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
   signedContainerClient
@@ -140,6 +155,12 @@ export const ValidateUpload = makeValidateUploadFunction(
   database,
   uploadedContainerClient,
   validatedContainerClient
+);
+
+export const CreateIssuer = makeCreateIssuerFunction(
+  database,
+  config.pagopa.selfCare,
+  config.slack
 );
 
 export const GetDocumentValidation = makeGetDocumentValidationFunction();

@@ -4,8 +4,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as t from "io-ts";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler, nopRequestDecoder } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
 
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { HttpError } from "@io-sign/io-sign/infra/http/errors";
@@ -39,13 +39,19 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
+import { LollipopApiClient } from "../../lollipop/client";
+import {
+  LollipopApiClientProblemSource,
+  makeLollipopClientHealthCheck,
+} from "../../lollipop/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource
   | AzureStorageProblemSource
   | TokenizerProblemSource
   | IOServicesProblemSource
-  | NamirialProblemSource;
+  | NamirialProblemSource
+  | LollipopApiClientProblemSource;
 
 const InfoDetailView = t.string;
 const applicativeValidation = TE.getApplicativeTaskValidation(
@@ -57,6 +63,7 @@ export const makeInfoHandler = (
   namirialConfig: NamirialConfig,
   pdvTokenizerClient: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  lollipopApiClient: LollipopApiClient,
   db: Database,
   filledContainerClient: ContainerClient,
   validatedContainerClient: ContainerClient,
@@ -70,7 +77,9 @@ export const makeInfoHandler = (
     () =>
       pipe(
         [
-          makeNamirialHealthCheck(namirialConfig),
+          makeLollipopClientHealthCheck(lollipopApiClient)(),
+          makeNamirialHealthCheck(namirialConfig.prod),
+          makeNamirialHealthCheck(namirialConfig.test),
           makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
           makeIOServicesHealthCheck(ioApiClient)(),
           makeAzureCosmosDbHealthCheck(db),

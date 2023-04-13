@@ -19,6 +19,9 @@ import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-si
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
+import { createLollipopApiClient } from "../infra/lollipop/client";
+import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -85,10 +88,16 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
+const lollipopApiClient = createLollipopApiClient(
+  config.pagopa.lollipop.apiBasePath,
+  config.pagopa.lollipop.apiKey
+);
+
 export const Info = makeInfoFunction(
   config.namirial,
   pdvTokenizerClient,
   ioApiClient,
+  lollipopApiClient,
   database,
   filledContainerClient,
   validatedContainerClient,
@@ -120,12 +129,12 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
 
 export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
+  lollipopApiClient,
   database,
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
-  config.namirial,
-  config.mock
+  config.namirial
 );
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
@@ -156,3 +165,11 @@ export const GetThirdPartyMessageAttachmentContent =
     database,
     signedContainerClient
   );
+
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database
+);
+
+export const GetSignatureRequests = GetSignatureRequestsFunction({
+  signatureRequestRepository,
+});

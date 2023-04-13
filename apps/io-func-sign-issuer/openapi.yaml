@@ -465,10 +465,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SignatureField"
-
       required:
         - title
-        - signature_fields
 
     DocumentMetadataList:
       type: array
@@ -579,7 +577,6 @@ components:
           $ref: "#/components/schemas/Timestamp"
       required:
         - id
-        - status
         - metadata
         - created_at
         - updated_at

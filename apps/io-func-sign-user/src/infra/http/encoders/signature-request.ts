@@ -6,15 +6,17 @@ import * as A from "fp-ts/lib/Array";
 import * as S from "fp-ts/lib/string";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import {
-  SignatureRequestDetailView as SignatureRequestApiModel,
-  StatusEnum as SignatureRequestStatusEnum,
-} from "../models/SignatureRequestDetailView";
+import { SignatureRequestDetailView as SignatureRequestApiModel } from "../models/SignatureRequestDetailView";
+
+import { SignatureRequestListView } from "../models/SignatureRequestListView";
+
+import { SignatureRequestStatusEnum } from "../models/SignatureRequestStatus";
 
 import { ThirdPartyMessage as ThirdPartyMessageApiModel } from "../models/ThirdPartyMessage";
 
 import { SignatureRequest } from "../../../signature-request";
 
+import { IssuerEnvironmentEnum } from "../models/IssuerEnvironment";
 import { DocumentReadyToDetailView } from "./document";
 
 const addPdfExtension = (fileName: NonEmptyString) =>
@@ -30,11 +32,13 @@ export const SignatureRequestToApiModel: E.Encoder<
     id,
     signerId: signer_id,
     dossierId: dossier_id,
+    dossierTitle: dossier_title,
     createdAt: created_at,
     updatedAt: updated_at,
     expiresAt: expires_at,
     issuerEmail: email,
     issuerDescription: description,
+    issuerEnvironment: environment,
     documents,
     ...extra
   }) => {
@@ -42,6 +46,7 @@ export const SignatureRequestToApiModel: E.Encoder<
       id,
       signer_id,
       dossier_id,
+      dossier_title,
       created_at,
       updated_at,
       expires_at,
@@ -49,6 +54,10 @@ export const SignatureRequestToApiModel: E.Encoder<
       issuer: {
         email,
         description,
+        environment:
+          environment === "TEST"
+            ? IssuerEnvironmentEnum.TEST
+            : IssuerEnvironmentEnum.DEFAULT,
       },
     };
     switch (extra.status) {
@@ -83,6 +92,46 @@ export const SignatureRequestToApiModel: E.Encoder<
       }
     }
   },
+};
+
+const toSignatureRequestStatusEnum = (
+  status: SignatureRequest["status"]
+): SignatureRequestStatusEnum => {
+  switch (status) {
+    case "REJECTED":
+      return SignatureRequestStatusEnum.REJECTED;
+    case "SIGNED":
+      return SignatureRequestStatusEnum.SIGNED;
+    case "WAIT_FOR_QTSP":
+      return SignatureRequestStatusEnum.WAIT_FOR_QTSP;
+    case "WAIT_FOR_SIGNATURE":
+      return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
+  }
+};
+
+export const SignatureRequestToListView: E.Encoder<
+  SignatureRequestListView,
+  SignatureRequest
+> = {
+  encode: ({
+    id,
+    signerId: signer_id,
+    dossierId: dossier_id,
+    dossierTitle: dossier_title,
+    status,
+    createdAt: created_at,
+    updatedAt: updated_at,
+    expiresAt: expires_at,
+  }) => ({
+    id,
+    signer_id,
+    dossier_id,
+    dossier_title,
+    status: toSignatureRequestStatusEnum(status),
+    created_at,
+    updated_at,
+    expires_at,
+  }),
 };
 
 export const SignatureRequestToThirdPartyMessage: E.Encoder<

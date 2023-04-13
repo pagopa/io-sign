@@ -73,3 +73,20 @@ export const downloadContentFromBlob = pipe(
     )
   )
 );
+
+export const deleteBlobIfExist = pipe(
+  RTE.ask<BlobClient>(),
+  RTE.chainTaskEitherK((blobClient) =>
+    pipe(
+      TE.tryCatch(
+        () => blobClient.deleteIfExists(),
+        () => new Error("Unable to delete the blob.")
+      ),
+      TE.filterOrElse(
+        (response) => response.succeeded === true,
+        () => new Error("The specified blob does not exists.")
+      ),
+      TE.map(() => blobClient)
+    )
+  )
+);
