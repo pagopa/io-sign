@@ -96,7 +96,7 @@ export const makeSendNotification =
                 pipe(
                   signatureRequest,
                   createAndSendAnalyticsEvent(EventName.NOTIFICATION_REJECTED),
-                  () => firstTaskEither
+                  TE.chain(() => firstTaskEither)
                 )
               )
             )
