@@ -1,4 +1,5 @@
-import { PDFDocument, PDFForm } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
+import { sequenceS } from "fp-ts/lib/Apply";
 
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
@@ -26,19 +27,29 @@ export const getPdfMetadata = (
   pipe(
     buffer,
     loadPdf,
-    TE.map((pdfDocument) => ({
-      pages: pdfDocument.getPages().map((page, number) => ({
-        ...page.getSize(),
-        number,
-      })),
-      formFields: pdfDocument
-        .getForm()
-        .getFields()
-        .map((field) => ({
-          type: field.constructor.name,
-          name: field.getName(),
-        })),
-    })),
+    TE.chainEitherK((pdfDocument) =>
+      sequenceS(E.Apply)({
+        formFields: E.tryCatch(
+          () =>
+            pdfDocument
+              .getForm()
+              .getFields()
+              .map((field) => ({
+                type: field.constructor.name,
+                name: field.getName(),
+              })),
+          E.toError
+        ),
+        pages: E.tryCatch(
+          () =>
+            pdfDocument.getPages().map((page, number) => ({
+              ...page.getSize(),
+              number,
+            })),
+          E.toError
+        ),
+      })
+    ),
     TE.chainEitherKW(
       validate(PdfDocumentMetadata, "Failed to extract metadata from pdf file!")
     )
@@ -49,17 +60,23 @@ export type Field = {
   fieldValue: string;
 };
 
-const populate = (form: PDFForm) => (field: Field) =>
+const populate = (pdfDocument: PDFDocument) => (field: Field) =>
   pipe(
-    E.tryCatch(() => form.getTextField(field.fieldName), E.toError),
+    E.tryCatch(
+      () => pdfDocument.getForm().getTextField(field.fieldName),
+      E.toError
+    ),
     E.map((textField) => textField.setText(field.fieldValue))
   );
 
 const getFieldValue =
-  (form: PDFForm) =>
+  (pdfDocument: PDFDocument) =>
   (fieldName: string): E.Either<EntityNotFoundError, Field> =>
     pipe(
-      E.tryCatch(() => form.getTextField(fieldName), E.toError),
+      E.tryCatch(
+        () => pdfDocument.getForm().getTextField(fieldName),
+        E.toError
+      ),
       E.chain((textField) =>
         pipe(
           textField.getText(),
@@ -83,7 +100,7 @@ export const populatePdf = (pdfFields: Field[]) => (buffer: Buffer) =>
     TE.chainEitherK((pdfDocument) =>
       pipe(
         pdfFields,
-        A.traverse(E.Applicative)(populate(pdfDocument.getForm())),
+        A.traverse(E.Applicative)(populate(pdfDocument)),
         E.map(() => pdfDocument)
       )
     ),
@@ -98,7 +115,7 @@ export const getPdfFieldsValue =
       TE.chainEitherK((pdfDocument) =>
         pipe(
           pdfFieldsName,
-          A.traverse(E.Applicative)(getFieldValue(pdfDocument.getForm()))
+          A.traverse(E.Applicative)(getFieldValue(pdfDocument))
         )
       )
     );
