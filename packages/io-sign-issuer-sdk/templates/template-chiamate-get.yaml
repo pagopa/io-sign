@@ -1,0 +1,6 @@
+# This template describe how retrieve a signer id, a signature request and a dossier
+signatureRequest:
+  id: string
+signer: fiscalCode // for example AAABBB99s01H501Z
+dossier:
+    id: string

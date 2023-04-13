@@ -1,4 +1,13 @@
+#signatureRequest:
+#  id: "01GXVGPVH5J0T9KV19HE8SR0GN"
+#    dossierId: "01GXVFEWRSQTRW1VDZBBQHHM71"
+#    signerId: "e648cebe-8cab-4020-882a-637ff62e3c51"
+#    signerId: "TNGFPP80S05H501Z"
+#    expiresAt: "2023-04-24T00:00:00.000Z"
+#signer: "TNGFPP80S05H501Z"
 dossier:
+#    id: "01GXVFEWRSQTRW1VDZBBQHHM71"
+    #   id: "01GXVF99HT47ZRXA6BHM64NWG8"
     title: "Dossier Filippo"
     documentsMetadata:
         -
@@ -16,3 +25,4 @@ dossier:
                         size:
                             w: 10
                             h: 10
+                        uniqueName: "test firma"
