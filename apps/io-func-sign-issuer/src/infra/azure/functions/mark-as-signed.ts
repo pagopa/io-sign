@@ -13,7 +13,10 @@ import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/mes
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { makeSendEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import {
+  makeCreateAndSendAnalyticsEvent,
+  makeSendEvent,
+} from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
@@ -25,7 +28,8 @@ const makeRequestAsSignedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
-  eventHubBillingClient: EventHubProducerClient
+  eventHubBillingClient: EventHubProducerClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestSigned),
@@ -38,6 +42,9 @@ const makeRequestAsSignedHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const sendBillingEvent = makeSendEvent(eventHubBillingClient);
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
 
   const markAsSigned = makeMarkRequestAsSigned(
     getDossier,
@@ -45,7 +52,8 @@ const makeRequestAsSignedHandler = (
     upsertSignatureRequest,
     submitMessage,
     getFiscalCodeBySignerId,
-    sendBillingEvent
+    sendBillingEvent,
+    createAndSendAnalyticsEvent
   );
 
   return createHandler(
