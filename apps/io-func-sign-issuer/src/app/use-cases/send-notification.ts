@@ -80,14 +80,28 @@ export const makeSendNotification =
           ),
           TE.fromEither
         ),
-        notification: pipe(signatureRequest, sendRequestToSignNotification),
-      }),
-      TE.chainFirstW(({ signatureRequest }) =>
-        pipe(
+        notification: pipe(
           signatureRequest,
-          createAndSendAnalyticsEvent(EventName.NOTIFICATION_SENT)
-        )
-      ),
+          sendRequestToSignNotification,
+          TE.chainFirstW(() =>
+            pipe(
+              signatureRequest,
+              createAndSendAnalyticsEvent(EventName.NOTIFICATION_SENT)
+            )
+          ),
+          (firstTaskEither) =>
+            pipe(
+              firstTaskEither,
+              TE.altW(() =>
+                pipe(
+                  signatureRequest,
+                  createAndSendAnalyticsEvent(EventName.NOTIFICATION_REJECTED),
+                  () => firstTaskEither
+                )
+              )
+            )
+        ),
+      }),
       TE.chainFirst(({ signatureRequest, notification }) =>
         pipe(
           {
