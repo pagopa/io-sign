@@ -116,3 +116,15 @@ export type GenericEvent = BillingEvent | AnalyticsEvent;
 export type SendEvent = (
   event: GenericEvent
 ) => TE.TaskEither<Error, GenericEvent>;
+
+export type CreateAndSendAnalyticsEvent = (
+  eventName: EventName
+) => (
+  signatureRequest:
+    | SignatureRequestDraft
+    | SignatureRequestSigned
+    | SignatureRequestReady
+    | SignatureRequestToBeSigned
+    | SignatureRequestWaitForQtsp
+    | SignatureRequestRejected
+) => TE.TaskEither<Error, typeof signatureRequest>;

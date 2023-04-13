@@ -8,6 +8,7 @@ import { ConsoleLogger } from "../../console-logger";
 
 import {
   createAnalyticsEvent,
+  CreateAndSendAnalyticsEvent,
   EventName,
   GenericEvent,
   SendEvent,
@@ -38,7 +39,7 @@ export const makeSendEvent =
     );
 
 export const makeCreateAndSendAnalyticsEvent =
-  (client: EventHubProducerClient) =>
+  (client: EventHubProducerClient): CreateAndSendAnalyticsEvent =>
   (eventName: EventName) =>
   (
     signatureRequest:

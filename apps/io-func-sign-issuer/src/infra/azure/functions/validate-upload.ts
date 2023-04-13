@@ -11,10 +11,11 @@ import { split } from "fp-ts/string";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "@pagopa/handler-kit";
-
+import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { validate } from "@io-sign/io-sign/validation";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 
+import { EventHubProducerClient } from "@azure/event-hubs";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
@@ -65,7 +66,8 @@ const makeRequireUploadMetadata =
 const makeValidateUploadHandler = (
   db: CosmosDatabase,
   uploadedContainerClient: ContainerClient,
-  validatedContainerClient: ContainerClient
+  validatedContainerClient: ContainerClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getUploadMetadata = makeGetUploadMetadata(db);
 
@@ -89,6 +91,10 @@ const makeValidateUploadHandler = (
 
   const requireUploadMetadata = makeRequireUploadMetadata(getUploadMetadata);
 
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
+
   const validateUpload = makeValidateUpload(
     getSignatureRequest,
     upsertSignatureRequest,
@@ -97,7 +103,8 @@ const makeValidateUploadHandler = (
     downloadDocumentUploadedFromBlobStorage,
     deleteDocumentUploadedFromBlobStorage,
     upsertUploadMetadata,
-    getPdfMetadata
+    getPdfMetadata,
+    createAndSendAnalyticsEvent
   );
 
   const decodeRequest = flow(
@@ -109,16 +116,7 @@ const makeValidateUploadHandler = (
   return createHandler(decodeRequest, validateUpload, identity, constVoid);
 };
 
-export const makeValidateUploadFunction = (
-  database: CosmosDatabase,
-  uploadedContainerClient: ContainerClient,
-  validatedContainerClient: ContainerClient
-) =>
-  pipe(
-    makeValidateUploadHandler(
-      database,
-      uploadedContainerClient,
-      validatedContainerClient
-    ),
-    azure.unsafeRun
-  );
+export const makeValidateUploadFunction = flow(
+  makeValidateUploadHandler,
+  azure.unsafeRun
+);

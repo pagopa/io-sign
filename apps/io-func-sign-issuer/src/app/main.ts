@@ -153,7 +153,8 @@ export const SendNotification = makeSendNotificationFunction(
 export const ValidateUpload = makeValidateUploadFunction(
   database,
   uploadedContainerClient,
-  validatedContainerClient
+  validatedContainerClient,
+  eventHubAnalyticsClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(
