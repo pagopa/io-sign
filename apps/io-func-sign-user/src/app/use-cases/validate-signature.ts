@@ -110,7 +110,18 @@ export const makeValidateSignature =
               TE.map((qtspSignatureRequest) => ({
                 qtspSignatureRequest,
                 signatureRequest,
-              }))
+              })),
+              (firstTaskEither) =>
+                pipe(
+                  firstTaskEither,
+                  TE.alt(() =>
+                    pipe(
+                      signatureRequest,
+                      createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR),
+                      () => firstTaskEither
+                    )
+                  )
+                )
             )
           ),
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
