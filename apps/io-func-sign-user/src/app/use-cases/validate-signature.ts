@@ -1,15 +1,19 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as A from "fp-ts/lib/Array";
+
 import { pipe } from "fp-ts/lib/function";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as L from "@pagopa/logger";
 import * as t from "io-ts";
 
 import {
   SignatureRequestRejected,
   SignatureRequestSigned,
 } from "@io-sign/io-sign/signature-request";
+import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
   markAsRejected,
   markAsSigned,
@@ -71,7 +75,8 @@ export const makeValidateSignature =
     upsertSignatureRequest: UpsertSignatureRequest,
     getQtspSignatureRequest: GetQtspSignatureRequest,
     notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
-    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
+    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) => {
     const markSignatureAndSignatureRequestAsRejected =
@@ -111,9 +116,46 @@ export const makeValidateSignature =
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
             switch (qtspSignatureRequest.status) {
               case "CREATED":
+                return pipe(
+                  TE.left(
+                    new Error(
+                      "Signature request created by the QTSP but not ready yet. Retry!"
+                    )
+                  ),
+                  TE.chainFirstIOK(() =>
+                    L.debug("Signature request created by the QTSP", {
+                      signatureRequest,
+                      qtspSignatureRequest,
+                    })({
+                      logger: ConsoleLogger,
+                    })
+                  )
+                );
               case "WAITING":
+                return TE.left(
+                  new Error("Signature request not ready yet. Retry!")
+                );
               case "READY":
-                return TE.left(new Error("Signature not ready yet. Retry!"));
+                return pipe(
+                  signatureRequest,
+                  createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
+                  TE.chainFirstIOK(() =>
+                    L.debug("Certificate created", {
+                      signatureRequest,
+                      qtspSignatureRequest,
+                    })({
+                      logger: ConsoleLogger,
+                    })
+                  ),
+                  TE.chain(() =>
+                    TE.left(
+                      new Error(
+                        "Certificate created. Signature request not ready yet. Retry. Retry!"
+                      )
+                    )
+                  )
+                );
+
               case "COMPLETED":
                 return pipe(
                   // Upsert signatureRequest documents url with signed url
@@ -134,7 +176,6 @@ export const makeValidateSignature =
                     )
                   ),
                   A.sequence(TE.ApplicativeSeq),
-
                   TE.map((documents) => ({
                     ...signatureRequest,
                     documents,
@@ -152,6 +193,14 @@ export const makeValidateSignature =
                     status: "COMPLETED" as const,
                   })),
                   TE.chain(upsertSignature),
+                  TE.chainFirstIOK(() =>
+                    L.debug("Signed by the QTSP", {
+                      signatureRequest,
+                      qtspSignatureRequest,
+                    })({
+                      logger: ConsoleLogger,
+                    })
+                  ),
                   TE.alt(() =>
                     pipe(
                       "Signed document not found!",
