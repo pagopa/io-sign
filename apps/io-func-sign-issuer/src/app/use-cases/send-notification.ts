@@ -13,6 +13,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request";
 
 import { DocumentReady } from "@io-sign/io-sign/document";
+import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -59,7 +60,8 @@ export const makeSendNotification =
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     upsertSignatureRequest: UpsertSignatureRequest,
-    getDossier: GetDossier
+    getDossier: GetDossier,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   ({ signatureRequest }: SendNotificationPayload) => {
     const sendRequestToSignNotification = makeSendSignatureRequestNotification(
@@ -80,6 +82,12 @@ export const makeSendNotification =
         ),
         notification: pipe(signatureRequest, sendRequestToSignNotification),
       }),
+      TE.chainFirstW(({ signatureRequest }) =>
+        pipe(
+          signatureRequest,
+          createAndSendAnalyticsEvent(EventName.NOTIFICATION_SENT)
+        )
+      ),
       TE.chainFirst(({ signatureRequest, notification }) =>
         pipe(
           {

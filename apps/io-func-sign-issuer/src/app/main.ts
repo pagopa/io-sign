@@ -148,7 +148,8 @@ export const GetUploadUrl = makeGetUploadUrlFunction(
 export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
-  ioApiClient
+  ioApiClient,
+  eventHubAnalyticsClient
 );
 
 export const ValidateUpload = makeValidateUploadFunction(
