@@ -15,6 +15,8 @@ import { QueueClient } from "@azure/storage-queue";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { error } from "@io-sign/io-sign/infra/http/response";
+import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
 import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";
@@ -29,7 +31,8 @@ import { makeNotifySignatureRequestReadyEvent } from "../storage/signature-reque
 
 const makeSetSignatureRequestStatusHandler = (
   db: CosmosDatabase,
-  onSignatureRequestReadyQueueClient: QueueClient
+  onSignatureRequestReadyQueueClient: QueueClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -38,14 +41,20 @@ const makeSetSignatureRequestStatusHandler = (
   const notifySignatureRequestReadyEvent = makeNotifySignatureRequestReadyEvent(
     onSignatureRequestReadyQueueClient
   );
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
+
   const markRequestAsReady = makeMarkRequestAsReady(
     upsertSignatureRequest,
-    notifySignatureRequestReadyEvent
+    notifySignatureRequestReadyEvent,
+    createAndSendAnalyticsEvent
   );
   const requireSignatureRequest = makeRequireSignatureRequest(
     getIssuerBySubscriptionId,
     getSignatureRequest
   );
+
   const requireSetSignatureRequestStatusBody: RE.ReaderEither<
     HttpRequest,
     Error,
@@ -81,14 +90,7 @@ const makeSetSignatureRequestStatusHandler = (
   );
 };
 
-export const makeSetSignatureRequestStatusFunction = (
-  database: CosmosDatabase,
-  onSignatureRequestReadyQueueClient: QueueClient
-) =>
-  pipe(
-    makeSetSignatureRequestStatusHandler(
-      database,
-      onSignatureRequestReadyQueueClient
-    ),
-    azure.unsafeRun
-  );
+export const makeSetSignatureRequestStatusFunction = flow(
+  makeSetSignatureRequestStatusHandler,
+  azure.unsafeRun
+);

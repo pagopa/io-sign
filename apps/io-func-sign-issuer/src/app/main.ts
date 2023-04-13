@@ -116,7 +116,8 @@ export const GetSignatureRequest = makeGetSignatureRequestFunction(
 );
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
-  onSignatureRequestReadyQueueClient
+  onSignatureRequestReadyQueueClient,
+  eventHubAnalyticsClient
 );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
