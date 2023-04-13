@@ -4,7 +4,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
 
-import { pipe } from "fp-ts/function";
+import { identity, pipe } from "fp-ts/function";
 import { toError } from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 
@@ -29,16 +29,20 @@ export const getPdfMetadata = (
     loadPdf,
     TE.chainEitherK((pdfDocument) =>
       sequenceS(E.Apply)({
-        formFields: E.tryCatch(
-          () =>
-            pdfDocument
-              .getForm()
-              .getFields()
-              .map((field) => ({
-                type: field.constructor.name,
-                name: field.getName(),
-              })),
-          E.toError
+        formFields: pipe(
+          E.tryCatch(
+            () =>
+              pdfDocument
+                .getForm()
+                .getFields()
+                .map((field) => ({
+                  type: field.constructor.name,
+                  name: field.getName(),
+                })),
+            E.toError
+          ),
+          E.fold(() => [], identity),
+          E.of
         ),
         pages: E.tryCatch(
           () =>
