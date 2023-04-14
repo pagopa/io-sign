@@ -38,7 +38,7 @@ export const DocumentToSign = t.type({
   url_out: NonEmptyString,
   signature_fields: t.array(t.string),
   signature_coordinates: t.array(SignatureCoordinate),
-  signatures_type: t.literal("PADES-T"),
+  signatures_type: t.literal("PADES-LT"),
   appearance_alias: t.literal("appio"),
 });
 
