@@ -188,12 +188,12 @@ __metadata:
   linkType: hard
 
 "@azure/core-util@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@azure/core-util@npm:1.2.0"
+  version: 1.3.0
+  resolution: "@azure/core-util@npm:1.3.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     tslib: ^2.2.0
-  checksum: 58c7e3c9e9fda27242c1ab1dbfcf11eab52cc3e6459a2509fa5572a3faebf3f24c6bf9d92883cd80974119fc1e2c16c7bd2c71f20cfbe670405515c73fdb4093
+  checksum: d1851c5d9017d561f9675c747ec2f9eef2d51e1d9d34ecdfa452419bded4b63918e8736e02d4ad28bee1a4b6bee72c1fe51762b5e1293dbadce437066f44c0a5
   languageName: node
   linkType: hard
 
@@ -2101,6 +2101,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pagopa/handler-kit-azure-func@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@pagopa/handler-kit-azure-func@npm:1.0.0"
+  dependencies:
+    "@pagopa/handler-kit": ^1.0.0
+    "@pagopa/logger": ^1.0.0
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.20
+  checksum: b7a5bcbe0287ee147d8d4a4ed4f0aa24123184b9aea5a79a2f56d8123c5d30d709ddaabab90b814e2b2f7bc6c04dcc7a72b49cfe21dcfba2e3048d9a8717ec17
+  languageName: node
+  linkType: hard
+
 "@pagopa/handler-kit-azure-func@npm:^1.0.1":
   version: 1.1.1
   resolution: "@pagopa/handler-kit-azure-func@npm:1.1.1"
@@ -2113,13 +2125,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit@npm:^0.5.1, handler-kit-legacy@npm:@pagopa/handler-kit@0.5.1":
-  version: 0.5.1
-  resolution: "@pagopa/handler-kit@npm:0.5.1"
+"@pagopa/handler-kit@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@pagopa/handler-kit@npm:1.0.0"
   dependencies:
+    "@pagopa/logger": ^1.0.0
     fp-ts: ^2.13.1
-    io-ts: ^2.2.19
-  checksum: 6c8db72df2d3efc916256cb6bb2aaa0c47617663f4ae21cef477af2fddb53ff75f8ca8457268bd1e485ba58b1fae7af2b8d58d897492a505c71615ceca77568c
+    io-ts: ^2.2.20
+    tsup: ^6.6.3
+  checksum: cb90f30992ca9b18c8046a59835c9f333d4a03467cc4b2607cf4c59d44e365c8078f17ff80fc26428b1e4a4b22d899e80700844dec713c19a9b650f58cdab855
   languageName: node
   linkType: hard
 
@@ -2184,6 +2198,15 @@ __metadata:
   dependencies:
     fp-ts: ^2.13.1
   checksum: 616ba6e578e6efd7410b3f51d8828b1b190d89498008136f016cd4926a287be17570b8708205502af90ab7c9384d77a117315d3c3c5577a3f0248b3ed6d799fb
+  languageName: node
+  linkType: hard
+
+"@pagopa/logger@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@pagopa/logger@npm:1.0.0"
+  dependencies:
+    fp-ts: ^2.13.1
+  checksum: 49de4c1700c45dcf50cdac7178ae7044952d18bca69bac3fcb73c4cbcf16a69ce670e57cb9bb5ea525b62df4fd977e34b6914f87fb8eb9152386551f8b30391f
   languageName: node
   linkType: hard
 
@@ -6622,6 +6645,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"handler-kit-legacy@npm:@pagopa/handler-kit@0.5.1":
+  version: 0.5.1
+  resolution: "@pagopa/handler-kit@npm:0.5.1"
+  dependencies:
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.19
+  checksum: 6c8db72df2d3efc916256cb6bb2aaa0c47617663f4ae21cef477af2fddb53ff75f8ca8457268bd1e485ba58b1fae7af2b8d58d897492a505c71615ceca77568c
+  languageName: node
+  linkType: hard
+
 "har-schema@npm:^2.0.0":
   version: 2.0.0
   resolution: "har-schema@npm:2.0.0"
@@ -7040,7 +7073,8 @@ __metadata:
     "@io-sign/io-sign": ^1.0.0
     "@jest/globals": ^29.3.1
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/handler-kit": ^0.5.1
+    "@pagopa/handler-kit": ^1.0.0
+    "@pagopa/handler-kit-azure-func": ^1.0.0
     "@pagopa/io-functions-commons": ^26.2.1
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^10.14.2
@@ -7049,6 +7083,7 @@ __metadata:
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
+    handler-kit-legacy: "npm:@pagopa/handler-kit@0.5.1"
     io-ts: ^2.2.19
     io-ts-types: ^0.5.19
     jest: ^29.3.1

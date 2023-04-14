@@ -3,14 +3,14 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as t from "io-ts";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import * as azure from "handler-kit-legacy/lib/azure";
 
 import { last } from "fp-ts/ReadonlyNonEmptyArray";
 import { split } from "fp-ts/string";
 
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
-import { createHandler } from "@pagopa/handler-kit";
+import { createHandler } from "handler-kit-legacy";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
