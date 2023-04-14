@@ -94,10 +94,6 @@ export const makeCreateSignatureRequest =
                 ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
                 "Content-Transfer-Encoding": "application/json",
-                // TODO: [SFEQS-1296] Source IP mock
-                "X-Forwarded-IP": "192.168.0.1",
-                "X-Forwarded-AppVersion": "pagopa-demo 1.1.1",
-                "X-Forwarded-OS": "Android 12",
               },
               body: JSON.stringify(body),
             }),
