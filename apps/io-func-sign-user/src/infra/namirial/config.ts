@@ -55,4 +55,4 @@ export const getNamirialConfigFromEnvironment: RE.ReaderEither<
 
 export const getNamirialCredentialsFromIssuerEnvironment =
   (issuerEnvironment: IssuerEnvironment) => (config: NamirialConfig) =>
-    issuerEnvironment === "DEFAULT" ? config.prod : config.test;
+    issuerEnvironment === "TEST" ? config.test : config.prod;
