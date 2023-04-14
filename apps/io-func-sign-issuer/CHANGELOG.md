@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 0.11.1
+
+### Patch Changes
+
+- d4cac27: OpenAPI specification fixes
+- Updated dependencies [46dabe7]
+  - @io-sign/io-sign@1.0.1
+
 ## 0.11.0
 
 ### Minor Changes
