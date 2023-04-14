@@ -26,6 +26,7 @@ describe("GetDossierHandler", () => {
     internalInstitutionId: newId(),
     environment: "TEST",
     vatNumber: "14711371128" as NonEmptyString,
+    department: "dep1" as NonEmptyString,
   };
 
   const dossier: Dossier = {
