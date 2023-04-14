@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.0.1
+
+### Patch Changes
+
+- 46dabe7: Adds a try-catch to the pdf-lib library to avoid unhandled errors.
+
 ## 1.0.0
 
 ### Major Changes
