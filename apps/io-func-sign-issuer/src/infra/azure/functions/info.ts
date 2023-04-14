@@ -30,6 +30,10 @@ import {
   EventHubProducerClient,
 } from "@azure/event-hubs";
 import {
+  AzureEventHubProblemSource,
+  makeAzureEventHubHealthCheck,
+} from "@io-sign/io-sign/infra/azure/event-hubs/health-check";
+import {
   AzureCosmosProblemSource,
   makeAzureCosmosDbHealthCheck,
 } from "../cosmos/health-check";
@@ -38,10 +42,6 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
-import {
-  AzureEventHubProblemSource,
-  makeAzureEventHubHealthCheck,
-} from "../event-hubs/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource

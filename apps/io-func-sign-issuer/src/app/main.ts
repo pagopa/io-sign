@@ -105,8 +105,11 @@ export const Info = makeInfoFunction(
   onSignatureRequestReadyQueueClient
 );
 
-export const CreateSignatureRequest =
-  makeCreateSignatureRequestFunction(database);
+export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
+  database,
+  eventHubAnalyticsClient
+);
+
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
   database,
   signedContainerClient

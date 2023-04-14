@@ -26,6 +26,7 @@ import {
   withPermissions,
   withExpireInMinutes,
   getBlobClient,
+  deleteBlobIfExist,
 } from "@io-sign/io-sign/infra/azure/storage/blob";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
@@ -54,6 +55,14 @@ const makeCreateFilledDocumentHandler = (
     pipe(
       filledDocumentBlobName,
       getBlobClient,
+      RTE.chainFirstTaskEitherK((blobClient) =>
+        pipe(
+          blobClient,
+          deleteBlobIfExist,
+          // if the file doesn't exist I can proceed anyway
+          TE.alt(() => TE.right(blobClient))
+        )
+      ),
       RTE.chainTaskEitherK(
         generateSasUrlFromBlob(
           pipe(

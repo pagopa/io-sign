@@ -1,7 +1,8 @@
 import { Database as CosmosDatabase } from "@azure/cosmos";
 
 import { createHandler } from "handler-kit-legacy";
-import * as azure from "handler-kit-legacy/lib/azure";
+import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
+
 import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { success, error } from "@io-sign/io-sign/infra/http/response";
@@ -21,7 +22,10 @@ import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import * as L from "@pagopa/logger";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
+
 import { requireSigner } from "../../http/decoder/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
 import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
@@ -112,6 +116,16 @@ const makeCreateSignatureHandler = (
         requireCreateSignatureLollipopParams
       ),
     }),
+    RTE.chainFirstIOK(() =>
+      L.info("creating signature")({
+        logger: ConsoleLogger,
+      })
+    ),
+    RTE.chainFirstIOK((params) =>
+      L.debug("creating signature with params", { params })({
+        logger: ConsoleLogger,
+      })
+    ),
     RTE.chainTaskEitherK((sequence) =>
       pipe(
         sequenceS(TE.ApplySeq)({
@@ -141,7 +155,12 @@ const makeCreateSignatureHandler = (
             tosSignature,
             challengeSignature,
           },
-        }))
+        })),
+        TE.chainFirstIOK((lollipopParams) =>
+          L.debug("retrived lollipop params: ", { lollipopParams })({
+            logger: ConsoleLogger,
+          })
+        )
       )
     ),
     RTE.map(
@@ -178,11 +197,16 @@ const makeCreateSignatureHandler = (
           challengeSignature: lollipopParams.challengeSignature,
         },
       })
+    ),
+    RTE.chainFirstIOK((payload) =>
+      L.debug("create signature payload", { payload })({
+        logger: ConsoleLogger,
+      })
     )
   );
 
   const decodeHttpRequest = flow(
-    azure.fromHttpRequest,
+    azureLegacyHandler.fromHttpRequest,
     TE.fromEither,
     TE.chain(requireCreateSignaturePayload)
   );
@@ -202,5 +226,5 @@ const makeCreateSignatureHandler = (
 
 export const makeCreateSignatureFunction = flow(
   makeCreateSignatureHandler,
-  azure.unsafeRun
+  azureLegacyHandler.unsafeRun
 );

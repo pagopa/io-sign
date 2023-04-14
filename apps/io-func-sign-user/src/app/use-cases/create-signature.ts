@@ -1,5 +1,8 @@
 import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import * as L from "@pagopa/logger";
+
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import * as A from "fp-ts/lib/Array";
@@ -97,6 +100,11 @@ const makeGetDocumentUrlForSignature =
             getUploadSignedDocumentUrl,
             TE.chainEitherKW(validate(NonEmptyString, "Invalid upload url"))
           ),
+        })
+      ),
+      TE.chainFirstIOK((documentsUrl) =>
+        L.debug("get documents url", { documentsUrl })({
+          logger: ConsoleLogger,
         })
       )
     );
@@ -225,8 +233,22 @@ export const makeCreateSignature =
               }))
             )
           ),
+          TE.chainFirstIOK((payload) =>
+            L.debug("create QTSP SignatureRequest with payload", {
+              payload,
+            })({
+              logger: ConsoleLogger,
+            })
+          ),
           TE.chain(
             creatQtspSignatureRequest(signatureRequest.issuerEnvironment)
+          ),
+          TE.chainFirstIOK((qtspSignatureRequest) =>
+            L.info("created QTSP signature request with id", {
+              id: qtspSignatureRequest.id,
+            })({
+              logger: ConsoleLogger,
+            })
           ),
           TE.filterOrElse(
             (qtspResponse) => qtspResponse.status === "CREATED",

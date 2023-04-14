@@ -24,7 +24,7 @@ variable "env_short" {
 }
 
 variable "domain" {
-  type = string
+  type        = string
   description = "The applicative domain"
   validation {
     condition = (
@@ -56,8 +56,6 @@ variable "environment_cd_roles" {
 
 variable "github_repository_environment_cd" {
   type = object({
-    protected_branches     = bool
-    custom_branch_policies = bool
     reviewers_teams        = list(string)
   })
   description = "GitHub Continous Integration roles"
