@@ -101,7 +101,15 @@ export const getUploadMetadata =
     id: UploadMetadata["id"]
   ): RTE.ReaderTaskEither<UploadMetadataEnvironment, Error, UploadMetadata> =>
   ({ uploadMetadataRepository: repo }) =>
-    pipe(repo.get(id), TE.chain(TE.fromOption(() => new Error("..."))));
+    pipe(
+      repo.get(id),
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new Error("Unable to find the metadata associated with this upload")
+        )
+      )
+    );
 
 export const upsertUploadMetadata =
   (
