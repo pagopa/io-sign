@@ -43,10 +43,15 @@ export class BlobStorageFileStorage implements FileStorage {
 
   constructor(containerClient: ContainerClient) {
     this.#containerClient = containerClient;
+    this.exists = this.exists.bind(this);
+    this.download = this.download.bind(this);
+    this.createFromUrl = this.createFromUrl.bind(this);
+    this.remove = this.remove.bind(this);
   }
 
   exists(filename: string) {
-    return pipe(this.#containerClient.getBlobClient(filename), blobExists);
+    const blobClient = this.#containerClient.getBlobClient(filename);
+    return blobExists(blobClient);
   }
 
   download(filename: string) {
@@ -62,6 +67,11 @@ export class BlobStorageFileStorage implements FileStorage {
   remove(filename: string) {
     const blobClient = this.#containerClient.getBlobClient(filename);
     return pipe(deleteBlobIfExist(blobClient), TE.map(constVoid));
+  }
+
+  getUrl(filename: string) {
+    const blobClient = this.#containerClient.getBlobClient(filename);
+    return blobClient.url;
   }
 }
 

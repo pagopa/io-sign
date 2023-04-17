@@ -1,5 +1,6 @@
 import * as H from "@pagopa/handler-kit";
-
+import * as L from "@pagopa/logger";
+import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { pipe, flow } from "fp-ts/lib/function";
 
