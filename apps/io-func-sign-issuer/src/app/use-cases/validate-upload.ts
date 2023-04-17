@@ -1,232 +1,159 @@
-import { identity, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
+import { pipe, flow, constVoid } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as A from "fp-ts/lib/Array";
 
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { sequenceS } from "fp-ts/lib/Apply";
+import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
+
 import {
-  DocumentMetadata,
   SignatureFieldAttributes,
   SignatureFieldToBeCreatedAttributes,
-  PdfDocumentMetadata,
-  PdfDocumentMetadataPage,
+  DocumentMetadata,
 } from "@io-sign/io-sign/document";
 
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
-import { getDocument } from "@io-sign/io-sign/signature-request";
 import {
-  DeleteUploadDocument,
-  DownloadUploadDocument,
-  IsUploaded,
+  getUploadMetadata,
+  upsertUploadMetadata,
+  getMetadataFromUploadedDocument,
+  createDocumentFromUrl,
   markUploadMetadataAsValid,
-  MoveUploadedDocument,
-  UploadMetadata,
-  UpsertUploadMetadata,
+  removeDocumentFromStorage,
 } from "../../upload";
+
 import {
-  GetSignatureRequest,
+  getSignatureRequest,
+  upsertSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
-  startValidationOnDocument,
-  UpsertSignatureRequest,
 } from "../../signature-request";
 
-export type GetPdfMetadata = (
-  buffer: Buffer
-) => TE.TaskEither<Error, PdfDocumentMetadata>;
+import { getDocument } from "@io-sign/io-sign/signature-request";
 
-const getPage =
-  (pageNumber: NonNegativeNumber) => (pages: PdfDocumentMetadata["pages"]) =>
-    pipe(
-      pages,
-      A.findFirst((p) => p.number === pageNumber)
-    );
+const validateExistingSignatureField = (
+  documentMetadata: PdfDocumentMetadata,
+  { uniqueName }: SignatureFieldAttributes
+): E.Either<string[], void> =>
+  pipe(
+    documentMetadata.formFields,
+    A.findFirst((field) => field.name === uniqueName),
+    E.fromOption(() => [
+      `the field "${uniqueName}" was not found is the uploaded document`,
+    ]),
+    E.map(constVoid)
+  );
 
-const isFieldInsidePage =
-  (fieldAttributes: SignatureFieldToBeCreatedAttributes) =>
-  (page: PdfDocumentMetadataPage) =>
-    fieldAttributes.coordinates.x + fieldAttributes.size.w < page.width &&
-    fieldAttributes.coordinates.y + fieldAttributes.size.h < page.height;
+const validateSignatureFieldToBeCreated = (
+  documentMetadata: PdfDocumentMetadata,
+  {
+    page,
+    coordinates: { x, y },
+    size: { w, h },
+  }: SignatureFieldToBeCreatedAttributes
+) =>
+  pipe(
+    documentMetadata.pages,
+    A.findFirst((p) => p.number == page),
+    E.fromOption(() => [
+      `the uploaded document has no ${page} as specified in its metadata`,
+    ]),
+    E.filterOrElse(
+      (page) => x + w < page.width && y + h < page.height,
+      () => [
+        "the uploaded document is incompatible with the attributes of the signature field to be created",
+      ]
+    ),
+    E.map(constVoid)
+  );
 
-export const isValidSignatureField =
-  (formFields: PdfDocumentMetadata["formFields"]) =>
-  (attributes: SignatureFieldAttributes): E.Either<Error[], boolean> =>
-    pipe(
-      formFields,
-      A.findFirst((field) => field.name === attributes.uniqueName),
-      E.fromOption(() => [
-        new Error(
-          `The dossier signature field (${attributes.uniqueName}) was not found in the uploaded document.`
-        ),
-      ]),
-      E.map(() => true)
-    );
-
-export const isValidSignatureFieldToBeCreated =
-  (pages: PdfDocumentMetadata["pages"]) =>
-  (
-    attributes: SignatureFieldToBeCreatedAttributes
-  ): E.Either<Error[], boolean> =>
-    pipe(
-      pages,
-      getPage(attributes.page),
-      E.fromOption(() => [
-        new Error(
-          `The page number in the dossier signature field (${attributes.page}) was not found in the uploaded document.`
-        ),
-      ]),
-      E.map(isFieldInsidePage(attributes)),
-      E.chain((isValid) =>
-        isValid
-          ? E.right(true)
-          : E.left([
-              new Error(
-                `The coordinates in the dossier are incompatible with the page size of the uploaded file.`
-              ),
-            ])
-      )
-    );
-
-const applicativeValidation = E.getApplicativeValidation(
-  A.getSemigroup<Error>()
-);
-
-export const validateSignatureFieldsWithMetadata =
-  (pdfDocumentMetadata: PdfDocumentMetadata) =>
-  (
-    signatureFields: DocumentMetadata["signatureFields"]
-  ): E.Either<Error[], boolean[]> =>
+const validateSignatureFields =
+  (documentMetadata: PdfDocumentMetadata) =>
+  (signatureFields: DocumentMetadata["signatureFields"]) =>
     pipe(
       signatureFields,
-      A.map((signatureField) => signatureField.attributes),
-      A.map((attributes) =>
-        SignatureFieldAttributes.is(attributes)
-          ? pipe(
-              attributes,
-              isValidSignatureField(pdfDocumentMetadata.formFields)
-            )
-          : pipe(
-              attributes,
-              isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages)
-            )
+      A.map((field) => field.attributes),
+      A.map((attr) =>
+        SignatureFieldAttributes.is(attr)
+          ? validateExistingSignatureField(documentMetadata, attr)
+          : validateSignatureFieldToBeCreated(documentMetadata, attr)
       ),
-      A.sequence(applicativeValidation)
+      A.sequence(E.getApplicativeValidation(A.getSemigroup<string>())),
+      E.mapLeft((problems) => new Error(problems.join("\n"))),
+      E.map(constVoid)
     );
 
-export const makeValidateUpload =
-  (
-    getSignatureRequest: GetSignatureRequest,
-    upsertSignatureRequest: UpsertSignatureRequest,
-    isUploaded: IsUploaded,
-    moveUploadedDocument: MoveUploadedDocument,
-    downloadDocumentUploadedFromBlobStorage: DownloadUploadDocument,
-    deleteDocumentUploadedFromBlobStorage: DeleteUploadDocument,
-    upsertUploadMetadata: UpsertUploadMetadata,
-    getPdfMetadata: GetPdfMetadata
-  ) =>
-  (uploadMetadata: UploadMetadata) =>
+// from a blob uri get the "upload metadata" (entity that tracks the upload)
+// does the signature request exists?
+// is a PDF document? (download + open)
+// the metadata declared in the dossier can be applied to this document?
+
+// YES -------> mark the document as ready
+// NO --------> mark the document as rejected
+export const validateUpload = flow(
+  getUploadMetadata,
+  RTE.bindTo("meta"),
+
+  RTE.bindW("signatureRequest", ({ meta }) =>
+    getSignatureRequest(meta.signatureRequestId, meta.issuerId)
+  ),
+
+  RTE.chainW(({ signatureRequest, meta }) =>
     pipe(
-      getSignatureRequest(uploadMetadata.signatureRequestId)(
-        uploadMetadata.issuerId
-      ),
-      TE.chain(
-        TE.fromOption(
-          () =>
-            new EntityNotFoundError(
-              "The specified Signature Request does not exists."
-            )
+      // Open the PDF document and check its metadata
+      getMetadataFromUploadedDocument(meta.id),
+      RTE.bindTo("documentMetadata"),
+
+      // Check if signature fields are valid
+      RTE.chainFirstEitherK(({ documentMetadata }) =>
+        pipe(
+          signatureRequest,
+          getDocument(meta.documentId),
+          E.fromOption(
+            () =>
+              new Error("no document was found with the specified document id")
+          ),
+          E.map((document) => document.metadata.signatureFields),
+          E.chain(validateSignatureFields(documentMetadata))
         )
       ),
-      TE.chainEitherK(startValidationOnDocument(uploadMetadata.documentId)),
-      TE.chain(upsertSignatureRequest),
-      TE.chain((signatureRequest) =>
+
+      // The uploaded PDF it's a valid Document for
+      // the specified Signature Request. (mark as READY)
+      RTE.chainW(({ documentMetadata }) =>
         pipe(
-          sequenceS(TE.ApplySeq)({
-            pdfDocumentMetadata: pipe(
-              uploadMetadata.url,
-              TE.fromNullable(new Error("Not found: url in upload metadata")),
-              TE.chain(() =>
-                pipe(
-                  isUploaded(uploadMetadata.id),
-                  TE.filterOrElse(
-                    identity,
-                    () => new Error("Unable to find the uploaded document")
-                  ),
-                  TE.chain(() =>
-                    pipe(
-                      downloadDocumentUploadedFromBlobStorage(
-                        uploadMetadata.id
-                      ),
-                      TE.chain(getPdfMetadata)
-                    )
-                  )
-                )
-              )
-            ),
-            url: pipe(
-              uploadMetadata.url,
-              TE.fromNullable(new Error("Url not found in upload metadata")),
-              TE.chain(moveUploadedDocument(uploadMetadata.documentId))
-            ),
-          }),
-          TE.chainEitherK(({ pdfDocumentMetadata, url }) =>
+          meta.url,
+          RTE.fromNullable(new Error("the upload has no file url")),
+          RTE.chainW(createDocumentFromUrl(meta.documentId)),
+          RTE.chainEitherKW((url) =>
             pipe(
               signatureRequest,
-              getDocument(uploadMetadata.documentId),
-              E.fromOption(
-                () =>
-                  new EntityNotFoundError(
-                    "No document was found with the specified document id."
-                  )
-              ),
-              E.chain((document) =>
-                pipe(
-                  document.metadata.signatureFields,
-                  validateSignatureFieldsWithMetadata(pdfDocumentMetadata),
-                  E.fold(
-                    (validationErrors) =>
-                      pipe(
-                        signatureRequest,
-                        markDocumentAsRejected(
-                          uploadMetadata.documentId,
-                          validationErrors.join("\n\n")
-                        )
-                      ),
-                    () =>
-                      pipe(
-                        signatureRequest,
-                        markDocumentAsReady(
-                          uploadMetadata.documentId,
-                          url,
-                          pdfDocumentMetadata
-                        )
-                      )
-                  )
-                )
-              )
+              markDocumentAsReady(meta.documentId, url, documentMetadata)
             )
           ),
-          TE.altW(() =>
+          RTE.chainW(upsertSignatureRequest),
+          // Update upload metadata and remove document
+          // fromt temp storage
+          RTE.chainW(() =>
             pipe(
-              signatureRequest,
-              markDocumentAsRejected(
-                uploadMetadata.documentId,
-                "The uploaded file appears to be corrupted or does not appear to be a PDF file."
-              ),
-              TE.fromEither
+              meta,
+              markUploadMetadataAsValid,
+              upsertUploadMetadata,
+              RTE.map((meta) => meta.id),
+              RTE.chainW(removeDocumentFromStorage)
             )
           )
         )
       ),
-      TE.chainFirst((signatureRequest) =>
+      // Mark the document as REJECTED on error
+      RTE.orElseW((e) =>
         pipe(
-          signatureRequest.status === "READY"
-            ? markUploadMetadataAsValid(uploadMetadata)
-            : uploadMetadata,
-          upsertUploadMetadata
+          signatureRequest,
+          markDocumentAsRejected(meta.documentId, e.message),
+          RTE.fromEither,
+          RTE.chain(upsertSignatureRequest),
+          // Remove REJECTED file from temp storage
+          RTE.chainW(() => removeDocumentFromStorage(meta.id))
         )
-      ),
-      TE.chain(upsertSignatureRequest),
-      TE.chain(() => deleteDocumentUploadedFromBlobStorage(uploadMetadata.id))
-    );
+      )
+    )
+  )
+);

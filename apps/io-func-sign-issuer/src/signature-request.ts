@@ -2,6 +2,7 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
@@ -393,3 +394,41 @@ export type UpsertSignatureRequest = (
 export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
+
+type SignatureRequestRepository = {
+  get: (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+};
+
+type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
+};
+
+export const getSignatureRequest =
+  (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.get(id, issuerId),
+      TE.chain(TE.fromOption(() => new Error("...")))
+    );
+
+export const upsertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.upsert(request);

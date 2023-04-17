@@ -19,7 +19,7 @@ import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-ur
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
 import { makeSetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
-import { makeValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
 import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
@@ -148,12 +148,6 @@ export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient
-);
-
-export const ValidateUpload = makeValidateUploadFunction(
-  database,
-  uploadedContainerClient,
-  validatedContainerClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(
