@@ -31,6 +31,8 @@ import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
 import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
+import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -159,12 +161,22 @@ export const CreateIssuer = makeCreateIssuerFunction(
 const issuerRepository = new CosmosDbIssuerRepository(database);
 const dossierRepository = new CosmosDbDossierRepository(database);
 
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database.container("signature-requests")
+);
+
 export const GetDossier = GetDossierFunction({
   issuerRepository,
   dossierRepository,
 });
 
 export const CreateDossier = CreateDossierFunction({
+  issuerRepository,
+  dossierRepository,
+});
+
+export const GetRequestsByDossier = GetRequestsByDossierFunction({
+  signatureRequestRepository,
   issuerRepository,
   dossierRepository,
 });
