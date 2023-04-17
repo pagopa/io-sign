@@ -10,11 +10,14 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+
+import { Dossier } from "../../../dossier";
 import {
   GetSignatureRequest,
   InsertSignatureRequest,
   UpsertSignatureRequest,
   SignatureRequest,
+  SignatureRequestRepository,
 } from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
@@ -68,3 +71,45 @@ export const makeUpsertSignatureRequest =
       (model) => model.upsert(request),
       TE.mapLeft(toCosmosDatabaseError)
     );
+
+export class CosmosDbSignatureRequestRepository
+  implements SignatureRequestRepository
+{
+  #container: cosmos.Container;
+
+  constructor(container: cosmos.Container) {
+    this.#container = container;
+  }
+
+  public async findByDossier(
+    dossier: Dossier,
+    options: { maxItemCount?: number; continuationToken?: string } = {}
+  ): Promise<{
+    // TODO: take a decision on validation at "database level" via RFC
+    items: ReadonlyArray<unknown>;
+    continuationToken?: string;
+  }> {
+    const { resources: items, continuationToken } = await this.#container.items
+      .query(
+        {
+          parameters: [
+            {
+              name: "@dossierId",
+              value: dossier.id,
+            },
+          ],
+          query: "SELECT * FROM m WHERE m.dossierId = @dossierId",
+        },
+        {
+          partitionKey: dossier.issuerId,
+          continuationToken: options.continuationToken,
+          maxItemCount: options.maxItemCount ?? 25,
+        }
+      )
+      .fetchNext();
+    return {
+      items,
+      continuationToken,
+    };
+  }
+}
