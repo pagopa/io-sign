@@ -428,7 +428,7 @@ export const getSignatureRequest =
   ({ signatureRequestRepository: repo }) =>
     pipe(
       repo.get(id, issuerId),
-      TE.chain(TE.fromOption(() => new Error("...")))
+      TE.chain(TE.fromOption(() => new Error("Signature request not found")))
     );
 
 export const upsertSignatureRequest =
