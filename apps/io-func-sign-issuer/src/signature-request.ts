@@ -6,12 +6,16 @@ import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
 
+import * as H from "@pagopa/handler-kit";
+
 import { Signer } from "@io-sign/io-sign/signer";
 
 import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
+
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import {
   Document,
@@ -393,3 +397,52 @@ export type UpsertSignatureRequest = (
 export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequestRepository = {
+  findByDossier: (
+    dossier: Dossier,
+    options?: { maxItemCount?: number; continuationToken?: string }
+  ) => Promise<{
+    items: ReadonlyArray<unknown>;
+    continuationToken?: string;
+  }>;
+};
+
+export type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
+};
+
+export const findSignatureRequestsByDossier =
+  (
+    dossier: Dossier,
+    options: {
+      maxItemCount?: number;
+      continuationToken?: string;
+    }
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    {
+      items: ReadonlyArray<SignatureRequest>;
+      continuationToken?: string;
+    }
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      TE.tryCatch(
+        () => repo.findByDossier(dossier, options),
+        (e) => (e instanceof Error ? e : new Error("error on find by dossier"))
+      ),
+      TE.chainEitherKW(
+        H.parse(
+          t.intersection([
+            t.type({
+              items: t.array(SignatureRequest),
+            }),
+            t.partial({
+              continuationToken: t.string,
+            }),
+          ])
+        )
+      )
+    );

@@ -1,7 +1,7 @@
 import { Database } from "@azure/cosmos";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { identity, flow } from "fp-ts/lib/function";

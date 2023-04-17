@@ -1,0 +1,17 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "Development": {
+      "issuerApiBaseUrl": "http://localhost:7071/api/v1/sign",
+      "userApiBaseUrl": "http://localhost:7072/api/v1/sign",
+      "subscriptionId": "{{$shared io.firma.subscriptionId}}",
+      "subscriptionKey": ""
+    },
+    "Production": {
+      "issuerApiBaseUrl": "https://api.io.pagopa.it/api/v1/sign",
+      "userApiBaseUrl": "https://app-backend.io.italia.it/api/v1/sign",
+      "subscriptionId": "",
+      "subscriptionKey": "{{$shared io.firma.subscriptionKey}}"
+    }
+  }
+}

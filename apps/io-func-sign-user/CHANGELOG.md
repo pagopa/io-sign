@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.3.1
+
+### Patch Changes
+
+- aeef66f: Fix default QTSP environment
+
 ## 0.3.0
 
 ### Minor Changes

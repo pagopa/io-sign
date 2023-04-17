@@ -57,7 +57,7 @@ const QtspDocumentToSignToApiModel: E.Encoder<
       A.filterMap(mapToBeCreatedAttributes),
       A.map(SignatureFieldToBeCreatedToApiModel.encode)
     ),
-    signatures_type: "PADES-T",
+    signatures_type: "PADES-LT",
     appearance_alias: "appio",
   }),
 };
