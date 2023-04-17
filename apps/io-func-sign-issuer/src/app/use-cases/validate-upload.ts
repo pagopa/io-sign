@@ -15,7 +15,7 @@ import {
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { getDocument } from "@io-sign/io-sign/signature-request";
-import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+
 import {
   DeleteUploadDocument,
   DownloadUploadDocument,
@@ -124,8 +124,7 @@ export const makeValidateUpload =
     downloadDocumentUploadedFromBlobStorage: DownloadUploadDocument,
     deleteDocumentUploadedFromBlobStorage: DeleteUploadDocument,
     upsertUploadMetadata: UpsertUploadMetadata,
-    getPdfMetadata: GetPdfMetadata,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    getPdfMetadata: GetPdfMetadata
   ) =>
   (uploadMetadata: UploadMetadata) =>
     pipe(
@@ -209,12 +208,6 @@ export const makeValidateUpload =
               )
             )
           ),
-          TE.chainFirstW((signatureRequest) =>
-            pipe(
-              signatureRequest,
-              createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)
-            )
-          ),
           TE.altW(() =>
             pipe(
               signatureRequest,
@@ -222,13 +215,7 @@ export const makeValidateUpload =
                 uploadMetadata.documentId,
                 "The uploaded file appears to be corrupted or does not appear to be a PDF file."
               ),
-              TE.fromEither,
-              TE.chainFirstW((signatureRequest) =>
-                pipe(
-                  signatureRequest,
-                  createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)
-                )
-              )
+              TE.fromEither
             )
           )
         )

@@ -11,11 +11,10 @@ import { split } from "fp-ts/string";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { createHandler } from "handler-kit-legacy";
-import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+
 import { validate } from "@io-sign/io-sign/validation";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 
-import { EventHubProducerClient } from "@azure/event-hubs";
 import {
   makeGetUploadMetadata,
   makeUpsertUploadMetadata,
@@ -66,8 +65,7 @@ const makeRequireUploadMetadata =
 const makeValidateUploadHandler = (
   db: CosmosDatabase,
   uploadedContainerClient: ContainerClient,
-  validatedContainerClient: ContainerClient,
-  eventHubAnalyticsClient: EventHubProducerClient
+  validatedContainerClient: ContainerClient
 ) => {
   const getUploadMetadata = makeGetUploadMetadata(db);
 
@@ -91,10 +89,6 @@ const makeValidateUploadHandler = (
 
   const requireUploadMetadata = makeRequireUploadMetadata(getUploadMetadata);
 
-  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient
-  );
-
   const validateUpload = makeValidateUpload(
     getSignatureRequest,
     upsertSignatureRequest,
@@ -103,8 +97,7 @@ const makeValidateUploadHandler = (
     downloadDocumentUploadedFromBlobStorage,
     deleteDocumentUploadedFromBlobStorage,
     upsertUploadMetadata,
-    getPdfMetadata,
-    createAndSendAnalyticsEvent
+    getPdfMetadata
   );
 
   const decodeRequest = flow(
