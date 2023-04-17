@@ -397,7 +397,7 @@ export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
 
-type SignatureRequestRepository = {
+export type SignatureRequestRepository = {
   get: (
     id: SignatureRequest["id"],
     issuerId: SignatureRequest["issuerId"]
