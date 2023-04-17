@@ -11,6 +11,7 @@ import {
   DocumentMetadata,
 } from "@io-sign/io-sign/document";
 
+import { getDocument } from "@io-sign/io-sign/signature-request";
 import {
   getUploadMetadata,
   upsertUploadMetadata,
@@ -26,8 +27,6 @@ import {
   markDocumentAsReady,
   markDocumentAsRejected,
 } from "../../signature-request";
-
-import { getDocument } from "@io-sign/io-sign/signature-request";
 
 const validateExistingSignatureField = (
   documentMetadata: PdfDocumentMetadata,
@@ -52,7 +51,7 @@ const validateSignatureFieldToBeCreated = (
 ) =>
   pipe(
     documentMetadata.pages,
-    A.findFirst((p) => p.number == page),
+    A.findFirst((p) => p.number === page),
     E.fromOption(() => [
       `the uploaded document has no ${page} as specified in its metadata`,
     ]),

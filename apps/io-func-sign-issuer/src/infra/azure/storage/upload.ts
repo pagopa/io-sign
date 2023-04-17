@@ -2,7 +2,7 @@ import { BlobClient, ContainerClient } from "@azure/storage-blob";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { pipe } from "fp-ts/lib/function";
+import { constVoid, pipe } from "fp-ts/lib/function";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { toError } from "fp-ts/lib/Either";
@@ -13,28 +13,12 @@ import {
   withExpireInMinutes,
   generateSasUrlFromBlob,
   blobExists,
+  deleteBlobIfExist,
 } from "@io-sign/io-sign/infra/azure/storage/blob";
-import {
-  DeleteUploadDocument,
-  DownloadUploadDocument,
-  GetUploadUrl,
-  IsUploaded,
-  MoveUploadedDocument,
-  UploadUrl,
-} from "../../../upload";
 
-const deleteBlobIfExists = (blobClient: BlobClient) =>
-  pipe(
-    TE.tryCatch(
-      () => blobClient.deleteIfExists(),
-      () => new Error("Unable to delete the blob.")
-    ),
-    TE.filterOrElse(
-      (response) => response.succeeded === true,
-      () => new Error("The specified blob does not exists.")
-    ),
-    TE.map(() => blobClient.name) // TODO: quale è lo scopo?
-  );
+import { GetUploadUrl, UploadUrl } from "../../../upload";
+
+import { FileStorage } from "../../../upload";
 
 export const copyFromUrl = (source: string) => (blobClient: BlobClient) =>
   pipe(
@@ -54,6 +38,32 @@ export const copyFromUrl = (source: string) => (blobClient: BlobClient) =>
     ),
     TE.map(() => blobClient.url)
   );
+export class BlobStorageFileStorage implements FileStorage {
+  #containerClient: ContainerClient;
+
+  constructor(containerClient: ContainerClient) {
+    this.#containerClient = containerClient;
+  }
+
+  exists(filename: string) {
+    return pipe(this.#containerClient.getBlobClient(filename), blobExists);
+  }
+
+  download(filename: string) {
+    const blobClient = this.#containerClient.getBlobClient(filename);
+    return pipe(TE.tryCatch(() => blobClient.downloadToBuffer(), toError));
+  }
+
+  createFromUrl(url: string, filename: string) {
+    const blobClient = this.#containerClient.getBlobClient(filename);
+    return copyFromUrl(url)(blobClient);
+  }
+
+  remove(filename: string) {
+    const blobClient = this.#containerClient.getBlobClient(filename);
+    return pipe(deleteBlobIfExist(blobClient), TE.map(constVoid));
+  }
+}
 
 export const makeGetUploadUrl =
   (containerClient: ContainerClient): GetUploadUrl =>
@@ -68,27 +78,4 @@ export const makeGetUploadUrl =
         )
       ),
       TE.chainEitherKW(validate(UploadUrl, "Invalid SAS Url generated."))
-    );
-
-export const makeIsUploaded =
-  (containerClient: ContainerClient): IsUploaded =>
-  (id) =>
-    pipe(containerClient.getBlobClient(id), blobExists);
-
-export const makeDeleteUploadedMetadata =
-  (containerClient: ContainerClient): DeleteUploadDocument =>
-  (id) =>
-    pipe(containerClient.getBlobClient(id), deleteBlobIfExists);
-
-export const makeMoveUploadedDocument =
-  (containerClient: ContainerClient): MoveUploadedDocument =>
-  (documentId) =>
-  (source) =>
-    pipe(containerClient.getBlobClient(documentId), copyFromUrl(source));
-
-export const makeDownloadUploadedDocument =
-  (containerClient: ContainerClient): DownloadUploadDocument =>
-  (id) =>
-    pipe(containerClient.getBlobClient(id), (blob) =>
-      TE.tryCatch(() => blob.downloadToBuffer(), toError)
     );

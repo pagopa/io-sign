@@ -12,6 +12,7 @@ import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/c
 import * as E from "fp-ts/lib/Either";
 import { pipe, identity } from "fp-ts/lib/function";
 
+import * as t from "io-ts";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
@@ -33,6 +34,10 @@ import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
+import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
+
+import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -160,9 +165,15 @@ export const CreateIssuer = makeCreateIssuerFunction(
 
 const issuerRepository = new CosmosDbIssuerRepository(database);
 const dossierRepository = new CosmosDbDossierRepository(database);
-
+const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
 const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
   database.container("signature-requests")
+);
+
+const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
+
+const validatedFileStorage = new BlobStorageFileStorage(
+  validatedContainerClient
 );
 
 export const GetDossier = GetDossierFunction({
@@ -179,4 +190,12 @@ export const GetRequestsByDossier = GetRequestsByDossierFunction({
   signatureRequestRepository,
   issuerRepository,
   dossierRepository,
+});
+
+export const ValidateUpload = ValidateUploadFunction({
+  signatureRequestRepository,
+  uploadMetadataRepository,
+  uploadedFileStorage,
+  validatedFileStorage,
+  inputDecoder: t.type({ uri: t.string }),
 });
