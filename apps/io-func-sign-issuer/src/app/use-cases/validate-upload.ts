@@ -36,7 +36,7 @@ import {
   startValidationOnDocument,
 } from "../../signature-request";
 
-const validateExistingSignatureField =
+export const validateExistingSignatureField =
   (clauseTitle: string, { uniqueName }: SignatureFieldAttributes) =>
   (documentMetadata: PdfDocumentMetadata): E.Either<string[], void> =>
     pipe(
@@ -48,7 +48,7 @@ const validateExistingSignatureField =
       E.map(constVoid)
     );
 
-const validateSignatureFieldToBeCreated =
+export const validateSignatureFieldToBeCreated =
   (
     clauseTitle: string,
     {
