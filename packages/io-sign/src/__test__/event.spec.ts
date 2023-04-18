@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
