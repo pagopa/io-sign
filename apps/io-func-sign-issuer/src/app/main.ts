@@ -123,7 +123,8 @@ export const GetSignatureRequest = makeGetSignatureRequestFunction(
 );
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
-  onSignatureRequestReadyQueueClient
+  onSignatureRequestReadyQueueClient,
+  eventHubAnalyticsClient
 );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
@@ -131,14 +132,16 @@ export const MarkAsWaitForSignature =
 export const MarkAsRejected = makeRequestAsRejectedFunction(
   database,
   pdvTokenizerClientWithApiKey,
-  ioApiClient
+  ioApiClient,
+  eventHubAnalyticsClient
 );
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
-  eventHubBillingClient
+  eventHubBillingClient,
+  eventHubAnalyticsClient
 );
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
@@ -154,7 +157,8 @@ export const GetUploadUrl = makeGetUploadUrlFunction(
 export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
-  ioApiClient
+  ioApiClient,
+  eventHubAnalyticsClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(

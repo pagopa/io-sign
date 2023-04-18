@@ -8,6 +8,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
@@ -37,6 +38,11 @@ const config = configOrError;
 
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
+
+const eventHubAnalyticsClient = new EventHubProducerClient(
+  config.azure.eventHubs.analyticsConnectionString,
+  "analytics"
+);
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
@@ -153,7 +159,8 @@ export const ValidateSignature = makeValidateSignatureFunction(
   signedContainerClient,
   config.namirial,
   onSignedQueueClient,
-  onRejectedQueueClient
+  onRejectedQueueClient,
+  eventHubAnalyticsClient
 );
 
 export const GetThirdPartyMessageDetails =

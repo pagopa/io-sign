@@ -7,6 +7,7 @@ import { NotificationContent } from "@io-sign/io-sign/notification";
 import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
+import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { Dossier, GetDossier } from "../../dossier";
 
 import {
@@ -33,7 +34,8 @@ export const makeMarkRequestAsRejected =
     getSignatureRequest: GetSignatureRequest,
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId
+    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   (request: SignatureRequestRejected) => {
     const sendRejectedNotification = makeSendSignatureRequestNotification(
@@ -59,6 +61,9 @@ export const makeMarkRequestAsRejected =
           // This is a fire-and-forget operation
           TE.altW(() => TE.right(request))
         )
+      ),
+      TE.chainFirstW(() =>
+        pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_REJECTED))
       )
     );
   };
