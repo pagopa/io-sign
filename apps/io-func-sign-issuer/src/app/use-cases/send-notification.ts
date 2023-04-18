@@ -1,5 +1,6 @@
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as T from "fp-ts/lib/Task";
 import * as t from "io-ts";
 
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
@@ -14,6 +15,7 @@ import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request"
 
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { Notification } from "@io-sign/io-sign/notification";
 import {
   SignatureRequest,
   UpsertSignatureRequest,
@@ -55,6 +57,10 @@ const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
   })
 );
 
+type SendNotificationResult =
+  | { sent: true; notification: Notification }
+  | { sent: false; error: Error };
+
 export const makeSendNotification =
   (
     submitNotification: SubmitNotificationForUser,
@@ -83,23 +89,26 @@ export const makeSendNotification =
         notification: pipe(
           signatureRequest,
           sendRequestToSignNotification,
-          TE.chainFirstW(() =>
+          TE.fold(
+            (error): T.Task<SendNotificationResult> =>
+              T.of({ sent: false, error }),
+            (notification): T.Task<SendNotificationResult> =>
+              T.of({ sent: true, notification })
+          ),
+          TE.fromTask,
+          TE.chainFirstW((result) =>
             pipe(
               signatureRequest,
-              createAndSendAnalyticsEvent(EventName.NOTIFICATION_SENT)
-            )
-          ),
-          (firstTaskEither) =>
-            pipe(
-              firstTaskEither,
-              TE.altW(() =>
-                pipe(
-                  signatureRequest,
-                  createAndSendAnalyticsEvent(EventName.NOTIFICATION_REJECTED),
-                  TE.chain(() => firstTaskEither)
-                )
+              createAndSendAnalyticsEvent(
+                result.sent
+                  ? EventName.NOTIFICATION_SENT
+                  : EventName.NOTIFICATION_REJECTED
               )
             )
+          ),
+          TE.chain((result) =>
+            result.sent ? TE.right(result.notification) : TE.left(result.error)
+          )
         ),
       }),
       TE.chainFirst(({ signatureRequest, notification }) =>

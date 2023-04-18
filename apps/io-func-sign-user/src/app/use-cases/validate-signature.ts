@@ -1,4 +1,5 @@
 import * as TE from "fp-ts/lib/TaskEither";
+import * as T from "fp-ts/lib/Task";
 import * as A from "fp-ts/lib/Array";
 
 import { pipe } from "fp-ts/lib/function";
@@ -28,6 +29,8 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 import { GetBlobUrl } from "../../infra/azure/storage/blob";
+
+import { SignatureRequest as QtspSignatureRequest } from "../../infra/namirial/signature-request";
 
 export const ValidateSignaturePayload = t.type({
   signatureId: NonEmptyString,
@@ -65,6 +68,13 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
         )
       )
     );
+
+type RetrievedQtspSignatureRequest =
+  | {
+      retrieved: true;
+      qtspSignatureRequest: QtspSignatureRequest;
+    }
+  | { retrieved: false; error: Error };
 
 export const makeValidateSignature =
   (
@@ -107,21 +117,30 @@ export const makeValidateSignature =
               getQtspSignatureRequest(signatureRequest.issuerEnvironment)(
                 signature.qtspSignatureRequestId
               ),
+              TE.fold(
+                (error): T.Task<RetrievedQtspSignatureRequest> =>
+                  T.of({ retrieved: false, error }),
+                (qtspSignatureRequest): T.Task<RetrievedQtspSignatureRequest> =>
+                  T.of({ retrieved: true, qtspSignatureRequest })
+              ),
+              TE.fromTask,
+              TE.chainFirstW((result) =>
+                pipe(
+                  signatureRequest,
+                  !result.retrieved
+                    ? createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR)
+                    : TE.right
+                )
+              ),
+              TE.chain((result) =>
+                result.retrieved
+                  ? TE.right(result.qtspSignatureRequest)
+                  : TE.left(result.error)
+              ),
               TE.map((qtspSignatureRequest) => ({
                 qtspSignatureRequest,
                 signatureRequest,
-              })),
-              (firstTaskEither) =>
-                pipe(
-                  firstTaskEither,
-                  TE.alt(() =>
-                    pipe(
-                      signatureRequest,
-                      createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR),
-                      () => firstTaskEither
-                    )
-                  )
-                )
+              }))
             )
           ),
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
