@@ -1,5 +1,5 @@
 import { newId } from "@io-sign/io-sign/id";
-import { it, describe, expect } from "@jest/globals";
+import { it, describe, expect } from "vitest";
 
 import * as H from "@pagopa/handler-kit";
 

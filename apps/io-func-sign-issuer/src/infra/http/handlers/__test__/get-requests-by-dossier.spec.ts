@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll } from "@jest/globals";
+import { describe, expect, it, beforeAll } from "vitest";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
