@@ -94,7 +94,7 @@ jobs:
       - name: Package
         run: yarn workspace ${{ matrix.package.name }} run build:package
 
-      - name: Create draft elease
+      - name: Create draft release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
