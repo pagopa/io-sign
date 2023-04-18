@@ -76,9 +76,25 @@ export class CosmosDbSignatureRequestRepository
   implements SignatureRequestRepository
 {
   #container: cosmos.Container;
+  #model: SignatureRequestModel;
 
   constructor(container: cosmos.Container) {
     this.#container = container;
+    this.#model = new SignatureRequestModel(this.#container.database);
+  }
+
+  public get(
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ) {
+    return pipe(
+      this.#model.find([id, issuerId]),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+  }
+
+  public upsert(request: SignatureRequest) {
+    return pipe(this.#model.upsert(request), TE.mapLeft(toCosmosDatabaseError));
   }
 
   public async findByDossier(

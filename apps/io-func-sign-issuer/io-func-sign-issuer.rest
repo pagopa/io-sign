@@ -17,14 +17,68 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
           },
           "attrs": {
             "coordinates": {
-              "x": 10,
-              "y": 10
+              "x": 1000,
+              "y": 900
             },
             "page": 0,
             "size": {
               "w": 150,
               "h": 30
             }
+          }
+        },
+        {
+          "clause": {
+            "title": "clause 2",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "coordinates": {
+              "x": 10,
+              "y": 900
+            },
+            "page": 0,
+            "size": {
+              "w": 150,
+              "h": 30
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# @name createDossierWithExistingSignatureField
+# @prompt title the title of the dossier
+POST {{issuerApiBaseUrl}}/dossiers
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "title": "{{title}}",
+  "documents_metadata": [
+    {
+      "title": "documento di test",
+      "signature_fields": [
+        {
+          "clause": {
+            "title": "clause 1",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "unique_name": "Signature1"
+          }
+        },
+        {
+          "clause": {
+            "title": "clause 2",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "unique_name": "Signature2"
           }
         }
       ]
@@ -76,14 +130,14 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
 
 # @name getUploadUrl
 # @prompt documentId
-GET {{issuerApiBaseUrl}}/signature-requests/{{getSignatureRequest.response.body.$.id}}/{{documentId}}
+GET {{issuerApiBaseUrl}}/signature-requests/{{getSignatureRequest.response.body.$.id}}/documents/{{documentId}}/upload_url
 X-Subscription-Id: {{subscriptionId}}
 Ocp-Apim-Subscription-Key: {{subscriptionKey}}
 
 ###
 
 # @name upload
-PUT {{getUploadUrl.response.body}}
+PUT {{getUploadUrl.response.body.$}}
 x-ms-blob-type : BlockBlob
 
 ###
