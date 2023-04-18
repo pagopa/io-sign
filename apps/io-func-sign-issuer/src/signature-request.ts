@@ -2,6 +2,7 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
@@ -14,8 +15,6 @@ import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
-
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import {
   Document,
@@ -399,6 +398,11 @@ export type NotifySignatureRequestReadyEvent = (
 ) => TE.TaskEither<Error, string>;
 
 export type SignatureRequestRepository = {
+  get: (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
   findByDossier: (
     dossier: Dossier,
     options?: { maxItemCount?: number; continuationToken?: string }
@@ -408,9 +412,35 @@ export type SignatureRequestRepository = {
   }>;
 };
 
-export type SignatureRequestEnvironment = {
+type SignatureRequestEnvironment = {
   signatureRequestRepository: SignatureRequestRepository;
 };
+
+export const getSignatureRequest =
+  (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.get(id, issuerId),
+      TE.chain(TE.fromOption(() => new Error("Signature request not found")))
+    );
+
+export const upsertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.upsert(request);
 
 export const findSignatureRequestsByDossier =
   (
