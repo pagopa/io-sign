@@ -8,7 +8,7 @@ Proposed
 
 ## Context
 
-We realized that [Jest](#) no longer fits the needs of a modern TypeScript project.
+We realized that [Jest](https://jestjs.io/) no longer fits the needs of a modern TypeScript project.
 
 The problems are many, but the most serious is the fact that Jest offers support for TypeScript through _third-party "transformers"_ that behave differently from the tools the project uses to compile TypeScript code. It often happens that code that compiles and works perfectly on the project, does not compile in the test framework.
 
