@@ -13,6 +13,10 @@ import {
   getIoServicesConfigFromEnvironment,
 } from "@io-sign/io-sign/infra/io-services/config";
 import {
+  EventHubConfig,
+  getEventHubsConfigFromEnvironment,
+} from "@io-sign/io-sign/infra/azure/event-hubs/config";
+import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
@@ -25,20 +29,21 @@ import {
   NamirialConfig,
 } from "../infra/namirial/config";
 import {
-  getMockConfigFromEnvironment,
-  MockConfig,
-} from "./use-cases/__mocks__/config";
+  getLollipopConfigFromEnvironment,
+  LollipopConfig,
+} from "../infra/lollipop/config";
 
 export const Config = t.type({
   azure: t.type({
     storage: StorageConfig,
     cosmos: CosmosConfig,
+    eventHubs: EventHubConfig,
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
+    lollipop: LollipopConfig,
   }),
-  mock: MockConfig,
   namirial: NamirialConfig,
 });
 
@@ -55,18 +60,20 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
-    mock: getMockConfigFromEnvironment,
+    lollipop: getLollipopConfigFromEnvironment,
+    eventHubs: getEventHubsConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
       storage: config.storage,
       cosmos: config.cosmos,
+      eventHubs: config.eventHubs,
     },
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
+      lollipop: config.lollipop,
     },
-    mock: config.mock,
     namirial: config.namirial,
   }))
 );

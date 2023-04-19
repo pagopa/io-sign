@@ -14,6 +14,12 @@
     "NamirialApiBasePath": "NAMIRIAL_API_BASE_PATH",
     "NamirialUsername": "NAMIRIAL_USERNAME",
     "NamirialPassword": "NAMIRIAL_PASSWORD",
-    "SpidAssertionMock": "MOCK_SPID_ASSERTION"
+    "LollipopApiBasePath": "LOLLIPOP_API_BASE_PATH",
+    "LollipopApiKey": "LOLLIPOP_API_KEY",
+    "NamirialTestApiBasePath": "NAMIRIAL_TEST_API_BASE_PATH",
+    "NamirialTestUsername": "NAMIRIAL_TEST_USERNAME",
+    "NamirialTestPassword": "NAMIRIAL_TEST_PASSWORD"
+    "NODE_ENV": "development",
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
   }
 }

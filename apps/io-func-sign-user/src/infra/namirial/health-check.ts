@@ -13,7 +13,7 @@ import {
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import { NamirialConfig } from "./config";
+import { NamirialCredentialsConfig } from "./config";
 import { makeGetClauses, makeGetToken, NamirialToken } from "./client";
 
 export type NamirialProblemSource =
@@ -27,18 +27,19 @@ const formatProblem = (
 ): HealthProblem<NamirialProblemSource> =>
   `${source}|${message}` as HealthProblem<NamirialProblemSource>;
 
-const checkGetTokenHealth = (config: NamirialConfig) =>
+const checkGetTokenHealth = (config: NamirialCredentialsConfig) =>
   pipe(
     makeGetToken()(config),
     TE.mapLeft((e) => [formatProblem("NamirialLogin", e.message)])
   );
 
-const checkGetTosHealth = (config: NamirialConfig) => (token: NamirialToken) =>
-  pipe(
-    token,
-    makeGetClauses()(config),
-    TE.mapLeft((e) => [formatProblem("NamirialTos", e.message)])
-  );
+const checkGetTosHealth =
+  (config: NamirialCredentialsConfig) => (token: NamirialToken) =>
+    pipe(
+      token,
+      makeGetClauses()(config),
+      TE.mapLeft((e) => [formatProblem("NamirialTos", e.message)])
+    );
 
 const checkTosUrlHealth =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
@@ -57,7 +58,7 @@ const applicativeValidation = TE.getApplicativeTaskValidation(
 );
 
 export const makeNamirialHealthCheck = (
-  config: NamirialConfig
+  config: NamirialCredentialsConfig
 ): HealthCheck<NamirialProblemSource, true> =>
   pipe(
     config,

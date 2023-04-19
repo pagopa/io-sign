@@ -57,7 +57,7 @@ const QtspDocumentToSignToApiModel: E.Encoder<
       A.filterMap(mapToBeCreatedAttributes),
       A.map(SignatureFieldToBeCreatedToApiModel.encode)
     ),
-    signatures_type: "PADES-T",
+    signatures_type: "PADES-LT",
     appearance_alias: "appio",
   }),
 };
@@ -76,6 +76,7 @@ export const QtspCreateSignatureToApiModel: E.Encoder<
     tosSignature,
     signature,
     documentsToSign,
+    signatureInput,
   }) => ({
     fiscal_code: fiscalCode,
     public_key: publicKey,
@@ -91,5 +92,6 @@ export const QtspCreateSignatureToApiModel: E.Encoder<
         QtspDocumentToSignToApiModel.encode
       ),
     },
+    signature_input: signatureInput,
   }),
 };

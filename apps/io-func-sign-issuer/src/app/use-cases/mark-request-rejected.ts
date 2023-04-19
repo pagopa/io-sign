@@ -2,9 +2,12 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 import { SignatureRequestRejected } from "@io-sign/io-sign/signature-request";
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { NotificationContent } from "@io-sign/io-sign/notification";
+
 import { pipe } from "fp-ts/lib/function";
 
 import * as TE from "fp-ts/lib/TaskEither";
+import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { Dossier, GetDossier } from "../../dossier";
 
 import {
@@ -19,11 +22,10 @@ import {
 } from "../../signature-request-notification";
 
 const rejectedMessage: MakeMessageContent =
-  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    content: {
-      subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Errore firma`,
-      markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${signatureRequest.id}"\n---\nA causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nVai ai documenti e firmali di nuovo. Se il problema si ripete, contatta l'assistenza.\n`,
-    },
+  (dossier: Dossier) =>
+  (signatureRequest: SignatureRequest): NotificationContent => ({
+    subject: `${signatureRequest.issuerDescription} - ${dossier.title} - C'è un problema con la firma`,
+    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a [${signatureRequest.issuerEmail}](mailto:${signatureRequest.issuerEmail}).`,
   });
 
 export const makeMarkRequestAsRejected =
@@ -32,7 +34,8 @@ export const makeMarkRequestAsRejected =
     getSignatureRequest: GetSignatureRequest,
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId
+    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   (request: SignatureRequestRejected) => {
     const sendRejectedNotification = makeSendSignatureRequestNotification(
@@ -58,6 +61,9 @@ export const makeMarkRequestAsRejected =
           // This is a fire-and-forget operation
           TE.altW(() => TE.right(request))
         )
+      ),
+      TE.chainFirstW(() =>
+        pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_REJECTED))
       )
     );
   };

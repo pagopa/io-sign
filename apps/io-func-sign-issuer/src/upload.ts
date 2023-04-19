@@ -3,17 +3,26 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import * as t from "io-ts";
 
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as R from "fp-ts/lib/Reader";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
-import { pipe } from "fp-ts/lib/function";
+import { pipe, flow, identity } from "fp-ts/lib/function";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { Issuer } from "@io-sign/io-sign/issuer";
 
-import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
-import { getDocument, SignatureRequest } from "./signature-request";
+import {
+  getDocument,
+  SignatureRequestId,
+} from "@io-sign/io-sign/signature-request";
+
+import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
+import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
+
+import { SignatureRequest } from "./signature-request";
 
 export const UploadMetadata = t.intersection([
   t.type({
@@ -65,14 +74,6 @@ export type InsertUploadMetadata = (
   uploadMetadata: UploadMetadata
 ) => TE.TaskEither<Error, UploadMetadata>;
 
-export type GetUploadMetadata = (
-  id: UploadMetadata["id"]
-) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
-
-export type UpsertUploadMetadata = (
-  uploadMetadata: UploadMetadata
-) => TE.TaskEither<Error, UploadMetadata>;
-
 export const UploadUrl = UrlFromString;
 export type UploadUrl = t.TypeOf<typeof UploadUrl>;
 
@@ -84,18 +85,97 @@ export const uploadMetadataNotFoundError = new EntityNotFoundError(
   "UploadMetadata"
 );
 
-export type IsUploaded = (
-  id: UploadMetadata["id"]
-) => TE.TaskEither<Error, boolean>;
+export type UploadMetadataRepository = {
+  get: (
+    id: UploadMetadata["id"]
+  ) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
+  upsert: (meta: UploadMetadata) => TE.TaskEither<Error, UploadMetadata>;
+};
 
-export type MoveUploadedDocument = (
-  destination: UploadMetadata["documentId"]
-) => (source: string) => TE.TaskEither<Error, string>;
+type UploadMetadataEnvironment = {
+  uploadMetadataRepository: UploadMetadataRepository;
+};
 
-export type DeleteUploadDocument = (
-  documentId: UploadMetadata["documentId"]
-) => TE.TaskEither<Error, string>;
+export const getUploadMetadata =
+  (
+    id: UploadMetadata["id"]
+  ): RTE.ReaderTaskEither<UploadMetadataEnvironment, Error, UploadMetadata> =>
+  ({ uploadMetadataRepository: repo }) =>
+    pipe(
+      repo.get(id),
+      TE.chain(
+        TE.fromOption(
+          () =>
+            new Error("Unable to find the metadata associated with this upload")
+        )
+      )
+    );
 
-export type DownloadUploadDocument = (
-  documentId: UploadMetadata["id"]
-) => TE.TaskEither<Error, Buffer>;
+export const upsertUploadMetadata =
+  (
+    meta: UploadMetadata
+  ): RTE.ReaderTaskEither<UploadMetadataEnvironment, Error, UploadMetadata> =>
+  ({ uploadMetadataRepository: repo }) =>
+    repo.upsert(meta);
+
+export type FileStorage = {
+  exists: (filename: string) => TE.TaskEither<Error, boolean>;
+  download: (filename: string) => TE.TaskEither<Error, Buffer>;
+  createFromUrl: (
+    url: string,
+    filename: string
+  ) => TE.TaskEither<Error, string>;
+  remove: (filename: string) => TE.TaskEither<Error, void>;
+  getUrl: (filename: string) => string;
+};
+
+export const getMetadataFromUploadedDocument =
+  (
+    filename: string
+  ): RTE.ReaderTaskEither<
+    { uploadedFileStorage: FileStorage },
+    Error,
+    PdfDocumentMetadata
+  > =>
+  ({ uploadedFileStorage }) =>
+    pipe(
+      TE.right(filename),
+      TE.chainFirst(
+        flow(
+          uploadedFileStorage.exists,
+          TE.filterOrElse(
+            identity,
+            () =>
+              new Error(
+                "the file referenced by the upload metadata does not exist"
+              )
+          )
+        )
+      ),
+      TE.chain(uploadedFileStorage.download),
+      TE.chain(getPdfMetadata)
+    );
+
+export const removeDocumentFromStorage =
+  (
+    filename: string
+  ): RTE.ReaderTaskEither<{ uploadedFileStorage: FileStorage }, Error, void> =>
+  ({ uploadedFileStorage: storage }) =>
+    storage.remove(filename);
+
+export const createDocumentFromUrl =
+  (filename: string) =>
+  (
+    url: string
+  ): RTE.ReaderTaskEither<
+    { validatedFileStorage: FileStorage },
+    Error,
+    string
+  > =>
+  ({ validatedFileStorage: storage }) =>
+    storage.createFromUrl(url, filename);
+
+export const getUploadedDocumentUrl =
+  (uploadId: string): R.Reader<{ uploadedFileStorage: FileStorage }, string> =>
+  ({ uploadedFileStorage: storage }) =>
+    storage.getUrl(uploadId);

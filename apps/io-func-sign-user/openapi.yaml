@@ -96,6 +96,16 @@ paths:
       summary: Get clauses list and MRC from QTSP
       tags:
         - QTSP Clauses
+      parameters:
+        - in: header
+          name: x-iosign-issuer-environment
+          schema:
+            type: string
+            description: Issuer environment
+            enum:
+              - TEST
+              - DEFAULT
+          required: true
       responses:
         "200":
           description: The QTSP clauses list
@@ -127,6 +137,76 @@ paths:
             minLength: 1
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
+        - name: x-pagopa-lollipop-original-method
+          in: header
+          description: The method of the endpoint called by IO app
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopMethod"
+        - name: x-pagopa-lollipop-original-url
+          in: header
+          description: The url of the endpoint called by IO app
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopOriginalURL"
+        - name: x-pagopa-lollipop-auth-jwt
+          in: header
+          description: Auth token to retrieve the SPID/CIE User identity from IO
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopJWTAuthorization"
+        - name: x-pagopa-lollipop-assertion-ref
+          in: header
+          description: The id of the assertion to retrieve
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopAssertionRef"
+        - name: x-pagopa-lollipop-assertion-type
+          in: header
+          description: The assertion type (SAML / OIDC)
+          required: true
+          schema:
+            $ref: "#/components/schemas/AssertionType"
+        - name: x-pagopa-lollipop-user-id
+          in: header
+          description: User's fiscal code.
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopUserId"
+        - name: x-pagopa-lollipop-public-key
+          in: header
+          description: User's public key
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopPublicKey"
+        - name: signature-input
+          in: header
+          description: The signature input, needed to verify the `signature` header
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopSignatureInput"
+        - name: signature
+          in: header
+          description: The signature of the HTTP request, signed by the client with its private key.
+          required: true
+          schema:
+            $ref: "#/components/schemas/LollipopSignature"
+        - name: x-pagopa-lollipop-custom-tos-challenge
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The tos challenge to sign by the client with its private key.
+            minLength: 1
+            example: 3f6886fbf080d1d2574e93a8ded56caa55df5ce094a40ad1956ac5c0d6c4ebc8
+        - name: x-pagopa-lollipop-custom-sign-challenge
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The challenge related to documents to sign by the client with its private key.
+            minLength: 1
+            example: ace93f266621e137200ec0d70b33119eca0874386c53f6c588ab8fc07a0b6f89
       responses:
         "200":
           description: Signature created
@@ -177,6 +257,113 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+
+  /signature-requests:
+    get:
+      operationId: getSignatureRequests
+      summary: Get the list of Signature Requests received by a Signer
+      tags:
+        - Signature Request
+      parameters:
+        - in: header
+          name: x-iosign-signer-id
+          schema:
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "200":
+          description: Signature Request list view
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestList"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /messages/{signature_request_id}:
+    get:
+      operationId: getThirdPartyMessageDetails
+      summary: Retrieve a Third Party message with signature request documents
+      tags:
+        - Third Party Message
+      parameters:
+        - in: path
+          name: signature_request_id
+          schema:
+            type: string
+            description: Entity Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+        - in: header
+          name: fiscal_code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: The Third Party message detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThirdPartyMessage"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /messages/{signature_request_id}/{document_id}:
+    get:
+      operationId: getThirdPartyMessageAttachmentContent
+      summary: Retrieve a Third Party message attachment content (document)
+      tags:
+        - Third Party Message
+      parameters:
+        - in: path
+          name: signature_request_id
+          schema:
+            type: string
+            description: Signature request Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+        - in: path
+          name: document_id
+          schema:
+            type: string
+            description: Document Id
+            format: ulid
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAA
+          required: true
+        - in: header
+          name: fiscal_code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: The Third Party message detail
+          content:
+            application/pdf:
+              schema:
+                $ref: "#/components/schemas/ThirdPartyMessageAttachmentContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/Unexpected"
 
 components:
   securitySchemes:
@@ -567,18 +754,25 @@ components:
         - created_at
         - updated_at
 
+    SignatureRequestStatus:
+      type: string
+      x-extensible-enum:
+        - WAIT_FOR_SIGNATURE
+        - WAIT_FOR_QTSP
+        - SIGNED
+        - REJECTED
+
+    DossierTitle:
+      type: string
+      minLength: 1
+
     SignatureRequestDetailView:
       type: object
       properties:
         id:
           $ref: "#/components/schemas/Id"
         status:
-          type: string
-          x-extensible-enum:
-            - WAIT_FOR_SIGNATURE
-            - WAIT_FOR_QTSP
-            - SIGNED
-            - REJECTED
+          $ref: "#/components/schemas/SignatureRequestStatus"
         issuer:
           type: object
           properties:
@@ -588,11 +782,16 @@ components:
             description:
               type: string
               minLength: 1
+            environment:
+              $ref: "#/components/schemas/IssuerEnvironment"
           required:
             - email
             - description
+            - environment
         dossier_id:
           $ref: "#/components/schemas/Id"
+        dossier_title:
+          $ref: "#/components/schemas/DossierTitle"
         signer_id:
           $ref: "#/components/schemas/Id"
         expires_at:
@@ -613,8 +812,150 @@ components:
         - status
         - issuer
         - dossier_id
+        - dossier_title
         - signer_id
         - expires_at
         - documents
         - created_at
         - updated_at
+
+    SignatureRequestListView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        signer_id:
+          $ref: "#/components/schemas/Id"
+        dossier_id:
+          $ref: "#/components/schemas/Id"
+        dossier_title:
+          $ref: "#/components/schemas/DossierTitle"
+        status:
+          $ref: "#/components/schemas/SignatureRequestStatus"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        expires_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - signer_id
+        - dossier_id
+        - dossier_title
+        - status
+        - created_at
+        - updated_at
+        - expires_at
+
+    SignatureRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureRequestListView"
+      required:
+        - items
+
+    ThirdPartyMessage:
+      type: object
+      properties:
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ThirdPartyAttachment"
+      required:
+        - attachments
+
+    ThirdPartyAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        content_type:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - url
+
+    ThirdPartyMessageAttachmentContent:
+      type: string
+      format: binary
+
+    LollipopMethod:
+      type: string
+      enum:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+    LollipopOriginalURL:
+      type: string
+      pattern: "^https:\/\/"
+    AssertionType:
+      type: string
+      enum:
+        - SAML
+        - OIDC
+    LollipopAssertionRef:
+      oneOf:
+        - $ref: "#/components/schemas/AssertionRefSha256"
+        - $ref: "#/components/schemas/AssertionRefSha384"
+        - $ref: "#/components/schemas/AssertionRefSha512"
+    LollipopUserId:
+      type: string
+      maxLength: 16
+      minLength: 16
+      description: The user's fiscal code, all upper case.
+      pattern: >-
+        ^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$
+    LollipopPublicKey:
+      type: string
+      minLength: 1
+      description: represents a Base64url encode of a JWK Public Key
+    LollipopJWTAuthorization:
+      type: string
+      minLength: 1
+
+    LollipopContentType:
+      type: string
+      enum:
+        - application/json
+        - application/octet-stream
+    LollipopContentDigest:
+      type: string
+      pattern: "^(sha-256=:[A-Za-z0-9+/=]{44}:|sha-384=:[A-Za-z0-9+/=]{66}:|sha-512=:[A-Za-z0-9+/=]{88}:)$"
+
+    LollipopSignatureInput:
+      type: string
+      pattern: "^(((sig[0-9]+)=[^,]*?)(, ?)?)+$"
+    LollipopSignature:
+      type: string
+      pattern: "^((sig[0-9]+)=:[A-Za-z0-9+/=]*:(, ?)?)+$"
+
+    # AssertionRef possible inputs
+    AssertionRefSha256:
+      type: string
+      pattern: ^(sha256-[A-Za-z0-9-_=]{1,44})$
+    AssertionRefSha384:
+      type: string
+      pattern: ^(sha384-[A-Za-z0-9-_=]{1,66})$
+    AssertionRefSha512:
+      type: string
+      pattern: ^(sha512-[A-Za-z0-9-_=]{1,88})$
+
+    IssuerEnvironment:
+      type: string
+      enum:
+        - TEST
+        - DEFAULT

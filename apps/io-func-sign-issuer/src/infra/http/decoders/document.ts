@@ -1,15 +1,11 @@
-import { validate } from "@io-sign/io-sign/validation";
-
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
-
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 
 import * as tx from "io-ts-types";
 
 import * as t from "io-ts";
-import { DocumentMetadata } from "@io-sign/io-sign/document";
+import { DocumentMetadata, SignatureFields } from "@io-sign/io-sign/document";
 
 import { SignatureField } from "@io-sign/io-sign/document";
 
@@ -20,7 +16,6 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 
-import { CreateDossierBody } from "../models/CreateDossierBody";
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
@@ -45,7 +40,7 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  ({ clause: { title, type }, attrs }, _ctx) =>
+  ({ clause: { title, type }, attrs }) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
@@ -72,10 +67,11 @@ export const DocumentMetadataFromApiModel = new t.Type<
 >(
   "DocumentMetadataFromApiModel",
   DocumentMetadata.is,
-  ({ title, signature_fields }, _ctx) =>
+  ({ title, signature_fields }) =>
     pipe(
-      signature_fields,
+      signature_fields ?? [],
       t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)).decode,
+      E.chain(SignatureFields.decode),
       E.map((signatureFields) => ({
         title,
         signatureFields,
@@ -85,16 +81,6 @@ export const DocumentMetadataFromApiModel = new t.Type<
   DocumentMetadataToApiModel.encode
 );
 
-export const requireDocumentsMetadata = flow(
-  (res: HttpRequest) => res.body,
-  validate(CreateDossierBody),
-  E.map((body) => body.documents_metadata),
-  E.chain(
-    validate(
-      tx.nonEmptyArray(
-        DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel)
-      ),
-      "Invalid document metadata"
-    )
-  )
+export const DocumentsMetadataFromApiModel = tx.nonEmptyArray(
+  DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel)
 );

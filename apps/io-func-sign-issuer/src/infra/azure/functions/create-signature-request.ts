@@ -3,18 +3,21 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { validate } from "@io-sign/io-sign/validation";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe, flow } from "fp-ts/lib/function";
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { created, error } from "@io-sign/io-sign/infra/http/response";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { EventHubProducerClient } from "@azure/event-hubs";
+import { EventName } from "@io-sign/io-sign/event";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { SignatureRequest } from "../../../signature-request";
@@ -32,7 +35,10 @@ import { makeInsertSignatureRequest } from "../cosmos/signature-request";
 import { mockGetSigner } from "../../__mocks__/signer";
 import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
 
-const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
+const makeCreateSignatureRequestHandler = (
+  db: CosmosDatabase,
+  eventHubAnalyticsClient: EventHubProducerClient
+) => {
   const getDossier = makeGetDossier(db);
   const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
 
@@ -42,6 +48,9 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
     insertSignatureRequest
   );
 
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
   const requireCreateSignatureRequestBody = flow(
     (req: HttpRequest) => req.body,
     validate(CreateSignatureRequestBody),
@@ -113,7 +122,15 @@ const makeCreateSignatureRequestHandler = (db: CosmosDatabase) => {
 
   return createHandler(
     decodeHttpRequest,
-    createSignatureRequest,
+    flow(
+      createSignatureRequest,
+      TE.chainFirstW((signatureRequest) =>
+        pipe(
+          signatureRequest,
+          createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED)
+        )
+      )
+    ),
     error,
     encodeHttpSuccessResponse
   );

@@ -3,18 +3,20 @@ import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as RE from "fp-ts/lib/ReaderEither";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import * as azure from "handler-kit-legacy/lib/azure";
 import { flow, pipe } from "fp-ts/lib/function";
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 import { sequenceS } from "fp-ts/lib/Apply";
 
-import { createHandler } from "@pagopa/handler-kit";
+import { createHandler } from "handler-kit-legacy";
 
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { error } from "@io-sign/io-sign/infra/http/response";
+import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
 import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";
@@ -29,7 +31,8 @@ import { makeNotifySignatureRequestReadyEvent } from "../storage/signature-reque
 
 const makeSetSignatureRequestStatusHandler = (
   db: CosmosDatabase,
-  onSignatureRequestReadyQueueClient: QueueClient
+  onSignatureRequestReadyQueueClient: QueueClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -38,14 +41,20 @@ const makeSetSignatureRequestStatusHandler = (
   const notifySignatureRequestReadyEvent = makeNotifySignatureRequestReadyEvent(
     onSignatureRequestReadyQueueClient
   );
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
+
   const markRequestAsReady = makeMarkRequestAsReady(
     upsertSignatureRequest,
-    notifySignatureRequestReadyEvent
+    notifySignatureRequestReadyEvent,
+    createAndSendAnalyticsEvent
   );
   const requireSignatureRequest = makeRequireSignatureRequest(
     getIssuerBySubscriptionId,
     getSignatureRequest
   );
+
   const requireSetSignatureRequestStatusBody: RE.ReaderEither<
     HttpRequest,
     Error,
@@ -81,14 +90,7 @@ const makeSetSignatureRequestStatusHandler = (
   );
 };
 
-export const makeSetSignatureRequestStatusFunction = (
-  database: CosmosDatabase,
-  onSignatureRequestReadyQueueClient: QueueClient
-) =>
-  pipe(
-    makeSetSignatureRequestStatusHandler(
-      database,
-      onSignatureRequestReadyQueueClient
-    ),
-    azure.unsafeRun
-  );
+export const makeSetSignatureRequestStatusFunction = flow(
+  makeSetSignatureRequestStatusHandler,
+  azure.unsafeRun
+);

@@ -2,13 +2,16 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
 
+import * as H from "@pagopa/handler-kit";
+
 import { Signer } from "@io-sign/io-sign/signer";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import { addDays, isBefore } from "date-fns/fp";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
@@ -24,26 +27,18 @@ import {
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-import { findFirst, findIndex, updateAt } from "fp-ts/lib/Array";
+import { findIndex, updateAt } from "fp-ts/lib/Array";
 import {
   SignatureRequestReady,
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  makeSignatureRequestVariant,
+  SignatureRequestDraft,
+  getDocument,
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { Dossier } from "./dossier";
-
-export const SignatureRequestDraft = makeSignatureRequestVariant(
-  "DRAFT",
-  t.type({
-    documents: t.array(Document),
-  })
-);
-
-export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
 
 export const SignatureRequest = t.union([
   SignatureRequestDraft,
@@ -66,9 +61,12 @@ export const newSignatureRequest = (
   issuerId: dossier.issuerId,
   issuerEmail: issuer.email,
   issuerDescription: issuer.description,
+  issuerInternalInstitutionId: issuer.internalInstitutionId,
   issuerEnvironment: issuer.environment,
+  issuerDepartment: issuer.department,
   signerId: signer.id,
   dossierId: dossier.id,
+  dossierTitle: dossier.title,
   status: "DRAFT",
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -109,12 +107,6 @@ export const withExpiryDate =
         expiresAt: expiryDate,
       }))
     );
-
-export const getDocument = (id: Document["id"]) =>
-  flow(
-    (request: SignatureRequest) => request.documents,
-    findFirst((document: Document) => document.id === id)
-  );
 
 export const replaceDocument =
   (id: Document["id"], updated: Document) => (request: SignatureRequestDraft) =>
@@ -404,3 +396,83 @@ export type UpsertSignatureRequest = (
 export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequestRepository = {
+  get: (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+  findByDossier: (
+    dossier: Dossier,
+    options?: { maxItemCount?: number; continuationToken?: string }
+  ) => Promise<{
+    items: ReadonlyArray<unknown>;
+    continuationToken?: string;
+  }>;
+};
+
+type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
+};
+
+export const getSignatureRequest =
+  (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.get(id, issuerId),
+      TE.chain(TE.fromOption(() => new Error("Signature request not found")))
+    );
+
+export const upsertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.upsert(request);
+
+export const findSignatureRequestsByDossier =
+  (
+    dossier: Dossier,
+    options: {
+      maxItemCount?: number;
+      continuationToken?: string;
+    }
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    {
+      items: ReadonlyArray<SignatureRequest>;
+      continuationToken?: string;
+    }
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      TE.tryCatch(
+        () => repo.findByDossier(dossier, options),
+        (e) => (e instanceof Error ? e : new Error("error on find by dossier"))
+      ),
+      TE.chainEitherKW(
+        H.parse(
+          t.intersection([
+            t.type({
+              items: t.array(SignatureRequest),
+            }),
+            t.partial({
+              continuationToken: t.string,
+            }),
+          ])
+        )
+      )
+    );

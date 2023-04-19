@@ -7,7 +7,12 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { readableReport } from "@pagopa/ts-commons/lib/reporters";
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import { NamirialConfig } from "./config";
+import {
+  defaultHeader,
+  isSuccessful,
+  responseToJson,
+} from "@io-sign/io-sign/infra/client-utils";
+import { NamirialCredentialsConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
   CreateSignatureRequestBody as CreateSignatureRequestBody,
@@ -20,15 +25,9 @@ export const NamirialToken = t.type({
 });
 export type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
-const isSuccessful = (r: Response): boolean =>
-  r.status >= 200 && r.status < 300;
-
-const defaultHeader = {
-  "Content-Type": "application/json",
-};
 export const makeGetToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath, username, password }: NamirialConfig) =>
+  ({ basePath, username, password }: NamirialCredentialsConfig) =>
     pipe(
       TE.tryCatch(
         () =>
@@ -46,23 +45,14 @@ export const makeGetToken =
         isSuccessful,
         () => new Error("The attempt to get Namirial token failed.")
       ),
-      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
-      TE.chainEitherKW(
-        flow(
-          NamirialToken.decode,
-          E.mapLeft(
-            (errs) =>
-              new Error(
-                `Invalid format for Namirial token: ${readableReport(errs)}`
-              )
-          )
-        )
+      TE.chain(
+        responseToJson(NamirialToken, `Invalid format for Namirial token`)
       )
     );
 
 export const makeGetClauses =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
     pipe(
       TE.of(token),
@@ -83,23 +73,14 @@ export const makeGetClauses =
         isSuccessful,
         () => new Error("The attempt to get Namirial clauses failed.")
       ),
-      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
-      TE.chainEitherKW(
-        flow(
-          ClausesMetadata.decode,
-          E.mapLeft(
-            (errs) =>
-              new Error(
-                `Invalid format for Namirial clauses: ${readableReport(errs)}`
-              )
-          )
-        )
+      TE.chain(
+        responseToJson(ClausesMetadata, `Invalid format for Namirial clauses`)
       )
     );
 
 export const makeCreateSignatureRequest =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
   (body: CreateSignatureRequestBody) =>
     pipe(
@@ -113,10 +94,6 @@ export const makeCreateSignatureRequest =
                 ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
                 "Content-Transfer-Encoding": "application/json",
-                // TODO: [SFEQS-1296] Source IP mock
-                "X-Forwarded-IP": "192.168.0.1",
-                "X-Forwarded-AppVersion": "pagopa-demo 1.1.1",
-                "X-Forwarded-OS": "Android 12",
               },
               body: JSON.stringify(body),
             }),
@@ -155,7 +132,7 @@ export const makeCreateSignatureRequest =
 
 export const makeGetSignatureRequest =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
-  ({ basePath }: NamirialConfig) =>
+  ({ basePath }: NamirialCredentialsConfig) =>
   (token: NamirialToken) =>
   (signatureRequestId: SignatureRequest["id"]) =>
     pipe(
@@ -177,18 +154,10 @@ export const makeGetSignatureRequest =
         isSuccessful,
         () => new Error("The attempt to get Namirial signature request failed.")
       ),
-      TE.chain((response) => TE.tryCatch(() => response.json(), E.toError)),
-      TE.chainEitherKW(
-        flow(
-          SignatureRequest.decode,
-          E.mapLeft(
-            (errs) =>
-              new Error(
-                `Invalid format for Namirial signature request : ${readableReport(
-                  errs
-                )}`
-              )
-          )
+      TE.chain(
+        responseToJson(
+          SignatureRequest,
+          `Invalid format for Namirial signature request`
         )
       )
     );
@@ -196,5 +165,5 @@ export const makeGetSignatureRequest =
 export const makeGetClausesWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
   (getToken: ReturnType<typeof makeGetToken>) =>
-  (config: NamirialConfig) =>
+  (config: NamirialCredentialsConfig) =>
     pipe(getToken(config), TE.chain(makeGetClauses(fetchWithTimeout)(config)));

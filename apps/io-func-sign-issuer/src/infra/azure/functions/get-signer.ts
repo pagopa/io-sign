@@ -1,4 +1,4 @@
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 import { Signer, signerNotFoundError } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as RE from "fp-ts/lib/ReaderEither";
@@ -7,7 +7,7 @@ import * as E from "fp-ts/lib/Either";
 
 import { flow, pipe } from "fp-ts/lib/function";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
+import * as azure from "handler-kit-legacy/lib/azure";
 
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
@@ -15,7 +15,7 @@ import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/
 import * as TE from "fp-ts/lib/TaskEither";
 
 import * as O from "fp-ts/lib/Option";
-import { createHandler } from "@pagopa/handler-kit";
+import { createHandler } from "handler-kit-legacy";
 import { validate } from "@io-sign/io-sign/validation";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";

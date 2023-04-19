@@ -1,4 +1,4 @@
-import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { pipe, flow } from "fp-ts/lib/function";

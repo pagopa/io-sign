@@ -1,5 +1,5 @@
 import { flow, identity } from "fp-ts/lib/function";
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 import { ActionNotAllowedError } from "../../../error";
 import { ValidationError } from "../../../validation";
 import { HttpError } from "../errors";

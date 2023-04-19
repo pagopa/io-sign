@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -23,6 +23,7 @@ import {
   SubmitNotificationForUser,
 } from "@io-sign/io-sign/notification";
 import { validate } from "@io-sign/io-sign/validation";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { Dossier, GetDossier, newDossier } from "../dossier";
 import { newSignatureRequest, SignatureRequest } from "../signature-request";
 import {
@@ -33,20 +34,23 @@ import {
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
+  internalInstitutionId: newId(),
   email: "info@enpacl-pec.it" as EmailString,
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
+  vatNumber: "15376271001" as NonEmptyString,
+  department: "",
 };
 
-const dossier = newDossier(issuer, "My dossier", [
+const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
   {
     title: "document #1",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
   {
     title: "document #2",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
 ]);
@@ -78,10 +82,8 @@ const mockGetDossier: GetDossier =
 
 const mockMakeMessageContent: MakeMessageContent =
   (_dossier: Dossier) => (_signatureRequest: SignatureRequest) => ({
-    content: {
-      subject: `Richiesta di Firma`,
-      markdown: `Message content`,
-    },
+    subject: `Richiesta di Firma`,
+    markdown: `Message content`,
   });
 
 describe("SignatureRequestNotification", () => {

@@ -3,11 +3,14 @@ import * as t from "io-ts";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
+import { flow } from "fp-ts/lib/function";
+import { findFirst } from "fp-ts/lib/Array";
 import { Id } from "./id";
 import { Signer } from "./signer";
 import { DocumentReady } from "./document";
 import { Notification } from "./notification";
 import { Issuer, IssuerEnvironment } from "./issuer";
+import { Document } from "./document";
 
 const SignatureRequest = t.type({
   id: Id,
@@ -16,14 +19,19 @@ const SignatureRequest = t.type({
   // TODO: [SFEQS-1028] issuerEmail and IssuerDescription are temp properties, waiting to implement the integration with Selfcare.
   issuerEmail: EmailString,
   issuerDescription: NonEmptyString,
+  issuerInternalInstitutionId: Id,
   issuerEnvironment: IssuerEnvironment,
+  issuerDepartment: t.string,
   dossierId: Id,
+  dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
   expiresAt: IsoDateFromString,
 });
 
 export const SignatureRequestId = SignatureRequest.props.id;
+
+export type SignatureRequestId = t.TypeOf<typeof SignatureRequestId>;
 
 export const makeSignatureRequestVariant = <S extends string, A, O>(
   status: S,
@@ -36,6 +44,15 @@ export const makeSignatureRequestVariant = <S extends string, A, O>(
     }),
     codec,
   ]);
+
+export const SignatureRequestDraft = makeSignatureRequestVariant(
+  "DRAFT",
+  t.type({
+    documents: t.array(Document),
+  })
+);
+
+export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
 
 export const SignatureRequestReady = makeSignatureRequestVariant(
   "READY",
@@ -113,3 +130,17 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
 export type SignatureRequestRejected = t.TypeOf<
   typeof SignatureRequestRejected
 >;
+
+export const getDocument = (id: Document["id"]) =>
+  flow(
+    (
+      request:
+        | SignatureRequestDraft
+        | SignatureRequestSigned
+        | SignatureRequestReady
+        | SignatureRequestToBeSigned
+        | SignatureRequestWaitForQtsp
+        | SignatureRequestRejected
+    ) => request.documents,
+    findFirst((document: Document) => document.id === id)
+  );

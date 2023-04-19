@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -12,9 +12,10 @@ import {
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import { validate } from "@io-sign/io-sign/validation";
+
 import {
-  isValidSignatureField,
-  isValidSignatureFieldToBeCreated,
+  validateExistingSignatureField,
+  validateSignatureFieldToBeCreated,
 } from "../validate-upload";
 
 const pdfDocumentMetadata: PdfDocumentMetadata = {
@@ -31,7 +32,7 @@ const pdfDocumentMetadata: PdfDocumentMetadata = {
   ],
 };
 
-describe("validateSignatureField", () => {
+describe("validateExistingSignatureField", () => {
   it.each([
     {
       payload: {
@@ -49,7 +50,9 @@ describe("validateSignatureField", () => {
     const data = pipe(
       payload,
       validate(SignatureFieldAttributes),
-      E.chainW(isValidSignatureField(pdfDocumentMetadata.formFields)),
+      E.chainW((attr) =>
+        pipe(pdfDocumentMetadata, validateExistingSignatureField("test", attr))
+      ),
       E.isRight
     );
     expect(data).toBe(expected);
@@ -104,7 +107,12 @@ describe("validateSignatureFieldToBeCreated", () => {
     const data = pipe(
       payload,
       validate(SignatureFieldToBeCreatedAttributes),
-      E.chainW(isValidSignatureFieldToBeCreated(pdfDocumentMetadata.pages)),
+      E.chainW((attr) =>
+        pipe(
+          pdfDocumentMetadata,
+          validateSignatureFieldToBeCreated("test", attr)
+        )
+      ),
       E.isRight
     );
     expect(data).toBe(expected);

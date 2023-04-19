@@ -430,10 +430,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SignatureField"
-
       required:
         - title
-        - signature_fields
 
     DocumentMetadataList:
       type: array
@@ -544,7 +542,6 @@ components:
           $ref: "#/components/schemas/Timestamp"
       required:
         - id
-        - status
         - metadata
         - created_at
         - updated_at
@@ -623,19 +620,22 @@ components:
         - $ref: "#/components/schemas/DocumentReady"
         - $ref: "#/components/schemas/DocumentRejected"
 
+    SignatureRequestStatus:
+      type: string
+      x-extensible-enum:
+        - DRAFT
+        - READY
+        - WAIT_FOR_SIGNATURE
+        - SIGNED
+        - REJECTED
+
     SignatureRequestDetailView:
       type: object
       properties:
         id:
           $ref: "#/components/schemas/Id"
         status:
-          type: string
-          x-extensible-enum:
-            - DRAFT
-            - READY
-            - WAIT_FOR_SIGNATURE
-            - SIGNED
-            - REJECTED
+          $ref: "#/components/schemas/SignatureRequestStatus"
         dossier_id:
           $ref: "#/components/schemas/Id"
         signer_id:
@@ -670,6 +670,44 @@ components:
         - documents
         - created_at
         - updated_at
+
+    SignatureRequestListView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        signer_id:
+          $ref: "#/components/schemas/Id"
+        dossier_id:
+          $ref: "#/components/schemas/Id"
+        status:
+          $ref: "#/components/schemas/SignatureRequestStatus"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        expires_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - signer_id
+        - dossier_id
+        - status
+        - created_at
+        - updated_at
+        - expires_at
+
+    SignatureRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureRequestListView"
+        continuationToken:
+          type: string
+      required:
+        - items
 
     UploadUrl:
       type: string
