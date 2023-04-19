@@ -59,7 +59,7 @@ const eventHubBillingClient = new EventHubProducerClient(
   "billing"
 );
 
-const eventHubAnalyticsClient = new EventHubProducerClient(
+const eventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
 );
@@ -105,7 +105,7 @@ export const Info = makeInfoFunction(
   ioApiClient,
   database,
   eventHubBillingClient,
-  eventHubAnalyticsClient,
+  eventAnalyticsClient,
   eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
@@ -114,7 +114,7 @@ export const Info = makeInfoFunction(
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const GetSignatureRequest = makeGetSignatureRequestFunction(
@@ -124,7 +124,7 @@ export const GetSignatureRequest = makeGetSignatureRequestFunction(
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
   onSignatureRequestReadyQueueClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
@@ -133,7 +133,7 @@ export const MarkAsRejected = makeRequestAsRejectedFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
@@ -141,7 +141,7 @@ export const MarkAsSigned = makeRequestAsSignedFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   eventHubBillingClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
@@ -158,7 +158,7 @@ export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(
@@ -202,4 +202,5 @@ export const ValidateUpload = ValidateUploadFunction({
   uploadedFileStorage,
   validatedFileStorage,
   inputDecoder: t.type({ uri: t.string }),
+  eventAnalyticsClient,
 });
