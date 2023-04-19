@@ -4,7 +4,7 @@ import { html } from "lit-html";
 import "./Skeleton";
 
 export default {
-  title: "Design System/Skeleton",
+  title: "UI/Skeleton",
   component: "io-skeleton",
   argTypes: {
     backgroundColor: {

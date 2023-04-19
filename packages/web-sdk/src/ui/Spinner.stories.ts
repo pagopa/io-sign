@@ -9,7 +9,7 @@ type IOSpinnerStoryArgs = {
 };
 
 export default {
-  title: "Design System/Spinner",
+  title: "UI/Spinner",
   component: "io-spinner",
   argTypes: {
     color: {

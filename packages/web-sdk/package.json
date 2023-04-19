@@ -1,5 +1,5 @@
 {
-  "name": "io-sign-client-sdk",
+  "name": "@io-sign/web-sdk",
   "private": true,
   "version": "0.0.0",
   "type": "module",

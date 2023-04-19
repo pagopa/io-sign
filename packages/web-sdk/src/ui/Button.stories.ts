@@ -8,7 +8,7 @@ import "./Button";
 type Arguments = IOButtonElementAttributes;
 
 export default {
-  title: "Design System/Button",
+  title: "UI/Button",
   component: "io-button",
   argTypes: {
     disabled: {
@@ -24,5 +24,5 @@ export default {
 
 export const Button: Story<Arguments> = ({ disabled }) =>
   html`<io-button disabled="${disabled ? "disabled" : nothing}"
-    >Ciao a tutti</io-button
+    >Sample button</io-button
   >`;
