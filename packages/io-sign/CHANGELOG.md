@@ -1,5 +1,12 @@
 # @io-sign/io-sign
 
+## 1.0.2
+
+### Patch Changes
+
+- 95d2a1e: Add analytics events
+- 95d2a1e: Adds a try-catch to the pdf-lib library to avoid unhandled errors.
+
 ## 1.0.1
 
 ### Patch Changes

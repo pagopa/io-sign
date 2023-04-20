@@ -1,5 +1,19 @@
 # io-func-sign-issuer
 
+## 0.12.0
+
+### Minor Changes
+
+- 0726d13: Add GetRequestsByDossier endpoint
+
+### Patch Changes
+
+- 5a267f0: Added document validation analytics events
+- 95d2a1e: Add analytics events
+- Updated dependencies [95d2a1e]
+- Updated dependencies [95d2a1e]
+  - @io-sign/io-sign@1.0.2
+
 ## 0.11.1
 
 ### Patch Changes
