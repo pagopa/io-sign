@@ -1005,7 +1005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@io-sign/io-sign@^1.0.1, @io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
+"@io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
@@ -6405,7 +6405,7 @@ __metadata:
     "@azure/functions": ^3.2.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
-    "@io-sign/io-sign": ^1.0.1
+    "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.0.1
     "@pagopa/handler-kit-azure-func": ^1.2.0
@@ -6467,7 +6467,7 @@ __metadata:
     "@azure/event-hubs": ^5.9.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
-    "@io-sign/io-sign": ^1.0.1
+    "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.0.1
     "@pagopa/handler-kit-azure-func": ^1.2.0
