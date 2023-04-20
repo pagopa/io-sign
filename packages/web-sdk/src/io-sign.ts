@@ -3,6 +3,8 @@ import { customElement, state, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import { msg, str } from "@lit/localize";
+
 import "./ui/Button";
 import "./ui/Skeleton";
 import "./ui/Spinner";
@@ -124,17 +126,17 @@ export class IOSignElement
     const dialog = (reqId: string) =>
       html`<io-dialog @close=${this.reset}>
         <div class="scan-the-qrcode">
-          <h1>Inquadra il codice QR</h1>
+          <h1>${msg(str`Scan the QR code`)}</h1>
           <p>
-            Per vedere e firmare i documenti su IO, inquadra<br />
-            questo codice con il tuo dispositivo
+            ${msg(html`To view and sign the documents with IO, <br />
+              scan this code with your device`)}
           </p>
           <div>
             <img
               src="https://io-d-link.azurewebsites.net/qrcode.png?feat=firma&srid=${reqId}&width=150"
             />
           </div>
-          <span>Non hai l’app IO? Scaricala ora</span>
+          <span>${msg(str`Don’t have the IO app? Download it now`)}</span>
           <div class="app-badges">
             <div>
               <a

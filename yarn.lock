@@ -2562,6 +2562,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@io-sign/web-sdk@workspace:packages/web-sdk"
   dependencies:
+    "@lit/localize": ^0.11.4
+    "@lit/localize-tools": ^0.6.8
     "@storybook/addon-essentials": ^7.0.6
     "@storybook/addon-links": ^7.0.6
     "@storybook/blocks": ^7.0.6
@@ -2723,7 +2725,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.6.0":
+"@lit/localize-tools@npm:^0.6.8":
+  version: 0.6.8
+  resolution: "@lit/localize-tools@npm:0.6.8"
+  dependencies:
+    "@lit/localize": ^0.11.0
+    "@xmldom/xmldom": ^0.8.2
+    fast-glob: ^3.2.7
+    fs-extra: ^10.0.0
+    jsonschema: ^1.4.0
+    lit: ^2.7.0
+    minimist: ^1.2.5
+    parse5: ^6.0.1
+    source-map-support: ^0.5.19
+    typescript: ~4.7.4
+  bin:
+    lit-localize: bin/lit-localize.js
+  checksum: e2a8417a79285e7b4f34c308008348376031d79cbc522f7320257821321f42d09c850e96a48237a1f83e8bf6f8a9f16635533bd45a3399926a1c369bd3dd6e63
+  languageName: node
+  linkType: hard
+
+"@lit/localize@npm:^0.11.0, @lit/localize@npm:^0.11.4":
+  version: 0.11.4
+  resolution: "@lit/localize@npm:0.11.4"
+  dependencies:
+    "@lit/reactive-element": ^1.4.0
+    lit: ^2.3.0
+  checksum: 00967634238bb67f1715ba3187f0b9e60b487d3d63ee7d67b726f5fb970d6630e522784127caa4216a9676682165a1ff1c7757bb81577110f23fde0ccda68f03
+  languageName: node
+  linkType: hard
+
+"@lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.4.0, @lit/reactive-element@npm:^1.6.0":
   version: 1.6.1
   resolution: "@lit/reactive-element@npm:1.6.1"
   dependencies:
@@ -5079,6 +5111,13 @@ __metadata:
     loupe: ^2.3.6
     pretty-format: ^27.5.1
   checksum: a685b6ba34b0173e4da388055dc2a22ba335a74cf99679f7036cea1d183e0ee804a01984148eaad0e0f48bfb786d33800ff6dd549b94f3d064e14caa0857ee62
+  languageName: node
+  linkType: hard
+
+"@xmldom/xmldom@npm:^0.8.2":
+  version: 0.8.7
+  resolution: "@xmldom/xmldom@npm:0.8.7"
+  checksum: 593d4429c2281ee7799adcb6ff8604b68cf30ce0721537e3e380287b423e67c7ac197d90987f932b4fd3febc409ded8435706e7f90fbba6e22e08740477341d1
   languageName: node
   linkType: hard
 
@@ -8825,7 +8864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9":
   version: 3.2.12
   resolution: "fast-glob@npm:3.2.12"
   dependencies:
@@ -9219,6 +9258,17 @@ __metadata:
   version: 1.0.0
   resolution: "fs-constants@npm:1.0.0"
   checksum: 18f5b718371816155849475ac36c7d0b24d39a11d91348cfcb308b4494824413e03572c403c86d3a260e049465518c4f0d5bd00f0371cdfcad6d4f30a85b350d
+  languageName: node
+  linkType: hard
+
+"fs-extra@npm:^10.0.0":
+  version: 10.1.0
+  resolution: "fs-extra@npm:10.1.0"
+  dependencies:
+    graceful-fs: ^4.2.0
+    jsonfile: ^6.0.1
+    universalify: ^2.0.0
+  checksum: dc94ab37096f813cc3ca12f0f1b5ad6744dfed9ed21e953d72530d103cea193c2f81584a39e9dee1bea36de5ee66805678c0dddc048e8af1427ac19c00fffc50
   languageName: node
   linkType: hard
 
@@ -11356,6 +11406,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsonschema@npm:^1.4.0":
+  version: 1.4.1
+  resolution: "jsonschema@npm:1.4.1"
+  checksum: 1ef02a6cd9bc32241ec86bbf1300bdbc3b5f2d8df6eb795517cf7d1cd9909e7beba1e54fdf73990fd66be98a182bda9add9607296b0cb00b1348212988e424b2
+  languageName: node
+  linkType: hard
+
 "jsprim@npm:^1.2.2":
   version: 1.4.2
   resolution: "jsprim@npm:1.4.2"
@@ -11572,7 +11629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:^2.4.1":
+"lit@npm:^2.3.0, lit@npm:^2.4.1, lit@npm:^2.7.0":
   version: 2.7.2
   resolution: "lit@npm:2.7.2"
   dependencies:
@@ -13295,6 +13352,13 @@ __metadata:
     json-parse-even-better-errors: ^2.3.0
     lines-and-columns: ^1.1.6
   checksum: 62085b17d64da57f40f6afc2ac1f4d95def18c4323577e1eced571db75d9ab59b297d1d10582920f84b15985cbfc6b6d450ccbf317644cfa176f3ed982ad87e2
+  languageName: node
+  linkType: hard
+
+"parse5@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "parse5@npm:6.0.1"
+  checksum: 7d569a176c5460897f7c8f3377eff640d54132b9be51ae8a8fa4979af940830b2b0c296ce75e5bd8f4041520aadde13170dbdec44889975f906098ea0002f4bd
   languageName: node
   linkType: hard
 
@@ -15120,7 +15184,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.16":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.19":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
@@ -16387,6 +16451,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:~4.7.4":
+  version: 4.7.4
+  resolution: "typescript@npm:4.7.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5750181b1cd7e6482c4195825547e70f944114fb47e58e4aa7553e62f11b3f3173766aef9c281783edfd881f7b8299cf35e3ca8caebe73d8464528c907a164df
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=d73830"
@@ -16394,6 +16468,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@~4.7.4#~builtin<compat/typescript>":
+  version: 4.7.4
+  resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=65a307"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
   languageName: node
   linkType: hard
 
