@@ -9,6 +9,7 @@ import * as A from "fp-ts/lib/Array";
 import * as L from "@pagopa/logger";
 
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 import {
   SignatureFieldAttributes,
@@ -189,6 +190,11 @@ export const validateUpload = flow(
                 RTE.map((meta) => meta.id),
                 RTE.chainW(removeDocumentFromStorage)
               )
+            ),
+            RTE.chainFirstW(() =>
+              createAndSendAnalyticsEvent(signatureRequest)(
+                EventName.DOCUMENT_UPLOADED
+              )
             )
           )
         ),
@@ -207,7 +213,12 @@ export const validateUpload = flow(
               })
             ),
             // Remove REJECTED file from temp storage
-            RTE.chainW(() => removeDocumentFromStorage(meta.id))
+            RTE.chainW(() => removeDocumentFromStorage(meta.id)),
+            RTE.chainFirstW(() =>
+              createAndSendAnalyticsEvent(signatureRequest)(
+                EventName.DOCUMENT_REJECTED
+              )
+            )
           )
         )
       )
