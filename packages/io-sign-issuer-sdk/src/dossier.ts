@@ -17,7 +17,7 @@ export const callDossier = async (
     const api = new DossierApi(configuration);
     return api.getDossier(request);
   } else {
-    await createDossier(configuration, dossier);
+    return createDossier(configuration, dossier);
   }
 };
 

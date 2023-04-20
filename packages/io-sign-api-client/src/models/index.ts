@@ -25,4 +25,6 @@ export * from './SignatureFieldToBeCreatedAttrs';
 export * from './SignatureFieldToBeCreatedAttrsCoordinates';
 export * from './SignatureFieldToBeCreatedAttrsSize';
 export * from './SignatureRequestDetailView';
+export * from './SignatureRequestList';
+export * from './SignatureRequestListView';
 export * from './SignerDetailView';

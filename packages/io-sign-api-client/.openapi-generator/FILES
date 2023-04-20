@@ -33,6 +33,8 @@ src/models/SignatureFieldToBeCreatedAttrs.ts
 src/models/SignatureFieldToBeCreatedAttrsCoordinates.ts
 src/models/SignatureFieldToBeCreatedAttrsSize.ts
 src/models/SignatureRequestDetailView.ts
+src/models/SignatureRequestList.ts
+src/models/SignatureRequestListView.ts
 src/models/SignerDetailView.ts
 src/models/index.ts
 src/runtime.ts

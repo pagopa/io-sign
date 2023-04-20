@@ -1,18 +1,21 @@
-dossier:
-    title: "Dossier Filippo"
-    documentsMetadata:
-        -
-            title: "Documento 1"
-            signatureFields:
-                -
-                    clause:
-                        title: "Firma contratto"
-                        type: "REQUIRED"
-                    attrs:
-                        coordinates:
-                            x: 10
-                            y: 10
-                        page: 0
-                        size:
-                            w: 10
-                            h: 10
+signatureRequest:
+    signerId: "TNGFPP80S05H501Z"
+    expiresAt: "2023-04-24T00:00:00.000Z"
+    dossier:
+        title: "Dossier Filippo completo"
+        documentsMetadata:
+            -
+                title: "Documento 1"
+                signatureFields:
+                    -
+                        clause:
+                            title: "Firma contratto"
+                            type: "REQUIRED"
+                        attrs:
+                            coordinates:
+                                x: 10
+                                y: 10
+                            page: 0
+                            size:
+                                w: 10
+                                h: 10

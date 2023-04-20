@@ -6,6 +6,7 @@ import {
   GetSignatureRequestRequest,
 } from "@io-sign/io-sign-api-client";
 import { callSigners } from "./signer";
+import { callDossier } from "./dossier";
 
 export const callSignatureRequests = async (
   configuration: Configuration,
@@ -14,25 +15,25 @@ export const callSignatureRequests = async (
 ) => {
   if (signatureRequest.id) {
     if (signatureRequest.documentId) {
-      await callGetDocumentUploadUrl(
+      return callGetDocumentUploadUrl(
         configuration,
         signatureRequest.id,
         signatureRequest.documentId
       );
     } else if (signatureRequest.status && signatureRequest.status !== "READY") {
-      await callSendNotification(configuration, signatureRequest.id);
+      return callSendNotification(configuration, signatureRequest.id);
     } else if (
       signatureRequest.status !== undefined &&
       signatureRequest.status === "READY"
     ) {
-      await callSetSignatureRequestStatus(configuration, signatureRequest.id);
+      return callSetSignatureRequestStatus(configuration, signatureRequest.id);
     } else {
       const request: GetSignatureRequestRequest = {
         id: signatureRequest.id,
       };
-      await getSignatureRequest(configuration, request);
+      return getSignatureRequest(configuration, request);
     }
-  } else if (signatureRequest.signerId && signatureRequest.dossierId) {
+  } else {
     if (FiscalCode.is(signatureRequest.signerId)) {
       const signer = await callSigners(
         configuration,
@@ -41,7 +42,17 @@ export const callSignatureRequests = async (
       // eslint-disable-next-line functional/immutable-data
       signatureRequest.signerId = signer.id;
     }
-    await createSignatureRequest(configuration, signatureRequest);
+	
+	    if (!signatureRequest.dossierId) {
+      const dossier = await callDossier(
+        configuration,
+        signatureRequest.dossier
+      );
+      // eslint-disable-next-line functional/immutable-data
+      signatureRequest.dossierId = dossier.id;
+    }
+
+    return createSignatureRequest(configuration, signatureRequest);
   }
 };
 
