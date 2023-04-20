@@ -1,5 +1,4 @@
 import { html } from "lit-html";
-import { Meta, Story } from "@storybook/web-components";
 
 import "./io-sign";
 
