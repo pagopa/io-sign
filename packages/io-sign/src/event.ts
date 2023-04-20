@@ -17,7 +17,6 @@ import {
   SignatureRequestWaitForQtsp,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
-import { ConsoleLogger } from "./infra/console-logger";
 
 const EventId = Id;
 
@@ -148,54 +147,44 @@ type EventAnalyticsClient = {
 };
 
 export const sendEvent =
-  (client: EventProducerClient) =>
-  (event: GenericEvent): TE.TaskEither<Error, GenericEvent> =>
+  (
+    event: GenericEvent
+  ): RTE.ReaderTaskEither<EventAnalyticsClient, Error, GenericEvent> =>
+  ({ eventAnalyticsClient }) =>
     pipe(
-      TE.tryCatch(() => client.createBatch(), E.toError),
+      TE.tryCatch(() => eventAnalyticsClient.createBatch(), E.toError),
       TE.chain((eventDataBatch) =>
         eventDataBatch.tryAdd({ body: event })
           ? TE.right(eventDataBatch)
           : TE.left(new Error("Unable to add new events to event batch!"))
       ),
       TE.chain((eventDataBatch) =>
-        TE.tryCatch(() => client.sendBatch(eventDataBatch), E.toError)
+        TE.tryCatch(
+          () => eventAnalyticsClient.sendBatch(eventDataBatch),
+          E.toError
+        )
       ),
       TE.map(() => event)
     );
 
 export const createAndSendAnalyticsEvent =
-  (signatureRequest: SignatureRequest) =>
-  (
-    eventName: EventName
-  ): RTE.ReaderTaskEither<
-    EventAnalyticsClient,
-    Error,
-    typeof signatureRequest
-  > =>
-  ({ eventAnalyticsClient }) =>
+  (signatureRequest: SignatureRequest) => (eventName: EventName) =>
     pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
-      sendEvent(eventAnalyticsClient),
-      TE.map(() => signatureRequest),
-      TE.chainFirstIOK(() =>
-        L.debug("Send analytics event", {
-          eventName,
-          signatureRequest,
-        })({
-          logger: ConsoleLogger,
-        })
+      sendEvent,
+      RTE.map(() => signatureRequest),
+      RTE.chainFirstW(() =>
+        L.debugRTE("Send analytics event", { eventName, signatureRequest })
       ),
       // This is a fire and forget operation
-      TE.altW(() =>
+      RTE.altW(() =>
         pipe(
-          TE.right(signatureRequest),
-          TE.chainFirstIOK(() =>
-            L.error("Unable to send analytics event", {
+          RTE.right(signatureRequest),
+          RTE.chainFirst(() =>
+            L.errorRTE("Unable to send analytics event", {
               eventName,
               signatureRequest,
-            })({
-              logger: ConsoleLogger,
             })
           )
         )

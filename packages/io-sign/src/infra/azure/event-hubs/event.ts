@@ -19,11 +19,12 @@ import {
   SignatureRequestWaitForQtsp,
   SignatureRequestRejected,
 } from "../../../signature-request";
+import { ConsoleLogger } from "../../console-logger";
 
 export const makeSendEvent =
-  (client: EventHubProducerClient): SendEvent =>
+  (eventAnalyticsClient: EventHubProducerClient): SendEvent =>
   (event: GenericEvent) =>
-    pipe(event, sendEvent(client));
+    pipe({ eventAnalyticsClient }, sendEvent(event));
 
 export const makeCreateAndSendAnalyticsEvent =
   (eventAnalyticsClient: EventHubProducerClient): CreateAndSendAnalyticsEvent =>
@@ -38,6 +39,9 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestRejected
   ): TE.TaskEither<Error, typeof signatureRequest> =>
     pipe(
-      { eventAnalyticsClient },
+      {
+        eventAnalyticsClient,
+        logger: ConsoleLogger,
+      },
       pipe(eventName, createAndSendAnalyticsEvent(signatureRequest))
     );
