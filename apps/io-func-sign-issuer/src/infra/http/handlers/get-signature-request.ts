@@ -10,23 +10,12 @@ import * as A from "fp-ts/lib/Array";
 import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 
 import { pipe, flow } from "fp-ts/lib/function";
-import { lookup } from "fp-ts/lib/Record";
-import {
-  SignatureRequestId,
-  SignatureRequestSigned,
-} from "@io-sign/io-sign/signature-request";
+import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { getSignatureRequest } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { requireIssuer } from "../../http/decoders/issuer";
-
-const requireSignatureRequestId = (req: H.HttpRequest) =>
-  pipe(
-    req.path,
-    lookup("signatureRequestId"),
-    RTE.fromOption(() => new H.HttpBadRequestError("...")),
-    RTE.chainEitherKW(H.parse(SignatureRequestId))
-  );
+import { requireSignatureRequestId } from "../decoders/signature-request";
 
 const grantReadAccessToDocuments =
   (request: SignatureRequestSigned) =>
