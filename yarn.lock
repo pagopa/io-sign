@@ -1005,7 +1005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@io-sign/io-sign@^1.0.0, @io-sign/io-sign@^1.0.1, @io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
+"@io-sign/io-sign@^1.0.1, @io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
@@ -1802,13 +1802,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/crypto-js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "@types/crypto-js@npm:4.1.1"
-  checksum: ea3d6a67b69f88baeb6af96004395903d2367a41bd5cd86306da23a44dd96589749495da50974a9b01bb5163c500764c8a33706831eade036bddae016417e3ea
-  languageName: node
-  linkType: hard
-
 "@types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
@@ -1849,13 +1842,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsrsasign@npm:^10.5.4":
-  version: 10.5.4
-  resolution: "@types/jsrsasign@npm:10.5.4"
-  checksum: e0ec7dcd534fe9a672a9b306f951f24eef1019b4d879d57e29a154eeb38cfb47f59239c2af1d202da211357feb452b96c45b8229ef3c440cf6d96606f4e5cff1
-  languageName: node
-  linkType: hard
-
 "@types/minimatch@npm:^3.0.3":
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
@@ -1877,15 +1863,6 @@ __metadata:
     "@types/node": "*"
     form-data: ^3.0.0
   checksum: 6f73b1470000d303d25a6fb92875ea837a216656cb7474f66cdd67bb014aa81a5a11e7ac9c21fe19bee9ecb2ef87c1962bceeaec31386119d1ac86e4c30ad7a6
-  languageName: node
-  linkType: hard
-
-"@types/node-jose@npm:^1.1.10":
-  version: 1.1.10
-  resolution: "@types/node-jose@npm:1.1.10"
-  dependencies:
-    "@types/node": "*"
-  checksum: a6cfb9fa1c9a748ef3edd461f93f944f853d8e1cde3b8e860662830ae50aa4adc98015754c12dbd41a1e0d1950ac8be6e2e4daaac0cdea59ea084164a382937c
   languageName: node
   linkType: hard
 
@@ -3867,13 +3844,6 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
-  languageName: node
-  linkType: hard
-
-"crypto-js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "crypto-js@npm:4.1.1"
-  checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
   languageName: node
   linkType: hard
 
@@ -6497,7 +6467,7 @@ __metadata:
     "@azure/event-hubs": ^5.9.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
-    "@io-sign/io-sign": ^1.0.0
+    "@io-sign/io-sign": ^1.0.1
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.0.1
     "@pagopa/handler-kit-azure-func": ^1.2.0
@@ -6506,20 +6476,14 @@ __metadata:
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
-    "@types/crypto-js": ^4.1.1
-    "@types/jsrsasign": ^10.5.4
-    "@types/node-jose": ^1.1.10
     "@vitest/coverage-c8": ^0.30.1
     azure-functions-core-tools: ^4.0.4895
-    crypto-js: ^4.1.1
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
     handler-kit-legacy: "npm:@pagopa/handler-kit@0.5.1"
     io-ts: ^2.2.19
     io-ts-types: ^0.5.19
-    jose: ^4.13.1
-    jsrsasign: ^10.6.1
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
     npm-pack-zip: ^1.3.0
@@ -7138,7 +7102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.11.2, jose@npm:^4.13.1":
+"jose@npm:^4.11.2":
   version: 4.13.1
   resolution: "jose@npm:4.13.1"
   checksum: 89be959573beee69bd443493887d78799fd42340b45afa2c6681beda30314bcdfa5575f6977203c199e4c3e0ec2fc18d3c94745e7f0d59db51dedfae0efee63d
@@ -7326,13 +7290,6 @@ __metadata:
     json-schema: 0.4.0
     verror: 1.10.0
   checksum: d175f6b1991e160cb0aa39bc857da780e035611986b5492f32395411879fdaf4e513d98677f08f7352dac93a16b66b8361c674b86a3fa406e2e7af6b26321838
-  languageName: node
-  linkType: hard
-
-"jsrsasign@npm:^10.6.1":
-  version: 10.6.1
-  resolution: "jsrsasign@npm:10.6.1"
-  checksum: 372cde32c0a1b54f0df65e2091f7b99724103f150ff535df5db798897e91cac5c484284633959da8ddf4e3d4868253c428df4d3c709f44667928e05e705105d2
   languageName: node
   linkType: hard
 
