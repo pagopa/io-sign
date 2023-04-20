@@ -14,7 +14,6 @@ import { pipe, identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
@@ -33,6 +32,7 @@ import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
 import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
+import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
@@ -117,10 +117,6 @@ export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   eventAnalyticsClient
 );
 
-export const GetSignatureRequest = makeGetSignatureRequestFunction(
-  database,
-  signedContainerClient
-);
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
   onSignatureRequestReadyQueueClient,
@@ -203,4 +199,10 @@ export const ValidateUpload = ValidateUploadFunction({
   validatedFileStorage,
   inputDecoder: t.type({ uri: t.string }),
   eventAnalyticsClient,
+});
+
+export const GetSignatureRequest = GetSignatureRequestFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  signedContainerClient,
 });
