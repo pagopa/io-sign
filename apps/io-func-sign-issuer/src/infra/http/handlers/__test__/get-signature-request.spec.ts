@@ -68,11 +68,7 @@ describe("GetSignatureRequestHandler", () => {
           ? TE.right(O.some(signatureRequest))
           : TE.right(O.none),
       upsert: () => TE.left(new Error("not implemented")),
-      findByDossier: () =>
-        Promise.resolve({
-          items: [],
-          continuationToken: "",
-        }),
+      findByDossier: () => Promise.reject("not implemented"),
     };
   });
 
