@@ -1,5 +1,15 @@
 # io-func-sign-user
 
+## 0.3.2
+
+### Patch Changes
+
+- 95d2a1e: Add analytics events
+- c83bdb2: Changed the type of signature from PADES-T to PADES-LT
+- Updated dependencies [95d2a1e]
+- Updated dependencies [95d2a1e]
+  - @io-sign/io-sign@1.0.2
+
 ## 0.3.1
 
 ### Patch Changes

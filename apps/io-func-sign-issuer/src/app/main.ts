@@ -14,7 +14,6 @@ import { pipe, identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
@@ -33,6 +32,7 @@ import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
 import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
+import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
@@ -59,7 +59,7 @@ const eventHubBillingClient = new EventHubProducerClient(
   "billing"
 );
 
-const eventHubAnalyticsClient = new EventHubProducerClient(
+const eventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
 );
@@ -105,7 +105,7 @@ export const Info = makeInfoFunction(
   ioApiClient,
   database,
   eventHubBillingClient,
-  eventHubAnalyticsClient,
+  eventAnalyticsClient,
   eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
@@ -114,17 +114,13 @@ export const Info = makeInfoFunction(
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
-export const GetSignatureRequest = makeGetSignatureRequestFunction(
-  database,
-  signedContainerClient
-);
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
   database,
   onSignatureRequestReadyQueueClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
@@ -133,7 +129,7 @@ export const MarkAsRejected = makeRequestAsRejectedFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
@@ -141,7 +137,7 @@ export const MarkAsSigned = makeRequestAsSignedFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   eventHubBillingClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
@@ -158,7 +154,7 @@ export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
-  eventHubAnalyticsClient
+  eventAnalyticsClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(
@@ -202,4 +198,11 @@ export const ValidateUpload = ValidateUploadFunction({
   uploadedFileStorage,
   validatedFileStorage,
   inputDecoder: t.type({ uri: t.string }),
+  eventAnalyticsClient,
+});
+
+export const GetSignatureRequest = GetSignatureRequestFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  signedContainerClient,
 });
