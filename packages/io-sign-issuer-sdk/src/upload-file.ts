@@ -1,26 +1,22 @@
 import * as fs from 'fs';
+
 export const callDocumentUpload = async (
 documentPath: string,
 uploadUrl: string
 ) => {
-  const headers = new Headers();
-  headers.append('x-ms-blob-type', 'BlockBlob');
+	try {
+  const pdfBlob = await fetch(documentPath).then((response) => response.blob());
 
-  fs.readFile(documentPath, async (error, data) => {
-    if (error) {
-      console.error("errore upload file: "+error);
-    } else {
-      const formData = new FormData();
-      formData.append('pdf', new Blob([data]), documentPath);
-
-      try {
-	console.log("upload-file");
-        const response = await fetch(uploadUrl, {
-          method: 'PUT',
-          body: formData,
-          headers: headers
-        });
-        if (!response.ok) {
+  const options = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/pdf',
+  'x-ms-blob-type': 'BlockBlob'
+    },
+    body: pdfBlob
+  };
+  const response = await fetch(uploadUrl, options);
+  if (!response.ok) {
           throw new Error(response.statusText);
         }
         const responseData = await response.json();
@@ -28,6 +24,4 @@ uploadUrl: string
       } catch (error) {
         console.error("catch"+error);
       }
-    }
-  });
-}
+};
