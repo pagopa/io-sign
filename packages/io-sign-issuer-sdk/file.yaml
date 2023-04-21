@@ -1,21 +1,7 @@
 signatureRequest:
-    signerId: "TNGFPP80S05H501Z"
-    expiresAt: "2023-04-24T00:00:00.000Z"
-    dossier:
-        title: "Dossier Filippo completo"
-        documentsMetadata:
-            -
-                title: "Documento 1"
-                signatureFields:
-                    -
-                        clause:
-                            title: "Firma contratto"
-                            type: "REQUIRED"
-                        attrs:
-                            coordinates:
-                                x: 10
-                                y: 10
-                            page: 0
-                            size:
-                                w: 10
-                                h: 10
+#    id: "01GYF9CB9TNM3RTJYNXAFADVMD"
+#    dossierId: "01GYF9CAXREG55MCKRGC2C8A9V"
+#    signerId: "e648cebe-8cab-4020-882a-637ff62e3c51"
+#    documentId: "01GYF9CB9TF8D9AW4GDP867EHQ"
+    documentPath: "./documento.pdf"
+    documentUploadUrl: "https://iopsignst.blob.core.windows.net/uploaded-documents/01GYG2Y0DF3QG5P5RTZDBGKHTX?sv=2021-10-04&spr=https%2Chttp&st=2023-04-20T19%3A40%3A47Z&se=2023-04-20T19%3A55%3A47Z&sr=b&sp=racw&sig=9VjfsvenMPEB%2BittaVbhgc5%2ByESmFf3mhXhQGkwswzk%3D&rsct=application%2Fpdf"

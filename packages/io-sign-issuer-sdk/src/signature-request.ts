@@ -7,12 +7,16 @@ import {
 } from "@io-sign/io-sign-api-client";
 import { callSigners } from "./signer";
 import { callDossier } from "./dossier";
+import { callDocumentUpload } from "./upload-file";
 
 export const callSignatureRequests = async (
   configuration: Configuration,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
+	if (signatureRequest.documentPath && signatureRequest.documentUploadUrl) {
+		return callDocumentUpload(signatureRequest.documentPath, signatureRequest.documentUploadUrl);
+		}
   if (signatureRequest.id) {
     if (signatureRequest.documentId) {
       return callGetDocumentUploadUrl(
