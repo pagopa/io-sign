@@ -412,7 +412,7 @@ export type SignatureRequestRepository = {
   }>;
 };
 
-type SignatureRequestEnvironment = {
+export type SignatureRequestEnvironment = {
   signatureRequestRepository: SignatureRequestRepository;
 };
 

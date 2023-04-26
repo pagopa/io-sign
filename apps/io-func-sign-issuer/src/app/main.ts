@@ -13,7 +13,6 @@ import * as E from "fp-ts/lib/Either";
 import { pipe, identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
-import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
@@ -39,6 +38,7 @@ import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { getConfigFromEnvironment } from "./config";
+import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -110,11 +110,6 @@ export const Info = makeInfoFunction(
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
-);
-
-export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
-  database,
-  eventAnalyticsClient
 );
 
 export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
@@ -206,3 +201,11 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   signedContainerClient,
 });
+
+export const CreateSignatureRequest = CreateSignatureRequestFunction({
+  issuerRepository,
+  dossierRepository,
+  signatureRequestRepository,
+});
+
+// eventAnalyticsClient
