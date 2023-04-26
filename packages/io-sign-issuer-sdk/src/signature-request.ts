@@ -14,28 +14,11 @@ export const callSignatureRequests = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-	if (signatureRequest.documentPath && signatureRequest.documentUploadUrl) {
-		return callDocumentUpload(signatureRequest.documentPath, signatureRequest.documentUploadUrl);
-		}
   if (signatureRequest.id) {
-    if (signatureRequest.documentId) {
-      return callGetDocumentUploadUrl(
-        configuration,
-        signatureRequest.id,
-        signatureRequest.documentId
-      );
-    } else if (signatureRequest.status && signatureRequest.status !== "READY") {
+    if (signatureRequest.status && signatureRequest.status == "READY") {
       return callSendNotification(configuration, signatureRequest.id);
-    } else if (
-      signatureRequest.status !== undefined &&
-      signatureRequest.status === "READY"
-    ) {
+    } else if (signatureRequest.status && signatureRequest.status !== "READY") {
       return callSetSignatureRequestStatus(configuration, signatureRequest.id);
-    } else {
-      const request: GetSignatureRequestRequest = {
-        id: signatureRequest.id,
-      };
-      return getSignatureRequest(configuration, request);
     }
   } else {
     if (FiscalCode.is(signatureRequest.signerId)) {
@@ -47,7 +30,7 @@ export const callSignatureRequests = async (
       signatureRequest.signerId = signer.id;
     }
 	
-	    if (!signatureRequest.dossierId) {
+	    if (!signatureRequest.dossier.id) {
       const dossier = await callDossier(
         configuration,
         signatureRequest.dossier
@@ -55,10 +38,26 @@ export const callSignatureRequests = async (
       // eslint-disable-next-line functional/immutable-data
       signatureRequest.dossierId = dossier.id;
     }
-
-    return createSignatureRequest(configuration, signatureRequest);
+  await createSignatureRequest(configuration, signatureRequest).then((req: any) => {
+      // eslint-disable-next-line functional/immutable-data
+	  signatureRequest = { ...signatureRequest, ...req };
+  }).catch((err) => console.error("Errore nella create: "+err));
   }
-};
+      const request: GetSignatureRequestRequest = {
+        id: signatureRequest.id,
+      };
+      await getSignatureRequest(configuration, request)
+	  .then((req) => {
+        // eslint-disable-next-line functional/immutable-data
+	  signatureRequest = { ...signatureRequest, ...req };
+	  });
+	// to do: this check could be done by a regular expression that checks if there is almost one "documentPath" into documentsMetadata and upload only where it is present
+			if (signatureRequest.dossier && signatureRequest.dossier.documentsMetadata["0"].path ) {
+				await callUploadFile(configuration, signatureRequest);
+}
+
+      return Promise.resolve(signatureRequest);
+ };
 
 const getSignatureRequest = async (
   configuration: Configuration,
@@ -112,4 +111,20 @@ const callSetSignatureRequestStatus = async (
     id: signatureRequestId,
     body: "READY",
   });
+};
+
+const callUploadFile = async (
+  configuration: Configuration,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signatureRequest: any
+) => {
+	for (let i=0; i< signatureRequest.dossier.documentsMetadata.length; i++) {
+callGetDocumentUploadUrl(
+        configuration,
+        signatureRequest.id,
+        signatureRequest.documents[i].id
+      ).then((documentUploadUrl: string) => {
+		 return callDocumentUpload(signatureRequest.dossier.documentsMetadata[i].path, documentUploadUrl.replaceAll("\"",""));
+	  });
+			}
 };

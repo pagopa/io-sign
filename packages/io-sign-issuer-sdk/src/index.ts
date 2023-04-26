@@ -33,11 +33,8 @@ const file = fs.readFileSync("./file.yaml", "utf8");
 const data = YAML.parse(file);
 if (data.signatureRequest != null) {
   callSignatureRequests(configuration, data.signatureRequest)
-.then((result: any) => {
-  const res: Response= <Response>result;
-console.log("Risultato signatureRequest:"+JSON.stringify(res, null, 2));
-})
-.catch((err) => console.error("errore signature request: "+err));
+    .then((result) => console.log("risultato signature request: "+JSON.stringify(result, null, 2)))
+    .catch((err) => console.error("errore signature request: "+err));
 }
 
 if (data.signer) {

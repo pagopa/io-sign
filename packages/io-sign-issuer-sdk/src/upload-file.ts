@@ -1,11 +1,11 @@
-import * as fs from 'fs';
+import { readFileSync} from 'fs';
 
 export const callDocumentUpload = async (
-documentPath: string,
+path: string,
 uploadUrl: string
 ) => {
-	try {
-  const pdfBlob = await fetch(documentPath).then((response) => response.blob());
+	console.log("file upload:"+path+" "+uploadUrl);
+  const pdfBlob = await readFileSync(path);
 
   const options = {
     method: 'PUT',
@@ -19,9 +19,11 @@ uploadUrl: string
   if (!response.ok) {
           throw new Error(response.statusText);
         }
+		console.log(response.status);
+	try {
         const responseData = await response.json();
         console.log(responseData);
       } catch (error) {
-        console.error("catch"+error);
+        console.error(error);
       }
 };
