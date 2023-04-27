@@ -97,6 +97,10 @@ export class CosmosDbSignatureRequestRepository
     return pipe(this.#model.upsert(request), TE.mapLeft(toCosmosDatabaseError));
   }
 
+  public insert(request: SignatureRequest) {
+    return pipe(this.#model.create(request), TE.mapLeft(toCosmosDatabaseError));
+  }
+
   public async findByDossier(
     dossier: Dossier,
     options: { maxItemCount?: number; continuationToken?: string } = {}
