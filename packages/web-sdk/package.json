@@ -17,7 +17,9 @@
     "typecheck": "tsc",
     "build": "vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook:build": "storybook build",
+    "localize:extract": "lit-localize extract",
+    "localize:build": "lit-localize build"
   },
   "dependencies": {
     "@lit/localize": "^0.11.4",
@@ -30,11 +32,14 @@
     "@storybook/blocks": "^7.0.6",
     "@storybook/web-components": "^7.0.6",
     "@storybook/web-components-vite": "^7.0.6",
+    "@vitest/coverage-c8": "^0.30.1",
+    "happy-dom": "^9.8.4",
     "lit-html": "^2.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.0.6",
     "typescript": "^4.9.3",
-    "vite": "^4.0.0"
+    "vite": "^4.0.0",
+    "vitest": "^0.30.1"
   }
 }

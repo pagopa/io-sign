@@ -1,13 +1,14 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   build: {
     lib: {
       entry: "src/io-sign.ts",
       formats: ["es"],
+      fileName: "sdk",
     },
-    rollupOptions: {
-      external: /^lit/,
-    },
+  },
+  test: {
+    environment: "happy-dom",
   },
 });

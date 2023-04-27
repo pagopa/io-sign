@@ -12,8 +12,6 @@ export class IOSpinnerElement extends LitElement {
         transform: rotate(360deg);
       }
     }
-    div.spinner {
-    }
     :host {
       display: inline-flex;
       margin: 0 auto;

@@ -5,7 +5,8 @@
   "tsConfig": "./tsconfig.json",
   "output": {
     "mode": "runtime",
-    "outputDir": "./src/generated/locales"
+    "outputDir": "./src/i18n/locales",
+    "localeCodesModule": "./src/i18n/locale.ts"
   },
   "interchange": {
     "format": "xliff",
