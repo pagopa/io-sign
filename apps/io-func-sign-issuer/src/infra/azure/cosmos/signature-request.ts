@@ -14,7 +14,6 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 import { Dossier } from "../../../dossier";
 import {
   GetSignatureRequest,
-  InsertSignatureRequest,
   UpsertSignatureRequest,
   SignatureRequest,
   SignatureRequestRepository,
