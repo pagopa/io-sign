@@ -8,6 +8,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { Signer } from "@io-sign/io-sign/signer";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { getDossierById } from "../../../dossier";
@@ -19,7 +20,6 @@ import {
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
 import { insertSignatureRequest } from "../../../signature-request";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 const requireSignatureRequestBody = (req: H.HttpRequest) =>
   pipe(

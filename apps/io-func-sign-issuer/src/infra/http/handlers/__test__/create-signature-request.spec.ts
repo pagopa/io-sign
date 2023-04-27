@@ -17,6 +17,7 @@ import {
   SignatureRequest,
   SignatureRequestRepository,
 } from "../../../../signature-request";
+import { EventHubProducerClient } from "@azure/event-hubs";
 
 describe("CreateSignatureRequestHandler", () => {
   let issuerRepository: IssuerRepository;
@@ -116,6 +117,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
+      eventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -144,6 +146,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
+      eventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -175,6 +178,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
+      eventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -213,6 +217,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository: signatureRequestRepositoryThatFailsOnInsert,
       input: req,
       inputDecoder: H.HttpRequest,
+      eventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
