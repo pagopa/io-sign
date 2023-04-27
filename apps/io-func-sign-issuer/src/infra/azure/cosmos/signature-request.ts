@@ -54,15 +54,6 @@ export const makeGetSignatureRequest =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export const makeInsertSignatureRequest =
-  (db: cosmos.Database): InsertSignatureRequest =>
-  (request) =>
-    pipe(
-      new SignatureRequestModel(db),
-      (model) => model.create(request),
-      TE.mapLeft(toCosmosDatabaseError)
-    );
-
 export const makeUpsertSignatureRequest =
   (db: cosmos.Database): UpsertSignatureRequest =>
   (request) =>
