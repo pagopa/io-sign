@@ -31,7 +31,7 @@ const requireSignatureRequestBody = (req: H.HttpRequest) =>
     })),
     RTE.fromEither
   );
-
+// TODO: move
 const getSigner = (signerId: Signer["id"]): TE.TaskEither<Error, Signer> =>
   pipe(
     mockGetSigner(signerId),
