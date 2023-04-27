@@ -19,6 +19,7 @@ import {
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
 import { insertSignatureRequest } from "../../../signature-request";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 const requireSignatureRequestBody = (req: H.HttpRequest) =>
   pipe(
@@ -68,6 +69,9 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       )
     ),
     RTE.chainW(insertSignatureRequest),
+    RTE.chainFirstW((request) =>
+      pipe(EventName.SIGNATURE_CREATED, createAndSendAnalyticsEvent(request))
+    ),
     RTE.map(
       flow(
         SignatureRequestToApiModel.encode,

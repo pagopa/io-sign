@@ -206,6 +206,5 @@ export const CreateSignatureRequest = CreateSignatureRequestFunction({
   issuerRepository,
   dossierRepository,
   signatureRequestRepository,
+  eventAnalyticsClient,
 });
-
-// eventAnalyticsClient
