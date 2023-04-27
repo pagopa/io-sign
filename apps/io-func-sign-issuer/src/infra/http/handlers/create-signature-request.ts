@@ -31,23 +31,7 @@ const requireSignatureRequestBody = (req: H.HttpRequest) =>
     })),
     RTE.fromEither
   );
-/*
-in apps/io-func-sign-issuer/src/dossier.ts
-export const getDossierById =
-  (
-    id: Dossier["id"],
-    issuerId: Dossier["issuerId"]
-  ): RTE.ReaderTaskEither<DossierEnvironment, Error, Dossier> =>
-  ({ dossierRepository: repo }) =>
-    pipe(
-      repo.getById(id, issuerId),
-      TE.chain(
-        TE.fromOption(
-          () => new EntityNotFoundError("The specified dossier was not found")
-        )
-      )
-    );
-  */
+
 const getSigner = (signerId: Signer["id"]): TE.TaskEither<Error, Signer> =>
   pipe(
     mockGetSigner(signerId),
@@ -76,10 +60,11 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       signer,
       expiresAt,
     })),
-    RTE.map(({ issuer, dossier, signer, expiresAt }) =>
+    RTE.chainW(({ issuer, dossier, signer, expiresAt }) =>
       pipe(
-        newSignatureRequest(dossier, signer, issuer)
-        // withExpiryDate(pipe(expiresAt, O.getOrElse(defaultExpiryDate)))
+        newSignatureRequest(dossier, signer, issuer),
+        withExpiryDate(pipe(expiresAt, O.getOrElse(defaultExpiryDate))),
+        RTE.fromEither
       )
     ),
     RTE.chainW(insertSignatureRequest),
