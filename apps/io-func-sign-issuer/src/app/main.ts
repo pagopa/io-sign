@@ -37,8 +37,8 @@ import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
-import { getConfigFromEnvironment } from "./config";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
