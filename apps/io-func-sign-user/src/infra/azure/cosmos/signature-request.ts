@@ -124,4 +124,11 @@ export class CosmosDbSignatureRequestRepository
       )
     );
   }
+
+  get(id: SignatureRequest["id"], signerId: SignatureRequest["signerId"]) {
+    return pipe(
+      this.#model.find([id, signerId]),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+  }
 }

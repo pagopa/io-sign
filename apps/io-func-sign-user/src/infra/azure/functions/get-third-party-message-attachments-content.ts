@@ -22,7 +22,7 @@ import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
 
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoder/signature-request";
+import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
 
 import { SignatureRequest } from "../../../signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";

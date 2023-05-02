@@ -26,10 +26,10 @@ import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import * as L from "@pagopa/logger";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 
-import { requireSigner } from "../../http/decoder/signer.old";
+import { requireSigner } from "../../http/decoders/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
-import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
-import { requireQtspClauses } from "../../http/decoder/qtsp-clause";
+import { requireDocumentsSignature } from "../../http/decoders/document-to-sign";
+import { requireQtspClauses } from "../../http/decoders/qtsp-clause";
 
 import {
   CreateSignaturePayload,
@@ -50,7 +50,7 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
-import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
+import { requireCreateSignatureLollipopParams } from "../../http/decoders/lollipop";
 import { LollipopApiClient } from "../../lollipop/client";
 import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";

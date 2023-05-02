@@ -16,13 +16,13 @@ import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-
 import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
+import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -148,12 +148,6 @@ export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   onWaitForSignatureQueueClient
 );
 
-export const GetSignatureRequest = makeGetSignatureRequestFunction(
-  database,
-  validatedContainerClient,
-  signedContainerClient
-);
-
 export const ValidateSignature = makeValidateSignatureFunction(
   database,
   signedContainerClient,
@@ -179,4 +173,10 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
 
 export const GetSignatureRequests = GetSignatureRequestsFunction({
   signatureRequestRepository,
+});
+
+export const GetSignatureRequest = GetSignatureRequestFunction({
+  signatureRequestRepository,
+  validatedContainerClient,
+  signedContainerClient,
 });
