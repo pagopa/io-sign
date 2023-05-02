@@ -90,10 +90,10 @@ describe("GetSignatureRequestHandler", () => {
     const req = {
       ...H.request("https://api.test.it/"),
       path: {
-        signatureRequestId: newId(), // mocks.signatureRequest.id,
+        signatureRequestId: newId(),
       },
       headers: {
-        "x-iosign-signer-id": mocks.signer.id, // newId()
+        "x-iosign-signer-id": mocks.signer.id,
       },
     };
     const run = GetSignatureRequestHandler({
