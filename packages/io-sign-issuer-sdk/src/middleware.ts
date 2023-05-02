@@ -9,7 +9,10 @@ export class APIMiddleware implements Middleware {
     return Promise.resolve({ url: context.url, init: context.init });
   }
 
-    post(context: ResponseContext): Promise<Response | void> {
-        return Promise.resolve(context.response);
+  post(context: ResponseContext): Promise<Response | void> {
+    if (!context.response.ok) {
+      throw new Error("Code: "+context.response.status+" message:"+context.response.statusText);
     }
+    return Promise.resolve(context.response);
+  }
 }

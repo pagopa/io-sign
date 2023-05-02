@@ -1,63 +1,68 @@
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import {
   Configuration,
   SignatureRequestApi,
   CreateSignatureRequestBody,
   GetSignatureRequestRequest,
 } from "@io-sign/io-sign-api-client";
-import { callSigners } from "./signer";
-import { callDossier } from "./dossier";
 import { callDocumentUpload } from "./upload-file";
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export const callSignatureRequests = async (
   configuration: Configuration,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-  if (signatureRequest.id) {
-    if (signatureRequest.status && signatureRequest.status == "READY") {
-      return callSendNotification(configuration, signatureRequest.id);
-    } else if (signatureRequest.status && signatureRequest.status !== "READY") {
-      return callSetSignatureRequestStatus(configuration, signatureRequest.id);
-    }
-  } else {
-    if (FiscalCode.is(signatureRequest.signerId)) {
-      const signer = await callSigners(
-        configuration,
-        signatureRequest.signerId
-      );
-      // eslint-disable-next-line functional/immutable-data
-      signatureRequest.signerId = signer.id;
-    }
-	
-	    if (!signatureRequest.dossier.id) {
-      const dossier = await callDossier(
-        configuration,
-        signatureRequest.dossier
-      );
-      // eslint-disable-next-line functional/immutable-data
-      signatureRequest.dossierId = dossier.id;
-    }
-  await createSignatureRequest(configuration, signatureRequest).then((req: any) => {
-      // eslint-disable-next-line functional/immutable-data
-	  signatureRequest = { ...signatureRequest, ...req };
-  }).catch((err) => console.error("Errore nella create: "+err));
-  }
-      const request: GetSignatureRequestRequest = {
-        id: signatureRequest.id,
-      };
-      await getSignatureRequest(configuration, request)
-	  .then((req) => {
+  if (!signatureRequest.id) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await createSignatureRequest(configuration, signatureRequest).then((req: any) => {
         // eslint-disable-next-line functional/immutable-data
-	  signatureRequest = { ...signatureRequest, ...req };
-	  });
-	// to do: this check could be done by a regular expression that checks if there is almost one "documentPath" into documentsMetadata and upload only where it is present
-			if (signatureRequest.dossier && signatureRequest.dossier.documentsMetadata["0"].path ) {
-				await callUploadFile(configuration, signatureRequest);
-}
+        signatureRequest = { ...signatureRequest, ...req };
+      });
+  }
+  const request: GetSignatureRequestRequest = {
+    id: signatureRequest.id,
+  };
+  await getSignatureRequest(configuration, request).then((req) => {
+    // eslint-disable-next-line functional/immutable-data
+    signatureRequest = { ...signatureRequest, ...req };
+  });
+  await callUploadFile(configuration, signatureRequest);
+  let i: number = 0;
+  let count: number = 0;
+  while (count < 5 && signatureRequest.documents.length > i) {
+    i = 0;
+    count++;
+    await getSignatureRequest(configuration, request).then((req) => {
+      req.documents.forEach((element: any) => {
+        if (element.status === "READY") {
+          i++;
+        }
+      });
+    });
+    await sleep(1);
+  }
+  if (signatureRequest.documents.length === i) {
+    if (signatureRequest.status && signatureRequest.status === "DRAFT") {
+      await callSetSignatureRequestStatus(configuration, signatureRequest.id);
+      await getSignatureRequest(configuration, request).then((req) => {
+        // eslint-disable-next-line functional/immutable-data
+        signatureRequest = { ...signatureRequest, ...req };
+      });
+    }
 
-      return Promise.resolve(signatureRequest);
- };
+    if (signatureRequest.status && signatureRequest.status === "WAIT_FOR_SIGNATURE") {
+            await callSendNotification(configuration, signatureRequest.id);
+            await getSignatureRequest(configuration, request).then((req) => {
+              // eslint-disable-next-line functional/immutable-data
+              signatureRequest = { ...signatureRequest, ...req };
+            });
+              }
+  }
+  return Promise.resolve(signatureRequest);
+};
 
 const getSignatureRequest = async (
   configuration: Configuration,
@@ -118,13 +123,22 @@ const callUploadFile = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-	for (let i=0; i< signatureRequest.dossier.documentsMetadata.length; i++) {
-callGetDocumentUploadUrl(
+  if (signatureRequest.dossier && signatureRequest.dossier.documentsMetadata["0"].path) {
+    for (
+      let i = 0;
+      i < signatureRequest.dossier.documentsMetadata.length;
+      i++
+    ) {
+      callGetDocumentUploadUrl(
         configuration,
         signatureRequest.id,
         signatureRequest.documents[i].id
-      ).then((documentUploadUrl: string) => {
-		 return callDocumentUpload(signatureRequest.dossier.documentsMetadata[i].path, documentUploadUrl.replaceAll("\"",""));
-	  });
-			}
+      ).then((documentUploadUrl: string) =>
+        callDocumentUpload(
+          signatureRequest.dossier.documentsMetadata[i].path,
+          documentUploadUrl.replaceAll('"', "")
+        )
+      );
+    }
+  }
 };

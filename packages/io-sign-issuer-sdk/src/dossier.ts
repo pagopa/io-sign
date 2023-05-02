@@ -21,15 +21,13 @@ export const callDossier = async (
   }
 };
 
-const createDossier = async (
-  configuration: Configuration,
-  dossier: any
-) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createDossier = async (configuration: Configuration, dossier: any) => {
   const api = new DossierApi(configuration);
 
-const request: CreateDossierRequest  = {
-	"createDossierBody": dossier
-};
+  const request: CreateDossierRequest = {
+    createDossierBody: dossier,
+  };
 
   return api.createDossier(request);
 };
