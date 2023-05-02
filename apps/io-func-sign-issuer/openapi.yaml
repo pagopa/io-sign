@@ -119,12 +119,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignatureRequestDetailView"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         default:
@@ -295,6 +295,13 @@ components:
 
     Unauthorized:
       description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
+    UnprocessableContent:
+      description: Unprocessable Content
       content:
         application/json:
           schema:
