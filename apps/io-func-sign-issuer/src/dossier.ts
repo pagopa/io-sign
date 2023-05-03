@@ -42,7 +42,7 @@ export const newDossier = (
   title,
   issuerId: issuer.id,
   documentsMetadata,
-  supportEmail: supportEmail ?? issuer.email,
+  supportEmail: supportEmail ?? issuer.email, // the issuer has the chance to add a specific support email for a dossier. otherwise, the issuer's generic support email will be taken
   createdAt: new Date(),
   updatedAt: new Date(),
 });
