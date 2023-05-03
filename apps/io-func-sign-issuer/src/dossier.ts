@@ -15,7 +15,7 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { NonEmptyString, EmailString } from "@pagopa/ts-commons/lib/strings";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
@@ -25,6 +25,7 @@ export const Dossier = t.type({
   title: NonEmptyString,
   issuerId: Issuer.props.id,
   documentsMetadata: DocumentsMetadata,
+  supportEmail: EmailString,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
 });
@@ -34,12 +35,14 @@ export type Dossier = t.TypeOf<typeof Dossier>;
 export const newDossier = (
   issuer: Issuer,
   title: Dossier["title"],
-  documentsMetadata: NonEmptyArray<DocumentMetadata>
+  documentsMetadata: NonEmptyArray<DocumentMetadata>,
+  supportEmail?: Dossier["supportEmail"]
 ): Dossier => ({
   id: newId(),
   title,
   issuerId: issuer.id,
   documentsMetadata,
+  supportEmail: supportEmail ?? issuer.email,
   createdAt: new Date(),
   updatedAt: new Date(),
 });

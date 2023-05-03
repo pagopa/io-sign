@@ -441,6 +441,12 @@ components:
         $ref: "#/components/schemas/DocumentMetadata"
       minLength: 1
 
+    DossierSupportEmail:
+      type: string
+      description: Issuer's support email for a specific dossier.
+      format: email
+      example: demo@example.com
+
     DossierTitle:
       type: string
       minLength: 3
@@ -450,6 +456,8 @@ components:
       properties:
         title:
           $ref: "#/components/schemas/DossierTitle"
+        support_email:
+          $ref: "#/components/schemas/DossierSupportEmail"
         documents_metadata:
           $ref: "#/components/schemas/DocumentMetadataList"
       required:
@@ -468,6 +476,8 @@ components:
           $ref: "#/components/schemas/Id"
         title:
           $ref: "#/components/schemas/DossierTitle"
+        support_email:
+          $ref: "#/components/schemas/DossierSupportEmail"
         documents_metadata:
           $ref: "#/components/schemas/DocumentMetadataList"
         created_at:

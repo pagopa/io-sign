@@ -176,4 +176,74 @@ describe("CreateDossierHandler", () => {
       })
     );
   });
+
+  it("should return an HTTP response with the dossier support email in the body", () => {
+    const email = "test@test.test";
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      body: {
+        title: "my test dossier",
+        documents_metadata: [
+          {
+            title: "test doc #1",
+            signature_fields: [],
+          },
+        ],
+        support_email: email,
+      },
+    };
+    const run = CreateDossierHandler({
+      logger,
+      issuerRepository,
+      dossierRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+    });
+    expect(run()).resolves.toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          body: expect.objectContaining({
+            support_email: email,
+          }),
+        }),
+      })
+    );
+  });
+
+  it("should return an HTTP response with the issuer support email in the body", () => {
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      body: {
+        title: "my test dossier",
+        documents_metadata: [
+          {
+            title: "test doc #1",
+            signature_fields: [],
+          },
+        ],
+      },
+    };
+    const run = CreateDossierHandler({
+      logger,
+      issuerRepository,
+      dossierRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+    });
+    expect(run()).resolves.toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          body: expect.objectContaining({
+            support_email: issuer.email,
+          }),
+        }),
+      })
+    );
+  });
 });
