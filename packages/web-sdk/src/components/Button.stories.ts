@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/web-components";
+import { Meta, StoryFn } from "@storybook/web-components";
 import { html, nothing } from "lit-html";
 
 import type { IOButtonElementAttributes } from "./Button";
@@ -22,7 +22,7 @@ export default {
   },
 } as Meta<Arguments>;
 
-export const Button: Story<Arguments> = ({ disabled }) =>
+export const Button: StoryFn<Arguments> = ({ disabled }) =>
   html`<io-button disabled="${disabled ? "disabled" : nothing}"
     >Sample button</io-button
   >`;

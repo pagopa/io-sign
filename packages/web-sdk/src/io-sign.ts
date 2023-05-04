@@ -1,42 +1,23 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html } from "lit";
 import { customElement, state, property } from "lit/decorators.js";
-
 import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
-
-import { localized, configureLocalization } from "@lit/localize";
-
-import { sourceLocale, targetLocales } from "./i18n/locale";
-
-import * as templates_it from "./i18n/locales/it";
-
+import { choose } from "lit/directives/choose.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
+import { localized } from "@lit/localize";
+import { provide } from "@lit-labs/context";
+
+import { IOSignLinkProvider, IOLinkProviderContext } from "./link-provider";
+import { setLocaleFromUserSettings } from "./i18n";
 
 import IOLogo from "./assets/io-logo.svg?raw";
 
-const localizedTemplates = new Map([["it", templates_it]]);
+import "./components/Button";
+import "./components/Skeleton";
+import "./components/Spinner";
+import "./components/QrCodeDialog";
 
-export const { getLocale, setLocale } = configureLocalization({
-  sourceLocale,
-  targetLocales,
-  loadLocale: async (locale) => {
-    const templates = localizedTemplates.get(locale);
-    if (typeof templates === "undefined") {
-      throw new Error(`Unable to local ${locale} locale: templates not found.`);
-    }
-    return templates;
-  },
-});
-
-setLocale("it");
-
-import "./ui/Button";
-import "./ui/Skeleton";
-import "./ui/Spinner";
-
-import "./io-sign-qr-dialog";
-
-import "./index.css";
+setLocaleFromUserSettings();
 
 export type IOSignElementAttributes = {
   disabled?: "disabled";
@@ -52,57 +33,94 @@ export class IOSignElement
   disabled?: "disabled";
 
   @state()
-  state: "idle" | "loading" = "idle";
+  state: "idle" | "activating" | "loading" = "activating";
 
   @state()
-  requestId?: string;
+  signatureRequestId?: string;
 
-  static styles = css`
-    .io-sign-button-content {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
+  @state()
+  showQrCode = false;
+
+  @provide({ context: IOLinkProviderContext })
+  @property({ attribute: false })
+  IOLinkProvider = new IOSignLinkProvider();
+
+  theme: HTMLLinkElement | null = null;
+
+  connectedCallback() {
+    super.connectedCallback();
+    const theme = document.getElementById("io-sign-theme-css");
+    if (theme === null) {
+      const el = document.createElement("link");
+      el.id = "io-sign-theme-css";
+      el.rel = "stylesheet";
+      el.href = import.meta.env.VITE_THEME_URL;
+      el.addEventListener("load", () => {
+        this.state = "idle";
+      });
+      this.theme = document.head.appendChild(el);
     }
-  `;
+  }
 
-  clickHandler() {
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this.theme !== null) {
+      document.head.removeChild(this.theme);
+    }
+  }
+
+  handleClick(e: Event) {
+    e.preventDefault();
+    if (this.disabled || this.state !== "idle") {
+      return;
+    }
     this.state = "loading";
     this.dispatchEvent(
-      new Event("io-sign-click", {
+      new Event("io-sign.cta.click", {
         bubbles: true,
+        composed: true,
       })
     );
-    this.continue("XAAA");
   }
 
-  continue(signatureRequestId: string) {
-    this.requestId = signatureRequestId;
+  handleClose() {
+    this.showQrCode = false;
   }
 
-  reset() {
-    this.requestId = undefined;
+  redirectOrShowQrCode(signatureRequestId: string) {
     this.state = "idle";
+    this.signatureRequestId = signatureRequestId;
+    const isMobile = /iPhone|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      const IOLink = this.IOLinkProvider.getIOLink(this.signatureRequestId);
+      const newWindow = window.open(IOLink, "_blank");
+      if (newWindow) {
+        newWindow.focus();
+      }
+    } else {
+      this.showQrCode = true;
+    }
   }
 
   render() {
     return html`<io-button
-        @click=${this.clickHandler}
+        @click=${this.handleClick}
         disabled=${ifDefined(this.disabled)}
       >
-        <div class="io-sign-button-content">
-          ${when(
-            this.state === "loading",
-            () => html`<io-spinner></io-spinner>`,
-            () => html`${unsafeSVG(IOLogo)} Firma con IO`
-          )}
-        </div>
+        ${choose(
+          this.state,
+          [
+            ["activating", () => html`<io-skeleton></io-skeleton>`],
+            ["loading", () => html`<io-spinner></io-spinner>`],
+          ],
+          () => html`${unsafeSVG(IOLogo)} Firma con IO`
+        )}
       </io-button>
       ${when(
-        this.requestId,
+        this.showQrCode && this.signatureRequestId,
         () => html`<io-sign-qr-dialog
-          .signatureRequestId=${this.requestId}
-          @close=${this.reset}
+          .signatureRequestId=${this.signatureRequestId}
+          @close=${this.handleClose}
         ></io-sign-qr-dialog>`
       )}`;
   }

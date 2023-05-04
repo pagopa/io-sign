@@ -2562,6 +2562,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@io-sign/web-sdk@workspace:packages/web-sdk"
   dependencies:
+    "@lit-labs/context": ^0.3.1
     "@lit/localize": ^0.11.4
     "@lit/localize-tools": ^0.6.8
     "@storybook/addon-essentials": ^7.0.6
@@ -2573,6 +2574,7 @@ __metadata:
     happy-dom: ^9.8.4
     lit: ^2.4.1
     lit-html: ^2.6.1
+    prettier: 2.7.1
     react: ^18.2.0
     react-dom: ^18.2.0
     storybook: ^7.0.6
@@ -2721,6 +2723,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit-labs/context@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@lit-labs/context@npm:0.3.1"
+  dependencies:
+    "@lit/reactive-element": ^1.5.0
+    lit: ^2.7.0
+  checksum: eca24343bf63a092662a45c0483a77191348514c84aa7fa1a497d45c5741c16e8e61fb294ed8e56d73536b4e7fe96c49beb416417a2c879e670e553e19f5a3f5
+  languageName: node
+  linkType: hard
+
 "@lit-labs/ssr-dom-shim@npm:^1.0.0, @lit-labs/ssr-dom-shim@npm:^1.1.0":
   version: 1.1.0
   resolution: "@lit-labs/ssr-dom-shim@npm:1.1.0"
@@ -2758,7 +2770,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.4.0, @lit/reactive-element@npm:^1.6.0":
+"@lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.4.0, @lit/reactive-element@npm:^1.5.0, @lit/reactive-element@npm:^1.6.0":
   version: 1.6.1
   resolution: "@lit/reactive-element@npm:1.6.1"
   dependencies:

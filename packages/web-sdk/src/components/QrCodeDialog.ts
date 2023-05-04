@@ -1,28 +1,35 @@
 import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
+import { customElement, property, state } from "lit/decorators.js";
 import { localized, msg, str } from "@lit/localize";
+import { consume } from "@lit-labs/context";
 
-import "./ui/Dialog";
+import { IOLinkProvider, IOLinkProviderContext } from "../link-provider";
+
+import "./Dialog";
 
 @localized()
 @customElement("io-sign-qr-dialog")
 export class ScanQrCodeDialogElement extends LitElement {
+  @consume({ context: IOLinkProviderContext })
+  @property({ attribute: false })
+  IOLinkProvider?: IOLinkProvider;
+
   @property({
     type: String,
   })
-  signatureRequestId: string = "";
+  signatureRequestId?: string;
 
+  @state()
   get qrCodeUrl() {
-    return `https://continua.io.pagopa.it/qrcode.png?feat=firma&srid=${this.signatureRequestId}&width=150&color=%2317324dff`;
+    if (this.signatureRequestId && this.IOLinkProvider) {
+      const url = this.IOLinkProvider.getQrCodeUrl(this.signatureRequestId);
+      return url.href;
+    }
+    return undefined;
   }
 
   static styles = css`
-    main {
-      font-family: "Titillium Web";
-      color: #17324d;
-    }
-    main h1 {
+    h1 {
       font-size: 1.625em;
     }
     .app-badges {
@@ -43,7 +50,7 @@ export class ScanQrCodeDialogElement extends LitElement {
 
   render() {
     return html`<io-dialog>
-      <main>
+      <div class="content">
         <h1>${msg(str`Scan the QR code`)}</h1>
         <p>
           ${msg(html`To view and sign the documents with IO, <br />
@@ -70,7 +77,7 @@ export class ScanQrCodeDialogElement extends LitElement {
               src="https://play.google.com/intl/en_us/badges/static/images/badges/it_badge_web_generic.png"
           /></a>
         </div>
-      </main>
+      </div>
     </io-dialog>`;
   }
 }

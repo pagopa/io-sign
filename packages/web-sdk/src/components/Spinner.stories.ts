@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/web-components";
+import { Meta, StoryFn } from "@storybook/web-components";
 import { html } from "lit-html";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -19,7 +19,7 @@ export default {
   },
 } as Meta<IOSpinnerStoryArgs>;
 
-export const Spinner: Story<IOSpinnerStoryArgs> = ({ color }) => {
+export const Spinner: StoryFn<IOSpinnerStoryArgs> = ({ color }) => {
   const styles = {
     "--io-spinner-color": color,
   };

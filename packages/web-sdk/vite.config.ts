@@ -5,7 +5,7 @@ export default defineConfig({
     lib: {
       entry: "src/io-sign.ts",
       formats: ["es"],
-      fileName: "sdk",
+      fileName: "io-sign",
     },
   },
   test: {

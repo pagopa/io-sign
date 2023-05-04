@@ -11,7 +11,7 @@ export class IOSkeletonElement extends LitElement {
       overflow: hidden;
       width: 100%;
       border-radius: 5px;
-      background-color: var(--background-color, rgb(255, 255, 255, 0.3));
+      background-color: var(--io-skeleton-bg-color, rgb(255, 255, 255, 0.3));
     }
     @keyframes translate {
       100% {

@@ -1,4 +1,4 @@
-import { Meta, Story } from "@storybook/web-components";
+import { Meta, StoryFn } from "@storybook/web-components";
 import { html } from "lit-html";
 
 import "./Skeleton";
@@ -20,7 +20,7 @@ type SkeletonArgs = {
   backgroundColor: string;
 };
 
-export const Skeleton: Story<SkeletonArgs> = (args) =>
+export const Skeleton: StoryFn<SkeletonArgs> = (args) =>
   html` <io-skeleton
     style="--background-color: ${args.backgroundColor}"
   ></io-text-skeleton>`;

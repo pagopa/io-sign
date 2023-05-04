@@ -6,8 +6,6 @@ export type IOButtonElementAttributes = {
   disabled?: "disabled";
 };
 
-import "../index.css";
-
 @customElement("io-button")
 export class IOButtonElement
   extends LitElement
@@ -18,28 +16,23 @@ export class IOButtonElement
 
   static styles = css`
     :host {
-      --main-blue: #0073e6;
-      --dark-blue: #0062c3;
-      --primary-color: var(--main-blue);
-      --radius: 4px;
-      --color: white;
-      --bg-color: var(--primary-color);
-      --disabled-color: rgba(23, 50, 77, 0.26);
-      --disabled-bg-color: rgba(23, 50, 77, 0.12);
-      --font-family: "Titillium Web";
+      --io-button-bg-color: var(--io-primary-color, #0073e6);
     }
-
     button {
-      font-family: var(--font-family);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--io-font-family, sans-serif);
       border: 0;
       height: 40px;
       font-size: 1em;
       font-weight: bold;
       padding: 0.5em 1.2em;
-      border-radius: var(--radius);
+      border-radius: var(--io-border-radius, 4px);
       min-width: 155px;
-      background: var(--bg-color);
-      color: var(--color);
+      background: var(--io-button-bg-color);
+      color: var(--io-button-color, white);
       transition: filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     }
     button:hover:not(:disabled) {
@@ -47,8 +40,11 @@ export class IOButtonElement
       filter: brightness(0.9);
     }
     button:disabled {
-      background-color: var(--disabled-bg-color);
-      color: var(--disabled-color);
+      background-color: var(
+        --io-button-disabled-bg-color,
+        rgba(23, 50, 77, 0.12)
+      );
+      color: var(--io-button-disabled-color, rgba(23, 50, 77, 0.26));
     }
   `;
 

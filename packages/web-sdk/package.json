@@ -19,11 +19,14 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "localize:extract": "lit-localize extract",
-    "localize:build": "lit-localize build"
+    "localize:build": "lit-localize build",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "@lit-labs/context": "^0.3.1",
     "@lit/localize": "^0.11.4",
-    "lit": "^2.4.1"
+    "lit": "^2.4.1",
+    "prettier": "2.7.1"
   },
   "devDependencies": {
     "@lit/localize-tools": "^0.6.8",

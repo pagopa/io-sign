@@ -6,14 +6,14 @@
   <source>Scan the QR code</source>
   <target>Inquadra il codice QR</target>
 </trans-unit>
-<trans-unit id="h279ff73b9f921594">
-  <source>To view and sign the documents with IO, 
-              scan this code with your device</source>
-  <target>Per vedere e firmare i documenti su IO, inquadra <x id="0" equiv-text="&lt;br&gt;"/> questo codice con il tuo dispositivo</target>
-</trans-unit>
 <trans-unit id="s986aec5a433b6eb5">
   <source>Don’t have the IO app? Download it now</source>
   <target>Non hai l’app IO? Scaricala ora</target>
+</trans-unit>
+<trans-unit id="h74a43a08a000928c">
+  <source>To view and sign the documents with IO, <x id="0" equiv-text="&lt;br&gt;"/>
+            scan this code with your device</source>
+  <target>Per vedere e firmare i documenti su IO, inquadra <x id="0" equiv-text="&lt;br&gt;"/> questo codice con il tuo dispositivo</target>
 </trans-unit>
 </body>
 </file>
