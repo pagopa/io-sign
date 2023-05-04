@@ -10,13 +10,11 @@
     <io-sign id="cta"></io-sign>
     <script>
       const cta = document.getElementById("cta");
-
       const createSignatureRequest = async () => {
         return {
-          id: "PROVA",
+          id: "FAKE_REQUEST_ID",
         };
       };
-
       cta.addEventListener("io-sign.cta.click", async (e) => {
         const request = await createSignatureRequest();
         setTimeout(() => {
