@@ -1,3 +1,4 @@
+
 import {
   Configuration,
   SignatureRequestApi,
@@ -15,53 +16,67 @@ export const callSignatureRequests = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-  if (!signatureRequest.id) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await createSignatureRequest(configuration, signatureRequest).then((req: any) => {
+    return await createSignatureRequest(configuration, signatureRequest).then((req: any) => {
+console.log("1");
         // eslint-disable-next-line functional/immutable-data
-        signatureRequest = { ...signatureRequest, ...req };
-      });
-  }
+        signatureRequest.id = req.id;
   const request: GetSignatureRequestRequest = {
     id: signatureRequest.id,
   };
-  await getSignatureRequest(configuration, request).then((req) => {
+  getSignatureRequest(configuration, request).then((req) => {
     // eslint-disable-next-line functional/immutable-data
     signatureRequest = { ...signatureRequest, ...req };
-  });
-  await callUploadFile(configuration, signatureRequest);
+	return signatureRequest;
+  }).then((result) => {
+console.log("2");
+  callUploadFile(configuration, result)
+  return result;
+  }).then((result) => {
+console.log("3");
   let i: number = 0;
   let count: number = 0;
   while (count < 5 && signatureRequest.documents.length > i) {
     i = 0;
     count++;
-    await getSignatureRequest(configuration, request).then((req) => {
+    getSignatureRequest(configuration, request).then((req) => {
       req.documents.forEach((element: any) => {
         if (element.status === "READY") {
           i++;
+      // eslint-disable-next-line functional/immutable-data
+      signatureRequest.documents[i].status = "READY";
         }
       });
     });
-    await sleep(1);
+    sleep(1);
   }
   if (signatureRequest.documents.length === i) {
-    if (signatureRequest.status && signatureRequest.status === "DRAFT") {
-      await callSetSignatureRequestStatus(configuration, signatureRequest.id);
-      await getSignatureRequest(configuration, request).then((req) => {
-        // eslint-disable-next-line functional/immutable-data
-        signatureRequest = { ...signatureRequest, ...req };
-      });
-    }
-
-    if (signatureRequest.status && signatureRequest.status === "WAIT_FOR_SIGNATURE") {
-            await callSendNotification(configuration, signatureRequest.id);
-            await getSignatureRequest(configuration, request).then((req) => {
-              // eslint-disable-next-line functional/immutable-data
-              signatureRequest = { ...signatureRequest, ...req };
-            });
-              }
+      // eslint-disable-next-line functional/immutable-data
+      signatureRequest.status = "SET_READY";
   }
-  return Promise.resolve(signatureRequest);
+  return signatureRequest;
+}).then((result) => {
+console.log("4");
+      callSetSignatureRequestStatus(configuration, result);
+      getSignatureRequest(configuration, request).then((req) => {
+        // eslint-disable-next-line functional/immutable-data
+        signatureRequest = req;
+      });
+      return signatureRequest;
+    }).then((result) => {
+console.log("5");
+            callSendNotification(configuration, result);
+            getSignatureRequest(configuration, request).then((req) => {
+              // eslint-disable-next-line functional/immutable-data
+              signatureRequest = req;
+            });
+            return signatureRequest;
+          });
+	})
+.catch((err) => {
+  console.error("errore signatureRequest series: ");
+  console.error(err);
+});
 };
 
 const getSignatureRequest = async (
@@ -78,13 +93,15 @@ const createSignatureRequest = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signatureRequest: any
 ) => {
-  const api = new SignatureRequestApi(configuration);
+  if (!signatureRequest.id) {
+    const api = new SignatureRequestApi(configuration);
   const createSignatureRequestBody: CreateSignatureRequestBody = {
-    dossierId: signatureRequest.dossierId,
+    dossierId: signatureRequest.dossier.id,
     signerId: signatureRequest.signerId,
-    //      expiresAt: "2023-04-24"
+//          expiresAt: signatureRequest.expiresAt
   };
   return api.createSignatureRequest({ createSignatureRequestBody });
+}
 };
 
 const callGetDocumentUploadUrl = async (
@@ -101,21 +118,27 @@ const callGetDocumentUploadUrl = async (
 
 const callSendNotification = async (
   configuration: Configuration,
-  signatureRequestId: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signatureRequest: any
 ) => {
+    if (signatureRequest.status && signatureRequest.status === "WAITING_FOR_SIGNATURE") {
   const api = new SignatureRequestApi(configuration);
-  return api.sendNotification({ reqId: signatureRequestId });
+  return api.sendNotification({ reqId: signatureRequest.id });
+    }
 };
 
 const callSetSignatureRequestStatus = async (
   configuration: Configuration,
-  signatureRequestId: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signatureRequest: any
 ) => {
+    if (signatureRequest.status && signatureRequest.status === "SET_READY") {
   const api = new SignatureRequestApi(configuration);
   return api.setSignatureRequestStatus({
-    id: signatureRequestId,
+    id: signatureRequest.id,
     body: "READY",
   });
+  }
 };
 
 const callUploadFile = async (
@@ -126,7 +149,7 @@ const callUploadFile = async (
   if (signatureRequest.dossier && signatureRequest.dossier.documentsMetadata["0"].path) {
     for (
       let i = 0;
-      i < signatureRequest.dossier.documentsMetadata.length;
+      i < signatureRequest.dossier.documentsMetalength;
       i++
     ) {
       callGetDocumentUploadUrl(

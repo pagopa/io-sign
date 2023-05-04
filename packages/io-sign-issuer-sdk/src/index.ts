@@ -19,7 +19,6 @@ if (subscriptionKey === undefined || subscriptionKey === null) {
 if (apiPath === undefined || apiPath === null) {
   throw new Error("Missing api path");
 }
-
 const checkSigner = async (
   configuration: Configuration,
   data: any
@@ -34,10 +33,10 @@ const checkSigner = async (
         }
         return data;
       })
-      .catch((err) => {
-        console.error("errore signer: ");
-        console.error(err);
-      });
+.catch((err) => {
+  console.error("errore signer: ");
+  console.error(err);
+});
   } else {
     return data;
   }
@@ -53,14 +52,14 @@ const checkDossier = async (
         console.log("risultato dossier: " + JSON.stringify(result, null, 2));
         if (data.signatureRequest) {
           // eslint-disable-next-line functional/immutable-data
-          data.signatureRequest.dossierId = result.id;
+          data.signatureRequest.dossier = { ...data.dossier, ...result };
         }
         return data;
       })
-      .catch((err) => {
-        console.error("errore dossier: ");
-        console.error(err);
-      });
+    .catch((err) => {
+      console.error("errore dossier: ");
+      console.error(err);
+    });
   } else {
     return data;
   }
@@ -95,8 +94,16 @@ function main() {
   checkSigner(configuration, data).then((signerChecked) => {
     checkDossier(configuration, signerChecked).then((dossierChecked) => {
       checkSignatureRequest(configuration, dossierChecked);
-    });
-  });
+    })
+    .catch((err) => {
+      console.error("errore dossier: ");
+      console.error(err);
+    })
+})
+.catch((err) => {
+  console.error("errore signer: ");
+  console.error(err);
+});
 }
 
 main();
