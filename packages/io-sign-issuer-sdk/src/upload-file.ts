@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 
 export const callDocumentUpload = async (path: string, uploadUrl: string) => {
-  console.log("file upload:" + path + " " + uploadUrl);
   const pdfBlob = await readFileSync(path);
 
   const options = {

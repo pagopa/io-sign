@@ -52,7 +52,7 @@ const checkDossier = async (
         console.log("risultato dossier: " + JSON.stringify(result, null, 2));
         if (data.signatureRequest) {
           // eslint-disable-next-line functional/immutable-data
-          data.signatureRequest.dossier = { ...data.dossier, ...result };
+          data.signatureRequest.dossierId = result.id;
         }
         return data;
       })
@@ -70,7 +70,7 @@ const checkSignatureRequest = async (
   data: any
 ) => {
   if (data.signatureRequest != null) {
-    return callSignatureRequests(configuration, data.signatureRequest)
+    return callSignatureRequests(configuration, data)
       .then((result) =>
         console.log("risultato signature request: " + JSON.stringify(result, null, 2))
       )
