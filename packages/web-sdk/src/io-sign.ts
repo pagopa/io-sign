@@ -48,7 +48,7 @@ export class IOSignElement
   theme: HTMLLinkElement | null = null;
 
   // Due to Web Component limitations, it's not possible to
-  // delcare custom fonts inside the component-scoped CSS
+  // declare custom fonts inside the component-scoped CSS
   // So we inject an external stylesheet (at VITE_THEME_URL)
   // into <head> element of the document when the component
   // is mounted to the page.
