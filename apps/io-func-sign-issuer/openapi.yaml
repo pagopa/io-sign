@@ -70,6 +70,50 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /dossiers/{id}/signature-requests:
+    get:
+      operationId: getRequestsByDossier
+      tags:
+        - Dossier
+      summary: Get the Signature Requests created from a Dossier
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - in: query
+          name: continuationToken
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: interger
+            minimum: 25
+            maximum: 100
+      responses:
+        "200":
+          description: The Dossier detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
   /signers:
     post:
       operationId: getSignerByFiscalCode
@@ -706,7 +750,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SignatureRequestListView"
-        continuationToken:
+        continuation_token:
           type: string
       required:
         - items

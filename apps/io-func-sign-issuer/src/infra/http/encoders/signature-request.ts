@@ -90,7 +90,7 @@ export const SignatureRequestToListApiModel: E.Encoder<
     continuationToken?: string;
   }
 > = {
-  encode: ({ items, continuationToken }) => ({
+  encode: ({ items, continuationToken }): SignatureRequestList => ({
     items: items
       .map(SignatureRequestToApiModel.encode)
       .map(
@@ -112,6 +112,6 @@ export const SignatureRequestToListApiModel: E.Encoder<
           expires_at,
         })
       ),
-    continuationToken,
+    continuation_token: continuationToken,
   }),
 };
