@@ -1,3 +1,5 @@
+// Dialog component that show the QRCode of a specified Signature Request
+
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { localized, msg, str } from "@lit/localize";

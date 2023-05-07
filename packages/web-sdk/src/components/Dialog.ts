@@ -1,3 +1,5 @@
+// A dialog component with a backdrop
+
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";

@@ -47,6 +47,13 @@ export class IOSignElement
 
   theme: HTMLLinkElement | null = null;
 
+  // Due to Web Component limitations, it's not possible to
+  // delcare custom fonts inside the component-scoped CSS
+  // So we inject an external stylesheet (at VITE_THEME_URL)
+  // into <head> element of the document when the component
+  // is mounted to the page.
+  // When the external CSS is mounted and loaded ("load" event)
+  // we set this component as "idle" (ready to be clicked).
   connectedCallback() {
     super.connectedCallback();
     const theme = document.getElementById("io-sign-theme-css");
@@ -59,6 +66,8 @@ export class IOSignElement
         this.state = "idle";
       });
       this.theme = document.head.appendChild(el);
+    } else {
+      this.state = "idle";
     }
   }
 
@@ -87,16 +96,21 @@ export class IOSignElement
     this.showQrCode = false;
   }
 
+  reset() {
+    this.state = "idle";
+    this.signatureRequestId = undefined;
+    this.showQrCode = false;
+  }
+
+  // Show the QrCode dialog or redirect the user to the IO App
   redirectOrShowQrCode(signatureRequestId: string) {
     this.state = "idle";
     this.signatureRequestId = signatureRequestId;
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     if (isMobile) {
-      const IOLink = this.IOLinkProvider.getIOLink(this.signatureRequestId);
-      const newWindow = window.open(IOLink, "_blank");
-      if (newWindow) {
-        newWindow.focus();
-      }
+      // TODO(SFEQS-1646): replace this hardcoded base url with a dynamic one
+      const IOLink = `https://continua.io.pagopa.it/fci/main?signatureRequestId=${this.signatureRequestId}`;
+      window.location.href = IOLink;
     } else {
       this.showQrCode = true;
     }

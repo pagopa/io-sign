@@ -1,3 +1,5 @@
+// An animated spinner component
+
 import { LitElement, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeSVG } from "lit-html/directives/unsafe-svg.js";

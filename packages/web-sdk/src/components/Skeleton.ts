@@ -1,3 +1,5 @@
+// A component for displaying the structure of a widget and/or a page during their initial loading.
+
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 

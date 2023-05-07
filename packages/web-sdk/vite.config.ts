@@ -7,6 +7,7 @@ export default defineConfig({
       formats: ["es"],
       fileName: "io-sign",
     },
+    target: "es2015",
   },
   test: {
     environment: "happy-dom",
