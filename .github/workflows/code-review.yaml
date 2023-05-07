@@ -42,7 +42,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --immutable
 
       - name: "Generate API models"
         run: yarn workspaces foreach run generate:api-models
