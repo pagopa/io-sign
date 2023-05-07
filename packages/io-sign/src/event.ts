@@ -17,6 +17,7 @@ import {
   SignatureRequestWaitForQtsp,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
+import { SignerId } from "./signer";
 
 const EventId = Id;
 
@@ -50,6 +51,7 @@ export enum EventName {
 const BaseEvent = t.type({
   id: EventId,
   signatureRequestId: SignatureRequestId,
+  signerId: SignerId,
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
@@ -83,6 +85,7 @@ export const createBillingEvent = (
   id: newId(),
   name: EventName.SIGNATURE_SIGNED,
   signatureRequestId: signatureRequest.id,
+  signerId: signatureRequest.signerId,
   internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
   createdAt: new Date(),
   pricingPlan: pricingPlanFromIssuerEnvironment(
@@ -107,6 +110,7 @@ export const createAnalyticsEvent =
     id: newId(),
     name: eventName,
     signatureRequestId: signatureRequest.id,
+    signerId: signatureRequest.signerId,
     internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
     createdAt: new Date(),
     pricingPlan: pricingPlanFromIssuerEnvironment(
