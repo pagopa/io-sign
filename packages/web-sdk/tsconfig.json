@@ -2,9 +2,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "./types",
+    "target": "ES2015",
+    "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
