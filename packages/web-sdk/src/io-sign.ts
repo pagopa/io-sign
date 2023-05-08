@@ -108,9 +108,11 @@ export class IOSignElement
     this.signatureRequestId = signatureRequestId;
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     if (isMobile) {
-      // TODO(SFEQS-1646): replace this hardcoded base url with a dynamic one
-      const IOLink = `https://continua.io.pagopa.it/fci/main?signatureRequestId=${this.signatureRequestId}`;
-      window.location.href = IOLink;
+      const IOLink = new URL(
+        `/fci/main?signatureRequestId=${this.signatureRequestId}`,
+        import.meta.env.VITE_IO_LINK_BASE_URL
+      );
+      window.location.href = IOLink.href;
     } else {
       this.showQrCode = true;
     }
