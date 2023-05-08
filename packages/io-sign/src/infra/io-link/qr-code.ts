@@ -8,6 +8,6 @@ export const makeGenerateSignatureRequestQrCode =
   (ioLinkConfig: IoLinkConfig): GenerateSignatureRequestQrCode =>
   (signatureRequestId: SignatureRequestId) =>
     new URL(
-      `qrcode?feat=firma&srid=${signatureRequestId}`,
+      `qrcode.png?feat=firma&srid=${signatureRequestId}`,
       ioLinkConfig.baseUrl
     ).href;
