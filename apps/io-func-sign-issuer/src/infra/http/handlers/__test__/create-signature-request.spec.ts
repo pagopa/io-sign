@@ -51,6 +51,7 @@ describe("CreateSignatureRequestHandler", () => {
         },
       },
     ],
+    supportEmail: issuer.email,
   };
 
   const signatureRequest: SignatureRequest = {

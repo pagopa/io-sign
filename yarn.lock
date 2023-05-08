@@ -2836,24 +2836,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-functions-core-tools@npm:^4.0.5148":
-  version: 4.0.5148
-  resolution: "azure-functions-core-tools@npm:4.0.5148"
-  dependencies:
-    chalk: 3.0.0
-    extract-zip: ^2.0.1
-    https-proxy-agent: 5.0.0
-    progress: 2.0.3
-    rimraf: 3.0.2
-  bin:
-    azfun: lib/main.js
-    azurefunctions: lib/main.js
-    func: lib/main.js
-  checksum: 565e91a934a9ccf614fbce670b61acfb67b32b26beb2c98fcf8d6ac207206ca36da6087a07550fd15f652fe9e08c9d0f7e7485031b27bdb730266071af20adca
-  conditions: (os=win32 | os=darwin | os=linux)
-  languageName: node
-  linkType: hard
-
 "azure-storage@npm:^2.10.5":
   version: 2.10.7
   resolution: "azure-storage@npm:2.10.7"
