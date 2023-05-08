@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 
 export const callDocumentUpload = async (path: string, uploadUrl: string) => {
-  const pdfBlob = await readFileSync(path);
+  const pdfBlob = readFileSync(path);
 
   const options = {
     method: "PUT",

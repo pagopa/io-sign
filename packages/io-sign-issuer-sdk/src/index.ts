@@ -7,6 +7,8 @@ import { callSigners } from "./signer";
 import { callDossier } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
 import { APIMiddleware } from "./middleware";
+import { SdkSchema, SdkSchemaWithSignatureRequest } from "./schema";
+
 dotenv.config();
 
 const apiPath = process.env.API_PATH;
@@ -21,22 +23,17 @@ if (apiPath === undefined || apiPath === null) {
 }
 const checkSigner = async (
   configuration: Configuration,
-  data: any
-): Promise<any> => {
+  data: SdkSchema
+): Promise<SdkSchema> => {
   if (data.fiscalCode) {
-    return callSigners(configuration, data.fiscalCode)
-      .then((result) => {
-        console.log("risultato signer: " + JSON.stringify(result, null, 2));
-        if (data.signatureRequest) {
-          // eslint-disable-next-line functional/immutable-data
-          data.signatureRequest.signerId = result.id;
-        }
-        return data;
-      })
-      .catch((err) => {
-        console.error("errore signer: ");
-        console.error(err);
-      });
+    return callSigners(configuration, data.fiscalCode).then((result) => {
+      console.log("risultato signer: " + JSON.stringify(result, null, 2));
+      if (data.signatureRequest) {
+        // eslint-disable-next-line functional/immutable-data
+        data.signatureRequest.signerId = result.id;
+      }
+      return data;
+    });
   } else {
     return data;
   }
@@ -44,22 +41,17 @@ const checkSigner = async (
 
 const checkDossier = async (
   configuration: Configuration,
-  data: any
-): Promise<any> => {
+  data: SdkSchema
+): Promise<SdkSchema> => {
   if (data.dossier) {
-    return callDossier(configuration, data.dossier)
-      .then((result) => {
-        console.log("risultato dossier: " + JSON.stringify(result, null, 2));
-        if (data.signatureRequest) {
-          // eslint-disable-next-line functional/immutable-data
-          data.signatureRequest.dossierId = result.id;
-        }
-        return data;
-      })
-      .catch((err) => {
-        console.error("errore dossier: ");
-        console.error(err);
-      });
+    return callDossier(configuration, data.dossier).then((result) => {
+      console.log("risultato dossier: " + JSON.stringify(result, null, 2));
+      if (data.signatureRequest) {
+        // eslint-disable-next-line functional/immutable-data
+        data.signatureRequest.dossierId = result.id;
+      }
+      return data;
+    });
   } else {
     return data;
   }
@@ -67,19 +59,17 @@ const checkDossier = async (
 
 const checkSignatureRequest = async (
   configuration: Configuration,
-  data: any
+  data: SdkSchema
 ) => {
   if (data.signatureRequest != null) {
-    return callSignatureRequests(configuration, data)
-      .then((result) =>
-        console.log(
-          "risultato signature request: " + JSON.stringify(result, null, 2)
-        )
+    return callSignatureRequests(
+      configuration,
+      data as SdkSchemaWithSignatureRequest
+    ).then((result) =>
+      console.log(
+        "risultato signature request: " + JSON.stringify(result, null, 2)
       )
-      .catch((err) => {
-        console.error("errore signature request: ");
-        console.error(err);
-      });
+    );
   }
 };
 
@@ -93,20 +83,16 @@ function main() {
 
   const file = fs.readFileSync("./file.yaml", "utf8");
   const data = YAML.parse(file);
+
+  // TODO: insert runtime check on data type
+
   checkSigner(configuration, data)
-    .then((signerChecked) => {
-      checkDossier(configuration, signerChecked)
-        .then((dossierChecked) => {
-          checkSignatureRequest(configuration, dossierChecked);
-        })
-        .catch((err) => {
-          console.error("errore dossier: ");
-          console.error(err);
-        });
-    })
+    .then((signerChecked) => checkDossier(configuration, signerChecked))
+    .then((dossierChecked) =>
+      checkSignatureRequest(configuration, dossierChecked)
+    )
     .catch((err) => {
-      console.error("errore signer: ");
-      console.error(err);
+      console.error("errore: ", err);
     });
 }
 
