@@ -33,10 +33,10 @@ const checkSigner = async (
         }
         return data;
       })
-.catch((err) => {
-  console.error("errore signer: ");
-  console.error(err);
-});
+      .catch((err) => {
+        console.error("errore signer: ");
+        console.error(err);
+      });
   } else {
     return data;
   }
@@ -56,10 +56,10 @@ const checkDossier = async (
         }
         return data;
       })
-    .catch((err) => {
-      console.error("errore dossier: ");
-      console.error(err);
-    });
+      .catch((err) => {
+        console.error("errore dossier: ");
+        console.error(err);
+      });
   } else {
     return data;
   }
@@ -72,7 +72,9 @@ const checkSignatureRequest = async (
   if (data.signatureRequest != null) {
     return callSignatureRequests(configuration, data)
       .then((result) =>
-        console.log("risultato signature request: " + JSON.stringify(result, null, 2))
+        console.log(
+          "risultato signature request: " + JSON.stringify(result, null, 2)
+        )
       )
       .catch((err) => {
         console.error("errore signature request: ");
@@ -91,19 +93,21 @@ function main() {
 
   const file = fs.readFileSync("./file.yaml", "utf8");
   const data = YAML.parse(file);
-  checkSigner(configuration, data).then((signerChecked) => {
-    checkDossier(configuration, signerChecked).then((dossierChecked) => {
-      checkSignatureRequest(configuration, dossierChecked);
+  checkSigner(configuration, data)
+    .then((signerChecked) => {
+      checkDossier(configuration, signerChecked)
+        .then((dossierChecked) => {
+          checkSignatureRequest(configuration, dossierChecked);
+        })
+        .catch((err) => {
+          console.error("errore dossier: ");
+          console.error(err);
+        });
     })
     .catch((err) => {
-      console.error("errore dossier: ");
+      console.error("errore signer: ");
       console.error(err);
-    })
-})
-.catch((err) => {
-  console.error("errore signer: ");
-  console.error(err);
-});
+    });
 }
 
 main();

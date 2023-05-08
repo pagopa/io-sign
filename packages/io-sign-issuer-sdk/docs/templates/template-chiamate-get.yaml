@@ -3,4 +3,4 @@ signatureRequest:
   id: string
 signer: fiscalCode // for example AAABBB99s01H501Z
 dossier:
-    id: string
+  id: string

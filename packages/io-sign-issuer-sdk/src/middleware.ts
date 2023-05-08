@@ -11,7 +11,9 @@ export class APIMiddleware implements Middleware {
 
   post(context: ResponseContext): Promise<Response | void> {
     if (!context.response.ok) {
-      throw new Error("Code: "+context.response.status+" message:"+context.response.statusText)+" API URL: "+context.response.url;
+      throw new Error(
+        `Code: ${context.response.status} message: ${context.response.statusText} API URL: ${context.response.url}`
+      );
     }
     return Promise.resolve(context.response);
   }

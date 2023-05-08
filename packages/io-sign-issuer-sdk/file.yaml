@@ -1,24 +1,22 @@
 fiscalCode: "TNGFPP80S05H501Z"
 signatureRequest:
-#  id: "01GZNJHMNCP4A45AYFHWJ2DDJ8"
+  #  id: "01GZNJHMNCP4A45AYFHWJ2DDJ8"
   expiresAt: "2023-05-5T00:00:00.000Z"
 dossier:
-#  id: "01GZK2R7CVYZV169V3TZWJ31GN"
+  #  id: "01GZK2R7CVYZV169V3TZWJ31GN"
   title: "Flusso completo con un file"
   documentsMetadata:
-      -
-        title: "Documento 1"
-        path: "./documento1.pdf"
-        signatureFields:
-          -
-            clause:
-              title: "Firma documento 1"
-              type: "REQUIRED"
-            attrs:
-              coordinates:
-                x: 10
-                y: 10
-              page: 0
-              size:
-                w: 10
-                h: 10
+    - title: "Documento 1"
+      path: "./documento1.pdf"
+      signatureFields:
+        - clause:
+            title: "Firma documento 1"
+            type: "REQUIRED"
+          attrs:
+            coordinates:
+              x: 10
+              y: 10
+            page: 0
+            size:
+              w: 10
+              h: 10
