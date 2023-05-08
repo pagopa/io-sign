@@ -20,6 +20,8 @@
     "NamirialTestUsername": "NAMIRIAL_TEST_USERNAME",
     "NamirialTestPassword": "NAMIRIAL_TEST_PASSWORD"
     "NODE_ENV": "development",
-    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace",
+    "BillingEventHubConnectionString": "BILLING_EVENT_HUB_CONNECTION_STRING",
+    "AnalyticsEventHubConnectionString": "ANALYTICS_EVENT_HUB_CONNECTION_STRING"
   }
 }
