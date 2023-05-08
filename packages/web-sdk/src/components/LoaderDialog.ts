@@ -22,12 +22,12 @@ export class LoaderDialogElement extends LitElement {
   render() {
     return html`<io-dialog>
       <div class="content">
-        <h1>${msg(str`Caricamento in corso...`)}</h1>
+        <h1>${msg(str`Loading...`)}</h1>
         <p>
           ${msg(
-            html`Abbiamo avviato il processo di creazione della richiesta di
-              firma. <br />
-              Tra qualche secondo potrai firmare tramite l'app IO.`
+            html`We have started the process of creating the request for
+              signature. <br />
+              In a few seconds you will be able to sign via the IO app.`
           )}
         </p>
         <io-spinner
