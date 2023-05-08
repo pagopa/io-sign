@@ -91,7 +91,7 @@ paths:
           name: limit
           required: false
           schema:
-            type: interger
+            type: integer
             minimum: 25
             maximum: 100
       responses:
