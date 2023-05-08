@@ -52,6 +52,7 @@ describe("GetRequestsByDossierHandler", () => {
         },
       },
     ],
+    supportEmail: issuer.email,
   });
 
   const emptyDossier = makeDossier();

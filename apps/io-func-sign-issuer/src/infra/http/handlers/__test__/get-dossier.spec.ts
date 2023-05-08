@@ -45,6 +45,7 @@ describe("GetDossierHandler", () => {
         },
       },
     ],
+    supportEmail: issuer.email,
   };
 
   const mocks = { issuer, dossier };
