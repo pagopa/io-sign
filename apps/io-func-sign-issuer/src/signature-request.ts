@@ -410,9 +410,10 @@ export type SignatureRequestRepository = {
     items: ReadonlyArray<unknown>;
     continuationToken?: string;
   }>;
+  insert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
 };
 
-type SignatureRequestEnvironment = {
+export type SignatureRequestEnvironment = {
   signatureRequestRepository: SignatureRequestRepository;
 };
 
@@ -434,6 +435,17 @@ export const getSignatureRequest =
         )
       )
     );
+
+export const insertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.insert(request);
 
 export const upsertSignatureRequest =
   (

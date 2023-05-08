@@ -30,7 +30,7 @@ import {
 } from "@io-sign/io-sign/infra/azure/storage/blob";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
-import { requireSigner } from "../../http/decoder/signer.old";
+import { requireSigner } from "../../http/decoders/signer.old";
 import { CreateFilledDocumentBody } from "../../http/models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../../http/encoders/filled-document";
 import { FilledDocumentDetailView } from "../../http/models/FilledDocumentDetailView";

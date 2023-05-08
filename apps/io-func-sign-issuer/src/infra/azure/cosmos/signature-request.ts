@@ -14,7 +14,6 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 import { Dossier } from "../../../dossier";
 import {
   GetSignatureRequest,
-  InsertSignatureRequest,
   UpsertSignatureRequest,
   SignatureRequest,
   SignatureRequestRepository,
@@ -54,15 +53,6 @@ export const makeGetSignatureRequest =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export const makeInsertSignatureRequest =
-  (db: cosmos.Database): InsertSignatureRequest =>
-  (request) =>
-    pipe(
-      new SignatureRequestModel(db),
-      (model) => model.create(request),
-      TE.mapLeft(toCosmosDatabaseError)
-    );
-
 export const makeUpsertSignatureRequest =
   (db: cosmos.Database): UpsertSignatureRequest =>
   (request) =>
@@ -95,6 +85,10 @@ export class CosmosDbSignatureRequestRepository
 
   public upsert(request: SignatureRequest) {
     return pipe(this.#model.upsert(request), TE.mapLeft(toCosmosDatabaseError));
+  }
+
+  public insert(request: SignatureRequest) {
+    return pipe(this.#model.create(request), TE.mapLeft(toCosmosDatabaseError));
   }
 
   public async findByDossier(
