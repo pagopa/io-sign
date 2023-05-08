@@ -16,6 +16,7 @@ import "./components/Button";
 import "./components/Skeleton";
 import "./components/Spinner";
 import "./components/QrCodeDialog";
+import "./components/LoaderDialog";
 
 setLocaleFromUserSettings();
 
@@ -138,6 +139,12 @@ export class IOSignElement
           .signatureRequestId=${this.signatureRequestId}
           @close=${this.handleClose}
         ></io-sign-qr-dialog>`
+      )}
+      ${when(
+        this.state === "loading",
+        () => html`<io-sign-loader-dialog
+          @close=${this.handleClose}
+        ></io-sign-loader-dialog>`
       )}`;
   }
 }
