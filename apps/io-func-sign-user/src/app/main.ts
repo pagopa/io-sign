@@ -8,6 +8,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 
+import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
@@ -99,6 +100,10 @@ const lollipopApiClient = createLollipopApiClient(
   config.pagopa.lollipop.apiKey
 );
 
+const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
+  config.pagopa.ioLink
+);
+
 export const Info = makeInfoFunction(
   config.namirial,
   pdvTokenizerClient,
@@ -145,7 +150,8 @@ export const CreateSignature = makeCreateSignatureFunction(
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
-  onWaitForSignatureQueueClient
+  onWaitForSignatureQueueClient,
+  generateSignatureRequestQrCode
 );
 
 export const ValidateSignature = makeValidateSignatureFunction(

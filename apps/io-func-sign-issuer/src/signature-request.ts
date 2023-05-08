@@ -292,8 +292,7 @@ const onReadyStatus =
         return E.right({
           ...request,
           status: "WAIT_FOR_SIGNATURE",
-          // TODO: [SFEQS-946] make the QR Code dynamic
-          qrCodeUrl: "https://place-holder.com/qr-code",
+          qrCodeUrl: action.qrCodeUrl,
           updatedAt: new Date(),
         });
       default:
