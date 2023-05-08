@@ -59,7 +59,7 @@ export const newSignatureRequest = (
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
-  issuerEmail: dossier.supportEmail ?? issuer.email,
+  issuerEmail: dossier.supportEmail,
   issuerDescription: issuer.description,
   issuerInternalInstitutionId: issuer.internalInstitutionId,
   issuerEnvironment: issuer.environment,
