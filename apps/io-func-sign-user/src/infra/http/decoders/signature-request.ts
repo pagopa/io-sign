@@ -1,3 +1,5 @@
+import * as H from "@pagopa/handler-kit";
+import { lookup } from "fp-ts/lib/Record";
 import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
 import { HttpRequest, path } from "handler-kit-legacy/lib/http";
@@ -9,6 +11,7 @@ import * as E from "fp-ts/lib/Either";
 import * as RE from "fp-ts/lib/ReaderEither";
 import { flow, pipe } from "fp-ts/lib/function";
 
+// TODO: replace with requireSignatureRequestId
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),
   E.fromOption(() => new Error(`Missing "id" in path`)),
@@ -68,4 +71,12 @@ export const makeRequireSignatureRequestByFiscalCode = (
       )
     ),
     RTE.chainW(RTE.fromOption(signatureRequestNotFoundError))
+  );
+
+export const requireSignatureRequestId = (req: H.HttpRequest) =>
+  pipe(
+    req.path,
+    lookup("signatureRequestId"),
+    RTE.fromOption(() => new H.HttpBadRequestError(`Missing "id" in path`)),
+    RTE.chainEitherKW(H.parse(SignatureRequestId, `Invalid "id" supplied`))
   );

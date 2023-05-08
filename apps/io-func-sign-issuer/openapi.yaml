@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Issuer API
-  version: 1.0.0
+  version: 1.1.0
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign
     description: production
@@ -70,6 +70,50 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /dossiers/{id}/signature-requests:
+    get:
+      operationId: getRequestsByDossier
+      tags:
+        - Dossier
+      summary: Get the Signature Requests created from a Dossier
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+        - in: query
+          name: continuationToken
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 25
+            maximum: 100
+      responses:
+        "200":
+          description: The Dossier detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestList"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
   /signers:
     post:
       operationId: getSignerByFiscalCode
@@ -119,12 +163,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignatureRequestDetailView"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         default:
@@ -295,6 +339,13 @@ components:
 
     Unauthorized:
       description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetail"
+
+    UnprocessableContent:
+      description: Unprocessable Content
       content:
         application/json:
           schema:
@@ -706,7 +757,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SignatureRequestListView"
-        continuationToken:
+        continuation_token:
           type: string
       required:
         - items
