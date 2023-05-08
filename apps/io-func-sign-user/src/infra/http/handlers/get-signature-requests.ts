@@ -13,7 +13,7 @@ import { flow } from "fp-ts/function";
 import * as RA from "fp-ts/ReadonlyArray";
 
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { requireSignerId } from "../decoder/signer";
+import { requireSignerId } from "../decoders/signer";
 
 import { getSignatureRequestsBySignerId } from "../../../signature-request";
 import { SignatureRequestToListView } from "../encoders/signature-request";

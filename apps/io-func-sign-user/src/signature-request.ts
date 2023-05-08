@@ -58,6 +58,14 @@ export type SignatureRequestRepository = {
   findBySignerId: (
     signerId: Signer["id"]
   ) => TE.TaskEither<Error, ReadonlyArray<SignatureRequest>>;
+  get: (
+    id: SignatureRequest["id"],
+    signerId: SignatureRequest["signerId"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+};
+
+type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
 };
 
 export const getSignatureRequestsBySignerId =
@@ -72,6 +80,25 @@ export const getSignatureRequestsBySignerId =
   > =>
   ({ signatureRequestRepository: repo }) =>
     repo.findBySignerId(signerId);
+
+export const getSignatureRequest =
+  (
+    id: SignatureRequest["id"],
+    signerId: SignatureRequest["signerId"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.get(id, signerId),
+      TE.chain(
+        TE.fromOption(
+          () => new EntityNotFoundError("Signature request not found")
+        )
+      )
+    );
 
 type Action_MARK_AS_SIGNED = {
   name: "MARK_AS_SIGNED";
