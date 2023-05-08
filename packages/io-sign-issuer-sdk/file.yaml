@@ -19,4 +19,17 @@ dossier:
             size:
               w: 10
               h: 10
-documentsPaths: ["./documento1.pdf"]
+    - title: "Documento 2"
+      signatureFields:
+        - clause:
+            title: "Firma documento 2"
+            type: "REQUIRED"
+          attrs:
+            coordinates:
+              x: 10
+              y: 10
+            page: 0
+            size:
+              w: 10
+              h: 10
+documentsPaths: ["./documento1.pdf", "./documento2.pdf"]
