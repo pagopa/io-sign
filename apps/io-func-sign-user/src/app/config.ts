@@ -17,6 +17,10 @@ import {
   getEventHubsConfigFromEnvironment,
 } from "@io-sign/io-sign/infra/azure/event-hubs/config";
 import {
+  IoLinkConfig,
+  getIoLinkConfigFromEnvironment,
+} from "@io-sign/io-sign/infra/io-link/config";
+import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
@@ -43,6 +47,7 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
+    ioLink: IoLinkConfig,
   }),
   namirial: NamirialConfig,
 });
@@ -62,6 +67,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     namirial: getNamirialConfigFromEnvironment,
     lollipop: getLollipopConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
+    ioLink: getIoLinkConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -73,6 +79,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
       lollipop: config.lollipop,
+      ioLink: config.ioLink,
     },
     namirial: config.namirial,
   }))
