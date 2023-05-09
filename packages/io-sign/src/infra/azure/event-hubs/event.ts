@@ -43,5 +43,5 @@ export const makeCreateAndSendAnalyticsEvent =
         eventAnalyticsClient,
         logger: ConsoleLogger,
       },
-      pipe(eventName, createAndSendAnalyticsEvent(signatureRequest))
+      pipe(signatureRequest, createAndSendAnalyticsEvent(eventName))
     );

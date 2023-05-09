@@ -70,7 +70,7 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
     ),
     RTE.chainW(insertSignatureRequest),
     RTE.chainFirstW((request) =>
-      pipe(EventName.SIGNATURE_CREATED, createAndSendAnalyticsEvent(request))
+      pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED))
     ),
     RTE.map(
       flow(
