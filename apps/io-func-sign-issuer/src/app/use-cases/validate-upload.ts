@@ -192,8 +192,8 @@ export const validateUpload = flow(
               )
             ),
             RTE.chainFirstW(() =>
-              createAndSendAnalyticsEvent(signatureRequest)(
-                EventName.DOCUMENT_UPLOADED
+              createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
+                signatureRequest
               )
             )
           )
@@ -215,8 +215,8 @@ export const validateUpload = flow(
             // Remove REJECTED file from temp storage
             RTE.chainW(() => removeDocumentFromStorage(meta.id)),
             RTE.chainFirstW(() =>
-              createAndSendAnalyticsEvent(signatureRequest)(
-                EventName.DOCUMENT_REJECTED
+              createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
+                signatureRequest
               )
             )
           )
