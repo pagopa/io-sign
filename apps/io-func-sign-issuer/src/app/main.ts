@@ -17,7 +17,6 @@ import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
-import { makeSetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
@@ -112,11 +111,11 @@ export const Info = makeInfoFunction(
   onSignatureRequestReadyQueueClient
 );
 
-export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
-  database,
-  onSignatureRequestReadyQueueClient,
-  eventAnalyticsClient
-);
+// export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
+//   database,
+//   onSignatureRequestReadyQueueClient,
+//   eventAnalyticsClient
+// );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
 

@@ -1,3 +1,4 @@
+import * as H from "@pagopa/handler-kit";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
@@ -14,83 +15,54 @@ import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
 
 import { validate } from "@io-sign/io-sign/validation";
-import { error } from "@io-sign/io-sign/infra/http/response";
-import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
-import { EventHubProducerClient } from "@azure/event-hubs";
-import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
+import { requireSignatureRequestId } from "../../http/decoders/signature-request";
 import { SetSignatureRequestStatusBody } from "../../http/models/SetSignatureRequestStatusBody";
-import { makeMarkRequestAsReady } from "../../../app/use-cases/mark-request-ready";
 
+import { requireIssuer } from "../../http/decoders/issuer";
 import {
-  makeGetSignatureRequest,
-  makeUpsertSignatureRequest,
-} from "../cosmos/signature-request";
+  getSignatureRequest,
+  markAsReady,
+  upsertSignatureRequest,
+} from "../../../signature-request";
+import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
+import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
-import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
-import { makeNotifySignatureRequestReadyEvent } from "../storage/signature-request";
-
-const makeSetSignatureRequestStatusHandler = (
-  db: CosmosDatabase,
-  onSignatureRequestReadyQueueClient: QueueClient,
-  eventHubAnalyticsClient: EventHubProducerClient
-) => {
-  const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const getSignatureRequest = makeGetSignatureRequest(db);
-  const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
-
-  const notifySignatureRequestReadyEvent = makeNotifySignatureRequestReadyEvent(
-    onSignatureRequestReadyQueueClient
-  );
-  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient
-  );
-
-  const markRequestAsReady = makeMarkRequestAsReady(
-    upsertSignatureRequest,
-    notifySignatureRequestReadyEvent,
-    createAndSendAnalyticsEvent
-  );
-  const requireSignatureRequest = makeRequireSignatureRequest(
-    getIssuerBySubscriptionId,
-    getSignatureRequest
-  );
-
-  const requireSetSignatureRequestStatusBody: RE.ReaderEither<
-    HttpRequest,
-    Error,
-    "READY"
-  > = flow(
-    (req) => req.body,
-    validate(SetSignatureRequestStatusBody),
+const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
+  pipe(
+    req.body,
+    validate(SetSignatureRequestStatusBody), // H.parse?
     E.filterOrElse(
-      (status) => status === "READY",
-      () => new Error("only READY is allowed")
-    )
+      (status) => status === "READY" || status === "REJECTED",
+      () => new Error("only READY or REJECTED is allowed")
+    ),
+    RTE.fromEither // lascio?
   );
 
-  const requireMarkRequestAsReadyPayload = pipe(
+// this is the handler written with handler-kit. previous: makeSetSignatureRequestStatusHandler
+const foo3 = (req: H.HttpRequest) =>
+  pipe(
     sequenceS(RTE.ApplyPar)({
-      signatureRequest: requireSignatureRequest,
-      body: RTE.fromReaderEither(requireSetSignatureRequestStatusBody),
+      signatureRequestId: requireSignatureRequestId(req),
+      issuer: requireIssuer(req),
+      body: requireSetSignatureRequestStatusBody(req),
     }),
-    RTE.map(({ signatureRequest }) => signatureRequest)
+    RTE.chainW(({ signatureRequestId, issuer }) =>
+      getSignatureRequest(signatureRequestId, issuer.id)
+    ),
+    RTE.chainW(flow(markAsReady, RTE.fromEither)),
+    RTE.chainW(upsertSignatureRequest),
+    RTE.chainFirstW((request) =>
+      pipe(EventName.SIGNATURE_READY, createAndSendAnalyticsEvent(request))
+    ),
+    RTE.chainW(enqueue),
+    // queste due righe solo per farlo compilare
+    RTE.map(flow(H.successJson, H.withStatusCode(201)))
+    // RTE.orElseW(logErrorAndReturnResponse)
   );
 
-  const decodeHttpRequest = flow(
-    azure.fromHttpRequest,
-    TE.fromEither,
-    TE.chain(requireMarkRequestAsReadyPayload)
-  );
+export const SetSignatureRequestStatusHandler = H.of(foo3);
 
-  return createHandler(
-    decodeHttpRequest,
-    markRequestAsReady,
-    error,
-    () => undefined
-  );
-};
-
-export const makeSetSignatureRequestStatusFunction = flow(
-  makeSetSignatureRequestStatusHandler,
-  azure.unsafeRun
+export const SetSignatureRequestStatusFunction = httpAzureFunction(
+  SetSignatureRequestStatusHandler
 );

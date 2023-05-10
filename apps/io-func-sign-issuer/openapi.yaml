@@ -519,6 +519,7 @@ components:
       type: string
       x-extensible-enum:
         - READY
+        - REJECTED
 
     DossierDetailView:
       type: object
