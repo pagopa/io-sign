@@ -151,19 +151,20 @@ const callUploadFile = async (
   data: SdkSchemaWithSignatureRequest
 ) => {
   if (data.signatureRequest.status === "DRAFT" && data.documentsPaths["0"]) {
-	  let i = 0;
-          data.signatureRequest.documents.forEach((element: DocumentDetailView) => {
-      callGetDocumentUploadUrl(
+          for (let i =0; i < data.signatureRequest.documents.length; i++) {
+      const documentUploadUrl: string = await callGetDocumentUploadUrl(
         configuration,
         data.signatureRequest.id,
-        element.id
-      ).then((documentUploadUrl: string) => {
-      callDocumentUpload(
+        data.signatureRequest.documents[i].id
+      );
+      console.log(i);
+      console.log(data.signatureRequest.documents[i].id);
+      console.log(data.documentsPaths[i]);
+      console.log(documentUploadUrl.replaceAll('"', ""));
+      await callDocumentUpload(
         data.documentsPaths[i],
         documentUploadUrl.replaceAll('"', "")
       );
-	  });
-	  i++;
-    });
+    }
   }
 };
