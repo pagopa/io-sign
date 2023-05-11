@@ -1,10 +1,11 @@
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-let */
 import {
   Configuration,
   SignatureRequestApi,
   CreateSignatureRequestBody,
   GetSignatureRequestRequest,
   SignatureRequestDetailView,
-  DocumentDetailView,
 } from "@io-sign/io-sign-api-client";
 import { callDocumentUpload } from "./upload-file";
 import { SdkSchemaWithSignatureRequest } from "./schema";
@@ -45,9 +46,9 @@ export const callSignatureRequests = async (
       data.signatureRequest = req;
     });
 
-    let retryCunt: number = 0;
-    while (retryCunt < 5 && data.signatureRequest.status === "READY") {
-      retryCunt++;
+    let retryCount: number = 0;
+    while (retryCount < 5 && data.signatureRequest.status === "READY") {
+      retryCount++;
       await getSignatureRequest(configuration, request).then((req) => {
         data.signatureRequest = req;
       });
@@ -165,12 +166,12 @@ const callUploadFile = async (
           documentUploadUrl.replaceAll('"', "")
         );
 
-        let retryCunt: number = 0;
+        let retryCount: number = 0;
         while (
-          retryCunt < 5 &&
+          retryCount < 5 &&
           data.signatureRequest.documents[i].status === "WAIT_FOR_UPLOAD"
         ) {
-          retryCunt++;
+          retryCount++;
           await getSignatureRequest(configuration, request).then((req) => {
             data.signatureRequest = req;
           });
