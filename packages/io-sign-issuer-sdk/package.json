@@ -23,7 +23,7 @@
     "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i ./../../apps/io-func-sign-issuer/openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
   },
   "dependencies": {
-    "@io-sign/io-sign-api-client": "^1.0.0",
+    "@io-sign/io-sign-api-client": "workspace:^",
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/ts-commons": "^11.0.0",
     "dotenv": "^16.0.3",

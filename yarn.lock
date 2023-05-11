@@ -1334,7 +1334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@io-sign/io-sign-api-client@^1.0.0, @io-sign/io-sign-api-client@workspace:packages/io-sign-api-client":
+"@io-sign/io-sign-api-client@workspace:^, @io-sign/io-sign-api-client@workspace:packages/io-sign-api-client":
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign-api-client@workspace:packages/io-sign-api-client"
   dependencies:
@@ -1346,7 +1346,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign-issuer-sdk@workspace:packages/io-sign-issuer-sdk"
   dependencies:
-    "@io-sign/io-sign-api-client": ^1.0.0
+    "@io-sign/io-sign-api-client": "workspace:^"
     "@jest/globals": ^29.3.1
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/io-functions-commons": ^26.2.1
