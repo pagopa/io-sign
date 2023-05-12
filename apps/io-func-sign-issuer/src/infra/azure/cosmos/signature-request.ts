@@ -2,15 +2,22 @@ import {
   CosmosdbModel,
   BaseModel,
   CosmosResource,
+  toCosmosErrorResponse,
+  CosmosDecodingError,
+  CosmosErrorResponse,
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
+import { Document } from "@io-sign/io-sign/document";
 
 import * as t from "io-ts";
+import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-
+import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 import * as cosmos from "@azure/cosmos";
-import { pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
+import { validate } from "@io-sign/io-sign/validation";
 import { Dossier } from "../../../dossier";
 import {
   GetSignatureRequest,
@@ -90,6 +97,60 @@ export class CosmosDbSignatureRequestRepository
   public insert(request: SignatureRequest) {
     return pipe(this.#model.create(request), TE.mapLeft(toCosmosDatabaseError));
   }
+
+  /* Unlike upsert, this function only partially updates the signature request,
+   * namely the document identified by documentId.
+   */
+  public patchDocument: SignatureRequestRepository["patchDocument"] = (
+    request: SignatureRequest,
+    documentId: Document["id"]
+  ) =>
+    pipe(
+      request.documents,
+      validate(t.array(Document), "Document type is invalid"),
+      E.chainOptionK(
+        () =>
+          new Error(
+            `Unable to find document with id ${documentId} in signature request`
+          )
+      )(A.findIndex((requestDocument) => requestDocument.id === documentId)),
+      TE.fromEither,
+      TE.chain((index) =>
+        pipe(
+          /* I can't use the io-functions-commons patch function here as it doesn't support
+           * updating a single item inside an array (documents)
+           */
+          TE.tryCatch(
+            () =>
+              this.#container.item(request.id, request.issuerId).patch([
+                {
+                  op: "replace",
+                  path: `/documents/${index}`,
+                  value: request.documents[index],
+                },
+              ]),
+            toCosmosErrorResponse
+          ),
+          TE.chainW((patchResponse) =>
+            pipe(
+              patchResponse.resource,
+              O.fromNullable,
+              TE.fromOption(() =>
+                CosmosErrorResponse({
+                  code: 404,
+                  message: "item not found for input id",
+                  name: "Not Found",
+                })
+              ),
+              TE.chainEitherKW(
+                flow(SignatureRequest.decode, E.mapLeft(CosmosDecodingError))
+              )
+            )
+          ),
+          TE.mapLeft(toCosmosDatabaseError)
+        )
+      )
+    );
 
   public async findByDossier(
     dossier: Dossier,
