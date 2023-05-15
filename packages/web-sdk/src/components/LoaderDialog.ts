@@ -11,13 +11,16 @@ import "./Dialog";
 @customElement("io-sign-loader-dialog")
 export class LoaderDialogElement extends LitElement {
   static styles = css`
-    h6 {
+    p {
       font-size: 1.5em;
       line-height: 28px;
     }
+    .content {
+      margin-top: 40%;
+      margin-bottom: 40%;
+    }
   `;
 
-  //TODO:[SFEQS-1643] This is only a pleceholder. Waiting for figma
   render() {
     return html`<io-dialog>
       <div class="content">
@@ -25,6 +28,7 @@ export class LoaderDialogElement extends LitElement {
         <io-spinner
           style=${styleMap({
             "--io-spinner-color": "#0073E6",
+            "--io-spinner-size": "40px",
           })}
         ></io-spinner>
       </div>
