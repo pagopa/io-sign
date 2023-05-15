@@ -8,6 +8,20 @@ import closeIcon from "../assets/close-icon.svg?raw";
 
 @customElement("io-dialog")
 export class IODialogElement extends LitElement {
+  showCloseButton: string;
+  constructor() {
+    super();
+    this.showCloseButton = "true";
+  }
+
+  static get properties() {
+    return {
+      showCloseButton: {
+        type: String,
+        attribute: "show-close-button",
+      },
+    };
+  }
   static styles = css`
     .backdrop {
       display: flex;
@@ -59,9 +73,13 @@ export class IODialogElement extends LitElement {
     return html`<div class="backdrop" @click=${this.dispatchClose}>
       <div class="dialog" @click=${this.handleClick}>
         <header>
-          <button class="close" @click=${this.dispatchClose}>
-            ${unsafeSVG(closeIcon)}
-          </button>
+          ${this.showCloseButton === "true"
+            ? html`
+                <button class="close" @click=${this.dispatchClose}>
+                  ${unsafeSVG(closeIcon)}
+                </button>
+              `
+            : html``}
         </header>
         <main>
           <slot></slot>
