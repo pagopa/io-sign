@@ -16,11 +16,6 @@ export class LoaderDialogElement extends LitElement {
     h1 {
       font-size: 1.625em;
     }
-
-    .body {
-      color: #17324d;
-      font-size: 16px;
-    }
   `;
 
   //TODO:[SFEQS-1643] This is only a pleceholder. Waiting for figma
@@ -30,7 +25,7 @@ export class LoaderDialogElement extends LitElement {
         <h1>${msg(str`Loading...`)}</h1>
         <p>${msg(html`Caricamento in corso......`)}</p>
         ${unsafeSVG(hourglass)}
-        <p class="body">${msg(html`Stiamo preparando i documenti...`)}</p>
+        <p>${msg(html`Stiamo preparando i documenti...`)}</p>
       </div>
     </io-dialog>`;
   }
