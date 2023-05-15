@@ -20,6 +20,7 @@
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
+    "build-api-client": "tsc -p ../io-sign-api-client/tsconfig.json",
     "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i ./../../apps/io-func-sign-issuer/openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
   },
   "dependencies": {

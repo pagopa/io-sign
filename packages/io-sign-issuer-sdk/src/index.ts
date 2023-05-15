@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import * as fetch from "isomorphic-fetch";
 import { Configuration } from "@io-sign/io-sign-api-client";
 import { callSigners } from "./signer";
-import { callDossier } from "./dossier";
+import { callDossier, callGetRequestsByDossier } from "./dossier";
 import { callSignatureRequests } from "./signature-request";
 import { APIMiddleware } from "./middleware";
 import { SdkSchema, SdkSchemaWithSignatureRequest } from "./schema";
@@ -43,6 +43,12 @@ const checkDossier = async (
   configuration: Configuration,
   data: SdkSchema
 ): Promise<SdkSchema> => {
+	if (data.signatureRequests) {
+    return callGetRequestsByDossier(configuration, data.signatureRequests).then((result: any) => {
+      console.log("risultato dossier: " + JSON.stringify(result, null, 2));
+	return data;
+	});
+	}
   if (data.dossier) {
     return callDossier(configuration, data.dossier).then((result) => {
       console.log("risultato dossier: " + JSON.stringify(result, null, 2));
