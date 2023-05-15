@@ -2,19 +2,18 @@
 
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
-import { localized, msg, str } from "@lit/localize";
-
-import hourglass from "../assets/hourglass.svg?raw";
+import { localized, msg } from "@lit/localize";
+import { styleMap } from "lit/directives/style-map.js";
 
 import "./Dialog";
-import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
 @localized()
 @customElement("io-sign-loader-dialog")
 export class LoaderDialogElement extends LitElement {
   static styles = css`
-    h1 {
-      font-size: 1.625em;
+    h6 {
+      font-size: 1.5em;
+      line-height: 28px;
     }
   `;
 
@@ -22,10 +21,12 @@ export class LoaderDialogElement extends LitElement {
   render() {
     return html`<io-dialog>
       <div class="content">
-        <h1>${msg(str`Loading...`)}</h1>
-        <p>${msg(html`Caricamento in corso......`)}</p>
-        ${unsafeSVG(hourglass)}
-        <p>${msg(html`Stiamo preparando i documenti...`)}</p>
+        <p>${msg(html`Stiamo preparando i<br />documenti...`)}</p>
+        <io-spinner
+          style=${styleMap({
+            "--io-spinner-color": "#0073E6",
+          })}
+        ></io-spinner>
       </div>
     </io-dialog>`;
   }
