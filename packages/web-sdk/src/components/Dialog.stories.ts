@@ -4,15 +4,15 @@ import "./Dialog";
 import { Meta, StoryFn } from "@storybook/web-components";
 
 type IODialogStoryArgs = {
-  withCloseButton?: "false";
+  withoutCloseButton?: "false";
 };
 
 export default {
   title: "UI/Dialog",
   component: "io-dialog",
   argTypes: {
-    withCloseButton: {
-      name: "With close button",
+    withoutCloseButton: {
+      name: "Without close button",
       type: "boolean",
       control: {
         type: "boolean",
@@ -22,7 +22,7 @@ export default {
   },
 } as Meta<IODialogStoryArgs>;
 
-export const Dialog: StoryFn<IODialogStoryArgs> = ({ withCloseButton }) =>
-  html`<io-dialog ${withCloseButton ? "with-close-button" : nothing}
+export const Dialog: StoryFn<IODialogStoryArgs> = ({ withoutCloseButton }) =>
+  html`<io-dialog ${withoutCloseButton ? "without-close-button" : nothing}
     >Ciao!</io-dialog
   >`;
