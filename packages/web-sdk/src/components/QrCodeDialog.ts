@@ -51,7 +51,7 @@ export class ScanQrCodeDialogElement extends LitElement {
   `;
 
   render() {
-    return html`<io-dialog show-close-button="true">
+    return html`<io-dialog with-close-button>
       <div class="content">
         <h1>${msg(str`Scan the QR code`)}</h1>
         <p>

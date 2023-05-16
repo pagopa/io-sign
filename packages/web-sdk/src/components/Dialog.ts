@@ -9,8 +9,8 @@ import { when } from "lit/directives/when.js";
 
 @customElement("io-dialog")
 export class IODialogElement extends LitElement {
-  @property({ attribute: "show-close-button" })
-  showCloseButton?: "true";
+  @property({ attribute: "with-close-button", type: Boolean })
+  withCloseButton: boolean = false;
 
   static styles = css`
     .backdrop {
@@ -64,7 +64,7 @@ export class IODialogElement extends LitElement {
       <div class="dialog" @click=${this.handleClick}>
         <header>
           ${when(
-            this.showCloseButton === "true",
+            this.withCloseButton,
             () => html`<button class="close" @click=${this.dispatchClose}>
               ${unsafeSVG(closeIcon)}
             </button>`

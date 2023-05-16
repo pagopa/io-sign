@@ -1,18 +1,18 @@
-import { html } from "lit-html";
+import { html, nothing } from "lit-html";
 
 import "./Dialog";
 import { Meta, StoryFn } from "@storybook/web-components";
 
 type IODialogStoryArgs = {
-  showCloseButton?: "false";
+  withCloseButton?: "false";
 };
 
 export default {
   title: "UI/Dialog",
   component: "io-dialog",
   argTypes: {
-    showCloseButton: {
-      name: "Show close button",
+    withCloseButton: {
+      name: "With close button",
       type: "boolean",
       control: {
         type: "boolean",
@@ -22,7 +22,7 @@ export default {
   },
 } as Meta<IODialogStoryArgs>;
 
-export const Dialog: StoryFn<IODialogStoryArgs> = ({ showCloseButton }) =>
-  html`<io-dialog show-close-button="${showCloseButton ? "true" : "false"}"
+export const Dialog: StoryFn<IODialogStoryArgs> = ({ withCloseButton }) =>
+  html`<io-dialog ${withCloseButton ? "with-close-button" : nothing}
     >Ciao!</io-dialog
   >`;
