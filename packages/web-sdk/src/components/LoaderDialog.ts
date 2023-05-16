@@ -22,7 +22,7 @@ export class LoaderDialogElement extends LitElement {
   `;
 
   render() {
-    return html`<io-dialog without-close-button>
+    return html`<io-dialog disable-close>
       <div class="content">
         <p>${msg(html`Stiamo preparando i<br />documenti...`)}</p>
         <io-spinner
