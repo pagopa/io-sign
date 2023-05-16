@@ -22,6 +22,10 @@ export class IOSpinnerElement extends LitElement {
       margin: 0 auto;
       animation: spin 1s linear infinite;
     }
+    svg {
+      width: var(--io-spinner-size, 24px);
+      height: var(--io-spinner-size, 24px);
+    }
   `;
 
   render() {

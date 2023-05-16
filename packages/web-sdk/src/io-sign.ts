@@ -16,6 +16,7 @@ import "./components/Button";
 import "./components/Skeleton";
 import "./components/Spinner";
 import "./components/QrCodeDialog";
+import "./components/LoaderDialog";
 
 setLocaleFromUserSettings();
 
@@ -109,8 +110,11 @@ export class IOSignElement
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     if (isMobile) {
       // TODO(SFEQS-1646): replace this hardcoded base url with a dynamic one
-      const IOLink = `https://continua.io.pagopa.it/fci/main?signatureRequestId=${this.signatureRequestId}`;
-      window.location.href = IOLink;
+      const IOLink = new URL(
+        `/fci/main?signatureRequestId=${this.signatureRequestId}`,
+        import.meta.env.VITE_IO_LINK_BASE_URL
+      );
+      window.location.href = IOLink.href;
     } else {
       this.showQrCode = true;
     }
@@ -136,6 +140,12 @@ export class IOSignElement
           .signatureRequestId=${this.signatureRequestId}
           @close=${this.handleClose}
         ></io-sign-qr-dialog>`
+      )}
+      ${when(
+        this.state === "loading",
+        () => html`<io-sign-loader-dialog
+          @close=${this.handleClose}
+        ></io-sign-loader-dialog>`
       )}`;
   }
 }

@@ -17,6 +17,10 @@
       "name": "@io-sign/io-sign"
     },
     {
+      "path": "packages/web-sdk",
+      "name": "@io-sign/web-sdk"
+    },
+    {
       "path": "apps/io-sign-selfcare-frontend"
     }
   ],
