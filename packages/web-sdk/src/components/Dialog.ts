@@ -1,27 +1,17 @@
 // A dialog component with a backdrop
 
 import { LitElement, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
 import closeIcon from "../assets/close-icon.svg?raw";
+import { when } from "lit/directives/when.js";
 
 @customElement("io-dialog")
 export class IODialogElement extends LitElement {
-  showCloseButton: string;
-  constructor() {
-    super();
-    this.showCloseButton = "true";
-  }
+  @property({ attribute: "show-close-button" })
+  showCloseButton?: "true";
 
-  static get properties() {
-    return {
-      showCloseButton: {
-        type: String,
-        attribute: "show-close-button",
-      },
-    };
-  }
   static styles = css`
     .backdrop {
       display: flex;
@@ -73,13 +63,12 @@ export class IODialogElement extends LitElement {
     return html`<div class="backdrop" @click=${this.dispatchClose}>
       <div class="dialog" @click=${this.handleClick}>
         <header>
-          ${this.showCloseButton === "true"
-            ? html`
-                <button class="close" @click=${this.dispatchClose}>
-                  ${unsafeSVG(closeIcon)}
-                </button>
-              `
-            : html``}
+          ${when(
+            this.showCloseButton === "true",
+            () => html`<button class="close" @click=${this.dispatchClose}>
+              ${unsafeSVG(closeIcon)}
+            </button>`
+          )}
         </header>
         <main>
           <slot></slot>

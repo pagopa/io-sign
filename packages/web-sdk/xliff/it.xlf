@@ -15,6 +15,10 @@
             scan this code with your device</source>
   <target>Per vedere e firmare i documenti su IO, inquadra <x id="0" equiv-text="&lt;br&gt;"/> questo codice con il tuo dispositivo</target>
 </trans-unit>
+<trans-unit id="ha0d71407af1d41f6">
+  <source>We are preparing the<x id="0" equiv-text="&lt;br&gt;"/>documents...</source>
+  <target>Stiamo preparando i<x id="0" equiv-text="&lt;br&gt;"/>documenti...</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
