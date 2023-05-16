@@ -6,6 +6,7 @@ import "./Spinner";
 
 type IOSpinnerStoryArgs = {
   color: "string";
+  size: "string";
 };
 
 export default {
@@ -16,12 +17,17 @@ export default {
       control: { type: "color" },
       defaultValue: "blue",
     },
+    size: {
+      type: "string",
+      defaultValue: "20px",
+    },
   },
 } as Meta<IOSpinnerStoryArgs>;
 
-export const Spinner: StoryFn<IOSpinnerStoryArgs> = ({ color }) => {
+export const Spinner: StoryFn<IOSpinnerStoryArgs> = ({ color, size }) => {
   const styles = {
     "--io-spinner-color": color,
+    "--io-spinner-size": size,
   };
   return html`<io-spinner style=${styleMap(styles)}></io-spinner>`;
 };
