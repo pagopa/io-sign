@@ -1,0 +1,15 @@
+{
+    "bindings": [
+      {
+        "authLevel": "function",
+        "type": "queueTrigger",
+        "direction": "in",
+        "name": "cancelSignatureRequest",
+        "queueName": "waiting-for-signature-request-cancelation",
+        "connection": "StorageAccountConnectionString"
+      }
+    ],
+    "scriptFile": "../dist/main.js",
+    "entryPoint": "CancelSignatureRequest"
+  }
+  

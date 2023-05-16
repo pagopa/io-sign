@@ -761,6 +761,7 @@ components:
         - WAIT_FOR_QTSP
         - SIGNED
         - REJECTED
+        - CANCELED
 
     DossierTitle:
       type: string

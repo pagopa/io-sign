@@ -53,6 +53,7 @@ describe("GetSignatureRequestHandler", () => {
         mocks.signatureRequest.signerId === signerId
           ? TE.right(O.some(signatureRequest))
           : TE.right(O.none),
+      upsert: () => TE.left(new Error("not implemented")),
     };
   });
 

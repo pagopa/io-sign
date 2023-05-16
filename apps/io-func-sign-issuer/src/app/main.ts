@@ -37,6 +37,7 @@ import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -99,6 +100,11 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
+const WaitingForSignatureRequestCancelationQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "waiting-for-signature-request-cancelation"
+);
+
 export const Info = makeInfoFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
@@ -111,11 +117,6 @@ export const Info = makeInfoFunction(
   onSignatureRequestReadyQueueClient
 );
 
-// export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
-//   database,
-//   onSignatureRequestReadyQueueClient,
-//   eventAnalyticsClient
-// );
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
 
@@ -206,4 +207,12 @@ export const CreateSignatureRequest = CreateSignatureRequestFunction({
   dossierRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
+});
+
+export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  eventAnalyticsClient,
+  readyClient: onSignatureRequestReadyQueueClient,
+  canceledClient: WaitingForSignatureRequestCancelationQueueClient,
 });

@@ -15,6 +15,7 @@ import {
   SignatureRequestSigned,
   SignatureRequestToBeSigned,
   SignatureRequestWaitForQtsp,
+  SignatureRequestCanceled,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
 import { SignerId } from "./signer";
@@ -66,7 +67,8 @@ type SignatureRequest =
   | SignatureRequestReady
   | SignatureRequestToBeSigned
   | SignatureRequestWaitForQtsp
-  | SignatureRequestRejected;
+  | SignatureRequestRejected
+  | SignatureRequestCanceled;
 
 export const BillingEvent = t.intersection([
   BaseEvent,

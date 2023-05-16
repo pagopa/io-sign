@@ -227,14 +227,14 @@ paths:
       responses:
         "204":
           description: Signature Request status successfully set
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         default:
@@ -519,7 +519,7 @@ components:
       type: string
       x-extensible-enum:
         - READY
-        - REJECTED
+        - CANCELED
 
     DossierDetailView:
       type: object
@@ -692,6 +692,7 @@ components:
         - WAIT_FOR_SIGNATURE
         - SIGNED
         - REJECTED
+        - CANCELED
 
     SignatureRequestDetailView:
       type: object

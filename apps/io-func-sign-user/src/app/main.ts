@@ -10,6 +10,7 @@ import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { SignatureRequestCanceled } from "@io-sign/io-sign/signature-request";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
@@ -24,6 +25,7 @@ import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
+import { CancelSignatureRequestFunction } from "../infra/azure/functions/cancel-signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -185,4 +187,9 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient,
   signedContainerClient,
+});
+
+export const CancelSignatureRequest = CancelSignatureRequestFunction({
+  signatureRequestRepository,
+  inputDecoder: SignatureRequestCanceled,
 });
