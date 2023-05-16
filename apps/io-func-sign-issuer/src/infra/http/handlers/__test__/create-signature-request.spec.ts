@@ -51,12 +51,13 @@ describe("CreateSignatureRequestHandler", () => {
         },
       },
     ],
+    supportEmail: issuer.email,
   };
 
   const signatureRequest: SignatureRequest = {
     id: newId(),
     issuerId: issuer.id,
-    issuerEmail: issuer.email,
+    issuerEmail: dossier.supportEmail,
     issuerDescription: issuer.description,
     issuerInternalInstitutionId: issuer.internalInstitutionId,
     issuerEnvironment: issuer.environment,

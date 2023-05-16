@@ -31,7 +31,7 @@
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/node": "^18.15.5",
     "@vitest/coverage-c8": "^0.30.1",
-    "azure-functions-core-tools": "^4.0.4895",
+    "azure-functions-core-tools": "^4.0.5148",
     "eslint": "^8.28.0",
     "npm-pack-zip": "^1.3.0",
     "prettier": "2.7.1",

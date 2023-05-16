@@ -6,7 +6,10 @@ import { createHandler } from "handler-kit-legacy";
 import * as TE from "fp-ts/lib/TaskEither";
 import { identity, flow } from "fp-ts/lib/function";
 
-import { SignatureRequestReady } from "@io-sign/io-sign/signature-request";
+import {
+  GenerateSignatureRequestQrCode,
+  SignatureRequestReady,
+} from "@io-sign/io-sign/signature-request";
 
 import { QueueClient } from "@azure/storage-queue";
 import { makeInsertSignatureRequest } from "../cosmos/signature-request";
@@ -15,7 +18,8 @@ import { makeNotifySignatureRequestWaitForSignatureEvent } from "../storage/sign
 
 const makeCreateSignatureRequestHandler = (
   db: Database,
-  onWaitForSignatureQueueClient: QueueClient
+  onWaitForSignatureQueueClient: QueueClient,
+  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestReady),
@@ -25,7 +29,8 @@ const makeCreateSignatureRequestHandler = (
     makeInsertSignatureRequest(db),
     makeNotifySignatureRequestWaitForSignatureEvent(
       onWaitForSignatureQueueClient
-    )
+    ),
+    generateSignatureRequestQrCode
   );
   return createHandler(
     getSignatureRequestFromQueue,

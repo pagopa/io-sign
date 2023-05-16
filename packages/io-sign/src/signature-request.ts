@@ -144,3 +144,7 @@ export const getDocument = (id: Document["id"]) =>
     ) => request.documents,
     findFirst((document: Document) => document.id === id)
   );
+
+export type GenerateSignatureRequestQrCode = (
+  signatureRequestId: SignatureRequestId
+) => string;

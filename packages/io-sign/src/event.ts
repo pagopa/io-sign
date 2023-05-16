@@ -172,7 +172,7 @@ export const sendEvent =
     );
 
 export const createAndSendAnalyticsEvent =
-  (signatureRequest: SignatureRequest) => (eventName: EventName) =>
+  (eventName: EventName) => (signatureRequest: SignatureRequest) =>
     pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
