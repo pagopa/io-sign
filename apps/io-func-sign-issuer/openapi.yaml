@@ -519,7 +519,7 @@ components:
       type: string
       x-extensible-enum:
         - READY
-        - CANCELED
+        - CANCELLED
 
     DossierDetailView:
       type: object
