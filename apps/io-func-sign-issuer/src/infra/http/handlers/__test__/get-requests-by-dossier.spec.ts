@@ -97,6 +97,8 @@ describe("GetRequestsByDossierHandler", () => {
       get: () => TE.left(new Error("not implemented")),
       upsert: () => TE.left(new Error("not implemented")),
       insert: () => TE.left(new Error("not implemented")),
+      patchDocument: (request, documentId) =>
+        TE.left(new Error("not implemented")),
     };
   });
 
