@@ -133,16 +133,11 @@ export type SignatureRequestRejected = t.TypeOf<
 
 export const SignatureRequestCanceled = makeSignatureRequestVariant(
   "CANCELED",
-  t.intersection([
-    t.type({
-      canceledAt: IsoDateFromString,
-      qrCodeUrl: t.string,
-      documents: t.array(DocumentReady),
-    }),
-    t.partial({
-      notification: Notification,
-    }),
-  ])
+  t.type({
+    canceledAt: IsoDateFromString,
+    qrCodeUrl: t.string,
+    documents: t.array(DocumentReady),
+  })
 );
 
 export type SignatureRequestCanceled = t.TypeOf<
