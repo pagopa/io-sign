@@ -692,7 +692,7 @@ components:
         - WAIT_FOR_SIGNATURE
         - SIGNED
         - REJECTED
-        - CANCELED
+        - CANCELLED
 
     SignatureRequestDetailView:
       type: object
