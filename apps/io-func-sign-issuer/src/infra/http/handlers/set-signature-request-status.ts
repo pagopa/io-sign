@@ -65,8 +65,8 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
           markAsReady,
           RTE.fromEither,
           RTE.chainW(upsertSignatureRequest),
-          RTE.chainFirstW(
-            createAndSendAnalyticsEvent(EventName.SIGNATURE_READY)
+          RTE.chainFirstW((req) =>
+            pipe(req, createAndSendAnalyticsEvent(EventName.SIGNATURE_READY))
           )
         );
       } else {
@@ -78,7 +78,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
         );
       }
     }),
-    RTE.chainW((req) => enqueueSignatureRequest(req as SignatureRequest)),
+    RTE.chainW(enqueueSignatureRequest),
     RTE.map(() => H.empty),
     RTE.orElseW(logErrorAndReturnResponse)
   )
