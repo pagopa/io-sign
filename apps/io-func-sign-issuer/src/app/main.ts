@@ -102,7 +102,7 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
 
 const WaitingForSignatureRequestCancelationQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "waiting-for-signature-request-cancelation"
+  "waiting-for-signature-request-cancellation"
 );
 
 export const Info = makeInfoFunction(
