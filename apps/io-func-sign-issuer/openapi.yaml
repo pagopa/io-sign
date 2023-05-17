@@ -307,6 +307,46 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /validate-document:
+    post:
+      operationId: validateDocument
+      tags:
+        - Utility
+      summary: Validate a PDF document against a list of signature fields
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                document:
+                  type: string
+                  format: binary
+                signature_fields:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/SignatureField"
+            encoding:
+              document:
+                contentType: application/pdf
+      responses:
+        "200":
+          description: the validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentValidationResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     SubscriptionKey:
@@ -783,3 +823,15 @@ components:
           type: string
       required:
         - io_message_id
+
+    DocumentValidationResult:
+      type: object
+      properties:
+        is_valid:
+          type: boolean
+        violations:
+          type: array
+          items:
+            type: string
+      required:
+        - is_valid
