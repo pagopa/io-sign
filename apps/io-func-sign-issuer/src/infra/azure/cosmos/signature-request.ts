@@ -12,7 +12,6 @@ import * as t from "io-ts";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as A from "fp-ts/lib/Array";
-import * as O from "fp-ts/lib/Option";
 import * as cosmos from "@azure/cosmos";
 import { pipe, flow } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
@@ -134,8 +133,7 @@ export class CosmosDbSignatureRequestRepository
           TE.chainW((patchResponse) =>
             pipe(
               patchResponse.resource,
-              O.fromNullable,
-              TE.fromOption(() =>
+              TE.fromNullable(
                 CosmosErrorResponse({
                   code: 404,
                   message: "item not found for input id",
