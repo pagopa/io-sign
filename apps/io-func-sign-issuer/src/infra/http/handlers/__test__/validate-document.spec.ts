@@ -174,7 +174,7 @@ describe("validateDocumentHandler", () => {
         "content-type": "multipart/form-data; boundary=XOXO",
       },
       body: Buffer.from(
-        `--XOXO\r\ncontent-disposition: form-data; name="file1"; filename="file1.txt;\r\ncontent-type: text/plain\r\n\r\nkisses from an invalid file\r\n--XOXO--`
+        `--XOXO\r\ncontent-disposition: form-data; name="file1"; filename="file1.txt";\r\ncontent-type: text/plain\r\n\r\nkisses from an invalid file\r\n--XOXO--`
       ),
     };
     const run = ctx.call(req);
