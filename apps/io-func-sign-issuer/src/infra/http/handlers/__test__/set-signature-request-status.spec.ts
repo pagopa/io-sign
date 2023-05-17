@@ -121,8 +121,8 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      readyClient: {} as QueueClient,
-      canceledClient: {} as QueueClient,
+      readyQueueClient: {} as QueueClient,
+      canceledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -154,8 +154,8 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      readyClient: {} as QueueClient,
-      canceledClient: {} as QueueClient,
+      readyQueueClient: {} as QueueClient,
+      canceledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -187,8 +187,8 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      readyClient: {} as QueueClient,
-      canceledClient: {} as QueueClient,
+      readyQueueClient: {} as QueueClient,
+      canceledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -223,10 +223,10 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      readyClient: {
+      readyQueueClient: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
-      canceledClient: {} as QueueClient,
+      canceledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -257,8 +257,8 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      readyClient: {} as QueueClient,
-      canceledClient: {
+      readyQueueClient: {} as QueueClient,
+      canceledQueueClient: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
     });

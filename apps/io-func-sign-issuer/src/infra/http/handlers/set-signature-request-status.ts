@@ -36,15 +36,17 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
     )
   );
 
-const enqueueReadySignatureRequest =
+const enqueueSignatureRequest =
   (signatureRequest: SignatureRequest) =>
-  (r: { readyClient: QueueClient; canceledClient: QueueClient }) =>
-    enqueue(signatureRequest)(r.readyClient);
-
-const enqueueCanceledSignatureRequest =
-  (signatureRequest: SignatureRequest) =>
-  (r: { readyClient: QueueClient; canceledClient: QueueClient }) =>
-    enqueue(signatureRequest)(r.canceledClient);
+  (r: { readyQueueClient: QueueClient; canceledQueueClient: QueueClient }) =>
+    pipe(
+      signatureRequest,
+      enqueue
+    )(
+      signatureRequest.status === "READY"
+        ? r.readyQueueClient
+        : r.canceledQueueClient
+    );
 
 export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
   pipe(
@@ -65,9 +67,6 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
           RTE.chainW(upsertSignatureRequest),
           RTE.chainFirstW(
             createAndSendAnalyticsEvent(EventName.SIGNATURE_READY)
-          ),
-          RTE.chainW((req) =>
-            enqueueReadySignatureRequest(req as SignatureRequest)
           )
         );
       } else {
@@ -75,11 +74,11 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
           signatureRequest,
           markAsCanceled(new Date()),
           RTE.fromEither,
-          RTE.chainW(upsertSignatureRequest),
-          RTE.chainW(enqueueCanceledSignatureRequest)
+          RTE.chainW(upsertSignatureRequest)
         );
       }
     }),
+    RTE.chainW((req) => enqueueSignatureRequest(req as SignatureRequest)),
     RTE.map(() => H.empty),
     RTE.orElseW(logErrorAndReturnResponse)
   )
