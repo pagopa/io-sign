@@ -117,7 +117,7 @@ export class CosmosDbSignatureRequestRepository
       TE.fromEither,
       TE.chain((index) =>
         pipe(
-          /* I can't use the io-functions-commons patch function here as it doesn't support
+          /* Here it is not possible to use the io-functions-commons patch function as it doesn't support
            * updating a single item inside an array (documents)
            */
           TE.tryCatch(
