@@ -82,7 +82,7 @@ export const SignatureRequestToApiModel: E.Encoder<
       case "CANCELED": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.CANCELED,
+          status: SignatureRequestStatusEnum.CANCELLED,
           canceled_at: extra.canceledAt,
         };
       }

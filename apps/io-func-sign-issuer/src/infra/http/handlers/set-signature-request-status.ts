@@ -31,7 +31,7 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
     req.body,
     validate(SetSignatureRequestStatusBody),
     E.filterOrElse(
-      (status) => status === "READY" || status === "CANCELED",
+      (status) => status === "READY" || status === "CANCELLED",
       () => new Error("only READY or CANCELED are allowed")
     )
   );

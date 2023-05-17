@@ -5,7 +5,7 @@
         "type": "queueTrigger",
         "direction": "in",
         "name": "cancelSignatureRequest",
-        "queueName": "waiting-for-signature-request-cancelation",
+        "queueName": "waiting-for-signature-request-cancellation",
         "connection": "StorageAccountConnectionString"
       }
     ],
