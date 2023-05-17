@@ -35,7 +35,7 @@ import {
   SignatureRequestSigned,
   SignatureRequestDraft,
   getDocument,
-  SignatureRequestCanceled,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
@@ -47,7 +47,7 @@ export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestCanceled,
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -170,9 +170,9 @@ type Action_MARK_DOCUMENT_AS_REJECTED = {
   };
 };
 
-type Action_MARK_AS_CANCELED = {
-  name: "MARK_AS_CANCELED";
-  canceledAt: Date;
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
 };
 
 type SignatureRequestAction =
@@ -183,7 +183,7 @@ type SignatureRequestAction =
   | Action_START_DOCUMENT_VALIDATION
   | Action_MARK_DOCUMENT_AS_READY
   | Action_MARK_DOCUMENT_AS_REJECTED
-  | Action_MARK_AS_CANCELED;
+  | Action_MARK_AS_CANCELLED;
 
 const dispatch =
   (action: SignatureRequestAction) =>
@@ -318,7 +318,9 @@ const onWaitForSignatureStatus =
     request: SignatureRequestToBeSigned
   ): E.Either<
     Error,
-    SignatureRequestSigned | SignatureRequestRejected | SignatureRequestCanceled
+    | SignatureRequestSigned
+    | SignatureRequestRejected
+    | SignatureRequestCancelled
   > => {
     if (action.name === "MARK_AS_SIGNED") {
       return E.right({
@@ -337,11 +339,11 @@ const onWaitForSignatureStatus =
         updatedAt: new Date(),
       });
     }
-    if (action.name === "MARK_AS_CANCELED") {
+    if (action.name === "MARK_AS_CANCELLED") {
       return E.right({
         ...request,
-        status: "CANCELED",
-        canceledAt: action.canceledAt,
+        status: "CANCELLED",
+        cancelledAt: action.cancelledAt,
         updatedAt: new Date(),
       });
     }
@@ -377,8 +379,8 @@ export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
 export const markAsRejected = (rejectedAt: Date, rejectReason: string) =>
   dispatch({ name: "MARK_AS_REJECTED", rejectedAt, rejectReason });
 
-export const markAsCanceled = (canceledAt: Date) =>
-  dispatch({ name: "MARK_AS_CANCELED", canceledAt });
+export const markAsCancelled = (cancelledAt: Date) =>
+  dispatch({ name: "MARK_AS_CANCELLED", cancelledAt });
 
 export const startValidationOnDocument = (documentId: Document["id"]) =>
   dispatch({ name: "START_DOCUMENT_VALIDATION", payload: { documentId } });

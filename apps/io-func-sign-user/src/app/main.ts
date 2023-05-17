@@ -10,7 +10,7 @@ import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
-import { SignatureRequestCanceled } from "@io-sign/io-sign/signature-request";
+import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
@@ -191,5 +191,5 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
 
 export const CancelSignatureRequest = CancelSignatureRequestFunction({
   signatureRequestRepository,
-  inputDecoder: SignatureRequestCanceled,
+  inputDecoder: SignatureRequestCancelled,
 });

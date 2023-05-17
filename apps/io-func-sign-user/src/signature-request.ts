@@ -3,7 +3,7 @@ import {
   SignatureRequestRejected,
   SignatureRequestSigned,
   SignatureRequestWaitForQtsp,
-  SignatureRequestCanceled,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Id } from "@io-sign/io-sign/id";
@@ -27,7 +27,7 @@ export const SignatureRequest = t.union([
   SignatureRequestRejected,
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
-  SignatureRequestCanceled,
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -129,16 +129,16 @@ type Action_MARK_AS_WAIT_FOR_QTSP = {
   name: "MARK_AS_WAIT_FOR_QTSP";
 };
 
-type Action_MARK_AS_CANCELED = {
-  name: "MARK_AS_CANCELED";
-  canceledAt: Date;
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
 };
 
 type SignatureRequestAction =
   | Action_MARK_AS_SIGNED
   | Action_MARK_AS_REJECTED
   | Action_MARK_AS_WAIT_FOR_QTSP
-  | Action_MARK_AS_CANCELED;
+  | Action_MARK_AS_CANCELLED;
 
 const dispatch =
   (action: SignatureRequestAction) =>
@@ -167,7 +167,7 @@ const onWaitForSignatureStatus =
     Error,
     | SignatureRequestWaitForQtsp
     | SignatureRequestRejected
-    | SignatureRequestCanceled
+    | SignatureRequestCancelled
   > => {
     switch (action.name) {
       case "MARK_AS_WAIT_FOR_QTSP":
@@ -184,11 +184,11 @@ const onWaitForSignatureStatus =
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
         });
-      case "MARK_AS_CANCELED":
+      case "MARK_AS_CANCELLED":
         return E.right({
           ...request,
-          status: "CANCELED",
-          canceledAt: action.canceledAt,
+          status: "CANCELLED",
+          cancelledAt: action.cancelledAt,
           updatedAt: new Date(),
         });
       default:
@@ -259,10 +259,10 @@ export const markAsRejected = (reason: string) =>
     name: "MARK_AS_REJECTED",
     payload: { reason },
   });
-export const markAsCanceled = (canceledAt: Date) =>
+export const markAsCancelled = (cancelledAt: Date) =>
   dispatch({
-    name: "MARK_AS_CANCELED",
-    canceledAt,
+    name: "MARK_AS_CANCELLED",
+    cancelledAt,
   });
 
 export const canBeWaitForQtsp = (request: SignatureRequest) =>

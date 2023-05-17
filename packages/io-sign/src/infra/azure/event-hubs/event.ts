@@ -18,7 +18,7 @@ import {
   SignatureRequestToBeSigned,
   SignatureRequestWaitForQtsp,
   SignatureRequestRejected,
-  SignatureRequestCanceled,
+  SignatureRequestCancelled,
 } from "../../../signature-request";
 import { ConsoleLogger } from "../../console-logger";
 
@@ -38,7 +38,7 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestToBeSigned
       | SignatureRequestWaitForQtsp
       | SignatureRequestRejected
-      | SignatureRequestCanceled
+      | SignatureRequestCancelled
   ): TE.TaskEither<Error, typeof signatureRequest> =>
     pipe(
       {

@@ -19,7 +19,7 @@ import {
 import {
   SignatureRequest,
   getSignatureRequest,
-  markAsCanceled,
+  markAsCancelled,
   markAsReady,
   upsertSignatureRequest,
 } from "../../../signature-request";
@@ -32,20 +32,20 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
     validate(SetSignatureRequestStatusBody),
     E.filterOrElse(
       (status) => status === "READY" || status === "CANCELLED",
-      () => new Error("only READY or CANCELED are allowed")
+      () => new Error("only READY or CANCELLED are allowed")
     )
   );
 
 const enqueueSignatureRequest =
   (signatureRequest: SignatureRequest) =>
-  (r: { readyQueueClient: QueueClient; canceledQueueClient: QueueClient }) =>
+  (r: { readyQueueClient: QueueClient; cancelledQueueClient: QueueClient }) =>
     pipe(
       signatureRequest,
       enqueue
     )(
       signatureRequest.status === "READY"
         ? r.readyQueueClient
-        : r.canceledQueueClient
+        : r.cancelledQueueClient
     );
 
 export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
@@ -72,7 +72,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
       } else {
         return pipe(
           signatureRequest,
-          markAsCanceled(new Date()),
+          markAsCancelled(new Date()),
           RTE.fromEither,
           RTE.chainW(upsertSignatureRequest)
         );

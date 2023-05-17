@@ -100,7 +100,7 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
-const WaitingForSignatureRequestCancelationQueueClient = new QueueClient(
+const WaitingForSignatureRequestCancellationQueueClient = new QueueClient(
   config.azure.storage.connectionString,
   "waiting-for-signature-request-cancellation"
 );
@@ -214,5 +214,5 @@ export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
   signatureRequestRepository,
   eventAnalyticsClient,
   readyQueueClient: onSignatureRequestReadyQueueClient,
-  canceledQueueClient: WaitingForSignatureRequestCancelationQueueClient,
+  cancelledQueueClient: WaitingForSignatureRequestCancellationQueueClient,
 });

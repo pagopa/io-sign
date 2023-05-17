@@ -124,7 +124,7 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       readyQueueClient: {} as QueueClient,
-      canceledQueueClient: {} as QueueClient,
+      cancelledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -157,7 +157,7 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       readyQueueClient: {} as QueueClient,
-      canceledQueueClient: {} as QueueClient,
+      cancelledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -190,7 +190,7 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       readyQueueClient: {} as QueueClient,
-      canceledQueueClient: {} as QueueClient,
+      cancelledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -228,7 +228,7 @@ describe("SetSignatureRequestHandler", () => {
       readyQueueClient: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
-      canceledQueueClient: {} as QueueClient,
+      cancelledQueueClient: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -239,7 +239,7 @@ describe("SetSignatureRequestHandler", () => {
     );
   });
 
-  it("should return a 204 HTTP response on success when settings status to CANCELED", () => {
+  it("should return a 204 HTTP response on success when settings status to CANCELLED", () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
@@ -250,7 +250,7 @@ describe("SetSignatureRequestHandler", () => {
           (signatureRequest) => signatureRequest.status === "WAIT_FOR_SIGNATURE"
         )?.id!,
       },
-      body: "CANCELED",
+      body: "CANCELLED",
     };
     const run = SetSignatureRequestStatusHandler({
       logger,
@@ -260,7 +260,7 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       readyQueueClient: {} as QueueClient,
-      canceledQueueClient: {
+      cancelledQueueClient: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
     });
