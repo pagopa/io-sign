@@ -11,7 +11,7 @@ import {
   upsertSignatureRequest,
 } from "../../signature-request";
 
-export const CancelSignatureRequestHandler = H.of(
+export const UpdateSignatureRequestHandler = H.of(
   (signatureRequest: SignatureRequestCancelled) =>
     pipe(
       signatureRequest,

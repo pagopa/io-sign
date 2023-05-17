@@ -4,12 +4,12 @@
         "authLevel": "function",
         "type": "queueTrigger",
         "direction": "in",
-        "name": "cancelSignatureRequest",
-        "queueName": "waiting-for-signature-request-cancellation",
+        "name": "updateSignatureRequest",
+        "queueName": "waiting-for-signature-request-updates",
         "connection": "StorageAccountConnectionString"
       }
     ],
     "scriptFile": "../dist/main.js",
-    "entryPoint": "CancelSignatureRequest"
+    "entryPoint": "UpdateSignatureRequest"
   }
   

@@ -25,7 +25,7 @@ import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
-import { CancelSignatureRequestFunction } from "../infra/azure/functions/cancel-signature-request";
+import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -189,7 +189,7 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
   signedContainerClient,
 });
 
-export const CancelSignatureRequest = CancelSignatureRequestFunction({
+export const UpdateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
 });
