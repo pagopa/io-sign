@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -11,7 +11,7 @@ import {
 
 import { newId } from "@io-sign/io-sign/id";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
-import { DocumentReady } from "@io-sign/io-sign/document";
+import { DocumentMetadata, DocumentReady } from "@io-sign/io-sign/document";
 import { makeGetSignedDocumentContent } from "../app/use-cases/get-signed-document-content";
 
 const documentId = newId();
@@ -19,10 +19,13 @@ const documentId = newId();
 const signatureRequest: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Richiesta Passaporto" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
+  issuerInternalInstitutionId: newId(),
   issuerEnvironment: "TEST",
+  issuerDepartment: "",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -47,7 +50,7 @@ const signatureRequest: SignatureRequestSigned = {
               type: "REQUIRED",
             },
           },
-        ],
+        ] as DocumentMetadata["signatureFields"],
         pdfDocumentMetadata: {
           pages: [],
           formFields: [],

@@ -1,11 +1,11 @@
 import * as E from "io-ts/lib/Encoder";
-import {
-  SignatureRequestDetailView as SignatureRequestApiModel,
-  StatusEnum as SignatureRequestStatusEnum,
-} from "../models/SignatureRequestDetailView";
+import { SignatureRequestDetailView as SignatureRequestApiModel } from "../models/SignatureRequestDetailView";
+
+import { SignatureRequestStatusEnum } from "../models/SignatureRequestStatus";
 
 import { SignatureRequest } from "../../../signature-request";
 
+import { SignatureRequestList } from "../models/SignatureRequestList";
 import { DocumentToApiModel } from "./document";
 import { NotificationToApiModel } from "./notification";
 
@@ -81,4 +81,37 @@ export const SignatureRequestToApiModel: E.Encoder<
       }
     }
   },
+};
+
+export const SignatureRequestToListApiModel: E.Encoder<
+  SignatureRequestList,
+  {
+    items: ReadonlyArray<SignatureRequest>;
+    continuationToken?: string;
+  }
+> = {
+  encode: ({ items, continuationToken }): SignatureRequestList => ({
+    items: items
+      .map(SignatureRequestToApiModel.encode)
+      .map(
+        ({
+          id,
+          signer_id,
+          dossier_id,
+          status,
+          created_at,
+          updated_at,
+          expires_at,
+        }) => ({
+          id,
+          signer_id,
+          dossier_id,
+          status,
+          created_at,
+          updated_at,
+          expires_at,
+        })
+      ),
+    continuation_token: continuationToken,
+  }),
 };

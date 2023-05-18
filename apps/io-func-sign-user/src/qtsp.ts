@@ -64,6 +64,7 @@ export const QtspCreateSignaturePayload = t.type({
   tosSignature: t.string,
   signature: t.string,
   documentsToSign: t.array(QtspDocumentToSign),
+  signatureInput: NonEmptyString,
 });
 export type QtspCreateSignaturePayload = t.TypeOf<
   typeof QtspCreateSignaturePayload

@@ -8,6 +8,8 @@ import { identity, pipe } from "fp-ts/lib/function";
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 
+import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
@@ -15,10 +17,13 @@ import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-
 import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeGetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
+import { createLollipopApiClient } from "../infra/lollipop/client";
+import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
+import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -34,6 +39,11 @@ const config = configOrError;
 
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
+
+const eventHubAnalyticsClient = new EventHubProducerClient(
+  config.azure.eventHubs.analyticsConnectionString,
+  "analytics"
+);
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
@@ -85,10 +95,20 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
+const lollipopApiClient = createLollipopApiClient(
+  config.pagopa.lollipop.apiBasePath,
+  config.pagopa.lollipop.apiKey
+);
+
+const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
+  config.pagopa.ioLink
+);
+
 export const Info = makeInfoFunction(
   config.namirial,
   pdvTokenizerClient,
   ioApiClient,
+  lollipopApiClient,
   database,
   filledContainerClient,
   validatedContainerClient,
@@ -120,23 +140,18 @@ export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
 
 export const CreateSignature = makeCreateSignatureFunction(
   pdvTokenizerClient,
+  lollipopApiClient,
   database,
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
-  config.namirial,
-  config.mock
+  config.namirial
 );
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
-  onWaitForSignatureQueueClient
-);
-
-export const GetSignatureRequest = makeGetSignatureRequestFunction(
-  database,
-  validatedContainerClient,
-  signedContainerClient
+  onWaitForSignatureQueueClient,
+  generateSignatureRequestQrCode
 );
 
 export const ValidateSignature = makeValidateSignatureFunction(
@@ -144,7 +159,8 @@ export const ValidateSignature = makeValidateSignatureFunction(
   signedContainerClient,
   config.namirial,
   onSignedQueueClient,
-  onRejectedQueueClient
+  onRejectedQueueClient,
+  eventHubAnalyticsClient
 );
 
 export const GetThirdPartyMessageDetails =
@@ -156,3 +172,17 @@ export const GetThirdPartyMessageAttachmentContent =
     database,
     signedContainerClient
   );
+
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database
+);
+
+export const GetSignatureRequests = GetSignatureRequestsFunction({
+  signatureRequestRepository,
+});
+
+export const GetSignatureRequest = GetSignatureRequestFunction({
+  signatureRequestRepository,
+  validatedContainerClient,
+  signedContainerClient,
+});

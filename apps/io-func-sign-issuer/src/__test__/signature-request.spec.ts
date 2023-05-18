@@ -1,4 +1,4 @@
-import { describe, it, test, expect } from "@jest/globals";
+import { describe, it, test, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -7,26 +7,30 @@ import { newSigner } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
 
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
+  internalInstitutionId: newId(),
   email: "info@enpacl-pec.it" as EmailString,
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
+  vatNumber: "15376271001" as NonEmptyString,
+  department: "",
 };
 
-const dossier = newDossier(issuer, "My dossier", [
+const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
   {
     title: "document #1",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
   {
     title: "document #2",
-    signatureFields: [],
+    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
 ]);

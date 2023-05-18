@@ -2,9 +2,12 @@ import { Id, id as newId } from "@io-sign/io-sign/id";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
 
 import * as t from "io-ts";
+
+import * as H from "@pagopa/handler-kit";
 
 import { Signer } from "@io-sign/io-sign/signer";
 
@@ -56,11 +59,14 @@ export const newSignatureRequest = (
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
-  issuerEmail: issuer.email,
+  issuerEmail: dossier.supportEmail,
   issuerDescription: issuer.description,
+  issuerInternalInstitutionId: issuer.internalInstitutionId,
   issuerEnvironment: issuer.environment,
+  issuerDepartment: issuer.department,
   signerId: signer.id,
   dossierId: dossier.id,
+  dossierTitle: dossier.title,
   status: "DRAFT",
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -286,8 +292,7 @@ const onReadyStatus =
         return E.right({
           ...request,
           status: "WAIT_FOR_SIGNATURE",
-          // TODO: [SFEQS-946] make the QR Code dynamic
-          qrCodeUrl: "https://place-holder.com/qr-code",
+          qrCodeUrl: action.qrCodeUrl,
           updatedAt: new Date(),
         });
       default:
@@ -390,3 +395,115 @@ export type UpsertSignatureRequest = (
 export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequestRepository = {
+  get: (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+  patchDocument: (
+    request: SignatureRequest,
+    documentId: Document["id"]
+  ) => TE.TaskEither<Error, SignatureRequest>;
+  findByDossier: (
+    dossier: Dossier,
+    options?: { maxItemCount?: number; continuationToken?: string }
+  ) => Promise<{
+    items: ReadonlyArray<unknown>;
+    continuationToken?: string;
+  }>;
+  insert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+};
+
+export type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
+};
+
+export const getSignatureRequest =
+  (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.get(id, issuerId),
+      TE.chain(
+        TE.fromOption(
+          () => new EntityNotFoundError("Signature request not found")
+        )
+      )
+    );
+
+export const insertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.insert(request);
+
+export const upsertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.upsert(request);
+
+export const patchSignatureRequestDocument =
+  (documentId: Document["id"]) =>
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(repo.patchDocument(request, documentId));
+
+export const findSignatureRequestsByDossier =
+  (
+    dossier: Dossier,
+    options: {
+      maxItemCount?: number;
+      continuationToken?: string;
+    }
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    {
+      items: ReadonlyArray<SignatureRequest>;
+      continuationToken?: string;
+    }
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      TE.tryCatch(
+        () => repo.findByDossier(dossier, options),
+        (e) => (e instanceof Error ? e : new Error("error on find by dossier"))
+      ),
+      TE.chainEitherKW(
+        H.parse(
+          t.intersection([
+            t.type({
+              items: t.array(SignatureRequest),
+            }),
+            t.partial({
+              continuationToken: t.string,
+            }),
+          ])
+        )
+      )
+    );

@@ -5,4 +5,5 @@
 * [3. choose-ulid-as-identifier-format](0003-choose-ulid-as-identifier-format.md)
 * [4. ship-services-via-singular-script](0004-ship-services-via-singular-script.md)
 * [5. use-yarn-as-package-manager](0005-use-yarn-as-package-manager.md)
-* [6. choice-code-generator-for-client-demo](0006-code-generator-for-client-demo.md)
+* [6. use-vitest-as-unit-test-framework](0006-use-vitest-as-unit-test-framework.md)
+* [7. choice-code-generator-for-client-demo](0006-code-generator-for-client-demo.md)

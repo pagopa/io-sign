@@ -4,8 +4,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as t from "io-ts";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler, nopRequestDecoder } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
 
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { HttpError } from "@io-sign/io-sign/infra/http/errors";
@@ -25,7 +25,14 @@ import {
   makeIOServicesHealthCheck,
 } from "@io-sign/io-sign/infra/io-services/health-check";
 
-import { EventHubProducerClient } from "@azure/event-hubs";
+import {
+  EventHubConsumerClient,
+  EventHubProducerClient,
+} from "@azure/event-hubs";
+import {
+  AzureEventHubProblemSource,
+  makeAzureEventHubHealthCheck,
+} from "@io-sign/io-sign/infra/azure/event-hubs/health-check";
 import {
   AzureCosmosProblemSource,
   makeAzureCosmosDbHealthCheck,
@@ -35,10 +42,6 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
-import {
-  AzureEventHubProblemSource,
-  makeAzureEventHubHealthCheck,
-} from "../event-hubs/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource
@@ -59,6 +62,7 @@ export const makeInfoHandler = (
   db: Database,
   eventHubBillingClient: EventHubProducerClient,
   eventHubAnalyticsClient: EventHubProducerClient,
+  eventHubSelfCareContractsConsumer: EventHubConsumerClient,
   uploadedContainerClient: ContainerClient,
   validatedContainerClient: ContainerClient,
   onSignatureRequestReadyQueueClient: QueueClient
@@ -73,6 +77,7 @@ export const makeInfoHandler = (
           makeAzureCosmosDbHealthCheck(db),
           makeAzureEventHubHealthCheck(eventHubBillingClient),
           makeAzureEventHubHealthCheck(eventHubAnalyticsClient),
+          makeAzureEventHubHealthCheck(eventHubSelfCareContractsConsumer),
           makeAzureStorageContainerHealthCheck(uploadedContainerClient),
           makeAzureStorageContainerHealthCheck(validatedContainerClient),
           makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient),

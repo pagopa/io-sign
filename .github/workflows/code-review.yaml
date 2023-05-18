@@ -18,7 +18,7 @@ on:
 
 jobs:
   code_review:
-    timeout-minutes: 5
+    timeout-minutes: 10 # temp fix
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +42,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --immutable
 
       - name: "Generate API models"
         run: yarn workspaces foreach run generate:api-models

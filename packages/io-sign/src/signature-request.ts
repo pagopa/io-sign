@@ -19,14 +19,19 @@ const SignatureRequest = t.type({
   // TODO: [SFEQS-1028] issuerEmail and IssuerDescription are temp properties, waiting to implement the integration with Selfcare.
   issuerEmail: EmailString,
   issuerDescription: NonEmptyString,
+  issuerInternalInstitutionId: Id,
   issuerEnvironment: IssuerEnvironment,
+  issuerDepartment: t.string,
   dossierId: Id,
+  dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
   expiresAt: IsoDateFromString,
 });
 
 export const SignatureRequestId = SignatureRequest.props.id;
+
+export type SignatureRequestId = t.TypeOf<typeof SignatureRequestId>;
 
 export const makeSignatureRequestVariant = <S extends string, A, O>(
   status: S,
@@ -139,3 +144,7 @@ export const getDocument = (id: Document["id"]) =>
     ) => request.documents,
     findFirst((document: Document) => document.id === id)
   );
+
+export type GenerateSignatureRequestQrCode = (
+  signatureRequestId: SignatureRequestId
+) => string;

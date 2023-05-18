@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -21,10 +21,13 @@ import {
 const signatureRequest: SignatureRequest = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Rilascio CIE" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
+  issuerInternalInstitutionId: newId(),
   issuerEnvironment: "TEST",
+  issuerDepartment: "",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -37,10 +40,13 @@ const signatureRequest: SignatureRequest = {
 const signatureRequestSigned: SignatureRequestSigned = {
   id: newId(),
   dossierId: newId(),
+  dossierTitle: "Richiesta borsa di studio" as NonEmptyString,
   issuerId: newId(),
   issuerEmail: "issuer@io-sign-mail.it" as EmailString,
   issuerDescription: "Mocked Issuer" as NonEmptyString,
+  issuerInternalInstitutionId: newId(),
   issuerEnvironment: "TEST",
+  issuerDepartment: "",
   signerId: newId(),
   createdAt: new Date(),
   updatedAt: new Date(),

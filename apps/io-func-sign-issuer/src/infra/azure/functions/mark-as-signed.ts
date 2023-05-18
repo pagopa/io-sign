@@ -1,7 +1,7 @@
 import { Database } from "@azure/cosmos";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { identity, flow } from "fp-ts/lib/function";
@@ -14,18 +14,22 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import {
+  makeCreateAndSendAnalyticsEvent,
+  makeSendEvent,
+} from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
-import { makeSendBillingEvent } from "../event-hubs/event";
 import { makeGetDossier } from "../cosmos/dossier";
 
 const makeRequestAsSignedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
-  eventHubBillingClient: EventHubProducerClient
+  eventHubBillingClient: EventHubProducerClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestSigned),
@@ -37,7 +41,10 @@ const makeRequestAsSignedHandler = (
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
-  const sendBillingEvent = makeSendBillingEvent(eventHubBillingClient);
+  const sendBillingEvent = makeSendEvent(eventHubBillingClient);
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
 
   const markAsSigned = makeMarkRequestAsSigned(
     getDossier,
@@ -45,7 +52,8 @@ const makeRequestAsSignedHandler = (
     upsertSignatureRequest,
     submitMessage,
     getFiscalCodeBySignerId,
-    sendBillingEvent
+    sendBillingEvent,
+    createAndSendAnalyticsEvent
   );
 
   return createHandler(

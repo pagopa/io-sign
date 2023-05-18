@@ -1,9 +1,14 @@
 import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import * as L from "@pagopa/logger";
+
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import * as t from "io-ts";
 import * as A from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as J from "fp-ts/Json";
 
 import { pipe, flow } from "fp-ts/lib/function";
 import {
@@ -12,6 +17,11 @@ import {
 } from "@io-sign/io-sign/error";
 
 import { Id } from "@io-sign/io-sign/id";
+
+import {
+  stringFromBase64Encode,
+  stringToBase64Encode,
+} from "@io-sign/io-sign/utility";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import { validate } from "@io-sign/io-sign/validation";
@@ -23,6 +33,7 @@ import {
   InsertSignature,
   newSignature,
   NotifySignatureReadyEvent,
+  SignatureValidationParams,
 } from "../../signature";
 
 import { DocumentToSign } from "../../signature-field";
@@ -33,20 +44,13 @@ import {
   UpsertSignatureRequest,
 } from "../../signature-request";
 
-import {
-  mockPublicKey,
-  mockSignature,
-  mockSpidAssertion,
-  mockTosSignature,
-} from "./__mocks__/qtsp";
-
 export const CreateSignaturePayload = t.type({
   signatureRequestId: NonEmptyString,
   signer: Signer,
   qtspClauses: QtspClauses,
   documentsSignature: t.array(DocumentToSign),
   email: EmailString,
-  spidAssertion: NonEmptyString,
+  signatureValidationParams: SignatureValidationParams,
 });
 
 export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
@@ -97,6 +101,11 @@ const makeGetDocumentUrlForSignature =
             TE.chainEitherKW(validate(NonEmptyString, "Invalid upload url"))
           ),
         })
+      ),
+      TE.chainFirstIOK((documentsUrl) =>
+        L.debug("get documents url", { documentsUrl })({
+          logger: ConsoleLogger,
+        })
       )
     );
 
@@ -120,7 +129,7 @@ export const makeCreateSignature =
     qtspClauses,
     documentsSignature,
     email,
-    spidAssertion,
+    signatureValidationParams,
   }: CreateSignaturePayload) => {
     const getDocumentUrlForSignature = pipe(
       signatureRequestId,
@@ -172,73 +181,109 @@ export const makeCreateSignature =
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
-        tosSignature: pipe(qtspClauses, mockTosSignature),
-        mockedSpidAssertion: pipe(
-          qtspClauses,
-          mockSpidAssertion()(spidAssertion)
-        ),
+        signatureRequest: retrieveSignatureRequest,
       }),
-      TE.chain((sequence) =>
+      TE.chain(({ documentsToSign, fiscalCode, signatureRequest }) =>
         pipe(
-          sequence.documentsToSign,
-          mockSignature,
-          TE.map((signature) => ({
-            ...sequence,
-            signature,
-          }))
-        )
-      ),
-      TE.map(
-        ({
-          documentsToSign,
-          tosSignature,
-          signature,
-          fiscalCode,
-          mockedSpidAssertion,
-        }) => ({
-          fiscalCode,
-          publicKey: mockPublicKey(),
-          spidAssertion: mockedSpidAssertion,
-          email,
-          documentLink: qtspClauses.filledDocumentUrl,
-          tosSignature,
-          signature,
-          nonce: qtspClauses.nonce,
-          documentsToSign,
-        })
-      ),
-      TE.chain(creatQtspSignatureRequest),
-      TE.filterOrElse(
-        (qtspResponse) => qtspResponse.status === "CREATED",
-        (e) =>
-          e.last_error !== null
-            ? new ActionNotAllowedError(
-                `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
-              )
-            : new ActionNotAllowedError(
-                "An error occurred while the QTSP was creating the signature."
-              )
-      ),
-      TE.chainW((qtspResponse) =>
-        pipe(
-          newSignature(signer, signatureRequestId, qtspResponse.id),
-          insertSignature
-        )
-      ),
-      TE.chainFirst(() =>
-        pipe(
-          retrieveSignatureRequest,
-          TE.chainEitherK(markAsWaitForQtsp),
-          TE.chain(upsertSignatureRequest)
-        )
-      ),
-      TE.chainFirst((signature) =>
-        pipe(
-          {
-            signatureId: signature.id,
-            signerId: signature.signerId,
-          },
-          notifySignatureReadyEvent
+          TE.of({
+            fiscalCode,
+            publicKey: signatureValidationParams.publicKey,
+            spidAssertion: signatureValidationParams.samlAssertionBase64,
+            email,
+            documentLink: qtspClauses.filledDocumentUrl,
+            tosSignature: signatureValidationParams.tosSignature,
+            signature: signatureValidationParams.challengeSignature,
+            nonce: qtspClauses.nonce,
+            documentsToSign,
+            signatureInput: signatureValidationParams.signatureInput,
+          }),
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              createSignaturePayload.signatureInput,
+              stringToBase64Encode,
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert signatureInput to base64 string"
+                )
+              ),
+              E.map((signatureInput) => ({
+                ...createSignaturePayload,
+                signatureInput,
+              }))
+            )
+          ),
+          TE.chainEitherKW((createSignaturePayload) =>
+            pipe(
+              createSignaturePayload.publicKey,
+              stringFromBase64Encode,
+              E.chain(J.parse),
+              E.chain(J.stringify),
+              E.mapLeft(() => new Error("Unable to parse public key")),
+              E.chainW(stringToBase64Encode),
+              E.chainW(
+                validate(
+                  NonEmptyString,
+                  "Unable to convert publicKey to base64 string"
+                )
+              ),
+              E.map((publicKey) => ({
+                ...createSignaturePayload,
+                publicKey,
+              }))
+            )
+          ),
+          TE.chainFirstIOK((payload) =>
+            L.debug("create QTSP SignatureRequest with payload", {
+              payload,
+            })({
+              logger: ConsoleLogger,
+            })
+          ),
+          TE.chain(
+            creatQtspSignatureRequest(signatureRequest.issuerEnvironment)
+          ),
+          TE.chainFirstIOK((qtspSignatureRequest) =>
+            L.info("created QTSP signature request with id", {
+              id: qtspSignatureRequest.id,
+            })({
+              logger: ConsoleLogger,
+            })
+          ),
+          TE.filterOrElse(
+            (qtspResponse) => qtspResponse.status === "CREATED",
+            (e) =>
+              e.last_error !== null
+                ? new ActionNotAllowedError(
+                    `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
+                  )
+                : new ActionNotAllowedError(
+                    "An error occurred while the QTSP was creating the signature."
+                  )
+          ),
+          TE.chainW((qtspResponse) =>
+            pipe(
+              newSignature(signer, signatureRequestId, qtspResponse.id),
+              insertSignature
+            )
+          ),
+          TE.chainFirst(() =>
+            pipe(
+              signatureRequest,
+              markAsWaitForQtsp,
+              TE.fromEither,
+              TE.chain(upsertSignatureRequest)
+            )
+          ),
+          TE.chainFirst((signature) =>
+            pipe(
+              {
+                signatureId: signature.id,
+                signerId: signature.signerId,
+              },
+              notifySignatureReadyEvent
+            )
+          )
         )
       )
     );
