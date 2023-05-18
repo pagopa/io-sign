@@ -28,14 +28,14 @@ const BufferC = new t.Type<Buffer, Buffer>(
 );
 
 const PdfFileC = t.type({
-  type: t.string,
+  type: t.literal("application/pdf"),
   data: BufferC,
 });
 
 type PdfFile = t.TypeOf<typeof PdfFileC>;
 
 const JsonFileC = t.type({
-  type: t.string,
+  type: t.literal("application/json"),
   data: BufferC,
 });
 
@@ -65,7 +65,7 @@ const parseSignatureFieldsFromBuffer = (b: Buffer) =>
   );
 
 const requireSignatureFields = (
-  files: FilesFromBody
+  files: Array<PdfFile | JsonFile>
 ): E.Either<Error, DocumentMetadata["signatureFields"]> =>
   pipe(
     files,
@@ -78,7 +78,7 @@ const requireSignatureFields = (
     E.chainW(H.parse(DocumentMetadata.props.signatureFields))
   );
 
-const requirePdfDocumentMetadata = (files: FilesFromBody) =>
+const requirePdfDocumentMetadata = (files: Array<PdfFile | JsonFile>) =>
   pipe(
     files,
     A.filter((file): file is PdfFile => file.type === "application/pdf"),
