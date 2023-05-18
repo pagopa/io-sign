@@ -38,6 +38,7 @@ import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -194,6 +195,10 @@ export const ValidateUpload = ValidateUploadFunction({
   validatedFileStorage,
   inputDecoder: t.type({ uri: t.string }),
   eventAnalyticsClient,
+});
+
+export const ValidateDocument = validateDocumentFunction({
+  issuerRepository,
 });
 
 export const GetSignatureRequest = GetSignatureRequestFunction({

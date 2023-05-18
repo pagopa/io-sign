@@ -42,7 +42,7 @@
   "dependencies": {
     "@azure/cosmos": "^3.17.1",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.0.1",
+    "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/logger": "1.0.1",
