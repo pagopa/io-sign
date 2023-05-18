@@ -1,0 +1,48 @@
+{
+  "name": "@io-sign/web-sdk",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/io-sign.es.js",
+  "exports": {
+    ".": "./dist/io-sign.es.js"
+  },
+  "types": "types/io-sign.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc",
+    "build": "vite build",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build",
+    "localize:extract": "lit-localize extract",
+    "localize:build": "lit-localize build",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@lit-labs/context": "^0.3.1",
+    "@lit/localize": "^0.11.4",
+    "lit": "^2.4.1",
+    "prettier": "2.7.1"
+  },
+  "devDependencies": {
+    "@lit/localize-tools": "^0.6.8",
+    "@storybook/addon-essentials": "^7.0.6",
+    "@storybook/addon-links": "^7.0.6",
+    "@storybook/blocks": "^7.0.6",
+    "@storybook/web-components": "^7.0.6",
+    "@storybook/web-components-vite": "^7.0.6",
+    "@vitest/coverage-c8": "^0.30.1",
+    "happy-dom": "^9.8.4",
+    "lit-html": "^2.6.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.0.6",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0",
+    "vitest": "^0.30.1"
+  }
+}

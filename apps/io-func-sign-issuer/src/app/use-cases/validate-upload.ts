@@ -95,6 +95,23 @@ const loggingContext = (meta: UploadMetadata) => ({
   signatureRequestId: meta.signatureRequestId,
 });
 
+// Validate a PDF document
+// Checks:
+// 1 - check if the document is compatible with given metadata
+export const validateDocument = (
+  documentMetadata: PdfDocumentMetadata,
+  signatureFields: DocumentMetadata["signatureFields"],
+  loggingContext?: Record<string, unknown>
+) =>
+  pipe(
+    documentMetadata,
+    isCompatibleWithSignatureFields(signatureFields),
+    RTE.fromEither,
+    RTE.chainFirstW(() =>
+      L.debugRTE("the signature fields are valid", loggingContext)
+    )
+  );
+
 // from a blob uri get the "upload metadata" (entity that tracks the upload)
 // does the signature request exists?
 // is a PDF document? (download + open)
@@ -149,15 +166,12 @@ export const validateUpload = flow(
             ...loggingContext(meta),
           })
         ),
-        // Check if signature fields are valid
+        // Validate document
         RTE.chainFirstW(({ documentMetadata }) =>
-          pipe(
+          validateDocument(
             documentMetadata,
-            isCompatibleWithSignatureFields(signatureFields),
-            RTE.fromEither,
-            RTE.chainFirstW(() =>
-              L.debugRTE("the signature fields are valid", loggingContext(meta))
-            )
+            signatureFields,
+            loggingContext(meta)
           )
         ),
         // The uploaded PDF it's a valid Document for
