@@ -1,4 +1,4 @@
-import { vitest, it, expect, describe } from "vitest";
+import { it, expect, describe } from "vitest";
 
 import * as H from "@pagopa/handler-kit";
 import * as L from "@pagopa/logger";
