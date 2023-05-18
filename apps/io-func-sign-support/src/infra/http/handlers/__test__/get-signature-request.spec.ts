@@ -14,6 +14,7 @@ import { pipe } from "fp-ts/lib/function";
 import { Issuer, IssuerRepository } from "../../../../issuer";
 import { GetSignatureRequestHandler } from "../get-signature-request";
 import { SignerRepository } from "../../../../signer";
+
 import {
   SignatureRequestRepository,
   SignatureRequest,

@@ -1,6 +1,7 @@
 {
   "name": "io-func-sign-support",
-  "version": "1.1.2",
+  "version": "1.0.0",
+  "main": "./dist/web.js",
   "private": true,
   "files": [
     "**/function.json",
@@ -8,7 +9,6 @@
     "host.json",
     "extensions.csproj"
   ],
-  "main": "dist/web.js",
   "bundledDependencies": true,
   "scripts": {
     "build": "tsup-node",
@@ -42,8 +42,8 @@
   "dependencies": {
     "@azure/cosmos": "^3.17.1",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.1.0",
-    "@pagopa/handler-kit-azure-func": "^1.2.0",
+    "@pagopa/handler-kit": "^1.0.0",
+    "@pagopa/handler-kit-azure-func": "^1.0.0",
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/logger": "1.0.1",
     "@pagopa/ts-commons": "^10.10.0",

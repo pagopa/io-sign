@@ -3193,7 +3193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit-azure-func@npm:^1.2.0":
+"@pagopa/handler-kit-azure-func@npm:^1.0.0, @pagopa/handler-kit-azure-func@npm:^1.2.0":
   version: 1.2.0
   resolution: "@pagopa/handler-kit-azure-func@npm:1.2.0"
   dependencies:
@@ -3205,7 +3205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
+"@pagopa/handler-kit@npm:^1.0.0, @pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
   version: 1.1.0
   resolution: "@pagopa/handler-kit@npm:1.1.0"
   dependencies:
@@ -9992,8 +9992,8 @@ __metadata:
     "@azure/functions": ^3.5.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/handler-kit": ^1.1.0
-    "@pagopa/handler-kit-azure-func": ^1.2.0
+    "@pagopa/handler-kit": ^1.0.0
+    "@pagopa/handler-kit-azure-func": ^1.0.0
     "@pagopa/io-functions-commons": ^26.2.1
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^12.0.2
