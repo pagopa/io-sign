@@ -1,5 +1,7 @@
 import { defineConfig } from "vitest/config";
 
+import minifyHTML from "rollup-plugin-minify-html-literals";
+
 export default defineConfig({
   build: {
     lib: {
@@ -8,6 +10,10 @@ export default defineConfig({
       fileName: "io-sign",
     },
     target: "es2015",
+    minify: true,
+    rollupOptions: {
+      plugins: [minifyHTML.default()],
+    },
   },
   test: {
     environment: "happy-dom",
