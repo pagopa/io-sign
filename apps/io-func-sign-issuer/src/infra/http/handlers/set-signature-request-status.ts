@@ -39,7 +39,7 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
 
 const getQueue =
   (signatureRequest: SignatureRequest) =>
-  (queueClient: { ready: QueueClient; cancelled: QueueClient }) => {
+  (queueClient: { ready: QueueClient; updated: QueueClient }) => {
     if (signatureRequest.status === "READY") {
       return E.right(queueClient.ready);
     } else if (signatureRequest.status === "CANCELLED") {
