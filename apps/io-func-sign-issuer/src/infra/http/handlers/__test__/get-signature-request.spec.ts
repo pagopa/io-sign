@@ -70,6 +70,8 @@ describe("GetSignatureRequestHandler", () => {
       upsert: () => TE.left(new Error("not implemented")),
       findByDossier: () => Promise.reject("not implemented"),
       insert: () => TE.left(new Error("not implemented")),
+      patchDocument: (request, documentId) =>
+        TE.left(new Error("not implemented")),
     };
   });
 

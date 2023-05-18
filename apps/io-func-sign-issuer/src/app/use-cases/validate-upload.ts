@@ -32,10 +32,10 @@ import {
 
 import {
   getSignatureRequest,
-  upsertSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
   startValidationOnDocument,
+  patchSignatureRequestDocument,
 } from "../../signature-request";
 
 export const validateExistingSignatureField =
@@ -173,7 +173,7 @@ export const validateUpload = flow(
                 markDocumentAsReady(meta.documentId, url, documentMetadata)
               )
             ),
-            RTE.chainW(upsertSignatureRequest),
+            RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
             // Update upload metadata and remove document
             // fromt temp storage
             RTE.chainW(() =>
@@ -204,8 +204,7 @@ export const validateUpload = flow(
             signatureRequest,
             markDocumentAsRejected(meta.documentId, e.message),
             RTE.fromEither,
-            RTE.chain(upsertSignatureRequest),
-
+            RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
             RTE.chainFirstW(() =>
               L.infoRTE("validation done", {
                 isDocumentValid: false,

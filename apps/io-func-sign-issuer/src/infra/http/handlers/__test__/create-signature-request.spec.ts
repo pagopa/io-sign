@@ -96,6 +96,8 @@ describe("CreateSignatureRequestHandler", () => {
       upsert: () => TE.left(new Error("not implemented")),
       findByDossier: () => Promise.reject("not implemented"),
       insert: (request) => TE.right(request),
+      patchDocument: (request, documentId) =>
+        TE.left(new Error("not implemented")),
     };
   });
 
@@ -200,6 +202,8 @@ describe("CreateSignatureRequestHandler", () => {
         upsert: () => TE.left(new Error("not implemented")),
         findByDossier: () => Promise.reject("not implemented"),
         insert: () => TE.left(new Error("insert failed")),
+        patchDocument: (request, documentId) =>
+          TE.left(new Error("not implemented")),
       };
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),

@@ -402,6 +402,10 @@ export type SignatureRequestRepository = {
     issuerId: SignatureRequest["issuerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+  patchDocument: (
+    request: SignatureRequest,
+    documentId: Document["id"]
+  ) => TE.TaskEither<Error, SignatureRequest>;
   findByDossier: (
     dossier: Dossier,
     options?: { maxItemCount?: number; continuationToken?: string }
@@ -456,6 +460,18 @@ export const upsertSignatureRequest =
   > =>
   ({ signatureRequestRepository: repo }) =>
     repo.upsert(request);
+
+export const patchSignatureRequestDocument =
+  (documentId: Document["id"]) =>
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(repo.patchDocument(request, documentId));
 
 export const findSignatureRequestsByDossier =
   (
