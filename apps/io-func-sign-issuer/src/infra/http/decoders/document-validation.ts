@@ -47,8 +47,6 @@ const FilesFromBodyC = t.union([
   t.tuple([PdfFileC]),
 ]);
 
-type FilesFromBody = t.TypeOf<typeof FilesFromBodyC>;
-
 const parseSignatureFieldsFromBuffer = (b: Buffer) =>
   pipe(
     b.toString(),
