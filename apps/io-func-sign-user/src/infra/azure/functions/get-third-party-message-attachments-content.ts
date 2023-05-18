@@ -5,9 +5,9 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
-import { HttpRequest, path } from "@pagopa/handler-kit/lib/http";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 
 import { Database } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
@@ -22,7 +22,7 @@ import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
 
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoder/signature-request";
+import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
 
 import { SignatureRequest } from "../../../signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";

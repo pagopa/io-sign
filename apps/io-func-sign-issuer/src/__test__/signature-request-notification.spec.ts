@@ -1,4 +1,4 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, it, expect } from "vitest";
 
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -39,6 +39,7 @@ const issuer: Issuer = {
   description: "descrizione dell'ente" as NonEmptyString,
   environment: "TEST",
   vatNumber: "15376271001" as NonEmptyString,
+  department: "",
 };
 
 const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [

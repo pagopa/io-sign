@@ -1,0 +1,149 @@
+# @name createDossier
+# @prompt title the title of the dossier
+POST {{issuerApiBaseUrl}}/dossiers
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "title": "{{title}}",
+  "documents_metadata": [
+    {
+      "title": "documento di test",
+      "signature_fields": [
+        {
+          "clause": {
+            "title": "clause 1",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "coordinates": {
+              "x": 1000,
+              "y": 900
+            },
+            "page": 0,
+            "size": {
+              "w": 150,
+              "h": 30
+            }
+          }
+        },
+        {
+          "clause": {
+            "title": "clause 2",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "coordinates": {
+              "x": 10,
+              "y": 900
+            },
+            "page": 0,
+            "size": {
+              "w": 150,
+              "h": 30
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# @name createDossierWithExistingSignatureField
+# @prompt title the title of the dossier
+POST {{issuerApiBaseUrl}}/dossiers
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "title": "{{title}}",
+  "documents_metadata": [
+    {
+      "title": "documento di test",
+      "signature_fields": [
+        {
+          "clause": {
+            "title": "clause 1",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "unique_name": "Signature1"
+          }
+        },
+        {
+          "clause": {
+            "title": "clause 2",
+            "type": "REQUIRED"
+          },
+          "attrs": {
+            "unique_name": "Signature2"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# @name getDossier
+# @prompt dossierId id of the dossier to retrieve
+GET {{issuerApiBaseUrl}}/dossiers/{{dossierId}}
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+###
+
+# @name getSigner
+# @prompt fiscalCode
+POST {{issuerApiBaseUrl}}/signers 
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "fiscal_code": "{{fiscalCode}}"
+}
+
+###
+
+# @name createSignatureRequest
+POST {{issuerApiBaseUrl}}/signature-requests
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "dossier_id": "{{getDossier.response.body.$.id}}",
+  "signer_id": "{{getSigner.response.body.$.id}}"
+}
+
+###
+
+# @name getSignatureRequest
+# @prompt signatureRequestId id of the signature request to retrieve
+GET {{issuerApiBaseUrl}}/signature-requests/{{signatureRequestId}}
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+###
+
+# @name getUploadUrl
+# @prompt documentId
+GET {{issuerApiBaseUrl}}/signature-requests/{{getSignatureRequest.response.body.$.id}}/documents/{{documentId}}/upload_url
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+###
+
+# @name upload
+PUT {{getUploadUrl.response.body.$}}
+x-ms-blob-type : BlockBlob
+
+###
+
+# @name getRequestsByDossier
+# @prompt dossierId id of the dossier to retrieve
+GET {{issuerApiBaseUrl}}/dossiers/{{dossierId}}/signature-requests?limit=1
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}

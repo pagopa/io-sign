@@ -36,7 +36,7 @@ resource "github_actions_environment_secret" "azure_runner_container_app_environ
   repository      = var.github.repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_CONTAINER_APP_ENVIRONMENT_NAME"
-  plaintext_value = "${local.project}-github-runner-cae"
+  plaintext_value = "${local.prefix}-github-runner-cae"
 }
 
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
@@ -44,5 +44,5 @@ resource "github_actions_environment_secret" "azure_runner_resource_group_name" 
   repository      = var.github.repository
   environment     = "${var.env}-runner"
   secret_name     = "AZURE_RESOURCE_GROUP_NAME"
-  plaintext_value = "${local.project}-github-runner-rg"
+  plaintext_value = "${local.prefix}-github-runner-rg"
 }

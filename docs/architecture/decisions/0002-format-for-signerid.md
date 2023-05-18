@@ -2,9 +2,9 @@
 
 Date: 2022-05-12
 
-## State
+## Status
 
-Proposed
+Accepted
 
 ## Context
 

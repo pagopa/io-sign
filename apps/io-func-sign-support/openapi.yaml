@@ -7,6 +7,8 @@ servers:
     description: production
   - url: http://localhost:7071/api/v1/sign/support
     description: local
+security:
+  - SubscriptionKey: []
 paths:
   /signature-requests/{id}:
     post:
@@ -55,6 +57,13 @@ paths:
                   - message
 
 components:
+  securitySchemes:
+    SubscriptionKey:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+      description: The API key obtained through the developer portal
+
   requestBodies:
     GetSignatureRequestById:
       required: true

@@ -2,6 +2,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { flow } from "fp-ts/lib/function";
 
 import {
+  GenerateSignatureRequestQrCode,
   SignatureRequestReady,
   SignatureRequestToBeSigned,
 } from "@io-sign/io-sign/signature-request";
@@ -15,13 +16,14 @@ import {
 
 export const makeCreateSignatureRequest = (
   insertSignatureRequest: InsertSignatureRequest,
-  notifyWaitForSignatureEvent: NotifySignatureRequestWaitForSignatureEvent
+  notifyWaitForSignatureEvent: NotifySignatureRequestWaitForSignatureEvent,
+  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
 ) =>
   flow(
     (request: SignatureRequestReady): SignatureRequestToBeSigned => ({
       ...request,
       status: "WAIT_FOR_SIGNATURE",
-      qrCodeUrl: "https://place-holder.com/qr-code",
+      qrCodeUrl: generateSignatureRequestQrCode(request.id),
     }),
     insertSignatureRequest,
     TE.chainEitherKW(

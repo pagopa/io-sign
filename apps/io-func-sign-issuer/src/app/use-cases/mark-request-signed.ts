@@ -1,5 +1,10 @@
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { createBillingEvent, SendBillingEvent } from "@io-sign/io-sign/event";
+import {
+  CreateAndSendAnalyticsEvent,
+  createBillingEvent,
+  EventName,
+  SendEvent,
+} from "@io-sign/io-sign/event";
 import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
@@ -38,7 +43,8 @@ export const makeMarkRequestAsSigned =
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    sendBillingEvent: SendBillingEvent
+    sendBillingEvent: SendEvent,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   (request: SignatureRequestSigned) => {
     const sendSignedNotification = makeSendSignatureRequestNotification(
@@ -73,7 +79,13 @@ export const makeMarkRequestAsSigned =
               TE.altW(() => TE.right(request))
             )
           ),
-          TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent))
+          TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent)),
+          TE.chainFirstW(() =>
+            pipe(
+              request,
+              createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED)
+            )
+          )
         )
       )
     );

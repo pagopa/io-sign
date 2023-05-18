@@ -21,6 +21,7 @@ const SignatureRequest = t.type({
   issuerDescription: NonEmptyString,
   issuerInternalInstitutionId: Id,
   issuerEnvironment: IssuerEnvironment,
+  issuerDepartment: t.string,
   dossierId: Id,
   dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,
@@ -143,3 +144,7 @@ export const getDocument = (id: Document["id"]) =>
     ) => request.documents,
     findFirst((document: Document) => document.id === id)
   );
+
+export type GenerateSignatureRequestQrCode = (
+  signatureRequestId: SignatureRequestId
+) => string;

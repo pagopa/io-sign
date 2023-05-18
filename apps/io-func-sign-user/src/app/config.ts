@@ -13,6 +13,14 @@ import {
   getIoServicesConfigFromEnvironment,
 } from "@io-sign/io-sign/infra/io-services/config";
 import {
+  EventHubConfig,
+  getEventHubsConfigFromEnvironment,
+} from "@io-sign/io-sign/infra/azure/event-hubs/config";
+import {
+  IoLinkConfig,
+  getIoLinkConfigFromEnvironment,
+} from "@io-sign/io-sign/infra/io-link/config";
+import {
   StorageConfig,
   getStorageConfigFromEnvironment,
 } from "../infra/azure/storage/config";
@@ -33,11 +41,13 @@ export const Config = t.type({
   azure: t.type({
     storage: StorageConfig,
     cosmos: CosmosConfig,
+    eventHubs: EventHubConfig,
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
+    ioLink: IoLinkConfig,
   }),
   namirial: NamirialConfig,
 });
@@ -56,16 +66,20 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
     lollipop: getLollipopConfigFromEnvironment,
+    eventHubs: getEventHubsConfigFromEnvironment,
+    ioLink: getIoLinkConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
       storage: config.storage,
       cosmos: config.cosmos,
+      eventHubs: config.eventHubs,
     },
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
       lollipop: config.lollipop,
+      ioLink: config.ioLink,
     },
     namirial: config.namirial,
   }))

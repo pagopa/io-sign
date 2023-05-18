@@ -1,8 +1,8 @@
 import { flow, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
 
 import { Database } from "@azure/cosmos";
 
@@ -11,7 +11,7 @@ import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoder/signature-request";
+import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../../http/encoders/signature-request";
 import { ThirdPartyMessage } from "../../http/models/ThirdPartyMessage";
 import { signedNoMoreThan90DaysAgo } from "../../../signature-request";

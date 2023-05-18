@@ -4,8 +4,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as t from "io-ts";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler, nopRequestDecoder } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
 
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { HttpError } from "@io-sign/io-sign/infra/http/errors";
@@ -30,6 +30,10 @@ import {
   EventHubProducerClient,
 } from "@azure/event-hubs";
 import {
+  AzureEventHubProblemSource,
+  makeAzureEventHubHealthCheck,
+} from "@io-sign/io-sign/infra/azure/event-hubs/health-check";
+import {
   AzureCosmosProblemSource,
   makeAzureCosmosDbHealthCheck,
 } from "../cosmos/health-check";
@@ -38,10 +42,6 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
-import {
-  AzureEventHubProblemSource,
-  makeAzureEventHubHealthCheck,
-} from "../event-hubs/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource

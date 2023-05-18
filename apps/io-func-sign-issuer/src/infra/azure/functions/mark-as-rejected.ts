@@ -1,7 +1,7 @@
 import { Database } from "@azure/cosmos";
 
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { createHandler } from "@pagopa/handler-kit";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { createHandler } from "handler-kit-legacy";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import { identity, flow } from "fp-ts/lib/function";
@@ -12,6 +12,8 @@ import { makeSubmitMessageForUser } from "@io-sign/io-sign/infra/io-services/mes
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeMarkRequestAsRejected } from "../../../app/use-cases/mark-request-rejected";
 import {
   makeGetSignatureRequest,
@@ -22,7 +24,8 @@ import { makeGetDossier } from "../cosmos/dossier";
 const makeRequestAsRejectedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
-  ioApiClient: IOApiClient
+  ioApiClient: IOApiClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestRejected),
@@ -33,13 +36,17 @@ const makeRequestAsRejectedHandler = (
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const submitMessage = makeSubmitMessageForUser(ioApiClient);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
+  const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
+    eventHubAnalyticsClient
+  );
 
   const markAsRejected = makeMarkRequestAsRejected(
     getDossier,
     getSignatureRequest,
     upsertSignatureRequest,
     submitMessage,
-    getFiscalCodeBySignerId
+    getFiscalCodeBySignerId,
+    createAndSendAnalyticsEvent
   );
 
   return createHandler(

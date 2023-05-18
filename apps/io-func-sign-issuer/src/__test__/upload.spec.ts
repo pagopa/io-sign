@@ -1,4 +1,4 @@
-import { it, describe, expect } from "@jest/globals";
+import { it, describe, expect } from "vitest";
 
 import { id as newId } from "@io-sign/io-sign/id";
 
@@ -28,6 +28,7 @@ describe("UploadMetadata", () => {
       description: "descrizione dell'ente" as NonEmptyString,
       environment: "TEST",
       vatNumber: "15376271001" as NonEmptyString,
+      department: "",
     };
 
     const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [

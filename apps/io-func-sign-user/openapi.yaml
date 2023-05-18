@@ -96,6 +96,16 @@ paths:
       summary: Get clauses list and MRC from QTSP
       tags:
         - QTSP Clauses
+      parameters:
+        - in: header
+          name: x-iosign-issuer-environment
+          schema:
+            type: string
+            description: Issuer environment
+            enum:
+              - TEST
+              - DEFAULT
+          required: true
       responses:
         "200":
           description: The QTSP clauses list
@@ -247,6 +257,31 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+
+  /signature-requests:
+    get:
+      operationId: getSignatureRequests
+      summary: Get the list of Signature Requests received by a Signer
+      tags:
+        - Signature Request
+      parameters:
+        - in: header
+          name: x-iosign-signer-id
+          schema:
+            type: string
+            description: Signer Id
+            minLength: 1
+            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+          required: true
+      responses:
+        "200":
+          description: Signature Request list view
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignatureRequestList"
+        "403":
+          $ref: "#/components/responses/Forbidden"
 
   /messages/{signature_request_id}:
     get:
@@ -737,12 +772,6 @@ components:
         id:
           $ref: "#/components/schemas/Id"
         status:
-          type: string
-          x-extensible-enum:
-            - WAIT_FOR_SIGNATURE
-            - WAIT_FOR_QTSP
-            - SIGNED
-            - REJECTED
           $ref: "#/components/schemas/SignatureRequestStatus"
         issuer:
           type: object
@@ -753,13 +782,15 @@ components:
             description:
               type: string
               minLength: 1
+            environment:
+              $ref: "#/components/schemas/IssuerEnvironment"
           required:
             - email
             - description
+            - environment
         dossier_id:
           $ref: "#/components/schemas/Id"
         dossier_title:
-          type: string
           $ref: "#/components/schemas/DossierTitle"
         signer_id:
           $ref: "#/components/schemas/Id"
@@ -787,6 +818,45 @@ components:
         - documents
         - created_at
         - updated_at
+
+    SignatureRequestListView:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/Id"
+        signer_id:
+          $ref: "#/components/schemas/Id"
+        dossier_id:
+          $ref: "#/components/schemas/Id"
+        dossier_title:
+          $ref: "#/components/schemas/DossierTitle"
+        status:
+          $ref: "#/components/schemas/SignatureRequestStatus"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        expires_at:
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - id
+        - signer_id
+        - dossier_id
+        - dossier_title
+        - status
+        - created_at
+        - updated_at
+        - expires_at
+
+    SignatureRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureRequestListView"
+      required:
+        - items
 
     ThirdPartyMessage:
       type: object
@@ -883,3 +953,9 @@ components:
     AssertionRefSha512:
       type: string
       pattern: ^(sha512-[A-Za-z0-9-_=]{1,88})$
+
+    IssuerEnvironment:
+      type: string
+      enum:
+        - TEST
+        - DEFAULT

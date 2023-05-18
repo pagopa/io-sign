@@ -6,14 +6,12 @@ module.exports = {
     node: true,
   },
   extends: ["@pagopa/eslint-config/recommended"],
-  ignorePatterns: ["**/models/*.ts", "*.yaml"],
-  overrides: [
-    {
-      files: ["**/*.spec.ts"],
-      rules: {
-        "functional/no-let": "off",
-      },
-    },
+  ignorePatterns: [
+    "**/models/*.ts",
+    "*.yaml",
+    "**/*.spec.ts",
+    "*.pdf",
+    "*.json",
   ],
   rules: {
     "max-classes-per-file": "off",

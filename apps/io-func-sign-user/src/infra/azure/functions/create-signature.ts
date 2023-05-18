@@ -1,11 +1,13 @@
 import { Database as CosmosDatabase } from "@azure/cosmos";
 
-import { createHandler } from "@pagopa/handler-kit";
-import * as azure from "@pagopa/handler-kit/lib/azure";
-import { HttpRequest } from "@pagopa/handler-kit/lib/http";
+import { createHandler } from "handler-kit-legacy";
+import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
+
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
+import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
@@ -20,11 +22,14 @@ import { ContainerClient } from "@azure/storage-blob";
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import * as L from "@pagopa/logger";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
-import { requireSigner } from "../../http/decoder/signer";
+
+import { requireSigner } from "../../http/decoders/signer.old";
 import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
-import { requireDocumentsSignature } from "../../http/decoder/document-to-sign";
-import { requireQtspClauses } from "../../http/decoder/qtsp-clause";
+import { requireDocumentsSignature } from "../../http/decoders/document-to-sign";
+import { requireQtspClauses } from "../../http/decoders/qtsp-clause";
 
 import {
   CreateSignaturePayload,
@@ -45,7 +50,7 @@ import {
 } from "../cosmos/signature-request";
 
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
-import { requireCreateSignatureLollipopParams } from "../../http/decoder/lollipop";
+import { requireCreateSignatureLollipopParams } from "../../http/decoders/lollipop";
 import { LollipopApiClient } from "../../lollipop/client";
 import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";
@@ -111,6 +116,16 @@ const makeCreateSignatureHandler = (
         requireCreateSignatureLollipopParams
       ),
     }),
+    RTE.chainFirstIOK(() =>
+      L.info("creating signature")({
+        logger: ConsoleLogger,
+      })
+    ),
+    RTE.chainFirstIOK((params) =>
+      L.debug("creating signature with params", { params })({
+        logger: ConsoleLogger,
+      })
+    ),
     RTE.chainTaskEitherK((sequence) =>
       pipe(
         sequenceS(TE.ApplySeq)({
@@ -140,7 +155,12 @@ const makeCreateSignatureHandler = (
             tosSignature,
             challengeSignature,
           },
-        }))
+        })),
+        TE.chainFirstIOK((lollipopParams) =>
+          L.debug("retrived lollipop params: ", { lollipopParams })({
+            logger: ConsoleLogger,
+          })
+        )
       )
     ),
     RTE.map(
@@ -158,14 +178,8 @@ const makeCreateSignatureHandler = (
           filledDocumentUrl: qtspClauses.filledDocumentUrl.includes("https://")
             ? qtspClauses.filledDocumentUrl
             : pipe(
-                E.tryCatch(
-                  () =>
-                    Buffer.from(
-                      qtspClauses.filledDocumentUrl,
-                      "base64"
-                    ).toString(),
-                  E.toError
-                ),
+                qtspClauses.filledDocumentUrl,
+                stringFromBase64Encode,
                 E.chainW(
                   validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
                 ),
@@ -183,11 +197,16 @@ const makeCreateSignatureHandler = (
           challengeSignature: lollipopParams.challengeSignature,
         },
       })
+    ),
+    RTE.chainFirstIOK((payload) =>
+      L.debug("create signature payload", { payload })({
+        logger: ConsoleLogger,
+      })
     )
   );
 
   const decodeHttpRequest = flow(
-    azure.fromHttpRequest,
+    azureLegacyHandler.fromHttpRequest,
     TE.fromEither,
     TE.chain(requireCreateSignaturePayload)
   );
@@ -207,5 +226,5 @@ const makeCreateSignatureHandler = (
 
 export const makeCreateSignatureFunction = flow(
   makeCreateSignatureHandler,
-  azure.unsafeRun
+  azureLegacyHandler.unsafeRun
 );
