@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Issuer API
-  version: 1.2.0
+  version: 1.2.1
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign
     description: production
@@ -326,6 +326,8 @@ paths:
                   type: array
                   items:
                     $ref: "#/components/schemas/SignatureField"
+              required:
+                - document
             encoding:
               document:
                 contentType: application/pdf
