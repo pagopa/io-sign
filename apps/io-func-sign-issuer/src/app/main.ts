@@ -219,5 +219,5 @@ export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
   signatureRequestRepository,
   eventAnalyticsClient,
   ready: onSignatureRequestReadyQueueClient,
-  cancelled: WaitingForSignatureRequestUpdatesQueueClient,
+  updated: WaitingForSignatureRequestUpdatesQueueClient,
 });

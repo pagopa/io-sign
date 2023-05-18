@@ -43,15 +43,15 @@ const getQueue =
     if (signatureRequest.status === "READY") {
       return E.right(queueClient.ready);
     } else if (signatureRequest.status === "CANCELLED") {
-      return E.right(queueClient.cancelled);
+      return E.right(queueClient.updated);
     } else {
-      return E.left(new Error("There are no queues for this update"));
+      return E.left(new Error("There are no queues for this status update"));
     }
   };
 
 const enqueueSignatureRequest =
   (signatureRequest: SignatureRequest) =>
-  (queueClient: { ready: QueueClient; cancelled: QueueClient }) =>
+  (queueClient: { ready: QueueClient; updated: QueueClient }) =>
     pipe(
       queueClient,
       getQueue(signatureRequest),
