@@ -965,6 +965,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@io-sign/io-sign@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@io-sign/io-sign@npm:0.9.0"
+  dependencies:
+    "@azure/storage-blob": ^12.12.0
+    "@azure/storage-queue": ^12.11.0
+    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/io-functions-services-sdk": ^3.22.0
+    "@pagopa/ts-commons": ^10.10.0
+    date-fns: ^2.29.3
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.19
+    io-ts-types: ^0.5.19
+    monocle-ts: ^2.3.13
+    newtype-ts: ^0.3.5
+    pdf-lib: ^1.17.1
+    ulid: ^2.3.0
+  checksum: 6c7ca9d5a0ee11eabbd3acdefc52a84d3294b835e4b09176e9107ba897812907729f80d75756244c097ef25db3d63660f4c40f9ef47ed674774b0c855e357a13
+  languageName: node
+  linkType: hard
+
 "@io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
@@ -1454,7 +1475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit-azure-func@npm:^1.2.0":
+"@pagopa/handler-kit-azure-func@npm:^1.0.0, @pagopa/handler-kit-azure-func@npm:^1.2.0":
   version: 1.2.0
   resolution: "@pagopa/handler-kit-azure-func@npm:1.2.0"
   dependencies:
@@ -1466,7 +1487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
+"@pagopa/handler-kit@npm:^1.0.0, @pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
   version: 1.1.0
   resolution: "@pagopa/handler-kit@npm:1.1.0"
   dependencies:
@@ -1509,6 +1530,17 @@ __metadata:
     "@azure/functions": ^3.2.0
     express: ^4.15.3
   checksum: 316f80a8d09172c016b457f550b2582cd549574422efd162e1445abbe936e108fa320344ae5ffb5fd31e019131b4625612b1d0a78a8374dac95b984a3dd327b0
+  languageName: node
+  linkType: hard
+
+"@pagopa/io-functions-services-sdk@npm:^3.22.0":
+  version: 3.30.2
+  resolution: "@pagopa/io-functions-services-sdk@npm:3.30.2"
+  dependencies:
+    "@pagopa/ts-commons": ^10.0.0
+    fp-ts: ^2.10.5
+    io-ts: ^2.2.16
+  checksum: 84af02fe08e674606b00c560e6b3ac0db526e706a7c0999759cc971bacf25279c5445e8dfdcf90a9955d393eb4a3024361aeab2aa78ccce9bcc863ebc49a09c7
   languageName: node
   linkType: hard
 
@@ -6021,10 +6053,10 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^3.17.1
     "@azure/functions": ^3.5.0
-    "@io-sign/io-sign": "workspace:^"
+    "@io-sign/io-sign": ^0.9.0
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/handler-kit": ^1.1.0
-    "@pagopa/handler-kit-azure-func": ^1.2.0
+    "@pagopa/handler-kit": ^1.0.0
+    "@pagopa/handler-kit-azure-func": ^1.0.0
     "@pagopa/io-functions-commons": ^26.2.1
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^12.0.2
