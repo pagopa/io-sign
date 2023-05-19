@@ -192,4 +192,5 @@ export const GetSignatureRequest = GetSignatureRequestFunction({
 export const UpdateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
+  eventAnalyticsClient: eventHubAnalyticsClient,
 });

@@ -5,12 +5,12 @@ import { pipe } from "fp-ts/lib/function";
 import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 
 import * as H from "@pagopa/handler-kit";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import {
   getSignatureRequest,
   markAsCancelled,
   upsertSignatureRequest,
 } from "../../signature-request";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 export const UpdateSignatureRequestHandler = H.of(
   (signatureRequest: SignatureRequestCancelled) =>
