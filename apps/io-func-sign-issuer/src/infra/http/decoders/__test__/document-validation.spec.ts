@@ -43,7 +43,6 @@ describe("requireFilesForValidation", () => {
         "hello.txt",
         Buffer.from("hello from a wrong file!"),
       ]),
-      multipartRequest(["application/pdf", "document.pdf", samplePdf]),
       multipartRequest(
         ["application/pdf", "document.pdf", samplePdf],
         ["application/json", "fields.json", Buffer.from(JSON.stringify({}))]
@@ -90,6 +89,7 @@ describe("requireFilesForValidation", () => {
     const requests = [
       multipartRequest(validPdfFile, validSignatureFields),
       multipartRequest(validSignatureFields, validPdfFile),
+      multipartRequest(validPdfFile),
     ];
     const results = await Promise.all(
       requests.map((req) => requireFilesForValidation(req)())
