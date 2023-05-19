@@ -39,6 +39,7 @@ export enum EventName {
   SIGNATURE_SIGNED = "io.sign.signature_request.signed",
   SIGNATURE_READY = "io.sign.signature_request.ready",
   SIGNATURE_REJECTED = "io.sign.signature_request.rejected",
+  SIGNATURE_CANCELLED = "io.sign.signature_request.cancelled",
   DOCUMENT_UPLOADED = "io.sign.signature_request.document.uploaded",
   DOCUMENT_REJECTED = "io.sign.signature_request.document.rejected",
   NOTIFICATION_SENT = "io.sign.signature_request.notification.sent",

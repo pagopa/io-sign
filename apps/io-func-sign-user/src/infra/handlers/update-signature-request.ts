@@ -10,6 +10,7 @@ import {
   markAsCancelled,
   upsertSignatureRequest,
 } from "../../signature-request";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 export const UpdateSignatureRequestHandler = H.of(
   (signatureRequest: SignatureRequestCancelled) =>
@@ -17,6 +18,9 @@ export const UpdateSignatureRequestHandler = H.of(
       signatureRequest,
       ({ id, signerId }) => getSignatureRequest(id, signerId),
       RTE.chainEitherK(markAsCancelled(new Date())),
-      RTE.chain(upsertSignatureRequest)
+      RTE.chain(upsertSignatureRequest),
+      RTE.chainFirstW(
+        createAndSendAnalyticsEvent(EventName.SIGNATURE_CANCELLED)
+      )
     )
 );
