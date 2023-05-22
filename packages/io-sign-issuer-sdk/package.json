@@ -14,14 +14,15 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "start": "node dist/index.js",
-    "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
     "build-api-client": "tsc -p ../io-sign-api-client/tsconfig.json",
-    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i ./../../apps/io-func-sign-issuer/openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client"
+    "generate:api-client": "npx @openapitools/openapi-generator-cli generate -i ./../../apps/io-func-sign-issuer/openapi.yaml -g typescript-fetch -o ../io-sign-api-client --additional-properties=npmName=@io-sign/io-sign-api-client",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@io-sign/io-sign-api-client": "workspace:^",
@@ -31,16 +32,15 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@jest/globals": "^29.3.1",
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.2.0",
     "@types/isomorphic-fetch": "^0.0.36",
     "@types/node": "^18.11.18",
+    "@vitest/coverage-c8": "^0.30.1",
     "eslint": "^8.28.0",
-    "jest": "^29.3.1",
     "prettier": "2.7.1",
-    "ts-jest": "^29.0.3",
     "tsup": "^6.4.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "vitest": "^0.30.1"
   }
 }
