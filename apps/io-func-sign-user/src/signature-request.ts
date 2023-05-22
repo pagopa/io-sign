@@ -3,6 +3,7 @@ import {
   SignatureRequestRejected,
   SignatureRequestSigned,
   SignatureRequestWaitForQtsp,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Id } from "@io-sign/io-sign/id";
@@ -26,6 +27,7 @@ export const SignatureRequest = t.union([
   SignatureRequestRejected,
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -62,6 +64,7 @@ export type SignatureRequestRepository = {
     id: SignatureRequest["id"],
     signerId: SignatureRequest["signerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
 };
 
 type SignatureRequestEnvironment = {
@@ -100,6 +103,17 @@ export const getSignatureRequest =
       )
     );
 
+export const upsertSignatureRequest =
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.upsert(request);
+
 type Action_MARK_AS_SIGNED = {
   name: "MARK_AS_SIGNED";
 };
@@ -115,10 +129,16 @@ type Action_MARK_AS_WAIT_FOR_QTSP = {
   name: "MARK_AS_WAIT_FOR_QTSP";
 };
 
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
+};
+
 type SignatureRequestAction =
   | Action_MARK_AS_SIGNED
   | Action_MARK_AS_REJECTED
-  | Action_MARK_AS_WAIT_FOR_QTSP;
+  | Action_MARK_AS_WAIT_FOR_QTSP
+  | Action_MARK_AS_CANCELLED;
 
 const dispatch =
   (action: SignatureRequestAction) =>
@@ -145,7 +165,9 @@ const onWaitForSignatureStatus =
     request: SignatureRequestToBeSigned
   ): E.Either<
     Error,
-    SignatureRequestWaitForQtsp | SignatureRequestRejected
+    | SignatureRequestWaitForQtsp
+    | SignatureRequestRejected
+    | SignatureRequestCancelled
   > => {
     switch (action.name) {
       case "MARK_AS_WAIT_FOR_QTSP":
@@ -161,6 +183,13 @@ const onWaitForSignatureStatus =
           updatedAt: new Date(),
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
+        });
+      case "MARK_AS_CANCELLED":
+        return E.right({
+          ...request,
+          status: "CANCELLED",
+          cancelledAt: action.cancelledAt,
+          updatedAt: new Date(),
         });
       default:
         return E.left(
@@ -229,6 +258,11 @@ export const markAsRejected = (reason: string) =>
   dispatch({
     name: "MARK_AS_REJECTED",
     payload: { reason },
+  });
+export const markAsCancelled = (cancelledAt: Date) =>
+  dispatch({
+    name: "MARK_AS_CANCELLED",
+    cancelledAt,
   });
 
 export const canBeWaitForQtsp = (request: SignatureRequest) =>

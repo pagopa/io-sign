@@ -131,4 +131,8 @@ export class CosmosDbSignatureRequestRepository
       TE.mapLeft(toCosmosDatabaseError)
     );
   }
+
+  upsert(request: SignatureRequest) {
+    return pipe(this.#model.upsert(request), TE.mapLeft(toCosmosDatabaseError));
+  }
 }

@@ -4,9 +4,9 @@ import { pipe, flow } from "fp-ts/lib/function";
 
 import { split } from "fp-ts/lib/string";
 import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";
-import { UploadMetadata } from "../../../upload";
+import { UploadMetadata } from "../../upload";
 
-import { validateUpload } from "../../../app/use-cases/validate-upload";
+import { validateUpload } from "../../app/use-cases/validate-upload";
 
 const extractFileNameFromURI = flow(split("/"), last);
 

@@ -17,7 +17,6 @@ import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
-import { makeSetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
@@ -38,6 +37,7 @@ import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
 import { getConfigFromEnvironment } from "./config";
 
@@ -101,6 +101,11 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
+const WaitingForSignatureRequestUpdatesQueueClient = new QueueClient(
+  config.azure.storage.connectionString,
+  "waiting-for-signature-request-updates"
+);
+
 export const Info = makeInfoFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
@@ -113,11 +118,6 @@ export const Info = makeInfoFunction(
   onSignatureRequestReadyQueueClient
 );
 
-export const SetSignatureRequestStatus = makeSetSignatureRequestStatusFunction(
-  database,
-  onSignatureRequestReadyQueueClient,
-  eventAnalyticsClient
-);
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
 
@@ -212,4 +212,12 @@ export const CreateSignatureRequest = CreateSignatureRequestFunction({
   dossierRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
+});
+
+export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  eventAnalyticsClient,
+  ready: onSignatureRequestReadyQueueClient,
+  updated: WaitingForSignatureRequestUpdatesQueueClient,
 });

@@ -131,6 +131,19 @@ export type SignatureRequestRejected = t.TypeOf<
   typeof SignatureRequestRejected
 >;
 
+export const SignatureRequestCancelled = makeSignatureRequestVariant(
+  "CANCELLED",
+  t.type({
+    cancelledAt: IsoDateFromString,
+    qrCodeUrl: t.string,
+    documents: t.array(DocumentReady),
+  })
+);
+
+export type SignatureRequestCancelled = t.TypeOf<
+  typeof SignatureRequestCancelled
+>;
+
 export const getDocument = (id: Document["id"]) =>
   flow(
     (
@@ -141,6 +154,7 @@ export const getDocument = (id: Document["id"]) =>
         | SignatureRequestToBeSigned
         | SignatureRequestWaitForQtsp
         | SignatureRequestRejected
+        | SignatureRequestCancelled
     ) => request.documents,
     findFirst((document: Document) => document.id === id)
   );

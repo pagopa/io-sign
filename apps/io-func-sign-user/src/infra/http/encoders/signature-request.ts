@@ -10,13 +10,12 @@ import { SignatureRequestDetailView as SignatureRequestApiModel } from "../model
 
 import { SignatureRequestListView } from "../models/SignatureRequestListView";
 
-import { SignatureRequestStatusEnum } from "../models/SignatureRequestStatus";
-
 import { ThirdPartyMessage as ThirdPartyMessageApiModel } from "../models/ThirdPartyMessage";
 
 import { SignatureRequest } from "../../../signature-request";
 
 import { IssuerEnvironmentEnum } from "../models/IssuerEnvironment";
+import { SignatureRequestStatusEnum } from "../models/SignatureRequestStatus";
 import { DocumentReadyToDetailView } from "./document";
 
 const addPdfExtension = (fileName: NonEmptyString) =>
@@ -90,6 +89,13 @@ export const SignatureRequestToApiModel: E.Encoder<
           signed_at: extra.signedAt,
         };
       }
+      case "CANCELLED": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.CANCELLED,
+          cancelled_at: extra.cancelledAt,
+        };
+      }
     }
   },
 };
@@ -106,6 +112,8 @@ const toSignatureRequestStatusEnum = (
       return SignatureRequestStatusEnum.WAIT_FOR_QTSP;
     case "WAIT_FOR_SIGNATURE":
       return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
+    case "CANCELLED":
+      return SignatureRequestStatusEnum.CANCELLED;
   }
 };
 
