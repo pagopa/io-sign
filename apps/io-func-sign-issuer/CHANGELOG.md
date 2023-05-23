@@ -1,5 +1,19 @@
 # io-func-sign-issuer
 
+## 0.13.0
+
+### Minor Changes
+
+- 3de67e5: Add getRequestsByDossier API endpoint
+- 3cdeb38: Added an endpoint to validate pdf document against a given signature field list
+- 940c6f1: Fixed the bug that didn't allow documents to be uploaded at the same time
+
+### Patch Changes
+
+- 170169b: (validate-document) make signature fields optional, defaults to empty array
+- Updated dependencies [286e6c2]
+  - @io-sign/io-sign@1.0.3
+
 ## 0.12.0
 
 ### Minor Changes
