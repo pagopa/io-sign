@@ -67,14 +67,12 @@ jobs:
 
       - name: Function
         if: steps.workload.outputs.type == 'func'
-        shell: bash
-        run: |
-          az webapp deploy \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.PREFIX }}-${{ env.ENV_SHORT }}-${{ steps.workload.outputs.domain }}-${{ steps.workload.outputs.name }}-${{ steps.workload.outputs.type }} \
-            --slot ${{ env.FUNCTION_SLOT }} \
-            --type zip \
-            --src-path artifact.zip
+        uses: azure/webapps-deploy@v2.2.9
+        with:
+          resource-group-name: ${{ env.RESOURCE_GROUP }}
+          app-name: ${{ env.PREFIX }}-${{ env.ENV_SHORT }}-${{ steps.workload.outputs.domain }}-${{ steps.workload.outputs.name }}-${{ steps.workload.outputs.type }}
+          slot-name: ${{ env.FUNCTION_SLOT }}
+          package: artifact.zip
 
   cleanup_runner:
     name: Cleanup Runner
