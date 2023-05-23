@@ -35,7 +35,7 @@ resource "aws_s3_bucket_policy" "ses_incoming" {
 data "aws_iam_policy_document" "ses_incoming_mailup" {
   statement {
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ses.amazonaws.com"]
     }
     actions = [
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "ses_incoming_mailup" {
 }
 
 resource "aws_ses_domain_identity" "firma_io_pagopa_it" {
-  domain = "firma.io.pagopa.it"
+  domain = var.domain
 }
 
 resource "aws_ses_domain_dkim" "firma_io_pagopa_it" {
@@ -75,7 +75,7 @@ resource "aws_ses_domain_dkim" "firma_io_pagopa_it" {
 resource "aws_ses_receipt_rule" "noreply_mailup" {
   name          = local.receipt_rule_name
   rule_set_name = aws_ses_receipt_rule_set.mailup.id
-  recipients    = ["no-reply@firma.io.pagopa.it"]
+  recipients    = [for box in var.mailboxes : format("%s@%s", box, var.domain)]
   enabled       = true
   scan_enabled  = true
 
@@ -86,9 +86,9 @@ resource "aws_ses_receipt_rule" "noreply_mailup" {
   }
 
   s3_action {
-    bucket_name = aws_s3_bucket.ses_incoming.id
+    bucket_name       = aws_s3_bucket.ses_incoming.id
     object_key_prefix = "no-reply-mailup"
-    position    = 2
+    position          = 2
   }
 
   depends_on = [

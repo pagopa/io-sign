@@ -10,3 +10,11 @@ tags = {
   Source      = "https://github.com/pagopa/io-sign"
   CostCenter  = "BD100 - STRATEGIC INNOVATION"
 }
+
+domain = "firma.io.pagopa.it"
+
+# Empty mailboxes list in order not to receive any email
+# TODO uncomment to allow incoming email to the no-reply box
+mailboxes = [
+  # "no-reply",
+]

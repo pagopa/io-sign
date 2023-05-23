@@ -16,3 +16,13 @@ variable "tags" {
     CreatedBy = "Terraform"
   }
 }
+
+variable "domain" {
+  type        = string
+  description = "The domain"
+}
+
+variable "mailboxes" {
+  type        = list(string)
+  description = "The mailboxes"
+}
