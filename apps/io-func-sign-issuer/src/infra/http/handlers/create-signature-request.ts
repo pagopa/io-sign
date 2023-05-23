@@ -20,6 +20,7 @@ import {
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
 import { insertSignatureRequest } from "../../../signature-request";
+import { DocumentsMetadataFromApiModel } from "../decoders/document";
 
 const requireSignatureRequestBody = (req: H.HttpRequest) =>
   pipe(
@@ -29,6 +30,11 @@ const requireSignatureRequestBody = (req: H.HttpRequest) =>
       dossierId: body.dossier_id,
       signerId: body.signer_id,
       expiresAt: O.fromNullable(body.expires_at),
+      documentsMetadata: pipe(
+        body.documents_metadata,
+        H.parse(DocumentsMetadataFromApiModel, "invalid document metadata"),
+        O.fromEither
+      ),
     })),
     RTE.fromEither
   );
@@ -55,15 +61,23 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
     RTE.bindW("signer", ({ body }) =>
       pipe(getSigner(body.signerId), RTE.fromTaskEither)
     ),
-    RTE.map(({ issuer, dossier, signer, body: { expiresAt } }) => ({
-      issuer,
-      dossier,
-      signer,
-      expiresAt,
-    })),
-    RTE.chainW(({ issuer, dossier, signer, expiresAt }) =>
+    RTE.map(
+      ({
+        issuer,
+        dossier,
+        signer,
+        body: { expiresAt, documentsMetadata },
+      }) => ({
+        issuer,
+        dossier,
+        signer,
+        expiresAt,
+        documentsMetadata,
+      })
+    ),
+    RTE.chainW(({ issuer, dossier, signer, expiresAt, documentsMetadata }) =>
       pipe(
-        newSignatureRequest(dossier, signer, issuer),
+        newSignatureRequest(dossier, signer, issuer, documentsMetadata),
         withExpiryDate(pipe(expiresAt, O.getOrElse(defaultExpiryDate))),
         RTE.fromEither
       )

@@ -10,6 +10,7 @@ import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
+import * as O from "fp-ts/lib/Option";
 
 const issuer: Issuer = {
   id: newId(),
@@ -38,11 +39,11 @@ const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
 describe("SignatureRequest", () => {
   describe("newSignatureRequest", () => {
     it('should create a request with "DRAFT" status', () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer);
+      const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
       expect(request.status).toBe("DRAFT");
     });
     test('all documents should be created with "WAIT_FOR_UPLOAD" status', () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer);
+      const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
       expect(
         request.documents.every(
           (document) => document.status === "WAIT_FOR_UPLOAD"
@@ -56,7 +57,7 @@ describe("SignatureRequest", () => {
       const newExpiryDate = pipe(new Date(), addDays(4));
       expect(
         pipe(
-          newSignatureRequest(dossier, newSigner(), issuer),
+          newSignatureRequest(dossier, newSigner(), issuer, O.none),
           withExpiryDate(newExpiryDate),
           E.map((request) => request.expiresAt),
           E.map(isEqual(newExpiryDate)),
@@ -67,7 +68,7 @@ describe("SignatureRequest", () => {
     it("should return an error on invalid expiry date", () => {
       expect(
         pipe(
-          newSignatureRequest(dossier, newSigner(), issuer),
+          newSignatureRequest(dossier, newSigner(), issuer, O.none),
           withExpiryDate(pipe(new Date(), subDays(100))),
           E.isLeft
         )

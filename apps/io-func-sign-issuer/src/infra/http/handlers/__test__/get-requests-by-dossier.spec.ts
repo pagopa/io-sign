@@ -61,7 +61,8 @@ describe("GetRequestsByDossierHandler", () => {
   const request: SignatureRequest = newSignatureRequest(
     dossierWithRequests,
     { id: newId() },
-    issuer
+    issuer,
+    O.none
   );
 
   const mocks = { issuer, emptyDossier, dossierWithRequests, request };
