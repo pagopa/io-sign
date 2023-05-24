@@ -1,6 +1,5 @@
 import { LitElement, html } from "lit";
 import { customElement, state, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
 import { choose } from "lit/directives/choose.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
@@ -21,7 +20,7 @@ import "./components/LoaderDialog";
 setLocaleFromUserSettings();
 
 export type IOSignElementAttributes = {
-  disabled?: "disabled";
+  disabled: boolean;
 };
 
 @customElement("io-sign")
@@ -30,8 +29,10 @@ export class IOSignElement
   extends LitElement
   implements IOSignElementAttributes
 {
-  @property()
-  disabled?: "disabled";
+  @property({
+    type: Boolean,
+  })
+  disabled: boolean = false;
 
   @state()
   state: "idle" | "activating" | "loading" = "activating";
@@ -123,7 +124,7 @@ export class IOSignElement
   render() {
     return html`<io-button
         @click=${this.handleClick}
-        disabled=${ifDefined(this.disabled)}
+        ?disabled=${this.disabled}
       >
         ${choose(
           this.state,

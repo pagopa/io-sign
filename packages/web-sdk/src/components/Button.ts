@@ -1,9 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export type IOButtonElementAttributes = {
-  disabled?: "disabled";
+  disabled: boolean;
 };
 
 @customElement("io-button")
@@ -11,8 +10,10 @@ export class IOButtonElement
   extends LitElement
   implements IOButtonElementAttributes
 {
-  @property()
-  disabled?: "disabled";
+  @property({
+    type: Boolean,
+  })
+  disabled: boolean = false;
 
   static styles = css`
     :host {
@@ -49,7 +50,7 @@ export class IOButtonElement
   `;
 
   render() {
-    return html`<button disabled=${ifDefined(this.disabled)}>
+    return html`<button ?disabled=${this.disabled}>
       <slot></slot>
     </button>`;
   }

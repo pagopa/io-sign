@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firma con IO demo</title>
+    <script type="module" src="./src/io-sign.ts"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Firma con IO demo</title>
-  <script type="module" src="./src/io-sign.ts"></script>
-</head>
-
-<body>
-  <io-sign id="cta"></io-sign>
-  <script>
-    const cta = document.getElementById("cta");
-    const createSignatureRequest = async () => {
-      return {
-        id: "FAKE_REQUEST_ID",
+  <body>
+    <io-sign id="cta"></io-sign>
+    <script>
+      const cta = document.getElementById("cta");
+      const createSignatureRequest = async () => {
+        return {
+          id: "FAKE_REQUEST_ID",
+        };
       };
-    };
-    cta.addEventListener("io-sign.cta.click", async (e) => {
-      const request = await createSignatureRequest();
-      setTimeout(() => {
-        cta.redirectOrShowQrCode(request.id);
-      }, 2000);
-    });
-  </script>
-</body>
-
+      cta.addEventListener("io-sign.cta.click", async (e) => {
+        const request = await createSignatureRequest();
+        setTimeout(() => {
+          cta.redirectOrShowQrCode(request.id);
+        }, 2000);
+      });
+    </script>
+  </body>
 </html>
