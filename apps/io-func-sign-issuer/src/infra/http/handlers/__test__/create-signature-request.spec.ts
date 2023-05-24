@@ -239,7 +239,7 @@ describe("CreateSignatureRequestHandler", () => {
   });
 
   it("should return an HTTP response with signature request documents_metadata in the body", async () => {
-    const documents_metadata = [
+    const documentsMetadata = [
       {
         title: "test doc #1",
         signature_fields: [],
@@ -257,7 +257,7 @@ describe("CreateSignatureRequestHandler", () => {
       body: {
         dossier_id: mocks.dossier.id,
         signer_id: newId(),
-        documents_metadata,
+        documents_metadata: documentsMetadata,
       },
     };
     const run = CreateSignatureRequestHandler({
@@ -291,6 +291,6 @@ describe("CreateSignatureRequestHandler", () => {
         }),
       })
     );
-    expect(metadata).toStrictEqual(documents_metadata);
+    expect(metadata).toStrictEqual(documentsMetadata);
   });
 });
