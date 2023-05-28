@@ -33,10 +33,6 @@ export const callSignatureRequests = async (
       data.signatureRequest = { ...data.signatureRequest, ...req };
     });
     await callUploadFile(configuration, data);
-    console.log(
-      "The documents have been uploaded, I am waiting for the READY status"
-    );
-
     await callSetReadySignatureRequestStatus(
       configuration,
       data.signatureRequest
@@ -45,9 +41,9 @@ export const callSignatureRequests = async (
       data.signatureRequest = req;
     });
 
-    let retryCunt: number = 0;
-    while (retryCunt < 5 && data.signatureRequest.status === "READY") {
-      retryCunt++;
+    let retryCount: number = 0;
+    while (retryCount < 5 && data.signatureRequest.status === "READY") {
+      retryCount++;
       await getSignatureRequest(configuration, request).then((req) => {
         data.signatureRequest = req;
       });
@@ -58,7 +54,7 @@ export const callSignatureRequests = async (
         "The status of the signature request has changed to WAIT_FOR_SIGNATURE"
       );
     } else {
-      throw new Error("The status of the signature request has not changed");
+      console.log("The status of the signature request has not changed");
     }
 
     await callSendNotification(configuration, data.signatureRequest);
@@ -90,7 +86,7 @@ const createSignatureRequest = async (
     const createSignatureRequestBody: CreateSignatureRequestBody = {
       dossierId: signatureRequest.dossierId,
       signerId: signatureRequest.signerId,
-      //          expiresAt: signatureRequest.expiresAt
+//                expiresAt: signatureRequest.expiresAt
     };
     return api.createSignatureRequest({ createSignatureRequestBody });
   } else {
@@ -116,7 +112,8 @@ const callSendNotification = async (
 ) => {
   if (
     signatureRequest.status &&
-    signatureRequest.status === "WAIT_FOR_SIGNATURE"
+    signatureRequest.status === "WAIT_FOR_SIGNATURE" &&
+    !(signatureRequest.notification)
   ) {
     const api = new SignatureRequestApi(configuration);
     return api.sendNotification({ reqId: signatureRequest.id });
@@ -148,7 +145,7 @@ const callUploadFile = async (
     id: data.signatureRequest.id,
   };
 
-  if (data.signatureRequest.status === "DRAFT") {
+  if (data.signatureRequest.status === "DRAFT" && data.documentsPaths) {
     if (data.documentsPaths.length === data.signatureRequest.documents.length) {
       for (let i = 0; i < data.signatureRequest.documents.length; i++) {
         const documentUploadUrl: string = await callGetDocumentUploadUrl(
@@ -164,26 +161,34 @@ const callUploadFile = async (
           data.documentsPaths[i],
           documentUploadUrl.replaceAll('"', "")
         );
-
-        let retryCunt: number = 0;
+	  }
+        let retryCount: number = 0;
+		let documentsReadyCount: number = 0;
         while (
-          retryCunt < 5 &&
-          data.signatureRequest.documents[i].status === "WAIT_FOR_UPLOAD"
+          retryCount < 5 &&
+          documentsReadyCount < data.documentsPaths.length
         ) {
-          retryCunt++;
+          retryCount++;
+          documentsReadyCount = 0;
           await getSignatureRequest(configuration, request).then((req) => {
             data.signatureRequest = req;
-          });
+			req.documents.forEach((document) => {
+if (document.status === "READY") {
+documentsReadyCount++;
+}
+      });
+              });
           await sleep(5000);
         }
-        if (data.signatureRequest.documents[i].status === "READY") {
-          console.log("The document has been uploaded and is ready");
-        } else {
+        if (data.documentsPaths.length === documentsReadyCount) {
+          console.log(
+            "The documents have been uploaded, I am waiting for the READY status"
+          );
+              } else {
           throw new Error(
-            "Timeout expired, an error occurred while uploading the file"
+            "Timeout expired, an error occurred while uploading the files"
           );
         }
-      }
     } else {
       console.error(
         `The number of documents required by the signature request (${data.signatureRequest.documents.length}) differs from the list of submitted documents (${data.documentsPaths.length})`

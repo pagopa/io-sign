@@ -9,7 +9,7 @@ export type SdkSchema = {
   signatureRequest?: Partial<SignatureRequestDetailView>;
   dossier?: Partial<DossierDetailView>;
   signatureRequests?: Partial<GetRequestsByDossierRequest>;
-  documentsPaths: string[];
+  documentsPaths?: string[];
 };
 
 export type SdkSchemaWithSignatureRequest = SdkSchema & {

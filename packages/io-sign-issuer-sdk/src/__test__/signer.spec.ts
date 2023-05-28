@@ -1,13 +1,12 @@
 import {
   Configuration,
-  DossierApi,
   SignerApi,
 } from "@io-sign/io-sign-api-client";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { callSigners } from "../signer";
 
 vi.mock("@io-sign/io-sign-api-client");
-const mockGetSignerNyFiscalCode = vi.spyOn(
+const mockGetSignerByFiscalCode = vi.spyOn(
   SignerApi.prototype,
   "getSignerByFiscalCode"
 );
@@ -18,7 +17,7 @@ describe("Signer APIs", () => {
 
     await callSigners({} as Configuration, request);
 
-    expect(mockGetSignerNyFiscalCode).toHaveBeenCalledWith({
+    expect(mockGetSignerByFiscalCode).toHaveBeenCalledWith({
       getSignerByFiscalCodeBody: { fiscalCode: request },
     });
   });
