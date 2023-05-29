@@ -44,7 +44,7 @@ describe("UploadMetadata", () => {
       },
     ]);
 
-    const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
+    const request = newSignatureRequest(dossier, newSigner(), issuer);
 
     it("should create an UploadMetadata record only if the specified document exists", () => {
       const metaForFirstDocument = pipe(

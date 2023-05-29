@@ -60,7 +60,7 @@ export const newSignatureRequest = (
   dossier: Dossier,
   signer: Signer,
   issuer: Issuer,
-  documentsMetadata: O.Option<NonEmptyArray<DocumentMetadata>>
+  documentsMetadata?: NonEmptyArray<DocumentMetadata>
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
@@ -78,8 +78,7 @@ export const newSignatureRequest = (
   expiresAt: defaultExpiryDate(),
   // the issuer has the chance to add specific documents metadata for a signature request. otherwise, the dossier's documents metadata will be taken
   documents: pipe(
-    documentsMetadata,
-    O.getOrElse(() => dossier.documentsMetadata),
+    documentsMetadata ?? dossier.documentsMetadata,
     (documentsMetadata) =>
       documentsMetadata.map((metadata) => ({
         id: newId(),

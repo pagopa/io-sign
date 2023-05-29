@@ -89,7 +89,7 @@ const mockMakeMessageContent: MakeMessageContent =
 describe("SignatureRequestNotification", () => {
   describe("newSignatureRequestNotification", () => {
     it("should create and send signature request notification", () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
 
       const makeSendSignatureRequest = makeSendSignatureRequestNotification(
         mockSubmitNotification,
@@ -114,7 +114,7 @@ describe("SignatureRequestNotification", () => {
     });
 
     it("should not send a signature request notification with invalid submission", () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
 
       const mockInvalidSubmitNotification: SubmitNotificationForUser =
         (_fiscalCode: FiscalCode) => (_message: NotificationMessage) =>
@@ -138,7 +138,7 @@ describe("SignatureRequestNotification", () => {
     });
 
     it("should not send a signature request notification with invalid fiscalCode", () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer, O.none);
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
 
       const mockGetInvalidFiscalCodeBySignerId: GetFiscalCodeBySignerId = (
         _id: Signer["id"]
