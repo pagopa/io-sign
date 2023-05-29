@@ -6,9 +6,8 @@ local.settings.json
 coverage
 bin
 obj
-http/models
-lollipop/models
-pdv-tokenizer/models 
+models/
+io-sign-api-client
 node_modules
 .turbo
 *.zip
