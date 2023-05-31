@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [f154adc]
+  - @io-sign/io-sign@1.0.4
+
 ## 0.3.3
 
 ### Patch Changes

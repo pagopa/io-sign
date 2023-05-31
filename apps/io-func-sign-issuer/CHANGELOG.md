@@ -1,5 +1,12 @@
 # io-func-sign-issuer
 
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [f154adc]
+  - @io-sign/io-sign@1.0.4
+
 ## 0.13.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.0.4
+
+### Patch Changes
+
+- f154adc: Exclude text fields from PDF metadata
+
 ## 1.0.3
 
 ### Patch Changes
