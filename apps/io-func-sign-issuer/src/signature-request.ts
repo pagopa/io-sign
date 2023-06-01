@@ -23,6 +23,7 @@ import {
   markAsRejected as setRejectedStatus,
   DocumentReady,
   PdfDocumentMetadata,
+  DocumentMetadata,
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -39,6 +40,7 @@ import {
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 import { Dossier } from "./dossier";
 
 export const SignatureRequest = t.union([
@@ -57,7 +59,8 @@ export const defaultExpiryDate = () => pipe(new Date(), addDays(90));
 export const newSignatureRequest = (
   dossier: Dossier,
   signer: Signer,
-  issuer: Issuer
+  issuer: Issuer,
+  documentsMetadata?: NonEmptyArray<DocumentMetadata>
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
@@ -73,13 +76,18 @@ export const newSignatureRequest = (
   createdAt: new Date(),
   updatedAt: new Date(),
   expiresAt: defaultExpiryDate(),
-  documents: dossier.documentsMetadata.map((metadata) => ({
-    id: newId(),
-    metadata,
-    status: "WAIT_FOR_UPLOAD",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  })),
+  // the issuer has the chance to add specific documents metadata for a signature request. otherwise, the dossier's documents metadata will be taken
+  documents: pipe(
+    documentsMetadata ?? dossier.documentsMetadata,
+    (documentsMetadata) =>
+      documentsMetadata.map((metadata) => ({
+        id: newId(),
+        metadata,
+        status: "WAIT_FOR_UPLOAD",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }))
+  ),
 });
 
 class InvalidExpiryDateError extends Error {

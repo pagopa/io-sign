@@ -2,6 +2,7 @@ import { describe, expect, it, beforeAll } from "vitest";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
+import * as E from "fp-ts/lib/Either";
 
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
@@ -18,6 +19,7 @@ import {
   SignatureRequestRepository,
 } from "../../../../signature-request";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { pipe } from "fp-ts/lib/function";
 
 describe("CreateSignatureRequestHandler", () => {
   let issuerRepository: IssuerRepository;
@@ -234,5 +236,61 @@ describe("CreateSignatureRequestHandler", () => {
         }),
       })
     );
+  });
+
+  it("should return an HTTP response with signature request documents_metadata in the body", async () => {
+    const documentsMetadata = [
+      {
+        title: "test doc #1",
+        signature_fields: [],
+      },
+      {
+        title: "test doc #2",
+        signature_fields: [],
+      },
+    ];
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      body: {
+        dossier_id: mocks.dossier.id,
+        signer_id: newId(),
+        documents_metadata: documentsMetadata,
+      },
+    };
+    const run = CreateSignatureRequestHandler({
+      logger,
+      issuerRepository,
+      dossierRepository,
+      signatureRequestRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+      eventAnalyticsClient: {} as EventHubProducerClient,
+    });
+
+    const metadata = pipe(
+      await run(),
+      E.fold(
+        () => [],
+        (result) =>
+          result.statusCode === 201
+            ? result.body.documents.map((document) => document.metadata)
+            : []
+      )
+    );
+
+    expect(run()).resolves.toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          statusCode: 201,
+          headers: expect.objectContaining({
+            "Content-Type": "application/json",
+          }),
+        }),
+      })
+    );
+    expect(metadata).toStrictEqual(documentsMetadata);
   });
 });
