@@ -42,12 +42,14 @@ export const callSignatureRequests = async (
     });
 
     let retryCount: number = 0;
-    while (retryCount < 5 && data.signatureRequest.status === "READY") {
+		let maxRetryCount:number = (process.env.RETRY_COUNT_CHANGE_STATUS) ? Number.parseInt(process.env.RETRY_COUNT_CHANGE_STATUS) : 5;
+		let retrySleepTime:number = (process.env.RETRY_SLEEP_TIME_CHANGE_STATUS) ? Number.parseInt(process.env.RETRY_SLEEP_TIME_CHANGE_STATUS) : 5000;
+    while (retryCount < maxRetryCount && data.signatureRequest.status === "READY") {
       retryCount++;
       await getSignatureRequest(configuration, request).then((req) => {
         data.signatureRequest = req;
       });
-      await sleep(5000);
+      await sleep(retrySleepTime);
     }
     if (data.signatureRequest.status === "WAIT_FOR_SIGNATURE") {
       console.log(
@@ -163,9 +165,11 @@ const callUploadFile = async (
         );
 	  }
         let retryCount: number = 0;
+		let maxRetryCount:number = (process.env.RETRY_COUNT_UPLOAD) ? Number.parseInt(process.env.RETRY_COUNT_UPLOAD) : 5;
+		let retrySleepTime:number = (process.env.RETRY_SLEEP_TIME_UPLOAD) ? Number.parseInt(process.env.RETRY_SLEEP_TIME_UPLOAD) : 5000;
 		let documentsReadyCount: number = 0;
         while (
-          retryCount < 5 &&
+          retryCount < maxRetryCount &&
           documentsReadyCount < data.documentsPaths.length
         ) {
           retryCount++;
@@ -178,7 +182,7 @@ documentsReadyCount++;
 }
       });
               });
-          await sleep(5000);
+          await sleep(retrySleepTime);
         }
         if (data.documentsPaths.length === documentsReadyCount) {
           console.log(

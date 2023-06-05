@@ -89,7 +89,6 @@ function main() {
 
   const file = fs.readFileSync("./file.yaml", "utf8");
   const data = YAML.parse(file);
-
   // TODO: insert runtime check on data type
 
   checkSigner(configuration, data)
