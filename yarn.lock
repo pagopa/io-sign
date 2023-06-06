@@ -2560,7 +2560,7 @@ __metadata:
     rollup-plugin-minify-html-literals: ^1.2.6
     storybook: ^7.0.6
     typescript: ^4.9.3
-    vite: ^4.0.0
+    vite: ^4.3.9
     vitest: ^0.30.1
   languageName: unknown
   linkType: soft
@@ -16689,9 +16689,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.0.0":
-  version: 4.3.7
-  resolution: "vite@npm:4.3.7"
+"vite@npm:^4.3.9":
+  version: 4.3.9
+  resolution: "vite@npm:4.3.9"
   dependencies:
     esbuild: ^0.17.5
     fsevents: ~2.3.2
@@ -16722,7 +16722,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: cda8c86fd9f9ab984f2ab8ae09f89bfef7dc636142f0b1ed30d37b8155516729cf91d95eab7ba43d43bb51d8068f0d938ac85dc80d3f53497fbd35f50d27ec25
+  checksum: 8c45a516278d1e0425fac00c0877336790f71484a851a318346a70e0d2aef9f3b9651deb2f9f002c791ceb920eda7d6a3cda753bdefd657321c99f448b02dd25
   languageName: node
   linkType: hard
 
