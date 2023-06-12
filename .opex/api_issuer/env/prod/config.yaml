@@ -2,6 +2,9 @@ oa3_spec: apps/io-func-sign-issuer/openapi.yaml
 name: opex_api_issuer
 location: West Europe
 timespan: 10m
+evaluation_frequency: 40 # default 20
+evaluation_time_window: 40 # default 20
+event_occurrences: 3 # default 1
 data_source: /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-rg-external/providers/Microsoft.Network/applicationGateways/io-p-appgateway
 resource_type: app-gateway
 action_groups:
@@ -12,3 +15,34 @@ action_groups:
 overrides:
   hosts:
     - api.io.pagopa.it
+  endpoints:
+    /api/v1/sign/dossiers:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/dossiers/{id}:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/dossiers/{id}/signature-requests:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signers:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signature-requests:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signature-requests/{id}:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signature-requests/{id}/status:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signature-requests/{req_id}/documents/{doc_id}/upload_url:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/signature-requests/{req_id}/notification:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
+    /api/v1/sign/validate-document:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
