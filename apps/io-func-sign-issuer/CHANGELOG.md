@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.14.0
+
+### Minor Changes
+
+- 9e14b34: Added optional input documents_metadata in createSignatureRequest API endpoint
+
 ## 0.13.1
 
 ### Patch Changes
