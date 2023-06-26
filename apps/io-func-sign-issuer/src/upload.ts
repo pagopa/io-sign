@@ -19,9 +19,6 @@ import {
   SignatureRequestId,
 } from "@io-sign/io-sign/signature-request";
 
-import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
-import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-
 import { SignatureRequest } from "./signature-request";
 
 export const UploadMetadata = t.intersection([
@@ -129,13 +126,13 @@ export type FileStorage = {
   getUrl: (filename: string) => string;
 };
 
-export const getMetadataFromUploadedDocument =
+export const getUploadedDocument =
   (
     filename: string
   ): RTE.ReaderTaskEither<
     { uploadedFileStorage: FileStorage },
     Error,
-    PdfDocumentMetadata
+    Buffer
   > =>
   ({ uploadedFileStorage }) =>
     pipe(
@@ -152,8 +149,7 @@ export const getMetadataFromUploadedDocument =
           )
         )
       ),
-      TE.chain(uploadedFileStorage.download),
-      TE.chain(getPdfMetadata)
+      TE.chain(uploadedFileStorage.download)
     );
 
 export const removeDocumentFromStorage =
