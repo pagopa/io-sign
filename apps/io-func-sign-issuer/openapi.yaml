@@ -770,6 +770,8 @@ components:
         qr_code_url:
           type: string
           format: uri
+        cancelled_at:
+          $ref: "#/components/schemas/Timestamp"
       required:
         - id
         - status
