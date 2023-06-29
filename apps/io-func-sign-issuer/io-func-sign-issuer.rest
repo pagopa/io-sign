@@ -147,3 +147,13 @@ x-ms-blob-type : BlockBlob
 GET {{issuerApiBaseUrl}}/dossiers/{{dossierId}}/signature-requests?limit=1
 X-Subscription-Id: {{subscriptionId}}
 Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+###
+
+# @name setSignatureRequestAsReady
+# @prompt signatureRequestId id of the signature request to retrieve
+PUT {{issuerApiBaseUrl}}/signature-requests/{{signatureRequestId}}/status
+X-Subscription-Id: {{subscriptionId}}
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+READY
