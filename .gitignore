@@ -7,7 +7,6 @@ coverage
 bin
 obj
 models/
-io-sign-api-client
 node_modules
 .turbo
 *.zip
