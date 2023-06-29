@@ -12,6 +12,7 @@ import {
   SignatureRequestToBeSigned,
   SignatureRequestWaitForQtsp,
   SignatureRequestId,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Signer } from "@io-sign/io-sign/signer";
@@ -26,6 +27,7 @@ export const SignatureRequest = t.union([
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
   SignatureRequestRejected,
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;

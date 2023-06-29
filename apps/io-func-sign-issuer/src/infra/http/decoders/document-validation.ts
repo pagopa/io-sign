@@ -6,6 +6,7 @@ import * as E from "fp-ts/lib/Either";
 import * as J from "fp-ts/lib/Json";
 import * as A from "fp-ts/lib/Array";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as O from "fp-ts/lib/Option";
 
 import * as H from "@pagopa/handler-kit";
 
@@ -14,6 +15,7 @@ import {
   DocumentMetadata,
   PdfDocumentMetadata,
 } from "@io-sign/io-sign/document";
+
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 
 import { SignatureFieldFromApiModel } from "./document";
@@ -42,9 +44,8 @@ type JsonFile = t.TypeOf<typeof JsonFileC>;
 const FilesFromBodyC = t.union([
   t.tuple([PdfFileC, JsonFileC]),
   t.tuple([JsonFileC, PdfFileC]),
+  t.tuple([PdfFileC]),
 ]);
-
-type FilesFromBody = t.TypeOf<typeof FilesFromBodyC>;
 
 const parseSignatureFieldsFromBuffer = (b: Buffer) =>
   pipe(
@@ -58,23 +59,24 @@ const parseSignatureFieldsFromBuffer = (b: Buffer) =>
     ),
     E.chainW(
       H.parse(t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)))
-    ),
-    E.chainW(H.parse(DocumentMetadata.props.signatureFields))
+    )
   );
 
-const requireSignatureFields = (files: FilesFromBody) =>
+const requireSignatureFields = (
+  files: Array<PdfFile | JsonFile>
+): E.Either<Error, DocumentMetadata["signatureFields"]> =>
   pipe(
     files,
     A.filter((file): file is JsonFile => file.type === "application/json"),
     A.head,
-    E.fromOption(
-      () => new H.HttpBadRequestError("missing signature fields file")
+    O.fold(
+      () => E.right([]),
+      (file) => parseSignatureFieldsFromBuffer(file.data)
     ),
-    E.map((file) => file.data),
-    E.chainW(parseSignatureFieldsFromBuffer)
+    E.chainW(H.parse(DocumentMetadata.props.signatureFields))
   );
 
-const requirePdfDocumentMetadata = (files: FilesFromBody) =>
+const requirePdfDocumentMetadata = (files: Array<PdfFile | JsonFile>) =>
   pipe(
     files,
     A.filter((file): file is PdfFile => file.type === "application/pdf"),

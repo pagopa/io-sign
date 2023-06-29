@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Issuer API
-  version: 1.2.0
+  version: 1.2.1
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign
     description: production
@@ -227,14 +227,14 @@ paths:
       responses:
         "204":
           description: Signature Request status successfully set
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         default:
@@ -326,6 +326,8 @@ paths:
                   type: array
                   items:
                     $ref: "#/components/schemas/SignatureField"
+              required:
+                - document
             encoding:
               document:
                 contentType: application/pdf
@@ -559,6 +561,7 @@ components:
       type: string
       x-extensible-enum:
         - READY
+        - CANCELLED
 
     DossierDetailView:
       type: object
@@ -628,6 +631,8 @@ components:
           $ref: "#/components/schemas/Id"
         expires_at:
           $ref: "#/components/schemas/Timestamp"
+        documents_metadata:
+          $ref: "#/components/schemas/DocumentMetadataList"
       required:
         - dossier_id
         - signer_id
@@ -731,6 +736,7 @@ components:
         - WAIT_FOR_SIGNATURE
         - SIGNED
         - REJECTED
+        - CANCELLED
 
     SignatureRequestDetailView:
       type: object
@@ -764,6 +770,8 @@ components:
         qr_code_url:
           type: string
           format: uri
+        cancelled_at:
+          $ref: "#/components/schemas/Timestamp"
       required:
         - id
         - status

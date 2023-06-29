@@ -10,6 +10,7 @@ import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
 import { newSignatureRequest, withExpiryDate } from "../signature-request";
+import * as O from "fp-ts/lib/Option";
 
 const issuer: Issuer = {
   id: newId(),

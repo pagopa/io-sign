@@ -2,7 +2,8 @@ name: "Azure Deploy"
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -25,7 +26,7 @@ jobs:
       - name: Create GitHub Runner
         id: create_github_runner
         # from https://github.com/pagopa/github-self-hosted-runner-azure-create-action/commits/main
-        uses: pagopa/github-self-hosted-runner-azure-create-action@63534a04613b420ce6474ccbb52ac7884129ff6f
+        uses: pagopa/github-self-hosted-runner-azure-create-action@599106a2c76f93a47b6bc9dcd5303df9d7b8ac4b
         with:
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -33,6 +34,7 @@ jobs:
           container_app_environment_name: ${{ secrets.AZURE_CONTAINER_APP_ENVIRONMENT_NAME }}
           resource_group_name: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           pat_token: ${{ secrets.BOT_TOKEN }}
+          self_hosted_runner_image_tag: v1.4.1@sha256:97aebedab1fe4ccfca0050726f37a76d18dcfa4165493ee2f823454897548ff9
 
   runner_job:
     name: Runner Job
@@ -67,14 +69,12 @@ jobs:
 
       - name: Function
         if: steps.workload.outputs.type == 'func'
-        shell: bash
-        run: |
-          az webapp deploy \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.PREFIX }}-${{ env.ENV_SHORT }}-${{ steps.workload.outputs.domain }}-${{ steps.workload.outputs.name }}-${{ steps.workload.outputs.type }} \
-            --slot ${{ env.FUNCTION_SLOT }} \
-            --type zip \
-            --src-path artifact.zip
+        uses: azure/webapps-deploy@v2.2.9
+        with:
+          resource-group-name: ${{ env.RESOURCE_GROUP }}
+          app-name: ${{ env.PREFIX }}-${{ env.ENV_SHORT }}-${{ steps.workload.outputs.domain }}-${{ steps.workload.outputs.name }}-${{ steps.workload.outputs.type }}
+          slot-name: ${{ env.FUNCTION_SLOT }}
+          package: artifact.zip
 
   cleanup_runner:
     name: Cleanup Runner

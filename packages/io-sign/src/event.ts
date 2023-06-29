@@ -15,6 +15,7 @@ import {
   SignatureRequestSigned,
   SignatureRequestToBeSigned,
   SignatureRequestWaitForQtsp,
+  SignatureRequestCancelled,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
 import { SignerId } from "./signer";
@@ -38,6 +39,7 @@ export enum EventName {
   SIGNATURE_SIGNED = "io.sign.signature_request.signed",
   SIGNATURE_READY = "io.sign.signature_request.ready",
   SIGNATURE_REJECTED = "io.sign.signature_request.rejected",
+  SIGNATURE_CANCELLED = "io.sign.signature_request.cancelled",
   DOCUMENT_UPLOADED = "io.sign.signature_request.document.uploaded",
   DOCUMENT_REJECTED = "io.sign.signature_request.document.rejected",
   NOTIFICATION_SENT = "io.sign.signature_request.notification.sent",
@@ -66,7 +68,8 @@ type SignatureRequest =
   | SignatureRequestReady
   | SignatureRequestToBeSigned
   | SignatureRequestWaitForQtsp
-  | SignatureRequestRejected;
+  | SignatureRequestRejected
+  | SignatureRequestCancelled;
 
 export const BillingEvent = t.intersection([
   BaseEvent,
