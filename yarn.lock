@@ -2505,6 +2505,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@io-sign/io-sign-api-client@workspace:^, @io-sign/io-sign-api-client@workspace:packages/io-sign-api-client":
+  version: 0.0.0-use.local
+  resolution: "@io-sign/io-sign-api-client@workspace:packages/io-sign-api-client"
+  dependencies:
+    typescript: ^4.0
+  languageName: unknown
+  linkType: soft
+
+"@io-sign/io-sign-issuer-sdk@workspace:packages/io-sign-issuer-sdk":
+  version: 0.0.0-use.local
+  resolution: "@io-sign/io-sign-issuer-sdk@workspace:packages/io-sign-issuer-sdk"
+  dependencies:
+    "@io-sign/io-sign-api-client": "workspace:^"
+    "@pagopa/eslint-config": ^3.0.0
+    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/ts-commons": ^11.0.0
+    "@rushstack/eslint-patch": ^1.2.0
+    "@types/isomorphic-fetch": ^0.0.36
+    "@types/node": ^18.11.18
+    "@vitest/coverage-c8": ^0.30.1
+    dotenv: ^16.0.3
+    eslint: ^8.28.0
+    isomorphic-fetch: ^3.0.0
+    prettier: 2.7.1
+    tsup: ^6.4.0
+    typescript: ^4.8.4
+    vitest: ^0.30.1
+  languageName: unknown
+  linkType: soft
+
 "@io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
@@ -3330,6 +3360,24 @@ __metadata:
     semver: ^7.3.7
     validator: ^13.7.0
   checksum: bbad5859653a7412570646266df5c2432c4f79ad4ba9b2800b3797468af959a9241ae0dca7f7b0a4552d8502dfea8ca8a6248c36b698dd2174d156d0703997e0
+  languageName: node
+  linkType: hard
+
+"@pagopa/ts-commons@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@pagopa/ts-commons@npm:11.0.0"
+  dependencies:
+    abort-controller: ^3.0.0
+    agentkeepalive: ^4.1.4
+    applicationinsights: ^1.8.10
+    fp-ts: ^2.11.0
+    io-ts: ^2.2.16
+    jose: ^4.11.2
+    json-set-map: ^1.1.2
+    node-fetch: ^2.6.0
+    semver: ^7.3.7
+    validator: ^13.7.0
+  checksum: 0d1080fd7164f5c7cf70abcc32ad40acfe66a9596593c2e3e6ab01f5550a0f4461fb8a9aa33d7ea7cdc91f7f3f798ee643f94cb9bd3cb45f16ab73045d709c61
   languageName: node
   linkType: hard
 
@@ -4477,6 +4525,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/isomorphic-fetch@npm:^0.0.36":
+  version: 0.0.36
+  resolution: "@types/isomorphic-fetch@npm:0.0.36"
+  checksum: 1ffaa1c97a019b1f7a682e2ae31bd4cc3f324198b422c62cece51b42d2750e0dde0c4df2320a52874d6c6019ee4b00ca2e736010d34b206a82e63ef82ef85bbe
+  languageName: node
+  linkType: hard
+
 "@types/istanbul-lib-coverage@npm:*, @types/istanbul-lib-coverage@npm:^2.0.0, @types/istanbul-lib-coverage@npm:^2.0.1":
   version: 2.0.4
   resolution: "@types/istanbul-lib-coverage@npm:2.0.4"
@@ -4617,6 +4672,13 @@ __metadata:
   version: 16.18.31
   resolution: "@types/node@npm:16.18.31"
   checksum: 1e0bbbdcfdb80ebb9c5544a58b9692964dca08175a9d2f787a1ed8c75c253d106d56cf7d94c5ba0b44e1627000d093d599f995aeb657f5edbf577e66565b017a
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.11.18":
+  version: 18.16.18
+  resolution: "@types/node@npm:18.16.18"
+  checksum: d32d8a0a04cd3f5ecb361bcb42f3a07623881ac90d680e06bf626defb3c663a94860d11690babe607cfe67265eceeb8a59ba5fe40c0e49f5a1b01e0088640469
   languageName: node
   linkType: hard
 
@@ -7481,6 +7543,13 @@ __metadata:
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.0.3":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
   languageName: node
   linkType: hard
 
@@ -10752,6 +10821,16 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: db85c4c970ce30693676487cca0e61da2ca34e8d4967c2e1309143ff910c207133a969f9e4ddb2dc6aba670aabce4e0e307146c310350b298e74a31f7d464703
+  languageName: node
+  linkType: hard
+
+"isomorphic-fetch@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "isomorphic-fetch@npm:3.0.0"
+  dependencies:
+    node-fetch: ^2.6.1
+    whatwg-fetch: ^3.4.1
+  checksum: e5ab79a56ce5af6ddd21265f59312ad9a4bc5a72cebc98b54797b42cb30441d5c5f8d17c5cd84a99e18101c8af6f90c081ecb8d12fd79e332be1778d58486d75
   languageName: node
   linkType: hard
 
@@ -16129,7 +16208,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^2.9.2 || ^3.0.0 || ^4.0.0, typescript@npm:^4.7.4, typescript@npm:^4.8.4, typescript@npm:^4.9.3":
+"typescript@npm:^2.9.2 || ^3.0.0 || ^4.0.0, typescript@npm:^4.0, typescript@npm:^4.7.4, typescript@npm:^4.8.4, typescript@npm:^4.9.3":
   version: 4.9.5
   resolution: "typescript@npm:4.9.5"
   bin:
@@ -16139,7 +16218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^2.9.2 || ^3.0.0 || ^4.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
+"typescript@patch:typescript@^2.9.2 || ^3.0.0 || ^4.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.0#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=d73830"
   bin:
@@ -16899,6 +16978,13 @@ __metadata:
   dependencies:
     iconv-lite: 0.6.3
   checksum: 7087810c410aa9b689cbd6af8773341a53cdc1f3aae2a882c163bd5522ec8ca4cdfc269aef417a5792f411807d5d77d50df4c24e3abb00bb60192858a40cc675
+  languageName: node
+  linkType: hard
+
+"whatwg-fetch@npm:^3.4.1":
+  version: 3.6.2
+  resolution: "whatwg-fetch@npm:3.6.2"
+  checksum: ee976b7249e7791edb0d0a62cd806b29006ad7ec3a3d89145921ad8c00a3a67e4be8f3fb3ec6bc7b58498724fd568d11aeeeea1f7827e7e1e5eae6c8a275afed
   languageName: node
   linkType: hard
 

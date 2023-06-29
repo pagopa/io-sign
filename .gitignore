@@ -7,6 +7,8 @@ coverage
 bin
 obj
 models
+# tmp fix for io-sign-api-client
+!packages/io-sign-api-client/src/models
 node_modules
 .turbo
 *.zip
