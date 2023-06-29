@@ -1,7 +1,4 @@
-import {
-  Configuration,
-  SignerApi,
-} from "@io-sign/io-sign-api-client";
+import { Configuration, SignerApi } from "@io-sign/io-sign-api-client";
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { callSigners } from "../signer";
 

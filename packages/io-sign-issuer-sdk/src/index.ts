@@ -43,12 +43,14 @@ const checkDossier = async (
   configuration: Configuration,
   data: SdkSchema
 ): Promise<SdkSchema> => {
-	if (data.signatureRequests) {
-    return callGetRequestsByDossier(configuration, data.signatureRequests).then((result: any) => {
-      console.log("risultato dossier: " + JSON.stringify(result, null, 2));
-	return data;
-	});
-	}
+  if (data.signatureRequests) {
+    return callGetRequestsByDossier(configuration, data.signatureRequests).then(
+      (result: any) => {
+        console.log("risultato dossier: " + JSON.stringify(result, null, 2));
+        return data;
+      }
+    );
+  }
   if (data.dossier) {
     return callDossier(configuration, data.dossier).then((result) => {
       console.log("risultato dossier: " + JSON.stringify(result, null, 2));

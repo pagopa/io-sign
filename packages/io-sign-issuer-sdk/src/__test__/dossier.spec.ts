@@ -1,8 +1,10 @@
 import { Configuration, DossierApi } from "@io-sign/io-sign-api-client";
-import { describe, expect, test, vi, beforeEach } from "vitest";
+
+import { describe, expect, test, vi } from "vitest";
 import { callDossier, callGetRequestsByDossier } from "./../dossier";
 
 vi.mock("@io-sign/io-sign-api-client");
+
 const mockGetDossier = vi.spyOn(DossierApi.prototype, "getDossier");
 const mockCreateDossier = vi.spyOn(DossierApi.prototype, "createDossier");
 const mockGetRequestsByDossier = vi.spyOn(

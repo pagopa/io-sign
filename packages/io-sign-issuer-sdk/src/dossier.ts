@@ -38,6 +38,6 @@ export const callGetRequestsByDossier = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   request: Partial<GetRequestsByDossierRequest>
 ) => {
-    const api = new DossierApi(configuration);
-		return api.getRequestsByDossier(<GetRequestsByDossierRequest>request);
+  const api = new DossierApi(configuration);
+  return api.getRequestsByDossier(<GetRequestsByDossierRequest>request);
 };

@@ -1,7 +1,6 @@
 import {
   ClauseTypeEnum,
   Configuration,
-  Document,
   DocumentReady,
   DocumentToBeUploaded,
   SignatureRequestApi,
@@ -137,19 +136,13 @@ vi.mock("@io-sign/io-sign-api-client");
 vi.mock("./upload-file");
 const mockGetSignatureRequest = vi
   .spyOn(SignatureRequestApi.prototype, "getSignatureRequest")
-  .mockImplementation(() => {
-    return Promise.resolve(getSignatureResponse);
-  });
+  .mockImplementation(() => Promise.resolve(getSignatureResponse));
 const mockCreateSignatureRequest = vi
   .spyOn(SignatureRequestApi.prototype, "createSignatureRequest")
-  .mockImplementation(() => {
-    return Promise.resolve(getSignatureResponse);
-  });
+  .mockImplementation(() => Promise.resolve(getSignatureResponse));
 const mockGetDocumentUploadUrl = vi
   .spyOn(SignatureRequestApi.prototype, "getDocumentUploadUrl")
-  .mockImplementation(() => {
-    return Promise.resolve("www.example.com");
-  });
+  .mockImplementation(() => Promise.resolve("www.example.com"));
 const mockSendNotification = vi.spyOn(
   SignatureRequestApi.prototype,
   "sendNotification"
@@ -158,7 +151,7 @@ const mockSetSignatureRequestStatus = vi.spyOn(
   SignatureRequestApi.prototype,
   "setSignatureRequestStatus"
 );
-//const mockCallDocumentUpload = vi.spyOn(
+// const mockCallDocumentUpload = vi.spyOn(
 describe("Signature Request APIs", () => {
   beforeEach(() => {
     mockGetSignatureRequest.mockClear();
@@ -206,9 +199,9 @@ describe("Signature Request APIs", () => {
         id: "aaa",
       },
     };
-    mockGetSignatureRequest.mockImplementation(() => {
-      return Promise.resolve(getSignatureRequestWithDocumentsUploadedResponse);
-    });
+    mockGetSignatureRequest.mockImplementation(() =>
+      Promise.resolve(getSignatureRequestWithDocumentsUploadedResponse)
+    );
     await callSignatureRequests({} as Configuration, request as any);
     expect(mockGetSignatureRequest).toBeCalledTimes(3); // it should be 8 times
     expect(mockCreateSignatureRequest).not.toBeCalled;
@@ -224,11 +217,9 @@ describe("Signature Request APIs", () => {
         id: "aaa",
       },
     };
-    mockGetSignatureRequest.mockImplementation(() => {
-      return Promise.resolve(
-        getSignatureRequestWithWaitForSignatureStatusResponse
-      );
-    });
+    mockGetSignatureRequest.mockImplementation(() =>
+      Promise.resolve(getSignatureRequestWithWaitForSignatureStatusResponse)
+    );
     await callSignatureRequests({} as Configuration, request as any);
     expect(mockGetSignatureRequest).toBeCalledTimes(3); // it should be 8 times
     expect(mockCreateSignatureRequest).not.toBeCalled;

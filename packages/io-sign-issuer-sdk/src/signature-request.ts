@@ -42,9 +42,16 @@ export const callSignatureRequests = async (
     });
 
     let retryCount: number = 0;
-		let maxRetryCount:number = (process.env.RETRY_COUNT_CHANGE_STATUS) ? Number.parseInt(process.env.RETRY_COUNT_CHANGE_STATUS) : 5;
-		let retrySleepTime:number = (process.env.RETRY_SLEEP_TIME_CHANGE_STATUS) ? Number.parseInt(process.env.RETRY_SLEEP_TIME_CHANGE_STATUS) : 5000;
-    while (retryCount < maxRetryCount && data.signatureRequest.status === "READY") {
+    const maxRetryCount: number = process.env.RETRY_COUNT_CHANGE_STATUS
+      ? Number.parseInt(process.env.RETRY_COUNT_CHANGE_STATUS)
+      : 5;
+    const retrySleepTime: number = process.env.RETRY_SLEEP_TIME_CHANGE_STATUS
+      ? Number.parseInt(process.env.RETRY_SLEEP_TIME_CHANGE_STATUS)
+      : 5000;
+    while (
+      retryCount < maxRetryCount &&
+      data.signatureRequest.status === "READY"
+    ) {
       retryCount++;
       await getSignatureRequest(configuration, request).then((req) => {
         data.signatureRequest = req;
@@ -88,7 +95,7 @@ const createSignatureRequest = async (
     const createSignatureRequestBody: CreateSignatureRequestBody = {
       dossierId: signatureRequest.dossierId,
       signerId: signatureRequest.signerId,
-//                expiresAt: signatureRequest.expiresAt
+      //                expiresAt: signatureRequest.expiresAt
     };
     return api.createSignatureRequest({ createSignatureRequestBody });
   } else {
@@ -115,7 +122,7 @@ const callSendNotification = async (
   if (
     signatureRequest.status &&
     signatureRequest.status === "WAIT_FOR_SIGNATURE" &&
-    !(signatureRequest.notification)
+    !signatureRequest.notification
   ) {
     const api = new SignatureRequestApi(configuration);
     return api.sendNotification({ reqId: signatureRequest.id });
@@ -163,36 +170,40 @@ const callUploadFile = async (
           data.documentsPaths[i],
           documentUploadUrl.replaceAll('"', "")
         );
-	  }
-        let retryCount: number = 0;
-		let maxRetryCount:number = (process.env.RETRY_COUNT_UPLOAD) ? Number.parseInt(process.env.RETRY_COUNT_UPLOAD) : 5;
-		let retrySleepTime:number = (process.env.RETRY_SLEEP_TIME_UPLOAD) ? Number.parseInt(process.env.RETRY_SLEEP_TIME_UPLOAD) : 5000;
-		let documentsReadyCount: number = 0;
-        while (
-          retryCount < maxRetryCount &&
-          documentsReadyCount < data.documentsPaths.length
-        ) {
-          retryCount++;
-          documentsReadyCount = 0;
-          await getSignatureRequest(configuration, request).then((req) => {
-            data.signatureRequest = req;
-			req.documents.forEach((document) => {
-if (document.status === "READY") {
-documentsReadyCount++;
-}
-      });
-              });
-          await sleep(retrySleepTime);
-        }
-        if (data.documentsPaths.length === documentsReadyCount) {
-          console.log(
-            "The documents have been uploaded, I am waiting for the READY status"
-          );
-              } else {
-          throw new Error(
-            "Timeout expired, an error occurred while uploading the files"
-          );
-        }
+      }
+      let retryCount: number = 0;
+      const maxRetryCount: number = process.env.RETRY_COUNT_UPLOAD
+        ? Number.parseInt(process.env.RETRY_COUNT_UPLOAD)
+        : 5;
+      const retrySleepTime: number = process.env.RETRY_SLEEP_TIME_UPLOAD
+        ? Number.parseInt(process.env.RETRY_SLEEP_TIME_UPLOAD)
+        : 5000;
+      let documentsReadyCount: number = 0;
+      while (
+        retryCount < maxRetryCount &&
+        documentsReadyCount < data.documentsPaths.length
+      ) {
+        retryCount++;
+        documentsReadyCount = 0;
+        await getSignatureRequest(configuration, request).then((req) => {
+          data.signatureRequest = req;
+          req.documents.forEach((document) => {
+            if (document.status === "READY") {
+              documentsReadyCount++;
+            }
+          });
+        });
+        await sleep(retrySleepTime);
+      }
+      if (data.documentsPaths.length === documentsReadyCount) {
+        console.log(
+          "The documents have been uploaded, I am waiting for the READY status"
+        );
+      } else {
+        throw new Error(
+          "Timeout expired, an error occurred while uploading the files"
+        );
+      }
     } else {
       console.error(
         `The number of documents required by the signature request (${data.signatureRequest.documents.length}) differs from the list of submitted documents (${data.documentsPaths.length})`
