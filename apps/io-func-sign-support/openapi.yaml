@@ -40,6 +40,21 @@ paths:
           $ref: "#/components/responses/HttpNotFound"
         500:
           $ref: "#/components/responses/HttpInternalServerError"
+  /info:
+    get:
+      operationId: Info
+      responses:
+        200:
+          description: it works
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
 
 components:
   securitySchemes:
@@ -317,6 +332,7 @@ components:
             - WAIT_FOR_QTSP
             - SIGNED
             - REJECTED
+            - CANCELLED
         created_at:
           $ref: "#/components/schemas/Timestamp"
         updated_at:
@@ -329,6 +345,8 @@ components:
           $ref: "#/components/schemas/Timestamp"
         reject_reason:
           type: string
+        cancelled_at:
+          $ref: "#/components/schemas/Timestamp"
         documents:
           type: array
           items:

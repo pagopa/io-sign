@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-user",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "private": true,
   "files": [
     "**/function.json",
@@ -29,7 +29,7 @@
     "@azure/storage-blob": "^12.12.0",
     "@azure/storage-queue": "^12.11.0",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.0.1",
+    "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^26.2.1",
     "@pagopa/logger": "1.0.1",

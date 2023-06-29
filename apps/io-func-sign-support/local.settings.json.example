@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "CosmosDbConnectionString": "COSMOS_DB_CONNECTION_STRING",
+    "CosmosDbIssuerDatabaseName": "COSMOS_ISSUER_DB_NAME",
+    "CosmosDbUserDatabaseName": "COSMOS_USER_DB_NAME"
+    "PdvTokenizerApiBasePath": "PDV_TOKENIZER_SERVICES_API_URL",
+    "PdvTokenizerApiKey": "PDV_TOKENIZER_SERVICES_API_KEY",
+    "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"
+  }
+}

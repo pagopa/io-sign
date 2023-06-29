@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firma con IO demo</title>
+    <script type="module" src="./io-sign.js"></script>
+  </head>
+  <body>
+    <io-sign id="cta"></io-sign>
+    <script>
+      const cta = document.getElementById("cta");
+
+      const createSignatureRequest = async () => {
+        return {
+          id: "PROVA",
+        };
+      };
+
+      cta.addEventListener("io-sign.cta.click", async (e) => {
+        const request = await createSignatureRequest();
+        setTimeout(() => {
+          cta.redirectOrShowQrCode(request.id);
+        }, 500);
+      });
+    </script>
+  </body>
+</html>

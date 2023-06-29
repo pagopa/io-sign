@@ -38,7 +38,8 @@ export const getPdfMetadata = (
                 .map((field) => ({
                   type: field.constructor.name,
                   name: field.getName(),
-                })),
+                }))
+                .filter((field) => field.type === "PDFSignature"),
             E.toError
           ),
           E.fold(() => [], identity),

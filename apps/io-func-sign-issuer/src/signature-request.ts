@@ -23,6 +23,7 @@ import {
   markAsRejected as setRejectedStatus,
   DocumentReady,
   PdfDocumentMetadata,
+  DocumentMetadata,
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -35,9 +36,11 @@ import {
   SignatureRequestSigned,
   SignatureRequestDraft,
   getDocument,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
+import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 import { Dossier } from "./dossier";
 
 export const SignatureRequest = t.union([
@@ -46,6 +49,7 @@ export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -55,7 +59,8 @@ export const defaultExpiryDate = () => pipe(new Date(), addDays(90));
 export const newSignatureRequest = (
   dossier: Dossier,
   signer: Signer,
-  issuer: Issuer
+  issuer: Issuer,
+  documentsMetadata?: NonEmptyArray<DocumentMetadata>
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
@@ -71,13 +76,18 @@ export const newSignatureRequest = (
   createdAt: new Date(),
   updatedAt: new Date(),
   expiresAt: defaultExpiryDate(),
-  documents: dossier.documentsMetadata.map((metadata) => ({
-    id: newId(),
-    metadata,
-    status: "WAIT_FOR_UPLOAD",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  })),
+  // the issuer has the chance to add specific documents metadata for a signature request. otherwise, the dossier's documents metadata will be taken
+  documents: pipe(
+    documentsMetadata ?? dossier.documentsMetadata,
+    (documentsMetadata) =>
+      documentsMetadata.map((metadata) => ({
+        id: newId(),
+        metadata,
+        status: "WAIT_FOR_UPLOAD",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }))
+  ),
 });
 
 class InvalidExpiryDateError extends Error {
@@ -168,6 +178,11 @@ type Action_MARK_DOCUMENT_AS_REJECTED = {
   };
 };
 
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
+};
+
 type SignatureRequestAction =
   | Action_MARK_AS_READY
   | Action_MARK_AS_WAIT_FOR_SIGNATURE
@@ -175,7 +190,8 @@ type SignatureRequestAction =
   | Action_MARK_AS_REJECTED
   | Action_START_DOCUMENT_VALIDATION
   | Action_MARK_DOCUMENT_AS_READY
-  | Action_MARK_DOCUMENT_AS_REJECTED;
+  | Action_MARK_DOCUMENT_AS_REJECTED
+  | Action_MARK_AS_CANCELLED;
 
 const dispatch =
   (action: SignatureRequestAction) =>
@@ -308,7 +324,12 @@ const onWaitForSignatureStatus =
   (action: SignatureRequestAction) =>
   (
     request: SignatureRequestToBeSigned
-  ): E.Either<Error, SignatureRequestSigned | SignatureRequestRejected> => {
+  ): E.Either<
+    Error,
+    | SignatureRequestSigned
+    | SignatureRequestRejected
+    | SignatureRequestCancelled
+  > => {
     if (action.name === "MARK_AS_SIGNED") {
       return E.right({
         ...request,
@@ -323,6 +344,14 @@ const onWaitForSignatureStatus =
         status: "REJECTED",
         rejectedAt: action.rejectedAt,
         rejectReason: action.rejectReason,
+        updatedAt: new Date(),
+      });
+    }
+    if (action.name === "MARK_AS_CANCELLED") {
+      return E.right({
+        ...request,
+        status: "CANCELLED",
+        cancelledAt: action.cancelledAt,
         updatedAt: new Date(),
       });
     }
@@ -357,6 +386,9 @@ export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
 
 export const markAsRejected = (rejectedAt: Date, rejectReason: string) =>
   dispatch({ name: "MARK_AS_REJECTED", rejectedAt, rejectReason });
+
+export const markAsCancelled = (cancelledAt: Date) =>
+  dispatch({ name: "MARK_AS_CANCELLED", cancelledAt });
 
 export const startValidationOnDocument = (documentId: Document["id"]) =>
   dispatch({ name: "START_DOCUMENT_VALIDATION", payload: { documentId } });
@@ -402,6 +434,10 @@ export type SignatureRequestRepository = {
     issuerId: SignatureRequest["issuerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
+  patchDocument: (
+    request: SignatureRequest,
+    documentId: Document["id"]
+  ) => TE.TaskEither<Error, SignatureRequest>;
   findByDossier: (
     dossier: Dossier,
     options?: { maxItemCount?: number; continuationToken?: string }
@@ -456,6 +492,18 @@ export const upsertSignatureRequest =
   > =>
   ({ signatureRequestRepository: repo }) =>
     repo.upsert(request);
+
+export const patchSignatureRequestDocument =
+  (documentId: Document["id"]) =>
+  (
+    request: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(repo.patchDocument(request, documentId));
 
 export const findSignatureRequestsByDossier =
   (

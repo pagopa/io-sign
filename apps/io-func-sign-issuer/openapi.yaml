@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Issuer API
-  version: 1.1.0
+  version: 1.2.1
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign
     description: production
@@ -227,14 +227,14 @@ paths:
       responses:
         "204":
           description: Signature Request status successfully set
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
         "429":
           $ref: "#/components/responses/TooManyRequests"
         default:
@@ -296,6 +296,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotificationDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
+  /validate-document:
+    post:
+      operationId: validateDocument
+      tags:
+        - Utility
+      summary: Validate a PDF document against a list of signature fields
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                document:
+                  type: string
+                  format: binary
+                signature_fields:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/SignatureField"
+              required:
+                - document
+            encoding:
+              document:
+                contentType: application/pdf
+      responses:
+        "200":
+          description: the validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentValidationResult"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -519,6 +561,7 @@ components:
       type: string
       x-extensible-enum:
         - READY
+        - CANCELLED
 
     DossierDetailView:
       type: object
@@ -588,6 +631,8 @@ components:
           $ref: "#/components/schemas/Id"
         expires_at:
           $ref: "#/components/schemas/Timestamp"
+        documents_metadata:
+          $ref: "#/components/schemas/DocumentMetadataList"
       required:
         - dossier_id
         - signer_id
@@ -691,6 +736,7 @@ components:
         - WAIT_FOR_SIGNATURE
         - SIGNED
         - REJECTED
+        - CANCELLED
 
     SignatureRequestDetailView:
       type: object
@@ -724,6 +770,8 @@ components:
         qr_code_url:
           type: string
           format: uri
+        cancelled_at:
+          $ref: "#/components/schemas/Timestamp"
       required:
         - id
         - status
@@ -783,3 +831,15 @@ components:
           type: string
       required:
         - io_message_id
+
+    DocumentValidationResult:
+      type: object
+      properties:
+        is_valid:
+          type: boolean
+        violations:
+          type: array
+          items:
+            type: string
+      required:
+        - is_valid
