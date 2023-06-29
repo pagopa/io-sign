@@ -8,7 +8,7 @@
       "subscriptionKey": ""
     },
     "Production": {
-      "issuerApiBaseUrl": "https://api.io.pagopa.it/api/v1/sign",
+      "issuerApiBaseUrl": "https://api-internal.io.italia.it/api/v1/sign",
       "userApiBaseUrl": "https://app-backend.io.italia.it/api/v1/sign",
       "subscriptionId": "",
       "subscriptionKey": "{{$shared io.firma.subscriptionKey}}"
