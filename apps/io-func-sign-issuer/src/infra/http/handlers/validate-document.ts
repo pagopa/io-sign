@@ -23,17 +23,18 @@ export const validateDocumentHandler = H.of((req: H.HttpRequest) =>
     RTE.right(req),
     RTE.chainFirstW(requireIssuer),
     RTE.chainW(requireFileFromValidationRTE),
-    RTE.chainReaderTaskKW(({ documentToValidate, signatureFields }) =>
-      pipe(
-        validateDocument(documentToValidate, signatureFields),
-        RTE.fold(
-          // the error message contains the list of violations
-          (e) => RT.of(e.message.split("\n")),
-          // the validation went good so there are no violations (empty array)
-          () => RT.of([])
-        ),
-        RT.map(validationToApiModel)
-      )
+    RTE.chainReaderTaskKW(
+      ({ documentContent, documentMetadata, signatureFields }) =>
+        pipe(
+          validateDocument(documentContent, documentMetadata, signatureFields),
+          RTE.fold(
+            // the error message contains the list of violations
+            (e) => RT.of(e.message.split("\n")),
+            // the validation went good so there are no violations (empty array)
+            () => RT.of([])
+          ),
+          RT.map(validationToApiModel)
+        )
     ),
     RTE.map(H.successJson),
     RTE.orElseW(logErrorAndReturnResponse)

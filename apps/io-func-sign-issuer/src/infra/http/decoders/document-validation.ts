@@ -76,7 +76,7 @@ const requireSignatureFields = (
     E.chainW(H.parse(DocumentMetadata.props.signatureFields))
   );
 
-const requirePdfDocumentMetadata = (files: Array<PdfFile | JsonFile>) =>
+const requirePdfDocumentContent = (files: Array<PdfFile | JsonFile>) =>
   pipe(
     files,
     A.filter((file): file is PdfFile => file.type === "application/pdf"),
@@ -85,8 +85,7 @@ const requirePdfDocumentMetadata = (files: Array<PdfFile | JsonFile>) =>
       () => new H.HttpBadRequestError("missing the pdf document to validate")
     ),
     E.map((file) => file.data),
-    TE.fromEither,
-    TE.chain(getPdfMetadata)
+    TE.fromEither
   );
 
 export const requireFilesForValidation = (
@@ -95,7 +94,8 @@ export const requireFilesForValidation = (
   Error,
   {
     signatureFields: DocumentMetadata["signatureFields"];
-    documentToValidate: PdfDocumentMetadata;
+    documentMetadata: PdfDocumentMetadata;
+    documentContent: Buffer;
   }
 > =>
   pipe(
@@ -109,9 +109,12 @@ export const requireFilesForValidation = (
     ),
     TE.fromEither,
     TE.chainW((files) =>
-      sequenceS(TE.ApplyPar)({
-        signatureFields: pipe(requireSignatureFields(files), TE.fromEither),
-        documentToValidate: requirePdfDocumentMetadata(files),
-      })
+      pipe(files, requirePdfDocumentContent, (documentContent) =>
+        sequenceS(TE.ApplyPar)({
+          signatureFields: TE.fromEither(requireSignatureFields(files)),
+          documentContent,
+          documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata)),
+        })
+      )
     )
   );

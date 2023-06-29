@@ -19,10 +19,11 @@ import {
 
 import { getDocument } from "@io-sign/io-sign/signature-request";
 
+import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import {
   getUploadMetadata,
   upsertUploadMetadata,
-  getMetadataFromUploadedDocument,
+  getUploadedDocument,
   createDocumentFromUrl,
   markUploadMetadataAsValid,
   removeDocumentFromStorage,
@@ -96,21 +97,37 @@ const loggingContext = (meta: UploadMetadata) => ({
 });
 
 // Validate a PDF document
-// Checks:
-// 1 - check if the document is compatible with given metadata
 export const validateDocument = (
+  documentContent: Buffer,
   documentMetadata: PdfDocumentMetadata,
   signatureFields: DocumentMetadata["signatureFields"],
   loggingContext?: Record<string, unknown>
 ) =>
-  pipe(
-    documentMetadata,
-    isCompatibleWithSignatureFields(signatureFields),
-    RTE.fromEither,
-    RTE.chainFirstW(() =>
-      L.debugRTE("the signature fields are valid", loggingContext)
-    )
-  );
+  RTE.sequenceSeqArray([
+    // check the magic number
+    // to be a valid PDF file, the uploaded document must start with "%PDF" file signature
+    pipe(
+      documentContent.toString("utf-8", 0, 4),
+      RTE.fromPredicate(
+        (bytes) => bytes === "%PDF",
+        () =>
+          new Error(
+            "the uploaded document has an invalid file signature (not a valid PDF)"
+          )
+      ),
+      RTE.map(constVoid)
+    ),
+    // check if the uploaded document metadata (document size, pages, existing signature fields)
+    // are compatible with the given "signature fields" (existing or to be created)
+    pipe(
+      documentMetadata,
+      isCompatibleWithSignatureFields(signatureFields),
+      RTE.fromEither,
+      RTE.chainFirstW(() =>
+        L.debugRTE("the signature fields are valid", loggingContext)
+      )
+    ),
+  ]);
 
 // from a blob uri get the "upload metadata" (entity that tracks the upload)
 // does the signature request exists?
@@ -157,9 +174,18 @@ export const validateUpload = flow(
       meta,
     }) =>
       pipe(
+        // Download the PDF document and save its content
+        getUploadedDocument(meta.id),
+        RTE.bindTo("documentContent"),
+
         // Open the PDF document and check its metadata
-        getMetadataFromUploadedDocument(meta.id),
-        RTE.bindTo("documentMetadata"),
+        RTE.bindW(
+          "documentMetadata",
+          ({ documentContent }) =>
+            () =>
+              getPdfMetadata(documentContent)
+        ),
+
         RTE.chainFirstW(({ documentMetadata }) =>
           L.debugRTE("obtained pdf metadata", {
             documentMetadata,
@@ -167,8 +193,9 @@ export const validateUpload = flow(
           })
         ),
         // Validate document
-        RTE.chainFirstW(({ documentMetadata }) =>
+        RTE.chainFirstW(({ documentContent, documentMetadata }) =>
           validateDocument(
+            documentContent,
             documentMetadata,
             signatureFields,
             loggingContext(meta)
