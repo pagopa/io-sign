@@ -97,8 +97,6 @@ const loggingContext = (meta: UploadMetadata) => ({
 });
 
 // Validate a PDF document
-// Checks:
-// 1 - check if the document is compatible with given metadata
 export const validateDocument = (
   documentContent: Buffer,
   documentMetadata: PdfDocumentMetadata,
