@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.3.5
+
+### Patch Changes
+
+- 60a5170: configure host logging properties to monitor execution on app insight
+
 ## 0.3.4
 
 ### Patch Changes

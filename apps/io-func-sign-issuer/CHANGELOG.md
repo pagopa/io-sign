@@ -1,5 +1,15 @@
 # io-func-sign-issuer
 
+## 0.15.0
+
+### Minor Changes
+
+- bd5e2c2: add magic number check on PDF document validation
+
+### Patch Changes
+
+- 60a5170: configure host logging properties to monitor execution on app insight
+
 ## 0.14.0
 
 ### Minor Changes
