@@ -21,7 +21,8 @@
       "name": "@io-sign/web-sdk"
     },
     {
-      "path": "apps/io-sign-selfcare-frontend"
+      "path": "apps/io-sign-backoffice-ca",
+      "name": "io-sign-backoffice-ca"
     }
   ],
   "settings": {
