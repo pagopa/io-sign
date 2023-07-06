@@ -5,4 +5,6 @@
 
 import { Box, BoxProps } from "@mui/material";
 
-export default (props: BoxProps) => <Box {...props} />;
+export default function ClientBox(props: BoxProps) {
+  return <Box {...props} />;
+}

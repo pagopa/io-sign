@@ -32,7 +32,6 @@ function NextAppDirEmotionCacheProvider(
   const { options, CacheProvider = DefaultCacheProvider, children } = props;
 
   const [{ cache, flush }] = useState(() => {
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     const cache = createCache(options);
     cache.compat = true;
     const prevInsert = cache.insert;
@@ -44,7 +43,6 @@ function NextAppDirEmotionCacheProvider(
       }
       return prevInsert(...args);
     };
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     const flush = () => {
       const prevInserted = inserted;
       inserted = [];
