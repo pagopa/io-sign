@@ -1,0 +1,11 @@
+{
+  "HeaderWithAccountInfo": {
+    "rootLink": {
+      "title": "Sito di PagoPA S.p.A.",
+      "ariaLabel": "Link: vai al sito di PagoPA S.p.A."
+    }
+  },
+  "Index": {
+    "title": "Ciao!"
+  }
+}
