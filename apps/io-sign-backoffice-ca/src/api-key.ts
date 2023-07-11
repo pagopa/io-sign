@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Id, id as newId } from "@io-sign/io-sign/id";
 
 const EnvironmentEnum = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 
@@ -13,6 +14,7 @@ export type ApiKeyBody = z.infer<typeof apiKeyBody>;
 
 const apiKey = z.object({
   id: z.string().nonempty(),
+  primaryKey: z.string().nonempty(),
   institutionId: z.string().nonempty(),
   resourceId: z.string().nonempty(),
   displayName: z.string(),
@@ -24,7 +26,9 @@ const apiKey = z.object({
 
 export type ApiKey = z.infer<typeof apiKey>;
 
-export const newApiKey = (apiKey: ApiKeyBody): ApiKey => ({
+export const newApiKey = (
+  apiKey: ApiKeyBody & { primaryKey: string }
+): ApiKey => ({
   ...apiKey,
   id: "12345", // newId()
   status: "ACTIVE",

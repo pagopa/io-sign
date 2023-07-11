@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ApiManagementClient } from "@azure/arm-apimanagement";
 import { z } from "zod";
+import { CosmosClient } from "@azure/cosmos";
 
 const loadCredentialsFromEnvironment = () =>
   z
@@ -10,11 +11,17 @@ const loadCredentialsFromEnvironment = () =>
       SUBSCRIPTION_ID: z.string().nonempty(),
       RESOURCE_GROUP_NAME: z.string().nonempty(),
       SERVICE_NAME: z.string().nonempty(),
+      PRODUCT_NAME: z.string().nonempty(),
+      ACCOUNT_ENDPOINT: z.string().nonempty(),
+      ACCOUNT_KEY: z.string().nonempty(),
     })
     .transform((env) => ({
       subscriptionId: env.SUBSCRIPTION_ID,
       resourceGroupName: env.RESOURCE_GROUP_NAME,
       serviceName: env.SERVICE_NAME,
+      productName: env.PRODUCT_NAME,
+      accountEndpoint: env.ACCOUNT_ENDPOINT,
+      accountKey: env.ACCOUNT_KEY,
     }))
     .parse(process.env);
 
@@ -24,7 +31,15 @@ class SubscriptionCreationError extends Error {
     this.name = "SubscriptionCreationError";
   }
 }
-// già è presente
+
+class ResouceAlreadyExistsError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ResouceAlreadyExistsError";
+  }
+}
+
+// già è presente in io-sign
 class CosmosDatabaseError extends Error {
   constructor(message: string) {
     super(message);
@@ -39,28 +54,74 @@ class ParseError extends Error {
   }
 }
 
-const createApiManagementClient = (subscriptionId: string) =>
+const createCosmosClient = (endpoint: string, key: string) =>
+  new CosmosClient({ endpoint, key });
+
+const { accountEndpoint, accountKey } = loadCredentialsFromEnvironment();
+const cosmosClient = createCosmosClient(accountEndpoint, accountKey);
+
+// vado sul db a vedere se per (displayName, env, instId esiste già)
+async function readApiKey({
+  displayName,
+  environment,
+  institutionId,
+}: ApiKeyBody) {
+  try {
+    await cosmosClient
+      .database("io-sign-backoffice")
+      .container("api-keys")
+      .items.query(
+        `SELECT * FROM c WHERE c.displayName = "${displayName}" AND c.environment = "${environment}" AND c.institutionId = "${institutionId}"`
+      )
+      .fetchAll()
+      .then((items) => {
+        if (items.resources.length !== 0) {
+          throw new ResouceAlreadyExistsError("resource already exists error");
+        }
+      });
+  } catch (error) {
+    throw new CosmosDatabaseError("cosmos database error message");
+  }
+}
+
+async function insertApiKey(apiKey: ApiKey) {
+  try {
+    await cosmosClient
+      .database("io-sign-backoffice")
+      .container("api-keys")
+      .items.create(apiKey);
+    return apiKey; // return quello che ho inserito?
+  } catch {
+    throw new CosmosDatabaseError("cosmos database error message");
+  }
+}
+
+const createAPIMClient = (subscriptionId: string) =>
   new ApiManagementClient(new DefaultAzureCredential(), subscriptionId);
 
 async function createAPIMSubscription(resourceId: string, displayName: string) {
-  const { subscriptionId, resourceGroupName, serviceName } =
+  const { subscriptionId, resourceGroupName, serviceName, productName } =
     loadCredentialsFromEnvironment();
 
-  await createApiManagementClient(subscriptionId)
+  return createAPIMClient(subscriptionId)
     .subscription.createOrUpdate(resourceGroupName, serviceName, resourceId, {
       displayName,
-      scope: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/io-back-office-dev`, // env?
+      scope: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
+    })
+    .then((x) => {
+      const primaryKey = x.primaryKey;
+      if (!primaryKey) {
+        throw new SubscriptionCreationError(
+          "subscription creation error message"
+        );
+      }
+      return primaryKey;
     })
     .catch(() => {
       throw new SubscriptionCreationError(
         "subscription creation error message"
       );
     });
-}
-
-async function insertApiKey(apiKey: ApiKey) {
-  return apiKey;
-  // throw new CosmosDatabaseError("cosmos database error message");
 }
 
 const getResponseFromError = (e: Error) => {
@@ -71,6 +132,11 @@ const getResponseFromError = (e: Error) => {
       return NextResponse.json({ error: "APIM Problem" }, { status: 500 });
     case "CosmosDatabaseError":
       return NextResponse.json({ error: "Database Problem" }, { status: 500 });
+    case "ResouceAlreadyExistsError":
+      return NextResponse.json(
+        { error: "Resource already exists" },
+        { status: 409 }
+      );
   }
 };
 
@@ -85,29 +151,28 @@ const parseApiKeyBody = (x: unknown): ApiKeyBody => {
 
 // manca 409
 export async function POST(request: Request) {
-  return request
-    .json()
-    .then(parseApiKeyBody)
-    .then(async (x) => {
-      await createAPIMSubscription(x.resourceId, x.displayName);
-      return x;
-    })
-    .then(newApiKey)
-    .then(insertApiKey)
-    .then((apiKey) => NextResponse.json(apiKey, { status: 201 }))
-    .catch(getResponseFromError);
+  return (
+    request
+      .json()
+      .then(parseApiKeyBody)
+      // check if the api key already exists
+      .then(async (apiKey) => {
+        await readApiKey(apiKey);
+        return apiKey;
+      })
+      .then(async (apiKey) => {
+        const primaryKey = await createAPIMSubscription(
+          apiKey.resourceId,
+          apiKey.displayName
+        );
+        return { ...apiKey, primaryKey };
+      })
+      .then(newApiKey)
+      // for the moment, primary key will be saved on database
+      .then(insertApiKey)
+      .then(({ id, primaryKey }) =>
+        NextResponse.json({ id, primaryKey }, { status: 201 })
+      )
+      .catch(getResponseFromError)
+  );
 }
-
-/**
- * no riassegnare valori
- * funzioni pure
- * approccio dichiarativo il più possibile
- * funzione per ottenere già il client apim configurato (tipo createApiManagementClient() che restituisce già l’instanza prendendo le credenziali da env e tutto)
- * si potrebbe usare direttamente il client di cosmos invece delle funzioni insertApiKey
- * try catch unico:
- * con una bellissima funzione che trasforma un Error in un errore specifico devi solo discriminare i vari errori. il modo più facile è settando un name custom
- * esempio: se fai in modo che createAPIMSubscription in caso di fallimento lancia un SubscriptionCreationError, poi nel catch unico puoi fare tipo switch (e.name) … e questo switch puoi metterlo in una funzione a parte che magari come unica responsabilità ha il convertire un Error in una Response (che è anche facilmente testabile poi). quindi poi dentro l’unico catch ti resterebbe una cosa tipo:
- * const errorResponse = getResponseFromError(e); return response
- * poi se le operazioni sono “poche” magari puoi anche usare .then invece di await e quindi avere tutte le chiamate con .then e alla fine solo il .catch(getResponseFromError) così non devi neanche creare variabili temporanee solo per memorizzare il risultato di await ed è più facile, forse, mantenere uno stile più immutabile
- * ah, ultima cosa: Error nel suo costruttore prende (message, cause) cause è un oggetto custom che puoi scegliere tu dove dentro puoi metterci eventuali dettagli dell’errore che vorresti portare nella risposta (che magari non stanno bene nel “message”)
- */
