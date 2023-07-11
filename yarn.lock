@@ -2665,6 +2665,83 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/ecma402-abstract@npm:1.11.4":
+  version: 1.11.4
+  resolution: "@formatjs/ecma402-abstract@npm:1.11.4"
+  dependencies:
+    "@formatjs/intl-localematcher": 0.2.25
+    tslib: ^2.1.0
+  checksum: 05dbe1c6457acfe9cdc0fc770940260e19fa588be6c655b1ff1697506348dac1eee9b249b64e6544531174d07a5a74a9e75f68430947cfdc074ebe8e3c86f86f
+  languageName: node
+  linkType: hard
+
+"@formatjs/ecma402-abstract@npm:^1.11.4":
+  version: 1.17.0
+  resolution: "@formatjs/ecma402-abstract@npm:1.17.0"
+  dependencies:
+    "@formatjs/intl-localematcher": 0.4.0
+    tslib: ^2.4.0
+  checksum: cc45d238e541076cb27b9cf02d8b97f789d1744b60218da6d31793204850c159e85f5b2557de3905a365eefd52a1c2e7f1febb9e1f009bad23d5eca17b3de6c8
+  languageName: node
+  linkType: hard
+
+"@formatjs/fast-memoize@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@formatjs/fast-memoize@npm:1.2.1"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 7df9e941142be16e5862afe7387926cec44ec136d2c2f9a7e1598cb6c8c23a65e420ed90251ec9b48df083f5473b10d6fbbee2e9fc7233d5bf1f27efffba59a7
+  languageName: node
+  linkType: hard
+
+"@formatjs/icu-messageformat-parser@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@formatjs/icu-messageformat-parser@npm:2.1.0"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.11.4
+    "@formatjs/icu-skeleton-parser": 1.3.6
+    tslib: ^2.1.0
+  checksum: 8dab4d102b334dd7ab25b85817b074f1b54845d02f9ef9fa5a1fa6a9723176ad28a59d845fdc0eeedb868b891e61a4c530384b123db29f5b14e1f3f8b207373f
+  languageName: node
+  linkType: hard
+
+"@formatjs/icu-skeleton-parser@npm:1.3.6":
+  version: 1.3.6
+  resolution: "@formatjs/icu-skeleton-parser@npm:1.3.6"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.11.4
+    tslib: ^2.1.0
+  checksum: cce2d8bea54f0096c557dc03920bfe4785893e60962313fab9eeee41f0b411d38b9d45852882b19f261417d730362c8685bea6ba5ac1e2dee141f030cda624e9
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-localematcher@npm:0.2.25":
+  version: 0.2.25
+  resolution: "@formatjs/intl-localematcher@npm:0.2.25"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: ee00ddc23317dc47a58831aaca5112e101d8bb1f38adc0ecfe1a9d7e008d0bb1091519f07e1d7d805b0c1e28f2c3e75f697ae479e22423445814412c7669284c
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-localematcher@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@formatjs/intl-localematcher@npm:0.4.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: c65108e9a81c3733d2b6240ceedc846d0ae59c3606041cb5cc71c13453cdabe295b0dc8559dc4a8acaafdc45876807bd5e9ef37a3ec1cb864e78db655d434b66
+  languageName: node
+  linkType: hard
+
+"@formatjs/intl-localematcher@npm:^0.2.32":
+  version: 0.2.32
+  resolution: "@formatjs/intl-localematcher@npm:0.2.32"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 477e18aabaf2e6e90fc12952a3cb6c0ebb40ad99414d6b9d2501c6348fbad58cacb433ec6630955cfd1491ea7630f32a9dc280bb27d0fb8a784251404a54140a
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -3786,31 +3863,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/mui-italia@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@pagopa/mui-italia@npm:0.9.1"
-  dependencies:
-    "@fontsource/dm-mono": ^4.5.10
-    "@fontsource/titillium-web": ^4.5.9
-    clsx: ^1.2.1
-    fp-ts: ^2.12.3
-    io-ts: ^2.2.18
-  peerDependencies:
-    "@emotion/react": ^11.10.4
-    "@emotion/styled": ^11.10.4
-    "@mui/icons-material": ^5.10.9
-    "@mui/lab": ^5.0.0-alpha.100
-    "@mui/material": ^5.10.9
-    "@mui/system": ^5.10.8
-    react: ^17.0.0
-    react-dom: ^17.0.0
-  checksum: 0d0e0cbd5497679e8d192b128156f427b5dcb3c72a785e20f9308adda30bb65f7c3c24eb7f602c22c10d7b32816fcf43ed0303eb2e4acf2eabdd13d605379c70
-  languageName: node
-  linkType: hard
-
-"@pagopa/mui-italia@npm:^0.9.5":
-  version: 0.9.8
-  resolution: "@pagopa/mui-italia@npm:0.9.8"
+"@pagopa/mui-italia@npm:^0.9.9":
+  version: 0.9.9
+  resolution: "@pagopa/mui-italia@npm:0.9.9"
   dependencies:
     "@fontsource/dm-mono": ^4.5.10
     "@fontsource/titillium-web": ^4.5.9
@@ -3826,7 +3881,7 @@ __metadata:
     "@mui/system": ^5.10.8
     react: ^17.0.0
     react-dom: ^17.0.0
-  checksum: bae9db2c182811868498ca6190b2f10f643910cfa658d2900de85e9583887a5a63b4aa39559514cb3436cccd8759c52fd9079c2d5d199928897e157bdf4eeebb
+  checksum: ffcebbbfc21b8f02f08f99409105d933cc5adfc8b2acb2eeec360ca0e453c6286733d9a65f606f0659b0219dab24e85dfe246932a1e616a4e8db49a300e049f7
   languageName: node
   linkType: hard
 
@@ -10802,6 +10857,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"intl-messageformat@npm:^9.3.18":
+  version: 9.13.0
+  resolution: "intl-messageformat@npm:9.13.0"
+  dependencies:
+    "@formatjs/ecma402-abstract": 1.11.4
+    "@formatjs/fast-memoize": 1.2.1
+    "@formatjs/icu-messageformat-parser": 2.1.0
+    tslib: ^2.1.0
+  checksum: effb840ae6e213adceab9951dbb2d18d1a354c82e35dbd213011daf23bcc79e2a18b6ef79157ae3b69c1e6d898fe66b54dd184ac180ee0646e26a70276e60038
+  languageName: node
+  linkType: hard
+
 "invert-kv@npm:^2.0.0":
   version: 2.0.0
   resolution: "invert-kv@npm:2.0.0"
@@ -10917,13 +10984,14 @@ __metadata:
     "@mui/icons-material": 5.11.0
     "@mui/lab": 5.0.0-alpha.119
     "@mui/material": 5.11.8
-    "@pagopa/mui-italia": ^0.9.5
+    "@pagopa/mui-italia": ^0.9.9
     "@types/node": 20.3.3
     "@types/react": 18.2.14
     "@types/react-dom": 18.2.6
     eslint: 8.44.0
     eslint-config-next: 13.4.8
     next: 13.4.8
+    next-intl: ^2.17.5
     react: 18.2.0
     react-dom: 18.2.0
     typescript: 5.1.6
@@ -10941,7 +11009,7 @@ __metadata:
     "@mui/lab": ^5.0.0-alpha.120
     "@mui/material": ^5.11.10
     "@pagopa/eslint-config": ^3.0.0
-    "@pagopa/mui-italia": ^0.9.1
+    "@pagopa/mui-italia": ^0.9.9
     "@rushstack/eslint-patch": ^1.2.0
     "@types/node": 18.14.1
     "@types/react": 18.0.28
@@ -13109,6 +13177,20 @@ __metadata:
     react: ">= 17.0.2"
     react-i18next: ^12.1.5
   checksum: 4f938fea7e9be3e75a1d8fd9bc230697bd0cd002b494b86bd5a8cbe3a5e94d387ee46d2c25401692e3278f69d878123722f57e7d2e264ee11e47e89dc840ede9
+  languageName: node
+  linkType: hard
+
+"next-intl@npm:^2.17.5":
+  version: 2.17.5
+  resolution: "next-intl@npm:2.17.5"
+  dependencies:
+    "@formatjs/intl-localematcher": ^0.2.32
+    negotiator: ^0.6.3
+    use-intl: ^2.17.5
+  peerDependencies:
+    next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 286d0d137e1f2916e20b2e09334aec3f8bc31a9048f27d034be66d72ca783d91c96a9c5007511fb73b0e39d13ef9f1a6311c05b83ad53038cf81f9b9953066b4
   languageName: node
   linkType: hard
 
@@ -16770,6 +16852,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:^2.1.0":
+  version: 2.6.0
+  resolution: "tslib@npm:2.6.0"
+  checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
+  languageName: node
+  linkType: hard
+
 "tsup@npm:^6.4.0, tsup@npm:^6.6.3":
   version: 6.7.0
   resolution: "tsup@npm:6.7.0"
@@ -17394,6 +17483,18 @@ __metadata:
     punycode: 1.3.2
     querystring: 0.2.0
   checksum: 50d100d3dd2d98b9fe3ada48cadb0b08aa6be6d3ac64112b867b56b19be4bfcba03c2a9a0d7922bfd7ac17d4834e88537749fe182430dfd9b68e520175900d90
+  languageName: node
+  linkType: hard
+
+"use-intl@npm:^2.17.5":
+  version: 2.17.5
+  resolution: "use-intl@npm:2.17.5"
+  dependencies:
+    "@formatjs/ecma402-abstract": ^1.11.4
+    intl-messageformat: ^9.3.18
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 0343f39fa5c1985e400f1568c492084ef9751303501c410023bd11216cadf6d9666d27c993971baa2b5364efdfc79a22126f516a8d1511de1cf40a0d43b88d15
   languageName: node
   linkType: hard
 
