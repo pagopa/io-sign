@@ -7,7 +7,7 @@ import { Config } from "@/app/config";
 import { addApiKey } from "../add-api-key";
 import { ApiKeyAlreadyExistsError } from "@/api-key";
 
-describe("AddApiKey", () => {
+describe("AddApiKey endpoint", () => {
   let cosmosClient = {} as CosmosClient;
   let apimClient = {} as ApiManagementClient;
   let config = {} as Config;
