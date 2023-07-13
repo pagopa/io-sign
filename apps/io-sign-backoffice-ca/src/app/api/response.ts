@@ -16,10 +16,10 @@ export const getCreatedResponse = (body: unknown) =>
 export const getErrorResponse = (e: Error) => {
   switch (e.name) {
     case "ParseError":
-      return getResponseFromError(new HttpBadRequestError());
+      return getResponseFromError(new HttpBadRequestError(e.message));
     case "ApiKeyAlreadyExistsError":
-      return getResponseFromError(new HttpConflictError());
+      return getResponseFromError(new HttpConflictError(e.message));
     default:
-      return getResponseFromError(new HttpError());
+      return getResponseFromError(new HttpError(e.message));
   }
 };
