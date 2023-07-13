@@ -1,41 +1,41 @@
 import { z } from "zod";
-import { Id, id as newId } from "@io-sign/io-sign/id";
+import { id as newId } from "@io-sign/io-sign/id";
+import { ParsingError } from "./error";
 
-const EnvironmentEnum = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
-
-export const apiKeyBody = z.object({
+const ApiKeyBody = z.object({
   institutionId: z.string().nonempty(),
   displayName: z.string().nonempty(),
-  environment: EnvironmentEnum,
+  environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
   resourceId: z.string().nonempty(),
 });
 
-export type ApiKeyBody = z.infer<typeof apiKeyBody>;
+export type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 
-const apiKey = z.object({
-  id: z.string().nonempty(),
-  primaryKey: z.string().nonempty(),
-  institutionId: z.string().nonempty(),
-  resourceId: z.string().nonempty(),
-  displayName: z.string(),
-  environment: EnvironmentEnum,
-  status: z.enum(["ACTIVE", "INACTIVE"]),
-  testers: z.string().array().optional(),
-  cidrs: z.string().array().optional(),
-});
-
-export type ApiKey = z.infer<typeof apiKey>;
+export type ApiKey = ApiKeyBody & {
+  id: string;
+  primaryKey: string;
+  status: "ACTIVE" | "INACTIVE";
+};
 
 export const newApiKey = (
   apiKey: ApiKeyBody & { primaryKey: string }
 ): ApiKey => ({
+  id: newId(),
   ...apiKey,
-  id: "12345", // newId()
   status: "ACTIVE",
 });
 
-export async function insertApiKey(apiKey: ApiKey) {
-  return apiKey;
-}
+export const parseApiKeyBody = (x: unknown): ApiKeyBody => {
+  try {
+    return ApiKeyBody.parse(x);
+  } catch {
+    throw new ParsingError("Failed to parse request body");
+  }
+};
 
-// da cambiare questo file e la DR (sono cambiati i campi di api key). e resourceId ci deve essere nei campi di input per creare la chiave
+export class ApiKeyAlreadyExistsError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ApiKeyAlreadyExistsError";
+  }
+}
