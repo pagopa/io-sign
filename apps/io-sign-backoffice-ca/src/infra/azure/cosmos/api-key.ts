@@ -47,7 +47,7 @@ export async function readApiKey({
 export async function insertApiKey(apiKey: ApiKey) {
   const { dbName, containerName } = getCosmosConfigFromEnvironment();
   const cosmosClient = getCosmosClient();
-  await cosmosClient
+  return cosmosClient
     .database(dbName)
     .container(containerName)
     .items.create(apiKey)

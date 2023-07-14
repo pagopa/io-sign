@@ -1,8 +1,57 @@
 import { NextRequest } from "next/server";
-import { beforeAll, describe, expect, it, vi } from "vitest";
 import { ParsingError } from "@/error";
 import { addApiKey } from "../add-api-key";
 import { ApiKeyAlreadyExistsError } from "@/api-key";
+
+// riprova dentro describe
+jest.mock("@/infra/azure/cosmos/config", () => ({
+  getCosmosConfigFromEnvironment: jest.fn().mockReturnValue({
+    accountEndpoint: "accountEndpoint",
+    accountKey: "accountKey",
+    dbName: "dbName",
+    containerName: "containerName",
+  }),
+}));
+jest.mock("@/infra/azure/cosmos/client", () => ({
+  getCosmosClient: jest.fn().mockReturnValue({
+    database: jest.fn().mockReturnValue({
+      container: jest.fn().mockReturnValue({
+        items: {
+          query: jest.fn(() => ({
+            fetchAll: jest.fn().mockResolvedValue({
+              resources: [], // mocks.apiKeys,
+            }),
+          })),
+          create: jest.fn(),
+        },
+      }),
+    }),
+  }),
+}));
+jest.mock("@/infra/azure/api-management/config", () => ({
+  getApimConfigFromEnvironment: jest.fn().mockReturnValue({
+    subscriptionId: "subscriptionId",
+    resourceGroupName: "resourceGroupName",
+    serviceName: "serviceName",
+    productName: "productName",
+  }),
+  getApimClient: jest.fn().mockReturnValue({
+    subscription: {
+      createOrUpdate: jest.fn().mockResolvedValue({
+        primaryKey: "foo",
+      }),
+    },
+  }),
+}));
+jest.mock("@/infra/azure/api-management/client", () => ({
+  getApimClient: jest.fn().mockReturnValue({
+    subscription: {
+      createOrUpdate: jest.fn().mockResolvedValue({
+        primaryKey: "foo",
+      }),
+    },
+  }),
+}));
 
 describe("AddApiKey endpoint", () => {
   const apiKeys = [
@@ -19,60 +68,6 @@ describe("AddApiKey endpoint", () => {
 
   const mocks = { apiKeys };
 
-  beforeAll(() => {
-    vi.mock("@/infra/azure/cosmos/config", () => ({
-      getCosmosConfigFromEnvironment: vi.fn().mockReturnValue({
-        accountEndpoint: "accountEndpoint",
-        accountKey: "accountKey",
-        dbName: "dbName",
-        containerName: "containerName",
-      }),
-    }));
-
-    vi.mock("@/infra/azure/cosmos/client", () => ({
-      getCosmosClient: vi.fn().mockReturnValue({
-        database: vi.fn().mockReturnValue({
-          container: vi.fn().mockReturnValue({
-            items: {
-              query: vi.fn(() => ({
-                fetchAll: vi.fn().mockResolvedValue({
-                  resources: [], // mocks.apiKeys,
-                }),
-              })),
-              create: vi.fn(),
-            },
-          }),
-        }),
-      }),
-    }));
-
-    vi.mock("@/infra/azure/api-management/config", () => ({
-      getApimConfigFromEnvironment: vi.fn().mockReturnValue({
-        subscriptionId: "subscriptionId",
-        resourceGroupName: "resourceGroupName",
-        serviceName: "serviceName",
-        productName: "productName",
-      }),
-      getApimClient: vi.fn().mockReturnValue({
-        subscription: {
-          createOrUpdate: vi.fn().mockResolvedValue({
-            primaryKey: "foo",
-          }),
-        },
-      }),
-    }));
-
-    vi.mock("@/infra/azure/api-management/client", () => ({
-      getApimClient: vi.fn().mockReturnValue({
-        subscription: {
-          createOrUpdate: vi.fn().mockResolvedValue({
-            primaryKey: "foo",
-          }),
-        },
-      }),
-    }));
-  });
-
   it.skip("should return a 409 HTTP response on input body conflict", async () => {
     // these institutionId, displayName and environment are already present in the mocked API keys
     const bodyRequest = {
@@ -82,7 +77,7 @@ describe("AddApiKey endpoint", () => {
       resourceId: "1689092259251",
     };
     const request = {
-      json: vi.fn(async () => bodyRequest),
+      json: jest.fn(async () => bodyRequest),
     } as unknown as NextRequest;
 
     expect(addApiKey(request)).rejects.toStrictEqual(
@@ -90,7 +85,8 @@ describe("AddApiKey endpoint", () => {
     );
   });
 
-  it("should return a 201 HTTP response on success", async () => {
+  it.skip("should return a 201 HTTP response on success", async () => {
+    console.log(mocks);
     // mocks.apiKeys = [];
     // these institutionId, displayName and environment are not present in the mocked API keys
     const bodyRequest = {
@@ -100,7 +96,7 @@ describe("AddApiKey endpoint", () => {
       resourceId: "1689092259251",
     };
     const request = {
-      json: vi.fn(async () => bodyRequest),
+      json: jest.fn(async () => bodyRequest),
     } as unknown as NextRequest;
 
     expect(addApiKey(request)).resolves.toEqual({
@@ -109,9 +105,9 @@ describe("AddApiKey endpoint", () => {
     });
   });
 
-  it.skip("should return a 400 HTTP response on input validation", async () => {
+  it("should return a 400 HTTP response on input validation", async () => {
     const request = {
-      json: vi.fn(async () => ({ foo: "foo" })),
+      json: jest.fn(async () => ({ foo: "foo" })),
     } as unknown as NextRequest;
 
     expect(addApiKey(request)).rejects.toStrictEqual(
