@@ -20,7 +20,6 @@ describe("AddApiKey endpoint", () => {
   const mocks = { apiKeys };
 
   beforeAll(() => {
-    // vedere se metterlo qua o da qualche altra parte
     vi.mock("@/infra/azure/cosmos/config", () => ({
       getCosmosConfigFromEnvironment: vi.fn().mockReturnValue({
         accountEndpoint: "accountEndpoint",
@@ -120,5 +119,3 @@ describe("AddApiKey endpoint", () => {
     );
   });
 });
-
-// vedere se mettere un config generico dentro app o due uno per apim e uno per cosmos
