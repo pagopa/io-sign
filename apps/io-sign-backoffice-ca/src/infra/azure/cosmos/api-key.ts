@@ -47,11 +47,10 @@ export async function readApiKey({
 export async function insertApiKey(apiKey: ApiKey) {
   const { dbName, containerName } = getCosmosConfigFromEnvironment();
   const cosmosClient = getCosmosClient();
-  return cosmosClient
+  await cosmosClient
     .database(dbName)
     .container(containerName)
     .items.create(apiKey)
-    .then(() => apiKey)
     .catch(() => {
       throw new CosmosDatabaseError("There has been an error");
     });

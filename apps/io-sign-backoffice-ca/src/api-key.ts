@@ -13,13 +13,10 @@ export type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 
 export type ApiKey = ApiKeyBody & {
   id: string;
-  primaryKey: string;
   status: "ACTIVE" | "INACTIVE";
 };
 
-export const newApiKey = (
-  apiKey: ApiKeyBody & { primaryKey: string }
-): ApiKey => ({
+export const newApiKey = (apiKey: ApiKeyBody): ApiKey => ({
   id: newId(),
   ...apiKey,
   status: "ACTIVE",

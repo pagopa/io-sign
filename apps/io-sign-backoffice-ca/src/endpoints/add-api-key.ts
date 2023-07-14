@@ -19,9 +19,13 @@ export async function addApiKey(request: Request) {
         );
         return { ...apiKey, primaryKey };
       })
-      .then(newApiKey)
-      // for the moment, primary key will be saved on database
-      .then(insertApiKey)
-      .then(({ id, primaryKey }) => ({ id, primaryKey }))
+      .then(({ primaryKey, ...apiKey }) => ({
+        apiKey: newApiKey(apiKey),
+        primaryKey,
+      }))
+      .then(async ({ apiKey, primaryKey }) => {
+        await insertApiKey(apiKey);
+        return { id: apiKey.id, primaryKey };
+      })
   );
 }

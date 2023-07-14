@@ -3,7 +3,6 @@ import { ParsingError } from "@/error";
 import { addApiKey } from "../add-api-key";
 import { ApiKeyAlreadyExistsError } from "@/api-key";
 
-// riprova dentro describe
 jest.mock("@/infra/azure/cosmos/config", () => ({
   getCosmosConfigFromEnvironment: jest.fn().mockReturnValue({
     accountEndpoint: "accountEndpoint",
@@ -22,7 +21,7 @@ jest.mock("@/infra/azure/cosmos/client", () => ({
               resources: [], // mocks.apiKeys,
             }),
           })),
-          create: jest.fn(),
+          create: jest.fn().mockResolvedValue({}),
         },
       }),
     }),
@@ -85,8 +84,7 @@ describe("AddApiKey endpoint", () => {
     );
   });
 
-  it.skip("should return a 201 HTTP response on success", async () => {
-    console.log(mocks);
+  it("should return a 201 HTTP response on success", async () => {
     // mocks.apiKeys = [];
     // these institutionId, displayName and environment are not present in the mocked API keys
     const bodyRequest = {
