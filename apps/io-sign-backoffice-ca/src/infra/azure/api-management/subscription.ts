@@ -1,15 +1,14 @@
-import { ApiManagementClient } from "@azure/arm-apimanagement";
-import { Config } from "@/app/config";
 import { SubscriptionCreationError } from "@/error";
+import { getApimClient } from "./client";
+import { getApimConfigFromEnvironment } from "./config";
 
 export async function createApimSubscription(
   resourceId: string,
-  displayName: string,
-  apimClient: ApiManagementClient,
-  config: Config
+  displayName: string
 ) {
   const { subscriptionId, resourceGroupName, serviceName, productName } =
-    config.azure.apim;
+    getApimConfigFromEnvironment();
+  const apimClient = getApimClient();
   return apimClient.subscription
     .createOrUpdate(resourceGroupName, serviceName, resourceId, {
       displayName,

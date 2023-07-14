@@ -1,14 +1,15 @@
 import { ApiKey, ApiKeyAlreadyExistsError, ApiKeyBody } from "@/api-key";
-import { Config } from "@/app/config";
 import { CosmosDatabaseError } from "@/error";
-import { CosmosClient } from "@azure/cosmos";
+import { getCosmosClient } from "./client";
+import { getCosmosConfigFromEnvironment } from "./config";
 
-export async function readApiKey(
-  { displayName, environment, institutionId }: ApiKeyBody,
-  cosmosClient: CosmosClient,
-  config: Config
-) {
-  const { dbName, containerName } = config.azure.cosmos;
+export async function readApiKey({
+  displayName,
+  environment,
+  institutionId,
+}: ApiKeyBody) {
+  const { dbName, containerName } = getCosmosConfigFromEnvironment();
+  const cosmosClient = getCosmosClient();
   await cosmosClient
     .database(dbName)
     .container(containerName)
@@ -43,19 +44,15 @@ export async function readApiKey(
     });
 }
 
-export async function insertApiKey(
-  apiKey: ApiKey,
-  cosmosClient: CosmosClient,
-  config: Config
-) {
-  try {
-    const { dbName, containerName } = config.azure.cosmos;
-    await cosmosClient
-      .database(dbName)
-      .container(containerName)
-      .items.create(apiKey);
-    return apiKey;
-  } catch (error) {
-    throw new CosmosDatabaseError("There has been an error");
-  }
+export async function insertApiKey(apiKey: ApiKey) {
+  const { dbName, containerName } = getCosmosConfigFromEnvironment();
+  const cosmosClient = getCosmosClient();
+  await cosmosClient
+    .database(dbName)
+    .container(containerName)
+    .items.create(apiKey)
+    .then(() => apiKey)
+    .catch(() => {
+      throw new CosmosDatabaseError("There has been an error");
+    });
 }
