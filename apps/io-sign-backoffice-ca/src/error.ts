@@ -6,8 +6,9 @@ export class SubscriptionCreationError extends Error {
 }
 
 export class ParsingError extends Error {
-  constructor(message: string) {
+  constructor(message: string, cause?: string) {
     super(message);
+    this.cause = cause;
     this.name = "ParsingError";
   }
 }
