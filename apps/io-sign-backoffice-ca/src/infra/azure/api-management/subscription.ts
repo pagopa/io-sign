@@ -17,11 +17,11 @@ export async function createApimSubscription(
     .then((x) => {
       const primaryKey = x.primaryKey;
       if (!primaryKey) {
-        throw new SubscriptionCreationError("There has been an error");
+        throw new SubscriptionCreationError("Unable to create the API key");
       }
       return primaryKey;
     })
     .catch(() => {
-      throw new SubscriptionCreationError("There has been an error");
+      throw new SubscriptionCreationError("Unable to create the API key");
     });
 }

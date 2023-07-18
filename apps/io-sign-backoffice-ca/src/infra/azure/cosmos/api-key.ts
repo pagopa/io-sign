@@ -39,7 +39,7 @@ export async function readApiKey({
     })
     .catch((error) => {
       throw error.name !== "ApiKeyAlreadyExistsError"
-        ? new CosmosDatabaseError("There has been an error")
+        ? new CosmosDatabaseError("Unable to create the API key") // TODO: error handling
         : error;
     });
 }
@@ -52,6 +52,6 @@ export async function insertApiKey(apiKey: ApiKey) {
     .container(containerName)
     .items.create(apiKey)
     .catch(() => {
-      throw new CosmosDatabaseError("There has been an error");
+      throw new CosmosDatabaseError("Unable to create the API key");
     });
 }
