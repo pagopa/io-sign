@@ -11,6 +11,7 @@ jest.mock("@/infra/azure/cosmos/config", () => ({
     containerName: "containerName",
   }),
 }));
+
 jest.mock("@/infra/azure/cosmos/client", () => ({
   getCosmosClient: jest.fn().mockReturnValue({
     database: jest.fn().mockReturnValue({
@@ -18,7 +19,7 @@ jest.mock("@/infra/azure/cosmos/client", () => ({
         items: {
           query: jest.fn(() => ({
             fetchAll: jest.fn().mockResolvedValue({
-              resources: [], // mocks.apiKeys,
+              resources: [],
             }),
           })),
           create: jest.fn().mockResolvedValue({}),
@@ -27,6 +28,7 @@ jest.mock("@/infra/azure/cosmos/client", () => ({
     }),
   }),
 }));
+
 jest.mock("@/infra/azure/api-management/config", () => ({
   getApimConfigFromEnvironment: jest.fn().mockReturnValue({
     subscriptionId: "subscriptionId",
@@ -42,6 +44,7 @@ jest.mock("@/infra/azure/api-management/config", () => ({
     },
   }),
 }));
+
 jest.mock("@/infra/azure/api-management/client", () => ({
   getApimClient: jest.fn().mockReturnValue({
     subscription: {
@@ -67,6 +70,7 @@ describe("AddApiKey endpoint", () => {
 
   const mocks = { apiKeys };
 
+  // TODO: update this test
   it.skip("should return a 409 HTTP response on input body conflict", async () => {
     // these institutionId, displayName and environment are already present in the mocked API keys
     const bodyRequest = {
@@ -85,8 +89,6 @@ describe("AddApiKey endpoint", () => {
   });
 
   it("should return a 201 HTTP response on success", async () => {
-    // mocks.apiKeys = [];
-    // these institutionId, displayName and environment are not present in the mocked API keys
     const bodyRequest = {
       institutionId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
