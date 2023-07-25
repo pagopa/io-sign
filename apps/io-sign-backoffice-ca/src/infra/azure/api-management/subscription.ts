@@ -1,13 +1,13 @@
 import { SubscriptionCreationError } from "@/error";
 import { getApimClient } from "./client";
-import { getApimConfigFromEnvironment } from "./config";
+import { getApimConfig } from "./config";
 
 export async function createApimSubscription(
   resourceId: string,
   displayName: string
 ) {
   const { subscriptionId, resourceGroupName, serviceName, productName } =
-    getApimConfigFromEnvironment();
+    getApimConfig();
   const apimClient = getApimClient();
   return apimClient.subscription
     .createOrUpdate(resourceGroupName, serviceName, resourceId, {

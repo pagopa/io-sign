@@ -1,7 +1,7 @@
 import { CosmosClient } from "@azure/cosmos";
-import { getCosmosConfigFromEnvironment } from "./config";
+import { getCosmosConfig } from "./config";
 
-const cosmosConfig = getCosmosConfigFromEnvironment();
+const cosmosConfig = getCosmosConfig();
 let cosmosClient: CosmosClient | null = null;
 
 export const getCosmosClient = () => {

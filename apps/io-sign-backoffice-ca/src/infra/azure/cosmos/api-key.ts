@@ -1,14 +1,14 @@
 import { ApiKey, ApiKeyAlreadyExistsError, ApiKeyBody } from "@/api-key";
 import { CosmosDatabaseError } from "@/error";
 import { getCosmosClient } from "./client";
-import { getCosmosConfigFromEnvironment } from "./config";
+import { getCosmosConfig } from "./config";
 
 export async function readApiKey({
   displayName,
   environment,
   institutionId,
 }: ApiKeyBody) {
-  const { dbName, containerName } = getCosmosConfigFromEnvironment();
+  const { dbName, containerName } = getCosmosConfig();
   const cosmosClient = getCosmosClient();
   await cosmosClient
     .database(dbName)
@@ -45,7 +45,7 @@ export async function readApiKey({
 }
 
 export async function insertApiKey(apiKey: ApiKey) {
-  const { dbName, containerName } = getCosmosConfigFromEnvironment();
+  const { dbName, containerName } = getCosmosConfig();
   const cosmosClient = getCosmosClient();
   await cosmosClient
     .database(dbName)

@@ -1,8 +1,8 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { ApiManagementClient } from "@azure/arm-apimanagement";
-import { getApimConfigFromEnvironment } from "./config";
+import { getApimConfig } from "./config";
 
-const apimConfig = getApimConfigFromEnvironment();
+const apimConfig = getApimConfig();
 let apimClient: ApiManagementClient | null = null;
 
 export const getApimClient = () => {
