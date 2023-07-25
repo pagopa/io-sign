@@ -1,4 +1,13 @@
 import { z } from "zod";
+import { CosmosClient } from "@azure/cosmos";
+
+export class CosmosDatabaseError extends Error {
+  constructor(message: string, cause = {}) {
+    super(message);
+    this.name = "CosmosDatabaseError";
+    this.cause = cause;
+  }
+}
 
 const Config = z
   .object({
@@ -22,4 +31,17 @@ export const getCosmosConfig = () => {
     });
   }
   return result.data;
+};
+
+const cosmosConfig = getCosmosConfig();
+let cosmosClient: CosmosClient | null = null;
+
+export const getCosmosClient = () => {
+  if (!cosmosClient) {
+    cosmosClient = new CosmosClient({
+      endpoint: cosmosConfig.accountEndpoint,
+      key: cosmosConfig.accountKey,
+    });
+  }
+  return cosmosClient;
 };

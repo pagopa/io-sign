@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ParsingError } from "@/error";
+import { ParsingInputError } from "@/error";
 import { addApiKey } from "../add-api-key";
 import { ApiKeyAlreadyExistsError } from "@/api-key";
 import { vi, describe, it, expect } from "vitest";
@@ -94,7 +94,7 @@ describe("AddApiKey endpoint", () => {
     } as unknown as NextRequest;
 
     expect(addApiKey(request)).rejects.toStrictEqual(
-      new ParsingError("Failed to parse request body")
+      new ParsingInputError("Failed to parse request body")
     );
   });
 

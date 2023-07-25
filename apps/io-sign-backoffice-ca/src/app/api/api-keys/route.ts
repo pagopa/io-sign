@@ -1,7 +1,14 @@
-import { NextRequest } from "next/server";
-import { addApiKey } from "@/endpoints/add-api-key";
-import { getCreatedResponse, getErrorResponse } from "../response";
+import { NextResponse, NextRequest } from "next/server";
+import { addApiKey } from "./_lib/api-key";
+import { getHttpError } from "@/lib/error";
+
+const getResponseFromError = (e: Error) => {
+  const { error, status } = getHttpError(e);
+  return NextResponse.json({ error }, { status });
+};
 
 export async function POST(request: NextRequest) {
-  return addApiKey(request).then(getCreatedResponse).catch(getErrorResponse);
+  return addApiKey(request)
+    .then((body: unknown) => NextResponse.json(body, { status: 201 }))
+    .catch(getResponseFromError);
 }
