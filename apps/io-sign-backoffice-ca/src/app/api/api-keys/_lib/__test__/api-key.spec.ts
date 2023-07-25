@@ -18,8 +18,7 @@ const mocks = { apiKeys };
 
 const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
   getCosmosConfig: vi.fn().mockReturnValue({
-    accountEndpoint: "accountEndpoint",
-    accountKey: "accountKey",
+    dbConnectionString: "dbConnectionString",
     dbName: "dbName",
     containerName: "containerName",
   }),
