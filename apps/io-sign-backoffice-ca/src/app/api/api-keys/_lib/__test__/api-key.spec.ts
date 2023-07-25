@@ -16,7 +16,13 @@ const apiKeys = [
 ];
 const mocks = { apiKeys };
 
-const { getCosmosClient } = vi.hoisted(() => ({
+const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
+  getCosmosConfig: vi.fn().mockReturnValue({
+    accountEndpoint: "accountEndpoint",
+    accountKey: "accountKey",
+    dbName: "dbName",
+    containerName: "containerName",
+  }),
   getCosmosClient: vi.fn().mockReturnValue({
     database: vi.fn().mockReturnValue({
       container: vi.fn().mockReturnValue({
@@ -33,17 +39,7 @@ const { getCosmosClient } = vi.hoisted(() => ({
   }),
 }));
 
-vi.mock("@/lib/cosmos", () => ({
-  getCosmosConfig: vi.fn().mockReturnValue({
-    accountEndpoint: "accountEndpoint",
-    accountKey: "accountKey",
-    dbName: "dbName",
-    containerName: "containerName",
-  }),
-  getCosmosClient,
-}));
-
-vi.mock("@/app/api/api-keys/_lib/apim", () => ({
+const { getApimConfig, getApimClient } = vi.hoisted(() => ({
   getApimConfig: vi.fn().mockReturnValue({
     subscriptionId: "subscriptionId",
     resourceGroupName: "resourceGroupName",
@@ -57,6 +53,16 @@ vi.mock("@/app/api/api-keys/_lib/apim", () => ({
       }),
     },
   }),
+}));
+
+vi.mock("@/lib/cosmos", () => ({
+  getCosmosConfig,
+  getCosmosClient,
+}));
+
+vi.mock("@/app/api/api-keys/_lib/apim", () => ({
+  getApimConfig,
+  getApimClient,
 }));
 
 describe("CreateApiKey endpoint", () => {
