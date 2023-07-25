@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { addApiKey } from "./_lib/api-key";
+import { createApiKey } from "./_lib/api-key";
 import { getHttpError } from "@/lib/error";
 
 const getResponseFromError = (e: Error) => {
@@ -8,7 +8,7 @@ const getResponseFromError = (e: Error) => {
 };
 
 export async function POST(request: NextRequest) {
-  return addApiKey(request)
+  return createApiKey(request)
     .then((body: unknown) => NextResponse.json(body, { status: 201 }))
     .catch(getResponseFromError);
 }

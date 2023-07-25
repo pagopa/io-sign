@@ -43,7 +43,7 @@ const parseApiKeyBody = (x: unknown): ApiKeyBody => {
   return result.data;
 };
 
-class ApiKeyAlreadyExistsError extends Error {
+export class ApiKeyAlreadyExistsError extends Error {
   constructor(cause = {}) {
     super("the API key already exists");
     this.name = "ApiKeyAlreadyExistsError";
@@ -129,7 +129,7 @@ async function createApimSubscription(resourceId: string, displayName: string) {
     });
 }
 
-export async function addApiKey(request: Request) {
+export async function createApiKey(request: Request) {
   return (
     request
       .json()
