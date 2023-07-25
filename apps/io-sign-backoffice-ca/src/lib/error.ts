@@ -18,6 +18,7 @@ class HttpBadRequestError extends HttpError {
   error = this.message;
   status = 400;
 }
+
 class HttpConflictError extends HttpError {
   error = this.message;
   status = 409;
