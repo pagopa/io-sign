@@ -14,8 +14,8 @@ const apiKeys = [
     status: "ACTIVE",
   },
 ];
-
 const mocks = { apiKeys };
+
 const { getCosmosClient } = vi.hoisted(() => ({
   getCosmosClient: vi.fn().mockReturnValue({
     database: vi.fn().mockReturnValue({
@@ -64,7 +64,7 @@ describe("CreateApiKey endpoint", () => {
     const request = {
       json: vi.fn(async () => ({ foo: "foo" })),
     } as unknown as NextRequest;
-    expect(createApiKey(request)).rejects.toThrow(ParsingInputError);
+    expect(createApiKey(request)).rejects.toThrowError(ParsingInputError);
   });
 
   it("should return a 409 HTTP response on input body conflict", async () => {
@@ -95,7 +95,7 @@ describe("CreateApiKey endpoint", () => {
     } as unknown as NextRequest;
 
     expect(createApiKey(request)).rejects.toThrowError(
-      new ApiKeyAlreadyExistsError("The API key already exists")
+      ApiKeyAlreadyExistsError
     );
   });
 
