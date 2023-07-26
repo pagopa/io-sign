@@ -11,14 +11,14 @@ export class CosmosDatabaseError extends Error {
 
 const Config = z
   .object({
-    DB_CONNECTION_STRING: z.string().nonempty(),
-    DB_NAME: z.string().nonempty(),
-    CONTAINER_NAME: z.string().nonempty(),
+    COSMOS_DB_CONNECTION_STRING: z.string().nonempty(),
+    COSMOS_DB_NAME: z.string().nonempty(),
+    COSMOS_CONTAINER_NAME: z.string().nonempty(),
   })
   .transform((env) => ({
-    dbConnectionString: env.DB_CONNECTION_STRING,
-    dbName: env.DB_NAME,
-    containerName: env.CONTAINER_NAME,
+    cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
+    cosmosDbName: env.COSMOS_DB_NAME,
+    cosmosContainerName: env.COSMOS_CONTAINER_NAME,
   }));
 
 export const getCosmosConfig = () => {
@@ -36,7 +36,7 @@ let cosmosClient: CosmosClient | null = null;
 
 export const getCosmosClient = () => {
   if (!cosmosClient) {
-    cosmosClient = new CosmosClient(cosmosConfig.dbConnectionString);
+    cosmosClient = new CosmosClient(cosmosConfig.cosmosDbConnectionString);
   }
   return cosmosClient;
 };

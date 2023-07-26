@@ -1,7 +1,7 @@
+import { z } from "zod";
 import { NextRequest } from "next/server";
 import { vi, describe, it, expect } from "vitest";
 import { ApiKeyAlreadyExistsError, createApiKey } from "../api-key";
-import { ParsingInputError } from "@/lib/error";
 
 const apiKeys = [
   {
@@ -18,9 +18,9 @@ const mocks = { apiKeys };
 
 const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
   getCosmosConfig: vi.fn().mockReturnValue({
-    dbConnectionString: "dbConnectionString",
-    dbName: "dbName",
-    containerName: "containerName",
+    cosmosDbConnectionString: "cosmosDbConnectionString",
+    cosmosDbName: "cosmosDbName",
+    cosmosContainerName: "cosmosContainerName",
   }),
   getCosmosClient: vi.fn().mockReturnValue({
     database: vi.fn().mockReturnValue({
@@ -40,10 +40,10 @@ const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
 
 const { getApimConfig, getApimClient } = vi.hoisted(() => ({
   getApimConfig: vi.fn().mockReturnValue({
-    subscriptionId: "subscriptionId",
-    resourceGroupName: "resourceGroupName",
-    serviceName: "serviceName",
-    productName: "productName",
+    azureSubscriptionId: "azureSubscriptionId",
+    apimResourceGroupName: "apimResourceGroupName",
+    apimServiceName: "apimServiceName",
+    apimProductName: "apimProductName",
   }),
   getApimClient: vi.fn().mockReturnValue({
     subscription: {
@@ -69,7 +69,7 @@ describe("CreateApiKey endpoint", () => {
     const request = {
       json: vi.fn(async () => ({ foo: "foo" })),
     } as unknown as NextRequest;
-    expect(createApiKey(request)).rejects.toThrowError(ParsingInputError);
+    expect(createApiKey(request)).rejects.toThrowError(z.ZodError);
   });
 
   it("should return a 409 HTTP response on input body conflict", async () => {

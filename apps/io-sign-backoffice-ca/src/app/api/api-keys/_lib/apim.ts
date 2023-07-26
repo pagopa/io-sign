@@ -12,16 +12,16 @@ export class SubscriptionCreationError extends Error {
 
 const Config = z
   .object({
-    SUBSCRIPTION_ID: z.string().nonempty(),
-    RESOURCE_GROUP_NAME: z.string().nonempty(),
-    SERVICE_NAME: z.string().nonempty(),
-    PRODUCT_NAME: z.string().nonempty(),
+    AZURE_SUBSCRIPTION_ID: z.string().nonempty(),
+    APIM_RESOURCE_GROUP_NAME: z.string().nonempty(),
+    APIM_SERVICE_NAME: z.string().nonempty(),
+    APIM_PRODUCT_NAME: z.string().nonempty(),
   })
   .transform((env) => ({
-    subscriptionId: env.SUBSCRIPTION_ID,
-    resourceGroupName: env.RESOURCE_GROUP_NAME,
-    serviceName: env.SERVICE_NAME,
-    productName: env.PRODUCT_NAME,
+    azureSubscriptionId: env.AZURE_SUBSCRIPTION_ID,
+    apimResourceGroupName: env.APIM_RESOURCE_GROUP_NAME,
+    apimServiceName: env.APIM_SERVICE_NAME,
+    apimProductName: env.APIM_PRODUCT_NAME,
   }));
 
 export const getApimConfig = () => {
@@ -41,7 +41,7 @@ export const getApimClient = () => {
   if (!apimClient) {
     apimClient = new ApiManagementClient(
       new DefaultAzureCredential(),
-      apimConfig.subscriptionId
+      apimConfig.azureSubscriptionId
     );
   }
   return apimClient;

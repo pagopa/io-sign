@@ -10,7 +10,6 @@ import {
   getCosmosConfig,
   CosmosDatabaseError,
 } from "@/lib/cosmos";
-import { ParsingInputError } from "@/lib/error";
 
 const ApiKeyBody = z.object({
   institutionId: z.string().nonempty(),
@@ -27,23 +26,12 @@ type ApiKey = ApiKeyBody & {
   createdAt: Date;
 };
 
-const newApiKey = (apiKey: ApiKeyBody): ApiKey => ({
+const ApiKey = (apiKey: ApiKeyBody): ApiKey => ({
   id: ulid(),
   ...apiKey,
   status: "ACTIVE",
   createdAt: new Date(),
 });
-
-const parseApiKeyBody = (x: unknown): ApiKeyBody => {
-  const result = ApiKeyBody.safeParse(x);
-  if (!result.success) {
-    throw new ParsingInputError({
-      cause: result.error.issues,
-    });
-  }
-
-  return result.data;
-};
 
 export class ApiKeyAlreadyExistsError extends Error {
   constructor(cause = {}) {
@@ -58,11 +46,11 @@ async function readApiKey({
   environment,
   institutionId,
 }: ApiKeyBody) {
-  const { dbName, containerName } = getCosmosConfig();
+  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
   const cosmosClient = getCosmosClient();
   await cosmosClient
-    .database(dbName)
-    .container(containerName)
+    .database(cosmosDbName)
+    .container(cosmosContainerName)
     .items.query({
       parameters: [
         {
@@ -95,11 +83,11 @@ async function readApiKey({
 }
 
 async function insertApiKey(apiKey: ApiKey) {
-  const { dbName, containerName } = getCosmosConfig();
+  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
   const cosmosClient = getCosmosClient();
   await cosmosClient
-    .database(dbName)
-    .container(containerName)
+    .database(cosmosDbName)
+    .container(cosmosContainerName)
     .items.create(apiKey)
     .catch((e) => {
       throw new CosmosDatabaseError("unable to create the API key", {
@@ -109,14 +97,18 @@ async function insertApiKey(apiKey: ApiKey) {
 }
 
 async function createApimSubscription(resourceId: string, displayName: string) {
-  const { subscriptionId, resourceGroupName, serviceName, productName } =
-    getApimConfig();
+  const {
+    azureSubscriptionId,
+    apimResourceGroupName,
+    apimServiceName,
+    apimProductName,
+  } = getApimConfig();
   const apimClient = getApimClient();
 
   return apimClient.subscription
-    .createOrUpdate(resourceGroupName, serviceName, resourceId, {
+    .createOrUpdate(apimResourceGroupName, apimServiceName, resourceId, {
       displayName,
-      scope: `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
+      scope: `/subscriptions/${azureSubscriptionId}/resourceGroups/${apimResourceGroupName}/providers/Microsoft.ApiManagement/service/${apimServiceName}/products/${apimProductName}`,
     })
     .then(({ primaryKey }) => {
       if (!primaryKey) {
@@ -135,7 +127,7 @@ export async function createApiKey(request: Request) {
   return (
     request
       .json()
-      .then(parseApiKeyBody)
+      .then(ApiKeyBody.parse)
       // check if the api key for the given input already exists
       .then(async (apiKey) => {
         await readApiKey(apiKey);
@@ -149,7 +141,7 @@ export async function createApiKey(request: Request) {
         return { ...apiKey, primaryKey };
       })
       .then(({ primaryKey, ...apiKey }) => ({
-        apiKey: newApiKey(apiKey),
+        apiKey: ApiKey(apiKey),
         primaryKey,
       }))
       .then(async ({ apiKey, primaryKey }) => {

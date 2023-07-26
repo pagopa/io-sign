@@ -1,11 +1,3 @@
-export class ParsingInputError extends Error {
-  constructor(cause = {}) {
-    super("error parsing the request body");
-    this.name = "ParsingError";
-    this.cause = cause;
-  }
-}
-
 export class HttpError extends Error {
   constructor(message: string) {
     super(message);
@@ -26,8 +18,8 @@ class HttpConflictError extends HttpError {
 
 export const getHttpError: (e: Error) => HttpError = (e) => {
   switch (e.name) {
-    case "ParsingInputError":
-      return new HttpBadRequestError(e.message);
+    case "ZodError":
+      return new HttpBadRequestError("error parsing the request body");
     case "ApiKeyAlreadyExistsError":
       return new HttpConflictError(e.message);
     default:
