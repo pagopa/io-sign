@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ApiManagementClient } from "@azure/arm-apimanagement";
+import { cache } from "react";
 
 export class SubscriptionCreationError extends Error {
   constructor(cause = {}) {
@@ -24,7 +25,7 @@ const Config = z
     apimProductName: env.APIM_PRODUCT_NAME,
   }));
 
-export const getApimConfig = () => {
+export const getApimConfig = cache(() => {
   const result = Config.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing apim config", {
@@ -32,17 +33,12 @@ export const getApimConfig = () => {
     });
   }
   return result.data;
-};
+});
 
-const apimConfig = getApimConfig();
-let apimClient: ApiManagementClient | null = null;
-
-export const getApimClient = () => {
-  if (!apimClient) {
-    apimClient = new ApiManagementClient(
+export const getApimClient = cache(
+  () =>
+    new ApiManagementClient(
       new DefaultAzureCredential(),
-      apimConfig.azureSubscriptionId
-    );
-  }
-  return apimClient;
-};
+      getApimConfig().azureSubscriptionId
+    )
+);

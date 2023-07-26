@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
+import { cache } from "react";
 
 export class CosmosDatabaseError extends Error {
   constructor(message: string, cause = {}) {
@@ -21,7 +22,7 @@ const Config = z
     cosmosContainerName: env.COSMOS_CONTAINER_NAME,
   }));
 
-export const getCosmosConfig = () => {
+export const getCosmosConfig = cache(() => {
   const result = Config.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing cosmos config", {
@@ -29,14 +30,8 @@ export const getCosmosConfig = () => {
     });
   }
   return result.data;
-};
+});
 
-const cosmosConfig = getCosmosConfig();
-let cosmosClient: CosmosClient | null = null;
-
-export const getCosmosClient = () => {
-  if (!cosmosClient) {
-    cosmosClient = new CosmosClient(cosmosConfig.cosmosDbConnectionString);
-  }
-  return cosmosClient;
-};
+export const getCosmosClient = cache(
+  () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
+);
