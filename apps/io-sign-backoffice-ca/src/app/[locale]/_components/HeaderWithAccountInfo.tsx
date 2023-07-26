@@ -1,16 +1,39 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { HeaderAccount, RootLinkType } from "@pagopa/mui-italia";
+import { User } from "@/app/auth/_lib/user";
+import { useRouter } from "next/navigation";
 
-import { HeaderAccount } from "@pagopa/mui-italia";
+type Props = {
+  loggedUser: User;
+  documentationUrl: string;
+  supportUrl: string;
+  companyLink: RootLinkType;
+};
 
-export default function HeaderWithAccountInfo() {
-  const t = useTranslations("HeaderWithAccountInfo");
-  const rootLink = {
-    label: "PagoPA S.p.A",
-    href: "https://www.pagopa.it/",
-    title: t("rootLink.title"),
-    ariaLabel: t("rootLink.ariaLabel"),
-  };
-  return <HeaderAccount rootLink={rootLink} onAssistanceClick={() => {}} />;
+export default function HeaderWithAccountInfo({
+  loggedUser,
+  documentationUrl,
+  supportUrl,
+  companyLink,
+}: Props) {
+  const router = useRouter();
+  function handleAssistanceClick() {
+    window.location.href = supportUrl;
+  }
+  function handleDocumentationClick() {
+    window.open(documentationUrl, "_blank", "noreferrer");
+  }
+  function handleLogout() {
+    router.push("/auth/logout");
+  }
+  return (
+    <HeaderAccount
+      rootLink={companyLink}
+      onAssistanceClick={handleAssistanceClick}
+      onDocumentationClick={handleDocumentationClick}
+      loggedUser={loggedUser}
+      onLogout={handleLogout}
+    />
+  );
 }
