@@ -24,12 +24,14 @@ type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 type ApiKey = ApiKeyBody & {
   id: string;
   status: "ACTIVE" | "INACTIVE";
+  createdAt: Date;
 };
 
 const newApiKey = (apiKey: ApiKeyBody): ApiKey => ({
   id: newId(),
   ...apiKey,
   status: "ACTIVE",
+  createdAt: new Date(),
 });
 
 const parseApiKeyBody = (x: unknown): ApiKeyBody => {
