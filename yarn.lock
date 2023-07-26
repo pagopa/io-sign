@@ -11258,6 +11258,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     typescript: 5.1.6
+    ulid: ^2.3.0
     vitest: ^0.33.0
     zod: ^3.21.4
   languageName: unknown

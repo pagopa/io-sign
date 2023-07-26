@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { id as newId } from "@io-sign/io-sign/id";
+import { ulid } from "ulid";
 import {
   SubscriptionCreationError,
   getApimClient,
@@ -28,7 +28,7 @@ type ApiKey = ApiKeyBody & {
 };
 
 const newApiKey = (apiKey: ApiKeyBody): ApiKey => ({
-  id: newId(),
+  id: ulid(),
   ...apiKey,
   status: "ACTIVE",
   createdAt: new Date(),

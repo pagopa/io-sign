@@ -16,7 +16,6 @@
     "@azure/identity": "^3.2.3",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
-    "@io-sign/io-sign": "workspace:^",
     "@mui/icons-material": "5.11.0",
     "@mui/lab": "5.0.0-alpha.119",
     "@mui/material": "5.11.8",
@@ -31,6 +30,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.6",
+    "ulid": "^2.3.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
