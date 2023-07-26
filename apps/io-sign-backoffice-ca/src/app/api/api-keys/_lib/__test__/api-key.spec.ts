@@ -94,7 +94,6 @@ describe("CreateApiKey endpoint", () => {
       displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
       environment: "DEFAULT",
       resourceId: "1689092259251",
-      name: "foo",
     };
     const request = {
       json: vi.fn(async () => bodyRequest),
@@ -111,7 +110,6 @@ describe("CreateApiKey endpoint", () => {
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
       environment: "TEST",
       resourceId: "1689092259251",
-      name: "foo",
     };
     const request = {
       json: vi.fn(async () => bodyRequest),

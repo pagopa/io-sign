@@ -17,7 +17,6 @@ const ApiKeyBody = z.object({
   displayName: z.string().nonempty(),
   environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
   resourceId: z.string().nonempty(),
-  name: z.string().nonempty(),
 });
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
