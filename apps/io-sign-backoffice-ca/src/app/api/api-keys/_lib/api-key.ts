@@ -75,10 +75,9 @@ async function readApiKey({
       throw new ApiKeyAlreadyExistsError();
     }
   } catch (e) {
-    if (e instanceof ApiKeyAlreadyExistsError) {
-      throw e;
-    }
-    new CosmosDatabaseError("unable to create the API key", { cause: e });
+    throw e instanceof ApiKeyAlreadyExistsError
+      ? e
+      : new CosmosDatabaseError("unable to create the API key", { cause: e });
   }
 }
 
