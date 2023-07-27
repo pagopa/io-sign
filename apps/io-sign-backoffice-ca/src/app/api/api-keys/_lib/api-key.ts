@@ -124,21 +124,18 @@ async function createApimSubscription(resourceId: string, displayName: string) {
 }
 
 export async function createApiKey(request: Request) {
-  return request
-    .json()
-    .then(ApiKeyBody.parse)
-    .then((apiKey) =>
-      // check if the api key for the given input already exists
-      readApiKey(apiKey)
-        .then(() => ApiKey(apiKey))
-        .then((apiKey) =>
-          createApimSubscription(apiKey.resourceId, apiKey.displayName).then(
-            (primaryKey) =>
-              insertApiKey(apiKey).then(() => ({
-                id: apiKey.id,
-                primaryKey,
-              }))
-          )
-        )
-    );
+  const apiKeyBody = ApiKeyBody.parse(await request.json());
+  // check if the api key for the given input already exists
+  await readApiKey(apiKeyBody);
+  const primaryKey = await createApimSubscription(
+    apiKeyBody.resourceId,
+    apiKeyBody.displayName
+  );
+  const apiKey = ApiKey(apiKeyBody);
+  await insertApiKey(apiKey);
+
+  return {
+    id: apiKey.id,
+    primaryKey,
+  };
 }
