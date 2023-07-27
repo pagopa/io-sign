@@ -65,14 +65,14 @@ vi.mock("@/app/api/api-keys/_lib/apim", () => ({
 }));
 
 describe("CreateApiKey endpoint", () => {
-  it("should return a 400 HTTP response on input validation", async () => {
+  it("should throw a ZodError on input validation", async () => {
     const request = {
       json: vi.fn(async () => ({ foo: "foo" })),
     } as unknown as NextRequest;
     expect(createApiKey(request)).rejects.toThrowError(z.ZodError);
   });
 
-  it("should return a 409 HTTP response on input body conflict", async () => {
+  it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
     // these institutionId, displayName and environment are already present in the mocked API keys
     getCosmosClient.mockReturnValueOnce({
       database: vi.fn().mockReturnValue({
@@ -104,7 +104,7 @@ describe("CreateApiKey endpoint", () => {
     );
   });
 
-  it("should return a 201 HTTP response on success", async () => {
+  it("should return a object { id, key } on success", async () => {
     const bodyRequest = {
       institutionId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
