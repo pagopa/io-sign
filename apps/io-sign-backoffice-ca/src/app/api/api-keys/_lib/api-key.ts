@@ -130,7 +130,7 @@ export async function createApiKey(request: Request) {
   const apiKeyBody = ApiKeyBody.parse(await request.json());
   // check if the api key for the given input already exists
   await readApiKey(apiKeyBody);
-  const primaryKey = await createApimSubscription(
+  const key = await createApimSubscription(
     apiKeyBody.resourceId,
     apiKeyBody.displayName
   );
@@ -139,6 +139,6 @@ export async function createApiKey(request: Request) {
 
   return {
     id: apiKey.id,
-    primaryKey,
+    key,
   };
 }

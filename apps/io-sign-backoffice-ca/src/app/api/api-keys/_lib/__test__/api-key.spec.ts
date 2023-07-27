@@ -10,8 +10,8 @@ const apiKeys = [
     displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
     environment: "DEFAULT",
     resourceId: "1689092259251",
-    primaryKey: "96e1a93a156b401d953b5a1b07ec534d",
     status: "ACTIVE",
+    createdAt: new Date(),
   },
 ];
 const mocks = { apiKeys };
@@ -117,7 +117,7 @@ describe("CreateApiKey endpoint", () => {
 
     expect(createApiKey(request)).resolves.toEqual({
       id: expect.any(String),
-      primaryKey: expect.any(String),
+      key: expect.any(String),
     });
   });
 });
