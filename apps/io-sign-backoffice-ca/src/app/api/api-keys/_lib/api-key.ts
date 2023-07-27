@@ -46,81 +46,84 @@ async function readApiKey({
   environment,
   institutionId,
 }: ApiKeyBody) {
-  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-  const cosmosClient = getCosmosClient();
-  await cosmosClient
-    .database(cosmosDbName)
-    .container(cosmosContainerName)
-    .items.query({
-      parameters: [
-        {
-          name: "@displayName",
-          value: displayName,
-        },
-        {
-          name: "@environment",
-          value: environment,
-        },
-        {
-          name: "@institutionId",
-          value: institutionId,
-        },
-      ],
-      query:
-        "SELECT * FROM c WHERE c.displayName = @displayName AND c.environment = @environment AND c.institutionId = @institutionId",
-    })
-    .fetchAll()
-    .then(({ resources }) => {
-      if (resources.length !== 0) {
-        throw new ApiKeyAlreadyExistsError();
-      }
-    })
-    .catch((e) => {
-      throw e.name !== "ApiKeyAlreadyExistsError"
-        ? new CosmosDatabaseError("unable to create the API key", { cause: e })
-        : e;
-    });
+  try {
+    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
+    const cosmosClient = getCosmosClient();
+    const { resources } = await cosmosClient
+      .database(cosmosDbName)
+      .container(cosmosContainerName)
+      .items.query({
+        parameters: [
+          {
+            name: "@displayName",
+            value: displayName,
+          },
+          {
+            name: "@environment",
+            value: environment,
+          },
+          {
+            name: "@institutionId",
+            value: institutionId,
+          },
+        ],
+        query:
+          "SELECT * FROM c WHERE c.displayName = @displayName AND c.environment = @environment AND c.institutionId = @institutionId",
+      })
+      .fetchAll();
+    if (resources.length !== 0) {
+      throw new ApiKeyAlreadyExistsError();
+    }
+  } catch (e) {
+    if (e instanceof ApiKeyAlreadyExistsError) {
+      throw e;
+    }
+    new CosmosDatabaseError("unable to create the API key", { cause: e });
+  }
 }
 
 async function insertApiKey(apiKey: ApiKey) {
-  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-  const cosmosClient = getCosmosClient();
-  await cosmosClient
-    .database(cosmosDbName)
-    .container(cosmosContainerName)
-    .items.create(apiKey)
-    .catch((e) => {
-      throw new CosmosDatabaseError("unable to create the API key", {
-        cause: e,
-      });
+  try {
+    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
+    const cosmosClient = getCosmosClient();
+    await cosmosClient
+      .database(cosmosDbName)
+      .container(cosmosContainerName)
+      .items.create(apiKey);
+  } catch (e) {
+    throw new CosmosDatabaseError("unable to create the API key", {
+      cause: e,
     });
+  }
 }
 
 async function createApimSubscription(resourceId: string, displayName: string) {
-  const {
-    azureSubscriptionId,
-    apimResourceGroupName,
-    apimServiceName,
-    apimProductName,
-  } = getApimConfig();
-  const apimClient = getApimClient();
-
-  return apimClient.subscription
-    .createOrUpdate(apimResourceGroupName, apimServiceName, resourceId, {
-      displayName,
-      scope: `/subscriptions/${azureSubscriptionId}/resourceGroups/${apimResourceGroupName}/providers/Microsoft.ApiManagement/service/${apimServiceName}/products/${apimProductName}`,
-    })
-    .then(({ primaryKey }) => {
-      if (!primaryKey) {
-        throw new Error();
+  try {
+    const {
+      azureSubscriptionId,
+      apimResourceGroupName,
+      apimServiceName,
+      apimProductName,
+    } = getApimConfig();
+    const apimClient = getApimClient();
+    const { primaryKey } = await apimClient.subscription.createOrUpdate(
+      apimResourceGroupName,
+      apimServiceName,
+      resourceId,
+      {
+        displayName,
+        scope: `/subscriptions/${azureSubscriptionId}/resourceGroups/${apimResourceGroupName}/providers/Microsoft.ApiManagement/service/${apimServiceName}/products/${apimProductName}`,
       }
-      return primaryKey;
-    })
-    .catch((e) => {
-      throw new SubscriptionCreationError({
-        cause: e,
-      });
+    );
+    if (!primaryKey) {
+      throw new Error();
+    }
+    return primaryKey;
+  } catch (e) {
+    throw new SubscriptionCreationError({
+      cause: e,
     });
+  }
 }
 
 export async function createApiKey(request: Request) {
