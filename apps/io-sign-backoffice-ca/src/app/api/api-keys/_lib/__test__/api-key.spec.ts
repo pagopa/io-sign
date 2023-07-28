@@ -65,13 +65,6 @@ vi.mock("@/app/api/api-keys/_lib/apim", () => ({
 }));
 
 describe("CreateApiKey endpoint", () => {
-  it("should throw a ZodError on input validation", async () => {
-    const request = {
-      json: vi.fn(async () => ({ foo: "foo" })),
-    } as unknown as NextRequest;
-    expect(createApiKey(request)).rejects.toThrowError(z.ZodError);
-  });
-
   it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
     // these institutionId, displayName and environment are already present in the mocked API keys
     getCosmosClient.mockReturnValueOnce({
@@ -92,14 +85,11 @@ describe("CreateApiKey endpoint", () => {
     const bodyRequest = {
       institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
       displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
-      environment: "DEFAULT",
+      environment: "DEFAULT" as "DEFAULT",
       resourceId: "1689092259251",
     };
-    const request = {
-      json: vi.fn(async () => bodyRequest),
-    } as unknown as NextRequest;
 
-    expect(createApiKey(request)).rejects.toThrowError(
+    expect(createApiKey(bodyRequest)).rejects.toThrowError(
       ApiKeyAlreadyExistsError
     );
   });
@@ -108,14 +98,11 @@ describe("CreateApiKey endpoint", () => {
     const bodyRequest = {
       institutionId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
-      environment: "TEST",
+      environment: "TEST" as "TEST",
       resourceId: "1689092259251",
     };
-    const request = {
-      json: vi.fn(async () => bodyRequest),
-    } as unknown as NextRequest;
 
-    expect(createApiKey(request)).resolves.toEqual({
+    expect(createApiKey(bodyRequest)).resolves.toEqual({
       id: expect.any(String),
       key: expect.any(String),
     });

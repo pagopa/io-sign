@@ -11,7 +11,7 @@ import {
   CosmosDatabaseError,
 } from "@/lib/cosmos";
 
-const ApiKeyBody = z.object({
+export const ApiKeyBody = z.object({
   institutionId: z.string().nonempty(),
   displayName: z.string().nonempty(),
   environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
@@ -125,8 +125,7 @@ async function createApimSubscription(resourceId: string, displayName: string) {
   }
 }
 
-export async function createApiKey(request: Request) {
-  const apiKeyBody = ApiKeyBody.parse(await request.json());
+export async function createApiKey(apiKeyBody: ApiKeyBody) {
   // check if the api key for the given input already exists
   await readApiKey(apiKeyBody);
   const key = await createApimSubscription(
