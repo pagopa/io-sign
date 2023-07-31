@@ -41,9 +41,20 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
+COPY --from=installer /app/apps/io-sign-backoffice-ca/sshd_config /etc/ssh/
+COPY --from=installer /app/apps/io-sign-backoffice-ca/entrypoint.sh .
 COPY --from=installer /app/apps/io-sign-backoffice-ca/next.config.js .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-ca/.next/standalone/node_modules ./node_modules
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-ca/.next/standalone/apps/io-sign-backoffice-ca .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-ca/.next/static .next/static
 
-CMD node server.js
+# Start and enable SSH (from https://learn.microsoft.com/en-us/azure/app-service/configure-custom-container?tabs=alpine&pivots=container-linux)
+RUN apk add openssh \
+    && echo "root:Docker!" | chpasswd \
+    && chmod +x ./entrypoint.sh \
+    && cd /etc/ssh/ \
+    && ssh-keygen -A
+
+EXPOSE 3000 2222
+
+ENTRYPOINT ["./entrypoint.sh"]
