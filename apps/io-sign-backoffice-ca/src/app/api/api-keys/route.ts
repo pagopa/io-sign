@@ -15,18 +15,29 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     if (e instanceof ZodError) {
       return NextResponse.json(
-        { error: "error parsing the request body" },
+        {
+          type: "/problem/validation-error",
+          title: "Validation Error",
+          detail: "Your request didn't validate",
+          violations: e.issues,
+        },
         { status: 422 }
       );
     }
     if (e instanceof ApiKeyAlreadyExistsError) {
-      return NextResponse.json({ error: e.message }, { status: 409 });
+      return NextResponse.json(
+        { title: "Conflict Error", detail: e.message },
+        { status: 409 }
+      );
     }
     if (e instanceof Error) {
-      return NextResponse.json({ error: e.message }, { status: 500 });
+      return NextResponse.json(
+        { title: "Internal Server Error", detail: e.message },
+        { status: 500 }
+      );
     }
     return NextResponse.json(
-      { error: "Internal server error" },
+      { title: "Internal Server Error", detail: "Something went wrong" },
       { status: 500 }
     );
   }
