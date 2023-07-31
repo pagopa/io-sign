@@ -1,3 +1,4 @@
+import "server-only";
 import { z } from "zod";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ApiManagementClient } from "@azure/arm-apimanagement";

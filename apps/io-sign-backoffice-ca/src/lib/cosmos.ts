@@ -1,3 +1,4 @@
+import "server-only";
 import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
 import { cache } from "react";

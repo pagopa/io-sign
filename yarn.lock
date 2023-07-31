@@ -11257,6 +11257,7 @@ __metadata:
     next-intl: 3.0.0-beta.8
     react: 18.2.0
     react-dom: 18.2.0
+    server-only: ^0.0.1
     typescript: ^5.1.6
     ulid: ^2.3.0
     vitest: ^0.33.0
@@ -16019,7 +16020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"server-only@npm:0.0.1":
+"server-only@npm:0.0.1, server-only@npm:^0.0.1":
   version: 0.0.1
   resolution: "server-only@npm:0.0.1"
   checksum: c432348956641ea3f460af8dc3765f3a1bdbcf7a1e0205b0756d868e6e6fe8934cdee6bff68401a1dd49ba4a831c75916517a877446d54b334f7de36fa273e53
