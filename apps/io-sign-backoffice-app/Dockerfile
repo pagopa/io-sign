@@ -39,14 +39,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-USER nextjs
 
 COPY --from=installer /app/apps/io-sign-backoffice-app/sshd_config /etc/ssh/
 COPY --from=installer /app/apps/io-sign-backoffice-app/entrypoint.sh .
-COPY --from=installer /app/apps/io-sign-backoffice-app/next.config.js .
-COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/node_modules ./node_modules
-COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app .
-COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/static .next/static
 
 # Start and enable SSH (from https://learn.microsoft.com/en-us/azure/app-service/configure-custom-container?tabs=alpine&pivots=container-linux)
 RUN apk add openssh \
@@ -54,6 +49,13 @@ RUN apk add openssh \
     && chmod +x ./entrypoint.sh \
     && cd /etc/ssh/ \
     && ssh-keygen -A
+
+USER nextjs
+
+COPY --from=installer /app/apps/io-sign-backoffice-app/next.config.js .
+COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/node_modules ./node_modules
+COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app .
+COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/static .next/static
 
 EXPOSE 3000 2222
 
