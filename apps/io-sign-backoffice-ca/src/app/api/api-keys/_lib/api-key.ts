@@ -1,22 +1,12 @@
-import "server-only";
 import { z } from "zod";
 import { ulid } from "ulid";
-import {
-  SubscriptionCreationError,
-  getApimClient,
-  getApimConfig,
-} from "./apim";
-import {
-  getCosmosClient,
-  getCosmosConfig,
-  CosmosDatabaseError,
-} from "@/lib/cosmos";
+import { getApimClient, getApimConfig } from "./apim";
+import { getCosmosClient, getCosmosConfig } from "@/lib/cosmos";
 
 export const ApiKeyBody = z.object({
   institutionId: z.string().nonempty(),
   displayName: z.string().nonempty(),
   environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
-  resourceId: z.string().nonempty(),
 });
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
@@ -27,8 +17,7 @@ type ApiKey = ApiKeyBody & {
   createdAt: Date;
 };
 
-const ApiKey = (apiKey: ApiKeyBody): ApiKey => ({
-  id: ulid(),
+const ApiKey = (apiKey: ApiKeyBody & { id: string }): ApiKey => ({
   ...apiKey,
   status: "ACTIVE",
   createdAt: new Date(),
@@ -42,11 +31,7 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function readApiKey({
-  displayName,
-  environment,
-  institutionId,
-}: ApiKeyBody) {
+async function getApiKey(displayName: string, institutionId: string) {
   try {
     const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
     const cosmosClient = getCosmosClient();
@@ -60,16 +45,12 @@ async function readApiKey({
             value: displayName,
           },
           {
-            name: "@environment",
-            value: environment,
-          },
-          {
             name: "@institutionId",
             value: institutionId,
           },
         ],
         query:
-          "SELECT * FROM c WHERE c.displayName = @displayName AND c.environment = @environment AND c.institutionId = @institutionId",
+          "SELECT * FROM c WHERE c.displayName = @displayName AND c.institutionId = @institutionId",
       })
       .fetchAll();
     if (resources.length !== 0) {
@@ -78,7 +59,7 @@ async function readApiKey({
   } catch (e) {
     throw e instanceof ApiKeyAlreadyExistsError
       ? e
-      : new CosmosDatabaseError("unable to create the API key", { cause: e });
+      : new Error("unable to create the API key", { cause: e });
   }
 }
 
@@ -91,7 +72,8 @@ async function insertApiKey(apiKey: ApiKey) {
       .container(cosmosContainerName)
       .items.create(apiKey);
   } catch (e) {
-    throw new CosmosDatabaseError("unable to create the API key", {
+    await deleteApimSubscription(apiKey.id);
+    throw new Error("unable to create the API key", {
       cause: e,
     });
   }
@@ -99,28 +81,43 @@ async function insertApiKey(apiKey: ApiKey) {
 
 async function createApimSubscription(resourceId: string, displayName: string) {
   try {
-    const {
-      azureSubscriptionId,
-      apimResourceGroupName,
-      apimServiceName,
-      apimProductName,
-    } = getApimConfig();
+    const { azure, apim } = getApimConfig();
+    const { resourceGroupName, serviceName, productName } = apim;
     const apimClient = getApimClient();
     const { primaryKey } = await apimClient.subscription.createOrUpdate(
-      apimResourceGroupName,
-      apimServiceName,
+      resourceGroupName,
+      serviceName,
       resourceId,
       {
         displayName,
-        scope: `/subscriptions/${azureSubscriptionId}/resourceGroups/${apimResourceGroupName}/providers/Microsoft.ApiManagement/service/${apimServiceName}/products/${apimProductName}`,
+        scope: `/subscriptions/${azure.subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
       }
     );
     if (!primaryKey) {
-      throw new Error();
+      throw new Error("primary key is undefined");
     }
     return primaryKey;
   } catch (e) {
-    throw new SubscriptionCreationError({
+    throw new Error("unable to create the API key", {
+      cause: e,
+    });
+  }
+}
+
+async function deleteApimSubscription(subscriptionId: string) {
+  try {
+    const { apim } = getApimConfig();
+    const { resourceGroupName, serviceName } = apim;
+    const apimClient = getApimClient();
+
+    await apimClient.subscription.delete(
+      resourceGroupName,
+      serviceName,
+      subscriptionId,
+      "*"
+    );
+  } catch (e) {
+    throw new Error("unable to create the API key", {
       cause: e,
     });
   }
@@ -128,16 +125,14 @@ async function createApimSubscription(resourceId: string, displayName: string) {
 
 export async function createApiKey(apiKeyBody: ApiKeyBody) {
   // check if the api key for the given input already exists
-  await readApiKey(apiKeyBody);
-  const key = await createApimSubscription(
-    apiKeyBody.resourceId,
-    apiKeyBody.displayName
-  );
-  const apiKey = ApiKey(apiKeyBody);
+  await getApiKey(apiKeyBody.displayName, apiKeyBody.institutionId);
+  const apiKeyId = ulid();
+  const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
+  const apiKey = ApiKey({ id: apiKeyId, ...apiKeyBody });
   await insertApiKey(apiKey);
 
   return {
-    id: apiKey.id,
+    id: apiKeyId,
     key,
   };
 }

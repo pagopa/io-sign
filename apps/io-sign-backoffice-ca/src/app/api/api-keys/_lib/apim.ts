@@ -1,16 +1,7 @@
-import "server-only";
 import { z } from "zod";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ApiManagementClient } from "@azure/arm-apimanagement";
 import { cache } from "react";
-
-export class SubscriptionCreationError extends Error {
-  constructor(cause = {}) {
-    super("unable to create the API key");
-    this.name = "SubscriptionCreationError";
-    this.cause = cause;
-  }
-}
 
 const Config = z
   .object({
@@ -20,10 +11,12 @@ const Config = z
     APIM_PRODUCT_NAME: z.string().nonempty(),
   })
   .transform((env) => ({
-    azureSubscriptionId: env.AZURE_SUBSCRIPTION_ID,
-    apimResourceGroupName: env.APIM_RESOURCE_GROUP_NAME,
-    apimServiceName: env.APIM_SERVICE_NAME,
-    apimProductName: env.APIM_PRODUCT_NAME,
+    azure: { subscriptionId: env.AZURE_SUBSCRIPTION_ID },
+    apim: {
+      resourceGroupName: env.APIM_RESOURCE_GROUP_NAME,
+      serviceName: env.APIM_SERVICE_NAME,
+      productName: env.APIM_PRODUCT_NAME,
+    },
   }));
 
 export const getApimConfig = cache(() => {
@@ -40,6 +33,6 @@ export const getApimClient = cache(
   () =>
     new ApiManagementClient(
       new DefaultAzureCredential(),
-      getApimConfig().azureSubscriptionId
+      getApimConfig().azure.subscriptionId
     )
 );

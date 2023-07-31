@@ -1,4 +1,3 @@
-import "server-only";
 import { NextResponse, NextRequest } from "next/server";
 import {
   ApiKeyAlreadyExistsError,

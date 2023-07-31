@@ -1,15 +1,6 @@
-import "server-only";
 import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
 import { cache } from "react";
-
-export class CosmosDatabaseError extends Error {
-  constructor(message: string, cause = {}) {
-    super(message);
-    this.name = "CosmosDatabaseError";
-    this.cause = cause;
-  }
-}
 
 const Config = z
   .object({
