@@ -1,5 +1,3 @@
-import { z } from "zod";
-import { NextRequest } from "next/server";
 import { vi, describe, it, expect } from "vitest";
 import { ApiKeyAlreadyExistsError, createApiKey } from "../api-key";
 
