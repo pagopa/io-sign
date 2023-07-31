@@ -10777,9 +10777,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"io-sign-backoffice-ca@workspace:apps/io-sign-backoffice-app":
+"io-sign-backoffice-app@workspace:apps/io-sign-backoffice-app":
   version: 0.0.0-use.local
-  resolution: "io-sign-backoffice-ca@workspace:apps/io-sign-backoffice-app"
+  resolution: "io-sign-backoffice-app@workspace:apps/io-sign-backoffice-app"
   dependencies:
     "@azure/arm-apimanagement": ^9.0.0
     "@azure/cosmos": ^3.17.3
