@@ -27,3 +27,9 @@ export const getCosmosConfig = cache(() => {
 export const getCosmosClient = cache(
   () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
 );
+
+export const getCosmosDatabase = () => {
+  const { cosmosDbName } = getCosmosConfig();
+  const cosmosClient = getCosmosClient();
+  return cosmosClient.database(cosmosDbName);
+};
