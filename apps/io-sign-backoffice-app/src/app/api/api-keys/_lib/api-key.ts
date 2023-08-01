@@ -3,10 +3,14 @@ import { ulid } from "ulid";
 import { getApimClient, getApimConfig } from "./apim";
 import { getCosmosClient, getCosmosConfig } from "@/lib/cosmos";
 
+const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
+
+type Environment = z.infer<typeof Environment>;
+
 export const ApiKeyBody = z.object({
   institutionId: z.string().nonempty(),
   displayName: z.string().nonempty(),
-  environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
+  environment: Environment,
 });
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
@@ -31,30 +35,13 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function getApiKey(displayName: string, institutionId: string) {
+async function apiKeyExists(institutionId: string, displayName: string) {
   try {
-    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-    const cosmosClient = getCosmosClient();
-    const { resources } = await cosmosClient
-      .database(cosmosDbName)
-      .container(cosmosContainerName)
-      .items.query({
-        parameters: [
-          {
-            name: "@displayName",
-            value: displayName,
-          },
-          {
-            name: "@institutionId",
-            value: institutionId,
-          },
-        ],
-        query:
-          "SELECT * FROM c WHERE c.displayName = @displayName AND c.institutionId = @institutionId",
-      })
-      .fetchAll();
-    if (resources.length !== 0) {
-      throw new ApiKeyAlreadyExistsError();
+    const apiKeys = await getApiKeys(institutionId, { displayName });
+    if (apiKeys.length !== 0) {
+      throw new ApiKeyAlreadyExistsError(
+        "such name already exists for the institution"
+      );
     }
   } catch (e) {
     throw e instanceof ApiKeyAlreadyExistsError
@@ -81,8 +68,10 @@ async function insertApiKey(apiKey: ApiKey) {
 
 async function createApimSubscription(resourceId: string, displayName: string) {
   try {
-    const { azure, apim } = getApimConfig();
-    const { resourceGroupName, serviceName, productName } = apim;
+    const {
+      azure: { subscriptionId },
+      apim: { resourceGroupName, serviceName, productName },
+    } = getApimConfig();
     const apimClient = getApimClient();
     const { primaryKey } = await apimClient.subscription.createOrUpdate(
       resourceGroupName,
@@ -90,7 +79,7 @@ async function createApimSubscription(resourceId: string, displayName: string) {
       resourceId,
       {
         displayName,
-        scope: `/subscriptions/${azure.subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
+        scope: `/subscriptions/${subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
       }
     );
     if (!primaryKey) {
@@ -106,8 +95,9 @@ async function createApimSubscription(resourceId: string, displayName: string) {
 
 async function deleteApimSubscription(subscriptionId: string) {
   try {
-    const { apim } = getApimConfig();
-    const { resourceGroupName, serviceName } = apim;
+    const {
+      apim: { resourceGroupName, serviceName },
+    } = getApimConfig();
     const apimClient = getApimClient();
 
     await apimClient.subscription.delete(
@@ -123,9 +113,96 @@ async function deleteApimSubscription(subscriptionId: string) {
   }
 }
 
+async function getApiKeys(
+  institutionId: string,
+  queryFilters?: {
+    environment?: Environment;
+    displayName?: string;
+  }
+): Promise<ApiKey[]> {
+  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
+  const cosmosClient = getCosmosClient();
+  let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
+  const parameters = [
+    {
+      name: "@institutionId",
+      value: institutionId,
+    },
+  ];
+
+  if (queryFilters && queryFilters.environment) {
+    parameters.push({
+      name: "@environment",
+      value: queryFilters.environment,
+    });
+    query = query.concat(" AND c.environment = @environment");
+  }
+  if (queryFilters && queryFilters.displayName) {
+    parameters.push({ name: "@displayName", value: queryFilters.displayName });
+    query = query.concat(" AND c.displayName = @displayName");
+  }
+
+  const { resources } = await cosmosClient
+    .database(cosmosDbName)
+    .container(cosmosContainerName)
+    .items.query({
+      parameters,
+      query,
+    })
+    .fetchAll();
+
+  return resources;
+}
+
+export async function listApiKeys(
+  institutionId: string,
+  queryFilters: {
+    environment?: Environment;
+    displayName?: string;
+  }
+): Promise<(ApiKey & { key: string })[]> {
+  try {
+    const apiKeys = await getApiKeys(institutionId, queryFilters);
+    const {
+      apim: { resourceGroupName, serviceName },
+    } = getApimConfig();
+    const apimClient = getApimClient();
+    return Promise.all(
+      apiKeys.map(
+        async ({
+          id,
+          institutionId,
+          displayName,
+          environment,
+          status,
+          createdAt,
+        }) => {
+          const { primaryKey } = await apimClient.subscription.listSecrets(
+            resourceGroupName,
+            serviceName,
+            id
+          );
+
+          return {
+            id,
+            key: primaryKey ?? "",
+            institutionId,
+            displayName,
+            environment,
+            status,
+            createdAt,
+          };
+        }
+      )
+    );
+  } catch (e) {
+    throw new Error("unable to get the API key(s)", { cause: e });
+  }
+}
+
 export async function createApiKey(apiKeyBody: ApiKeyBody) {
   // check if the api key for the given input already exists
-  await getApiKey(apiKeyBody.displayName, apiKeyBody.institutionId);
+  await apiKeyExists(apiKeyBody.institutionId, apiKeyBody.displayName);
   const apiKeyId = ulid();
   const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
   const apiKey = ApiKey({ id: apiKeyId, ...apiKeyBody });

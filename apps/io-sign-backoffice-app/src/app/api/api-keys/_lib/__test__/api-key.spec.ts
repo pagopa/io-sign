@@ -1,5 +1,9 @@
 import { vi, describe, it, expect } from "vitest";
-import { ApiKeyAlreadyExistsError, createApiKey } from "../api-key";
+import {
+  ApiKeyAlreadyExistsError,
+  createApiKey,
+  listApiKeys,
+} from "../api-key";
 
 const apiKeys = [
   {
@@ -25,7 +29,7 @@ const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
         items: {
           query: vi.fn(() => ({
             fetchAll: vi.fn().mockResolvedValue({
-              resources: [],
+              resources: mocks.apiKeys,
             }),
           })),
           create: vi.fn().mockResolvedValue({}),
@@ -49,6 +53,9 @@ const { getApimConfig, getApimClient } = vi.hoisted(() => ({
       createOrUpdate: vi.fn().mockResolvedValue({
         primaryKey: "foo",
       }),
+      listSecrets: vi.fn().mockResolvedValue({
+        primaryKey: "0040820bee855345982b3ee534334b4",
+      }),
     },
   }),
 }));
@@ -63,24 +70,9 @@ vi.mock("@/app/api/api-keys/_lib/apim", () => ({
   getApimClient,
 }));
 
-describe("CreateApiKey endpoint", () => {
+describe("CreateApiKey", () => {
   it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
-    // these institutionId, displayName and environment are already present in the mocked API keys
-    getCosmosClient.mockReturnValueOnce({
-      database: vi.fn().mockReturnValue({
-        container: vi.fn().mockReturnValue({
-          items: {
-            query: vi.fn(() => ({
-              fetchAll: vi.fn().mockResolvedValue({
-                resources: mocks.apiKeys,
-              }),
-            })),
-            create: vi.fn().mockResolvedValue({}),
-          },
-        }),
-      }),
-    });
-
+    // these institutionId, displayName are already present in the mocked API keys
     const bodyRequest = {
       institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
       displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
@@ -93,6 +85,21 @@ describe("CreateApiKey endpoint", () => {
   });
 
   it("should return a object { id, key } on success", async () => {
+    getCosmosClient.mockReturnValueOnce({
+      database: vi.fn().mockReturnValue({
+        container: vi.fn().mockReturnValue({
+          items: {
+            query: vi.fn(() => ({
+              fetchAll: vi.fn().mockResolvedValue({
+                resources: [],
+              }),
+            })),
+            create: vi.fn().mockResolvedValue({}),
+          },
+        }),
+      }),
+    });
+
     const bodyRequest = {
       institutionId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
@@ -103,5 +110,19 @@ describe("CreateApiKey endpoint", () => {
       id: expect.any(String),
       key: expect.any(String),
     });
+  });
+});
+
+describe("GetApiKeys", () => {
+  it("should return API keys list", async () => {
+    const mockedApiKeys = mocks.apiKeys.map((apiKey) => {
+      return { ...apiKey, key: "0040820bee855345982b3ee534334b4" };
+    });
+
+    expect(
+      listApiKeys("institutionId", {
+        environment: "DEFAULT",
+      })
+    ).resolves.toEqual(mockedApiKeys);
   });
 });
