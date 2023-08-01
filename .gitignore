@@ -12,6 +12,7 @@ models
 node_modules
 .turbo
 *.zip
+out/
 
 .pnp.*
 .yarn/*
