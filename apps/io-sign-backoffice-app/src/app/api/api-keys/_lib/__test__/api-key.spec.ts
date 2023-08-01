@@ -70,7 +70,7 @@ vi.mock("@/lib/apim", () => ({
   getApimClient,
 }));
 
-describe("CreateApiKey", () => {
+describe("createApiKey", () => {
   it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
     // these institutionId, displayName are already present in the mocked API keys
     const bodyRequest = {
@@ -113,7 +113,7 @@ describe("CreateApiKey", () => {
   });
 });
 
-describe("GetApiKeys", () => {
+describe("listApiKeys", () => {
   it("should return API keys list", async () => {
     const mockedApiKeys = mocks.apiKeys.map((apiKey) => {
       return { ...apiKey, key: "0040820bee855345982b3ee534334b4" };
