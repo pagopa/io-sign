@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ulid } from "ulid";
-import { getApimClient, getApimConfig } from "./apim";
+
+import { getApimClient, getApimConfig } from "@/lib/apim";
 import { getCosmosClient, getCosmosConfig } from "@/lib/cosmos";
 
 const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);

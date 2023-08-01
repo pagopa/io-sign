@@ -65,7 +65,7 @@ vi.mock("@/lib/cosmos", () => ({
   getCosmosClient,
 }));
 
-vi.mock("@/app/api/api-keys/_lib/apim", () => ({
+vi.mock("@/lib/apim", () => ({
   getApimConfig,
   getApimClient,
 }));

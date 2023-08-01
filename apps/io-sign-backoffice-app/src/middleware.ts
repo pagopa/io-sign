@@ -6,5 +6,5 @@ export default createIntlMiddleware({
 });
 
 export const config = {
-  matcher: ["/((?!auth|api|_next|.*\\..*).*)"],
+  matcher: ["/((?!health|auth|api|_next|.*\\..*).*)"],
 };

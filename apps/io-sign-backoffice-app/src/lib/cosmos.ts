@@ -27,3 +27,15 @@ export const getCosmosConfig = cache(() => {
 export const getCosmosClient = cache(
   () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
 );
+
+export async function getCosmosHealth() {
+  try {
+    const cosmos = getCosmosClient();
+    const { resource } = await cosmos.getDatabaseAccount();
+    if (!resource) {
+      throw new Error();
+    }
+  } catch {
+    throw "cosmos-db";
+  }
+}

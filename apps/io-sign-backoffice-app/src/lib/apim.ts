@@ -36,3 +36,15 @@ export const getApimClient = cache(
       getApimConfig().azure.subscriptionId
     )
 );
+
+export async function getApimHealth() {
+  try {
+    const apim = getApimClient();
+    const {
+      apim: { resourceGroupName, serviceName, productName },
+    } = getApimConfig();
+    await apim.product.get(resourceGroupName, serviceName, productName);
+  } catch {
+    throw "apim";
+  }
+}
