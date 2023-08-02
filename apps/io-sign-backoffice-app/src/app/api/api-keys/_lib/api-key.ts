@@ -9,7 +9,7 @@ const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 type Environment = z.infer<typeof Environment>;
 
 export const ApiKeyBody = z.object({
-  institutionId: z.string().nonempty(),
+  institutionId: z.string().uuid(),
   displayName: z.string().nonempty(),
   environment: Environment,
 });
