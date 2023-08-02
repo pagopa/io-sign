@@ -2,20 +2,22 @@ import { vi, describe, it, expect } from "vitest";
 import {
   ApiKeyAlreadyExistsError,
   createApiKey,
+  getApiKey,
   listApiKeys,
 } from "../api-key";
 
-const apiKeys = [
-  {
-    id: "01H54NWNGVPYFEY03W3XPB9ZDY",
-    institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
-    displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
-    environment: "DEFAULT",
-    status: "ACTIVE",
-    createdAt: new Date(),
-  },
-];
-const mocks = { apiKeys };
+const mocks = vi.hoisted(() => ({
+  apiKeys: [
+    {
+      id: "01H54NWNGVPYFEY03W3XPB9ZDY",
+      institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
+      displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
+      environment: "DEFAULT",
+      status: "ACTIVE",
+      createdAt: new Date(),
+    },
+  ],
+}));
 
 const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
   getCosmosConfig: vi.fn().mockReturnValue({
@@ -34,6 +36,11 @@ const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
           })),
           create: vi.fn().mockResolvedValue({}),
         },
+        item: vi.fn().mockReturnValue({
+          read: vi.fn().mockResolvedValue({
+            resource: mocks.apiKeys[0],
+          }),
+        }),
       }),
     }),
   }),
@@ -119,10 +126,17 @@ describe("listApiKeys", () => {
       return { ...apiKey, key: "0040820bee855345982b3ee534334b4" };
     });
 
-    expect(
-      listApiKeys("institutionId", {
-        environment: "DEFAULT",
-      })
-    ).resolves.toEqual(mockedApiKeys);
+    expect(listApiKeys("institutionId", "DEFAULT")).resolves.toEqual(
+      mockedApiKeys
+    );
+  });
+});
+
+describe("getApiKey", () => {
+  it("should return the API key", async () => {
+    expect(getApiKey("apiKeyId", "institutionId")).resolves.toEqual({
+      ...mocks.apiKeys[0],
+      key: "0040820bee855345982b3ee534334b4",
+    });
   });
 });

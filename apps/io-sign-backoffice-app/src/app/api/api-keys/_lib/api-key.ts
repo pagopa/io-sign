@@ -36,37 +36,6 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function apiKeyExists(institutionId: string, displayName: string) {
-  try {
-    const apiKeys = await getApiKeys(institutionId, { displayName });
-    if (apiKeys.length !== 0) {
-      throw new ApiKeyAlreadyExistsError(
-        "such name already exists for the institution"
-      );
-    }
-  } catch (e) {
-    throw e instanceof ApiKeyAlreadyExistsError
-      ? e
-      : new Error("unable to create the API key", { cause: e });
-  }
-}
-
-async function insertApiKey(apiKey: ApiKey) {
-  try {
-    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-    const cosmosClient = getCosmosClient();
-    await cosmosClient
-      .database(cosmosDbName)
-      .container(cosmosContainerName)
-      .items.create(apiKey);
-  } catch (e) {
-    await deleteApimSubscription(apiKey.id);
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
-}
-
 async function createApimSubscription(resourceId: string, displayName: string) {
   try {
     const {
@@ -114,6 +83,39 @@ async function deleteApimSubscription(subscriptionId: string) {
   }
 }
 
+const getCosmosContainer = () => {
+  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
+  return getCosmosClient()
+    .database(cosmosDbName)
+    .container(cosmosContainerName);
+};
+
+async function apiKeyExists(institutionId: string, displayName: string) {
+  try {
+    const apiKeys = await getApiKeys(institutionId, { displayName });
+    if (apiKeys.length !== 0) {
+      throw new ApiKeyAlreadyExistsError(
+        "such name already exists for the institution"
+      );
+    }
+  } catch (e) {
+    throw e instanceof ApiKeyAlreadyExistsError
+      ? e
+      : new Error("unable to create the API key", { cause: e });
+  }
+}
+
+async function insertApiKey(apiKey: ApiKey) {
+  try {
+    await getCosmosContainer().items.create(apiKey);
+  } catch (e) {
+    await deleteApimSubscription(apiKey.id);
+    throw new Error("unable to create the API key", {
+      cause: e,
+    });
+  }
+}
+
 async function getApiKeys(
   institutionId: string,
   queryFilters?: {
@@ -121,8 +123,6 @@ async function getApiKeys(
     displayName?: string;
   }
 ): Promise<ApiKey[]> {
-  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-  const cosmosClient = getCosmosClient();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
     {
@@ -143,9 +143,7 @@ async function getApiKeys(
     query = query.concat(" AND c.displayName = @displayName");
   }
 
-  const { resources } = await cosmosClient
-    .database(cosmosDbName)
-    .container(cosmosContainerName)
+  const { resources } = await getCosmosContainer()
     .items.query({
       parameters,
       query,
@@ -155,15 +153,35 @@ async function getApiKeys(
   return resources;
 }
 
+export async function getApiKey(
+  id: string,
+  institutionId: string
+): Promise<ApiKey & { key: string }> {
+  try {
+    const { resource } = await getCosmosContainer()
+      .item(id, institutionId)
+      .read();
+    const {
+      apim: { resourceGroupName, serviceName },
+    } = getApimConfig();
+    const apimClient = getApimClient();
+    const { primaryKey } = await apimClient.subscription.listSecrets(
+      resourceGroupName,
+      serviceName,
+      id
+    );
+    return { ...resource, key: primaryKey };
+  } catch (e) {
+    throw new Error("unable to get the API key", { cause: e });
+  }
+}
+
 export async function listApiKeys(
   institutionId: string,
-  queryFilters: {
-    environment?: Environment;
-    displayName?: string;
-  }
+  environment: Environment
 ): Promise<(ApiKey & { key: string })[]> {
   try {
-    const apiKeys = await getApiKeys(institutionId, queryFilters);
+    const apiKeys = await getApiKeys(institutionId, { environment });
     const {
       apim: { resourceGroupName, serviceName },
     } = getApimConfig();
@@ -197,7 +215,7 @@ export async function listApiKeys(
       )
     );
   } catch (e) {
-    throw new Error("unable to get the API key(s)", { cause: e });
+    throw new Error("unable to get the API keys", { cause: e });
   }
 }
 
