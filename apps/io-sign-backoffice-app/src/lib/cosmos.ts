@@ -14,7 +14,7 @@ const Config = z
     cosmosContainerName: env.COSMOS_CONTAINER_NAME,
   }));
 
-const getCosmosConfig = cache(() => {
+export const getCosmosConfig = cache(() => {
   const result = Config.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing cosmos config", {
@@ -28,8 +28,8 @@ const getCosmosClient = cache(
   () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
 );
 
-export const getCosmosContainer = () => {
-  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
+export const getCosmosContainer = (cosmosContainerName: string) => {
+  const { cosmosDbName } = getCosmosConfig();
   return getCosmosClient()
     .database(cosmosDbName)
     .container(cosmosContainerName);

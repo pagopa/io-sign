@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ulid } from "ulid";
 
 import { getApimClient, getApimConfig } from "@/lib/apim";
-import { getCosmosContainer } from "@/lib/cosmos";
+import { getCosmosConfig, getCosmosContainer } from "@/lib/cosmos";
 
 const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 
@@ -100,7 +100,8 @@ async function apiKeyExists(institutionId: string, displayName: string) {
 
 async function insertApiKey(apiKey: ApiKey) {
   try {
-    await getCosmosContainer().items.create(apiKey);
+    const { cosmosContainerName } = getCosmosConfig();
+    await getCosmosContainer(cosmosContainerName).items.create(apiKey);
   } catch (e) {
     await deleteApimSubscription(apiKey.id);
     throw new Error("unable to create the API key", {
@@ -111,11 +112,12 @@ async function insertApiKey(apiKey: ApiKey) {
 
 async function getApiKeys(
   institutionId: string,
-  queryFilters?: {
+  queryFilters: {
     environment?: Environment;
     displayName?: string;
   }
 ): Promise<ApiKey[]> {
+  const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
     {
@@ -124,19 +126,19 @@ async function getApiKeys(
     },
   ];
 
-  if (queryFilters && queryFilters.environment) {
+  if (queryFilters.environment) {
     parameters.push({
       name: "@environment",
       value: queryFilters.environment,
     });
     query = query.concat(" AND c.environment = @environment");
   }
-  if (queryFilters && queryFilters.displayName) {
+  if (queryFilters.displayName) {
     parameters.push({ name: "@displayName", value: queryFilters.displayName });
     query = query.concat(" AND c.displayName = @displayName");
   }
 
-  const { resources } = await getCosmosContainer()
+  const { resources } = await getCosmosContainer(cosmosContainerName)
     .items.query({
       parameters,
       query,
@@ -151,7 +153,8 @@ export async function getApiKey(
   institutionId: string
 ): Promise<ApiKey & { key: string }> {
   try {
-    const { resource } = await getCosmosContainer()
+    const { cosmosContainerName } = getCosmosConfig();
+    const { resource } = await getCosmosContainer(cosmosContainerName)
       .item(id, institutionId)
       .read();
     const {
