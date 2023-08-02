@@ -9,9 +9,9 @@ import {
 const mocks = vi.hoisted(() => ({
   apiKeys: [
     {
-      id: "01H54NWNGVPYFEY03W3XPB9ZDY",
-      institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
-      displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
+      id: "id",
+      institutionId: "institutionId",
+      displayName: "displayName",
       environment: "DEFAULT",
       status: "ACTIVE",
       createdAt: new Date(),

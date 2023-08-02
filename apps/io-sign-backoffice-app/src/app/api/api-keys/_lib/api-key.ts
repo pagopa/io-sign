@@ -175,41 +175,33 @@ export async function getApiKey(
 export async function listApiKeys(
   institutionId: string,
   environment: Environment
-): Promise<(ApiKey & { key: string })[]> {
+) {
   try {
     const apiKeys = await getApiKeys(institutionId, { environment });
     const {
       apim: { resourceGroupName, serviceName },
     } = getApimConfig();
     const apimClient = getApimClient();
-    return Promise.all(
-      apiKeys.map(
-        async ({
-          id,
-          institutionId,
-          displayName,
-          environment,
-          status,
-          createdAt,
-        }) => {
-          const { primaryKey } = await apimClient.subscription.listSecrets(
-            resourceGroupName,
-            serviceName,
-            id
-          );
+    const result: (ApiKey & { key: string })[] = [];
+    for (const apiKey of apiKeys) {
+      const { primaryKey } = await apimClient.subscription.listSecrets(
+        resourceGroupName,
+        serviceName,
+        apiKey.id
+      );
 
-          return {
-            id,
-            key: primaryKey ?? "",
-            institutionId,
-            displayName,
-            environment,
-            status,
-            createdAt,
-          };
-        }
-      )
-    );
+      result.push({
+        id: apiKey.id,
+        key: primaryKey ?? "",
+        institutionId,
+        displayName: apiKey.displayName,
+        environment,
+        status: apiKey.status,
+        createdAt: apiKey.createdAt,
+      });
+    }
+
+    return result;
   } catch (e) {
     throw new Error("unable to get the API keys", { cause: e });
   }
