@@ -19,7 +19,10 @@ const mocks = vi.hoisted(() => ({
   ],
 }));
 
-const { getCosmosContainer } = vi.hoisted(() => ({
+const { getCosmosConfig, getCosmosContainer } = vi.hoisted(() => ({
+  getCosmosConfig: vi.fn().mockReturnValue({
+    cosmosContainerName: "cosmosContainerName",
+  }),
   getCosmosContainer: vi.fn().mockReturnValue({
     items: {
       query: vi.fn(() => ({
@@ -59,6 +62,7 @@ const { getApimConfig, getApimClient } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/cosmos", () => ({
+  getCosmosConfig,
   getCosmosContainer,
 }));
 
