@@ -46,7 +46,7 @@ async function createApimSubscription(id: string, displayName: string) {
     const { primaryKey } = await apimClient.subscription.createOrUpdate(
       resourceGroupName,
       serviceName,
-      resourceId,
+      id,
       {
         displayName,
         scope: `/subscriptions/${subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
