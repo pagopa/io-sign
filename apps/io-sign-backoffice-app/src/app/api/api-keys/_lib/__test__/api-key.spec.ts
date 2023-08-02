@@ -19,28 +19,19 @@ const mocks = vi.hoisted(() => ({
   ],
 }));
 
-const { getCosmosConfig, getCosmosClient } = vi.hoisted(() => ({
-  getCosmosConfig: vi.fn().mockReturnValue({
-    cosmosDbConnectionString: "cosmosDbConnectionString",
-    cosmosDbName: "cosmosDbName",
-    cosmosContainerName: "cosmosContainerName",
-  }),
-  getCosmosClient: vi.fn().mockReturnValue({
-    database: vi.fn().mockReturnValue({
-      container: vi.fn().mockReturnValue({
-        items: {
-          query: vi.fn(() => ({
-            fetchAll: vi.fn().mockResolvedValue({
-              resources: mocks.apiKeys,
-            }),
-          })),
-          create: vi.fn().mockResolvedValue({}),
-        },
-        item: vi.fn().mockReturnValue({
-          read: vi.fn().mockResolvedValue({
-            resource: mocks.apiKeys[0],
-          }),
+const { getCosmosContainer } = vi.hoisted(() => ({
+  getCosmosContainer: vi.fn().mockReturnValue({
+    items: {
+      query: vi.fn(() => ({
+        fetchAll: vi.fn().mockResolvedValue({
+          resources: mocks.apiKeys,
         }),
+      })),
+      create: vi.fn().mockResolvedValue({}),
+    },
+    item: vi.fn().mockReturnValue({
+      read: vi.fn().mockResolvedValue({
+        resource: mocks.apiKeys[0],
       }),
     }),
   }),
@@ -68,8 +59,7 @@ const { getApimConfig, getApimClient } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/cosmos", () => ({
-  getCosmosConfig,
-  getCosmosClient,
+  getCosmosContainer,
 }));
 
 vi.mock("@/lib/apim", () => ({
@@ -92,19 +82,15 @@ describe("createApiKey", () => {
   });
 
   it("should return a object { id, key } on success", async () => {
-    getCosmosClient.mockReturnValueOnce({
-      database: vi.fn().mockReturnValue({
-        container: vi.fn().mockReturnValue({
-          items: {
-            query: vi.fn(() => ({
-              fetchAll: vi.fn().mockResolvedValue({
-                resources: [],
-              }),
-            })),
-            create: vi.fn().mockResolvedValue({}),
-          },
-        }),
-      }),
+    getCosmosContainer.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          fetchAll: vi.fn().mockResolvedValue({
+            resources: [],
+          }),
+        })),
+        create: vi.fn().mockResolvedValue({}),
+      },
     });
 
     const bodyRequest = {

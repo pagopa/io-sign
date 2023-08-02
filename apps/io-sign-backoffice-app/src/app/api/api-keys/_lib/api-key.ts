@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ulid } from "ulid";
 
 import { getApimClient, getApimConfig } from "@/lib/apim";
-import { getCosmosClient, getCosmosConfig } from "@/lib/cosmos";
+import { getCosmosContainer } from "@/lib/cosmos";
 
 const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 
@@ -82,13 +82,6 @@ async function deleteApimSubscription(subscriptionId: string) {
     });
   }
 }
-
-const getCosmosContainer = () => {
-  const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-  return getCosmosClient()
-    .database(cosmosDbName)
-    .container(cosmosContainerName);
-};
 
 async function apiKeyExists(institutionId: string, displayName: string) {
   try {
