@@ -36,7 +36,7 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function createApimSubscription(resourceId: string, displayName: string) {
+async function createApimSubscription(id: string, displayName: string) {
   try {
     const {
       azure: { subscriptionId },
