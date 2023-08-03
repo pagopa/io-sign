@@ -9,12 +9,12 @@ import {
 const mocks = vi.hoisted(() => ({
   apiKeys: [
     {
-      id: "id",
-      institutionId: "institutionId",
+      id: "01GG4NFBCN4ZH8ETCCKX3766KX",
+      institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
       displayName: "displayName",
       environment: "DEFAULT",
       status: "ACTIVE",
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     },
   ],
 }));
@@ -76,7 +76,7 @@ describe("createApiKey", () => {
     // these institutionId, displayName are already present in the mocked API keys
     const bodyRequest = {
       institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
-      displayName: "Comune di Cori - Anagrafe - Lorem Ipsum",
+      displayName: "displayName",
       environment: "DEFAULT" as "DEFAULT",
     };
 

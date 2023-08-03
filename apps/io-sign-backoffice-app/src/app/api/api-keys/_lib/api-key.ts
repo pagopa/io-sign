@@ -16,16 +16,26 @@ export const ApiKeyBody = z.object({
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 
-type ApiKey = ApiKeyBody & {
-  id: string;
-  status: "ACTIVE" | "INACTIVE";
-  createdAt: Date;
-};
+export const ApiKeyWithUnexposedSecret = ApiKeyBody.extend({
+  id: z.string().nonempty(),
+  status: z.enum(["ACTIVE", "INACTIVE"]),
+  createdAt: z.string().datetime(),
+});
 
-const ApiKey = (apiKey: ApiKeyBody & { id: string }): ApiKey => ({
-  ...apiKey,
+type ApiKeyWithUnexposedSecret = z.infer<typeof ApiKeyWithUnexposedSecret>;
+
+const ApiKeyWithExposedSecret = ApiKeyWithUnexposedSecret.extend({
+  key: z.string().nonempty(),
+});
+
+type ApiKeyWithExposedSecret = z.infer<typeof ApiKeyWithExposedSecret>;
+
+const ApiKey = (
+  apiKeyBody: ApiKeyBody & { id: string }
+): ApiKeyWithUnexposedSecret => ({
+  ...apiKeyBody,
   status: "ACTIVE",
-  createdAt: new Date(),
+  createdAt: new Date().toISOString(),
 });
 
 export class ApiKeyAlreadyExistsError extends Error {
@@ -36,78 +46,62 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function createApimSubscription(id: string, displayName: string) {
-  try {
-    const {
-      azure: { subscriptionId },
-      apim: { resourceGroupName, serviceName, productName },
-    } = getApimConfig();
-    const apimClient = getApimClient();
-    const { primaryKey } = await apimClient.subscription.createOrUpdate(
-      resourceGroupName,
-      serviceName,
-      id,
-      {
-        displayName,
-        scope: `/subscriptions/${subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
-      }
-    );
-    if (!primaryKey) {
-      throw new Error("primary key is undefined");
+async function getSecret(id: string): Promise<string | undefined> {
+  const apimClient = getApimClient();
+  const {
+    apim: { resourceGroupName, serviceName },
+  } = getApimConfig();
+  const { primaryKey } = await apimClient.subscription.listSecrets(
+    resourceGroupName,
+    serviceName,
+    id
+  );
+  return primaryKey;
+}
+
+async function exposeSecret(
+  apiKey: ApiKeyWithUnexposedSecret
+): Promise<ApiKeyWithExposedSecret> {
+  const primaryKey = await getSecret(apiKey.id);
+  const key = z.string().parse(primaryKey);
+  return { ...apiKey, key };
+}
+
+async function createApimSubscription(
+  id: string,
+  displayName: string
+): Promise<string> {
+  const {
+    azure: { subscriptionId },
+    apim: { resourceGroupName, serviceName, productName },
+  } = getApimConfig();
+  const apimClient = getApimClient();
+  const { primaryKey } = await apimClient.subscription.createOrUpdate(
+    resourceGroupName,
+    serviceName,
+    id,
+    {
+      displayName,
+      scope: `/subscriptions/${subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
     }
-    return primaryKey;
-  } catch (e) {
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
+  );
+  if (!primaryKey) {
+    throw new Error("primary key is undefined");
   }
+  return primaryKey;
 }
 
-async function deleteApimSubscription(subscriptionId: string) {
-  try {
-    const {
-      apim: { resourceGroupName, serviceName },
-    } = getApimConfig();
-    const apimClient = getApimClient();
-
-    await apimClient.subscription.delete(
-      resourceGroupName,
-      serviceName,
-      subscriptionId,
-      "*"
-    );
-  } catch (e) {
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
-}
-
-async function apiKeyExists(institutionId: string, displayName: string) {
-  try {
-    const apiKeys = await getApiKeys(institutionId, { displayName });
-    if (apiKeys.length !== 0) {
-      throw new ApiKeyAlreadyExistsError(
-        "such name already exists for the institution"
-      );
-    }
-  } catch (e) {
-    throw e instanceof ApiKeyAlreadyExistsError
-      ? e
-      : new Error("unable to create the API key", { cause: e });
-  }
-}
-
-async function insertApiKey(apiKey: ApiKey) {
-  try {
-    const { cosmosContainerName } = getCosmosConfig();
-    await getCosmosContainer(cosmosContainerName).items.create(apiKey);
-  } catch (e) {
-    await deleteApimSubscription(apiKey.id);
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
+async function deleteApimSubscription(subscriptionId: string): Promise<void> {
+  const {
+    apim: { resourceGroupName, serviceName },
+  } = getApimConfig();
+  const apimClient = getApimClient();
+  await apimClient.subscription.delete(
+    resourceGroupName,
+    serviceName,
+    subscriptionId,
+    "*"
+  );
 }
 
 async function getApiKeys(
@@ -116,7 +110,7 @@ async function getApiKeys(
     environment?: Environment;
     displayName?: string;
   }
-): Promise<ApiKey[]> {
+): Promise<ApiKeyWithUnexposedSecret[]> {
   const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
@@ -144,29 +138,34 @@ async function getApiKeys(
       query,
     })
     .fetchAll();
+  const apiKeys = ApiKeyWithUnexposedSecret.array().parse(resources);
+  return apiKeys;
+}
 
-  return resources;
+async function apiKeyExists(
+  institutionId: string,
+  displayName: string
+): Promise<boolean> {
+  const apiKeys = await getApiKeys(institutionId, { displayName });
+  return apiKeys.length !== 0;
+}
+
+async function insertApiKey(apiKey: ApiKeyWithUnexposedSecret): Promise<void> {
+  const { cosmosContainerName } = getCosmosConfig();
+  await getCosmosContainer(cosmosContainerName).items.create(apiKey);
 }
 
 export async function getApiKey(
   id: string,
   institutionId: string
-): Promise<ApiKey & { key: string }> {
+): Promise<ApiKeyWithExposedSecret> {
   try {
     const { cosmosContainerName } = getCosmosConfig();
     const { resource } = await getCosmosContainer(cosmosContainerName)
       .item(id, institutionId)
       .read();
-    const {
-      apim: { resourceGroupName, serviceName },
-    } = getApimConfig();
-    const apimClient = getApimClient();
-    const { primaryKey } = await apimClient.subscription.listSecrets(
-      resourceGroupName,
-      serviceName,
-      id
-    );
-    return { ...resource, key: primaryKey };
+    const apiKey = ApiKeyWithUnexposedSecret.parse(resource);
+    return exposeSecret(apiKey);
   } catch (e) {
     throw new Error("unable to get the API key", { cause: e });
   }
@@ -178,30 +177,7 @@ export async function listApiKeys(
 ) {
   try {
     const apiKeys = await getApiKeys(institutionId, { environment });
-    const {
-      apim: { resourceGroupName, serviceName },
-    } = getApimConfig();
-    const apimClient = getApimClient();
-    const result: (ApiKey & { key: string })[] = [];
-    for (const apiKey of apiKeys) {
-      const { primaryKey } = await apimClient.subscription.listSecrets(
-        resourceGroupName,
-        serviceName,
-        apiKey.id
-      );
-
-      result.push({
-        id: apiKey.id,
-        key: primaryKey ?? "",
-        institutionId,
-        displayName: apiKey.displayName,
-        environment,
-        status: apiKey.status,
-        createdAt: apiKey.createdAt,
-      });
-    }
-
-    return result;
+    return Promise.all(apiKeys.map(exposeSecret));
   } catch (e) {
     throw new Error("unable to get the API keys", { cause: e });
   }
@@ -209,14 +185,80 @@ export async function listApiKeys(
 
 export async function createApiKey(apiKeyBody: ApiKeyBody) {
   // check if the api key for the given input already exists
-  await apiKeyExists(apiKeyBody.institutionId, apiKeyBody.displayName);
-  const apiKeyId = ulid();
-  const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
-  const apiKey = ApiKey({ id: apiKeyId, ...apiKeyBody });
-  await insertApiKey(apiKey);
+  try {
+    const apiKeyAlreadyExists = await apiKeyExists(
+      apiKeyBody.institutionId,
+      apiKeyBody.displayName
+    );
+    if (apiKeyAlreadyExists) {
+      throw new ApiKeyAlreadyExistsError(
+        "such name already exists for the institution"
+      );
+    }
+  } catch (e) {
+    throw e instanceof ApiKeyAlreadyExistsError
+      ? e
+      : new Error("unable to create the API key", { cause: e });
+  }
 
+  const apiKeyId = ulid();
+  let key: string;
+  try {
+    key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
+  } catch (e) {
+    throw new Error("unable to create the API key", { cause: e });
+  }
+  const apiKey = ApiKey({
+    id: apiKeyId,
+    ...apiKeyBody,
+  });
+  try {
+    await insertApiKey(apiKey);
+  } catch (e) {
+    try {
+      await deleteApimSubscription(apiKey.id);
+    } catch (e) {
+      throw new Error("unable to create the API key", { cause: e });
+    }
+    throw new Error("unable to create the API key", { cause: e });
+  }
   return {
     id: apiKeyId,
     key,
   };
+}
+
+export async function createApiKey2(apiKeyBody: ApiKeyBody) {
+  // check if the api key for the given input already exists
+  try {
+    const apiKeyAlreadyExists = await apiKeyExists(
+      apiKeyBody.institutionId,
+      apiKeyBody.displayName
+    );
+    if (apiKeyAlreadyExists) {
+      throw new ApiKeyAlreadyExistsError(
+        "such name already exists for the institution"
+      );
+    }
+    const apiKeyId = ulid();
+    const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
+    const apiKey = ApiKey({
+      id: apiKeyId,
+      ...apiKeyBody,
+    });
+    try {
+      await insertApiKey(apiKey);
+    } catch (e) {
+      await deleteApimSubscription(apiKey.id);
+      throw new Error("unable to create the API key", { cause: e });
+    }
+    return {
+      id: apiKeyId,
+      key,
+    };
+  } catch (e) {
+    throw e instanceof ApiKeyAlreadyExistsError
+      ? e
+      : new Error("unable to create the API key", { cause: e });
+  }
 }
