@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { ulid } from "ulid";
 
-import { getApimClient, getApimConfig } from "@/lib/apim";
-import { getCosmosConfig, getCosmosContainer } from "@/lib/cosmos";
+import { getApimClient } from "@/lib/apim";
+import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 
 const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 
@@ -46,21 +46,8 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function getSecret(id: string): Promise<string | undefined> {
-  const apimClient = getApimClient();
-  const {
-    apim: { resourceGroupName, serviceName },
-  } = getApimConfig();
-  const { primaryKey } = await apimClient.subscription.listSecrets(
-    resourceGroupName,
-    serviceName,
-    id
-  );
-  return primaryKey;
-}
-
 async function exposeSecret(apiKey: ApiKey): Promise<ApiKeyWithExposedSecret> {
-  const primaryKey = await getSecret(apiKey.id);
+  const primaryKey = await getApimClient().getSecret(apiKey.id);
   const key = z.string().parse(primaryKey);
   return { ...apiKey, key };
 }
@@ -69,37 +56,11 @@ async function createApimSubscription(
   id: string,
   displayName: string
 ): Promise<string> {
-  const {
-    azure: { subscriptionId },
-    apim: { resourceGroupName, serviceName, productName },
-  } = getApimConfig();
-  const apimClient = getApimClient();
-  const { primaryKey } = await apimClient.subscription.createOrUpdate(
-    resourceGroupName,
-    serviceName,
-    id,
-    {
-      displayName,
-      scope: `/subscriptions/${subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
-    }
-  );
+  const primaryKey = await getApimClient().createSubscription(id, displayName);
   if (!primaryKey) {
     throw new Error("primary key is undefined");
   }
   return primaryKey;
-}
-
-async function deleteApimSubscription(subscriptionId: string): Promise<void> {
-  const {
-    apim: { resourceGroupName, serviceName },
-  } = getApimConfig();
-  const apimClient = getApimClient();
-  await apimClient.subscription.delete(
-    resourceGroupName,
-    serviceName,
-    subscriptionId,
-    "*"
-  );
 }
 
 async function getApiKeys(
@@ -130,7 +91,7 @@ async function getApiKeys(
     query = query.concat(" AND c.displayName = @displayName");
   }
 
-  const { resources } = await getCosmosContainer(cosmosContainerName)
+  const { resources } = await getCosmosContainerClient(cosmosContainerName)
     .items.query({
       parameters,
       query,
@@ -150,7 +111,7 @@ async function apiKeyExists(
 
 async function insertApiKey(apiKey: ApiKey): Promise<void> {
   const { cosmosContainerName } = getCosmosConfig();
-  await getCosmosContainer(cosmosContainerName).items.create(apiKey);
+  await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
 }
 
 export async function getApiKey(
@@ -159,7 +120,7 @@ export async function getApiKey(
 ): Promise<ApiKeyWithExposedSecret> {
   try {
     const { cosmosContainerName } = getCosmosConfig();
-    const { resource } = await getCosmosContainer(cosmosContainerName)
+    const { resource } = await getCosmosContainerClient(cosmosContainerName)
       .item(id, institutionId)
       .read();
     const apiKey = ApiKey.parse(resource);
@@ -202,7 +163,7 @@ export async function createApiKey(apiKeyBody: ApiKeyBody) {
     try {
       await insertApiKey(apiKey);
     } catch (e) {
-      await deleteApimSubscription(apiKey.id);
+      await getApimClient().deleteSubscription(apiKey.id);
       throw new Error("unable to create the API key", { cause: e });
     }
     return {
