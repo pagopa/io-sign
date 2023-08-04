@@ -16,23 +16,23 @@ export const ApiKeyBody = z.object({
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 
-export const ApiKeyWithUnexposedSecret = ApiKeyBody.extend({
+export const ApiKey = ApiKeyBody.extend({
   id: z.string().nonempty(),
   status: z.enum(["ACTIVE", "INACTIVE"]),
   createdAt: z.string().datetime(),
 });
 
-type ApiKeyWithUnexposedSecret = z.infer<typeof ApiKeyWithUnexposedSecret>;
+type ApiKey = z.infer<typeof ApiKey>;
 
-const ApiKeyWithExposedSecret = ApiKeyWithUnexposedSecret.extend({
+const ApiKeyWithExposedSecret = ApiKey.extend({
   key: z.string().nonempty(),
 });
 
 type ApiKeyWithExposedSecret = z.infer<typeof ApiKeyWithExposedSecret>;
 
-const ApiKey = (
+const ApiKeyWithUnexposedSecret = (
   apiKeyBody: ApiKeyBody & { id: string }
-): ApiKeyWithUnexposedSecret => ({
+): ApiKey => ({
   ...apiKeyBody,
   status: "ACTIVE",
   createdAt: new Date().toISOString(),
@@ -59,9 +59,7 @@ async function getSecret(id: string): Promise<string | undefined> {
   return primaryKey;
 }
 
-async function exposeSecret(
-  apiKey: ApiKeyWithUnexposedSecret
-): Promise<ApiKeyWithExposedSecret> {
+async function exposeSecret(apiKey: ApiKey): Promise<ApiKeyWithExposedSecret> {
   const primaryKey = await getSecret(apiKey.id);
   const key = z.string().parse(primaryKey);
   return { ...apiKey, key };
@@ -110,7 +108,7 @@ async function getApiKeys(
     environment?: Environment;
     displayName?: string;
   }
-): Promise<ApiKeyWithUnexposedSecret[]> {
+): Promise<ApiKey[]> {
   const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
@@ -138,7 +136,7 @@ async function getApiKeys(
       query,
     })
     .fetchAll();
-  const apiKeys = ApiKeyWithUnexposedSecret.array().parse(resources);
+  const apiKeys = ApiKey.array().parse(resources);
   return apiKeys;
 }
 
@@ -150,7 +148,7 @@ async function apiKeyExists(
   return apiKeys.length !== 0;
 }
 
-async function insertApiKey(apiKey: ApiKeyWithUnexposedSecret): Promise<void> {
+async function insertApiKey(apiKey: ApiKey): Promise<void> {
   const { cosmosContainerName } = getCosmosConfig();
   await getCosmosContainer(cosmosContainerName).items.create(apiKey);
 }
@@ -164,7 +162,7 @@ export async function getApiKey(
     const { resource } = await getCosmosContainer(cosmosContainerName)
       .item(id, institutionId)
       .read();
-    const apiKey = ApiKeyWithUnexposedSecret.parse(resource);
+    const apiKey = ApiKey.parse(resource);
     return exposeSecret(apiKey);
   } catch (e) {
     throw new Error("unable to get the API key", { cause: e });
@@ -195,54 +193,9 @@ export async function createApiKey(apiKeyBody: ApiKeyBody) {
         "such name already exists for the institution"
       );
     }
-  } catch (e) {
-    throw e instanceof ApiKeyAlreadyExistsError
-      ? e
-      : new Error("unable to create the API key", { cause: e });
-  }
-
-  const apiKeyId = ulid();
-  let key: string;
-  try {
-    key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
-  } catch (e) {
-    throw new Error("unable to create the API key", { cause: e });
-  }
-  const apiKey = ApiKey({
-    id: apiKeyId,
-    ...apiKeyBody,
-  });
-  try {
-    await insertApiKey(apiKey);
-  } catch (e) {
-    try {
-      await deleteApimSubscription(apiKey.id);
-    } catch (e) {
-      throw new Error("unable to create the API key", { cause: e });
-    }
-    throw new Error("unable to create the API key", { cause: e });
-  }
-  return {
-    id: apiKeyId,
-    key,
-  };
-}
-
-export async function createApiKey2(apiKeyBody: ApiKeyBody) {
-  // check if the api key for the given input already exists
-  try {
-    const apiKeyAlreadyExists = await apiKeyExists(
-      apiKeyBody.institutionId,
-      apiKeyBody.displayName
-    );
-    if (apiKeyAlreadyExists) {
-      throw new ApiKeyAlreadyExistsError(
-        "such name already exists for the institution"
-      );
-    }
     const apiKeyId = ulid();
     const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
-    const apiKey = ApiKey({
+    const apiKey = ApiKeyWithUnexposedSecret({
       id: apiKeyId,
       ...apiKeyBody,
     });
