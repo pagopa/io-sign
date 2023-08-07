@@ -3,6 +3,7 @@ import { ulid } from "ulid";
 
 import { getApimClient } from "@/lib/apim";
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
+import { FeedResponse } from "@azure/cosmos";
 
 const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
 
@@ -63,13 +64,13 @@ async function createApimSubscription(
   return primaryKey;
 }
 
-async function getApiKeys(
+function getApiKeys(
   institutionId: string,
   queryFilters: {
     environment?: Environment;
     displayName?: string;
   }
-): Promise<ApiKey[]> {
+): AsyncIterable<FeedResponse<ApiKey>> {
   const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
@@ -91,22 +92,24 @@ async function getApiKeys(
     query = query.concat(" AND c.displayName = @displayName");
   }
 
-  const { resources } = await getCosmosContainerClient(cosmosContainerName)
+  return getCosmosContainerClient(cosmosContainerName)
     .items.query({
       parameters,
       query,
     })
-    .fetchAll();
-  const apiKeys = ApiKey.array().parse(resources);
-  return apiKeys;
+    .getAsyncIterator();
 }
 
 async function apiKeyExists(
   institutionId: string,
   displayName: string
 ): Promise<boolean> {
-  const apiKeys = await getApiKeys(institutionId, { displayName });
-  return apiKeys.length !== 0;
+  const apiKeys = getApiKeys(institutionId, { displayName });
+  let exists = false;
+  for await (const { resources } of apiKeys) {
+    exists = resources.length === 0 ? false : true;
+  }
+  return exists;
 }
 
 async function insertApiKey(apiKey: ApiKey): Promise<void> {
@@ -130,21 +133,23 @@ export async function getApiKey(
   }
 }
 
-export async function listApiKeys(
+export async function* listApiKeys(
   institutionId: string,
   environment: Environment
 ) {
   try {
-    const apiKeys = await getApiKeys(institutionId, { environment });
-    return Promise.all(apiKeys.map(exposeSecret));
+    const apiKeys = getApiKeys(institutionId, { environment });
+    for await (const { resources } of apiKeys) {
+      yield Promise.all(ApiKey.array().parse(resources).map(exposeSecret));
+    }
   } catch (e) {
     throw new Error("unable to get the API keys", { cause: e });
   }
 }
 
 export async function createApiKey(apiKeyBody: ApiKeyBody) {
-  // check if the api key for the given input already exists
   try {
+    // check if the api key for the given input already exists
     const apiKeyAlreadyExists = await apiKeyExists(
       apiKeyBody.institutionId,
       apiKeyBody.displayName

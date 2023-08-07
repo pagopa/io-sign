@@ -25,11 +25,7 @@ const { getCosmosConfig, getCosmosContainerClient } = vi.hoisted(() => ({
   }),
   getCosmosContainerClient: vi.fn().mockReturnValue({
     items: {
-      query: vi.fn(() => ({
-        fetchAll: vi.fn().mockResolvedValue({
-          resources: mocks.apiKeys,
-        }),
-      })),
+      query: vi.fn().mockResolvedValue({}),
       create: vi.fn().mockResolvedValue({}),
     },
     item: vi.fn().mockReturnValue({
@@ -58,15 +54,31 @@ vi.mock("@/lib/apim", () => ({
   getApimClient,
 }));
 
-describe.skip("createApiKey", () => {
+describe("createApiKey", () => {
   it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
+    const mockResponse = [...mocks.apiKeys];
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: mockResponse.length === 0,
+                value: { resources: [mockResponse.shift()] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
     // these institutionId, displayName are already present in the mocked API keys
     const bodyRequest = {
       institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
       displayName: "displayName",
       environment: "DEFAULT" as "DEFAULT",
     };
-
     expect(createApiKey(bodyRequest)).rejects.toThrowError(
       ApiKeyAlreadyExistsError
     );
@@ -76,8 +88,12 @@ describe.skip("createApiKey", () => {
     getCosmosContainerClient.mockReturnValueOnce({
       items: {
         query: vi.fn(() => ({
-          fetchAll: vi.fn().mockResolvedValue({
-            resources: [],
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: true,
+              }),
+            }),
           }),
         })),
         create: vi.fn().mockResolvedValue({}),
@@ -89,7 +105,6 @@ describe.skip("createApiKey", () => {
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
       environment: "TEST" as "TEST",
     };
-
     expect(createApiKey(bodyRequest)).resolves.toEqual({
       id: expect.any(String),
       key: expect.any(String),
@@ -99,13 +114,34 @@ describe.skip("createApiKey", () => {
 
 describe("listApiKeys", () => {
   it("should return API keys list", async () => {
-    const mockedApiKeys = mocks.apiKeys.map((apiKey) => {
-      return { ...apiKey, key: "0040820bee855345982b3ee534334b4" };
+    const mockResponse = [...mocks.apiKeys];
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: mockResponse.length === 0,
+                value: { resources: [mockResponse.shift()] },
+              }),
+            }),
+          }),
+        })),
+      },
     });
 
-    expect(listApiKeys("institutionId", "DEFAULT")).resolves.toEqual(
-      mockedApiKeys
-    );
+    const mockedApiKey = [
+      {
+        ...mocks.apiKeys[0],
+        key: "0040820bee855345982b3ee534334b4",
+      },
+    ];
+
+    expect(listApiKeys("institutionId", "DEFAULT").next()).resolves.toEqual({
+      value: mockedApiKey,
+      done: false,
+    });
   });
 });
 
