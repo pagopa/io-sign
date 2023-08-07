@@ -112,11 +112,8 @@ async function apiKeyExists(
   displayName: string
 ): Promise<boolean> {
   const apiKeys = getApiKeys(institutionId, { displayName });
-  let exists = false;
-  for await (const _apiKey of apiKeys) {
-    exists = true;
-  }
-  return exists;
+  const item = await apiKeys.next();
+  return !item.done;
 }
 
 async function insertApiKey(apiKey: ApiKey): Promise<void> {
