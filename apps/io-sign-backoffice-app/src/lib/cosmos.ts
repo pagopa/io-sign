@@ -24,9 +24,16 @@ export const getCosmosConfig = cache(() => {
   return result.data;
 });
 
-export const getCosmosClient = cache(
+const getCosmosClient = cache(
   () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
 );
+
+export const getCosmosContainerClient = (cosmosContainerName: string) => {
+  const { cosmosDbName } = getCosmosConfig();
+  return getCosmosClient()
+    .database(cosmosDbName)
+    .container(cosmosContainerName);
+};
 
 export async function getCosmosHealth() {
   try {
