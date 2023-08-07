@@ -64,13 +64,13 @@ async function createApimSubscription(
   return primaryKey;
 }
 
-function getApiKeys(
+async function* getApiKeys(
   institutionId: string,
   queryFilters: {
     environment?: Environment;
     displayName?: string;
   }
-): AsyncIterable<FeedResponse<ApiKey>> {
+) {
   const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
@@ -92,12 +92,19 @@ function getApiKeys(
     query = query.concat(" AND c.displayName = @displayName");
   }
 
-  return getCosmosContainerClient(cosmosContainerName)
-    .items.query({
-      parameters,
-      query,
-    })
-    .getAsyncIterator();
+  const cosmosResponse: AsyncIterable<FeedResponse<ApiKey>> =
+    getCosmosContainerClient(cosmosContainerName)
+      .items.query({
+        parameters,
+        query,
+      })
+      .getAsyncIterator();
+
+  for await (const { resources } of cosmosResponse) {
+    for (const resource of resources) {
+      yield ApiKey.parse(resource);
+    }
+  }
 }
 
 async function apiKeyExists(
@@ -106,8 +113,8 @@ async function apiKeyExists(
 ): Promise<boolean> {
   const apiKeys = getApiKeys(institutionId, { displayName });
   let exists = false;
-  for await (const { resources } of apiKeys) {
-    exists = resources.length === 0 ? false : true;
+  for await (const _apiKey of apiKeys) {
+    exists = true;
   }
   return exists;
 }
@@ -139,8 +146,8 @@ export async function* listApiKeys(
 ) {
   try {
     const apiKeys = getApiKeys(institutionId, { environment });
-    for await (const { resources } of apiKeys) {
-      yield Promise.all(ApiKey.array().parse(resources).map(exposeSecret));
+    for await (const apiKey of apiKeys) {
+      yield exposeSecret(apiKey);
     }
   } catch (e) {
     throw new Error("unable to get the API keys", { cause: e });

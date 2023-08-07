@@ -131,12 +131,10 @@ describe("listApiKeys", () => {
       },
     });
 
-    const mockedApiKey = [
-      {
-        ...mocks.apiKeys[0],
-        key: "0040820bee855345982b3ee534334b4",
-      },
-    ];
+    const mockedApiKey = {
+      ...mocks.apiKeys[0],
+      key: "0040820bee855345982b3ee534334b4",
+    };
 
     expect(listApiKeys("institutionId", "DEFAULT").next()).resolves.toEqual({
       value: mockedApiKey,
