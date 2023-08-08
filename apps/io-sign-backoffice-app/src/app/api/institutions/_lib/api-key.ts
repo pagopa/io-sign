@@ -5,8 +5,6 @@ import { fiscalCodeRegex } from "./fiscal-code";
 
 const Path = z.enum(["/test_fiscal_codes", "/cidrs"]);
 
-type Path = z.infer<typeof Path>;
-
 const AddPatchBody = z.object({
   op: z.literal("add"),
   path: Path,
@@ -20,7 +18,10 @@ const RemovePatchBody = z.object({
 
 type AddPatchBody = z.infer<typeof AddPatchBody>;
 
-export const parseValue = (path: Path, value: AddPatchBody["value"]) => {
+export const parseValue = (
+  path: AddPatchBody["path"],
+  value: AddPatchBody["value"]
+) => {
   if (path === "/test_fiscal_codes") {
     z.string().regex(fiscalCodeRegex).array().parse(value);
   } else if (path === "/cidrs") {
