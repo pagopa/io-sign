@@ -55,7 +55,7 @@ vi.mock("@/lib/apim", () => ({
 }));
 
 describe("createApiKey", () => {
-  it("should throw a ApiKeyAlreadyExistsError on input body conflict", async () => {
+  it("should throw a ApiKeyAlreadyExistsError on input body conflict", () => {
     const mockResponse = [...mocks.apiKeys];
 
     getCosmosContainerClient.mockReturnValueOnce({
@@ -84,7 +84,7 @@ describe("createApiKey", () => {
     );
   });
 
-  it("should return a object { id, key } on success", async () => {
+  it("should return a object { id, key } on success", () => {
     getCosmosContainerClient.mockReturnValueOnce({
       items: {
         query: vi.fn(() => ({
@@ -113,7 +113,7 @@ describe("createApiKey", () => {
 });
 
 describe("listApiKeys", () => {
-  it("should return API keys list", async () => {
+  it("should return API keys list", () => {
     const mockResponse = [...mocks.apiKeys];
 
     getCosmosContainerClient.mockReturnValueOnce({
@@ -144,7 +144,7 @@ describe("listApiKeys", () => {
 });
 
 describe("getApiKey", () => {
-  it("should return the API key", async () => {
+  it("should return the API key", () => {
     expect(getApiKey("apiKeyId", "institutionId")).resolves.toEqual({
       ...mocks.apiKeys[0],
       key: "0040820bee855345982b3ee534334b4",
