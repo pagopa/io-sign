@@ -1,7 +1,7 @@
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 import { z } from "zod";
-import { ipAddressRegex } from "./ip-address";
 import { fiscalCodeRegex } from "./fiscal-code";
+import { Cidr } from "./ip-address";
 
 const Path = z.enum(["/test_fiscal_codes", "/cidrs"]);
 
@@ -25,7 +25,7 @@ export const parseValue = (
   if (path === "/test_fiscal_codes") {
     z.string().regex(fiscalCodeRegex).array().parse(value);
   } else if (path === "/cidrs") {
-    z.string().regex(ipAddressRegex).array().parse(value);
+    Cidr.array().parse(value);
   }
 };
 
