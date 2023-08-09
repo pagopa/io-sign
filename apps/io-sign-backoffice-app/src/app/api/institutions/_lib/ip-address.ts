@@ -1,7 +1,7 @@
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 import { z } from "zod";
 
-export const Cidr = z.custom<"cidr">((val) => {
+export const Cidr = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
