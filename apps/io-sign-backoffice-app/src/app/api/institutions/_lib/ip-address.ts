@@ -1,23 +1,24 @@
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 import { z } from "zod";
 
-export const Cidr = z.custom<string>((val) => {
+export const CIDR = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
   const [ip, subnet] = val.split("/");
-  try {
-    z.string().ip({ version: "v4" }).parse(ip);
-    z.enum(["8", "16", "24", "32"]).parse(subnet);
-    return true;
-  } catch {
-    return false;
-  }
-}, "Invalid cidr value");
+  const checks = [
+    z.string().ip({ version: "v4" }).safeParse(ip),
+    z.enum(["8", "16", "24", "32"]).safeParse(subnet),
+  ]
+    .map((result) => result.success)
+    .every(Boolean);
+
+  return checks;
+}, "Invalid CIDR value");
 
 const IpAddresses = z
   .object({
-    cidrs: Cidr.array().optional(),
+    cidrs: CIDR.array().optional(),
   })
   .transform((res) => ({ cidrs: res.cidrs || [] }));
 
