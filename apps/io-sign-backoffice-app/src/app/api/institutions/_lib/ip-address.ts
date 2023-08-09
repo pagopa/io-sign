@@ -16,7 +16,7 @@ export const CIDR = z.custom<string>((val) => {
   return checks;
 }, "Invalid CIDR value");
 
-const IpAddresses = z
+const CidrsFromCosmosDb = z
   .object({
     cidrs: CIDR.array().optional(),
   })
@@ -28,7 +28,7 @@ export async function listIpAddresses(apiKeyId: string, institutionId: string) {
     const { resource } = await getCosmosContainerClient(cosmosContainerName)
       .item(apiKeyId, institutionId)
       .read();
-    return IpAddresses.parse(resource);
+    return CidrsFromCosmosDb.parse(resource);
   } catch (e) {
     throw new Error("unable to get the IP addresses", { cause: e });
   }
