@@ -26,11 +26,7 @@ export const ipAddressRegex = new RegExp(`(?:^${v4}$)|(?:^${v6}$)`);
 
 const IpAddresses = z
   .object({
-    cidrs: z
-      .string()
-      .regex(new RegExp(`(?:^${v4}$)|(?:^${v6}$)`))
-      .array()
-      .optional(),
+    cidrs: z.string().regex(ipAddressRegex).array().optional(),
   })
   .transform((res) => ({ cidrs: res.cidrs || [] }));
 
