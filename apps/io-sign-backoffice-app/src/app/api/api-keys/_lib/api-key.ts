@@ -5,14 +5,10 @@ import { getApimClient } from "@/lib/apim";
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
-const Environment = z.enum(["TEST", "DEFAULT", "INTERNAL"]);
-
-type Environment = z.infer<typeof Environment>;
-
 export const ApiKeyBody = z.object({
   institutionId: z.string().uuid(),
   displayName: z.string().nonempty(),
-  environment: Environment,
+  environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
 });
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
