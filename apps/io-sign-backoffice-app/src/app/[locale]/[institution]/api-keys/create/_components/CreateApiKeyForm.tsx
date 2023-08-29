@@ -4,19 +4,14 @@ import { useForm, FormProvider } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { z } from "zod";
 import { Institution } from "@/lib/selfcare/api";
 
 import { kebabCase } from "lodash";
 import { useEffect } from "react";
 
-const FormFields = z.object({
-  environment: z.union([z.literal("test"), z.literal("prod")]),
-  displayName: z.string().min(3).max(20),
-  cidrs: z.array(z.string()),
-});
+import { ApiKey, apiKeySchema } from "@/lib/api-key";
 
-export type FormFields = z.infer<typeof FormFields>;
+export type FormFields = ApiKey;
 
 export default function CreateApiKeyForm({
   children,
@@ -29,9 +24,11 @@ export default function CreateApiKeyForm({
     defaultValues: {
       environment: "test",
       displayName: "",
-      cidrs: [] as string[],
+      cidrs: [],
+      testers: [],
+      institutionId: institution.id,
     },
-    resolver: zodResolver(FormFields),
+    resolver: zodResolver(apiKeySchema),
   });
 
   const environment = methods.watch("environment", "test");

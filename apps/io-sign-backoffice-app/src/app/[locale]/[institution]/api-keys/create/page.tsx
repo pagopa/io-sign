@@ -17,6 +17,7 @@ import { pick } from "lodash";
 import CreateApiKeyForm from "./_components/CreateApiKeyForm";
 import ApiKeyDetailSection from "./_components/ApiKeyDetailSection";
 import ApiKeyNetworkSection from "./_components/ApiKeyNetworkSection";
+import ApiKeyTestersSection from "./_components/ApiKeyTestersSection";
 
 import NextLink from "next/link";
 import { Suspense } from "react";
@@ -96,6 +97,7 @@ export default function CreateApiKeyPage({
           <Stack spacing={5}>
             <ApiKeyDetailSection documentationUrl={documentationUrl} />
             <ApiKeyNetworkSection />
+            <ApiKeyTestersSection />
             <Stack direction="row" justifyContent="space-between">
               <Button
                 variant="outlined"

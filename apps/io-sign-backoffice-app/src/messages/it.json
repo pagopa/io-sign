@@ -38,7 +38,19 @@
         },
         "network": {
           "title": "Indirizzi IP",
-          "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito."
+          "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito.",
+          "list": {
+            "addItemButtonLabel": "Aggiungi indirizzo IP",
+            "inputLabel": "Inserisci indirizzo IP"
+          }
+        },
+        "testers": {
+          "title": "Codici fiscali",
+          "description": "Aggiungi uno o più codici fiscali. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
+          "list": {
+            "addItemButtonLabel": "Aggiungi codice fiscale",
+            "inputLabel": "Inserisci codice fiscale"
+          }
         }
       }
     },

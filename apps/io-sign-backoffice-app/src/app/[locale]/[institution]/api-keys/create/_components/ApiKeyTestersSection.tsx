@@ -7,15 +7,15 @@ import { Stack, Typography } from "@mui/material";
 
 import EditableList from "@/components/EditableList";
 
-import { cidrSchema } from "@/lib/api-key";
+import { fiscalCodeSchema } from "@/lib/api-key";
 
 import { FormFields } from "./CreateApiKeyForm";
 
 export default function ApiKeyNetworkSection() {
-  const t = useTranslations("firmaconio.createApiKey.form.network");
+  const t = useTranslations("firmaconio.createApiKey.form.testers");
   const { setValue } = useFormContext<FormFields>();
   const onEditableListChange = (items: string[]) => {
-    setValue("cidrs", items);
+    setValue("testers", items);
   };
   return (
     <Stack p={3} spacing={3} bgcolor="background.paper">
@@ -25,7 +25,7 @@ export default function ApiKeyNetworkSection() {
         name="cidrs"
         render={({ field }) => (
           <EditableList
-            schema={cidrSchema}
+            schema={fiscalCodeSchema}
             value={field.value}
             onChange={onEditableListChange}
             addItemButtonLabel={t("list.addItemButtonLabel")}

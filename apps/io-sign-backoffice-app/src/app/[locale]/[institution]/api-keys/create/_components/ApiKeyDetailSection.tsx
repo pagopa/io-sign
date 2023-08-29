@@ -14,7 +14,10 @@ export default function ApiKeyDetailSection({
 }: {
   documentationUrl: string;
 }) {
-  const { control } = useFormContext<FormFields>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<FormFields>();
 
   const t = useTranslations("firmaconio.createApiKey.form.details");
   return (
@@ -65,6 +68,8 @@ export default function ApiKeyDetailSection({
             rules={{ required: true }}
             render={({ field }) => (
               <TextField
+                error={errors.displayName ? true : false}
+                helperText={errors.displayName?.message}
                 sx={{ width: "30ch" }}
                 size="small"
                 label="Inserisci un nome*"
