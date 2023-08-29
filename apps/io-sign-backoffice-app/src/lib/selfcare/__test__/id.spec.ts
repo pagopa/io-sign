@@ -1,6 +1,6 @@
 import { describe, vi, it, expect } from "vitest";
 
-import { verifySelfCareIdToken } from "../self-care";
+import * as SelfCareIdentity from "../id";
 
 const { jwtVerify, createRemoteJWKSet } = vi.hoisted(() => ({
   jwtVerify: vi.fn(
@@ -34,9 +34,9 @@ vi.stubEnv(
 vi.stubEnv("AUTH_SELFCARE_JWT_ISSUER", "test-issuer");
 vi.stubEnv("AUTH_SELFCARE_JWT_AUDIENCE", "test-audience");
 
-describe("verifySelfCareIdToken", () => {
+describe("verify", () => {
   it("verifies the id token using the right config", async () => {
-    await verifySelfCareIdToken("myidtok");
+    await SelfCareIdentity.verify("myidtok");
     expect(createRemoteJWKSet).toHaveBeenCalledWith(
       expect.objectContaining({
         href: process.env.AUTH_SELFCARE_JWK_SET_URL,
@@ -52,7 +52,7 @@ describe("verifySelfCareIdToken", () => {
       payload: {},
     }));
     await expect(() =>
-      verifySelfCareIdToken("invalid-id-token")
+      SelfCareIdentity.verify("invalid-id-token")
     ).rejects.toThrowError();
   });
 });

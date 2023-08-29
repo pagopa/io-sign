@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { redirect } from "next/navigation";
-import { authenticate } from "@/app/auth/_lib/user";
+
+import { authenticate } from "@/lib/auth/user";
 
 export async function GET(
   request: NextRequest,

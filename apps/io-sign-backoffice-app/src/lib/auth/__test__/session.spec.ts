@@ -6,7 +6,7 @@ import {
   createSessionCookie,
   destroySessionCookie,
   getPayloadFromSessionCookie,
-} from "../session";
+} from "@/lib/auth/session";
 
 vi.stubEnv("AUTH_SESSION_SECRET", "_TEST_");
 

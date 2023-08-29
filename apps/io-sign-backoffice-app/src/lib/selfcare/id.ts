@@ -1,21 +1,21 @@
-import { createRemoteJWKSet, jwtVerify } from "jose";
 import { z } from "zod";
 import { cache } from "react";
+import * as jose from "jose";
 
-const Config = z
+const ConfigFromEnvironment = z
   .object({
     AUTH_SELFCARE_JWK_SET_URL: z.string().url(),
     AUTH_SELFCARE_JWT_ISSUER: z.string().nonempty(),
     AUTH_SELFCARE_JWT_AUDIENCE: z.string().nonempty(),
   })
   .transform((e) => ({
-    jwks: new URL(e.AUTH_SELFCARE_JWK_SET_URL),
+    remoteJWKSetUrl: new URL(e.AUTH_SELFCARE_JWK_SET_URL),
     audience: e.AUTH_SELFCARE_JWT_AUDIENCE,
     issuer: e.AUTH_SELFCARE_JWT_ISSUER,
   }));
 
-const getConfig = cache(() => {
-  const result = Config.safeParse(process.env);
+const getConfigFromEnvironment = cache(() => {
+  const result = ConfigFromEnvironment.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing auth.self-care config", {
       cause: result.error.issues,
@@ -42,17 +42,17 @@ const Claims = z.object({
 
 type Claims = z.infer<typeof Claims>;
 
-export async function verifySelfCareIdToken(idToken: string): Promise<Claims> {
+export async function verify(jwt: string): Promise<Claims> {
+  const config = getConfigFromEnvironment();
   try {
-    const config = getConfig();
-    const jwks = createRemoteJWKSet(config.jwks);
-    const result = await jwtVerify(idToken, jwks, {
-      issuer: config.issuer,
+    const jwks = jose.createRemoteJWKSet(config.remoteJWKSetUrl);
+    const { payload } = await jose.jwtVerify(jwt, jwks, {
       audience: config.audience,
+      issuer: config.issuer,
     });
-    return Claims.parse(result.payload);
+    return Claims.parse(payload);
   } catch (e) {
-    throw new Error("the provided id token is not valid", {
+    throw new Error("unable to verify the provided id token", {
       cause: e,
     });
   }

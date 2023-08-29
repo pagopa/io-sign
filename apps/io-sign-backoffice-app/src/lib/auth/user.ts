@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { verifySelfCareIdToken } from "./self-care";
+import * as SelfCareIdentity from "@/lib/selfcare/id";
 import { getPayloadFromSessionCookie, createSessionCookie } from "./session";
 
 export const User = z.object({
@@ -29,7 +29,7 @@ export let authenticate = async (idToken: string) => {
     name: firstName,
     family_name: lastName,
     organization: { id: institutionId },
-  } = await verifySelfCareIdToken(idToken);
+  } = await SelfCareIdentity.verify(idToken);
   const user = {
     id,
     email,
