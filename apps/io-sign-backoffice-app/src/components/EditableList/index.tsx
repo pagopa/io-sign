@@ -6,6 +6,7 @@ import { Stack, Box, Button } from "@mui/material";
 
 import EditableListForm from "./EditableListForm";
 import EditableListItem from "./EditableListItem";
+import EditItemModal from "./EditItemModal";
 
 import { z } from "zod";
 
