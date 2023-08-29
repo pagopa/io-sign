@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { DefaultAzureCredential } from "@azure/identity";
-import { ApiManagementClient } from "@azure/arm-apimanagement";
 import { cache } from "react";
 
 const Config = z
