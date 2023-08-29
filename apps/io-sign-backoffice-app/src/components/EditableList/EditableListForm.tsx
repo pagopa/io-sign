@@ -1,12 +1,9 @@
 "use client";
 
-import { z } from "zod";
 import { Button, Stack, TextField } from "@mui/material";
-import { useEditableListForm } from "./hooks";
+import { useEditableListForm, Options } from "./hooks";
 
-export type Props = {
-  schema: z.ZodSchema<string>;
-  onConfirm: (item: string) => void;
+export type Props = Options & {
   inputLabel: string;
 };
 
@@ -15,13 +12,18 @@ export default function EditableListForm({
   onConfirm,
   inputLabel,
 }: Props) {
-  const { error, onChange, onClick } = useEditableListForm(schema, onConfirm);
+  const { input, error, onChange, onClick } = useEditableListForm({
+    schema,
+    onConfirm,
+  });
   return (
     <Stack direction="row" spacing={2}>
       <TextField
+        autoComplete="off"
         size="small"
         label={inputLabel}
         onChange={onChange}
+        value={input}
         error={error ? true : false}
         helperText={error?.message}
       />

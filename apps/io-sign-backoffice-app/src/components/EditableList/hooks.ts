@@ -1,11 +1,18 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { z } from "zod";
 
-export function useEditableListForm(
-  schema: z.ZodSchema<string>,
-  onConfirm: (item: string) => void
-) {
-  const [input, setInput] = useState("");
+export type Options = {
+  schema: z.ZodSchema<string>;
+  onConfirm: (item: string) => void;
+  initialValue?: string;
+};
+
+export function useEditableListForm({
+  initialValue = "",
+  schema,
+  onConfirm,
+}: Options) {
+  const [input, setInput] = useState(initialValue);
 
   const [error, setError] = useState<{ message: string } | undefined>(
     undefined
@@ -42,5 +49,5 @@ export function useEditableListForm(
     }
   }, [input]);
 
-  return { error, onClick, onChange };
+  return { input, error, onClick, onChange };
 }

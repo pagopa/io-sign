@@ -30,23 +30,52 @@ export default function EditableList({
   const [items, setItems] = useState(value);
   const [showForm, setShowForm] = useState(false);
 
+  const [selectedItemIndex, selectItem] = useState(-1);
+
   useEffect(() => {
     onChange(items);
   }, [items]);
 
-  const onConfirm = (item: string) => {
+  const addItem = (item: string) => {
     setItems((items) => [...items, item]);
     setShowForm(false);
   };
 
-  const onAddItemButtonClick = () => setShowForm(true);
+  const editItem = (item: string) => {
+    setItems((items) => {
+      const updated = items.map((el, i) =>
+        i === selectedItemIndex ? item : el
+      );
+      return updated;
+    });
+    selectItem(-1);
+  };
+
+  const deleteItem = (index: number) => () => {
+    setItems((items) => items.filter((_, i) => i !== index));
+  };
+
+  const onEdit = (index: number) => () => {
+    selectItem(index);
+  };
+
+  const onClose = () => {
+    selectItem(-1);
+  };
+
+  const onClick = () => setShowForm(true);
 
   return (
     <Stack spacing={3}>
       {items.length > 0 && (
         <Stack spacing={2}>
-          {items.map((item) => (
-            <EditableListItem key={item} value={item} />
+          {items.map((item, index) => (
+            <EditableListItem
+              key={item}
+              value={item}
+              onEdit={onEdit(index)}
+              onDelete={deleteItem(index)}
+            />
           ))}
         </Stack>
       )}
@@ -54,7 +83,19 @@ export default function EditableList({
         <EditableListForm
           schema={schema}
           inputLabel={inputLabel}
-          onConfirm={onConfirm}
+          onConfirm={addItem}
+        />
+      )}
+      {selectedItemIndex > -1 && (
+        <EditItemModal
+          open={selectedItemIndex > -1}
+          title="ciao"
+          description="mondo"
+          inputLabel={inputLabel}
+          schema={schema}
+          initialValue={items[selectedItemIndex]}
+          onConfirm={editItem}
+          onClose={onClose}
         />
       )}
       <Box>
@@ -63,7 +104,7 @@ export default function EditableList({
           fullWidth={false}
           variant="contained"
           startIcon={<Add />}
-          onClick={onAddItemButtonClick}
+          onClick={onClick}
           disabled={showForm}
         >
           {addItemButtonLabel}

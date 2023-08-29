@@ -17,12 +17,16 @@ export default function EditableListItem({ value, onEdit, onDelete }: Props) {
       </Typography>
       <Stack direction="row" spacing={1}>
         {onEdit && (
-          <IconButton size="small" color="primary">
+          <IconButton size="small" color="primary" onClick={onEdit}>
             <Edit fontSize="inherit" />
           </IconButton>
         )}
         {onDelete && (
-          <IconButton size="small" sx={{ color: "error.main" }}>
+          <IconButton
+            size="small"
+            sx={{ color: "error.main" }}
+            onClick={onDelete}
+          >
             <Delete fontSize="inherit" />
           </IconButton>
         )}
