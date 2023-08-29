@@ -44,20 +44,8 @@ export class ApiKeyAlreadyExistsError extends Error {
 }
 
 async function exposeSecret(apiKey: ApiKey): Promise<ApiKeyWithExposedSecret> {
-  const primaryKey = await getApimClient().getSecret(apiKey.id);
-  const key = z.string().parse(primaryKey);
+  const key = await getApimClient().getSecret(apiKey.id);
   return { ...apiKey, key };
-}
-
-async function createApimSubscription(
-  id: string,
-  displayName: string
-): Promise<string> {
-  const primaryKey = await getApimClient().createSubscription(id, displayName);
-  if (!primaryKey) {
-    throw new Error("primary key is undefined");
-  }
-  return primaryKey;
 }
 
 async function* getApiKeys(institutionId: string, displayName?: string) {
@@ -144,7 +132,10 @@ export async function createApiKey(apiKeyBody: ApiKeyBody) {
       );
     }
     const apiKeyId = ulid();
-    const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
+    const key = await getApimClient().createSubscription(
+      apiKeyId,
+      apiKeyBody.displayName
+    );
     const apiKey = ApiKeyWithUnexposedSecret({
       id: apiKeyId,
       ...apiKeyBody,

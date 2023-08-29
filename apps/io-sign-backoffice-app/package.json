@@ -11,9 +11,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@azure/arm-apimanagement": "^9.0.0",
     "@azure/cosmos": "^3.17.3",
-    "@azure/identity": "^3.2.3",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
     "@mui/icons-material": "5.11.0",

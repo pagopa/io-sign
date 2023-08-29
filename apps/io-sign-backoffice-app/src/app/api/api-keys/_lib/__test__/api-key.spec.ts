@@ -136,7 +136,7 @@ describe("listApiKeys", () => {
       key: "0040820bee855345982b3ee534334b4",
     };
 
-    expect(listApiKeys("institutionId", "DEFAULT").next()).resolves.toEqual({
+    expect(listApiKeys("institutionId").next()).resolves.toEqual({
       value: mockedApiKey,
       done: false,
     });
