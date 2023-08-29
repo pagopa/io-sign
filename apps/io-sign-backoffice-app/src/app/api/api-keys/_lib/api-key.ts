@@ -1,27 +1,38 @@
 import { z } from "zod";
 import { ulid } from "ulid";
 
-import { getApimClient, getApimConfig } from "@/lib/apim";
-import { getCosmosClient, getCosmosConfig } from "@/lib/cosmos";
+import { getApimClient } from "@/lib/apim";
+import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
+import { FeedResponse } from "@azure/cosmos";
 
 export const ApiKeyBody = z.object({
-  institutionId: z.string().nonempty(),
+  institutionId: z.string().uuid(),
   displayName: z.string().nonempty(),
   environment: z.enum(["TEST", "DEFAULT", "INTERNAL"]),
 });
 
 type ApiKeyBody = z.infer<typeof ApiKeyBody>;
 
-type ApiKey = ApiKeyBody & {
-  id: string;
-  status: "ACTIVE" | "INACTIVE";
-  createdAt: Date;
-};
+export const ApiKey = ApiKeyBody.extend({
+  id: z.string().nonempty(),
+  status: z.enum(["ACTIVE", "INACTIVE"]),
+  createdAt: z.string().datetime(),
+});
 
-const ApiKey = (apiKey: ApiKeyBody & { id: string }): ApiKey => ({
-  ...apiKey,
+type ApiKey = z.infer<typeof ApiKey>;
+
+const ApiKeyWithExposedSecret = ApiKey.extend({
+  key: z.string().nonempty(),
+});
+
+type ApiKeyWithExposedSecret = z.infer<typeof ApiKeyWithExposedSecret>;
+
+const ApiKeyWithUnexposedSecret = (
+  apiKeyBody: ApiKeyBody & { id: string }
+): ApiKey => ({
+  ...apiKeyBody,
   status: "ACTIVE",
-  createdAt: new Date(),
+  createdAt: new Date().toISOString(),
 });
 
 export class ApiKeyAlreadyExistsError extends Error {
@@ -32,108 +43,125 @@ export class ApiKeyAlreadyExistsError extends Error {
   }
 }
 
-async function getApiKey(displayName: string, institutionId: string) {
-  try {
-    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-    const cosmosClient = getCosmosClient();
-    const { resources } = await cosmosClient
-      .database(cosmosDbName)
-      .container(cosmosContainerName)
+async function exposeSecret(apiKey: ApiKey): Promise<ApiKeyWithExposedSecret> {
+  const primaryKey = await getApimClient().getSecret(apiKey.id);
+  const key = z.string().parse(primaryKey);
+  return { ...apiKey, key };
+}
+
+async function createApimSubscription(
+  id: string,
+  displayName: string
+): Promise<string> {
+  const primaryKey = await getApimClient().createSubscription(id, displayName);
+  if (!primaryKey) {
+    throw new Error("primary key is undefined");
+  }
+  return primaryKey;
+}
+
+async function* getApiKeys(institutionId: string, displayName?: string) {
+  const { cosmosContainerName } = getCosmosConfig();
+  let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
+  const parameters = [
+    {
+      name: "@institutionId",
+      value: institutionId,
+    },
+  ];
+
+  if (displayName) {
+    parameters.push({ name: "@displayName", value: displayName });
+    query = query.concat(" AND c.displayName = @displayName");
+  }
+
+  const cosmosResponse: AsyncIterable<FeedResponse<ApiKey>> =
+    getCosmosContainerClient(cosmosContainerName)
       .items.query({
-        parameters: [
-          {
-            name: "@displayName",
-            value: displayName,
-          },
-          {
-            name: "@institutionId",
-            value: institutionId,
-          },
-        ],
-        query:
-          "SELECT * FROM c WHERE c.displayName = @displayName AND c.institutionId = @institutionId",
+        parameters,
+        query,
       })
-      .fetchAll();
-    if (resources.length !== 0) {
-      throw new ApiKeyAlreadyExistsError();
+      .getAsyncIterator();
+
+  for await (const { resources } of cosmosResponse) {
+    for (const resource of resources) {
+      yield ApiKey.parse(resource);
     }
+  }
+}
+
+async function apiKeyExists(
+  institutionId: string,
+  displayName: string
+): Promise<boolean> {
+  const apiKeys = getApiKeys(institutionId, displayName);
+  const item = await apiKeys.next();
+  return !item.done;
+}
+
+async function insertApiKey(apiKey: ApiKey): Promise<void> {
+  const { cosmosContainerName } = getCosmosConfig();
+  await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
+}
+
+export async function getApiKey(
+  id: string,
+  institutionId: string
+): Promise<ApiKeyWithExposedSecret> {
+  try {
+    const { cosmosContainerName } = getCosmosConfig();
+    const { resource } = await getCosmosContainerClient(cosmosContainerName)
+      .item(id, institutionId)
+      .read();
+    const apiKey = ApiKey.parse(resource);
+    return exposeSecret(apiKey);
+  } catch (e) {
+    throw new Error("unable to get the API key", { cause: e });
+  }
+}
+
+export async function* listApiKeys(institutionId: string) {
+  try {
+    const apiKeys = getApiKeys(institutionId);
+    for await (const apiKey of apiKeys) {
+      yield exposeSecret(apiKey);
+    }
+  } catch (e) {
+    throw new Error("unable to get the API keys", { cause: e });
+  }
+}
+
+export async function createApiKey(apiKeyBody: ApiKeyBody) {
+  try {
+    // check if the api key for the given input already exists
+    const apiKeyAlreadyExists = await apiKeyExists(
+      apiKeyBody.institutionId,
+      apiKeyBody.displayName
+    );
+    if (apiKeyAlreadyExists) {
+      throw new ApiKeyAlreadyExistsError(
+        "such name already exists for the institution"
+      );
+    }
+    const apiKeyId = ulid();
+    const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
+    const apiKey = ApiKeyWithUnexposedSecret({
+      id: apiKeyId,
+      ...apiKeyBody,
+    });
+    try {
+      await insertApiKey(apiKey);
+    } catch (e) {
+      await getApimClient().deleteSubscription(apiKey.id);
+      throw new Error("unable to create the API key", { cause: e });
+    }
+    return {
+      id: apiKeyId,
+      key,
+    };
   } catch (e) {
     throw e instanceof ApiKeyAlreadyExistsError
       ? e
       : new Error("unable to create the API key", { cause: e });
   }
-}
-
-async function insertApiKey(apiKey: ApiKey) {
-  try {
-    const { cosmosDbName, cosmosContainerName } = getCosmosConfig();
-    const cosmosClient = getCosmosClient();
-    await cosmosClient
-      .database(cosmosDbName)
-      .container(cosmosContainerName)
-      .items.create(apiKey);
-  } catch (e) {
-    await deleteApimSubscription(apiKey.id);
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
-}
-
-async function createApimSubscription(resourceId: string, displayName: string) {
-  try {
-    const { azure, apim } = getApimConfig();
-    const { resourceGroupName, serviceName, productName } = apim;
-    const apimClient = getApimClient();
-    const { primaryKey } = await apimClient.subscription.createOrUpdate(
-      resourceGroupName,
-      serviceName,
-      resourceId,
-      {
-        displayName,
-        scope: `/subscriptions/${azure.subscriptionId}/resourceGroups/${productName}/providers/Microsoft.ApiManagement/service/${serviceName}/products/${productName}`,
-      }
-    );
-    if (!primaryKey) {
-      throw new Error("primary key is undefined");
-    }
-    return primaryKey;
-  } catch (e) {
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
-}
-
-async function deleteApimSubscription(subscriptionId: string) {
-  try {
-    const { apim } = getApimConfig();
-    const { resourceGroupName, serviceName } = apim;
-    const apimClient = getApimClient();
-
-    await apimClient.subscription.delete(
-      resourceGroupName,
-      serviceName,
-      subscriptionId,
-      "*"
-    );
-  } catch (e) {
-    throw new Error("unable to create the API key", {
-      cause: e,
-    });
-  }
-}
-
-export async function createApiKey(apiKeyBody: ApiKeyBody) {
-  // check if the api key for the given input already exists
-  await getApiKey(apiKeyBody.displayName, apiKeyBody.institutionId);
-  const apiKeyId = ulid();
-  const key = await createApimSubscription(apiKeyId, apiKeyBody.displayName);
-  const apiKey = ApiKey({ id: apiKeyId, ...apiKeyBody });
-  await insertApiKey(apiKey);
-
-  return {
-    id: apiKeyId,
-    key,
-  };
 }
