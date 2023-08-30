@@ -33,10 +33,13 @@ const bodySchema = z
   .min(1)
   .max(1);
 
-export async function PATCH(request: NextRequest, params: Params) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Params }
+) {
   try {
     pathSchema.parse(params);
-  } catch {
+  } catch (e) {
     return NextResponse.json(
       {
         title: "Bad request",

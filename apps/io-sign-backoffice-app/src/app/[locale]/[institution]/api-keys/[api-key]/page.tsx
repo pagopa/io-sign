@@ -13,9 +13,10 @@ import ApiKeySummary from "./_components/ApiKeySummary";
 import NetworkSettings from "./_components/NetworkSettings";
 import TestersSettings from "./_components/TestersSettings";
 
-import { ApiKeyWithSecret } from "@/lib/api-keys";
+import { ApiKeyWithSecret, getApiKeyWithSecret } from "@/lib/api-keys";
 
 import { pick } from "lodash";
+import { use } from "react";
 
 export default function ApiKeyDetailPage({
   params,
@@ -23,6 +24,10 @@ export default function ApiKeyDetailPage({
   params: { institution: string; ["api-key"]: string };
 }) {
   const t = useTranslations("firmaconio");
+
+  let apiKey: ApiKeyWithSecret = use(
+    getApiKeyWithSecret(params["api-key"], params["institution"])
+  );
 
   const locale = useLocale();
   const messages = useMessages();
@@ -38,28 +43,14 @@ export default function ApiKeyDetailPage({
     "firmaconio.apiKey.testers",
   ]);
 
-  const displayName = params["api-key"];
-
-  const apiKey: ApiKeyWithSecret = {
-    displayName,
-    institutionId: params.institution,
-    environment: "prod",
-    status: "active",
-    cidrs: ["10.10.10.10/24"],
-    testers: ["CVLLCU95L14C351Q"],
-    createdAt: new Date(),
-    secret: "ciao",
-    id: "ciao",
-  };
-
   const apiKeysHref = `/${params.institution}/api-keys`;
 
   const headerProps: PageHeaderProps = {
-    title: displayName,
+    title: apiKey.displayName,
     navigation: {
       hierarchy: [
         { icon: VpnKey, label: t("apiKeys.title"), href: apiKeysHref },
-        { label: displayName },
+        { label: apiKey.displayName },
       ],
       startButton: { label: "Indietro", href: apiKeysHref },
     },
@@ -74,12 +65,7 @@ export default function ApiKeyDetailPage({
           cidrs={apiKey.cidrs}
           disabled={apiKey.status === "revoked"}
         />
-        {apiKey.environment === "test" && (
-          <TestersSettings
-            fiscalCodes={apiKey.testers}
-            disabled={apiKey.status === "revoked"}
-          />
-        )}
+        {apiKey.environment === "test" && <TestersSettings apiKey={apiKey} />}
       </NextIntlClientProvider>
     </Stack>
   );

@@ -41,7 +41,7 @@ export const apiKeySchema = z.object({
   cidrs: z.array(cidrSchema).default([]),
   testers: z.array(fiscalCodeSchema).default([]),
   status: z.union([z.literal("active"), z.literal("revoked")]),
-  createdAt: z.date(),
+  createdAt: z.string().pipe(z.coerce.date()),
 });
 
 export type ApiKey = z.infer<typeof apiKeySchema>;
@@ -127,6 +127,7 @@ export async function getApiKeyWithSecret(
     const apiKey = await getApiKey(id, institutionId);
     return exposeApiKeySecret(apiKey);
   } catch (e) {
+    console.log(e);
     throw new Error("unable to get the API Key", { cause: e });
   }
 }

@@ -9,27 +9,43 @@ import { useTranslations } from "next-intl";
 
 import FiscalCodeListInput from "@/components/FiscalCodeListInput";
 import { Props as EditableListProps } from "@/components/EditableList";
+import { ApiKey } from "@/lib/api-keys";
 
 type Props = {
-  fiscalCodes: Array<string>;
-  disabled?: boolean;
+  apiKey: ApiKey;
 };
 
 export default function TestersSettings({
-  fiscalCodes,
-  disabled = false,
+  apiKey: { id, institutionId, testers, status },
 }: Props) {
   const t = useTranslations("firmaconio.apiKey.testers");
 
-  const [value, setValue] = useState(fiscalCodes);
+  const [value, setValue] = useState(testers);
 
   const editModal: EditableListProps["editModal"] = {
     title: t("modals.editFiscalCodes.title"),
     description: t("apiKey.testers.editModal.description"),
   };
 
-  const onChange = (fiscalCodes: string[]) => {
-    console.log(fiscalCodes);
+  const onChange = async (fiscalCodes: string[]) => {
+    const response = await fetch(
+      `/api/institutions/${institutionId}/api-keys/${id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify([
+          {
+            op: "replace",
+            path: "/testers",
+            value: fiscalCodes,
+          },
+        ]),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const json = await response.json();
+    console.log(json);
   };
 
   return (
@@ -45,7 +61,7 @@ export default function TestersSettings({
         value={value}
         editModal={editModal}
         onChange={onChange}
-        disabled={disabled}
+        disabled={status === "revoked"}
       />
     </Stack>
   );

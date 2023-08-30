@@ -31,7 +31,7 @@ function ApiKeyMetadataCard({ apiKey }: Props) {
           {t("creationDate")}
         </Typography>
         <Typography variant="body2" fontWeight={600}>
-          {new Date().toUTCString()}
+          {apiKey.createdAt.toLocaleDateString()}
         </Typography>
       </Stack>
       <Stack direction="row" alignItems="center">
