@@ -37,10 +37,10 @@ export const apiKeySchema = z.object({
   id: z.string().ulid(),
   institutionId: z.string().uuid(),
   displayName: z.string().min(3).max(40),
-  environment: z.union([z.literal("test"), z.literal("prod")]),
+  environment: z.enum(["test", "prod"]),
   cidrs: z.array(cidrSchema).default([]),
   testers: z.array(fiscalCodeSchema).default([]),
-  status: z.union([z.literal("active"), z.literal("revoked")]),
+  status: z.enum(["active", "revoked"]),
   createdAt: z.string().pipe(z.coerce.date()),
 });
 
