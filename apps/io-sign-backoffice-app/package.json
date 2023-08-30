@@ -17,7 +17,7 @@
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.1",
     "@mui/icons-material": "^5.14.3",
-    "@mui/lab": "^5.0.0-alpha.140",
+    "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.5",
     "@mui/system": "^5.14.5",
     "@pagopa/mui-italia": "^1.0.1",

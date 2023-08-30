@@ -61,7 +61,7 @@ function InstitutionCard() {
   const t = useTranslations("firmaconio.overview.cards.institution");
   const entries = [
     {
-      label: t("email.label"),
+      label: t("supportEmail.label"),
       value: "assistenza@genola.cn.it",
     },
   ];

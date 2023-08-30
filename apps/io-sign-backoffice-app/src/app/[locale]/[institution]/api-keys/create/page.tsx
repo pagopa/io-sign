@@ -18,6 +18,7 @@ import CreateApiKeyForm from "./_components/CreateApiKeyForm";
 import ApiKeyDetailSection from "./_components/ApiKeyDetailSection";
 import ApiKeyNetworkSection from "./_components/ApiKeyNetworkSection";
 import ApiKeyTestersSection from "./_components/ApiKeyTestersSection";
+import FormActions from "./_components/FormActions";
 
 import NextLink from "next/link";
 import { Suspense } from "react";
@@ -55,6 +56,8 @@ function LocalizedCreateApiKeyForm({
   }
 
   const createApiKeyFormMessages = pick(messages, [
+    "firmaconio.apiKey.network",
+    "firmaconio.apiKey.testers",
     "firmaconio.createApiKey.form",
     "firmaconio.modals",
   ]);
@@ -96,18 +99,7 @@ export default function CreateApiKeyPage({
             <ApiKeyDetailSection documentationUrl={documentationUrl} />
             <ApiKeyNetworkSection />
             <ApiKeyTestersSection />
-            <Stack direction="row" justifyContent="space-between">
-              <Button
-                variant="outlined"
-                href={parent.href}
-                LinkComponent={NextLink}
-              >
-                Indietro
-              </Button>
-              <Button type="submit" variant="contained">
-                Continua
-              </Button>
-            </Stack>
+            <FormActions parent={parent} />
           </Stack>
         </LocalizedCreateApiKeyForm>
       </Suspense>

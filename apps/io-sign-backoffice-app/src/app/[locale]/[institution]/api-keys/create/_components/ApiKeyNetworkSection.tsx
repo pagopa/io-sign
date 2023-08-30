@@ -3,11 +3,9 @@
 import { useTranslations } from "next-intl";
 import { useFormContext, Controller } from "react-hook-form";
 
-import { Stack, Typography, TextField } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
-import EditableList from "@/components/EditableList";
-
-import { cidrSchema } from "@/lib/api-key";
+import IpAddressListInput from "@/components/IpAddressListInput";
 
 import { FormFields } from "./CreateApiKeyForm";
 
@@ -31,13 +29,9 @@ export default function ApiKeyNetworkSection() {
       <Controller
         name="cidrs"
         render={({ field }) => (
-          <EditableList
-            schema={cidrSchema}
+          <IpAddressListInput
             value={field.value}
             onChange={onEditableListChange}
-            addItemButtonLabel={t("createApiKey.form.network.list.button")}
-            inputLabel={t("createApiKey.form.network.list.inputLabel")}
-            editModal={{ title: t("modals.editIpAddress.title") }}
           />
         )}
       />

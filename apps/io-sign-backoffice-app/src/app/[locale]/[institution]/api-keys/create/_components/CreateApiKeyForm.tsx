@@ -9,9 +9,9 @@ import { Institution } from "@/lib/selfcare/api";
 import { kebabCase } from "lodash";
 import { useEffect } from "react";
 
-import { ApiKey, apiKeySchema } from "@/lib/api-key";
+import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
 
-export type FormFields = ApiKey;
+export type FormFields = CreateApiKeyPayload;
 
 export default function CreateApiKeyForm({
   children,
@@ -28,7 +28,7 @@ export default function CreateApiKeyForm({
       testers: [],
       institutionId: institution.id,
     },
-    resolver: zodResolver(apiKeySchema),
+    resolver: zodResolver(createApiKeyPayloadSchema),
   });
 
   const environment = methods.watch("environment", "test");
@@ -41,7 +41,17 @@ export default function CreateApiKeyForm({
     );
   }, [institution.name, environment]);
 
-  const onSubmit = (data: {}) => console.log(data);
+  const onSubmit = async (data: FormFields) => {
+    const response = await fetch("/api/api-keys", {
+      method: "POST",
+      body: JSON.stringify({ ...data, environment: "TEST" }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await response.json();
+    console.log(json);
+  };
 
   return (
     <FormProvider {...methods}>

@@ -1,10 +1,11 @@
 import { vi, describe, it, expect } from "vitest";
+
 import {
   ApiKeyAlreadyExistsError,
   createApiKey,
-  getApiKey,
+  getApiKeyWithSecret,
   listApiKeys,
-} from "../api-key";
+} from "@/lib/api-keys";
 
 const mocks = vi.hoisted(() => ({
   apiKeys: [
@@ -77,7 +78,9 @@ describe("createApiKey", () => {
     const bodyRequest = {
       institutionId: "a0e07d4a-9792-4af3-8175-889aead727b8",
       displayName: "displayName",
-      environment: "DEFAULT" as "DEFAULT",
+      environment: "prod" as const,
+      cidrs: [],
+      testers: [],
     };
     expect(createApiKey(bodyRequest)).rejects.toThrowError(
       ApiKeyAlreadyExistsError
@@ -103,7 +106,9 @@ describe("createApiKey", () => {
     const bodyRequest = {
       institutionId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
       displayName: "POLIBA - Dipartimento di Informatica (TEST)",
-      environment: "TEST" as "TEST",
+      environment: "test" as const,
+      cidrs: [],
+      testers: [],
     };
     expect(createApiKey(bodyRequest)).resolves.toEqual({
       id: expect.any(String),
@@ -145,7 +150,7 @@ describe("listApiKeys", () => {
 
 describe("getApiKey", () => {
   it("should return the API key", () => {
-    expect(getApiKey("apiKeyId", "institutionId")).resolves.toEqual({
+    expect(getApiKeyWithSecret("apiKeyId", "institutionId")).resolves.toEqual({
       ...mocks.apiKeys[0],
       key: "0040820bee855345982b3ee534334b4",
     });

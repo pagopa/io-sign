@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+/*import { NextRequest, NextResponse } from "next/server";
 
 import { ZodError } from "zod";
-import { PatchBody, parseValue, patchApiKey } from "../../../_lib/api-key";
+
 
 const parseBody = (body: unknown): PatchBody => {
   const parsedBody = PatchBody.parse(body);
@@ -48,4 +48,4 @@ export async function POST(
       { status: 500, headers: { "Content-Type": "application/problem+json" } }
     );
   }
-}
+}*/

@@ -22,6 +22,7 @@ export type Props = {
     title: string;
     description?: string;
   };
+  disabled?: boolean;
 };
 
 export default function EditableList({
@@ -31,6 +32,7 @@ export default function EditableList({
   inputLabel,
   addItemButtonLabel,
   editModal,
+  disabled = false,
 }: Props) {
   const [items, setItems] = useState(value);
   const [showForm, setShowForm] = useState(false);
@@ -80,6 +82,7 @@ export default function EditableList({
               value={item}
               onEdit={onEdit(index)}
               onDelete={deleteItem(index)}
+              disabled={disabled}
             />
           ))}
         </Stack>
@@ -110,7 +113,7 @@ export default function EditableList({
           variant="contained"
           startIcon={<Add />}
           onClick={onClick}
-          disabled={showForm}
+          disabled={disabled || showForm}
         >
           {addItemButtonLabel}
         </Button>

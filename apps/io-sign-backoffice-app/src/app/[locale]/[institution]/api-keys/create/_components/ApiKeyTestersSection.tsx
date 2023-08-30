@@ -5,9 +5,7 @@ import { useFormContext, Controller } from "react-hook-form";
 
 import { Stack, Typography } from "@mui/material";
 
-import EditableList from "@/components/EditableList";
-
-import { fiscalCodeSchema } from "@/lib/api-key";
+import FiscalCodeListInput from "@/components/FiscalCodeListInput";
 
 import { FormFields } from "./CreateApiKeyForm";
 
@@ -28,13 +26,9 @@ export default function ApiKeyNetworkSection() {
       <Controller
         name="cidrs"
         render={({ field }) => (
-          <EditableList
-            schema={fiscalCodeSchema}
+          <FiscalCodeListInput
             value={field.value}
             onChange={onEditableListChange}
-            addItemButtonLabel={t("createApiKey.form.testers.list.button")}
-            inputLabel={t("createApiKey.form.testers.list.inputLabel")}
-            editModal={{ title: t("modals.editFiscalCode.title") }}
           />
         )}
       />

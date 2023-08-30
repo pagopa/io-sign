@@ -1,12 +1,46 @@
 {
   "firmaconio": {
+    "apiKey": {
+      "creationDate": "Data creazione",
+      "environment": "Ambiente",
+      "environments": {
+        "prod": "Produzione",
+        "test": "Test"
+      },
+      "network": {
+        "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito.",
+        "list": {
+          "button": "Aggiungi indirizzo IP",
+          "inputLabel": "Inserisci indirizzo IP"
+        },
+        "title": "Indirizzi IP"
+      },
+      "secret": {
+        "copyButton": "Copia il codice",
+        "revokeButton": "Revoca",
+        "title": "API Key"
+      },
+      "status": "Stato",
+      "statuses": {
+        "active": "Attiva",
+        "revoked": "Revocata"
+      },
+      "testers": {
+        "description": "Aggiungi uno o più codici fiscali. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
+        "list": {
+          "button": "Aggiungi codice fiscale",
+          "inputLabel": "Inserisci codice fiscale"
+        },
+        "title": "Codici fiscali"
+      }
+    },
     "apiKeys": {
       "description": "Qui puoi generare e gestire le API Key da utilizzare.",
       "title": "API Key"
     },
     "createApiKey": {
-      "alert": "Attualmente è possibile generare API Key solo per eseguire i test. Se hai bisogno di una chiave di produzione, scrivi a <email>{l3SupportEmail}</email>",
-      "description": "Abbiamo generato il codice della API Key. Inserisci un nome identificativo se vuoi sostituire quello impostato in automatico. Associa poi gli indirizzi IP e i codici fiscali.",
+      "alert": "Ad ora è possibile generare API Key solo per l’ambiente di test. Se il tuo ente è pronto a passare in produzione, contattaci a <email>{l3SupportEmail}</email>",
+      "description": "Seleziona l’ambiente in cui vuoi creare una API Key. Inserisci un nome identificativo se vuoi sostituire quello impostato in automatico. Associa poi gli indirizzi IP e i codici fiscali.",
       "exitButton": {
         "label": "Esci"
       },
@@ -28,18 +62,10 @@
         },
         "network": {
           "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito.",
-          "list": {
-            "button": "Aggiungi indirizzo IP",
-            "inputLabel": "Inserisci indirizzo IP"
-          },
           "title": "Indirizzi IP"
         },
         "testers": {
           "description": "Aggiungi uno o più codici fiscali. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
-          "list": {
-            "button": "Aggiungi codice fiscale",
-            "inputLabel": "Inserisci codice fiscale"
-          },
           "title": "Codici fiscali"
         }
       },
@@ -64,13 +90,13 @@
       "cards": {
         "institution": {
           "cta": "Modifica",
-          "supportemail": {
+          "supportEmail": {
             "label": "Email di assistenza per i cittadini"
           },
           "title": "Informazioni"
         },
         "support": {
-          "description": "Usa uno dei contatti a seconda delle fasi in cui si trova il tuo ente",
+          "description": "Usa uno dei contatti a seconda della fase in cui si trova il tuo ente",
           "environments": {
             "prod": {
               "label": "Fase di produzione"
