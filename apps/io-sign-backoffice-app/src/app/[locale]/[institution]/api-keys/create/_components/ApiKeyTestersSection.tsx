@@ -12,15 +12,19 @@ import { fiscalCodeSchema } from "@/lib/api-key";
 import { FormFields } from "./CreateApiKeyForm";
 
 export default function ApiKeyNetworkSection() {
-  const t = useTranslations("firmaconio.createApiKey.form.testers");
+  const t = useTranslations("firmaconio");
   const { setValue } = useFormContext<FormFields>();
   const onEditableListChange = (items: string[]) => {
     setValue("testers", items);
   };
   return (
     <Stack p={3} spacing={3} bgcolor="background.paper">
-      <Typography variant="h6">{t("title")}</Typography>
-      <Typography variant="body1">{t("description")}</Typography>
+      <Typography variant="h6">
+        {t("createApiKey.form.testers.title")}
+      </Typography>
+      <Typography variant="body1">
+        {t("createApiKey.form.testers.description")}
+      </Typography>
       <Controller
         name="cidrs"
         render={({ field }) => (
@@ -28,8 +32,9 @@ export default function ApiKeyNetworkSection() {
             schema={fiscalCodeSchema}
             value={field.value}
             onChange={onEditableListChange}
-            addItemButtonLabel={t("list.addItemButtonLabel")}
-            inputLabel={t("list.inputLabel")}
+            addItemButtonLabel={t("createApiKey.form.testers.list.button")}
+            inputLabel={t("createApiKey.form.testers.list.inputLabel")}
+            editModal={{ title: t("modals.editFiscalCode.title") }}
           />
         )}
       />

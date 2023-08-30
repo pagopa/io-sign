@@ -54,10 +54,10 @@ function LocalizedCreateApiKeyForm({
     throw new Error("unable to fetch localized messages");
   }
 
-  const createApiKeyFormMessages = pick(
-    messages,
-    "firmaconio.createApiKey.form"
-  );
+  const createApiKeyFormMessages = pick(messages, [
+    "firmaconio.createApiKey.form",
+    "firmaconio.modals",
+  ]);
 
   return (
     <NextIntlClientProvider locale={locale} messages={createApiKeyFormMessages}>
@@ -81,8 +81,6 @@ export default function CreateApiKeyPage({
   };
 
   const institution = use(getInstitution(params.institution));
-
-  console.log(institution);
 
   return (
     <Stack spacing={5} sx={{ maxWidth: "calc(100% - 300px)" }}>

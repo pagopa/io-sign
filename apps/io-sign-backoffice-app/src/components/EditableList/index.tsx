@@ -18,6 +18,10 @@ export type Props = {
   schema: z.ZodSchema<string>;
   inputLabel: string;
   addItemButtonLabel: string;
+  editModal: {
+    title: string;
+    description?: string;
+  };
 };
 
 export default function EditableList({
@@ -26,6 +30,7 @@ export default function EditableList({
   onChange,
   inputLabel,
   addItemButtonLabel,
+  editModal,
 }: Props) {
   const [items, setItems] = useState(value);
   const [showForm, setShowForm] = useState(false);
@@ -89,8 +94,8 @@ export default function EditableList({
       {selectedItemIndex > -1 && (
         <EditItemModal
           open={selectedItemIndex > -1}
-          title="ciao"
-          description="mondo"
+          title={editModal.title}
+          description={editModal.description}
           inputLabel={inputLabel}
           schema={schema}
           initialValue={items[selectedItemIndex]}

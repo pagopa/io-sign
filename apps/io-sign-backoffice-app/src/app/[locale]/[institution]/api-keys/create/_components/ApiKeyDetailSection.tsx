@@ -19,7 +19,7 @@ export default function ApiKeyDetailSection({
     formState: { errors },
   } = useFormContext<FormFields>();
 
-  const t = useTranslations("firmaconio.createApiKey.form.details");
+  const t = useTranslations("firmaconio.createApiKey.form.general");
   return (
     <Stack p={3} spacing={3} bgcolor="background.paper">
       <Stack spacing={2}>
@@ -39,7 +39,7 @@ export default function ApiKeyDetailSection({
       </Stack>
       <Stack spacing={2}>
         <Typography variant="body2" fontWeight={600}>
-          Seleziona l'ambiente
+          {t("environment.label")}
         </Typography>
         <Controller
           control={control}
@@ -47,7 +47,7 @@ export default function ApiKeyDetailSection({
           render={({ field }) => (
             <TextField
               size="small"
-              label="Seleziona l'ambiente"
+              label={t("environment.inputLabel")}
               select
               disabled
               {...field}
@@ -60,7 +60,7 @@ export default function ApiKeyDetailSection({
         />
         <Stack spacing={2}>
           <Typography variant="body2" fontWeight={600}>
-            Dai un nome alla tua API Key
+            {t("displayName.label")}
           </Typography>
           <Controller
             control={control}
@@ -72,7 +72,7 @@ export default function ApiKeyDetailSection({
                 helperText={errors.displayName?.message}
                 sx={{ width: "30ch" }}
                 size="small"
-                label="Inserisci un nome*"
+                label={t("displayName.inputLabel")}
                 {...field}
               />
             )}

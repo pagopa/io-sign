@@ -10,10 +10,10 @@ import EditableList from "@/components/EditableList";
 import { cidrSchema } from "@/lib/api-key";
 
 import { FormFields } from "./CreateApiKeyForm";
-import Dialog from "@/components/Dialog";
 
 export default function ApiKeyNetworkSection() {
-  const t = useTranslations("firmaconio.createApiKey.form.network");
+  const t = useTranslations("firmaconio");
+
   const { setValue } = useFormContext<FormFields>();
 
   const onEditableListChange = (items: string[]) => {
@@ -22,8 +22,12 @@ export default function ApiKeyNetworkSection() {
 
   return (
     <Stack p={3} spacing={3} bgcolor="background.paper">
-      <Typography variant="h6">{t("title")}</Typography>
-      <Typography variant="body1">{t("description")}</Typography>
+      <Typography variant="h6">
+        {t("createApiKey.form.network.title")}
+      </Typography>
+      <Typography variant="body1">
+        {t("createApiKey.form.network.description")}
+      </Typography>
       <Controller
         name="cidrs"
         render={({ field }) => (
@@ -31,8 +35,9 @@ export default function ApiKeyNetworkSection() {
             schema={cidrSchema}
             value={field.value}
             onChange={onEditableListChange}
-            addItemButtonLabel={t("list.addItemButtonLabel")}
-            inputLabel={t("list.inputLabel")}
+            addItemButtonLabel={t("createApiKey.form.network.list.button")}
+            inputLabel={t("createApiKey.form.network.list.inputLabel")}
+            editModal={{ title: t("modals.editIpAddress.title") }}
           />
         )}
       />

@@ -8,7 +8,9 @@ import {
 
 import { ZodError } from "zod";
 
-export async function POST(request: NextRequest) {
+export async function POST() {}
+
+/*export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const parsedBody = ApiKeyBody.parse(body);
@@ -46,4 +48,4 @@ export async function POST(request: NextRequest) {
       { status: 500, headers: { "Content-Type": "application/problem+json" } }
     );
   }
-}
+}*/
