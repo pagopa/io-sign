@@ -44,7 +44,7 @@ export default function CreateApiKeyForm({
   const onSubmit = async (data: FormFields) => {
     const response = await fetch("/api/api-keys", {
       method: "POST",
-      body: JSON.stringify({ ...data, environment: "TEST" }),
+      body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
