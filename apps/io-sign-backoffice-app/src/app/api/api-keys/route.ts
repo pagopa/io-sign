@@ -1,15 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
+
 import {
-  ApiKeyAlreadyExistsError,
-  ApiKeyBody,
+  createApiKeyPayloadSchema,
   createApiKey,
-} from "./_lib/api-key";
+  ApiKeyAlreadyExistsError,
+} from "@/lib/api-keys";
+
 import { ZodError } from "zod";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const parsedBody = ApiKeyBody.parse(body);
+    const parsedBody = createApiKeyPayloadSchema.parse(body);
     const res = await createApiKey(parsedBody);
     return NextResponse.json(res, { status: 201 });
   } catch (e) {
@@ -33,14 +35,11 @@ export async function POST(request: NextRequest) {
         { status: 409, headers: { "Content-Type": "application/problem+json" } }
       );
     }
-    if (e instanceof Error) {
-      return NextResponse.json(
-        { title: "Internal Server Error", detail: e.message },
-        { status: 500, headers: { "Content-Type": "application/problem+json" } }
-      );
-    }
     return NextResponse.json(
-      { title: "Internal Server Error", detail: "Something went wrong" },
+      {
+        title: "Internal Server Error",
+        detail: e instanceof Error ? e.message : "Something went wrong",
+      },
       { status: 500, headers: { "Content-Type": "application/problem+json" } }
     );
   }
