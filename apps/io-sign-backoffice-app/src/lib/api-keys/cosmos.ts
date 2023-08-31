@@ -44,7 +44,11 @@ export async function apiKeyExists(
 
 export async function insertApiKey(apiKey: ApiKey): Promise<void> {
   const { cosmosContainerName } = getCosmosConfig();
-  await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
+  try {
+    await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
+  } catch (e) {
+    throw new Error("unable to create the API key", { cause: e });
+  }
 }
 
 export async function getApiKey(

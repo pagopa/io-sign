@@ -45,7 +45,6 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
       await insertApiKey(apiKey);
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
-      throw new Error("unable to create the API key", { cause: e });
     }
     return apiKey.id;
   } catch (e) {
