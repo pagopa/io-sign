@@ -1,5 +1,3 @@
-import "server-only";
-
 import { apiKeyExists, insertApiKey, getApiKeys, getApiKey } from "./cosmos";
 
 import {
@@ -76,7 +74,6 @@ export async function getApiKeyWithSecret(
     const apiKey = await getApiKey(id, institutionId);
     return exposeApiKeySecret(apiKey);
   } catch (e) {
-    console.log(e);
     throw new Error("unable to get the API Key", { cause: e });
   }
 }

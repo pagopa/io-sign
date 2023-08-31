@@ -1,5 +1,3 @@
-import "server-only";
-
 import { getApimClient } from "../apim";
 
 import { ApiKey, ApiKeyWithSecret } from "./index";
