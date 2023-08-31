@@ -23,6 +23,7 @@ import FormActions from "./_components/FormActions";
 import NextLink from "next/link";
 import { Suspense } from "react";
 import { Institution, getInstitution } from "@/lib/selfcare/api";
+import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 
 function CreateApiKeyPageHeader({
   parent,
@@ -97,8 +98,16 @@ export default function CreateApiKeyPage({
         <LocalizedCreateApiKeyForm institution={institution}>
           <Stack spacing={5}>
             <ApiKeyDetailSection documentationUrl={documentationUrl} />
-            <ApiKeyNetworkSection />
-            <ApiKeyTestersSection />
+
+            <ApiKeyEditableFieldCard
+              field="cidrs"
+              i18n={{ namespace: "createApiKey.form.network" }}
+            />
+
+            <ApiKeyEditableFieldCard
+              field="testers"
+              i18n={{ namespace: "createApiKey.form.network" }}
+            />
             <FormActions parent={parent} />
           </Stack>
         </LocalizedCreateApiKeyForm>

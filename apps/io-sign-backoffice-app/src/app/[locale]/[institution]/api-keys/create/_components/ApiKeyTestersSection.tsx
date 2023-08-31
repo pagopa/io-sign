@@ -24,7 +24,7 @@ export default function ApiKeyNetworkSection() {
         {t("createApiKey.form.testers.description")}
       </Typography>
       <Controller
-        name="cidrs"
+        name="testers"
         render={({ field }) => (
           <FiscalCodeListInput
             items={field.value}
