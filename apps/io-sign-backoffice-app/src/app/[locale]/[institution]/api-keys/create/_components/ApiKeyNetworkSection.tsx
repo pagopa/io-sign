@@ -30,7 +30,7 @@ export default function ApiKeyNetworkSection() {
         name="cidrs"
         render={({ field }) => (
           <IpAddressListInput
-            value={field.value}
+            items={field.value}
             onChange={onEditableListChange}
           />
         )}
