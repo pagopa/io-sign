@@ -7,17 +7,12 @@ import { Stack, Typography, Link, MenuItem, TextField } from "@mui/material";
 
 import NextLink from "next/link";
 
-import { FormFields } from "./CreateApiKeyForm";
+import { CreateApiKeyPayload } from "@/lib/api-keys";
 
-export default function ApiKeyDetailSection({
-  documentationUrl,
-}: {
-  documentationUrl: string;
-}) {
+export default function ApiKeyMetadataCard() {
   const {
-    control,
     formState: { errors },
-  } = useFormContext<FormFields>();
+  } = useFormContext<CreateApiKeyPayload>();
 
   const t = useTranslations("firmaconio.createApiKey.form.general");
   return (
@@ -31,7 +26,7 @@ export default function ApiKeyDetailSection({
             variant="body2"
             fontWeight={600}
             component={NextLink}
-            href={documentationUrl}
+            href="#"
           >
             {t("link.label")}
           </Link>
@@ -42,7 +37,6 @@ export default function ApiKeyDetailSection({
           {t("environment.label")}
         </Typography>
         <Controller
-          control={control}
           name="environment"
           render={({ field }) => (
             <TextField
@@ -63,7 +57,6 @@ export default function ApiKeyDetailSection({
             {t("displayName.label")}
           </Typography>
           <Controller
-            control={control}
             name="displayName"
             rules={{ required: true }}
             render={({ field }) => (

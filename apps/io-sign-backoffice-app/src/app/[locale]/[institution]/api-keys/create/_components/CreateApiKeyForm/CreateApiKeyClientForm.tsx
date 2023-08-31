@@ -3,27 +3,30 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Institution } from "@/lib/selfcare/api";
 
 import { kebabCase } from "lodash";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Snackbar, Stack, Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { createApiKey } from "@/lib/api-keys/client";
 
-export type FormFields = CreateApiKeyPayload;
+import NextLink from "next/link";
 
-export default function CreateApiKeyForm({
+export default function CreateApiKeyClientForm({
   children,
   institution,
 }: {
   children: React.ReactNode;
   institution: Institution;
 }) {
-  const methods = useForm<FormFields>({
+  const methods = useForm<CreateApiKeyPayload>({
     defaultValues: {
       environment: "test",
       displayName: "",
@@ -34,9 +37,11 @@ export default function CreateApiKeyForm({
     resolver: zodResolver(createApiKeyPayloadSchema),
   });
 
-  const router = useRouter();
+  const t = useTranslations("firmaconio.createApiKey.form");
 
-  const { setValue, watch } = methods;
+  const { setValue, watch, formState, handleSubmit } = methods;
+
+  const router = useRouter();
 
   const [showError, setShowError] = useState(false);
 
@@ -50,7 +55,7 @@ export default function CreateApiKeyForm({
     );
   }, [institution.name, environment]);
 
-  const onSubmit = async (data: FormFields) => {
+  const onSubmit = async (data: CreateApiKeyPayload) => {
     try {
       const { id } = await createApiKey(data);
       router.push(`/${institution.id}/api-keys/${id}`);
@@ -66,13 +71,33 @@ export default function CreateApiKeyForm({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={5}>
+          {children}
+          <Stack direction="row" justifyContent="space-between">
+            <Button
+              variant="outlined"
+              href={`/${institution.id}/api-keys`}
+              LinkComponent={NextLink}
+            >
+              {t("actions.cancel")}
+            </Button>
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={formState.isSubmitting}
+            >
+              {t("actions.confirm")}
+            </LoadingButton>
+          </Stack>
+        </Stack>
+      </form>
       <Snackbar
         open={showError}
         autoHideDuration={3000}
         onClose={onSnackbarClose}
       >
-        <Alert severity="error">Ciao!</Alert>
+        <Alert severity="error">{t("errors.generic")}</Alert>
       </Snackbar>
     </FormProvider>
   );

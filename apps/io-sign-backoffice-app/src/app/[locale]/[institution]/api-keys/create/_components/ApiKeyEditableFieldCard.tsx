@@ -9,7 +9,7 @@ import { Stack, Typography } from "@mui/material";
 import IpAddressListInput from "@/components/IpAddressListInput";
 import FiscalCodeListInput from "@/components/FiscalCodeListInput";
 
-import { FormFields } from "./CreateApiKeyForm";
+import { CreateApiKeyPayload } from "@/lib/api-keys";
 
 type Props = {
   field: "cidrs" | "testers";
@@ -23,7 +23,7 @@ export default function ApiKeyEditableFieldCard({
   i18n: { namespace },
 }: Props) {
   const t = useTranslations(namespace);
-  const { setValue } = useFormContext<FormFields>();
+  const { setValue } = useFormContext<CreateApiKeyPayload>();
   const onEditableListChange = (items: string[]) => {
     setValue(field, items);
   };
