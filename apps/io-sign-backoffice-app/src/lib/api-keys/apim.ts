@@ -12,9 +12,6 @@ export function deleteApiKeySubscription(apiKey: ApiKey): Promise<void> {
   return getApimClient().deleteSubscription(apiKey.id);
 }
 
-export async function exposeApiKeySecret(
-  apiKey: ApiKey
-): Promise<ApiKeyWithSecret> {
-  const secret = await getApimClient().getSecret(apiKey.id);
-  return { ...apiKey, secret };
+export async function getApiKeySecret(apiKey: ApiKey): Promise<string> {
+  return getApimClient().getSecret(apiKey.id);
 }

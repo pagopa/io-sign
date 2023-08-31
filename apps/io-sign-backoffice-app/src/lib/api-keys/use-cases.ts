@@ -3,7 +3,7 @@ import { apiKeyExists, insertApiKey, getApiKeys, getApiKey } from "./cosmos";
 import {
   createApiKeySubscription,
   deleteApiKeySubscription,
-  exposeApiKeySecret,
+  getApiKeySecret,
 } from "./apim";
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
@@ -53,6 +53,11 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
       ? e
       : new Error("unable to create the API key", { cause: e });
   }
+}
+
+async function exposeApiKeySecret(apiKey: ApiKey): Promise<ApiKeyWithSecret> {
+  const secret = await getApiKeySecret(apiKey);
+  return { ...apiKey, secret };
 }
 
 export async function* listApiKeys(institutionId: string) {
