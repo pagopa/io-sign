@@ -12,6 +12,10 @@ export const apiErrorSchema = z.object({
   details: z.string().optional(),
 });
 
+const createApiKeyResponseSchema = z.object({
+  id: z.string().ulid(),
+});
+
 export async function createApiKey(payload: CreateApiKeyPayload) {
   const resp = await fetch(`/api/api-keys`, {
     method: "POST",
@@ -23,6 +27,8 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
   if (!resp.ok) {
     throw new Error("Something went wrong");
   }
+  const json = await resp.json();
+  return createApiKeyResponseSchema.parse(json);
 }
 
 export async function upsertApiKeyField(

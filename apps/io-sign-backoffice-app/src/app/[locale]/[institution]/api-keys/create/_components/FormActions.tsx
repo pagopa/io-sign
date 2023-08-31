@@ -16,15 +16,17 @@ export type Props = {
 };
 
 export default function FormActions({ parent }: Props) {
-  const {
-    formState: { isSubmitting },
-  } = useFormContext<FormFields>();
+  const { formState } = useFormContext<FormFields>();
   return (
     <Stack direction="row" justifyContent="space-between">
       <Button variant="outlined" href={parent.href} LinkComponent={NextLink}>
         Indietro
       </Button>
-      <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton
+        type="submit"
+        variant="contained"
+        loading={formState.isSubmitting}
+      >
         Continua
       </LoadingButton>
     </Stack>
