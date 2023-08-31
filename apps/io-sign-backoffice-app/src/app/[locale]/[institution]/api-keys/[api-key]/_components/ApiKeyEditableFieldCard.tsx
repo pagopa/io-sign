@@ -50,6 +50,9 @@ export default function ApiKeyEditableFieldCard({
     () => (field === "cidrs" ? IpAddressListInput : FiscalCodeListInput),
     [field]
   );
+  const onSnackbarClose = () => {
+    setShowError(false);
+  };
   return (
     <Stack spacing={3} p={3} bgcolor="background.paper">
       <Stack spacing={1}>
@@ -67,7 +70,7 @@ export default function ApiKeyEditableFieldCard({
       />
       <Snackbar
         open={showError}
-        onClose={() => setShowError(false)}
+        onClose={onSnackbarClose}
         autoHideDuration={3000}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >

@@ -26,6 +26,10 @@ export default function CreateApiKeyClientForm({
   children: React.ReactNode;
   institution: Institution;
 }) {
+  const t = useTranslations("firmaconio.createApiKey.form");
+  const router = useRouter();
+  const [showError, setShowError] = useState(false);
+
   const methods = useForm<CreateApiKeyPayload>({
     defaultValues: {
       environment: "test",
@@ -36,14 +40,7 @@ export default function CreateApiKeyClientForm({
     },
     resolver: zodResolver(createApiKeyPayloadSchema),
   });
-
-  const t = useTranslations("firmaconio.createApiKey.form");
-
   const { setValue, watch, formState, handleSubmit } = methods;
-
-  const router = useRouter();
-
-  const [showError, setShowError] = useState(false);
 
   const environment = watch("environment", "test");
 
@@ -68,7 +65,6 @@ export default function CreateApiKeyClientForm({
   const onSnackbarClose = () => {
     setShowError(false);
   };
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
