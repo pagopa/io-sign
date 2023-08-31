@@ -173,51 +173,12 @@ describe("getApiKeyWithSecret", () => {
   });
 });
 
-/*describe("upsertApiKeyField", () => {
-  it("should update the cidr list", async () => {
-    const newValue = ["10.10.10.10/24"];
-    await upsertApiKeyField("apiKeyId", "institutionId", "cidrs", newValue);
-    expect(patchItem).toHaveBeenCalledWith({
-      operations: [
-        {
-          op: "replace",
-          path: "/cidrs",
-          value: newValue,
-        },
-      ],
-    });
-  });
-  it("should update the testers list", async () => {
-    const newValue: string[] = [];
-    await upsertApiKeyField("apiKeyId", "institutionId", "testers", newValue);
-    expect(patchItem).toHaveBeenCalledWith({
-      operations: [
-        {
-          op: "replace",
-          path: "/testers",
-          value: newValue,
-        },
-      ],
-    });
-  });
-  it.only.each([
-    ["testers", ["CVLZCU75L24C351K"]],
-    ["cidrs", ["10.10.10.10/24", "127.0.0.1/32"]],
-  ])("should update the given field", async (field: , value) => {
-    
-    const operations = [
-      {
-        field: "cidr" as const,
-        value: ["10.10.10.10/24", "127.0.0.1/32"],
-      },
-      {
-        field: "testers" as const,
-        value: ["CVLZCU75L24C351K"],
-      },
-    ];
-
-    const newValue: string[] = [];
-    await upsertApiKeyField("apiKeyId", "institutionId", field, newValue);
+describe("upsertApiKeyField", () => {
+  it.each([
+    ["testers" as const, ["CVLZCU75L24C351K"]],
+    ["cidrs" as const, ["10.10.10.10/24", "127.0.0.1/32"]],
+  ])("should update the given field", async (field, value) => {
+    await upsertApiKeyField("apiKeyId", "institutionId", field, value);
     expect(patchItem).toHaveBeenCalledWith({
       operations: [
         {
@@ -228,4 +189,4 @@ describe("getApiKeyWithSecret", () => {
       ],
     });
   });
-});*/
+});
