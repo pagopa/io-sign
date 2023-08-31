@@ -1,10 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
 
+import { createApiKeyPayloadSchema } from "@/lib/api-keys";
+
 import {
-  createApiKeyPayloadSchema,
   createApiKey,
   ApiKeyAlreadyExistsError,
-} from "@/lib/api-keys";
+} from "@/lib/api-keys/use-cases";
 
 import { ZodError } from "zod";
 
