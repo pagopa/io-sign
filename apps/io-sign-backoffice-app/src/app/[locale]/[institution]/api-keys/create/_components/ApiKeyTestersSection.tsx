@@ -27,7 +27,7 @@ export default function ApiKeyNetworkSection() {
         name="cidrs"
         render={({ field }) => (
           <FiscalCodeListInput
-            value={field.value}
+            items={field.value}
             onChange={onEditableListChange}
           />
         )}

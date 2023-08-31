@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 import { Stack, Box, Button } from "@mui/material";
 
@@ -8,14 +8,12 @@ import EditableListForm from "./EditableListForm";
 import EditableListItem from "./EditableListItem";
 import EditItemModal from "./EditItemModal";
 
-import { isEqual } from "lodash";
-
 import { z } from "zod";
 
 import { Add } from "@mui/icons-material";
 
 export type Props = {
-  value: Array<string>;
+  items: Array<string>;
   onChange: (newValue: Array<string>) => void;
   schema: z.ZodSchema<string>;
   inputLabel: string;
@@ -28,7 +26,7 @@ export type Props = {
 };
 
 export default function EditableList({
-  value,
+  items,
   schema,
   onChange,
   inputLabel,
@@ -36,42 +34,21 @@ export default function EditableList({
   editModal,
   disabled = false,
 }: Props) {
-  const [items, setItems] = useState(value);
   const [showForm, setShowForm] = useState(false);
   const [selectedItemIndex, selectItem] = useState(-1);
 
-  // prev holds a reference to the previous
-  // state in order to trigger onChange only
-  // on actual state changes
-  const prev = useRef(value);
-
-  // prev it's needed because useEffect
-  // is called multiple times for the same state value
-  // (for example on component mount)
-  useEffect(() => {
-    if (!isEqual(prev.current, items)) {
-      onChange(items);
-      prev.current = items;
-    }
-  }, [items]);
-
   const addItem = (item: string) => {
-    setItems((items) => [item, ...items]);
+    onChange([item, ...items]);
     setShowForm(false);
   };
 
   const editItem = (item: string) => {
-    setItems((items) => {
-      const updated = items.map((el, i) =>
-        i === selectedItemIndex ? item : el
-      );
-      return updated;
-    });
+    onChange(items.map((el, i) => (i === selectedItemIndex ? item : el)));
     selectItem(-1);
   };
 
   const deleteItem = (index: number) => () => {
-    setItems((items) => items.filter((_, i) => i !== index));
+    onChange(items.filter((_, i) => i !== index));
   };
 
   const onEdit = (index: number) => () => {

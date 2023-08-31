@@ -8,13 +8,13 @@ import { fiscalCodeSchema } from "@/lib/api-keys";
 
 export type Props = Pick<
   EditableListProps,
-  "onChange" | "value" | "disabled"
+  "onChange" | "items" | "disabled"
 > & {
   editModal?: Partial<EditableListProps["editModal"]>;
 };
 
 export default function FiscalCodeListInput({
-  value,
+  items,
   onChange,
   editModal = {},
   disabled = false,
@@ -29,7 +29,7 @@ export default function FiscalCodeListInput({
   return (
     <EditableList
       schema={fiscalCodeSchema}
-      value={value}
+      items={items}
       onChange={onChange}
       addItemButtonLabel={t("apiKey.testers.list.button")}
       inputLabel={t("apiKey.testers.list.inputLabel")}

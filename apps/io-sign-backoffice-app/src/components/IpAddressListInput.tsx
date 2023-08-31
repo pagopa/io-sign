@@ -8,13 +8,13 @@ import { cidrSchema } from "@/lib/api-keys";
 
 export type Props = Pick<
   EditableListProps,
-  "onChange" | "value" | "disabled"
+  "onChange" | "items" | "disabled"
 > & {
   editModal?: Partial<EditableListProps["editModal"]>;
 };
 
 export default function IpAddressListInput({
-  value,
+  items,
   onChange,
   editModal = {},
   disabled = false,
@@ -29,7 +29,7 @@ export default function IpAddressListInput({
   return (
     <EditableList
       schema={cidrSchema}
-      value={value}
+      items={items}
       onChange={onChange}
       addItemButtonLabel={t("apiKey.network.list.button")}
       inputLabel={t("apiKey.network.list.inputLabel")}

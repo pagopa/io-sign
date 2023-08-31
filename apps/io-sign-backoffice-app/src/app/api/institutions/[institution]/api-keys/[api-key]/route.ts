@@ -65,6 +65,7 @@ export async function PATCH(
       field,
       newValue
     );
+    throw new Error("...");
     return new Response(null, { status: 204 });
   } catch (e) {
     if (e instanceof ZodError) {

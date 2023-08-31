@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useContext } from "react";
 
-import { Stack, Typography } from "@mui/material";
+import { Alert, Snackbar, Stack, Typography } from "@mui/material";
 import { SvgIconComponent } from "@mui/icons-material";
 
 import { useTranslations } from "next-intl";
@@ -12,7 +12,7 @@ import IpAddressListInput from "@/components/IpAddressListInput";
 
 import { Props as EditableListProps } from "@/components/EditableList";
 
-import { ApiKeyContext } from "@/lib/api-keys/client";
+import { ApiKeyContext, upsertApiKeyField } from "@/lib/api-keys/client";
 
 type Props = {
   field: "cidrs" | "testers";
@@ -28,43 +28,28 @@ export default function ApiKeyEditableFieldCard({
   icon: Icon,
 }: Props) {
   const t = useTranslations(namespace);
-
+  const [showError, setShowError] = useState(false);
   const apiKey = useContext(ApiKeyContext);
-
   if (!apiKey) {
     throw new Error("cannot load ApiKey from context");
   }
-
-  const [value] = useState(apiKey[field]);
-
+  const [items, setItems] = useState<string[]>(apiKey[field]);
   const editModal: Partial<EditableListProps["editModal"]> = {
     description: t("editModal.description"),
   };
-
-  const onChange = async (items: unknown[]) => {
-    await fetch(
-      `/api/institutions/${apiKey.institutionId}/api-keys/${apiKey.id}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify([
-          {
-            op: "replace",
-            path: `/${field}`,
-            value: items,
-          },
-        ]),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const onChange = async (updated: string[]) => {
+    setItems(updated);
+    try {
+      await upsertApiKeyField(apiKey, field, updated);
+    } catch (e) {
+      setShowError(true);
+      setItems(items);
+    }
   };
-
   const ListInput = useMemo(
     () => (field === "cidrs" ? IpAddressListInput : FiscalCodeListInput),
     [field]
   );
-
   return (
     <Stack spacing={3} p={3} bgcolor="background.paper">
       <Stack spacing={1}>
@@ -75,11 +60,21 @@ export default function ApiKeyEditableFieldCard({
         <Typography variant="body2">{t("description")}</Typography>
       </Stack>
       <ListInput
-        value={value}
+        items={items}
         editModal={editModal}
         onChange={onChange}
         disabled={apiKey.status === "revoked"}
       />
+      <Snackbar
+        open={showError}
+        onClose={() => setShowError(false)}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert severity="error" variant="outlined">
+          {t("errors.update")}
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 }
