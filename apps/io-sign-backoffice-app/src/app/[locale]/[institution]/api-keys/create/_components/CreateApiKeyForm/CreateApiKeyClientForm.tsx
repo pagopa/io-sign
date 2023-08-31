@@ -96,8 +96,11 @@ export default function CreateApiKeyClientForm({
         open={showError}
         autoHideDuration={3000}
         onClose={onSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert severity="error">{t("errors.generic")}</Alert>
+        <Alert severity="error" variant="outlined">
+          {t("errors.generic")}
+        </Alert>
       </Snackbar>
     </FormProvider>
   );
