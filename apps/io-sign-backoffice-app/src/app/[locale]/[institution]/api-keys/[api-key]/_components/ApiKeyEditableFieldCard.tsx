@@ -2,17 +2,17 @@
 
 import { useMemo, useState, useContext } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { Alert, Snackbar, Stack, Typography } from "@mui/material";
 import { SvgIconComponent } from "@mui/icons-material";
 
-import { useTranslations } from "next-intl";
+import { ApiKeyContext, upsertApiKeyField } from "@/lib/api-keys/client";
 
 import FiscalCodeListInput from "@/components/FiscalCodeListInput";
 import IpAddressListInput from "@/components/IpAddressListInput";
 
 import { Props as EditableListProps } from "@/components/EditableList";
-
-import { ApiKeyContext, upsertApiKeyField } from "@/lib/api-keys/client";
 
 type Props = {
   field: "cidrs" | "testers";

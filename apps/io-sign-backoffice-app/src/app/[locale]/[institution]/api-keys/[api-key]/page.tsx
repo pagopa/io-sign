@@ -1,6 +1,5 @@
-import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
-import { PeopleAlt, PinDrop, VpnKey } from "@mui/icons-material";
-import { Stack } from "@mui/material";
+import { Suspense, use } from "react";
+import { pick } from "lodash";
 
 import {
   NextIntlClientProvider,
@@ -9,15 +8,16 @@ import {
   useTranslations,
 } from "next-intl";
 
-import ApiKeySummary from "./_components/ApiKeySummary";
-import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
-
-import ApiKeyProvider from "./_components/ApiKeyProvider";
+import { Stack } from "@mui/material";
+import { PeopleAlt, PinDrop, VpnKey } from "@mui/icons-material";
 
 import { getApiKeyWithSecret } from "@/lib/api-keys/use-cases";
 
-import { pick } from "lodash";
-import { Suspense, use } from "react";
+import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
+
+import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
+import ApiKeyProvider from "./_components/ApiKeyProvider";
+import ApiKeySummary from "./_components/ApiKeySummary";
 
 export default function ApiKeyDetailPage({
   params,

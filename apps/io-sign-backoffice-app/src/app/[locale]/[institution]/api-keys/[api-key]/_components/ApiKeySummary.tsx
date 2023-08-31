@@ -1,15 +1,15 @@
-import { Stack, Typography, Chip } from "@mui/material";
-
-import { VpnKey } from "@mui/icons-material";
+import { Suspense } from "react";
 
 import { useTranslations } from "next-intl";
+
+import { Stack, Typography, Chip } from "@mui/material";
+import { VpnKey } from "@mui/icons-material";
 
 import { ApiKeyWithSecret } from "@/lib/api-keys";
 
 import ApiKeySecretForm, {
   Props as ApiKeySecretFormProps,
 } from "./ApiKeySecretForm";
-import { Suspense } from "react";
 
 export type Props = {
   apiKey: ApiKeyWithSecret;

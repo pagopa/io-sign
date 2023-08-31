@@ -1,15 +1,16 @@
-import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
-import { SvgIconComponent, VpnKey } from "@mui/icons-material";
-import { Alert, Stack } from "@mui/material";
-
 import { use, Suspense } from "react";
 
 import { useTranslations } from "next-intl";
 
-import CreateApiKeyForm from "./_components/CreateApiKeyForm";
-import ApiKeyMetadataCard from "./_components/ApiKeyMetadataCard";
+import { Alert, Stack } from "@mui/material";
+import { SvgIconComponent, VpnKey } from "@mui/icons-material";
 
 import { getInstitution } from "@/lib/selfcare/api";
+
+import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
+
+import CreateApiKeyForm from "./_components/CreateApiKeyForm";
+import ApiKeyMetadataCard from "./_components/ApiKeyMetadataCard";
 import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 
 function CreateApiKeyPageHeader({

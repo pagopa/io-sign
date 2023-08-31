@@ -1,21 +1,21 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
-import { useRouter } from "next/navigation";
-
-import { useTranslations } from "next-intl";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { Institution } from "@/lib/selfcare/api";
-
-import { kebabCase } from "lodash";
 import { useEffect, useState } from "react";
 
-import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { kebabCase } from "lodash";
+
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+
 import { Alert, Snackbar, Stack, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+
+import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
 import { createApiKey } from "@/lib/api-keys/client";
+import { Institution } from "@/lib/selfcare/api";
 
 import NextLink from "next/link";
 

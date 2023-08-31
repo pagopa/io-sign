@@ -1,7 +1,8 @@
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 
-import { Institution } from "@/lib/selfcare/api";
 import { pick } from "lodash";
+
+import { Institution } from "@/lib/selfcare/api";
 
 import CreateApiKeyClientForm from "./CreateApiKeyClientForm";
 
