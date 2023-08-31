@@ -13,6 +13,9 @@
           "button": "Aggiungi indirizzo IP",
           "inputLabel": "Inserisci indirizzo IP"
         },
+        "editModal": {
+          "description": "WIP"
+        },
         "title": "Indirizzi IP"
       },
       "secret": {
@@ -30,6 +33,9 @@
         "list": {
           "button": "Aggiungi codice fiscale",
           "inputLabel": "Inserisci codice fiscale"
+        },
+        "editModal": {
+          "description": "WIP"
         },
         "title": "Codici fiscali"
       }
@@ -116,5 +122,19 @@
       "description": "Accedendo, accetti i Termini e condizioni d’uso del servizio e confermi di avere letto l’Informativa Privacy. ",
       "title": "Firma con IO"
     }
+  },
+  "common": {
+    "companyLink": {
+      "title": "Sito di PagoPA S.p.A.",
+      "ariaLabel": "Link vai al sito di PagoPA S.p.A."
+    }
+  },
+  "Index": {
+    "title": "Il tuo ente ha aderito",
+    "body": "Entro qualche giorno riceverai via email le API Key e le\n indicazioni per procedere. Se hai bisogno di supporto,\n contatta il tuo referente PagoPA o scrivi a \n <email>{supportl3}</email>",
+    "cta": "Indietro"
+  },
+  "Footer": {
+    "legal": "<strong>PagoPA S.p.A.</strong> - Società per azioni con socio unico - Capitale sociale di euro 1,000,000 interamente versato - Sede legale in Roma, Piazza Colonna 370,\n CAP 00187 - N. di iscrizione a Registro Imprese di Roma, CF e P.IVA 15376371009"
   }
 }

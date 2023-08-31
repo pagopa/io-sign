@@ -9,6 +9,7 @@ import { ApiKeyWithSecret } from "@/lib/api-keys";
 import ApiKeySecretForm, {
   Props as ApiKeySecretFormProps,
 } from "./ApiKeySecretForm";
+import { Suspense } from "react";
 
 export type Props = {
   apiKey: ApiKeyWithSecret;
@@ -63,11 +64,13 @@ function ApiKeySecretCard({ secret, disabled = false }: ApiKeySecretFormProps) {
 export default function ApiKeyDetail({ apiKey }: Props) {
   return (
     <Stack spacing={3}>
-      <ApiKeyMetadataCard apiKey={apiKey} />
-      <ApiKeySecretCard
-        secret={apiKey.secret}
-        disabled={apiKey.status === "revoked"}
-      />
+      <Suspense>
+        <ApiKeyMetadataCard apiKey={apiKey} />
+        <ApiKeySecretCard
+          secret={apiKey.secret}
+          disabled={apiKey.status === "revoked"}
+        />
+      </Suspense>
     </Stack>
   );
 }

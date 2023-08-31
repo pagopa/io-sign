@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Stack, Box, Button } from "@mui/material";
 
 import EditableListForm from "./EditableListForm";
 import EditableListItem from "./EditableListItem";
 import EditItemModal from "./EditItemModal";
+
+import { isEqual } from "lodash";
 
 import { z } from "zod";
 
@@ -36,15 +38,25 @@ export default function EditableList({
 }: Props) {
   const [items, setItems] = useState(value);
   const [showForm, setShowForm] = useState(false);
-
   const [selectedItemIndex, selectItem] = useState(-1);
 
+  // prev holds a reference to the previous
+  // state in order to trigger onChange only
+  // on actual state changes
+  const prev = useRef(value);
+
+  // prev it's needed because useEffect
+  // is called multiple times for the same state value
+  // (for example on component mount)
   useEffect(() => {
-    onChange(items);
+    if (!isEqual(prev.current, items)) {
+      onChange(items);
+      prev.current = items;
+    }
   }, [items]);
 
   const addItem = (item: string) => {
-    setItems((items) => [...items, item]);
+    setItems((items) => [item, ...items]);
     setShowForm(false);
   };
 

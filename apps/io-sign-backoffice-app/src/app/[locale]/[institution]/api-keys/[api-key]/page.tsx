@@ -1,5 +1,5 @@
 import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
-import { VpnKey } from "@mui/icons-material";
+import { PeopleAlt, PinDrop, VpnKey } from "@mui/icons-material";
 import { Stack } from "@mui/material";
 
 import {
@@ -10,13 +10,14 @@ import {
 } from "next-intl";
 
 import ApiKeySummary from "./_components/ApiKeySummary";
-import NetworkSettings from "./_components/NetworkSettings";
-import TestersSettings from "./_components/TestersSettings";
+import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 
-import { ApiKeyWithSecret, getApiKeyWithSecret } from "@/lib/api-keys";
+import ApiKeyProvider from "./_components/ApiKeyProvider";
+
+import { getApiKeyWithSecret } from "@/lib/api-keys/use-cases";
 
 import { pick } from "lodash";
-import { use } from "react";
+import { Suspense, use } from "react";
 
 export default function ApiKeyDetailPage({
   params,
@@ -25,7 +26,7 @@ export default function ApiKeyDetailPage({
 }) {
   const t = useTranslations("firmaconio");
 
-  let apiKey: ApiKeyWithSecret = use(
+  const apiKey = use(
     getApiKeyWithSecret(params["api-key"], params["institution"])
   );
 
@@ -60,12 +61,23 @@ export default function ApiKeyDetailPage({
     <Stack spacing={5}>
       <PageHeader {...headerProps} />
       <NextIntlClientProvider locale={locale} messages={clientMessages}>
-        <ApiKeySummary apiKey={apiKey} />
-        <NetworkSettings
-          cidrs={apiKey.cidrs}
-          disabled={apiKey.status === "revoked"}
-        />
-        {apiKey.environment === "test" && <TestersSettings apiKey={apiKey} />}
+        <ApiKeyProvider value={apiKey}>
+          <Suspense>
+            <ApiKeySummary apiKey={apiKey} />
+            <ApiKeyEditableFieldCard
+              field="cidrs"
+              i18n={{ namespace: "firmaconio.apiKey.network" }}
+              icon={PinDrop}
+            />
+            {apiKey.environment === "test" && (
+              <ApiKeyEditableFieldCard
+                field="testers"
+                i18n={{ namespace: "firmaconio.apiKey.testers" }}
+                icon={PeopleAlt}
+              />
+            )}
+          </Suspense>
+        </ApiKeyProvider>
       </NextIntlClientProvider>
     </Stack>
   );

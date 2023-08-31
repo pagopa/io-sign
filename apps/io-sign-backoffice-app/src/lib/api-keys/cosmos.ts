@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 

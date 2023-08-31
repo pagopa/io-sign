@@ -9,6 +9,4 @@ const context = createServerContext<Institution["id"] | null>(
   null
 );
 
-export const InstitutionProvider = context.Provider;
-
 export default context;

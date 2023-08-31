@@ -5,7 +5,7 @@ import {
   createApiKey,
   getApiKeyWithSecret,
   listApiKeys,
-} from "@/lib/api-keys";
+} from "@/lib/api-keys/use-cases";
 
 const mocks = vi.hoisted(() => ({
   apiKeys: [
