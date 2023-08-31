@@ -27,8 +27,14 @@ const bodySchema = z
       ])
     )
   )
-  .min(1)
-  .max(1);
+  .length(1)
+  .transform(
+    (operations): { field: "cidrs" | "testers"; newValue: string[] } => ({
+      // here we get the field to update, from the JSON patch operation
+      field: operations[0].path === "/cidrs" ? "cidrs" : "testers",
+      newValue: operations[0].value,
+    })
+  );
 
 export async function PATCH(
   request: NextRequest,
@@ -52,13 +58,11 @@ export async function PATCH(
   }
   try {
     const body = await request.json();
-    const {
-      0: { path, value: newValue },
-    } = bodySchema.parse(body);
+    const { field, newValue } = bodySchema.parse(body);
     await upsertApiKeyField(
       params["api-key"],
       params.institution,
-      path === "/cidrs" ? "cidrs" : "testers",
+      field,
       newValue
     );
     return new Response(null, { status: 204 });

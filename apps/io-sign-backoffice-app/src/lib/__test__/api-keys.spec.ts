@@ -5,19 +5,35 @@ import {
   createApiKey,
   getApiKeyWithSecret,
   listApiKeys,
+  upsertApiKeyField,
 } from "@/lib/api-keys/use-cases";
 
-const mocks = vi.hoisted(() => ({
-  apiKeys: [
-    {
-      id: "01GG4NFBCN4ZH8ETCCKX3766KX",
-      institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
-      displayName: "displayName",
-      environment: "DEFAULT",
-      status: "ACTIVE",
-      createdAt: new Date().toISOString(),
-    },
-  ],
+import { ApiKey, apiKeyWithSecretSchema } from "../api-keys";
+
+type SerializedApiKey = Omit<ApiKey, "createdAt"> & {
+  createdAt: string;
+};
+
+const mocks: { apiKeys: Array<SerializedApiKey>; secret: string } = vi.hoisted(
+  () => ({
+    apiKeys: [
+      {
+        id: "01GG4NFBCN4ZH8ETCCKX3766KX",
+        institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
+        displayName: "displayName",
+        environment: "prod" as const,
+        status: "active" as const,
+        createdAt: new Date().toISOString(),
+        cidrs: [],
+        testers: [],
+      },
+    ],
+    secret: "0040820bee855345982b3ee534334b4",
+  })
+);
+
+const { patchItem } = vi.hoisted(() => ({
+  patchItem: vi.fn(),
 }));
 
 const { getCosmosConfig, getCosmosContainerClient } = vi.hoisted(() => ({
@@ -33,6 +49,7 @@ const { getCosmosConfig, getCosmosContainerClient } = vi.hoisted(() => ({
       read: vi.fn().mockResolvedValue({
         resource: mocks.apiKeys[0],
       }),
+      patch: patchItem,
     }),
   }),
 }));
@@ -110,10 +127,7 @@ describe("createApiKey", () => {
       cidrs: [],
       testers: [],
     };
-    expect(createApiKey(bodyRequest)).resolves.toEqual({
-      id: expect.any(String),
-      key: expect.any(String),
-    });
+    expect(createApiKey(bodyRequest)).resolves.toEqual(expect.any(String));
   });
 });
 
@@ -136,10 +150,10 @@ describe("listApiKeys", () => {
       },
     });
 
-    const mockedApiKey = {
+    const mockedApiKey = apiKeyWithSecretSchema.parse({
       ...mocks.apiKeys[0],
-      key: "0040820bee855345982b3ee534334b4",
-    };
+      secret: mocks.secret,
+    });
 
     expect(listApiKeys("institutionId").next()).resolves.toEqual({
       value: mockedApiKey,
@@ -148,11 +162,31 @@ describe("listApiKeys", () => {
   });
 });
 
-describe("getApiKey", () => {
+describe("getApiKeyWithSecret", () => {
   it("should return the API key", () => {
-    expect(getApiKeyWithSecret("apiKeyId", "institutionId")).resolves.toEqual({
-      ...mocks.apiKeys[0],
-      key: "0040820bee855345982b3ee534334b4",
+    expect(getApiKeyWithSecret("apiKeyId", "institutionId")).resolves.toEqual(
+      expect.objectContaining({
+        id: mocks.apiKeys[0].id,
+        secret: mocks.secret,
+      })
+    );
+  });
+});
+
+describe("upsertApiKeyField", () => {
+  it.each([
+    ["testers" as const, ["CVLZCU75L24C351K"]],
+    ["cidrs" as const, ["10.10.10.10/24", "127.0.0.1/32"]],
+  ])("should update the given field", async (field, value) => {
+    await upsertApiKeyField("apiKeyId", "institutionId", field, value);
+    expect(patchItem).toHaveBeenCalledWith({
+      operations: [
+        {
+          op: "replace",
+          path: `/${field}`,
+          value,
+        },
+      ],
     });
   });
 });
