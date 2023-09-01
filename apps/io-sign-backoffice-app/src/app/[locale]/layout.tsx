@@ -1,3 +1,4 @@
+import { Link } from "@mui/material";
 import { pick } from "lodash";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
@@ -23,9 +24,10 @@ export default function RootLayout({
   const clientMessages = pick(messages, [
     "firmaconio.modals",
     "firmaconio.footer",
+    "firmaconio.apiKeys.list",
     "firmaconio.apiKeys.alert",
     "firmaconio.apiKeys.table",
-    "firmaconio.createApiKey.form",
+    "firmaconio.createApiKey",
     "firmaconio.apiKey",
   ]);
 

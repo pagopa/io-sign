@@ -13,11 +13,9 @@ export default function ApiKeyEmptyListView({ loading = false }: Props) {
   const t = useTranslations("firmaconio");
   return (
     <Stack spacing={5}>
-      <Alert
-        severity="warning"
-        variant="outlined"
-        children={t.rich("apiKeys.alert")}
-      />
+      <Alert severity="warning" variant="outlined">
+        {t.rich("createApiKey.alert")}
+      </Alert>
       <ApiKeyTableHeader showAction={!loading} />
       {loading ? (
         <Stack

@@ -45,7 +45,7 @@ export default function ApiKeyListView(props: Props) {
       </Tabs>
       {isProd && (
         <Alert severity="warning" variant="outlined">
-          {t.rich("apiKeys.alert")}
+          {t.rich("createApiKey.alert")}
         </Alert>
       )}
       <ApiKeyListHeader showAction={!isProd} />
