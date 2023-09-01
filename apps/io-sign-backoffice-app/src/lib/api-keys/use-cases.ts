@@ -8,6 +8,7 @@ import {
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
+import { getToken } from "./tokenizer";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
@@ -29,7 +30,7 @@ export class ApiKeyAlreadyExistsError extends Error {
 
 export async function createApiKey(payload: CreateApiKeyPayload) {
   try {
-    // check if the api key for the given input already exists
+    // check if the api key with the given displayName already exists for that institution
     const apiKeyAlreadyExists = await apiKeyExists(
       payload.institutionId,
       payload.displayName
@@ -42,9 +43,11 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     const apiKey = ApiKey(payload);
     await createApiKeySubscription(apiKey);
     try {
-      await insertApiKey(apiKey);
+      const tokens = await Promise.all(apiKey.testers.map(getToken));
+      await insertApiKey({ ...apiKey, testers: tokens });
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
+      throw new Error("unable to create the API key", { cause: e });
     }
     return apiKey.id;
   } catch (e) {
