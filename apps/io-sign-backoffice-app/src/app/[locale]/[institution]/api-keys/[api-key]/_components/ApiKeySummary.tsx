@@ -2,7 +2,7 @@ import { Suspense } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Stack, Typography, Chip } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { VpnKey } from "@mui/icons-material";
 
 import { ApiKeyWithSecret } from "@/lib/api-keys";
@@ -10,6 +10,7 @@ import { ApiKeyWithSecret } from "@/lib/api-keys";
 import ApiKeySecretForm, {
   Props as ApiKeySecretFormProps,
 } from "./ApiKeySecretForm";
+import ApiKeyStatusChip from "@/components/ApiKeyStatusChip";
 
 export type Props = {
   apiKey: ApiKeyWithSecret;
@@ -39,10 +40,7 @@ function ApiKeyMetadataCard({ apiKey }: Props) {
         <Typography variant="body2" width="200px">
           {t("status")}
         </Typography>
-        <Chip
-          label={t(`statuses.${apiKey.status}`)}
-          color={apiKey.status === "active" ? "success" : "error"}
-        />
+        <ApiKeyStatusChip status={apiKey.status} />
       </Stack>
     </Stack>
   );

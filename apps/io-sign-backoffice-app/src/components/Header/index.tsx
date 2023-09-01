@@ -1,48 +1,39 @@
-import { getLoggedUser } from "@/lib/auth/user";
-import { getInstitutions, getProducts } from "@/lib/selfcare/api";
-import { useContext } from "react";
+import { useContext, use } from "react";
 
-import InstitutionContext from "@/context/institution";
-import { getConfig } from "@/config";
-
-import ClientHeader from "./ClientHeader";
-import { useTranslations } from "next-intl";
 import { RootLinkType } from "@pagopa/mui-italia";
 
-async function Content({
-  institutionId,
-  rootLink,
-}: {
-  institutionId: string;
-  rootLink: RootLinkType;
-}) {
-  const loggedUser = await getLoggedUser();
-  const [institutions, products] = await Promise.all([
-    getInstitutions(loggedUser.id),
-    getProducts(loggedUser.id, institutionId),
-  ]);
-  const config = getConfig();
-  return (
-    <ClientHeader
-      loggedUser={loggedUser}
-      institutions={institutions}
-      currentInstitutionId={institutionId}
-      products={products}
-      supportUrl={config.selfCare.portal.supportUrl}
-      documentationUrl={config.documentationUrl}
-      rootLink={rootLink}
-    />
-  );
-}
+import { getConfig } from "@/config";
+
+import { getLoggedUser } from "@/lib/auth/use-cases";
+import { getInstitutions } from "@/lib/institutions/use-cases";
+import InstitutionContext from "@/lib/institutions/context";
+
+import ClientHeader from "./ClientHeader";
 
 export default function Header({ rootLink }: { rootLink: RootLinkType }) {
   const institutionId = useContext(InstitutionContext);
-  if (!institutionId) {
-    throw new Error("...");
-  }
+  const loggedUser = use(getLoggedUser());
+  const institutions = use(getInstitutions());
+  const config = getConfig();
+  const products = [
+    {
+      id: "prod-io-sign",
+      title: "Firma con IO",
+      linkType: "internal" as const,
+      productUrl: "#",
+    },
+  ];
   return (
     <header>
-      <Content rootLink={rootLink} institutionId={institutionId} />
+      <ClientHeader
+        loggedUser={loggedUser}
+        institutions={institutions}
+        currentInstitutionId={institutionId}
+        products={products}
+        supportUrl={config.selfCare.portal.supportUrl}
+        documentationUrl={config.documentationUrl}
+        rootLink={rootLink}
+      />
     </header>
   );
 }

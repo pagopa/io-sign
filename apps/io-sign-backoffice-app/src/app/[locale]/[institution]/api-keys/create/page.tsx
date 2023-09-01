@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Alert, Stack } from "@mui/material";
 import { SvgIconComponent, VpnKey } from "@mui/icons-material";
 
-import { getInstitution } from "@/lib/selfcare/api";
+import { getInstitution } from "@/lib/institutions/use-cases";
 
 import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
 

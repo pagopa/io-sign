@@ -1,12 +1,7 @@
 import { Suspense, use } from "react";
 import { pick } from "lodash";
 
-import {
-  NextIntlClientProvider,
-  useLocale,
-  useMessages,
-  useTranslations,
-} from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { Stack } from "@mui/material";
 import { PeopleAlt, PinDrop, VpnKey } from "@mui/icons-material";
@@ -30,20 +25,6 @@ export default function ApiKeyDetailPage({
     getApiKeyWithSecret(params["api-key"], params["institution"])
   );
 
-  const locale = useLocale();
-  const messages = useMessages();
-
-  if (!messages) {
-    throw new Error("unable to fetch localized messages");
-  }
-
-  const clientMessages = pick(messages, [
-    "firmaconio.modals",
-    "firmaconio.apiKey.secret",
-    "firmaconio.apiKey.network",
-    "firmaconio.apiKey.testers",
-  ]);
-
   const apiKeysHref = `/${params.institution}/api-keys`;
 
   const headerProps: PageHeaderProps = {
@@ -60,25 +41,23 @@ export default function ApiKeyDetailPage({
   return (
     <Stack spacing={5}>
       <PageHeader {...headerProps} />
-      <NextIntlClientProvider locale={locale} messages={clientMessages}>
-        <ApiKeyProvider value={apiKey}>
-          <Suspense>
-            <ApiKeySummary apiKey={apiKey} />
+      <ApiKeyProvider value={apiKey}>
+        <Suspense>
+          <ApiKeySummary apiKey={apiKey} />
+          <ApiKeyEditableFieldCard
+            field="cidrs"
+            i18n={{ namespace: "firmaconio.apiKey.network" }}
+            icon={PinDrop}
+          />
+          {apiKey.environment === "test" && (
             <ApiKeyEditableFieldCard
-              field="cidrs"
-              i18n={{ namespace: "firmaconio.apiKey.network" }}
-              icon={PinDrop}
+              field="testers"
+              i18n={{ namespace: "firmaconio.apiKey.testers" }}
+              icon={PeopleAlt}
             />
-            {apiKey.environment === "test" && (
-              <ApiKeyEditableFieldCard
-                field="testers"
-                i18n={{ namespace: "firmaconio.apiKey.testers" }}
-                icon={PeopleAlt}
-              />
-            )}
-          </Suspense>
-        </ApiKeyProvider>
-      </NextIntlClientProvider>
+          )}
+        </Suspense>
+      </ApiKeyProvider>
     </Stack>
   );
 }

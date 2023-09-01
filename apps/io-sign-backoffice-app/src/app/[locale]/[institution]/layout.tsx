@@ -4,7 +4,7 @@ import { Stack, Box } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import ThemeRegistry from "@/components/ThemeRegistry";
-import InstitutionContext from "@/context/institution";
+import InstitutionContext from "@/lib/institutions/context";
 
 import Preview from "@/components/Preview";
 

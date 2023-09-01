@@ -1,4 +1,5 @@
-import { useLocale } from "next-intl";
+import { pick } from "lodash";
+import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
 
 export default function RootLayout({
@@ -12,9 +13,29 @@ export default function RootLayout({
   if (params.locale !== locale) {
     notFound();
   }
+
+  const messages = useMessages();
+
+  if (!messages) {
+    notFound();
+  }
+
+  const clientMessages = pick(messages, [
+    "firmaconio.modals",
+    "firmaconio.footer",
+    "firmaconio.apiKeys.alert",
+    "firmaconio.apiKeys.table",
+    "firmaconio.createApiKey.form",
+    "firmaconio.apiKey",
+  ]);
+
   return (
     <html lang={locale}>
-      <body>{children}</body>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={clientMessages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

@@ -1,12 +1,9 @@
 import { createServerContext } from "react";
-
-import { Institution } from "@/lib/selfcare/api";
+import { Institution } from "./index";
 
 // til: server side contexts sould be valued by JSON objects, so
 // the type "undefined" is not allowed here as "defaultValue"
-const context = createServerContext<Institution["id"] | null>(
+export default createServerContext<Institution["id"] | null>(
   "institution",
   null
 );
-
-export default context;

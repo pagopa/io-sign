@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import InstitutionContext from "@/context/institution";
+import InstitutionContext from "@/lib/institutions/context";
 
 export default function Preview({
   children,

@@ -15,7 +15,7 @@ type Props = {
   rootLink: RootLinkType;
   loggedUser: JwtUser;
   institutions: Array<PartyEntity>;
-  currentInstitutionId: string;
+  currentInstitutionId: string | null;
   products: Array<ProductEntity>;
   supportUrl: string;
   documentationUrl: string;
@@ -23,37 +23,28 @@ type Props = {
 
 export default function ClientHeader(props: Props) {
   const router = useRouter();
-  function handleAssistanceClick() {
-    window.location.href = props.supportUrl;
-  }
-  function handleDocumentationClick() {
+  const onAssistanceClick = () => (window.location.href = props.supportUrl);
+  const onDocumentationClick = () =>
     window.open(props.documentationUrl, "_blank", "noreferrer");
-  }
-  function handleLogout() {
-    router.push("/auth/logout");
-  }
-  function handleSelectedParty({ id }: PartyEntity) {
-    router.push(`/${id}`);
-  }
-  function handleSelectedProduct({ id }: ProductEntity) {
-    router.push(`/${id}`);
-  }
+  const onLogout = () => router.push("/auth/logout");
+  const onSelectedParty = ({ id }: PartyEntity) => router.push(`/${id}`);
+  const onSelectedProduct = ({ id }: ProductEntity) => {};
   return (
     <>
       <HeaderAccount
         rootLink={props.rootLink}
         loggedUser={props.loggedUser}
-        onAssistanceClick={handleAssistanceClick}
-        onDocumentationClick={handleDocumentationClick}
-        onLogout={handleLogout}
+        onAssistanceClick={onAssistanceClick}
+        onDocumentationClick={onDocumentationClick}
+        onLogout={onLogout}
       />
       <HeaderProduct
         partyList={props.institutions}
-        partyId={props.currentInstitutionId}
+        partyId={props.currentInstitutionId ?? undefined}
         productsList={props.products}
         productId="prod-io-sign"
-        onSelectedParty={handleSelectedParty}
-        onSelectedProduct={handleSelectedProduct}
+        onSelectedParty={onSelectedParty}
+        onSelectedProduct={onSelectedProduct}
       ></HeaderProduct>
     </>
   );

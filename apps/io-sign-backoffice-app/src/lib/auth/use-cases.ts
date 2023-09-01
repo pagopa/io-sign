@@ -1,15 +1,6 @@
-import { z } from "zod";
-import * as SelfCareIdentity from "@/lib/selfcare/id";
+import { userSchema } from "./index";
+import { verify } from "./selfcare";
 import { getPayloadFromSessionCookie, createSessionCookie } from "./session";
-
-export const User = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
-  firstName: z.string().nonempty(),
-  lastName: z.string().nonempty(),
-});
-
-export type User = z.infer<typeof User>;
 
 export class UnauthenticatedUserError extends Error {
   constructor(e: unknown) {
@@ -29,7 +20,7 @@ export let authenticate = async (idToken: string) => {
     name: firstName,
     family_name: lastName,
     organization: { id: institutionId },
-  } = await SelfCareIdentity.verify(idToken);
+  } = await verify(idToken);
   const user = {
     id,
     email,
@@ -57,7 +48,7 @@ if (process.env.NODE_ENV === "development") {
 export const getLoggedUser = async () => {
   try {
     const payload = await getPayloadFromSessionCookie();
-    return User.parse(payload);
+    return userSchema.parse(payload);
   } catch (e) {
     throw new UnauthenticatedUserError(e);
   }

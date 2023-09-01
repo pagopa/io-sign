@@ -1,6 +1,6 @@
 import { vi, it, expect, describe } from "vitest";
 
-import { getLoggedUser, authenticate } from "../user";
+import { getLoggedUser, authenticate } from "../use-cases";
 
 const mocks = vi.hoisted(() => ({
   user: {
@@ -19,13 +19,13 @@ const { getPayloadFromSessionCookie, createSessionCookie } = vi.hoisted(() => ({
   createSessionCookie: vi.fn(),
 }));
 
-vi.mock("../session", () => ({
+vi.mock("@/lib/auth/session", () => ({
   getPayloadFromSessionCookie,
   createSessionCookie,
 }));
 
-vi.mock("../self-care", () => ({
-  verifySelfCareIdToken: vi.fn(async () => ({
+vi.mock("@/lib/auth/selfcare", () => ({
+  verify: vi.fn(async () => ({
     uid: mocks.user.id,
     email: mocks.user.email,
     name: mocks.user.firstName,

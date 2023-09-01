@@ -1,54 +1,47 @@
+import { use, Suspense } from "react";
+
 import { useTranslations } from "next-intl";
-import { Link, Stack, Typography } from "@mui/material";
-import PageHeader from "@/components/PageHeader";
 
-import NextLink from "next/link";
+import {
+  Skeleton,
+  Stack,
+  Table,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
 
-import { Alert, Box, Button } from "@mui/material";
+import { Alert } from "@mui/material";
 
-import { Add } from "@mui/icons-material";
+import { listApiKeys } from "@/lib/api-keys/use-cases";
 
-export default function Page() {
+import ApiKeyListView from "./_components/ApiKeyListView";
+import ApiKeyEmptyListView from "./_components/ApiKeyEmptyListView";
+
+function ApiKeysPageHeader() {
   const t = useTranslations("firmaconio.apiKeys");
+  const props: PageHeaderProps = {
+    title: t("title"),
+    description: t("description"),
+  };
+  return <PageHeader {...props} />;
+}
+
+export default function ApiKeys({
+  params,
+}: {
+  params: { institution: string };
+}) {
+  const t = useTranslations("firmaconio.apiKeys");
+  const apiKeys = listApiKeys(params.institution);
   return (
-    <Stack spacing={6}>
-      <Stack spacing={5}>
-        <PageHeader title={t("title")} description={t("description")} />
-        <Alert severity="warning" variant="outlined">
-          Attualmente è possibile generare API Key solo per eseguire i test. Se
-          necessiti di una chiave di produzione, contattaci a
-          firmaconio-tech@pagopa.it
-        </Alert>
-      </Stack>
-      <Stack spacing={4}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="h6">API Key generate</Typography>
-          <Button
-            variant="contained"
-            href="api-keys/create"
-            LinkComponent={NextLink}
-            size="small"
-            startIcon={<Add />}
-          >
-            Genera API Key
-          </Button>
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          bgcolor="background.paper"
-          p={2}
-        >
-          <Typography variant="body2">
-            Non è presente ancora nessuna API Key per questo ente.
-          </Typography>
-        </Stack>
-      </Stack>
+    <Stack spacing={5}>
+      <ApiKeysPageHeader />
+      <Suspense fallback={<ApiKeyEmptyListView loading />}>
+        <ApiKeyListView apiKeys={apiKeys} />
+      </Suspense>
     </Stack>
   );
 }

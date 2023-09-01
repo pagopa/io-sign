@@ -15,7 +15,7 @@ import { LoadingButton } from "@mui/lab";
 
 import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
 import { createApiKey } from "@/lib/api-keys/client";
-import { Institution } from "@/lib/selfcare/api";
+import { Institution } from "@/lib/institutions";
 
 import NextLink from "next/link";
 

@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import Link from "next/link";
+
 import {
   Box,
   Divider,
@@ -10,16 +14,8 @@ import {
   Slide,
 } from "@mui/material";
 
-import Link from "next/link";
-
 import { ExitToApp, SvgIconComponent } from "@mui/icons-material";
-import {
-  useSelectedLayoutSegment,
-  useParams,
-  usePathname,
-} from "next/navigation";
-
-import React, { useEffect, useState } from "react";
+import { useSelectedLayoutSegment, usePathname } from "next/navigation";
 
 type NavItem = {
   title: string;
@@ -38,6 +34,9 @@ export default function Sidenav({ pages, external }: Props) {
 
   const [hideSidenav, setHideSidenav] = useState(false);
 
+  // due to layout limitations in app router, we need this hack
+  // to hide the sidenav in "api-keys/create" page
+  // todo: introduce a new top-level client component that manages the layout
   useEffect(() => {
     setHideSidenav(pathname.endsWith("/api-keys/create"));
   }, [pathname]);
