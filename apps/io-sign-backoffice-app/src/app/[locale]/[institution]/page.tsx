@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 
 import PageHeader from "@/components/PageHeader";
 import Preview from "@/components/Preview";
-import { VpnKey, VpnKeyOff } from "@mui/icons-material";
 
 export default function Index() {
   return (
@@ -17,7 +16,13 @@ export default function Index() {
 function Confirm() {
   const t = useTranslations("Index");
   return (
-    <Stack alignItems="center" justifyContent="center" flexGrow={1} spacing={3}>
+    <Stack
+      flexGrow={1}
+      alignItems="center"
+      justifyContent="center"
+      spacing={3}
+      height={"100%"}
+    >
       <IllusPaymentCompleted />
       <Stack spacing={2} alignItems="center">
         <Typography variant="h4">{t("title")}</Typography>

@@ -7,7 +7,7 @@
   },
   "Index": {
     "title": "Il tuo ente ha aderito",
-    "body": "Entro qualche giorno riceverai via email le API Key e le\n indicazioni per procedere. Se hai bisogno di supporto,\n contatta il tuo referente PagoPA o scrivi a \n <email>{supportl3}</email>",
+    "body": "Entro qualche giorno riceverai via email le API Key e le\n indicazioni per procedere. Se hai bisogno di supporto,\n contatta il tuo referente PagoPA o scrivi a \n <email>{l3SupportEmail}</email>",
     "cta": "Indietro"
   },
   "firmaconio": {
