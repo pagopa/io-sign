@@ -8,7 +8,7 @@ import {
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
-import { getToken } from "./tokenizer";
+import { getToken } from "../tokenizer";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
