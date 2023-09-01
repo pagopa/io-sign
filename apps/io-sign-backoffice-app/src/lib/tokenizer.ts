@@ -20,21 +20,3 @@ export const getTokenizerConfig = cache(() => {
   }
   return result.data;
 });
-
-export async function getTokenizerHealth() {
-  try {
-    const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } =
-      getTokenizerConfig();
-    const res = await fetch(pdvTokenizerApiBasePath, {
-      headers: {
-        "x-api-key": pdvTokenizerApiKey,
-      },
-      method: "HEAD",
-    });
-    if (!res.ok) {
-      throw new Error();
-    }
-  } catch {
-    throw "tokenizer";
-  }
-}
