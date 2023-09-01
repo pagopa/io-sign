@@ -18,11 +18,9 @@ export default function ApiKeyEmptyListView({ loading = false }: Props) {
       </Alert>
       <ApiKeyTableHeader showAction={!loading} />
       {loading ? (
-        <Stack
-          p={2}
-          bgcolor="background.paper"
-          children={<Skeleton variant="text" />}
-        />
+        <Stack p={2} bgcolor="background.paper">
+          <Skeleton variant="text" />
+        </Stack>
       ) : (
         <ApiKeyEmptyTable />
       )}

@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, useCallback, ChangeEvent } from "react";
 import { z } from "zod";
 
 export type Options = {
@@ -18,17 +18,20 @@ export function useEditableListForm({
     undefined
   );
 
-  const validate = (item: string) => {
-    const result = schema.safeParse(item);
-    if (!result.success) {
-      const issue = result.error.issues.at(0);
-      const message = issue
-        ? issue.message
-        : "Si è verificato un errore imprevisto";
-      return { success: false, error: { message } };
-    }
-    return { success: true };
-  };
+  const validate = useCallback(
+    (item: string) => {
+      const result = schema.safeParse(item);
+      if (!result.success) {
+        const issue = result.error.issues.at(0);
+        const message = issue
+          ? issue.message
+          : "Si è verificato un errore imprevisto";
+        return { success: false, error: { message } };
+      }
+      return { success: true };
+    },
+    [schema]
+  );
 
   const onClick = () => {
     const result = validate(input);
@@ -47,7 +50,7 @@ export function useEditableListForm({
       const result = validate(input);
       setError(result.success ? undefined : result.error);
     }
-  }, [input]);
+  }, [input, error, validate]);
 
   return { input, error, onClick, onChange };
 }

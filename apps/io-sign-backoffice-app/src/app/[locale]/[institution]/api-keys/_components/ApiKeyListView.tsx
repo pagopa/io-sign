@@ -18,22 +18,21 @@ type Props = {
 
 export default function ApiKeyListView(props: Props) {
   const apiKeys = use(props.apiKeys);
+  const t = useTranslations("firmaconio");
+  const [environment, setEnvironment] = useState<ApiKey["environment"]>("prod");
+
+  const apiKeysForEnvironment = useMemo(
+    () => apiKeys.filter((apiKey) => apiKey.environment === environment),
+    [apiKeys, environment]
+  );
 
   if (apiKeys.length === 0) {
     return <ApiKeyEmptyListView />;
   }
 
-  const t = useTranslations("firmaconio");
-  const [environment, setEnvironment] = useState<ApiKey["environment"]>("prod");
-
   const onChange = (e: unknown, env: ApiKey["environment"]) => {
     setEnvironment(env);
   };
-
-  const apiKeysForEnvironment = useMemo(
-    () => apiKeys.filter((apiKey) => apiKey.environment === environment),
-    [environment]
-  );
 
   const isProd = environment === "prod";
 

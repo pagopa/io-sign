@@ -35,7 +35,9 @@ export default function Layout({
             <Preview>
               <Sidenav />
             </Preview>
-            <Box p={3} flexGrow={1} children={children} />
+            <Box p={3} flexGrow={1}>
+              {children}
+            </Box>
           </Stack>
           <Footer rootLink={rootLink} />
         </Stack>

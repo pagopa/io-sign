@@ -50,7 +50,7 @@ export default function CreateApiKeyClientForm({
       "displayName",
       `${kebabCase(institution.name)}-${random}-${environment}`
     );
-  }, [institution.name, environment]);
+  }, [institution.name, environment, setValue]);
 
   const onSubmit = async (data: CreateApiKeyPayload) => {
     try {

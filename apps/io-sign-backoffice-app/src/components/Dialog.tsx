@@ -22,8 +22,9 @@ export default function Dialog({ open, children }: Props) {
           borderRadius: "4px",
           outline: 0,
         }}
-        children={children}
-      />
+      >
+        {children}
+      </Box>
     </Modal>
   );
 }

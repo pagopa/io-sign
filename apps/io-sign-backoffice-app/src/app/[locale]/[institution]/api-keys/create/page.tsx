@@ -49,11 +49,9 @@ export default function CreateApiKeyPage({
     <Stack spacing={5} sx={{ maxWidth: "calc(100% - 300px)" }}>
       <Suspense>
         <CreateApiKeyPageHeader parent={parent} />
-        <Alert
-          severity="warning"
-          variant="outlined"
-          children={t.rich("createApiKey.alert")}
-        />
+        <Alert severity="warning" variant="outlined">
+          {t.rich("createApiKey.alert")}
+        </Alert>
         <CreateApiKeyForm institution={institution}>
           <ApiKeyMetadataCard />
           <ApiKeyEditableFieldCard
