@@ -11,7 +11,7 @@ export default function Dialog({ open, children }: Props) {
     <Modal open={open} onClose={() => {}}>
       <Box
         sx={{
-          position: "absolute" as "absolute",
+          position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +44,12 @@ export default function CreateApiKeyClientForm({
 
   const environment = watch("environment", "test");
 
+  // Fills the form with a default value for "displayName"
+  // The default displayName is composed by:
+  // KEBAB-CASE(institution.name) + RANDOM CHARS + ENVIRONMENT.
+
+  // Since Math.random() is not pure, we need to run it inside
+  // useEffect hook, in order to avoid unwanted rendering behaviour
   useEffect(() => {
     const random = Math.random().toString(32).substring(3, 7);
     setValue(
@@ -57,7 +63,6 @@ export default function CreateApiKeyClientForm({
       const { id } = await createApiKey(data);
       router.push(`/${institution.id}/api-keys/${id}`);
     } catch (e) {
-      console.log(e);
       setShowError(true);
     }
   };

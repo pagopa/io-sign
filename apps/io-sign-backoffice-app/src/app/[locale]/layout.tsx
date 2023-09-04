@@ -1,7 +1,7 @@
-import { Link } from "@mui/material";
-import { pick } from "lodash";
-import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import { notFound } from "next/navigation";
+import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
+
+import { pick } from "lodash";
 
 export default function RootLayout({
   children,
@@ -14,13 +14,10 @@ export default function RootLayout({
   if (params.locale !== locale) {
     notFound();
   }
-
   const messages = useMessages();
-
   if (!messages) {
     notFound();
   }
-
   const clientMessages = pick(messages, [
     "firmaconio.modals",
     "firmaconio.footer",
@@ -30,7 +27,6 @@ export default function RootLayout({
     "firmaconio.createApiKey",
     "firmaconio.apiKey",
   ]);
-
   return (
     <html lang={locale}>
       <body>

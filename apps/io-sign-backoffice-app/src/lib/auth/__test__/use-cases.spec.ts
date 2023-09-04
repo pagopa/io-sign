@@ -31,8 +31,8 @@ vi.mock("@/lib/auth/selfcare", () => ({
     name: mocks.user.firstName,
     family_name: mocks.user.lastName,
     organization: mocks.organization,
-    iat: Date.now(),
-    desired_exp: Date.now() + 15 * 60 * 1000,
+    iat: 0,
+    desired_exp: 15 * 60,
   })),
 }));
 

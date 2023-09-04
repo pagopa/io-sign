@@ -10,7 +10,7 @@ import {
   upsertApiKeyField,
 } from "@/lib/api-keys/use-cases";
 
-import { ApiKey, apiKeySchema, apiKeyWithSecretSchema } from "../api-keys";
+import { ApiKey, apiKeySchema } from "../api-keys";
 
 type SerializedApiKey = Omit<ApiKey, "createdAt"> & {
   createdAt: string;
@@ -134,7 +134,7 @@ describe("createApiKey", () => {
 });
 
 describe("listApiKeys", () => {
-  it.only("should return API keys list", () => {
+  it("should return API keys list", () => {
     const serialized = [...mocks.apiKeys];
     const response = z.array(apiKeySchema).parse([...mocks.apiKeys]);
 

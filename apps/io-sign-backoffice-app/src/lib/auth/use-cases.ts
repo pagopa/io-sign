@@ -27,7 +27,7 @@ export let authenticate = async (idToken: string) => {
     firstName,
     lastName,
   };
-  const maxAge = (desired_exp - iat) / 1000;
+  const maxAge = desired_exp - iat;
   await createSessionCookie(user, maxAge);
   return { user, institutionId };
 };

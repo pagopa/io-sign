@@ -1,19 +1,9 @@
-import { use, Suspense } from "react";
+import { Suspense } from "react";
 
 import { useTranslations } from "next-intl";
 
-import {
-  Skeleton,
-  Stack,
-  Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Stack } from "@mui/material";
 import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
-
-import { Alert } from "@mui/material";
 
 import { listApiKeys } from "@/lib/api-keys/use-cases";
 
@@ -34,7 +24,6 @@ export default function ApiKeys({
 }: {
   params: { institution: string };
 }) {
-  const t = useTranslations("firmaconio.apiKeys");
   const apiKeys = listApiKeys(params.institution);
   return (
     <Stack spacing={5}>

@@ -28,7 +28,7 @@ export default function ClientHeader(props: Props) {
     window.open(props.documentationUrl, "_blank", "noreferrer");
   const onLogout = () => router.push("/auth/logout");
   const onSelectedParty = ({ id }: PartyEntity) => router.push(`/${id}`);
-  const onSelectedProduct = ({ id }: ProductEntity) => {};
+  const onSelectedProduct = () => {};
   return (
     <>
       <HeaderAccount

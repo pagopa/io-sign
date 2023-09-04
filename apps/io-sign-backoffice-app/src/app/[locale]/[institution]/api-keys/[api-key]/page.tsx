@@ -1,5 +1,4 @@
 import { Suspense, use } from "react";
-import { pick } from "lodash";
 
 import { useTranslations } from "next-intl";
 

@@ -10,10 +10,11 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { theme } from "@pagopa/mui-italia";
 
-import * as ReactIs from "react-is";
-
 // This implementation is from emotion-js
 // https://github.com/emotion-js/emotion/issues/2928#issuecomment-1319747902
+
+// It's required to make Emotion and MUI compatible with RSCs.
+
 export default function ThemeRegistry(props: {
   children: React.ReactNode;
   options: Options;

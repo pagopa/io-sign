@@ -29,7 +29,7 @@ const getSecret = cache(() => {
  * @param maxAge the number of seconds until the session cookie expires
  */
 export async function createSessionCookie(
-  payload: {},
+  payload: object,
   maxAge: number = 15 * 60
 ) {
   const jwt = new SignJWT({ ...payload })
@@ -59,8 +59,8 @@ function getSessionCookie(): { name: string; value: string } {
   return cookie;
 }
 
-export async function getPayloadFromSessionCookie(): Promise<{}> {
-  let payload: {};
+export async function getPayloadFromSessionCookie(): Promise<object> {
+  let payload: object;
   try {
     const cookie = getSessionCookie();
     const secret = getSecret();

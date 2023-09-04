@@ -4,7 +4,7 @@ import { verify } from "../selfcare";
 
 const { jwtVerify, createRemoteJWKSet } = vi.hoisted(() => ({
   jwtVerify: vi.fn(
-    async (): Promise<{}> => ({
+    async (): Promise<object> => ({
       payload: {
         uid: "42f7d28a-ccca-487d-8777-040b07b7e622",
         name: "Mario",
