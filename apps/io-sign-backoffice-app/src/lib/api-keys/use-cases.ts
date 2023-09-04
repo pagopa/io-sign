@@ -59,12 +59,13 @@ async function exposeApiKeySecret(apiKey: ApiKey): Promise<ApiKeyWithSecret> {
   return { ...apiKey, secret };
 }
 
-export async function* listApiKeys(institutionId: string) {
+export async function listApiKeys(institutionId: string) {
   try {
-    const apiKeys = getApiKeys(institutionId);
-    for await (const apiKey of apiKeys) {
-      yield exposeApiKeySecret(apiKey);
+    const apiKeys: ApiKey[] = [];
+    for await (const apiKey of getApiKeys(institutionId)) {
+      apiKeys.push(apiKey);
     }
+    return apiKeys;
   } catch (e) {
     throw new Error("unable to get the API keys", { cause: e });
   }

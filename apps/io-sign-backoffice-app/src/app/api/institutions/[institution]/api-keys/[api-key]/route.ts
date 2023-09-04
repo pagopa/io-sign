@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
-import { upsertApiKeyField } from "@/lib/api-keys/cosmos";
+import { upsertApiKeyField } from "@/lib/api-keys/use-cases";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),

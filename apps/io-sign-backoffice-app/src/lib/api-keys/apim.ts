@@ -1,6 +1,6 @@
 import { getApimClient } from "../apim";
 
-import { ApiKey, ApiKeyWithSecret } from "./index";
+import { ApiKey } from "./index";
 
 export async function createApiKeySubscription(
   apiKey: ApiKey

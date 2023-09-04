@@ -11,12 +11,12 @@ const ConfigFromEnvironment = z
   .transform((e) => ({
     selfCare: {
       portal: {
-        url: new URL(e.SELFCARE_URL),
-        supportUrl: new URL(e.SELFCARE_SUPPORT_URL),
-        logoutUrl: new URL(e.SELFCARE_LOGOUT_URL),
+        url: e.SELFCARE_URL,
+        supportUrl: e.SELFCARE_SUPPORT_URL,
+        logoutUrl: e.SELFCARE_LOGOUT_URL,
       },
     },
-    documentationUrl: new URL(e.DOCUMENTATION_URL),
+    documentationUrl: e.DOCUMENTATION_URL,
   }));
 
 export type Config = z.infer<typeof ConfigFromEnvironment>;
