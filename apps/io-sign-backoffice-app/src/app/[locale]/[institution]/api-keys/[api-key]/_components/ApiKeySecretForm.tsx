@@ -1,5 +1,8 @@
 "use client";
 
+// ApiKeySecretForm renders a form that gives user the ability
+// to show or copy secret (such as API Token or passwords).
+
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 

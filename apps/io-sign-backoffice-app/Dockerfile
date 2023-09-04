@@ -42,7 +42,6 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/entrypoint.sh .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/next.config.js .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/node_modules ./node_modules
 COPY --from=installer --chown=nextjs:nodejs /app/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app .
