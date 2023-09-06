@@ -49,9 +49,9 @@ class ApimProductClient {
       this.#subscriptionId
     }/resourceGroups/${
       this.#resourceGroupName
-    }/providers/Microsoft.ApiManagement/service/${this.#serviceName}`
-      .concat(path)
-      .concat("/?api-version=2022-08-01");
+    }/providers/Microsoft.ApiManagement/service/${
+      this.#serviceName
+    }${path}/?api-version=2022-08-01`;
 
     const resp = await fetch(url, {
       headers: {
