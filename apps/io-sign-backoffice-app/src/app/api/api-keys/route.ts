@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const parsedBody = createApiKeyPayloadSchema.parse(body);
-    const res = await createApiKey(parsedBody);
-    return NextResponse.json(res, { status: 201 });
+    const apiKeyId = await createApiKey(parsedBody);
+    return NextResponse.json({ id: apiKeyId }, { status: 201 });
   } catch (e) {
     if (e instanceof ZodError) {
       return NextResponse.json(

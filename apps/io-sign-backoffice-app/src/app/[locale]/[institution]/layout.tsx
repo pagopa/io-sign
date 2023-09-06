@@ -1,6 +1,47 @@
 import React from "react";
-import { Stack } from "@/components/mui";
+import { Stack, Box } from "@mui/material";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <Stack flexGrow={1}>{children}</Stack>;
+import { useTranslations } from "next-intl";
+
+import ThemeRegistry from "@/components/ThemeRegistry";
+import InstitutionContext from "@/lib/institutions/context";
+
+import Preview from "@/components/Preview";
+
+import Header from "@/components/Header";
+import Sidenav from "@/components/Sidenav";
+import Footer from "@/components/Footer";
+
+export default function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { institution: string };
+}) {
+  const t = useTranslations();
+  const rootLink = {
+    href: "https://pagopa.it",
+    ariaLabel: t("common.companyLink.ariaLabel"),
+    title: t("common.companyLink.title"),
+    label: "PagoPA S.p.A.",
+  };
+  return (
+    <ThemeRegistry options={{ key: "mui" }}>
+      <InstitutionContext.Provider value={params.institution}>
+        <Stack sx={{ height: "100vh" }}>
+          <Header rootLink={rootLink} />
+          <Stack direction="row" flexGrow={1}>
+            <Preview>
+              <Sidenav />
+            </Preview>
+            <Box p={3} flexGrow={1}>
+              {children}
+            </Box>
+          </Stack>
+          <Footer rootLink={rootLink} />
+        </Stack>
+      </InstitutionContext.Provider>
+    </ThemeRegistry>
+  );
 }

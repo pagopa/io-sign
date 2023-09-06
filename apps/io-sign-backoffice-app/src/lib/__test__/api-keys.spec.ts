@@ -1,5 +1,7 @@
 import { vi, describe, it, expect } from "vitest";
 
+import { z } from "zod";
+
 import {
   ApiKeyAlreadyExistsError,
   createApiKey,
@@ -8,7 +10,7 @@ import {
   upsertApiKeyField,
 } from "@/lib/api-keys/use-cases";
 
-import { ApiKey, apiKeyWithSecretSchema } from "../api-keys";
+import { ApiKey, apiKeySchema } from "../api-keys";
 
 type SerializedApiKey = Omit<ApiKey, "createdAt"> & {
   createdAt: string;
@@ -141,7 +143,8 @@ describe("createApiKey", () => {
 
 describe("listApiKeys", () => {
   it("should return API keys list", () => {
-    const mockResponse = [...mocks.apiKeys];
+    const serialized = [...mocks.apiKeys];
+    const response = z.array(apiKeySchema).parse([...mocks.apiKeys]);
 
     getCosmosContainerClient.mockReturnValueOnce({
       items: {
@@ -149,24 +152,15 @@ describe("listApiKeys", () => {
           getAsyncIterator: vi.fn().mockReturnValue({
             [Symbol.asyncIterator]: () => ({
               next: async () => ({
-                done: mockResponse.length === 0,
-                value: { resources: [mockResponse.shift()] },
+                done: serialized.length === 0,
+                value: { resources: [serialized.shift()] },
               }),
             }),
           }),
         })),
       },
     });
-
-    const mockedApiKey = apiKeyWithSecretSchema.parse({
-      ...mocks.apiKeys[0],
-      secret: mocks.secret,
-    });
-
-    expect(listApiKeys("institutionId").next()).resolves.toEqual({
-      value: mockedApiKey,
-      done: false,
-    });
+    expect(listApiKeys("institutionId")).resolves.toEqual(response);
   });
 });
 

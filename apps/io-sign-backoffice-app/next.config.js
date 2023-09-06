@@ -8,6 +8,9 @@ const nextConfig = {
       transform: "@mui/icons-material/{{member}}",
     },
   },
+  experimental: {
+    logging: "verbose",
+  },
   output: "standalone",
 };
 
