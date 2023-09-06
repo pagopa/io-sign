@@ -1,0 +1,1 @@
+export { getIssuer } from "./cosmos";
