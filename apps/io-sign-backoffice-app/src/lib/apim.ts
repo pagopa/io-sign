@@ -1,108 +1,108 @@
 import { z } from "zod";
 import { cache } from "react";
+import { ApiManagementClient } from "@azure/arm-apimanagement";
+import { DefaultAzureCredential } from "@azure/identity";
 
 const Config = z
   .object({
     AZURE_SUBSCRIPTION_ID: z.string().nonempty(),
-    APIM_ACCESS_TOKEN: z.string().nonempty(),
     APIM_RESOURCE_GROUP_NAME: z.string().nonempty(),
     APIM_SERVICE_NAME: z.string().nonempty(),
     APIM_PRODUCT_NAME: z.string().nonempty(),
   })
   .transform((env) => ({
-    azure: { subscriptionId: env.AZURE_SUBSCRIPTION_ID },
-    apim: {
-      accessToken: env.APIM_ACCESS_TOKEN,
-      resourceGroupName: env.APIM_RESOURCE_GROUP_NAME,
-      serviceName: env.APIM_SERVICE_NAME,
-      productName: env.APIM_PRODUCT_NAME,
-    },
+    subscriptionId: env.AZURE_SUBSCRIPTION_ID,
+    resourceGroupName: env.APIM_RESOURCE_GROUP_NAME,
+    serviceName: env.APIM_SERVICE_NAME,
+    productName: env.APIM_PRODUCT_NAME,
   }));
 
 type Config = z.infer<typeof Config>;
 
-type Method = "GET" | "POST" | "PUT" | "DELETE";
-
 class ApimProductClient {
-  #accessToken: string;
-  #subscriptionId: string;
-  #resourceGroupName: string;
-  #serviceName: string;
-  #productName: string;
+  #config: Config;
+  #apimClient: ApiManagementClient;
 
   constructor(config: Config) {
-    const {
-      azure: { subscriptionId },
-      apim: { accessToken, resourceGroupName, serviceName, productName },
-    } = config;
-    this.#subscriptionId = subscriptionId;
-    this.#accessToken = accessToken;
-    this.#resourceGroupName = resourceGroupName;
-    this.#serviceName = serviceName;
-    this.#productName = productName;
-  }
-
-  async #fetch(path: string, method: Method = "GET", body?: string) {
-    const url = `https://${
-      this.#serviceName
-    }.management.azure-api.net/subscriptions/${
-      this.#subscriptionId
-    }/resourceGroups/${
-      this.#resourceGroupName
-    }/providers/Microsoft.ApiManagement/service/${
-      this.#serviceName
-    }${path}/?api-version=2022-08-01`;
-
-    const resp = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: this.#accessToken,
-      },
-      method,
-      body,
-    });
-    if (!resp.ok) {
-      throw new Error("Something went wrong");
-    }
-    const json = await resp.json();
-    return json;
+    this.#config = config;
+    this.#apimClient = new ApiManagementClient(
+      new DefaultAzureCredential(),
+      this.#config.subscriptionId
+    );
   }
 
   async getSecret(id: string): Promise<string> {
-    const res = await this.#fetch(`/subscriptions/${id}/listSecrets`, "POST");
-    return z
-      .object({
-        primaryKey: z.string(),
-      })
-      .parse(res).primaryKey;
+    try {
+      const secret = await this.#apimClient.subscription.listSecrets(
+        this.#config.resourceGroupName,
+        this.#config.serviceName,
+        id
+      );
+      const parsed = z
+        .object({
+          primaryKey: z.string().nonempty(),
+        })
+        .parse(secret);
+      return parsed.primaryKey;
+    } catch (cause) {
+      throw new Error(
+        "Error obtaining the Api Management Subscription Secret",
+        { cause }
+      );
+    }
   }
 
   async createSubscription(id: string, displayName: string): Promise<string> {
-    const res = await this.#fetch(
-      `/subscriptions/${id}`,
-      "PUT",
-      JSON.stringify({
-        properties: {
+    try {
+      const subscription = await this.#apimClient.subscription.createOrUpdate(
+        this.#config.resourceGroupName,
+        this.#config.serviceName,
+        id,
+        {
           displayName,
-          scope: `/products/${this.#productName}`,
-        },
-      })
-    );
-    return z
-      .object({
-        properties: z.object({
-          primaryKey: z.string(),
-        }),
-      })
-      .parse(res).properties.primaryKey;
+          scope: `/products/${this.#config.productName}`,
+        }
+      );
+      const parsed = z
+        .object({
+          primaryKey: z.string().nonempty(),
+        })
+        .parse(subscription);
+      return parsed.primaryKey;
+    } catch (cause) {
+      throw new Error("Error creating the Api Management Subscription", {
+        cause,
+      });
+    }
   }
 
-  async deleteSubscription(subscriptionId: string): Promise<void> {
-    await this.#fetch(`/subscriptions/${subscriptionId}`, "DELETE");
+  async deleteSubscription(id: string): Promise<void> {
+    try {
+      await this.#apimClient.subscription.delete(
+        this.#config.resourceGroupName,
+        this.#config.serviceName,
+        id,
+        "*"
+      );
+    } catch (cause) {
+      throw new Error("Error deleting the Api Management Subscription", {
+        cause,
+      });
+    }
   }
 
   async getProduct() {
-    await this.#fetch(`/products/${this.#productName}`);
+    try {
+      await this.#apimClient.product.get(
+        this.#config.resourceGroupName,
+        this.#config.serviceName,
+        this.#config.productName
+      );
+    } catch (cause) {
+      throw new Error("Unable to get the Api Management Product", {
+        cause,
+      });
+    }
   }
 }
 
