@@ -3,8 +3,6 @@ import { useTranslations } from "next-intl";
 
 import { getConfig } from "@/config";
 
-import InstitutionContext from "@/lib/institutions/context";
-
 import {
   SupervisedUserCircleRounded,
   PeopleRounded,
@@ -17,7 +15,6 @@ import ClientSidenav from "./ClientSidenav";
 export default function Sidenav() {
   const t = useTranslations();
   const c = getConfig();
-  const institutionId = useContext(InstitutionContext);
   const items = [
     {
       title: t("firmaconio.overview.title"),

@@ -6,12 +6,15 @@ import { getConfig } from "@/config";
 
 import { getLoggedUser } from "@/lib/auth/use-cases";
 import { getInstitutions } from "@/lib/institutions/use-cases";
-import InstitutionContext from "@/lib/institutions/context";
 
 import ClientHeader from "./ClientHeader";
 
-export default function Header({ rootLink }: { rootLink: RootLinkType }) {
-  const institutionId = useContext(InstitutionContext);
+export type Props = {
+  institutionId: string;
+  rootLink: RootLinkType;
+};
+
+export default function Header({ rootLink, institutionId }: Props) {
   const loggedUser = use(getLoggedUser());
   const institutions = use(getInstitutions());
   const config = getConfig();

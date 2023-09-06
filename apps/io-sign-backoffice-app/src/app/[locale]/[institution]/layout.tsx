@@ -1,15 +1,11 @@
 import React from "react";
-import { Stack, Box } from "@mui/material";
+import { Stack } from "@mui/material";
 
 import { useTranslations } from "next-intl";
 
 import ThemeRegistry from "@/components/ThemeRegistry";
-import InstitutionContext from "@/lib/institutions/context";
-
-import Preview from "@/components/Preview";
 
 import Header from "@/components/Header";
-import Sidenav from "@/components/Sidenav";
 import Footer from "@/components/Footer";
 
 export default function Layout({
@@ -28,20 +24,11 @@ export default function Layout({
   };
   return (
     <ThemeRegistry options={{ key: "mui" }}>
-      <InstitutionContext.Provider value={params.institution}>
-        <Stack sx={{ height: "100vh" }}>
-          <Header rootLink={rootLink} />
-          <Stack direction="row" flexGrow={1}>
-            <Preview>
-              <Sidenav />
-            </Preview>
-            <Box p={3} flexGrow={1}>
-              {children}
-            </Box>
-          </Stack>
-          <Footer rootLink={rootLink} />
-        </Stack>
-      </InstitutionContext.Provider>
+      <Stack sx={{ height: "100vh" }}>
+        <Header institutionId={params.institution} rootLink={rootLink} />
+        {children}
+        <Footer rootLink={rootLink} />
+      </Stack>
     </ThemeRegistry>
   );
 }

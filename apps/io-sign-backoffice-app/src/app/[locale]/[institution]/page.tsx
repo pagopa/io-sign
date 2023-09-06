@@ -2,15 +2,16 @@ import { Stack, Typography, Button } from "@mui/material";
 import { IllusPaymentCompleted } from "@pagopa/mui-italia";
 import { useTranslations } from "next-intl";
 
-import PageHeader from "@/components/PageHeader";
-import Preview from "@/components/Preview";
+import Page from "@/components/Page";
 
-export default function Index() {
-  return (
-    <Preview fallback={<Confirm />}>
-      <Overview />
-    </Preview>
-  );
+export default function Index({ params }: { params: { institution: string } }) {
+  if (
+    process.env.NODE_ENV === "development" ||
+    params.institution === "4a4149af-172e-4950-9cc8-63ccc9a6d865"
+  ) {
+    return <Overview />;
+  }
+  return <Confirm />;
 }
 
 function Confirm() {
@@ -43,9 +44,14 @@ function Confirm() {
 
 function Overview() {
   const t = useTranslations("firmaconio.overview");
+
+  const header = {
+    title: t("title"),
+    description: t("description"),
+  };
+
   return (
-    <Stack spacing={3}>
-      <PageHeader title={t("title")} description={t("description")} />
+    <Page header={header}>
       <Stack p={2} spacing={2} bgcolor="background.paper">
         <Typography variant="body1">
           Ciao! 👋 Ti trovi in questa pagina, perché fai parte del test del
@@ -56,6 +62,6 @@ function Overview() {
           menu.
         </Typography>
       </Stack>
-    </Stack>
+    </Page>
   );
 }
