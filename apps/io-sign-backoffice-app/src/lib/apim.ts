@@ -21,105 +21,88 @@ const Config = z
 
 type Config = z.infer<typeof Config>;
 
+type Method = "GET" | "POST" | "PUT" | "DELETE";
+
 class ApimProductClient {
-  private accessToken: string;
-  private subscriptionId: string;
-  private resourceGroupName: string;
-  private serviceName: string;
-  private productName: string;
+  #accessToken: string;
+  #subscriptionId: string;
+  #resourceGroupName: string;
+  #serviceName: string;
+  #productName: string;
 
   constructor(config: Config) {
     const {
       azure: { subscriptionId },
       apim: { accessToken, resourceGroupName, serviceName, productName },
     } = config;
-    this.subscriptionId = subscriptionId;
-    this.accessToken = accessToken;
-    this.resourceGroupName = resourceGroupName;
-    this.serviceName = serviceName;
-    this.productName = productName;
+    this.#subscriptionId = subscriptionId;
+    this.#accessToken = accessToken;
+    this.#resourceGroupName = resourceGroupName;
+    this.#serviceName = serviceName;
+    this.#productName = productName;
+  }
+
+  async #fetch(path: string, method: Method = "GET", body?: string) {
+    const url = `https://${
+      this.#serviceName
+    }.management.azure-api.net/subscriptions/${
+      this.#subscriptionId
+    }/resourceGroups/${
+      this.#resourceGroupName
+    }/providers/Microsoft.ApiManagement/service/${this.#serviceName}`
+      .concat(path)
+      .concat("/?api-version=2022-08-01");
+
+    const resp = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: this.#accessToken,
+      },
+      method,
+      body,
+    });
+    if (!resp.ok) {
+      throw new Error("Something went wrong");
+    }
+    const json = await resp.json();
+    return json;
   }
 
   async getSecret(id: string): Promise<string> {
-    const url = `https://iosignbackofficedev.management.azure-api.net/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.ApiManagement/service/${this.serviceName}/subscriptions/${id}/listSecrets?api-version=2022-08-01`;
-
-    const res = await fetch(url, {
-      headers: {
-        Authorization: this.accessToken,
-      },
-      method: "POST",
-    });
-    if (!res.ok) {
-      throw new Error("error getting primary key on apim");
-    }
-
-    const body = await res.json();
-    const parsedBody = z
+    const res = await this.#fetch(`/subscriptions/${id}/listSecrets`, "POST");
+    return z
       .object({
         primaryKey: z.string(),
-        secondaryKey: z.string(),
       })
-      .parse(body);
-    return parsedBody.primaryKey;
+      .parse(res).primaryKey;
   }
 
   async createSubscription(id: string, displayName: string): Promise<string> {
-    const url = `https://iosignbackofficedev.management.azure-api.net/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.ApiManagement/service/${this.serviceName}/subscriptions/${id}?api-version=2022-08-01`;
-
-    const res = await fetch(url, {
-      headers: {
-        Authorization: this.accessToken,
-        Accept: "application/json, text/plain",
-        "Content-Type": "application/json",
-      },
-      method: "PUT",
-      body: JSON.stringify({
+    const res = await this.#fetch(
+      `/subscriptions/${id}`,
+      "PUT",
+      JSON.stringify({
         properties: {
           displayName,
-          scope: `/products/${this.productName}`,
+          scope: `/products/${this.#productName}`,
         },
-      }),
-    });
-    if (!res.ok) {
-      throw new Error("error creating subscription on apim");
-    }
-    const body = await res.json();
-    const parsedBody = z
+      })
+    );
+    return z
       .object({
         properties: z.object({
           primaryKey: z.string(),
         }),
       })
-      .parse(body);
-    return parsedBody.properties.primaryKey;
+      .parse(res).properties.primaryKey;
   }
 
   async deleteSubscription(subscriptionId: string): Promise<void> {
-    const url = `https://iosignbackofficedev.management.azure-api.net/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.ApiManagement/service/${this.serviceName}/subscriptions/${subscriptionId}?api-version=2022-08-01`;
-
-    const res = await fetch(url, {
-      headers: {
-        Authorization: this.accessToken,
-      },
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      throw new Error("error deleting subscription on apim");
-    }
+    await this.#fetch(`/subscriptions/${subscriptionId}`, "DELETE");
   }
 
   async getProduct() {
-    const url = `https://iosignbackofficedev.management.azure-api.net/subscriptions/${this.subscriptionId}/resourceGroups/${this.resourceGroupName}/providers/Microsoft.ApiManagement/service/${this.serviceName}/products/${this.productName}?api-version=2022-08-01`;
-
-    const res = await fetch(url, {
-      headers: {
-        Authorization: this.accessToken,
-      },
-      method: "GET",
-    });
-    if (!res.ok) {
-      throw new Error("error getting product on apim");
-    }
+    await this.#fetch(`/products/${this.#productName}`);
   }
 }
 

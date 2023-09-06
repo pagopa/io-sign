@@ -1,10 +1,11 @@
-import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
+import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
 
+const cosmosContainerName = "api-keys";
+
 export async function* getApiKeys(institutionId: string, displayName?: string) {
-  const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
     {
@@ -43,7 +44,6 @@ export async function apiKeyExists(
 }
 
 export async function insertApiKey(apiKey: ApiKey): Promise<void> {
-  const { cosmosContainerName } = getCosmosConfig();
   try {
     await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
   } catch (e) {
@@ -56,7 +56,6 @@ export async function getApiKey(
   institutionId: string
 ): Promise<ApiKey> {
   try {
-    const { cosmosContainerName } = getCosmosConfig();
     const { resource } = await getCosmosContainerClient(cosmosContainerName)
       .item(id, institutionId)
       .read();
@@ -82,5 +81,29 @@ export async function upsertApiKeyField<
     });
   } catch (e) {
     throw new Error(`unable to update the ${field} field`, { cause: e });
+  }
+}
+
+export async function getApiKeyById(id: string): Promise<ApiKey> {
+  try {
+    const { resources } = await getCosmosContainerClient(cosmosContainerName)
+      .items.query({
+        parameters: [
+          {
+            name: "@id",
+            value: id,
+          },
+        ],
+        query: "SELECT * FROM c where c.id = @id",
+      })
+      .fetchAll();
+    const apiKey = apiKeySchema
+      .array()
+      .length(1)
+      .transform((apiKeys) => apiKeys[0])
+      .parse(resources);
+    return apiKey;
+  } catch (e) {
+    throw new Error("unable to get the API key", { cause: e });
   }
 }
