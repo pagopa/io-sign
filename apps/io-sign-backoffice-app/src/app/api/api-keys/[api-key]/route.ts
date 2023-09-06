@@ -34,10 +34,8 @@ export async function GET(
   try {
     const apiKey = await getApiKeyById(params["api-key"]);
     if (request.nextUrl.searchParams.get("include") === "institution") {
-      const { id: institutionId, ...institution } = await getInstitution(
-        apiKey.institutionId
-      );
-      const { id, ...issuer } = await getIssuer(apiKey.institutionId);
+      const institution = await getInstitution(apiKey.institutionId);
+      const issuer = await getIssuer(apiKey.institutionId);
       return NextResponse.json(
         {
           ...apiKey,
