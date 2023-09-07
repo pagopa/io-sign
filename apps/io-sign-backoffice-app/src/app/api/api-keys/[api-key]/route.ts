@@ -1,6 +1,6 @@
 import { getApiKeyById } from "@/lib/api-keys/cosmos";
 import { getInstitution } from "@/lib/institutions/use-cases";
-import { getIssuer } from "@/lib/issuers/use-cases";
+import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
@@ -33,9 +33,23 @@ export async function GET(
   }
   try {
     const apiKey = await getApiKeyById(params["api-key"]);
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          title: "Not Found",
+          status: 404,
+        },
+        {
+          status: 404,
+          headers: {
+            "Content-Type": "application/problem+json",
+          },
+        }
+      );
+    }
     if (request.nextUrl.searchParams.get("include") === "institution") {
       const institution = await getInstitution(apiKey.institutionId);
-      const issuer = await getIssuer(apiKey.institutionId);
+      const issuer = await getIssuerByInstitution(institution);
       return NextResponse.json(
         {
           ...apiKey,

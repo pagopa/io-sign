@@ -1,28 +1,29 @@
-import { Issuer, issuerSchema } from ".";
-import { getCosmosContainerClient } from "../cosmos";
+import { Issuer, issuerSchema } from "@/lib/issuers";
+import { getCosmosContainerClient } from "@/lib/cosmos";
 
-const cosmosContainerName = "issuers";
-
-export async function getIssuer(institutionId: string): Promise<Issuer> {
+export async function insertIssuer(issuer: Issuer) {
   try {
-    const { resources } = await getCosmosContainerClient(cosmosContainerName)
-      .items.query({
-        parameters: [
-          {
-            name: "@institutionId",
-            value: institutionId,
-          },
-        ],
-        query: "SELECT * FROM c where c.institutionId = @institutionId",
-      })
-      .fetchAll();
-    const issuer = issuerSchema
-      .array()
-      .length(1)
-      .transform((issuers) => issuers[0])
-      .parse(resources);
+    const cosmos = getCosmosContainerClient("issuers");
+    await cosmos.items.create(issuer);
     return issuer;
-  } catch (e) {
-    throw new Error("unable to get the issuer", { cause: e });
+  } catch (cause) {
+    throw new Error("Error inserting issuer on DB", {
+      cause,
+    });
+  }
+}
+
+export async function getIssuer({
+  id,
+  institutionId,
+}: Pick<Issuer, "id" | "institutionId">) {
+  try {
+    const cosmos = getCosmosContainerClient("issuers");
+    const item = await cosmos.item(id, institutionId).read();
+    return issuerSchema.parse(item.resource);
+  } catch (cause) {
+    throw new Error("Error getting issuer on DB", {
+      cause,
+    });
   }
 }

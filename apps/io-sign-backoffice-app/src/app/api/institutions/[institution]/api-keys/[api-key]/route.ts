@@ -4,6 +4,7 @@ import { z, ZodError } from "zod";
 
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
 import { upsertApiKeyField } from "@/lib/api-keys/use-cases";
+import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
@@ -68,20 +69,12 @@ export async function PATCH(
     return new Response(null, { status: 204 });
   } catch (e) {
     if (e instanceof ZodError) {
-      return NextResponse.json(
-        {
-          type: "/problem/validation-error",
-          title: "Validation Error",
-          detail: "Your request didn't validate",
-          violations: e.issues,
+      return NextResponse.json(ValidationProblem(e), {
+        status: 422,
+        headers: {
+          "Content-Type": "application/problem+json",
         },
-        {
-          status: 422,
-          headers: {
-            "Content-Type": "application/problem+json",
-          },
-        }
-      );
+      });
     }
     return NextResponse.json(
       {
