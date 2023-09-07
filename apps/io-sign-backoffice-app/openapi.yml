@@ -8,7 +8,7 @@ servers:
 security:
   - SubscriptionKey: []
 paths:
-  /issuers/{subscriptionId}:
+  /api-keys/{subscriptionId}:
     get:
       operationId: getIssuer
       tags:
