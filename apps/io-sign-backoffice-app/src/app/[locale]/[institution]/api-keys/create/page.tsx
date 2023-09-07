@@ -60,7 +60,7 @@ export default function CreateApiKeyPage({
           />
           <ApiKeyEditableFieldCard
             field="testers"
-            i18n={{ namespace: "firmaconio.createApiKey.form.network" }}
+            i18n={{ namespace: "firmaconio.createApiKey.form.testers" }}
           />
         </CreateApiKeyForm>
       </Suspense>

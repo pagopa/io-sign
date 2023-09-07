@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   ApiKeyAlreadyExistsError,
   createApiKey,
+  getApiKeyById,
   getApiKeyWithSecret,
   listApiKeys,
   upsertApiKeyField,
@@ -38,10 +39,7 @@ const { patchItem } = vi.hoisted(() => ({
   patchItem: vi.fn(),
 }));
 
-const { getCosmosConfig, getCosmosContainerClient } = vi.hoisted(() => ({
-  getCosmosConfig: vi.fn().mockReturnValue({
-    cosmosContainerName: "cosmosContainerName",
-  }),
+const { getCosmosContainerClient } = vi.hoisted(() => ({
   getCosmosContainerClient: vi.fn().mockReturnValue({
     items: {
       query: vi.fn().mockResolvedValue({}),
@@ -66,7 +64,6 @@ const { getApimClient } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/cosmos", () => ({
-  getCosmosConfig,
   getCosmosContainerClient,
 }));
 
@@ -182,5 +179,22 @@ describe("upsertApiKeyField", () => {
         },
       ],
     });
+  });
+});
+
+describe("getApiKeyById", () => {
+  it("should return API key", async () => {
+    const response = z.array(apiKeySchema).parse([...mocks.apiKeys]);
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          fetchAll: vi.fn().mockResolvedValue({
+            resources: mocks.apiKeys,
+          }),
+        })),
+      },
+    });
+    expect(getApiKeyById("id")).resolves.toEqual(response[0]);
   });
 });

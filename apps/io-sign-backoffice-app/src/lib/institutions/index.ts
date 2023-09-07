@@ -8,12 +8,15 @@ export const institutionSchema = z
   .object({
     id: z.string().uuid(),
     description: z.string().nonempty(),
+    taxCode: z.string().nonempty(),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
   })
-  .transform(({ id, description: name, userProductRoles, logo }) => ({
+  .transform(({ id, description: name, taxCode, userProductRoles, logo }) => ({
     id,
     name,
+    taxCode,
+    vatNumber: taxCode,
     productRole: userProductRoles.at(0) ?? "Operatore",
     logo,
   }));
