@@ -1,16 +1,9 @@
 import { ulid } from "ulid";
-import { z } from "zod";
 
 import { Institution } from "@/lib/institutions";
 
-import { issuerSchema } from "./index";
+import { CreateIssuerPayload } from "./index";
 import { insertIssuer, getIssuer } from "./cosmos";
-
-export const createIssuerPayloadSchema = issuerSchema.pick({
-  id: true,
-  institutionId: true,
-  supportEmail: true,
-});
 
 export async function createIssuer(payload: CreateIssuerPayload) {
   return insertIssuer({
@@ -19,8 +12,6 @@ export async function createIssuer(payload: CreateIssuerPayload) {
     ...payload,
   });
 }
-
-export type CreateIssuerPayload = z.infer<typeof createIssuerPayloadSchema>;
 
 export function getIssuerByInstitution({
   id: institutionId,
