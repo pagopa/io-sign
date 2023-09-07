@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createIssuer, createIssuerPayloadSchema } from "@/lib/issuers/actions";
 import { ZodError } from "zod";
 import { ValidationProblem } from "@/lib/api/responses";
+
+import {
+  createIssuer,
+  createIssuerPayloadSchema,
+} from "@/lib/issuers/use-cases";
 
 export async function POST(request: NextRequest) {
   try {

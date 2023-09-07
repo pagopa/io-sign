@@ -1,6 +1,6 @@
 import { getApiKeyById } from "@/lib/api-keys/cosmos";
 import { getInstitution } from "@/lib/institutions/use-cases";
-import { getIssuer } from "@/lib/issuers/use-cases";
+import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
@@ -35,7 +35,7 @@ export async function GET(
     const apiKey = await getApiKeyById(params["api-key"]);
     if (request.nextUrl.searchParams.get("include") === "institution") {
       const institution = await getInstitution(apiKey.institutionId);
-      const issuer = await getIssuer(apiKey.institutionId);
+      const issuer = await getIssuerByInstitution(institution);
       return NextResponse.json(
         {
           ...apiKey,

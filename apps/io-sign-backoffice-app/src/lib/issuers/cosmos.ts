@@ -1,5 +1,5 @@
 import { Issuer, issuerSchema } from "@/lib/issuers";
-import { getCosmosContainerClient } from "../cosmos";
+import { getCosmosContainerClient } from "@/lib/cosmos";
 
 export async function insertIssuer(issuer: Issuer) {
   try {
