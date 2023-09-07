@@ -33,6 +33,20 @@ export async function GET(
   }
   try {
     const apiKey = await getApiKeyById(params["api-key"]);
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          title: "Not Found",
+          status: 404,
+        },
+        {
+          status: 404,
+          headers: {
+            "Content-Type": "application/problem+json",
+          },
+        }
+      );
+    }
     if (request.nextUrl.searchParams.get("include") === "institution") {
       const institution = await getInstitution(apiKey.institutionId);
       const issuer = await getIssuerByInstitution(institution);

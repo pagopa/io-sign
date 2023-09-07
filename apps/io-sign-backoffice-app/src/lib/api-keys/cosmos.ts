@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
@@ -69,7 +71,7 @@ export async function upsertApiKeyField<
   F extends keyof Pick<ApiKey, "cidrs" | "testers">
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
-    const cosmos = getCosmosContainerClient("api-keys");
+    const cosmos = getCosmosContainerClient(cosmosContainerName);
     await cosmos.item(id, institutionId).patch({
       operations: [
         {
@@ -84,25 +86,11 @@ export async function upsertApiKeyField<
   }
 }
 
-export async function getApiKeyById(id: string): Promise<ApiKey> {
+export async function getApiKeyById(id: string): Promise<ApiKey | undefined> {
   try {
-    const { resources } = await getCosmosContainerClient(cosmosContainerName)
-      .items.query({
-        parameters: [
-          {
-            name: "@id",
-            value: id,
-          },
-        ],
-        query: "SELECT * FROM c where c.id = @id",
-      })
-      .fetchAll();
-    const apiKey = apiKeySchema
-      .array()
-      .length(1)
-      .transform((apiKeys) => apiKeys[0])
-      .parse(resources);
-    return apiKey;
+    const cosmos = getCosmosContainerClient(cosmosContainerName);
+    const response = await cosmos.item(id).read<ApiKey>();
+    return apiKeySchema.or(z.undefined()).parse(response.resource);
   } catch (e) {
     throw new Error("unable to get the API key", { cause: e });
   }
