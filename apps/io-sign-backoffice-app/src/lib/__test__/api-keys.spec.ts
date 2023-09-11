@@ -184,17 +184,16 @@ describe("upsertApiKeyField", () => {
 
 describe("getApiKeyById", () => {
   it("should return API key", async () => {
-    const response = z.array(apiKeySchema).parse([...mocks.apiKeys]);
-
-    getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          fetchAll: vi.fn().mockResolvedValue({
-            resources: mocks.apiKeys,
-          }),
-        })),
-      },
+    const apiKey = apiKeySchema.parse(mocks.apiKeys[0]);
+    expect(getApiKeyById("id")).resolves.toEqual(apiKey);
+  });
+  it("should return undefined when API Key is not found", async () => {
+    getCosmosContainerClient.mockReturnValue({
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: undefined }),
+      }),
     });
-    expect(getApiKeyById("id")).resolves.toEqual(response[0]);
+    const maybeApiKey = await getApiKeyById("does-not-exists");
+    expect(maybeApiKey).toBeUndefined();
   });
 });
