@@ -149,7 +149,7 @@ export const makeGetIssuerByVatNumber =
 
 export const makeGetIssuerBySubscriptionId =
   (_db: cosmos.Database): GetIssuerBySubscriptionId =>
-  (subscriptionId: string) =>
+  (subscriptionId) =>
     pipe(
       getConfigFromEnvironment(process.env),
       TE.fromEither,
