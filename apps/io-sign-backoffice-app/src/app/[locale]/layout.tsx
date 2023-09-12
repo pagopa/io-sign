@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
-import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
+import { useLocale, useMessages } from "next-intl";
+
+import IntlClientProvider from "@/i18n/IntlClientProvider";
 
 import { pick } from "lodash";
+import ThemeRegistry from "@/components/ThemeRegistry";
 
 export default function RootLayout({
   children,
@@ -19,20 +22,24 @@ export default function RootLayout({
     notFound();
   }
   const clientMessages = pick(messages, [
+    "firmaconio.a11y",
     "firmaconio.modals",
     "firmaconio.footer",
+    "firmaconio.tos",
     "firmaconio.apiKeys.list",
     "firmaconio.apiKeys.alert",
     "firmaconio.apiKeys.table",
     "firmaconio.createApiKey",
     "firmaconio.apiKey",
+    "firmaconio.overview.title",
+    "firmaconio.apiKeys.title",
   ]);
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider locale={locale} messages={clientMessages}>
-          {children}
-        </NextIntlClientProvider>
+        <IntlClientProvider intl={{ locale, messages: clientMessages }}>
+          <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
+        </IntlClientProvider>
       </body>
     </html>
   );
