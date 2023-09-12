@@ -11,7 +11,7 @@ export default function Page(props: Props) {
     <PageContent header={props.header}>{props.children}</PageContent>
   );
   if (props.hideSidenav) {
-    return <Container>{content}</Container>;
+    return <Container sx={{ flexGrow: 1 }}>{content}</Container>;
   }
   return (
     <Stack direction="row" flexGrow={1}>

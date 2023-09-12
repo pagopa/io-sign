@@ -9,7 +9,7 @@ export type Props = {
 
 export default function PageContent({ header, children }: Props) {
   return (
-    <Stack p={3} spacing={5} flexGrow={1}>
+    <Stack p={3} spacing={5} flexGrow={1} height="100%">
       {header && <PageHeader {...header} />}
       {children}
     </Stack>
