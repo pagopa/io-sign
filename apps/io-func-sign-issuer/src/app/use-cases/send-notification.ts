@@ -42,7 +42,7 @@ const requestToSignMessage: MakeMessageContent =
       dossier.title
     }.\n\n\nHai tempo fino al ${format(
       signatureRequest.expiresAt,
-      "dd/MM/yyyy"
+      "dd/MM/yyyy HH:mm"
     )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
     }](mailto:${signatureRequest.issuerEmail}).`,
