@@ -28,11 +28,12 @@ const Claims = z.object({
   // issued at (in ms)
   iat: z.number(),
   uid: z.string().uuid(),
-  email: z.string().email(),
+  email: z.string().email().optional(),
   name: z.string().nonempty(),
   family_name: z.string().nonempty(),
   organization: z.object({
     id: z.string().uuid(),
+    name: z.string().nonempty(),
   }),
   // "desired_exp" is a custom claim, issued by self care
   // that has the purpose to "syncronize" session duration
