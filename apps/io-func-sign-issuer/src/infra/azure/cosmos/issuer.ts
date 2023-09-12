@@ -23,19 +23,10 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 import { Issuer } from "@io-sign/io-sign/issuer";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import {
-  defaultHeader,
-  isSuccessful,
-  responseToJson,
-} from "@io-sign/io-sign/infra/client-utils";
-import { getConfigFromEnvironment } from "../../../app/config";
-import {
-  ApiKey,
   GetIssuerBySubscriptionId,
   GetIssuerByVatNumber,
   IssuerRepository,
-  getIssuerEnvironment,
 } from "../../../issuer";
 import { IssuerByVatNumberModel } from "./issuer-by-vat-number";
 
@@ -148,53 +139,12 @@ export const makeGetIssuerByVatNumber =
     );
 
 export const makeGetIssuerBySubscriptionId =
-  (_db: cosmos.Database): GetIssuerBySubscriptionId =>
+  (db: cosmos.Database): GetIssuerBySubscriptionId =>
   (subscriptionId) =>
     pipe(
-      getConfigFromEnvironment(process.env),
-      TE.fromEither,
-      TE.chain(({ backOffice: { basePath, apiKey } }) =>
-        pipe(
-          TE.tryCatch(
-            () =>
-              makeFetchWithTimeout()(
-                `${basePath}/api-keys/${subscriptionId}?include=institution`,
-                {
-                  method: "GET",
-                  headers: {
-                    ...defaultHeader,
-                    "Ocp-Apim-Subscription-Key": apiKey,
-                  },
-                }
-              ),
-            E.toError
-          )
-        )
-      ),
-      TE.filterOrElse(
-        isSuccessful,
-        () => new Error("The attempt to get issuer from back office failed.")
-      ),
-      TE.chain(responseToJson(ApiKey, "Invalid format for institution")),
-      TE.map(
-        ({
-          id,
-          institutionId,
-          environment,
-          institution: { name, vatNumber },
-          issuer: { id: issuerId, supportEmail },
-        }) => ({
-          id: issuerId,
-          subscriptionId: id,
-          email: supportEmail,
-          description: name,
-          internalInstitutionId: institutionId,
-          environment: getIssuerEnvironment(environment, institutionId),
-          vatNumber,
-          department: "",
-        })
-      ),
-      TE.map(O.some)
+      new IssuerModel(db),
+      (model) => model.findBySubscriptionId(subscriptionId),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 // END
 

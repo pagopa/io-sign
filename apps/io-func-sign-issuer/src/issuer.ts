@@ -3,21 +3,13 @@ import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as O from "fp-ts/lib/Option";
-import * as E from "fp-ts/lib/Either";
 
 import { pipe } from "fp-ts/lib/function";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import {
-  defaultHeader,
-  isSuccessful,
-  responseToJson,
-} from "@io-sign/io-sign/infra/client-utils";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Id } from "@io-sign/io-sign/id";
-import { getConfigFromEnvironment } from "./app/config";
 
 export type IssuerRepository = {
   getByVatNumber: (
@@ -84,50 +76,14 @@ export const getIssuerBySubscriptionId =
   (
     subscriptionId: Issuer["subscriptionId"]
   ): RTE.ReaderTaskEither<IssuerEnvironment, Error, Issuer> =>
-  ({ issuerRepository: _repo }) =>
+  ({ issuerRepository: repo }) =>
     pipe(
-      getConfigFromEnvironment(process.env),
-      TE.fromEither,
-      TE.chain(({ backOffice: { basePath, apiKey } }) =>
-        pipe(
-          TE.tryCatch(
-            () =>
-              makeFetchWithTimeout()(
-                `${basePath}/api-keys/${subscriptionId}?include=institution`,
-                {
-                  method: "GET",
-                  headers: {
-                    ...defaultHeader,
-                    "Ocp-Apim-Subscription-Key": apiKey,
-                  },
-                }
-              ),
-            E.toError
-          )
+      subscriptionId,
+      repo.getBySubscriptionId.bind(repo),
+      TE.chain(
+        TE.fromOption(
+          () => new EntityNotFoundError("The specified issuer was not found")
         )
-      ),
-      TE.filterOrElse(
-        isSuccessful,
-        () => new Error("The attempt to get issuer from back office failed.")
-      ),
-      TE.chain(responseToJson(ApiKey, "Invalid format for institution")),
-      TE.map(
-        ({
-          id,
-          institutionId,
-          environment,
-          institution: { name, vatNumber },
-          issuer: { id: issuerId, supportEmail },
-        }) => ({
-          id: issuerId,
-          subscriptionId: id,
-          email: supportEmail,
-          description: name,
-          internalInstitutionId: institutionId,
-          environment: getIssuerEnvironment(environment, institutionId),
-          vatNumber,
-          department: "",
-        })
       )
     );
 
