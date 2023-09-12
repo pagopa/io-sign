@@ -49,3 +49,25 @@ export async function getToken(pii: string): Promise<string> {
     .parse(body);
   return parsedBody.token;
 }
+
+export async function getTokenizerHealth() {
+  try {
+    const token = "7af2e3e7-4923-4595-b0fe-aba33d8a7325";
+    const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } =
+      getTokenizerConfig();
+    const res = await fetch(
+      `${pdvTokenizerApiBasePath}/tokenizer/v1/tokens/${token}/pii`,
+      {
+        headers: {
+          "x-api-key": pdvTokenizerApiKey,
+        },
+        method: "GET",
+      }
+    );
+    if (!res.ok) {
+      throw new Error();
+    }
+  } catch {
+    throw "tokenizer";
+  }
+}
