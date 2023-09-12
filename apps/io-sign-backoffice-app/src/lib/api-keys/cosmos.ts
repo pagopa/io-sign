@@ -4,6 +4,7 @@ import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
+import { getToken } from "../tokenizer";
 
 const cosmosContainerName = "api-keys";
 
@@ -72,12 +73,16 @@ export async function upsertApiKeyField<
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
     const cosmos = getCosmosContainerClient(cosmosContainerName);
+    const value =
+      field === "testers"
+        ? await Promise.all(newValue.map(getToken))
+        : newValue;
     await cosmos.item(id, institutionId).patch({
       operations: [
         {
           path: `/${field}`,
           op: "replace",
-          value: newValue,
+          value,
         },
       ],
     });
