@@ -1,7 +1,8 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import { ZodError, z } from "zod";
 
-import { insertTOSAcceptance } from "@/lib/consents/cosmos";
-import { NextRequest, NextResponse } from "next/server";
+import { insertTOSAcceptance } from "@/lib/consents/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
 
 export const schema = z.object({
