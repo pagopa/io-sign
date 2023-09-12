@@ -35,3 +35,5 @@ export const productSchema = z
     productUrl,
     linkType: "external" as const,
   }));
+
+export type Product = z.infer<typeof productSchema>;
