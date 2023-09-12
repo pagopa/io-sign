@@ -40,7 +40,9 @@ function ApiKeyMetadataCard({ apiKey }: Props) {
         <Typography variant="body2" width="200px">
           {t("status")}
         </Typography>
-        <ApiKeyStatusChip status={apiKey.status} />
+        <Suspense>
+          <ApiKeyStatusChip status={apiKey.status} />
+        </Suspense>
       </Stack>
     </Stack>
   );

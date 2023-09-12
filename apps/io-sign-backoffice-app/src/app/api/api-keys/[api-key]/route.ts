@@ -49,6 +49,9 @@ export async function GET(
     }
     if (request.nextUrl.searchParams.get("include") === "institution") {
       const institution = await getInstitution(apiKey.institutionId);
+      if (!institution) {
+        throw new Error("Institution not found");
+      }
       const issuer = await getIssuerByInstitution(institution);
       return NextResponse.json(
         {

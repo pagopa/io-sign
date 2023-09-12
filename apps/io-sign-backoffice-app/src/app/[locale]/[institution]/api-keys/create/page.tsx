@@ -12,6 +12,7 @@ import Page, { Props as PageProps } from "@/components/Page";
 import CreateApiKeyForm from "./_components/CreateApiKeyForm";
 import ApiKeyMetadataCard from "./_components/ApiKeyMetadataCard";
 import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
+import { notFound } from "next/navigation";
 
 export default function CreateApiKeyPage({
   params,
@@ -33,6 +34,9 @@ export default function CreateApiKeyPage({
     },
   };
   const institution = use(getInstitution(params.institution));
+  if (!institution) {
+    notFound();
+  }
   return (
     <Page header={header} hideSidenav>
       <Suspense>

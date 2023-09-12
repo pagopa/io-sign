@@ -1,21 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
+import { ZodError, z } from "zod";
 
-import { ZodError } from "zod";
+import { insertTOSAcceptance } from "@/lib/consents/cosmos";
+import { NextRequest, NextResponse } from "next/server";
 import { ValidationProblem } from "@/lib/api/responses";
 
-import { createIssuer } from "@/lib/issuers/use-cases";
-import { createIssuerPayloadSchema } from "@/lib/issuers";
+export const schema = z.object({
+  institutionId: z.string().uuid(),
+  userId: z.string().uuid(),
+});
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const payload = createIssuerPayloadSchema.parse(body);
-    const issuer = await createIssuer(payload);
-    return NextResponse.json(issuer, {
-      status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const { institutionId, userId } = z
+      .object({
+        institutionId: z.string().uuid(),
+        userId: z.string().uuid(),
+      })
+      .parse(body);
+    await insertTOSAcceptance(userId, institutionId);
+    return new Response(null, {
+      status: 204,
     });
   } catch (e) {
     if (e instanceof ZodError) {
