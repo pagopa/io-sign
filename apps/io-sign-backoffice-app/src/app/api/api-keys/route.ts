@@ -1,13 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
+import { ZodError } from "zod";
 
 import { createApiKeyPayloadSchema } from "@/lib/api-keys";
-
 import {
   createApiKey,
   ApiKeyAlreadyExistsError,
 } from "@/lib/api-keys/use-cases";
-
-import { ZodError } from "zod";
+import { ValidationProblem } from "@/lib/api/responses";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,18 +16,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ id: apiKeyId }, { status: 201 });
   } catch (e) {
     if (e instanceof ZodError) {
-      return NextResponse.json(
-        {
-          type: "/problem/validation-error",
-          title: "Validation Error",
-          detail: "Your request didn't validate",
-          violations: e.issues,
-        },
-        {
-          status: 422,
-          headers: { "Content-Type": "application/problem+json" },
-        }
-      );
+      return NextResponse.json(ValidationProblem(e), {
+        status: 422,
+        headers: { "Content-Type": "application/problem+json" },
+      });
     }
     if (e instanceof ApiKeyAlreadyExistsError) {
       return NextResponse.json(

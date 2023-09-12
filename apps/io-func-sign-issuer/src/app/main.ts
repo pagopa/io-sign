@@ -26,7 +26,7 @@ import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
-import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
+import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
 import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
@@ -159,7 +159,10 @@ export const CreateIssuer = makeCreateIssuerFunction(
   config.slack
 );
 
-const issuerRepository = new CosmosDbIssuerRepository(database);
+const issuerRepository = new BackOfficeIssuerRepository(
+  config.backOffice.basePath,
+  config.backOffice.apiKey
+);
 const dossierRepository = new CosmosDbDossierRepository(database);
 const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
 const signatureRequestRepository = new CosmosDbSignatureRequestRepository(

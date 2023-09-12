@@ -22,6 +22,7 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import * as RA from "fp-ts/lib/ReadonlyArray";
+
 import {
   GetIssuerBySubscriptionId,
   GetIssuerByVatNumber,
@@ -136,6 +137,7 @@ export const makeGetIssuerByVatNumber =
       ),
       TE.mapLeft(toCosmosDatabaseError)
     );
+
 export const makeGetIssuerBySubscriptionId =
   (db: cosmos.Database): GetIssuerBySubscriptionId =>
   (subscriptionId) =>

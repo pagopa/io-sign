@@ -86,4 +86,4 @@ export async function getApiKeyWithSecret(
   }
 }
 
-export { upsertApiKeyField } from "./cosmos";
+export { upsertApiKeyField, getApiKeyById } from "./cosmos";

@@ -1,10 +1,13 @@
-import { getCosmosConfig, getCosmosContainerClient } from "@/lib/cosmos";
+import { z } from "zod";
+
+import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
 
+const cosmosContainerName = "api-keys";
+
 export async function* getApiKeys(institutionId: string, displayName?: string) {
-  const { cosmosContainerName } = getCosmosConfig();
   let query = "SELECT * FROM c WHERE c.institutionId = @institutionId";
   const parameters = [
     {
@@ -43,7 +46,6 @@ export async function apiKeyExists(
 }
 
 export async function insertApiKey(apiKey: ApiKey): Promise<void> {
-  const { cosmosContainerName } = getCosmosConfig();
   try {
     await getCosmosContainerClient(cosmosContainerName).items.create(apiKey);
   } catch (e) {
@@ -56,7 +58,6 @@ export async function getApiKey(
   institutionId: string
 ): Promise<ApiKey> {
   try {
-    const { cosmosContainerName } = getCosmosConfig();
     const { resource } = await getCosmosContainerClient(cosmosContainerName)
       .item(id, institutionId)
       .read();
@@ -70,7 +71,7 @@ export async function upsertApiKeyField<
   F extends keyof Pick<ApiKey, "cidrs" | "testers">
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
-    const cosmos = getCosmosContainerClient("api-keys");
+    const cosmos = getCosmosContainerClient(cosmosContainerName);
     await cosmos.item(id, institutionId).patch({
       operations: [
         {
@@ -82,5 +83,15 @@ export async function upsertApiKeyField<
     });
   } catch (e) {
     throw new Error(`unable to update the ${field} field`, { cause: e });
+  }
+}
+
+export async function getApiKeyById(id: string): Promise<ApiKey | undefined> {
+  try {
+    const cosmos = getCosmosContainerClient(cosmosContainerName);
+    const response = await cosmos.item(id).read<ApiKey>();
+    return apiKeySchema.or(z.undefined()).parse(response.resource);
+  } catch (e) {
+    throw new Error("unable to get the API key", { cause: e });
   }
 }
