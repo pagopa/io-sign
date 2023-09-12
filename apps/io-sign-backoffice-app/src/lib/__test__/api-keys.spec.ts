@@ -183,7 +183,10 @@ describe("upsertApiKeyField", () => {
         {
           op: "replace",
           path: `/${field}`,
-          value,
+          value:
+            field === "testers"
+              ? ["7af2e3e7-4923-4595-b0fe-aba33d8a7326"]
+              : value,
         },
       ],
     });
