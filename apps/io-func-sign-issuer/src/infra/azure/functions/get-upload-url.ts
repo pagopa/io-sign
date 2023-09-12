@@ -27,7 +27,7 @@ import {
 import { UploadUrlToApiModel } from "../../http/encoders/upload";
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
 import { makeInsertUploadMetadata } from "../cosmos/upload";
-import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
+import { makeGetIssuerBySubscriptionId } from "../../back-office/issuer";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,

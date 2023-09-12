@@ -28,7 +28,7 @@ import { makeRequireSignatureRequest } from "../../http/decoders/signature-reque
 import { makeSendNotification } from "../../../app/use-cases/send-notification";
 import { NotificationToApiModel } from "../../http/encoders/notification";
 
-import { makeGetIssuerBySubscriptionId } from "../cosmos/issuer";
+import { makeGetIssuerBySubscriptionId } from "../../back-office/issuer";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { makeGetDossier } from "../cosmos/dossier";
 import { SendNotificationPayload } from "../../../signature-request-notification";
