@@ -39,16 +39,26 @@ export default function Sidenav() {
     },
   ];
 
+  const usersURL = new URL(
+    `/dashboard/${institutionId}/users`,
+    process.env.NEXT_PUBLIC_SELFCARE_URL
+  );
+
+  const groupsURL = new URL(
+    `/dashboard/${institutionId}/groups`,
+    process.env.NEXT_PUBLIC_SELFCARE_URL
+  );
+
   const external = [
     {
       title: "Utenti",
       icon: PeopleRounded,
-      href: "#",
+      href: usersURL.href,
     },
     {
       title: "Gruppi",
       icon: SupervisedUserCircleRounded,
-      href: "#",
+      href: groupsURL.href,
     },
   ];
 
