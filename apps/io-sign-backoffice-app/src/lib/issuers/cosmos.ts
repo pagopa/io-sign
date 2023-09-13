@@ -27,3 +27,23 @@ export async function getIssuer({
     });
   }
 }
+
+export async function replaceSupportEmail(
+  { id, institutionId }: Pick<Issuer, "id" | "institutionId">,
+  newSupportEmail: string
+): Promise<void> {
+  try {
+    const cosmos = getCosmosContainerClient("issuers");
+    await cosmos.item(id, institutionId).patch([
+      {
+        op: "replace",
+        path: "/supportEmail",
+        value: newSupportEmail,
+      },
+    ]);
+  } catch (cause) {
+    throw new Error("Unable to update supportEmail on issuer", {
+      cause,
+    });
+  }
+}

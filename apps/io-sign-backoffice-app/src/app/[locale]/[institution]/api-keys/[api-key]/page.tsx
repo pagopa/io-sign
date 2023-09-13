@@ -11,6 +11,8 @@ import Page, { Props as PageProps } from "@/components/Page";
 import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 import ApiKeyProvider from "./_components/ApiKeyProvider";
 import ApiKeySummary from "./_components/ApiKeySummary";
+import ApiKeyCreatedSnackbar from "./_components/ApiKeyCreatedSnackbar";
+import { Alert } from "@mui/material";
 
 export default function ApiKeyDetailPage({
   params,
@@ -32,8 +34,17 @@ export default function ApiKeyDetailPage({
       startButton: { label: "Indietro", href: apiKeysHref },
     },
   };
+
+  const showInfoAlert =
+    apiKey.cidrs.length === 0 && apiKey.testers.length === 0;
+
   return (
     <Page header={header}>
+      {showInfoAlert && (
+        <Alert variant="outlined" severity="info">
+          {t("apiKey.alerts.empty")}
+        </Alert>
+      )}
       <ApiKeyProvider value={apiKey}>
         <Suspense>
           <ApiKeySummary apiKey={apiKey} />
@@ -51,6 +62,7 @@ export default function ApiKeyDetailPage({
           )}
         </Suspense>
       </ApiKeyProvider>
+      <ApiKeyCreatedSnackbar />
     </Page>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Stack, Box, Button } from "@mui/material";
 
@@ -11,6 +11,7 @@ import EditItemModal from "./EditItemModal";
 import { z } from "zod";
 
 import { Add } from "@mui/icons-material";
+import DeleteItemModal from "./DeleteItemModal";
 
 export type Props = {
   items: Array<string>;
@@ -19,6 +20,10 @@ export type Props = {
   inputLabel: string;
   addItemButtonLabel: string;
   editModal: {
+    title: string;
+    description?: string;
+  };
+  deleteModal?: {
     title: string;
     description?: string;
   };
@@ -32,9 +37,13 @@ export default function EditableList({
   inputLabel,
   addItemButtonLabel,
   editModal,
+  deleteModal,
   disabled = false,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [action, setAction] = useState<"edit" | "delete" | undefined>(
+    undefined
+  );
   const [selectedItemIndex, selectItem] = useState(-1);
 
   const addItem = (item: string) => {
@@ -42,22 +51,39 @@ export default function EditableList({
     setShowForm(false);
   };
 
+  const reset = useCallback(() => {
+    selectItem(-1);
+    setAction(undefined);
+  }, []);
+
   const editItem = (item: string) => {
     onChange(items.map((el, i) => (i === selectedItemIndex ? item : el)));
-    selectItem(-1);
+    reset();
   };
 
-  const deleteItem = (index: number) => () => {
-    onChange(items.filter((_, i) => i !== index));
-  };
+  const deleteItem = useCallback(() => {
+    onChange(items.filter((_, i) => i !== selectedItemIndex));
+    reset();
+  }, [reset, items, onChange, selectedItemIndex]);
 
   const onEdit = (index: number) => () => {
+    setAction("edit");
     selectItem(index);
   };
 
-  const onClose = () => {
-    selectItem(-1);
-  };
+  const onDelete = useCallback(
+    (index: number) => () => {
+      selectItem(index);
+      if (deleteModal) {
+        setAction("delete");
+      } else {
+        deleteItem();
+      }
+    },
+    [deleteModal, deleteItem]
+  );
+
+  const onClose = () => reset();
 
   const onClick = () => setShowForm(true);
 
@@ -70,7 +96,7 @@ export default function EditableList({
               key={item}
               value={item}
               onEdit={onEdit(index)}
-              onDelete={deleteItem(index)}
+              onDelete={onDelete(index)}
               disabled={disabled}
             />
           ))}
@@ -83,7 +109,7 @@ export default function EditableList({
           onConfirm={addItem}
         />
       )}
-      {selectedItemIndex > -1 && (
+      {selectedItemIndex > -1 && action === "edit" && (
         <EditItemModal
           open={selectedItemIndex > -1}
           title={editModal.title}
@@ -92,6 +118,15 @@ export default function EditableList({
           schema={schema}
           initialValue={items[selectedItemIndex]}
           onConfirm={editItem}
+          onClose={onClose}
+        />
+      )}
+      {deleteModal && selectedItemIndex > -1 && action === "delete" && (
+        <DeleteItemModal
+          open={selectedItemIndex > -1}
+          title={deleteModal.title}
+          description={deleteModal.description}
+          onConfirm={deleteItem}
           onClose={onClose}
         />
       )}

@@ -26,6 +26,7 @@ export default function RootLayout({
     "firmaconio.modals",
     "firmaconio.footer",
     "firmaconio.tos",
+    "firmaconio.overview.cards.issuer.supportEmail",
     "firmaconio.apiKeys.list",
     "firmaconio.apiKeys.alert",
     "firmaconio.apiKeys.table",

@@ -2,7 +2,11 @@ import { vi, describe, it, expect } from "vitest";
 import { z } from "zod";
 
 import { Issuer } from "../issuers";
-import { getIssuerByInstitution, createIssuer } from "../issuers/use-cases";
+import {
+  getIssuerByInstitution,
+  createIssuer,
+  replaceSupportEmail,
+} from "../issuers/use-cases";
 
 const mocks: { issuer: Issuer } = vi.hoisted(() => ({
   issuer: {
@@ -14,10 +18,13 @@ const mocks: { issuer: Issuer } = vi.hoisted(() => ({
   },
 }));
 
+const patchItem = vi.hoisted(() => vi.fn());
+
 const { getCosmosContainerClient } = vi.hoisted(() => ({
   getCosmosContainerClient: vi.fn().mockReturnValue({
     item: vi.fn().mockReturnValue({
       read: vi.fn().mockResolvedValue({ resource: mocks.issuer }),
+      patch: patchItem,
     }),
     items: { create: vi.fn().mockResolvedValue({}) },
   }),
@@ -55,5 +62,25 @@ describe("getIssuer", () => {
         taxCode: mocks.issuer.id,
       })
     ).resolves.toEqual(mocks.issuer);
+  });
+});
+
+describe("replaceSupportEmail", () => {
+  it("should replaces the supportEmail field", async () => {
+    const newEmailAddress = "new.email.address@test.unit.tld";
+    await replaceSupportEmail(
+      {
+        id: mocks.issuer.id,
+        institutionId: mocks.issuer.institutionId,
+      },
+      newEmailAddress
+    );
+    expect(patchItem).toHaveBeenCalledWith([
+      {
+        op: "replace",
+        path: "/supportEmail",
+        value: newEmailAddress,
+      },
+    ]);
   });
 });

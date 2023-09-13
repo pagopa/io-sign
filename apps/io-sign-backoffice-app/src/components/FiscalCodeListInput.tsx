@@ -8,7 +8,7 @@ import { fiscalCodeSchema } from "@/lib/api-keys";
 
 export type Props = Pick<
   EditableListProps,
-  "onChange" | "items" | "disabled"
+  "onChange" | "items" | "disabled" | "deleteModal"
 > & {
   editModal?: Partial<EditableListProps["editModal"]>;
 };
@@ -17,6 +17,7 @@ export default function FiscalCodeListInput({
   items,
   onChange,
   editModal = {},
+  deleteModal,
   disabled = false,
 }: Props) {
   const t = useTranslations("firmaconio");
@@ -34,6 +35,7 @@ export default function FiscalCodeListInput({
       addItemButtonLabel={t("apiKey.testers.list.button")}
       inputLabel={t("apiKey.testers.list.inputLabel")}
       editModal={editModalWithDefaults}
+      deleteModal={deleteModal}
       disabled={disabled}
     />
   );

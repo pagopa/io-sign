@@ -14,10 +14,24 @@
         "prod": "Produzione",
         "test": "Test"
       },
+      "alerts": {
+        "empty": "L’API Key che hai generato è vuota. Associa alla chiave almeno un indirizzo IP e un codice fiscale."
+      },
+      "feedbacks": {
+        "copied": "API Key copiata.",
+        "created": "API Key generata con successo."
+      },
       "network": {
-        "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito.",
+        "description": "Aggiungi uno o più indirizzi IP. Saranno gli unici in grado di utilizzare l’API Key. È possibile utilizzare anche la notazione CIDR. Se al momento non hai un indirizzo IP, potrai aggiungerlo anche in seguito.",
         "editModal": {
-          "description": "L’indirizzo IP che inserirai sarà autorizzato a utilizzare l’API Key.\n"
+          "description": "Se modifichi l’indirizzo IP, quello precedente non sarà più autorizzato ad utilizzare le API key e non funzionerà l’integrazione con Firma con IO."
+        },
+        "deleteModal": {
+          "title": "Elimina indirizzo IP",
+          "description": "Se lo elimini, questo indirizzo IP non sarà più autorizzato ad utilizzare l'API Key."
+        },
+        "errors": {
+          "update": "Non è stato possibile modificare gli indirizzi IP. Riprova."
         },
         "list": {
           "button": "Aggiungi indirizzo IP",
@@ -36,9 +50,16 @@
         "revoked": "Revocata"
       },
       "testers": {
-        "description": "Aggiungi uno o più codici fiscali. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
+        "description": "Aggiungi uno o più codici fiscali. I codici fiscali inseriti potranno ricevere le richieste di firma in fase di test. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
         "editModal": {
           "description": "Se modifichi, non potrai più inviare richieste di firma per il codice fiscale inserito in precedenza. Vuoi procedere?\n"
+        },
+        "deleteModal": {
+          "title": "Elimina codice fiscale",
+          "description": "Se lo elimini, non potrai inviare richieste di firma per questo codice fiscale."
+        },
+        "errors": {
+          "update": "Non è stato possibile aggiornare i codici fiscali. Riprova."
         },
         "list": {
           "button": "Aggiungi codice fiscale",
@@ -67,6 +88,9 @@
           "cancel": "Indietro",
           "confirm": "Genera"
         },
+        "errors": {
+          "generic": "Non è stato possibile generare la chiave. Riprova."
+        },
         "general": {
           "description": "Seleziona l’ambiente di creazione e inserisci un nome identificativo, noi ne impostiamo uno di default.",
           "displayName": {
@@ -83,12 +107,18 @@
           "title": "Informazioni sulla API Key"
         },
         "network": {
-          "description": "Aggiungi uno o più indirizzi IP. Se al momento non ne hai uno, potrai aggiungerlo anche in seguito.",
-          "title": "Indirizzi IP"
+          "description": "Aggiungi uno o più indirizzi IP. Saranno gli unici in grado di utilizzare l’API Key. È possibile utilizzare anche la notazione CIDR. Se al momento non hai un indirizzo IP, potrai aggiungerlo anche in seguito. ",
+          "title": "Indirizzi IP",
+          "editModal": {
+            "description": "L’indirizzo IP che inserirai sarà autorizzato a utilizzare l’API Key."
+          }
         },
         "testers": {
-          "description": "Aggiungi uno o più codici fiscali. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
-          "title": "Codici fiscali"
+          "description": "Aggiungi uno o più codici fiscali. I codici fiscali inseriti potranno ricevere le richieste di firma in fase di test. Se al momento non ne hai uno potrai aggiungerlo anche in seguito.",
+          "title": "Codici fiscali",
+          "editModal": {
+            "description": "Il codice fiscale inserito potrà ricevere le richieste di firma dei documenti."
+          }
         }
       },
       "submitButton": {
@@ -102,7 +132,9 @@
     "modals": {
       "actions": {
         "cancel": "Annulla",
-        "confirm": "Conferma"
+        "confirm": "Conferma",
+        "editConfirm": "Modifica",
+        "deleteConfirm": "Elimina"
       },
       "editFiscalCode": {
         "title": "Modifica codice fiscale"
@@ -113,9 +145,22 @@
     },
     "overview": {
       "cards": {
-        "institution": {
-          "cta": "Modifica",
+        "issuer": {
           "supportEmail": {
+            "cta": "Modifica",
+            "editModal": {
+              "cancel": "Annulla",
+              "confirm": "Modifica",
+              "currentValueLabel": "Indirizzo email attuale",
+              "description": "Inserisci il nuovo indirizzo email da fornire al cittadino per richiedere assistenza al tuo ente.",
+              "newValueInputLabel": "Inserisci il nuovo indirizzo email",
+              "newValueLabel": "Nuovo indirizzo email",
+              "title": "Modifica l’indirizzo email da fornire ai cittadini"
+            },
+            "edit": {
+              "error": "Non è stato possibile aggiornare l’indirizzo email. Riprova.",
+              "success": "Indirizzo email modificato correttamente."
+            },
             "label": "Email di assistenza per i cittadini"
           },
           "title": "Informazioni"

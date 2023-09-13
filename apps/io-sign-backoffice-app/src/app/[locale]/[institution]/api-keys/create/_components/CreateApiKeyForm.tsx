@@ -61,7 +61,7 @@ export default function CreateApiKeyClientForm({
   const onSubmit = async (data: CreateApiKeyPayload) => {
     try {
       const { id } = await createApiKey(data);
-      router.push(`/${institution.id}/api-keys/${id}`);
+      router.push(`/${institution.id}/api-keys/${id}?created=true`);
     } catch (e) {
       setShowError(true);
     }
@@ -86,7 +86,7 @@ export default function CreateApiKeyClientForm({
             <LoadingButton
               type="submit"
               variant="contained"
-              loading={formState.isSubmitting}
+              loading={formState.isSubmitting || formState.isSubmitSuccessful}
             >
               {t("actions.confirm")}
             </LoadingButton>
