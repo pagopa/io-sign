@@ -24,7 +24,16 @@ export default function Footer() {
         languages={languages}
         onLanguageChanged={() => {}}
         companyLink={companyLink}
-        links={[]}
+        links={[
+          {
+            label: "Informativa privacy",
+            href: "/privacy-policy",
+            ariaLabel: t("a11y.link.ariaLabel", {
+              label: "Informativa Privacy",
+            }),
+            linkType: "internal",
+          },
+        ]}
       />
       <FooterLegal
         content={

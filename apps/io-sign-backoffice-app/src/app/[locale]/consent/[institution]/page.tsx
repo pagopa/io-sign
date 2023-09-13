@@ -2,7 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import { Typography, Stack } from "@mui/material";
+import NextLink from "next/link";
+
+import { Typography, Stack, Link } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 import Page from "@/components/Page";
@@ -49,7 +51,15 @@ export default function Consent({
         <Stack spacing={8}>
           <Stack spacing={1} alignItems="center">
             <Typography variant="h3">{t("title")}</Typography>
-            <Typography variant="body1">{t("description")}</Typography>
+            <Typography variant="body1">
+              {t.rich("description", {
+                pp: (label) => (
+                  <Link component={NextLink} href="/privacy-policy">
+                    {label}
+                  </Link>
+                ),
+              })}
+            </Typography>
           </Stack>
           <Stack direction="row" justifyContent="center">
             <LoadingButton
