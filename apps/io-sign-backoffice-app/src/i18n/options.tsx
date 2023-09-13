@@ -1,7 +1,5 @@
 import type { IntlConfig } from "next-intl";
 
-import NextLink from "next/link";
-
 import { Link } from "@mui/material";
 
 export const defaultTranslationValues: IntlConfig["defaultTranslationValues"] =
