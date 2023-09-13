@@ -33,6 +33,10 @@ import {
   getSlackConfigFromEnvironment,
   SlackConfig,
 } from "../infra/slack/config";
+import {
+  getBackOfficeConfigFromEnvironment,
+  BackOfficeConfig,
+} from "../infra/back-office/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -46,6 +50,7 @@ export const Config = t.type({
     selfCare: SelfCareConfig,
   }),
   slack: SlackConfig,
+  backOffice: BackOfficeConfig,
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -63,6 +68,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     selfCare: getSelfCareConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     slack: getSlackConfigFromEnvironment,
+    backOffice: getBackOfficeConfigFromEnvironment,
   }),
   RE.map((config) => ({
     azure: {
@@ -76,5 +82,6 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       selfCare: config.selfCare,
     },
     slack: config.slack,
+    backOffice: config.backOffice,
   }))
 );
