@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { z } from "zod";
 
 import EditableList, { Props as EditableListProps } from "./EditableList";
 
@@ -27,9 +28,19 @@ export default function IpAddressListInput({
     },
     editModal
   );
+
+  const schema = cidrSchema.or(
+    z
+      .string()
+      .ip()
+      .transform((ip) => `${ip}/32`)
+  );
+
+  const formatItem = (item: string) => item.replace("/32", "");
+
   return (
     <EditableList
-      schema={cidrSchema}
+      schema={schema}
       items={items}
       onChange={onChange}
       addItemButtonLabel={t("apiKey.network.list.button")}
@@ -37,6 +48,7 @@ export default function IpAddressListInput({
       editModal={editModalWithDefaults}
       deleteModal={deleteModal}
       disabled={disabled}
+      transform={formatItem}
     />
   );
 }

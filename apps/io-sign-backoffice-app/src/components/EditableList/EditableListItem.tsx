@@ -8,6 +8,7 @@ export type Props = {
   onEdit?: () => void;
   onDelete?: () => void;
   disabled?: boolean;
+  transform?: (i: string) => string;
 };
 
 export default function EditableListItem({
@@ -15,11 +16,12 @@ export default function EditableListItem({
   onEdit,
   onDelete,
   disabled = false,
+  transform,
 }: Props) {
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <Typography variant="body2" minWidth="18ch" fontWeight={600}>
-        {value}
+        {transform?.(value) ?? value}
       </Typography>
       {!disabled && (
         <Stack direction="row" spacing={1}>

@@ -26,9 +26,9 @@ export function useEditableListForm({
         const message = issue
           ? issue.message
           : "Si è verificato un errore imprevisto";
-        return { success: false, error: { message } };
+        return { success: false as const, error: { message } };
       }
-      return { success: true };
+      return { success: true as const, data: result.data };
     },
     [schema]
   );
@@ -36,7 +36,7 @@ export function useEditableListForm({
   const onClick = () => {
     const result = validate(input);
     if (result.success) {
-      onConfirm(input);
+      onConfirm(result.data);
     } else {
       setError(result.error);
     }

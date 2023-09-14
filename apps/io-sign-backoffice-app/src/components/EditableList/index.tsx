@@ -5,7 +5,9 @@ import { useCallback, useState } from "react";
 import { Stack, Box, Button } from "@mui/material";
 
 import EditableListForm from "./EditableListForm";
-import EditableListItem from "./EditableListItem";
+import EditableListItem, {
+  Props as EditableListItemProps,
+} from "./EditableListItem";
 import EditItemModal from "./EditItemModal";
 
 import { z } from "zod";
@@ -28,6 +30,7 @@ export type Props = {
     description?: string;
   };
   disabled?: boolean;
+  transform?: EditableListItemProps["transform"];
 };
 
 export default function EditableList({
@@ -39,6 +42,7 @@ export default function EditableList({
   editModal,
   deleteModal,
   disabled = false,
+  transform,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [action, setAction] = useState<"edit" | "delete" | undefined>(
@@ -98,6 +102,7 @@ export default function EditableList({
               onEdit={onEdit(index)}
               onDelete={onDelete(index)}
               disabled={disabled}
+              transform={transform}
             />
           ))}
         </Stack>
@@ -116,7 +121,9 @@ export default function EditableList({
           description={editModal.description}
           inputLabel={inputLabel}
           schema={schema}
-          initialValue={items[selectedItemIndex]}
+          initialValue={
+            transform?.(items[selectedItemIndex]) ?? items[selectedItemIndex]
+          }
           onConfirm={editItem}
           onClose={onClose}
         />
