@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { z } from "zod";
+
 import EditableList, { Props as EditableListProps } from "./EditableList";
 
 import { fiscalCodeSchema } from "@/lib/api-keys";
@@ -27,9 +29,12 @@ export default function FiscalCodeListInput({
     },
     editModal
   );
+
+  const schema = z.string().toUpperCase().pipe(fiscalCodeSchema);
+
   return (
     <EditableList
-      schema={fiscalCodeSchema}
+      schema={schema}
       items={items}
       onChange={onChange}
       addItemButtonLabel={t("apiKey.testers.list.button")}
