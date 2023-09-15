@@ -29,7 +29,11 @@ paths:
         "200":
           description: "the api key"
         default:
-          $ref: "#/components/schemas/ProblemDetail"
+          description: "error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 
   /issuers:
     post:
@@ -41,7 +45,11 @@ paths:
         201:
           description: "issuer created"
         default:
-          $ref: "#/components/schemas/ProblemDetail"
+          description: "error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 
 components:
   securitySchemes:
@@ -80,7 +88,6 @@ components:
             occurrence of the problem.
           minimum: 100
           maximum: 600
-          exclusiveMaximum: true
           example: 200
         detail:
           type: string
