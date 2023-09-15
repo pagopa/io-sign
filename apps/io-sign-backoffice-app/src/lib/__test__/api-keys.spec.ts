@@ -75,7 +75,7 @@ vi.mock("@/lib/apim", () => ({
   getApimClient,
 }));
 
-vi.mock("@/lib/tokenizer", () => ({
+vi.mock("@/lib/pdv-tokenizer", () => ({
   getToken,
 }));
 

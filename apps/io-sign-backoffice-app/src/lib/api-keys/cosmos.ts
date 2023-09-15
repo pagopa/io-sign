@@ -4,7 +4,7 @@ import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
-import { getToken } from "../tokenizer";
+import { getToken } from "../pdv-tokenizer";
 
 const cosmosContainerName = "api-keys";
 
