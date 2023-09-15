@@ -1,9 +1,11 @@
-import { useContext } from "react";
+"use client";
+
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-import { getConfig } from "@/config";
+import { useParams, usePathname } from "next/navigation";
 
-import InstitutionContext from "@/lib/institutions/context";
+import { Box, Divider, List } from "@mui/material";
 
 import {
   SupervisedUserCircleRounded,
@@ -12,13 +14,17 @@ import {
   DashboardCustomize,
 } from "@mui/icons-material";
 
-import ClientSidenav from "./ClientSidenav";
+import SidenavItem from "./SidenavItem";
 
 export default function Sidenav() {
   const t = useTranslations();
-  const c = getConfig();
-  const institutionId = useContext(InstitutionContext);
-  const items = [
+  const pathname = usePathname();
+  const segment = useMemo(() => pathname.split("/").at(2) ?? null, [pathname]);
+  const params = useParams();
+
+  const institutionId = params.institution;
+
+  const sections = [
     {
       title: t("firmaconio.overview.title"),
       icon: DashboardCustomize,
@@ -32,19 +38,56 @@ export default function Sidenav() {
       href: `/${institutionId}/api-keys`,
     },
   ];
+
+  const usersURL = new URL(
+    `/dashboard/${institutionId}/users`,
+    process.env.NEXT_PUBLIC_SELFCARE_URL
+  );
+
+  const groupsURL = new URL(
+    `/dashboard/${institutionId}/groups`,
+    process.env.NEXT_PUBLIC_SELFCARE_URL
+  );
+
   const external = [
     {
       title: "Utenti",
       icon: PeopleRounded,
-      href: new URL(`dashboard/${institutionId}/users`, c.selfCare.portal.url)
-        .href,
+      href: usersURL.href,
     },
     {
       title: "Gruppi",
       icon: SupervisedUserCircleRounded,
-      href: new URL(`dashboard/${institutionId}/groups`, c.selfCare.portal.url)
-        .href,
+      href: groupsURL.href,
     },
   ];
-  return <ClientSidenav pages={items} external={external} />;
+
+  return (
+    <Box
+      sx={{
+        maxWidth: 300,
+        flexGrow: 1,
+        backgroundColor: "background.paper",
+        py: 3,
+      }}
+    >
+      <List component="nav">
+        {sections.map((item, i) => (
+          <SidenavItem
+            key={i}
+            item={item}
+            selected={item.segment === segment}
+          />
+        ))}
+      </List>
+      <Box py={2}>
+        <Divider />
+      </Box>
+      <List component="nav">
+        {external.map((item, i) => (
+          <SidenavItem key={i} item={item} external />
+        ))}
+      </List>
+    </Box>
+  );
 }

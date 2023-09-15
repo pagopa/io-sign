@@ -1,51 +1,63 @@
 "use client";
 
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-  HeaderProduct,
-  HeaderAccount,
-  ProductEntity,
-  PartyEntity,
-  JwtUser,
-  RootLinkType,
-} from "@pagopa/mui-italia";
+import { Stack } from "@mui/material";
 
-type Props = {
-  rootLink: RootLinkType;
-  loggedUser: JwtUser;
-  institutions: Array<PartyEntity>;
-  currentInstitutionId: string | null;
-  products: Array<ProductEntity>;
-  supportUrl: string;
-  documentationUrl: string;
+import { User } from "@/lib/auth";
+import { Institution, Product } from "@/lib/institutions";
+
+import { HeaderProduct } from "@pagopa/mui-italia";
+import AccountHeader from "@/components/AccountHeader";
+
+export type Props = {
+  products: Product[];
+  institutions: Institution[];
+  institutionId: string;
+  loggedUser: User;
 };
 
-export default function ClientHeader(props: Props) {
+export default function ClientHeader({
+  loggedUser,
+  products,
+  institutions,
+  institutionId,
+}: Props) {
   const router = useRouter();
-  const onAssistanceClick = () => (window.location.href = props.supportUrl);
-  const onDocumentationClick = () =>
-    window.open(props.documentationUrl, "_blank", "noreferrer");
-  const onLogout = () => router.push("/auth/logout");
-  const onSelectedParty = ({ id }: PartyEntity) => router.push(`/${id}`);
-  const onSelectedProduct = () => {};
+
+  const selfcareURL =
+    process.env.NEXT_PUBLIC_SELFCARE_URL ?? "https://selfcare.pagopa.it";
+
+  const onSelectedParty = useCallback(
+    (party: { id: string }) => {
+      router.push(`/${party.id}`);
+    },
+    [router]
+  );
+
+  const onSelectedProduct = useCallback(
+    (product: { id: string }) => {
+      const url = new URL(
+        `token-exchange?institutionId=${institutionId}&productId=${product.id}`,
+        selfcareURL
+      );
+      router.push(url.href);
+    },
+    [institutionId, router, selfcareURL]
+  );
+
   return (
-    <>
-      <HeaderAccount
-        rootLink={props.rootLink}
-        loggedUser={props.loggedUser}
-        onAssistanceClick={onAssistanceClick}
-        onDocumentationClick={onDocumentationClick}
-        onLogout={onLogout}
-      />
+    <Stack>
+      <AccountHeader loggedUser={loggedUser} />
       <HeaderProduct
-        partyList={props.institutions}
-        partyId={props.currentInstitutionId ?? undefined}
-        productsList={props.products}
+        productsList={products}
         productId="prod-io-sign"
+        partyList={institutions}
+        partyId={institutionId}
         onSelectedParty={onSelectedParty}
         onSelectedProduct={onSelectedProduct}
-      ></HeaderProduct>
-    </>
+      />
+    </Stack>
   );
 }

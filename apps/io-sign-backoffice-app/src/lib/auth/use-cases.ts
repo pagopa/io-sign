@@ -1,3 +1,6 @@
+import { InstitutionDetail } from "../institutions";
+import { getInstitution } from "@/lib/institutions/use-cases";
+import { createIssuerIfNotExists } from "@/lib/issuers/use-cases";
 import { userSchema } from "./index";
 import { verify } from "./selfcare";
 import { getPayloadFromSessionCookie, createSessionCookie } from "./session";
@@ -12,24 +15,35 @@ export class UnauthenticatedUserError extends Error {
 }
 
 export let authenticate = async (idToken: string) => {
-  const {
-    iat,
-    desired_exp,
-    uid: id,
-    email,
-    name: firstName,
-    family_name: lastName,
-    organization: { id: institutionId },
-  } = await verify(idToken);
-  const user = {
-    id,
-    email,
-    firstName,
-    lastName,
-  };
-  const maxAge = desired_exp - iat;
-  await createSessionCookie(user, maxAge);
-  return { user, institutionId };
+  try {
+    const {
+      iat,
+      desired_exp,
+      uid: id,
+      name: firstName,
+      family_name: lastName,
+      organization: { id: institutionId },
+    } = await verify(idToken);
+    const institution = await getInstitution(institutionId);
+    if (!institution) {
+      throw new Error(`Institution ${institutionId} does not exists`);
+    }
+    await createIssuerIfNotExists({
+      id: institution.taxCode,
+      institutionId,
+      supportEmail: institution.supportEmail,
+    });
+    const user = {
+      id,
+      firstName,
+      lastName,
+    };
+    const maxAge = desired_exp - iat;
+    await createSessionCookie(user, maxAge);
+    return { user, institutionId };
+  } catch (cause) {
+    throw new Error("Can't authenticate user", { cause });
+  }
 };
 
 if (process.env.NODE_ENV === "development") {
@@ -40,8 +54,19 @@ if (process.env.NODE_ENV === "development") {
       lastName: "Bonaparte",
       email: "n.bonaparte@email.test.it",
     };
+    const institution: InstitutionDetail = {
+      id: "8c68a47b-fdbd-46e9-91df-71aa0d45043b",
+      name: "Comune di Genola",
+      taxCode: "0010213",
+      supportEmail: "firmaconio-tech@pagopa.it",
+    };
+    await createIssuerIfNotExists({
+      id: institution.taxCode,
+      institutionId: institution.id,
+      supportEmail: institution.supportEmail,
+    });
     await createSessionCookie(user, Date.now() + 2592000);
-    return { user, institutionId: "8c68a47b-fdbd-46e9-91df-71aa0d45043b" };
+    return { user, institutionId: institution.id };
   };
 }
 

@@ -43,8 +43,8 @@ export default function ApiKeyMetadataCard() {
               size="small"
               label={t("environment.inputLabel")}
               select
-              disabled
               {...field}
+              disabled={true}
               sx={{ width: "20ch" }}
             >
               <MenuItem value="test">test</MenuItem>

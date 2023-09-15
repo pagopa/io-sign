@@ -11,7 +11,8 @@ export type Props = {
   }>;
   startButton?: {
     label: string;
-    href: string;
+    href?: string;
+    onClick?: () => void;
   };
 };
 
@@ -33,6 +34,7 @@ export default function Navigation({ hierarchy, startButton }: Props) {
           disableRipple
           LinkComponent={NextLink}
           href={startButton.href}
+          onClick={startButton.onClick}
           accessKey="b"
         >
           {startButton.label}

@@ -25,6 +25,9 @@ export default function ApiKeyEditableFieldCard({
 }: Props) {
   const t = useTranslations(namespace);
   const { setValue } = useFormContext<CreateApiKeyPayload>();
+  const editModal = {
+    description: t("editModal.description"),
+  };
   const onEditableListChange = (items: string[]) => {
     setValue(field, items);
   };
@@ -39,7 +42,11 @@ export default function ApiKeyEditableFieldCard({
       <Controller
         name={field}
         render={({ field }) => (
-          <ListInput items={field.value} onChange={onEditableListChange} />
+          <ListInput
+            items={field.value}
+            editModal={editModal}
+            onChange={onEditableListChange}
+          />
         )}
       />
     </Stack>

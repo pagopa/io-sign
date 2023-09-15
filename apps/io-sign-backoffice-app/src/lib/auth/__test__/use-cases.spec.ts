@@ -5,7 +5,6 @@ import { getLoggedUser, authenticate } from "../use-cases";
 const mocks = vi.hoisted(() => ({
   user: {
     id: "53680989-1538-40f4-932d-36a63fa1135d",
-    email: "unit+test@pagopa.it",
     firstName: "Mario",
     lastName: "Rossi",
   },
@@ -27,13 +26,25 @@ vi.mock("@/lib/auth/session", () => ({
 vi.mock("@/lib/auth/selfcare", () => ({
   verify: vi.fn(async () => ({
     uid: mocks.user.id,
-    email: mocks.user.email,
     name: mocks.user.firstName,
     family_name: mocks.user.lastName,
     organization: mocks.organization,
     iat: 0,
     desired_exp: 15 * 60,
   })),
+}));
+
+vi.mock("@/lib/institutions/use-cases", () => ({
+  getInstitution: vi.fn().mockResolvedValue({
+    id: "8c68a47b-fdbd-46e9-91df-71aa0d45043b",
+    name: "Comune di Genola",
+    taxCode: "0010213",
+    supportEmail: "firmaconio-tech@pagopa.it",
+  }),
+}));
+
+vi.mock("@/lib/issuers/use-cases", () => ({
+  createIssuerIfNotExists: vi.fn().mockResolvedValue({}),
 }));
 
 describe("getLoggedUser", () => {

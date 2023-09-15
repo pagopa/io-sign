@@ -11,6 +11,7 @@ export const institutionSchema = z
     taxCode: z.string().nonempty(),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
+    supportEmail: z.string().email().optional(),
   })
   .transform(({ id, description: name, taxCode, userProductRoles, logo }) => ({
     id,
@@ -22,6 +23,17 @@ export const institutionSchema = z
   }));
 
 export type Institution = z.infer<typeof institutionSchema>;
+
+export const institutionDetailSchema = z
+  .object({
+    id: z.string().uuid(),
+    taxCode: z.string().nonempty(),
+    supportEmail: z.string().email(),
+    description: z.string().nonempty(),
+  })
+  .transform(({ description: name, ...fields }) => ({ ...fields, name }));
+
+export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
 
 export const productSchema = z
   .object({
@@ -35,3 +47,5 @@ export const productSchema = z
     productUrl,
     linkType: "external" as const,
   }));
+
+export type Product = z.infer<typeof productSchema>;
