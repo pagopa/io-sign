@@ -1,5 +1,15 @@
 # io-func-sign-issuer
 
+## 0.16.0
+
+### Minor Changes
+
+- a48402e: Updated getIssuerBySubscriptionId to get data from back office instead of database
+
+### Patch Changes
+
+- 7e45f01: Added the time reference into the message sent on send notification's action
+
 ## 0.15.0
 
 ### Minor Changes
