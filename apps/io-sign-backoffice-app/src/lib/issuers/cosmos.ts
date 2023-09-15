@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { Issuer, issuerSchema } from "@/lib/issuers";
 import { getCosmosContainerClient } from "@/lib/cosmos";
 
@@ -20,7 +21,7 @@ export async function getIssuer({
   try {
     const cosmos = getCosmosContainerClient("issuers");
     const item = await cosmos.item(id, institutionId).read();
-    return issuerSchema.parse(item.resource);
+    return issuerSchema.or(z.undefined()).parse(item.resource);
   } catch (cause) {
     throw new Error("Error getting issuer on DB", {
       cause,

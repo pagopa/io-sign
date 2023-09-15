@@ -2,29 +2,27 @@
 
 import { useState, useEffect } from "react";
 
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { kebabCase } from "lodash";
-
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 
 import { Alert, Snackbar, Stack, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 import { CreateApiKeyPayload, createApiKeyPayloadSchema } from "@/lib/api-keys";
 import { createApiKey } from "@/lib/api-keys/client";
-import { Institution } from "@/lib/institutions";
-
-import NextLink from "next/link";
+import { InstitutionDetail } from "@/lib/institutions";
 
 export default function CreateApiKeyClientForm({
   children,
   institution,
 }: {
   children: React.ReactNode;
-  institution: Institution;
+  institution: InstitutionDetail;
 }) {
   const t = useTranslations("firmaconio.createApiKey.form");
   const router = useRouter();
@@ -46,17 +44,13 @@ export default function CreateApiKeyClientForm({
 
   // Fills the form with a default value for "displayName"
   // The default displayName is composed by:
-  // KEBAB-CASE(institution.name) + RANDOM CHARS + ENVIRONMENT.
-
+  // RANDOM CHARS + ENVIRONMENT.
   // Since Math.random() is not pure, we need to run it inside
   // useEffect hook, in order to avoid unwanted rendering behaviour
   useEffect(() => {
     const random = Math.random().toString(32).substring(3, 7);
-    setValue(
-      "displayName",
-      `${kebabCase(institution.name)}-${random}-${environment}`
-    );
-  }, [institution.name, environment, setValue]);
+    setValue("displayName", `${random}-${environment}`);
+  }, [environment, setValue]);
 
   const onSubmit = async (data: CreateApiKeyPayload) => {
     try {
@@ -70,6 +64,7 @@ export default function CreateApiKeyClientForm({
   const onSnackbarClose = () => {
     setShowError(false);
   };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>

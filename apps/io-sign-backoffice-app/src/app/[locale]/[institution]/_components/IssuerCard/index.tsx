@@ -20,6 +20,9 @@ export default function IssuerCard({ institutionId }: Props) {
     notFound();
   }
   const issuer = use(getIssuerByInstitution(institution));
+  if (!issuer) {
+    notFound();
+  }
   return (
     <Stack
       p={3}

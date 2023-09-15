@@ -5,6 +5,8 @@ import {
   institutionSchema,
   productSchema,
   Product,
+  institutionDetailSchema,
+  InstitutionDetail,
 } from "./index";
 
 import { cache } from "react";
@@ -56,7 +58,7 @@ class SelfcareApiClient {
     }
   }
 
-  async getInstitution(id: string): Promise<Institution | undefined> {
+  async getInstitution(id: string): Promise<InstitutionDetail | undefined> {
     const resource = new URL(`external/v2/institutions/${id}`, this.#baseURL);
     try {
       const response = await fetch(resource, this.#options);
@@ -64,7 +66,10 @@ class SelfcareApiClient {
         return undefined;
       }
       const json = await response.json();
-      return institutionSchema.parse(json);
+      if (process.env.NODE_ENV === "development") {
+        json.supportEmail = "firmaconio-tech@gmail.com";
+      }
+      return institutionDetailSchema.parse(json);
     } catch (cause) {
       throw new Error(`Unable to get institution from self care`, { cause });
     }

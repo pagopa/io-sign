@@ -35,16 +35,8 @@ export default function ApiKeyDetailPage({
     },
   };
 
-  const showInfoAlert =
-    apiKey.cidrs.length === 0 && apiKey.testers.length === 0;
-
   return (
     <Page header={header}>
-      {showInfoAlert && (
-        <Alert variant="outlined" severity="info">
-          {t("apiKey.alerts.empty")}
-        </Alert>
-      )}
       <ApiKeyProvider value={apiKey}>
         <Suspense>
           <ApiKeySummary apiKey={apiKey} />
