@@ -12,7 +12,6 @@ import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 import ApiKeyProvider from "./_components/ApiKeyProvider";
 import ApiKeySummary from "./_components/ApiKeySummary";
 import ApiKeyCreatedSnackbar from "./_components/ApiKeyCreatedSnackbar";
-import { Alert } from "@mui/material";
 
 export default function ApiKeyDetailPage({
   params,
