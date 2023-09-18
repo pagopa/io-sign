@@ -3,7 +3,7 @@ import { z } from "zod";
 export const issuerSchema = z.object({
   id: z.string().nonempty(),
   type: z.enum(["PA"]),
-  externalId: z.string().ulid(),
+  externalId: z.string().nonempty(),
   institutionId: z.string().uuid(),
   supportEmail: z.string().email(),
 });

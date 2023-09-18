@@ -66,7 +66,10 @@ class SelfcareApiClient {
         return undefined;
       }
       const json = await response.json();
-      if (process.env.NODE_ENV === "development") {
+      if (
+        process.env.NODE_ENV === "development" ||
+        id === "4a4149af-172e-4950-9cc8-63ccc9a6d865"
+      ) {
         json.supportEmail = "firmaconio-tech@gmail.com";
       }
       return institutionDetailSchema.parse(json);

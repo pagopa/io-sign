@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const pathSchema = z.object({
-  "api-key": z.string().ulid(),
+  "api-key": z.string().nonempty(),
 });
 
 type Params = z.infer<typeof pathSchema>;
