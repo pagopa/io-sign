@@ -59,6 +59,7 @@ if (process.env.NODE_ENV === "development") {
       name: "Comune di Genola",
       taxCode: "0010213",
       supportEmail: "firmaconio-tech@pagopa.it",
+      vatNumber: "0010213",
     };
     await createIssuerIfNotExists({
       id: institution.taxCode,
