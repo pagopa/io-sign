@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.16.1
+
+### Patch Changes
+
+- 2e3e187: updated ApiKey decoder based on backoffice changes
+
 ## 0.16.0
 
 ### Minor Changes
