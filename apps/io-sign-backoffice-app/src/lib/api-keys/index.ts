@@ -25,7 +25,7 @@ export const fiscalCodeSchema = z
 export type CIDR = z.infer<typeof cidrSchema>;
 
 export const apiKeySchema = z.object({
-  id: z.string().ulid(),
+  id: z.string().nonempty(),
   institutionId: z.string().uuid(),
   displayName: z.string().min(3).max(40),
   environment: z.enum(["test", "prod"]),

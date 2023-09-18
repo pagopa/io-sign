@@ -58,9 +58,6 @@ export const ApiKey = t.type({
     id: NonEmptyString,
     name: NonEmptyString,
     taxCode: NonEmptyString,
-    vatNumber: NonEmptyString,
-    productRole: NonEmptyString,
-    logo: NonEmptyString,
   }),
   issuer: t.type({
     id: NonEmptyString,
