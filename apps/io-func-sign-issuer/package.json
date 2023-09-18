@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-issuer",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "private": true,
   "files": [
     "**/function.json",
