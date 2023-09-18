@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.16.2
+
+### Patch Changes
+
+- 3e39114: read vatnumber from institution instead of taxcode
+
 ## 0.16.1
 
 ### Patch Changes
