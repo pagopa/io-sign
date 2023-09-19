@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, Usable, use } from "react";
+import { useMemo, useState, Usable, use, Suspense } from "react";
 import { useTranslations } from "next-intl";
 
 import { Stack, Tabs, Tab, Alert } from "@mui/material";
@@ -47,7 +47,9 @@ export default function ApiKeyListView(props: Props) {
           {t.rich("createApiKey.alert")}
         </Alert>
       )}
-      <ApiKeyListHeader showAction={!isProd} />
+      <Suspense>
+        <ApiKeyListHeader showAction={!isProd} />
+      </Suspense>
       {apiKeysForEnvironment.length > 0 ? (
         <ApiKeyTable apiKeys={apiKeysForEnvironment} />
       ) : (

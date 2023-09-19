@@ -37,6 +37,10 @@ export default function ApiKeyEditableFieldCard({
   const editModal: Partial<EditableListProps["editModal"]> = {
     description: t("editModal.description"),
   };
+  const deleteModal: EditableListProps["deleteModal"] = {
+    title: t("deleteModal.title"),
+    description: t("deleteModal.description"),
+  };
   const onChange = async (updated: string[]) => {
     setItems(updated);
     try {
@@ -65,6 +69,7 @@ export default function ApiKeyEditableFieldCard({
       <ListInput
         items={items}
         editModal={editModal}
+        deleteModal={deleteModal}
         onChange={onChange}
         disabled={apiKey.status === "revoked"}
       />

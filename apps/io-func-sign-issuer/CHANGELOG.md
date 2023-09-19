@@ -1,5 +1,27 @@
 # io-func-sign-issuer
 
+## 0.16.2
+
+### Patch Changes
+
+- 3e39114: read vatnumber from institution instead of taxcode
+
+## 0.16.1
+
+### Patch Changes
+
+- 2e3e187: updated ApiKey decoder based on backoffice changes
+
+## 0.16.0
+
+### Minor Changes
+
+- a48402e: Updated getIssuerBySubscriptionId to get data from back office instead of database
+
+### Patch Changes
+
+- 7e45f01: Added the time reference into the message sent on send notification's action
+
 ## 0.15.0
 
 ### Minor Changes

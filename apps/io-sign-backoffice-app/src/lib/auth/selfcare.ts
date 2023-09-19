@@ -28,7 +28,7 @@ const Claims = z.object({
   // issued at (in ms)
   iat: z.number(),
   uid: z.string().uuid(),
-  email: z.string().email(),
+  email: z.string().email().optional(),
   name: z.string().nonempty(),
   family_name: z.string().nonempty(),
   organization: z.object({

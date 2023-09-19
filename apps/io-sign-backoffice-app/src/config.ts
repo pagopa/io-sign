@@ -3,20 +3,16 @@ import { cache } from "react";
 
 const ConfigFromEnvironment = z
   .object({
-    SELFCARE_URL: z.string().url(),
-    SELFCARE_SUPPORT_URL: z.string().url(),
+    NEXT_PUBLIC_SELFCARE_URL: z.string().url(),
     SELFCARE_LOGOUT_URL: z.string().url(),
-    DOCUMENTATION_URL: z.string().url(),
   })
   .transform((e) => ({
     selfCare: {
       portal: {
-        url: e.SELFCARE_URL,
-        supportUrl: e.SELFCARE_SUPPORT_URL,
+        url: e.NEXT_PUBLIC_SELFCARE_URL,
         logoutUrl: e.SELFCARE_LOGOUT_URL,
       },
     },
-    documentationUrl: e.DOCUMENTATION_URL,
   }));
 
 export type Config = z.infer<typeof ConfigFromEnvironment>;

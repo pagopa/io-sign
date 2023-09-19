@@ -2,16 +2,16 @@ import { Suspense, use } from "react";
 
 import { useTranslations } from "next-intl";
 
-import { Stack } from "@mui/material";
 import { PeopleAlt, PinDrop, VpnKey } from "@mui/icons-material";
 
 import { getApiKeyWithSecret } from "@/lib/api-keys/use-cases";
 
-import PageHeader, { Props as PageHeaderProps } from "@/components/PageHeader";
+import Page, { Props as PageProps } from "@/components/Page";
 
 import ApiKeyEditableFieldCard from "./_components/ApiKeyEditableFieldCard";
 import ApiKeyProvider from "./_components/ApiKeyProvider";
 import ApiKeySummary from "./_components/ApiKeySummary";
+import ApiKeyCreatedSnackbar from "./_components/ApiKeyCreatedSnackbar";
 
 export default function ApiKeyDetailPage({
   params,
@@ -19,14 +19,11 @@ export default function ApiKeyDetailPage({
   params: { institution: string; ["api-key"]: string };
 }) {
   const t = useTranslations("firmaconio");
-
   const apiKey = use(
     getApiKeyWithSecret(params["api-key"], params["institution"])
   );
-
   const apiKeysHref = `/${params.institution}/api-keys`;
-
-  const headerProps: PageHeaderProps = {
+  const header: PageProps["header"] = {
     title: apiKey.displayName,
     navigation: {
       hierarchy: [
@@ -38,8 +35,7 @@ export default function ApiKeyDetailPage({
   };
 
   return (
-    <Stack spacing={5}>
-      <PageHeader {...headerProps} />
+    <Page header={header}>
       <ApiKeyProvider value={apiKey}>
         <Suspense>
           <ApiKeySummary apiKey={apiKey} />
@@ -57,6 +53,7 @@ export default function ApiKeyDetailPage({
           )}
         </Suspense>
       </ApiKeyProvider>
-    </Stack>
+      <ApiKeyCreatedSnackbar />
+    </Page>
   );
 }

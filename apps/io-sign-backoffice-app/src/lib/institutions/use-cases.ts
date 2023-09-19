@@ -1,11 +1,15 @@
-import { getLoggedUser } from "@/lib/auth/use-cases";
-import { getSelfCareApiClient } from "./selfcare";
+import { cache } from "react";
 
-export async function getInstitutions() {
-  const loggedUser = await getLoggedUser();
-  return getSelfCareApiClient().getInstitutions(loggedUser.id);
-}
+import { getSelfcareApiClient } from "./selfcare";
 
-export async function getInstitution(id: string) {
-  return getSelfCareApiClient().getInstitution(id);
-}
+export const getInstitution = cache((id: string) =>
+  getSelfcareApiClient().getInstitution(id)
+);
+
+export const getUserInstitutions = cache((uid: string) =>
+  getSelfcareApiClient().getInstitutions(uid)
+);
+
+export const getUserProductsByInstitutionId = cache(
+  (uid: string, iid: string) => getSelfcareApiClient().getProducts(uid, iid)
+);

@@ -25,7 +25,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     body: JSON.stringify(payload),
   });
   if (!resp.ok) {
-    throw new Error("Something went wrong");
+    throw new Error(resp.statusText);
   }
   const json = await resp.json();
   return createApiKeyResponseSchema.parse(json);
@@ -48,6 +48,6 @@ export async function upsertApiKeyField(
     }
   );
   if (!resp.ok) {
-    throw new Error("Something went wrong");
+    throw new Error(resp.statusText);
   }
 }

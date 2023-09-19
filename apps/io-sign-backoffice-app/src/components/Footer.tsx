@@ -6,26 +6,41 @@ import { Stack } from "@mui/material";
 
 import { FooterPostLogin, FooterLegal } from "@pagopa/mui-italia";
 
-type Props = {
-  rootLink: {
-    href: string;
-    ariaLabel: string;
-  };
-};
+export default function Footer() {
+  const t = useTranslations("firmaconio");
 
-export default function Footer({ rootLink }: Props) {
-  const t = useTranslations("firmaconio.footer");
+  const languages = {
+    it: { it: "Italiano" },
+  };
+
+  const companyLink = {
+    href: process.env.NEXT_PUBLIC_COMPANY_LINK,
+    ariaLabel: t("a11y.link.ariaLabel", { label: "PagoPA S.p.A." }),
+  };
+
   return (
     <Stack>
       <FooterPostLogin
-        currentLangCode="it"
-        languages={{ it: { it: "Italiano" } }}
+        languages={languages}
         onLanguageChanged={() => {}}
-        companyLink={rootLink}
-        links={[]}
+        companyLink={companyLink}
+        links={[
+          {
+            label: "Informativa privacy",
+            href: "/privacy-policy",
+            ariaLabel: t("a11y.link.ariaLabel", {
+              label: "Informativa Privacy",
+            }),
+            linkType: "internal",
+          },
+        ]}
       />
       <FooterLegal
-        content={<span style={{ whiteSpace: "pre-line" }}>{t("legal")}</span>}
+        content={
+          <span style={{ whiteSpace: "pre-line" }}>
+            {t.rich("footer.legal")}
+          </span>
+        }
       />
     </Stack>
   );

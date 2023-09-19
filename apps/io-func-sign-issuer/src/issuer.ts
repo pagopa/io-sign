@@ -55,17 +55,15 @@ export const ApiKey = t.type({
   status: t.union([t.literal("active"), t.literal("revoked")]),
   createdAt: NonEmptyString,
   institution: t.type({
-    id: Id,
+    id: NonEmptyString,
     name: NonEmptyString,
-    taxCode: NonEmptyString,
     vatNumber: NonEmptyString,
-    productRole: NonEmptyString,
-    logo: NonEmptyString,
   }),
   issuer: t.type({
-    id: Id,
+    id: NonEmptyString,
+    externalId: NonEmptyString,
     type: NonEmptyString,
-    institutionId: Id,
+    institutionId: NonEmptyString,
     supportEmail: EmailString,
   }),
 });

@@ -11,6 +11,7 @@ export const institutionSchema = z
     taxCode: z.string().nonempty(),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
+    supportEmail: z.string().email().optional(),
   })
   .transform(({ id, description: name, taxCode, userProductRoles, logo }) => ({
     id,
@@ -22,6 +23,36 @@ export const institutionSchema = z
   }));
 
 export type Institution = z.infer<typeof institutionSchema>;
+
+const onboardingSchema = z.object({
+  productId: z.string().nonempty(),
+  status: z.string().nonempty(),
+  billing: z.object({
+    vatNumber: z.string().nonempty(),
+  }),
+});
+
+type Onboarding = z.infer<typeof onboardingSchema>;
+
+export const getIOSignOnboarding = (list: Onboarding[]) =>
+  list.filter((p) => p.productId === "prod-io-sign").at(0);
+
+export const institutionDetailSchema = z
+  .object({
+    id: z.string().uuid(),
+    taxCode: z.string().nonempty(),
+    supportEmail: z.string().email(),
+    description: z.string().nonempty(),
+    onboarding: z.array(onboardingSchema),
+  })
+  .transform(({ description: name, onboarding, ...fields }) => ({
+    ...fields,
+    name,
+    vatNumber:
+      getIOSignOnboarding(onboarding)?.billing.vatNumber ?? fields.taxCode,
+  }));
+
+export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
 
 export const productSchema = z
   .object({
@@ -35,3 +66,5 @@ export const productSchema = z
     productUrl,
     linkType: "external" as const,
   }));
+
+export type Product = z.infer<typeof productSchema>;

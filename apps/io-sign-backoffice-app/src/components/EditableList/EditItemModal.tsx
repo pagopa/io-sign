@@ -49,7 +49,7 @@ export default function EditItemModal({
             {t("cancel")}
           </Button>
           <Button variant="contained" onClick={onClick}>
-            {t("confirm")}
+            {t("editConfirm")}
           </Button>
         </Stack>
       </Stack>

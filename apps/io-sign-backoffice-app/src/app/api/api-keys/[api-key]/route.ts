@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const pathSchema = z.object({
-  "api-key": z.string().ulid(),
+  "api-key": z.string().nonempty(),
 });
 
 type Params = z.infer<typeof pathSchema>;
@@ -49,6 +49,9 @@ export async function GET(
     }
     if (request.nextUrl.searchParams.get("include") === "institution") {
       const institution = await getInstitution(apiKey.institutionId);
+      if (!institution) {
+        throw new Error("Institution not found");
+      }
       const issuer = await getIssuerByInstitution(institution);
       return NextResponse.json(
         {

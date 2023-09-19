@@ -1,8 +1,12 @@
 import { vi, describe, it, expect } from "vitest";
-import { z } from "zod";
 
 import { Issuer } from "../issuers";
-import { getIssuerByInstitution, createIssuer } from "../issuers/use-cases";
+
+import {
+  getIssuerByInstitution,
+  createIssuerIfNotExists,
+  replaceSupportEmail,
+} from "../issuers/use-cases";
 
 const mocks: { issuer: Issuer } = vi.hoisted(() => ({
   issuer: {
@@ -14,12 +18,23 @@ const mocks: { issuer: Issuer } = vi.hoisted(() => ({
   },
 }));
 
+const patch = vi.hoisted(() => vi.fn());
+
+const item = vi.hoisted(() =>
+  vi.fn((id: string) => ({
+    read: async () => ({
+      resource: id === mocks.issuer.id ? mocks.issuer : undefined,
+    }),
+    patch,
+  }))
+);
+
+const create = vi.hoisted(() => vi.fn().mockResolvedValue({}));
+
 const { getCosmosContainerClient } = vi.hoisted(() => ({
   getCosmosContainerClient: vi.fn().mockReturnValue({
-    item: vi.fn().mockReturnValue({
-      read: vi.fn().mockResolvedValue({ resource: mocks.issuer }),
-    }),
-    items: { create: vi.fn().mockResolvedValue({}) },
+    item,
+    items: { create },
   }),
 }));
 
@@ -27,23 +42,24 @@ vi.mock("@/lib/cosmos", () => ({
   getCosmosContainerClient,
 }));
 
-describe("createIssuer", () => {
-  it("should create an issuer", async () => {
+describe("createIssuerIfNotExists", () => {
+  it("should not create an issuer", async () => {
     const payload = {
       id: mocks.issuer.id,
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
     };
-    const issuer = await createIssuer(payload);
-    expect(issuer).toEqual(
-      expect.objectContaining({
-        ...payload,
-        type: "PA",
-        externalId: expect.any(String),
-      })
-    );
-    const result = z.string().ulid().safeParse(issuer.externalId);
-    expect(result.success).toBe(true);
+    await createIssuerIfNotExists(payload);
+    expect(create).not.toHaveBeenCalled();
+  });
+  it("should create an issuer", async () => {
+    const payload = {
+      id: "not-exists",
+      institutionId: mocks.issuer.institutionId,
+      supportEmail: mocks.issuer.supportEmail,
+    };
+    await createIssuerIfNotExists(payload);
+    expect(create).toHaveBeenCalledWith(expect.objectContaining(payload));
   });
 });
 
@@ -55,5 +71,25 @@ describe("getIssuer", () => {
         taxCode: mocks.issuer.id,
       })
     ).resolves.toEqual(mocks.issuer);
+  });
+});
+
+describe("replaceSupportEmail", () => {
+  it("should replaces the supportEmail field", async () => {
+    const newEmailAddress = "new.email.address@test.unit.tld";
+    await replaceSupportEmail(
+      {
+        id: mocks.issuer.id,
+        institutionId: mocks.issuer.institutionId,
+      },
+      newEmailAddress
+    );
+    expect(patch).toHaveBeenCalledWith([
+      {
+        op: "replace",
+        path: "/supportEmail",
+        value: newEmailAddress,
+      },
+    ]);
   });
 });

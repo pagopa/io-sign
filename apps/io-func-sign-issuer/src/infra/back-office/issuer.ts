@@ -60,7 +60,7 @@ class IssuerModel {
           institutionId,
           environment,
           institution: { name, vatNumber },
-          issuer: { id: issuerId, supportEmail },
+          issuer: { externalId: issuerId, supportEmail },
         }) =>
           pipe(
             {

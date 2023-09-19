@@ -23,7 +23,9 @@ export default function ApiKeyTableRow({ apiKey }: Props) {
   return (
     <TableRow key={apiKey.id}>
       <TableCell>
-        <Link p={2}>{apiKey.displayName}</Link>
+        <Link href={href} p={2}>
+          {apiKey.displayName}
+        </Link>
       </TableCell>
       <TableCell>
         <Typography variant="body2">

@@ -94,8 +94,18 @@ export async function upsertApiKeyField<
 export async function getApiKeyById(id: string): Promise<ApiKey | undefined> {
   try {
     const cosmos = getCosmosContainerClient(cosmosContainerName);
-    const response = await cosmos.item(id).read<ApiKey>();
-    return apiKeySchema.or(z.undefined()).parse(response.resource);
+    const q = cosmos.items.query({
+      query: "SELECT * FROM c WHERE c.id = @id",
+      parameters: [
+        {
+          name: "@id",
+          value: id,
+        },
+      ],
+    });
+    const response = await q.fetchAll();
+    const apiKey = response.resources.at(0);
+    return apiKeySchema.or(z.undefined()).parse(apiKey);
   } catch (e) {
     throw new Error("unable to get the API key", { cause: e });
   }
