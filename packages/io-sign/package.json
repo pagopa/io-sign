@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "repository": "https://github.com/pagopa/io-sign",
   "exports": {
-    "./": "./dist/"
+    "./*": "./dist/*.js"
   },
   "typesVersions": {
     "*": {
