@@ -2,8 +2,7 @@ name: "Azure Deploy"
 
 on:
   release:
-    types: [published, edited]
-  workflow_dispatch: {}
+    types: [published]
 
 permissions:
   id-token: write
