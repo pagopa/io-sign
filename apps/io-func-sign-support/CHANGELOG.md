@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.1.3
+
+### Patch Changes
+
+- bf17c8c: update to node 18
+
 ## 1.1.2
 
 ### Patch Changes
