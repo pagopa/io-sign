@@ -15,7 +15,10 @@
         "test": "Test"
       },
       "alerts": {
-        "empty": "L’API Key che hai generato è vuota. Associa alla chiave almeno un indirizzo IP e un codice fiscale."
+        "empty": {
+          "test": "Per utilizzare l'API Key, associa almeno un indirizzo IP e un codice fiscale.",
+          "prod": "Per utilizzare l'API Key, associa almeno un indirizzo IP."
+        }
       },
       "feedbacks": {
         "copied": "API Key copiata.",
@@ -79,7 +82,7 @@
     },
     "createApiKey": {
       "alert": "Ad ora è possibile generare API Key solo per l’ambiente di test. Se il tuo ente è pronto a passare in produzione, contattaci a <email>{l3SupportEmail}</email>",
-      "description": "Seleziona l’ambiente in cui vuoi creare una API Key. Inserisci un nome identificativo se vuoi sostituire quello impostato in automatico. Associa poi gli indirizzi IP e i codici fiscali.",
+      "description": "Seleziona l'ambiente e inserisci un nome identificativo, noi ne impostiamo uno di default. Associa poi gli indirizzi IP e i codici fiscali.",
       "exitButton": {
         "label": "Esci"
       },
@@ -92,7 +95,7 @@
           "generic": "Non è stato possibile generare la chiave. Riprova."
         },
         "general": {
-          "description": "Seleziona l’ambiente di creazione e inserisci un nome identificativo, noi ne impostiamo uno di default.",
+          "description": "Seleziona l’ambiente in cui vuoi creare una API Key e inserisci un nome identificativo se vuoi sostituire quello impostato in automatico.",
           "displayName": {
             "inputLabel": "Inserisci un nome*",
             "label": "Dai un nome alla tua API Key"
@@ -134,7 +137,8 @@
         "cancel": "Annulla",
         "confirm": "Conferma",
         "editConfirm": "Modifica",
-        "deleteConfirm": "Elimina"
+        "deleteConfirm": "Elimina",
+        "revokeConfirm": "Revoca"
       },
       "editFiscalCode": {
         "title": "Modifica codice fiscale"
@@ -183,7 +187,7 @@
     },
     "tos": {
       "cta": "Accedi",
-      "description": "Accedendo, accetti i Termini e condizioni d’uso del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
+      "description": "Accedendo, accetti i <tos>Termini e condizioni d’uso</tos> del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
       "title": "Firma con IO"
     }
   }
