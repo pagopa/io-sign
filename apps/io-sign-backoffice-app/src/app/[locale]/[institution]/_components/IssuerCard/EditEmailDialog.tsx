@@ -5,7 +5,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Stack, Typography, TextField, Button } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 
 import Dialog from "@/components/Dialog";
 import { useTranslations } from "next-intl";
@@ -18,11 +17,16 @@ export type Props = {
 };
 
 const formFieldsSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email({
+    message: "errors.invalid",
+  }),
 });
 
 type FormFields = z.infer<typeof formFieldsSchema>;
 
+// todo (SFEQS-2019): "reset" function called from "onSubmit" function
+// does not reset the validation state of the form. Maybe is a bug
+// "react-hook-form"
 export default function EditEmailDialog({
   open,
   onClose,
@@ -32,10 +36,11 @@ export default function EditEmailDialog({
   const t = useTranslations(
     "firmaconio.overview.cards.issuer.supportEmail.editModal"
   );
+
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting, errors },
+    formState: { isDirty, errors },
     reset,
   } = useForm<FormFields>({
     defaultValues: {
@@ -43,12 +48,19 @@ export default function EditEmailDialog({
     },
     resolver: zodResolver(formFieldsSchema),
   });
+
   const onSubmit = (data: FormFields) => {
     onConfirm(data.email);
     reset();
   };
+
+  const onCancel = () => {
+    onClose();
+    reset();
+  };
+
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={4}>
           <Stack spacing={2}>
@@ -74,22 +86,24 @@ export default function EditEmailDialog({
                   label={t("newValueInputLabel")}
                   autoComplete="off"
                   error={errors.email ? true : false}
-                  helperText={errors.email?.message}
+                  helperText={
+                    errors.email ? t(errors.email?.message) : undefined
+                  }
                 />
               )}
             />
           </Stack>
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            <Button variant="outlined" onClick={onClose}>
+            <Button variant="outlined" onClick={onCancel}>
               {t("cancel")}
             </Button>
-            <LoadingButton
+            <Button
               type="submit"
-              loading={isSubmitting}
+              disabled={!isDirty || errors.email !== undefined}
               variant="contained"
             >
               {t("confirm")}
-            </LoadingButton>
+            </Button>
           </Stack>
         </Stack>
       </form>

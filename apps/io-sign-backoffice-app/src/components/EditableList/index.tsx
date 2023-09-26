@@ -20,6 +20,7 @@ export type Props = {
   onChange: (newValue: Array<string>) => void;
   schema: z.ZodSchema<string>;
   inputLabel: string;
+  errorLabel: string;
   addItemButtonLabel: string;
   editModal: {
     title: string;
@@ -38,6 +39,7 @@ export default function EditableList({
   schema,
   onChange,
   inputLabel,
+  errorLabel,
   addItemButtonLabel,
   editModal,
   deleteModal,
@@ -130,6 +132,7 @@ export default function EditableList({
         <EditableListForm
           schema={schema}
           inputLabel={inputLabel}
+          errorLabel={errorLabel}
           onConfirm={addItem}
           onBlur={onBlur}
         />

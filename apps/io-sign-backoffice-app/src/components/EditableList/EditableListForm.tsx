@@ -6,6 +6,7 @@ import { useCallback } from "react";
 
 export type Props = Options & {
   inputLabel: string;
+  errorLabel: string;
   onBlur?: () => void;
 };
 
@@ -14,6 +15,7 @@ export default function EditableListForm({
   onConfirm,
   onBlur,
   inputLabel,
+  errorLabel,
 }: Props) {
   const { input, error, onChange, onClick, reset } = useEditableListForm({
     schema,
@@ -37,7 +39,7 @@ export default function EditableListForm({
         onBlur={onTextFieldBlur}
         value={input}
         error={error ? true : false}
-        helperText={error?.message}
+        helperText={error ? errorLabel : undefined}
       />
       <Button
         variant="text"

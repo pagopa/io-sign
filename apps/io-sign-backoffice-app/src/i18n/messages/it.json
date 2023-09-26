@@ -34,7 +34,8 @@
           "description": "Se lo elimini, questo indirizzo IP non sarà più autorizzato ad utilizzare l'API Key."
         },
         "errors": {
-          "update": "Non è stato possibile modificare gli indirizzi IP. Riprova."
+          "update": "Non è stato possibile modificare gli indirizzi IP. Riprova.",
+          "invalid": "L'indirizzo IP inserito non è valido"
         },
         "list": {
           "button": "Aggiungi indirizzo IP",
@@ -62,7 +63,8 @@
           "description": "Se lo elimini, non potrai inviare richieste di firma per questo codice fiscale."
         },
         "errors": {
-          "update": "Non è stato possibile aggiornare i codici fiscali. Riprova."
+          "update": "Non è stato possibile aggiornare i codici fiscali. Riprova.",
+          "invalid": "Il codice fiscale inserito non è valido"
         },
         "list": {
           "button": "Aggiungi codice fiscale",
@@ -159,12 +161,16 @@
               "description": "Inserisci il nuovo indirizzo email da fornire al cittadino per richiedere assistenza al tuo ente.",
               "newValueInputLabel": "Inserisci il nuovo indirizzo email",
               "newValueLabel": "Nuovo indirizzo email",
-              "title": "Modifica l’indirizzo email da fornire ai cittadini"
+              "title": "Modifica l’indirizzo email da fornire ai cittadini",
+              "errors": {
+                "invalid": "Inserisci l’indirizzo in un formato valido"
+              }
             },
             "edit": {
               "error": "Non è stato possibile aggiornare l’indirizzo email. Riprova.",
               "success": "Indirizzo email modificato correttamente."
             },
+
             "label": "Email di assistenza per i cittadini"
           },
           "title": "Informazioni"
