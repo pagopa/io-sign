@@ -33,8 +33,8 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
 
 export async function upsertApiKeyField(
   apiKey: ApiKey,
-  field: "cidrs" | "testers",
-  value: unknown[]
+  field: "cidrs" | "testers" | "status",
+  value: unknown
 ) {
   const operations = [{ op: "replace", path: `/${field}`, value }];
   const resp = await fetch(

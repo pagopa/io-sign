@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
-import { upsertApiKeyField } from "@/lib/api-keys/use-cases";
+import { revokeApiKey, upsertApiKeyField } from "@/lib/api-keys/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
-  "api-key": z.string().ulid(),
+  "api-key": z.string().nonempty(),
 });
 
 type Params = z.infer<typeof pathSchema>;
@@ -25,14 +25,25 @@ const bodySchema = z
           path: z.literal("/testers"),
           value: z.array(fiscalCodeSchema),
         }),
+        z.object({ path: z.literal("/status"), value: z.literal("revoked") }),
       ])
     )
   )
   .length(1)
   .transform(
-    (operations): { field: "cidrs" | "testers"; newValue: string[] } => ({
+    (
+      operations
+    ): {
+      field: "cidrs" | "testers" | "status";
+      newValue: string[] | "revoked";
+    } => ({
       // here we get the field to update, from the JSON patch operation
-      field: operations[0].path === "/cidrs" ? "cidrs" : "testers",
+      field:
+        operations[0].path === "/cidrs"
+          ? "cidrs"
+          : operations[0].path === "/testers"
+          ? "testers"
+          : "status",
       newValue: operations[0].value,
     })
   );
@@ -60,12 +71,16 @@ export async function PATCH(
   try {
     const body = await request.json();
     const { field, newValue } = bodySchema.parse(body);
-    await upsertApiKeyField(
-      params["api-key"],
-      params.institution,
-      field,
-      newValue
-    );
+    if (field === "status" && newValue === "revoked") {
+      await revokeApiKey(params["api-key"], params.institution);
+    } else {
+      await upsertApiKeyField(
+        params["api-key"],
+        params.institution,
+        field,
+        newValue
+      );
+    }
     return new Response(null, { status: 204 });
   } catch (e) {
     if (e instanceof ZodError) {
