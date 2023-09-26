@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, Link } from "@mui/material";
 
 import { getSupportContactsByPhase } from "@/lib/support";
 
@@ -24,9 +24,9 @@ export default function SupportCard() {
           <Typography width="157px" variant="body2">
             {t(`environments.${contact.phase}.label`)}
           </Typography>
-          <Typography variant="body2" fontWeight={600}>
+          <Link href={`mailto:${contact.email}`} variant="body2">
             {contact.email}
-          </Typography>
+          </Link>
         </Stack>
       ))}
     </Stack>

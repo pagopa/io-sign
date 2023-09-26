@@ -64,9 +64,7 @@ export default function IssuerEmailSection({ issuer }: Props) {
   return (
     <Stack spacing={3}>
       <Stack direction="row" alignItems="center" spacing={2}>
-        <Typography variant="body2" width="157px">
-          {t("label")}
-        </Typography>
+        <Typography variant="body2">{t("label")}</Typography>
         <Typography variant="body2" fontWeight={600}>
           {currentEmail}
         </Typography>
