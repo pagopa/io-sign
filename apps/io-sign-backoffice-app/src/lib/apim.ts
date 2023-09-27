@@ -31,6 +31,27 @@ class ApimProductClient {
     );
   }
 
+  async suspend(id: string): Promise<void> {
+    try {
+      const subscription = await this.#apimClient.subscription.createOrUpdate(
+        this.#config.resourceGroupName,
+        this.#config.serviceName,
+        id,
+        {
+          scope: `/products/${this.#config.productName}`,
+          state: "suspended",
+        }
+      );
+      z.object({
+        state: z.literal("suspended"),
+      }).parse(subscription);
+    } catch (cause) {
+      throw new Error("Error suspending the Api Management Subscription", {
+        cause,
+      });
+    }
+  }
+
   async getSecret(id: string): Promise<string> {
     try {
       const secret = await this.#apimClient.subscription.listSecrets(
