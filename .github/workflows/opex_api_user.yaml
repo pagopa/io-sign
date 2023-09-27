@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'apps/io-func-sign-user/openapi.yaml'
-      - '.github/workflows/opex_api_user.yaml'
-      - '.opex/api_user/**'
+      - "apps/io-func-sign-user/openapi.yaml"
+      - ".github/workflows/opex_api_user.yaml"
+      - ".opex/api_user/**"
 
 env:
   API_NAME: api_user
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
 
       # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.1.0
+      - uses: pagopa/opex-dashboard-azure-action@v1.2.1
         with:
           environment: ${{ matrix.environment }}
           api-name: ${{ env.API_NAME }}
@@ -42,4 +42,4 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           # from https://github.com/pagopa/opex-dashboard-azure-action/pkgs/container/opex-dashboard-azure-action
-          docker-version: sha256:7e454c1892b2aaf3717782c07a2fa01504db5cc7d07979fae863dfc00a9f0173
+          docker-version: sha256:04d8ead53c772d23b094c2a395292dc159e6f2905e1b13b5f828f31eac6eb27f
