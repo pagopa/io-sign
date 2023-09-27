@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import { Stack, Box, Button } from "@mui/material";
+import { Stack, Box, Button, Link } from "@mui/material";
 
 import EditableListForm from "./EditableListForm";
 import EditableListItem, {
@@ -20,6 +20,7 @@ export type Props = {
   onChange: (newValue: Array<string>) => void;
   schema: z.ZodSchema<string>;
   inputLabel: string;
+  errorLabel: string;
   addItemButtonLabel: string;
   editModal: {
     title: string;
@@ -31,6 +32,7 @@ export type Props = {
   };
   disabled?: boolean;
   transform?: EditableListItemProps["transform"];
+  limit?: number;
 };
 
 export default function EditableList({
@@ -38,10 +40,12 @@ export default function EditableList({
   schema,
   onChange,
   inputLabel,
+  errorLabel,
   addItemButtonLabel,
   editModal,
   deleteModal,
   disabled = false,
+  limit = 4,
   transform,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
@@ -49,6 +53,12 @@ export default function EditableList({
     undefined
   );
   const [selectedItemIndex, selectItem] = useState(-1);
+  const [showAll, setShowAll] = useState(items.length <= limit);
+
+  const list = useMemo(
+    () => (showAll ? items : items.slice(0, limit)),
+    [showAll, items]
+  );
 
   const addItem = (item: string) => {
     onChange([item, ...items]);
@@ -91,13 +101,15 @@ export default function EditableList({
 
   const onClick = () => setShowForm(true);
 
+  const onBlur = () => setShowForm(false);
+
   return (
     <Stack spacing={3}>
-      {items.length > 0 && (
+      {list.length > 0 && (
         <Stack spacing={2}>
-          {items.map((item, index) => (
+          {list.map((item, index) => (
             <EditableListItem
-              key={item}
+              key={index}
               value={item}
               onEdit={onEdit(index)}
               onDelete={onDelete(index)}
@@ -105,13 +117,26 @@ export default function EditableList({
               transform={transform}
             />
           ))}
+          {!showAll && (
+            <Stack direction="row">
+              <Link
+                component="button"
+                variant="caption-semibold"
+                onClick={() => setShowAll(true)}
+              >
+                mostra tutti
+              </Link>
+            </Stack>
+          )}
         </Stack>
       )}
       {showForm && (
         <EditableListForm
           schema={schema}
           inputLabel={inputLabel}
+          errorLabel={errorLabel}
           onConfirm={addItem}
+          onBlur={onBlur}
         />
       )}
       {selectedItemIndex > -1 && action === "edit" && (

@@ -15,6 +15,12 @@ export default function ApiKeyMetadataCard() {
   } = useFormContext<CreateApiKeyPayload>();
 
   const t = useTranslations("firmaconio.createApiKey.form.general");
+
+  const { href } = new URL(
+    "api/ambienti-test-and-produzione",
+    process.env.NEXT_PUBLIC_DOCUMENTATION_URL
+  );
+
   return (
     <Stack p={3} spacing={3} bgcolor="background.paper">
       <Stack spacing={2}>
@@ -26,7 +32,9 @@ export default function ApiKeyMetadataCard() {
             variant="body2"
             fontWeight={600}
             component={NextLink}
-            href="#"
+            href={href}
+            target="_blank"
+            rel="noopener"
           >
             {t("link.label")}
           </Link>

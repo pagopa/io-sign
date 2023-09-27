@@ -2,20 +2,33 @@
 
 import { Button, Stack, TextField } from "@mui/material";
 import { useEditableListForm, Options } from "./hooks";
+import { useCallback } from "react";
 
 export type Props = Options & {
   inputLabel: string;
+  errorLabel: string;
+  onBlur?: () => void;
 };
 
 export default function EditableListForm({
   schema,
   onConfirm,
+  onBlur,
   inputLabel,
+  errorLabel,
 }: Props) {
-  const { input, error, onChange, onClick } = useEditableListForm({
+  const { input, error, onChange, onClick, reset } = useEditableListForm({
     schema,
     onConfirm,
   });
+
+  const onTextFieldBlur = useCallback(() => {
+    if (input.length === 0 && onBlur) {
+      reset();
+      onBlur();
+    }
+  }, [input, onBlur, reset]);
+
   return (
     <Stack direction="row" spacing={2}>
       <TextField
@@ -23,9 +36,10 @@ export default function EditableListForm({
         size="small"
         label={inputLabel}
         onChange={onChange}
+        onBlur={onTextFieldBlur}
         value={input}
         error={error ? true : false}
-        helperText={error?.message}
+        helperText={error ? errorLabel : undefined}
       />
       <Button
         variant="text"

@@ -15,7 +15,10 @@
         "test": "Test"
       },
       "alerts": {
-        "empty": "L’API Key che hai generato è vuota. Associa alla chiave almeno un indirizzo IP e un codice fiscale."
+        "empty": {
+          "test": "Per utilizzare l'API Key, associa almeno un indirizzo IP e un codice fiscale.",
+          "prod": "Per utilizzare l'API Key, associa almeno un indirizzo IP."
+        }
       },
       "feedbacks": {
         "copied": "API Key copiata.",
@@ -31,7 +34,8 @@
           "description": "Se lo elimini, questo indirizzo IP non sarà più autorizzato ad utilizzare l'API Key."
         },
         "errors": {
-          "update": "Non è stato possibile modificare gli indirizzi IP. Riprova."
+          "update": "Non è stato possibile modificare gli indirizzi IP. Riprova.",
+          "invalid": "L'indirizzo IP inserito non è valido"
         },
         "list": {
           "button": "Aggiungi indirizzo IP",
@@ -66,7 +70,8 @@
           "description": "Se lo elimini, non potrai inviare richieste di firma per questo codice fiscale."
         },
         "errors": {
-          "update": "Non è stato possibile aggiornare i codici fiscali. Riprova."
+          "update": "Non è stato possibile aggiornare i codici fiscali. Riprova.",
+          "invalid": "Il codice fiscale inserito non è valido"
         },
         "list": {
           "button": "Aggiungi codice fiscale",
@@ -86,7 +91,7 @@
     },
     "createApiKey": {
       "alert": "Ad ora è possibile generare API Key solo per l’ambiente di test. Se il tuo ente è pronto a passare in produzione, contattaci a <email>{l3SupportEmail}</email>",
-      "description": "Seleziona l’ambiente in cui vuoi creare una API Key. Inserisci un nome identificativo se vuoi sostituire quello impostato in automatico. Associa poi gli indirizzi IP e i codici fiscali.",
+      "description": "Seleziona l'ambiente e inserisci un nome identificativo, noi ne impostiamo uno di default. Associa poi gli indirizzi IP e i codici fiscali.",
       "exitButton": {
         "label": "Esci"
       },
@@ -99,7 +104,7 @@
           "generic": "Non è stato possibile generare la chiave. Riprova."
         },
         "general": {
-          "description": "Seleziona l’ambiente di creazione e inserisci un nome identificativo, noi ne impostiamo uno di default.",
+          "description": "Seleziona l’ambiente in cui vuoi creare una API Key e inserisci un nome identificativo se vuoi sostituire quello impostato in automatico.",
           "displayName": {
             "inputLabel": "Inserisci un nome*",
             "label": "Dai un nome alla tua API Key"
@@ -141,7 +146,8 @@
         "cancel": "Annulla",
         "confirm": "Conferma",
         "editConfirm": "Modifica",
-        "deleteConfirm": "Elimina"
+        "deleteConfirm": "Elimina",
+        "revokeConfirm": "Revoca"
       },
       "editFiscalCode": {
         "title": "Modifica codice fiscale"
@@ -162,12 +168,16 @@
               "description": "Inserisci il nuovo indirizzo email da fornire al cittadino per richiedere assistenza al tuo ente.",
               "newValueInputLabel": "Inserisci il nuovo indirizzo email",
               "newValueLabel": "Nuovo indirizzo email",
-              "title": "Modifica l’indirizzo email da fornire ai cittadini"
+              "title": "Modifica l’indirizzo email da fornire ai cittadini",
+              "errors": {
+                "invalid": "Inserisci l’indirizzo in un formato valido"
+              }
             },
             "edit": {
               "error": "Non è stato possibile aggiornare l’indirizzo email. Riprova.",
               "success": "Indirizzo email modificato correttamente."
             },
+
             "label": "Email di assistenza per i cittadini"
           },
           "title": "Informazioni"
@@ -190,7 +200,7 @@
     },
     "tos": {
       "cta": "Accedi",
-      "description": "Accedendo, accetti i Termini e condizioni d’uso del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
+      "description": "Accedendo, accetti i <tos>Termini e condizioni d’uso</tos> del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
       "title": "Firma con IO"
     }
   }
