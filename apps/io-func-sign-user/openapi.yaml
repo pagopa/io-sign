@@ -250,7 +250,7 @@ paths:
         "200":
           description: The Signature Request detail
           headers:
-            x-firmaconio-environment:
+            x-io-sign-environment:
               schema:
                 $ref: "#/components/schemas/Environment"
               description: The environment to which the signature request belongs.
@@ -311,11 +311,6 @@ paths:
       responses:
         "200":
           description: The Third Party message detail
-          headers:
-            x-firmaconio-environment:
-              schema:
-                $ref: "#/components/schemas/Environment"
-              description: The environment to which the signature request belongs.
           content:
             application/json:
               schema:
