@@ -31,6 +31,7 @@ function Loader() {
 }
 
 export type Props = {
+  // policyId is the notice id from OneTrust
   policyId: string;
   title?: string;
 };

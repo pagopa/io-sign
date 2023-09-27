@@ -32,6 +32,7 @@ export type Props = {
   };
   disabled?: boolean;
   transform?: EditableListItemProps["transform"];
+  limit?: number;
 };
 
 export default function EditableList({
@@ -44,6 +45,7 @@ export default function EditableList({
   editModal,
   deleteModal,
   disabled = false,
+  limit = 4,
   transform,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
@@ -51,10 +53,10 @@ export default function EditableList({
     undefined
   );
   const [selectedItemIndex, selectItem] = useState(-1);
-  const [showAll, setShowAll] = useState(items.length <= 4);
+  const [showAll, setShowAll] = useState(items.length <= limit);
 
   const list = useMemo(
-    () => (showAll ? items : items.slice(0, 4)),
+    () => (showAll ? items : items.slice(0, limit)),
     [showAll, items]
   );
 
