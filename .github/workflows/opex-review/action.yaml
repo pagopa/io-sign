@@ -28,6 +28,5 @@ runs:
           --workdir /github/workspace --rm \
           -v $(pwd):"/github/workspace" \
           ghcr.io/pagopa/opex-dashboard-azure-action@${{ inputs.docker_version }} \
-          generate \
           --template-name ${{ inputs.template_name }} \
           --config-file .opex/${{ inputs.api_name }}/env/${{ inputs.environment }}/config.yaml
