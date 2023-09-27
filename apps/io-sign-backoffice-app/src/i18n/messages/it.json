@@ -45,8 +45,15 @@
       },
       "secret": {
         "copyButton": "Copia il codice",
-        "revokeButton": "Revoca",
         "title": "API Key"
+      },
+      "revoke": {
+        "button": "Revoca",
+        "modal": {
+          "title": "Revoca API Key",
+          "description": "La revoca è un’azione irreversibile. Se prosegui, ci sarà il rischio di brusche interruzioni del servizio. Sei sicuro di voler procedere?",
+          "confirm": "Revoca"
+        }
       },
       "status": "Stato",
       "statuses": {
