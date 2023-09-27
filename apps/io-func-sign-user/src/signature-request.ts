@@ -291,3 +291,6 @@ export const signedNoMoreThan90DaysAgo = (
       )
     )
   );
+
+export const getEnvironment = (request: SignatureRequest) =>
+  request.issuerEnvironment === "TEST" ? "test" : "prod";

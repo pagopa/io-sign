@@ -249,6 +249,11 @@ paths:
       responses:
         "200":
           description: The Signature Request detail
+          headers:
+            x-firmaconio-environment:
+              schema:
+                $ref: "#/components/schemas/Environment"
+              description: The environment to which the signature request belongs.
           content:
             application/json:
               schema:
@@ -306,6 +311,11 @@ paths:
       responses:
         "200":
           description: The Third Party message detail
+          headers:
+            x-firmaconio-environment:
+              schema:
+                $ref: "#/components/schemas/Environment"
+              description: The environment to which the signature request belongs.
           content:
             application/json:
               schema:
@@ -960,3 +970,7 @@ components:
       enum:
         - TEST
         - DEFAULT
+
+    Environment:
+      type: string
+      enum: ["test", "prod"]
