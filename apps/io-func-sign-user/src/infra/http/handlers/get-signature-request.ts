@@ -3,7 +3,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 
 import { ContainerClient } from "@azure/storage-blob";
 

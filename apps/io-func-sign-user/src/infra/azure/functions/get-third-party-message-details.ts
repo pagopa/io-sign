@@ -11,6 +11,7 @@ import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokeniz
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 
+import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../../http/encoders/signature-request";
@@ -19,7 +20,6 @@ import {
   getEnvironment,
   signedNoMoreThan90DaysAgo,
 } from "../../../signature-request";
-import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 
 const makeGetThirdPartyMessageDetailsHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
