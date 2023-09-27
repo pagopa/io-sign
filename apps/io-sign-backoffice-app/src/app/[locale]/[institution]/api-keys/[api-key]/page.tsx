@@ -38,6 +38,7 @@ export default function ApiKeyDetailPage({
     },
   };
 
+  // if the api key is "empty" (no cidrs, no testers) show the alert
   const showAlert =
     apiKey.status === "active" &&
     (apiKey.cidrs.length == 0 ||
