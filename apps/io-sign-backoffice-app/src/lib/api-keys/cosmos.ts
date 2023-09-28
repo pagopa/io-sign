@@ -69,7 +69,7 @@ export async function getApiKey(
 }
 
 export async function upsertApiKeyField<
-  F extends keyof Pick<ApiKey, "cidrs" | "testers">
+  F extends keyof Pick<ApiKey, "cidrs" | "testers" | "status">
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
     const cosmos = getCosmosContainerClient(cosmosContainerName);

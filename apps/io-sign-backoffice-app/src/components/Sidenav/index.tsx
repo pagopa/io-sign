@@ -65,8 +65,7 @@ export default function Sidenav() {
   return (
     <Box
       sx={{
-        maxWidth: 300,
-        flexGrow: 1,
+        width: 300,
         backgroundColor: "background.paper",
         py: 3,
       }}

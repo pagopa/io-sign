@@ -3,7 +3,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 
 import { ContainerClient } from "@azure/storage-blob";
 
@@ -13,6 +13,7 @@ import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/docum
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
   SignatureRequest,
+  getEnvironment,
   getSignatureRequest,
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
@@ -46,7 +47,13 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       getSignatureRequest(signatureRequestId, signerId.id)
     ),
     RTE.chainW(grantReadAccessToDocuments),
-    RTE.map(flow(SignatureRequestToApiModel.encode, H.successJson)),
+    RTE.map((request) =>
+      pipe(
+        SignatureRequestToApiModel.encode(request),
+        H.successJson,
+        H.withHeader("x-io-sign-environment", getEnvironment(request))
+      )
+    ),
     RTE.orElseW(logErrorAndReturnResponse)
   )
 );

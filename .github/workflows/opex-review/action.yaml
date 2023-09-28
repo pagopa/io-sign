@@ -3,19 +3,19 @@ description: Generate the dashboard or fail and exit in case of syntax errors
 
 inputs:
   docker_version:
-    description: 'The version of the docker image to run'
+    description: "The version of the docker image to run"
     required: true
     # From https://github.com/pagopa/opex-dashboard/pkgs/container/opex-dashboard
-    default: 'sha256:b5732960bf092267c5d30e7bf4a0986ce5fceb89ea3faf8fcb6a80fe89165437'
+    default: "sha256:04d8ead53c772d23b094c2a395292dc159e6f2905e1b13b5f828f31eac6eb27f"
   template_name:
-    description: 'The template to use to generate dashbards'
+    description: "The template to use to generate dashbards"
     required: true
-    default: 'azure-dashboard'
+    default: "azure-dashboard"
   api_name:
-    description: 'The name of the API'
+    description: "The name of the API"
     required: true
   environment:
-    description: 'The environment'
+    description: "The environment"
     required: true
 
 runs:
@@ -28,6 +28,5 @@ runs:
           --workdir /github/workspace --rm \
           -v $(pwd):"/github/workspace" \
           ghcr.io/pagopa/opex-dashboard-azure-action@${{ inputs.docker_version }} \
-          generate \
-          --template-name ${{ inputs.template_name }} \
-          --config-file .opex/${{ inputs.api_name }}/env/${{ inputs.environment }}/config.yaml
+          ${{ inputs.template_name }} \
+          .opex/${{ inputs.api_name }}/env/${{ inputs.environment }}/config.yaml

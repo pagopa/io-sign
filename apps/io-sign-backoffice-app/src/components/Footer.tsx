@@ -33,6 +33,14 @@ export default function Footer() {
             }),
             linkType: "internal",
           },
+          {
+            label: "Termini e condizioni d'uso",
+            href: "/terms-of-service",
+            ariaLabel: t("a11y.link.ariaLabel", {
+              label: "Termini e condizioni d'uso",
+            }),
+            linkType: "internal",
+          },
         ]}
       />
       <FooterLegal

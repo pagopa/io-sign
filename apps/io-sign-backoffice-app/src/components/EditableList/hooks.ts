@@ -52,5 +52,10 @@ export function useEditableListForm({
     }
   }, [input, error, validate]);
 
-  return { input, error, onClick, onChange };
+  const reset = () => {
+    setInput(initialValue);
+    setError(undefined);
+  };
+
+  return { input, error, onClick, onChange, reset };
 }

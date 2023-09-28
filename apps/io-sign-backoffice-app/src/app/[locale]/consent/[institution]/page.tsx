@@ -58,6 +58,11 @@ export default function Consent({
                     {label}
                   </Link>
                 ),
+                tos: (label) => (
+                  <Link component={NextLink} href="/terms-of-service">
+                    {label}
+                  </Link>
+                ),
               })}
             </Typography>
           </Stack>

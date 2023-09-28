@@ -1,9 +1,16 @@
-import { apiKeyExists, insertApiKey, getApiKeys, getApiKey } from "./cosmos";
+import {
+  apiKeyExists,
+  insertApiKey,
+  getApiKeys,
+  getApiKey,
+  upsertApiKeyField,
+} from "./cosmos";
 
 import {
   createApiKeySubscription,
   deleteApiKeySubscription,
   getApiKeySecret,
+  suspendApiKeySubscription,
 } from "./apim";
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
@@ -83,6 +90,15 @@ export async function getApiKeyWithSecret(
     return exposeApiKeySecret(apiKey);
   } catch (e) {
     throw new Error("unable to get the API Key", { cause: e });
+  }
+}
+
+export async function revokeApiKey(id: string, institutionId: string) {
+  try {
+    await suspendApiKeySubscription({ id });
+    await upsertApiKeyField(id, institutionId, "status", "revoked");
+  } catch (e) {
+    throw new Error("Unable to revoke the API Key", { cause: e });
   }
 }
 

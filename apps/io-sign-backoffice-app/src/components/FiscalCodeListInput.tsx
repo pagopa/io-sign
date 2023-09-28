@@ -39,6 +39,7 @@ export default function FiscalCodeListInput({
       onChange={onChange}
       addItemButtonLabel={t("apiKey.testers.list.button")}
       inputLabel={t("apiKey.testers.list.inputLabel")}
+      errorLabel={t("apiKey.testers.errors.invalid")}
       editModal={editModalWithDefaults}
       deleteModal={deleteModal}
       disabled={disabled}

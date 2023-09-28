@@ -7,9 +7,9 @@ import { VpnKey } from "@mui/icons-material";
 
 import { ApiKeyWithSecret } from "@/lib/api-keys";
 
-import ApiKeySecretForm, {
-  Props as ApiKeySecretFormProps,
-} from "./ApiKeySecretForm";
+import ApiKeyActionsForm, {
+  Props as ApiKeyActionsFormProps,
+} from "./ApiKeyActionsForm";
 import ApiKeyStatusChip from "@/components/ApiKeyStatusChip";
 
 export type Props = {
@@ -48,7 +48,7 @@ function ApiKeyMetadataCard({ apiKey }: Props) {
   );
 }
 
-function ApiKeySecretCard({ secret, disabled = false }: ApiKeySecretFormProps) {
+function ApiKeyActions({ apiKey, disabled = false }: ApiKeyActionsFormProps) {
   const t = useTranslations("firmaconio.apiKey.secret");
   return (
     <Stack spacing={2} p={3} bgcolor="background.paper">
@@ -56,7 +56,7 @@ function ApiKeySecretCard({ secret, disabled = false }: ApiKeySecretFormProps) {
         <VpnKey fontSize="small" />
         <Typography variant="sidenav">{t("title")}</Typography>
       </Stack>
-      <ApiKeySecretForm secret={secret} disabled={disabled} />
+      <ApiKeyActionsForm apiKey={apiKey} disabled={disabled} />
     </Stack>
   );
 }
@@ -66,10 +66,7 @@ export default function ApiKeyDetail({ apiKey }: Props) {
     <Stack spacing={3}>
       <Suspense>
         <ApiKeyMetadataCard apiKey={apiKey} />
-        <ApiKeySecretCard
-          secret={apiKey.secret}
-          disabled={apiKey.status === "revoked"}
-        />
+        <ApiKeyActions apiKey={apiKey} disabled={apiKey.status === "revoked"} />
       </Suspense>
     </Stack>
   );

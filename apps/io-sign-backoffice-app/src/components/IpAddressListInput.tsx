@@ -45,6 +45,7 @@ export default function IpAddressListInput({
       onChange={onChange}
       addItemButtonLabel={t("apiKey.network.list.button")}
       inputLabel={t("apiKey.network.list.inputLabel")}
+      errorLabel={t("apiKey.network.errors.invalid")}
       editModal={editModalWithDefaults}
       deleteModal={deleteModal}
       disabled={disabled}

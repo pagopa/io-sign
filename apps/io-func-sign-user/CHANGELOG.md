@@ -1,5 +1,17 @@
 # io-func-sign-user
 
+## 0.4.0
+
+### Minor Changes
+
+- 0a888ab: add x-firmaconio-environment header to http responses related to signature requests
+
+## 0.3.6
+
+### Patch Changes
+
+- 29ee473: update to node 18
+
 ## 0.3.5
 
 ### Patch Changes

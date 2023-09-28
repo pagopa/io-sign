@@ -26,12 +26,18 @@ export default function EditableListItem({
       {!disabled && (
         <Stack direction="row" spacing={1}>
           {onEdit && (
-            <IconButton size="small" color="primary" onClick={onEdit}>
+            <IconButton
+              aria-label="Modifica"
+              size="small"
+              color="primary"
+              onClick={onEdit}
+            >
               <Edit fontSize="inherit" />
             </IconButton>
           )}
           {onDelete && (
             <IconButton
+              aria-label="Elimina"
               size="small"
               sx={{ color: "error.main" }}
               onClick={onDelete}

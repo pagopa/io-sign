@@ -12,7 +12,7 @@ export const cidrSchema = z.custom<string>((val) => {
     })
     .safeParse({ ip, subnet });
   return result.success;
-}, "Invalid CIDR value");
+});
 
 export const fiscalCodeSchema = z
   .string()
