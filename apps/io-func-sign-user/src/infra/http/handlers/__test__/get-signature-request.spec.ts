@@ -141,7 +141,7 @@ describe("GetSignatureRequestHandler", () => {
           statusCode: 200,
           headers: expect.objectContaining({
             "Content-Type": "application/json",
-            "x-firmaconio-environment": "test",
+            "x-io-sign-environment": "test",
           }),
         }),
       })

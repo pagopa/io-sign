@@ -51,7 +51,7 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       pipe(
         SignatureRequestToApiModel.encode(request),
         H.successJson,
-        H.withHeader("x-firmaconio-environment", getEnvironment(request))
+        H.withHeader("x-io-sign-environment", getEnvironment(request))
       )
     ),
     RTE.orElseW(logErrorAndReturnResponse)
