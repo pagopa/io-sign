@@ -18,5 +18,5 @@
     "adr": "^1.4.3",
     "turbo": "^1.10.14"
   },
-  "packageManager": "yarn@3.3.0"
+  "packageManager": "yarn@3.6.3"
 }
