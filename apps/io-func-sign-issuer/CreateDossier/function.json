@@ -5,7 +5,7 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "route": "dossiers",
+      "route": "dossier",
       "methods": ["post"]
     },
     {
