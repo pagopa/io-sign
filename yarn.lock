@@ -4526,6 +4526,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rushstack/eslint-patch@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@rushstack/eslint-patch@npm:1.5.1"
+  checksum: e4c25322312dbaa29e835a7ab4fbac53c8731dd0da65e46646e38945e296429e7fb91c2ef3da5af5d5938d44b0cde1d5290438ebb3dcb015e02b80b5e2530d24
+  languageName: node
+  linkType: hard
+
 "@sendgrid/client@npm:^6.5.5":
   version: 6.5.5
   resolution: "@sendgrid/client@npm:6.5.5"
@@ -12108,6 +12115,8 @@ __metadata:
   resolution: "io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func"
   dependencies:
     "@azure/functions": ^4.0.1
+    "@pagopa/eslint-config": ^3.0.0
+    "@rushstack/eslint-patch": ^1.5.1
     eslint: ^8.50.0
     prettier: ^3.0.3
     tsup: ^7.2.0
