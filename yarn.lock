@@ -405,6 +405,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/functions@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@azure/functions@npm:4.0.1"
+  dependencies:
+    long: ^4.0.0
+    undici: ^5.13.0
+  checksum: 1aefbab740b70c6d274fe75e287051ac6593b6d39156952491c68c0b4cf93d1b5d8dda48a8e2ae17ae359b4b2b252255555b39904f132ef8be870ac511fcf073
+  languageName: node
+  linkType: hard
+
 "@azure/identity@npm:^3.3.0":
   version: 3.3.0
   resolution: "@azure/identity@npm:3.3.0"
@@ -3308,6 +3318,13 @@ __metadata:
   version: 2.1.2
   resolution: "@fal-works/esbuild-plugin-global-externals@npm:2.1.2"
   checksum: c59715902b9062aa7ff38973f298b509499fd146dbf564dc338b3f9e896da5bffb4ca676c27587fde79b3586003e24d65960acb62f009bca43dca34c76f8cbf7
+  languageName: node
+  linkType: hard
+
+"@fastify/busboy@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@fastify/busboy@npm:2.0.0"
+  checksum: 41879937ce1dee6421ef9cd4da53239830617e1f0bb7a0e843940772cd72827205d05e518af6adabe6e1ea19301285fff432b9d11bad01a531e698bea95c781b
   languageName: node
   linkType: hard
 
@@ -11969,6 +11986,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func":
+  version: 0.0.0-use.local
+  resolution: "io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func"
+  dependencies:
+    "@azure/functions": ^4.0.1
+    tsup: ^7.2.0
+    typescript: ^4.8.4
+  languageName: unknown
+  linkType: soft
+
 "io-sign@workspace:.":
   version: 0.0.0-use.local
   resolution: "io-sign@workspace:."
@@ -18301,6 +18328,15 @@ __metadata:
   version: 1.13.6
   resolution: "underscore@npm:1.13.6"
   checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
+  languageName: node
+  linkType: hard
+
+"undici@npm:^5.13.0":
+  version: 5.25.4
+  resolution: "undici@npm:5.25.4"
+  dependencies:
+    "@fastify/busboy": ^2.0.0
+  checksum: 654da161687de893127a685be61a19cb5bae42f4595c316ebf633929d871ac3bcd33edcb74156cea90655dfcd100bfe9b53a4f4749d52fc6ad2232f49a6ca8ab
   languageName: node
   linkType: hard
 
