@@ -2,7 +2,12 @@
   "version": "2.0",
   "logging": {
     "logLevel": {
-      "default": "Debug"
+      "default": "None",
+      "Function": "Error",
+      "Host.Aggregator": "Information",
+      "Host.Results": "Information",
+      "Microsoft": "Information",
+      "Worker": "Information"
     },
     "applicationInsights": {
       "samplingSettings": {
