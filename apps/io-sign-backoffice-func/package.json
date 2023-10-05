@@ -4,12 +4,17 @@
   "private": true,
   "scripts": {
     "build": "tsup-node",
+    "format": "prettier --write .",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
     "start": "func start"
   },
   "dependencies": {
     "@azure/functions": "^4.0.1"
   },
   "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.3",
     "tsup": "^7.2.0",
     "typescript": "^4.8.4"
   },
