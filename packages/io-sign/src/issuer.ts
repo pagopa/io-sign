@@ -11,6 +11,12 @@ export const IssuerEnvironment = t.union([
 ]);
 export type IssuerEnvironment = t.TypeOf<typeof IssuerEnvironment>;
 
+export const IssuerState = t.union([
+  t.literal("ACTIVE"),
+  t.literal("INACTIVE"),
+]);
+export type IssuerState = t.TypeOf<typeof IssuerState>;
+
 export const Issuer = t.type({
   id: Id,
   subscriptionId: NonEmptyString,
@@ -21,6 +27,7 @@ export const Issuer = t.type({
   environment: IssuerEnvironment,
   vatNumber: NonEmptyString,
   department: t.string,
+  state: IssuerState,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
