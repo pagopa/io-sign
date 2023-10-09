@@ -56,7 +56,12 @@ variable "environment_cd_roles" {
 
 variable "github_repository_environment_cd" {
   type = object({
-    reviewers_teams        = list(string)
+    reviewers_teams = list(string)
   })
   description = "GitHub Continous Integration roles"
+}
+
+variable "location" {
+  type    = string
+  default = "westeurope"
 }

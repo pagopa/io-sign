@@ -1,7 +1,7 @@
 locals {
   github_environment = {
     backoffice_app = {
-      name = "${var.project}-backoffice-app"
+      name = "${local.project}-backoffice-app"
     }
   }
 }
@@ -36,5 +36,5 @@ resource "github_actions_environment_secret" "backoffice_app_azure_client_id" {
   repository      = var.github.repository
   environment     = local.github_environment.backoffice_app.name
   secret_name     = "AZURE_CLIENT_ID"
-  plaintext_value = azurerm_user_assigned_identity.runner.application_id
+  plaintext_value = azurerm_user_assigned_identity.runner.client_id
 }
