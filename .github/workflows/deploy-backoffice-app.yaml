@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/cache@v3
         with:
-          path: out/node_modules/.cache/turbo
+          path: node_modules/.cache/turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
@@ -32,17 +32,17 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
-      - run: zip -r standalone.zip .next/standalone/apps/io-sign-backoffice-app
-        working-directory: ./out/apps/io-sign-backoffice-app
+      - run: zip -r /out/standalone.zip io-sign-backoffice-app
+        working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps
 
-      - run: zip -r static.zip .next/static
-        working-directory: ./out/apps/io-sign-backoffice-app
+      - run: zip -r /out/static.zip static
+        working-directory: ./out/apps/io-sign-backoffice-app/.next
 
       - uses: actions/upload-artifact@v3
         with:
           path: |
-            ./out/apps/io-sign-backoffice-app/static.zip
-            ./out/apps/io-sign-backoffice-app/standalone.zip
+            ./out/static.zip
+            ./out/standalone.zip
 
   deploy:
     if: ${{ !github.event.act }}
