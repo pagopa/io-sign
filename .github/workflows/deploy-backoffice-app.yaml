@@ -1,4 +1,4 @@
-name: Deploy (io-p-sign-backoffice)
+name: Deploy (io-p-sign-backoffice-app)
 
 on:
   workflow_dispatch: {}
@@ -32,21 +32,15 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
+      - run: mv static .next/standalone/apps/io-sign-backoffice-app/.next/static
+        working-directory: ./out/apps/io-sign-backoffice-app/.next
+
       - run: zip -r standalone.zip .
         working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app
 
       - uses: actions/upload-artifact@v3
         with:
-          name: standalone
           path: ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app/standalone.zip
-
-      - run: zip -r static.zip .
-        working-directory: ./out/apps/io-sign-backoffice-app/.next/static
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: static
-          path: ./out/apps/io-sign-backoffice-app/.next/static/static.zip
 
   deploy:
     if: ${{ !github.event.act }}
@@ -60,16 +54,6 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
-        with:
-          name: standalone
-
-      - run: unzip standalone.zip -d ./app
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: static
-
-      - run: unzip static.zip -d ./app/.next/static
 
       - uses: azure/login@v1
         with:
@@ -81,5 +65,5 @@ jobs:
         with:
           resource-group-name: ${{ secrets.AZURE_WEB_APP_RESOURCE_GROUP }}
           app-name: ${{ secrets.AZURE_WEB_APP_NAME }}
-          slot: staging
-          package: app
+          slot-name: staging
+          package: artifact.zip
