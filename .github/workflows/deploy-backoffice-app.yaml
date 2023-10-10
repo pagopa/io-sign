@@ -32,17 +32,17 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
-      - run: zip -r /out/standalone.zip io-sign-backoffice-app
+      - run: zip -r io-sign-backoffice-app
         working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps
 
-      - run: zip -r /out/static.zip static
+      - run: zip -r static
         working-directory: ./out/apps/io-sign-backoffice-app/.next
 
       - uses: actions/upload-artifact@v3
         with:
           path: |
-            ./out/static.zip
-            ./out/standalone.zip
+            ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app.zip
+            ./out/apps/io-sign-backoffice-app/.next/static.zip
 
   deploy:
     if: ${{ !github.event.act }}
