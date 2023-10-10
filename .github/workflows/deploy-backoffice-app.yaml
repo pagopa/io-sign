@@ -59,22 +59,27 @@ jobs:
       contents: read
 
     steps:
-      #- uses: azure/login@v1
-      #  with:
-      #    client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
       - uses: actions/download-artifact@v3
         with:
           name: standalone
 
-      - run: unzip standalone.zip
+      - run: unzip standalone.zip -d ./app
 
       - uses: actions/download-artifact@v3
         with:
           name: static
 
-      - run: unzip static.zip -d .next/static
+      - run: unzip static.zip -d ./app/.next/static
 
-      - run: ls -R
+      - uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          resource-group-name: ${{ secrets.AZURE_WEB_APP_RESOURCE_GROUP }}
+          app-name: ${{ secrets.AZURE_WEB_APP_NAME }}
+          slot: staging
+          package: app
