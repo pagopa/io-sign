@@ -38,3 +38,19 @@ resource "github_actions_environment_secret" "backoffice_app_azure_client_id" {
   secret_name     = "AZURE_CLIENT_ID"
   plaintext_value = azurerm_user_assigned_identity.runner.client_id
 }
+
+#tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
+resource "github_actions_environment_secret" "backoffice_app_azure_web_app_rg" {
+  repository      = var.github.repository
+  environment     = local.github_environment.backoffice_app.name
+  secret_name     = "AZURE_WEB_APP_RESOURCE_GROUP"
+  plaintext_value = "${local.project}-backend-rg"
+}
+
+#tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
+resource "github_actions_environment_secret" "backoffice_app_azure_web_app_name" {
+  repository      = var.github.repository
+  environment     = local.github_environment.backoffice_app.name
+  secret_name     = "AZURE_WEB_APP_NAME"
+  plaintext_value = "${local.project}-backoffice-app"
+}
