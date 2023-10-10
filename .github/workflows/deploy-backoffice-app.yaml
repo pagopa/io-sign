@@ -75,6 +75,6 @@ jobs:
         with:
           name: static
 
-      - run: unzip static.zip ./standalone/.next
+      - run: unzip static.zip -d .next/static
 
       - run: ls -R
