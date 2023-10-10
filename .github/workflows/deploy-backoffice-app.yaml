@@ -68,8 +68,5 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: standalone
-          path: io-p-sign-backoffice-app.zip
-
-      - run: unzip io-p-sign-backoffice-app.zip
 
       - run: ls -R
