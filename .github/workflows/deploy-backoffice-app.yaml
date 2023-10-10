@@ -12,13 +12,13 @@ jobs:
         with:
           fetch-depth: 2
 
+      - run: npx turbo@1.9.3 prune --scope io-sign-backoffice-app
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: ".node-version"
           cache: "yarn"
           cache-dependency-path: "./out/yarn.lock"
-
-      - run: yarn dlx turbo@1.9.3 prune --scope io-sign-backoffice-app
 
       - run: yarn install --immutable
         working-directory: ./out
