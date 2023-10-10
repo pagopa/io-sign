@@ -32,17 +32,21 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
-      - run: zip -r ../../io-sign-backoffice-app.zip io-sign-backoffice-app
-        working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps
-
-      - run: zip -r static.zip static
-        working-directory: ./out/apps/io-sign-backoffice-app/.next
+      - run: zip -r standalone.zip .
+        working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app
 
       - uses: actions/upload-artifact@v3
         with:
-          path: |
-            ./out/apps/io-sign-backoffice-app/.next/io-sign-backoffice-app.zip
-            ./out/apps/io-sign-backoffice-app/.next/static.zip
+          name: standalone
+          path: ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app/standalone.zip
+
+      - run: zip -r static.zip .
+        working-directory: ./out/apps/io-sign-backoffice-app/.next/static
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: static
+          path: ./out/apps/io-sign-backoffice-app/.next/static/static.zip
 
   deploy:
     if: ${{ !github.event.act }}
@@ -55,8 +59,6 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/download-artifact@v3
-
       - uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
