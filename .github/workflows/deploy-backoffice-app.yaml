@@ -56,11 +56,6 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
-        with:
-          name: standalone-server
-          path: io-sign-backoffice
-
-      - uses: actions/download-artifact@v3
 
       - uses: azure/login@v1
         with:
