@@ -2,6 +2,7 @@ name: Deploy (Backoffice)
 
 on:
   workflow_dispatch: {}
+  push: {}
 
 jobs:
   build:
