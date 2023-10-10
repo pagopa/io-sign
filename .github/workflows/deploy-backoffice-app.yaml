@@ -41,8 +41,8 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: |
-          ./out/apps/io-sign-backoffice-app/static.zip
-          ./out/apps/io-sign-backoffice-app/standalone.zip
+            ./out/apps/io-sign-backoffice-app/static.zip
+            ./out/apps/io-sign-backoffice-app/standalone.zip
 
   deploy:
     if: ${{ !github.event.act }}
