@@ -41,6 +41,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
+          name: io-p-sign-backoffice-app
           path: ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app/standalone.zip
 
   deploy:
@@ -55,6 +56,8 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
+        with:
+          name: io-p-sign-backoffice-app
 
       - uses: azure/login@v1
         with:
@@ -62,9 +65,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - run: ls -R
+
       - uses: azure/webapps-deploy@v2
         with:
           resource-group-name: ${{ vars.AZURE_WEB_APP_RESOURCE_GROUP }}
           app-name: ${{ vars.AZURE_WEB_APP_NAME }}
           slot-name: staging
-          package: artifact.zip
+          package: standalone.zip
