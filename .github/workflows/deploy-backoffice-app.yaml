@@ -64,7 +64,7 @@ jobs:
 
       - uses: azure/webapps-deploy@v2
         with:
-          resource-group-name: ${{ secrets.AZURE_WEB_APP_RESOURCE_GROUP }}
-          app-name: ${{ secrets.AZURE_WEB_APP_NAME }}
+          resource-group-name: ${{ env.AZURE_WEB_APP_RESOURCE_GROUP }}
+          app-name: ${{ env.AZURE_WEB_APP_NAME }}
           slot-name: staging
           package: artifact.zip
