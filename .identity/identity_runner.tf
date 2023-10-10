@@ -4,13 +4,13 @@ resource "azurerm_user_assigned_identity" "runner" {
   resource_group_name = azurerm_resource_group.identity.name
 }
 
-resource "azurerm_federated_identity_credential" "runner" {
-  name                = "github-federated"
+resource "azurerm_federated_identity_credential" "io-p-sign-backoffice-app" {
+  name                = "io-p-sign-backoffice-app"
   resource_group_name = azurerm_resource_group.identity.name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = "https://token.actions.githubusercontent.com"
   parent_id           = azurerm_user_assigned_identity.runner.id
-  subject             = "repo:${var.github.org}/${var.github.repository}:environment:*"
+  subject             = "repo:${var.github.org}/${var.github.repository}:environment:io-p-sign-backoffice-app"
 }
 
 resource "azurerm_role_assignment" "environment_runner_github_runner_rg" {
