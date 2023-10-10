@@ -40,7 +40,9 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: ./out/apps/io-sign-backoffice-app/*.zip
+          path: |
+          ./out/apps/io-sign-backoffice-app/static.zip
+          ./out/apps/io-sign-backoffice-app/standalone.zip
 
   deploy:
     if: ${{ !github.event.act }}
@@ -59,9 +61,6 @@ jobs:
           path: io-sign-backoffice
 
       - uses: actions/download-artifact@v3
-        with:
-          name: static-files
-          path: io-sign-backoffice/.next/static
 
       - uses: azure/login@v1
         with:
