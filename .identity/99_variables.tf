@@ -46,6 +46,12 @@ variable "github" {
   }
 }
 
+variable "github_token" {
+  type        = string
+  sensitive   = true
+  description = "GitHub Organization and repository name"
+}
+
 variable "environment_cd_roles" {
   type = object({
     subscription    = list(string)
