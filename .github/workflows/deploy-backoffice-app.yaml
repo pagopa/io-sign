@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: ".node-version"
-          cache: "yarn"
+          cache: "npm"
 
       - run: yarn dlx turbo@1.9.3 prune --scope io-sign-backoffice-app
 
@@ -32,7 +32,7 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
-      - run: zip -r io-sign-backoffice-app.zip io-sign-backoffice-app
+      - run: zip -r ../../io-sign-backoffice-app.zip io-sign-backoffice-app
         working-directory: ./out/apps/io-sign-backoffice-app/.next/standalone/apps
 
       - run: zip -r static.zip static
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: |
-            ./out/apps/io-sign-backoffice-app/.next/standalone/apps/io-sign-backoffice-app.zip
+            ./out/apps/io-sign-backoffice-app/.next/io-sign-backoffice-app.zip
             ./out/apps/io-sign-backoffice-app/.next/static.zip
 
   deploy:
