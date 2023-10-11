@@ -33,7 +33,7 @@ jobs:
       - run: yarn build
         working-directory: ./out
 
-      - run: mv .next/static .next/standalone/apps/io-sign-backoffice-app/
+      - run: mv .next/static .next/standalone/apps/io-sign-backoffice-app/.next/
         working-directory: ./out/apps/io-sign-backoffice-app/
 
       - run: zip -r standalone.zip .
@@ -64,8 +64,6 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - run: ls -R
 
       - uses: azure/webapps-deploy@v2
         with:
