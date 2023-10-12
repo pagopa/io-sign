@@ -22,6 +22,16 @@ resource "github_repository_environment" "web_apps" {
   repository  = var.github.repository
 }
 
+resource "azurerm_federated_identity_credential" "web_apps" {
+  for_each            = local.web_app_names
+  name                = replace(each.value, "/", "-")
+  resource_group_name = azurerm_resource_group.identity.name
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = "https://token.actions.githubusercontent.com"
+  parent_id           = azurerm_user_assigned_identity.runner.id
+  subject             = "repo:${var.github.org}/${var.github.repository}:environment:${github_repository_environment.web_apps[each.key].environment}"
+}
+
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "web_app_subscription_id" {
   for_each        = local.web_app_names
