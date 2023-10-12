@@ -48,7 +48,7 @@ jobs:
     if: ${{ !github.event.act }}
     needs: [build]
     runs-on: self-hosted
-    environment: io-p-sign-backoffice-app
+    environment: io-p-sign-backoffice-app-staging
 
     permissions:
       id-token: write
@@ -69,5 +69,5 @@ jobs:
         with:
           resource-group-name: ${{ vars.AZURE_WEB_APP_RESOURCE_GROUP }}
           app-name: ${{ vars.AZURE_WEB_APP_NAME }}
-          slot-name: staging
+          slot-name: ${{ vars.AZURE_WEB_APP_SLOT }}
           package: standalone.zip
