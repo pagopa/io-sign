@@ -63,7 +63,7 @@ jobs:
           npm pkg set --json "files"='["**/function.json", "dist", "host.json","extensions.csproj"]'
           npx npm-pack-zip --destination artifact.zip
           echo "artifact-path=$(realpath artifact.zip)" >> "$GITHUB_OUTPUT"
-        working-directory: ./out/apps/${{ input.workspace-name }}
+        working-directory: ./out/apps/${{ inputs.workspace-name }}
 
       - uses: actions/upload-artifact@v3
         with:
