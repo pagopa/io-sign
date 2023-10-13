@@ -71,3 +71,24 @@ jobs:
           app-name: ${{ vars.AZURE_WEB_APP_NAME }}
           slot-name: ${{ vars.AZURE_WEB_APP_SLOT }}
           package: standalone.zip
+
+  swap_slot:
+    if: ${{ !github.event.act }}
+    needs: [build]
+    runs-on: self-hosted
+    environment: io-p-sign-backoffice-app
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - run: curl -f 'https://${{ vars.AZURE_WEB_APP_NAME }}-staging.azurewebsites.net/health'
+
+      - uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - run: az webapp deployment slot swap -g ${{ vars.AZURE_WEB_APP_RESOURCE_GROUP }} -n ${{ vars.AZURE_WEB_APP_NAME }} --slot staging --target-slot production
