@@ -60,4 +60,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.workspace-name }}
-          path: ${{ steps.[format("make-{0}-artifact", steps.detect-workspace-type.outputs.workspace-type)].outputs.artifact-path }}
+          path: ${{ steps[format("make-{0}-artifact", steps.detect-workspace-type.outputs.workspace-type)].outputs.artifact-path }}
