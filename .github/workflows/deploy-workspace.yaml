@@ -47,7 +47,7 @@ jobs:
           fi
         working-directory: ./out
 
-      - if: ${{ steps.detect-workspace-type.outputs.workspace-type == "next-standalone" }}
+      - if: ${{ steps.detect-workspace-type.outputs.workspace-type == 'next-standalone' }}
         run: |
           mv .next/static .next/standalone/apps/${{ inputs.workspace-name }}/.next/
           cd .next/standalone/apps/${{ inputs.workspace-name }} 
