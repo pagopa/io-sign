@@ -20,6 +20,7 @@ const issuer: Issuer = {
   environment: "TEST",
   vatNumber: "IT01234567" as NonEmptyString,
   department: "",
+  state: "ACTIVE",
 };
 
 const signatureRequest: SignatureRequestSigned = {

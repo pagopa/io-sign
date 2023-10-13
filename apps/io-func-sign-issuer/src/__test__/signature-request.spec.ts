@@ -21,6 +21,7 @@ const issuer: Issuer = {
   environment: "TEST",
   vatNumber: "15376271001" as NonEmptyString,
   department: "",
+  state: "ACTIVE",
 };
 
 const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [

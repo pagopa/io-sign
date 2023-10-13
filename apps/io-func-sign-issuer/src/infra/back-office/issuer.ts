@@ -72,6 +72,7 @@ class IssuerModel {
               environment: getIssuerEnvironment(environment, institutionId),
               vatNumber,
               department: "",
+              state: "ACTIVE" as const,
             },
             O.some
           )
