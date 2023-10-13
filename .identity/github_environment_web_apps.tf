@@ -16,10 +16,17 @@ locals {
   web_app_names = toset([for w in concat(data.azurerm_resources.web_apps.resources, data.azurerm_resources.web_apps_slots.resources) : w.name])
 }
 
+data "github_team" "maintainers" {
+  slug = "io-sign-maintainers"
+}
+
 resource "github_repository_environment" "web_apps" {
   for_each    = local.web_app_names
   environment = replace(each.value, "/", "-")
   repository  = var.github.repository
+  reviewers {
+    teams = endswith(each.value, "/staging") ? [] : [data.github_team.maintainers.id]
+  }
 }
 
 resource "azurerm_federated_identity_credential" "web_apps" {
