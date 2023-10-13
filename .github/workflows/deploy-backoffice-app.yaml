@@ -74,7 +74,7 @@ jobs:
 
   swap_slot:
     if: ${{ !github.event.act }}
-    needs: [build]
+    needs: [deploy]
     runs-on: self-hosted
     environment: io-p-sign-backoffice-app
 
