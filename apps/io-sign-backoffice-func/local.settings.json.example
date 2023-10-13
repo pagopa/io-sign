@@ -1,0 +1,8 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "SelfCareEventHubConnectionString": "SELF_CARE_EVENT_HUB_CONNECTION_STRING"
+  }
+}
