@@ -51,7 +51,7 @@ jobs:
         run: |
           mv .next/static .next/standalone/apps/${{ inputs.workspace-name }}/.next/
           cd .next/standalone/apps/${{ inputs.workspace-name }} 
-          zip -r artifact.zip
+          zip -r artifact.zip .
           mv artifact.zip /out/artifact.zip
           ls -R
         working-directory: ./out/apps/${{ inputs.workspace-name }}
