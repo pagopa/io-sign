@@ -54,8 +54,16 @@ jobs:
           cd .next/standalone/apps/${{ inputs.workspace-name }} 
           zip -r artifact.zip .
           echo "artifact-path=$(realpath artifact.zip)" >> "$GITHUB_OUTPUT"
-          ls -R
         working-directory: ./out/apps/${{ inputs.workspace-name }}
+
+      - if: ${{ steps.detect-workspace-type.outputs.workspace-type == 'function-app' }}
+        id: make-function-app-artifact
+        run: |
+          npm pkg set --json "bundledDependencies"=true
+          npm pkg set --json "files"='["**/function.json", "dist", "host.json","extensions.csproj"]'
+          npx npm-pack-zip --destination artifact.zip
+          echo "artifact-path=$(realpath artifact.zip)" >> "$GITHUB_OUTPUT"
+        working-directory: ./out/apps/${{ input.workspace-name }}
 
       - uses: actions/upload-artifact@v3
         with:
