@@ -5,6 +5,6 @@ on:
 
 jobs:
   deploy_workspace_to_azure:
-    uses: .github/workflows/deploy-workspace.yaml@SFEQS-2028-add-bo-deploy-workflow
+    uses: ./.github/workflows/deploy-workspace.yaml@SFEQS-2028-add-bo-deploy-workflow
     with:
       workspace-name: io-sign-backoffice-app
