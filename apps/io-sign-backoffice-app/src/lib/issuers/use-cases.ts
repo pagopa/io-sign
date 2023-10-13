@@ -14,6 +14,7 @@ export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
     await insertIssuer({
       externalId: ulid(),
       type: "PA",
+      state: "active",
       ...payload,
     });
   } catch (cause) {
