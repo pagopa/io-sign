@@ -9,3 +9,7 @@ jobs:
     with:
       environment: io-p-sign-backoffice-func
       workspace-name: io-sign-backoffice-func
+    secrets:
+      azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure_tenant_id: ${{ secets.AZURE_TENANT_ID }}
