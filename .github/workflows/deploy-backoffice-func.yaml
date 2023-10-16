@@ -10,4 +10,3 @@ jobs:
       environment: io-p-sign-backoffice-func
       workspace-name: io-sign-backoffice-func
     secrets: inherit
-    vars: inherit
