@@ -18,6 +18,7 @@ runs:
         else
           exit 1
         fi
+      shell: bash
       working-directory: ./out/apps/${{ inputs.workspace-name }}
 
     - if: ${{ steps.detect-workspace-type.outputs.workspace-type == 'next-standalone' }}
@@ -27,6 +28,7 @@ runs:
         cd .next/standalone/apps/${{ inputs.workspace-name }} 
         zip -r artifact.zip .
         echo "artifact-path=$(realpath artifact.zip)" >> "$GITHUB_OUTPUT"
+      shell: bash
       working-directory: ./out/apps/${{ inputs.workspace-name }}
 
     - if: ${{ steps.detect-workspace-type.outputs.workspace-type == 'function-app' }}
@@ -36,4 +38,5 @@ runs:
         npm pkg set --json "files"='["**/function.json", "dist", "host.json","extensions.csproj"]'
         npx npm-pack-zip --destination artifact.zip
         echo "artifact-path=$(realpath artifact.zip)" >> "$GITHUB_OUTPUT"
+      shell: bash
       working-directory: ./out/apps/${{ inputs.workspace-name }}
