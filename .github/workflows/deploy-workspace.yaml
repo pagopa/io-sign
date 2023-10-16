@@ -18,29 +18,12 @@ jobs:
         with:
           fetch-depth: 2
 
-      - run: npx turbo@1.9.3 prune --scope ${{ inputs.workspace-name }}
-
-      - uses: actions/setup-node@v3
+      - uses: "pagopa/io-std/build-workspace@SFEQS-2043-make-reusable-workflows"
         with:
-          node-version-file: ".node-version"
-          cache: "yarn"
-          cache-dependency-path: "./out/yarn.lock"
-
-      - run: yarn install --immutable
-        working-directory: ./out
-
-      - uses: actions/cache@v3
-        with:
-          path: ./out/node_modules/.cache/turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - run: yarn build
-        working-directory: ./out
+          workspace-name: ${{ inputs.workspace-name }}
 
       - id: make_artifact
-        uses: "./.github/workflows/make-artifact"
+        uses: "pagopa/io-std/make-workspace-artifact@SFEQS-2043-make-reusable-workflows"
         with:
           workspace-name: ${{ inputs.workspace-name }}
 
