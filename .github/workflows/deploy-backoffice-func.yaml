@@ -12,4 +12,4 @@ jobs:
     secrets:
       azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-      azure_tenant_id: ${{ secets.AZURE_TENANT_ID }}
+      azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
