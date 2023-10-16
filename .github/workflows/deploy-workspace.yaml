@@ -10,11 +10,11 @@ on:
         required: true
         type: string
     secrets:
-      azure_subscription_id:
+      AZURE_SUBSCRIPTION_ID:
         required: true
-      azure_tenant_id:
+      AZURE_TENANT_ID:
         required: true
-      azure_client_id:
+      AZURE_CLIENT_ID:
         required: true
 
 jobs:
@@ -64,7 +64,7 @@ jobs:
         with:
           resource-group-name: ${{ vars.AZURE_WEB_APP_RESOURCE_GROUP }}
           app-name: ${{ vars.AZURE_WEB_APP_NAME }}
-          slot-name: ${{ vars.AZURE_WEB_APP_SLOT }}
+          slot-name: staging
           package: artifact.zip
 
   #swap_slot:
