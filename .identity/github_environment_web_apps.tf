@@ -7,13 +7,8 @@ data "azurerm_resources" "web_apps" {
   type                = "Microsoft.Web/sites"
 }
 
-data "azurerm_resources" "web_apps_slots" {
-  resource_group_name = local.resource_group_name
-  type                = "Microsoft.Web/sites/slots"
-}
-
 locals {
-  web_app_names = toset([for w in concat(data.azurerm_resources.web_apps.resources, data.azurerm_resources.web_apps_slots.resources) : w.name])
+  web_app_names = toset([for w in data.azurerm_resources.web_apps.resources : w.name])
 }
 
 data "github_team" "maintainers" {
@@ -22,16 +17,16 @@ data "github_team" "maintainers" {
 
 resource "github_repository_environment" "web_apps" {
   for_each    = local.web_app_names
-  environment = replace(each.value, "/", "-")
+  environment = each.value
   repository  = var.github.repository
   reviewers {
-    teams = endswith(each.value, "/staging") ? [] : [data.github_team.maintainers.id]
+    teams = [data.github_team.maintainers.id]
   }
 }
 
 resource "azurerm_federated_identity_credential" "web_apps" {
   for_each            = local.web_app_names
-  name                = replace(each.value, "/", "-")
+  name                = each.value
   resource_group_name = azurerm_resource_group.identity.name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = "https://token.actions.githubusercontent.com"
@@ -79,7 +74,7 @@ resource "github_actions_environment_variable" "web_app_names" {
   repository    = var.github.repository
   environment   = github_repository_environment.web_apps[each.key].environment
   variable_name = "AZURE_WEB_APP_NAME"
-  value         = trimsuffix(each.value, "/staging")
+  value         = each.value
 }
 
 resource "github_actions_environment_variable" "web_app_slots" {
@@ -87,5 +82,5 @@ resource "github_actions_environment_variable" "web_app_slots" {
   repository    = var.github.repository
   environment   = github_repository_environment.web_apps[each.key].environment
   variable_name = "AZURE_WEB_APP_SLOT"
-  value         = endswith(each.value, "/staging") ? "staging" : "production"
+  value         = "production"
 }
