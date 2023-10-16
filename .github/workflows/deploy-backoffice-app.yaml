@@ -6,6 +6,6 @@ on:
 jobs:
   deploy_workspace_to_azure:
     uses: ./.github/workflows/deploy-workspace.yaml
-    environment: io-p-sign-backoffice-app
     with:
+      environment: io-p-sign-backoffice-app
       workspace-name: io-sign-backoffice-app
