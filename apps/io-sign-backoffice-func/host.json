@@ -28,7 +28,7 @@
       "traceReplayEvents": false
     },
     "http": {
-      "routePrefix": "api/v1/sign"
+      "routePrefix": ""
     },
     "queues": {
       "maxPollingInterval": "00:00:05.000"
