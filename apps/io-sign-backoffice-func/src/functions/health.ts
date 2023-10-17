@@ -1,14 +1,6 @@
-import {
-  app,
-  HttpRequest,
-  HttpResponseInit,
-  InvocationContext,
-} from "@azure/functions";
+import { app, HttpResponseInit } from "@azure/functions";
 
-async function handler(
-  _request: HttpRequest,
-  _context: InvocationContext
-): Promise<HttpResponseInit> {
+async function handler(): Promise<HttpResponseInit> {
   return { status: 200 };
 }
 
