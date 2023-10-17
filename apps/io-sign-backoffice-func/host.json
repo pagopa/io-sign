@@ -18,9 +18,6 @@
       }
     }
   },
-  "http": {
-    "routePrefix": ""
-  },
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[3.3.*, 4.0.0)"
@@ -29,6 +26,9 @@
     "tracing": {
       "traceInputsAndOutputs": false,
       "traceReplayEvents": false
+    },
+    "http": {
+      "routePrefix": "api/v1/sign"
     },
     "queues": {
       "maxPollingInterval": "00:00:05.000"
