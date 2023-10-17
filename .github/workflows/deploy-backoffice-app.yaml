@@ -2,6 +2,9 @@ name: Deploy (backoffice-app)
 
 on:
   workflow_dispatch: {}
+  push:
+    tags:
+      - io-sign-backoffice-app@**
 
 jobs:
   deploy_workspace_to_azure:
