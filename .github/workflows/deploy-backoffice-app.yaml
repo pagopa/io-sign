@@ -9,7 +9,7 @@ on:
 jobs:
   deploy_workspace_to_azure:
     name: Deploy
-    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@SFEQS-2043-make-reusable-workflows
+    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
     with:
       environment: io-p-sign-backoffice-app
       workspace-name: io-sign-backoffice-app
