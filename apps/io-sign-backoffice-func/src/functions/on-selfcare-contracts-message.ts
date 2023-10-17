@@ -1,6 +1,6 @@
 import { app, InvocationContext } from "@azure/functions";
 
-export async function handler(
+async function handler(
   message: unknown,
   context: InvocationContext
 ): Promise<void> {
