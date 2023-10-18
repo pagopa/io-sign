@@ -37,7 +37,7 @@
     "server-only": "^0.0.1",
     "sharp": "^0.32.6",
     "ulid": "^2.3.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
