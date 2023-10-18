@@ -46,6 +46,12 @@ variable "github" {
   }
 }
 
+variable "github_token" {
+  type        = string
+  sensitive   = true
+  description = "GitHub Organization and repository name"
+}
+
 variable "environment_cd_roles" {
   type = object({
     subscription    = list(string)
@@ -56,7 +62,12 @@ variable "environment_cd_roles" {
 
 variable "github_repository_environment_cd" {
   type = object({
-    reviewers_teams        = list(string)
+    reviewers_teams = list(string)
   })
   description = "GitHub Continous Integration roles"
+}
+
+variable "location" {
+  type    = string
+  default = "westeurope"
 }

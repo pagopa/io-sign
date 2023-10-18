@@ -27,6 +27,9 @@
       "traceInputsAndOutputs": false,
       "traceReplayEvents": false
     },
+    "http": {
+      "routePrefix": ""
+    },
     "queues": {
       "maxPollingInterval": "00:00:05.000"
     }

@@ -7,6 +7,10 @@ data "azurerm_resource_group" "github_runner_rg" {
   name = "${var.prefix}-${var.env_short}-github-runner-rg"
 }
 
+data "azurerm_resource_group" "backend" {
+  name = "${local.project}-backend-rg"
+}
+
 data "azurerm_resource_group" "dashboards" {
   name = "dashboards"
 }
