@@ -49,6 +49,7 @@ describe("createIssuerIfNotExists", () => {
       id: mocks.issuer.id,
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
+      name: "test",
     };
     await createIssuerIfNotExists(payload);
     expect(create).not.toHaveBeenCalled();
@@ -58,6 +59,7 @@ describe("createIssuerIfNotExists", () => {
       id: "not-exists",
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
+      name: "test",
     };
     await createIssuerIfNotExists(payload);
     expect(create).toHaveBeenCalledWith(expect.objectContaining(payload));

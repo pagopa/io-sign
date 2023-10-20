@@ -15,6 +15,9 @@ import {
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
+import { sendMessage } from "../slack";
+import { getInstitution } from "../institutions/use-cases";
+import { getIssuerByInstitution } from "../issuers/use-cases";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
@@ -36,6 +39,10 @@ export class ApiKeyAlreadyExistsError extends Error {
 
 export async function createApiKey(payload: CreateApiKeyPayload) {
   try {
+    const institution = await getInstitution(payload.institutionId);
+    if (!institution) {
+      throw new Error("institution does not exists");
+    }
     // check if the api key for the given input already exists
     const apiKeyAlreadyExists = await apiKeyExists(
       payload.institutionId,
@@ -53,6 +60,10 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
     }
+    const issuer = await getIssuerByInstitution(institution);
+    await sendMessage(
+      `(_backoffice_) *${institution.name}* (\`${issuer?.externalId}\`) ha creato una nuova API Key di *${payload.environment}*.\nHa configurato *${payload.cidrs.length}* indirizzi IP di test e *${payload.testers.length}* codici fiscali.`
+    );
     return apiKey.id;
   } catch (e) {
     throw e instanceof ApiKeyAlreadyExistsError
