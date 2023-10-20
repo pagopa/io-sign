@@ -19,7 +19,7 @@ const getSlackConfig = cache(() => {
   return result.data;
 });
 
-export async function sendSlackMessage(text: string) {
+export async function sendMessage(text: string) {
   try {
     const config = getSlackConfig();
     await fetch(config.webhook, {
