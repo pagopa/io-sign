@@ -51,7 +51,7 @@ describe("createIssuerIfNotExists", () => {
       supportEmail: mocks.issuer.supportEmail,
       name: "test",
     };
-    await createIssuerIfNotExists(payload);
+    await createIssuerIfNotExists({ ...payload, name: "test" });
     expect(create).not.toHaveBeenCalled();
   });
   it("should create an issuer", async () => {
@@ -59,9 +59,8 @@ describe("createIssuerIfNotExists", () => {
       id: "not-exists",
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
-      name: "test",
     };
-    await createIssuerIfNotExists(payload);
+    await createIssuerIfNotExists({ ...payload, name: "test" });
     expect(create).toHaveBeenCalledWith(expect.objectContaining(payload));
   });
 });
