@@ -11,10 +11,14 @@ export const issuerSchema = z.object({
 
 export type Issuer = z.infer<typeof issuerSchema>;
 
-export const createIssuerPayloadSchema = issuerSchema.pick({
-  id: true,
-  institutionId: true,
-  supportEmail: true,
-});
+export const createIssuerPayloadSchema = issuerSchema
+  .pick({
+    id: true,
+    institutionId: true,
+    supportEmail: true,
+  })
+  .extend({
+    name: z.string().nonempty(),
+  });
 
 export type CreateIssuerPayload = z.infer<typeof createIssuerPayloadSchema>;
