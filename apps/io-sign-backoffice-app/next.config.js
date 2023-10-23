@@ -5,6 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: "standalone",
+  images: { unoptimized: true },
 };
 
 module.exports = withNextIntl(nextConfig);
