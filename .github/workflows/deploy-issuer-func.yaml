@@ -1,0 +1,16 @@
+name: Deploy (issuer-func)
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - io-func-sign-issuer@**
+
+jobs:
+  deploy_workspace_to_azure:
+    name: Deploy
+    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
+    with:
+      environment: io-p-sign-issuer-func
+      workspace-name: io-func-sign-issuer
+    secrets: inherit
