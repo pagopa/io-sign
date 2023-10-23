@@ -12,28 +12,48 @@ import {
 } from "@/lib/api-keys/use-cases";
 
 import { ApiKey, apiKeySchema } from "../api-keys";
+import { InstitutionDetail } from "../institutions";
+import { Issuer } from "../issuers";
 
 type SerializedApiKey = Omit<ApiKey, "createdAt"> & {
   createdAt: string;
 };
 
-const mocks: { apiKeys: Array<SerializedApiKey>; secret: string } = vi.hoisted(
-  () => ({
-    apiKeys: [
-      {
-        id: "01GG4NFBCN4ZH8ETCCKX3766KX",
-        institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
-        displayName: "displayName",
-        environment: "prod" as const,
-        status: "active" as const,
-        createdAt: new Date().toISOString(),
-        cidrs: [],
-        testers: [],
-      },
-    ],
-    secret: "0040820bee855345982b3ee534334b4",
-  })
-);
+const mocks: {
+  apiKeys: Array<SerializedApiKey>;
+  institution: InstitutionDetail;
+  issuer: Issuer;
+  secret: string;
+} = vi.hoisted(() => ({
+  apiKeys: [
+    {
+      id: "01GG4NFBCN4ZH8ETCCKX3766KX",
+      institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
+      displayName: "displayName",
+      environment: "prod",
+      status: "active",
+      createdAt: new Date().toISOString(),
+      cidrs: [],
+      testers: [],
+    },
+  ],
+  institution: {
+    id: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
+    vatNumber: "101010",
+    supportEmail: "support@email.it",
+    taxCode: "101010",
+    name: "Test",
+  },
+  issuer: {
+    externalId: "01GG4NFBCN4ZH8ETCCKX3766KX",
+    institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
+    supportEmail: "support@email.it",
+    id: "101010",
+    type: "PA",
+    state: "active",
+  },
+  secret: "0040820bee855345982b3ee534334b4",
+}));
 
 const { patchItem } = vi.hoisted(() => ({
   patchItem: vi.fn(),
@@ -69,6 +89,14 @@ vi.mock("@/lib/cosmos", () => ({
 
 vi.mock("@/lib/apim", () => ({
   getApimClient,
+}));
+
+vi.mock("@/lib/institutions/use-cases", () => ({
+  getInstitution: vi.fn().mockResolvedValue(mocks.institution),
+}));
+
+vi.mock("@/lib/issuers/use-cases", () => ({
+  getIssuerByInstitution: vi.fn().mockResolvedValue(mocks.issuer),
 }));
 
 describe("createApiKey", () => {

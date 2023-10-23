@@ -15,9 +15,9 @@ import {
 
 import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
-import { sendMessage } from "../slack";
-import { getInstitution } from "../institutions/use-cases";
-import { getIssuerByInstitution } from "../issuers/use-cases";
+import { sendMessage } from "@/lib/slack";
+import { getInstitution } from "@/lib/institutions/use-cases";
+import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
