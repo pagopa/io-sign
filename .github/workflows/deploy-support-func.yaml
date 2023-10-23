@@ -1,0 +1,16 @@
+name: Deploy (support-func)
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - io-func-sign-support@**
+
+jobs:
+  deploy_workspace_to_azure:
+    name: Deploy
+    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
+    with:
+      environment: io-p-sign-support-func
+      workspace-name: io-func-sign-support
+    secrets: inherit
