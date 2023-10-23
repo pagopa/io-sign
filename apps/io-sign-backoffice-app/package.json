@@ -35,7 +35,6 @@
     "react-hook-form": "^7.45.4",
     "react-is": "^18.2.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.32.6",
     "ulid": "^2.3.0",
     "zod": "^3.21.4"
   },
