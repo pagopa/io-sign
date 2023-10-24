@@ -2,6 +2,8 @@ import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
 import { cache } from "react";
 
+let cosmosClient: CosmosClient;
+
 const Config = z
   .object({
     COSMOS_DB_CONNECTION_STRING: z.string().nonempty(),
@@ -22,9 +24,12 @@ const getCosmosConfig = cache(() => {
   return result.data;
 });
 
-const getCosmosClient = cache(
-  () => new CosmosClient(getCosmosConfig().cosmosDbConnectionString)
-);
+const getCosmosClient = () => {
+  if (!cosmosClient) {
+    cosmosClient = new CosmosClient(getCosmosConfig().cosmosDbConnectionString);
+  }
+  return cosmosClient;
+};
 
 export const getCosmosContainerClient = (cosmosContainerName: string) => {
   const { cosmosDbName } = getCosmosConfig();
