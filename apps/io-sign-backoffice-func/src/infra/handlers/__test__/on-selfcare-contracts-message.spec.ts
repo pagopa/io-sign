@@ -40,7 +40,7 @@ describe("onSelfcareContractsMessage handler", () => {
           : TE.right(O.none),
     };
     institutionRepository = {
-      getInstitutionById: () => TE.right(O.some(mocks.selfcareInstitution)),
+      getById: () => TE.right(O.some(mocks.selfcareInstitution)),
     };
     slackRepository = {
       sendMessage: () => TE.right(undefined),

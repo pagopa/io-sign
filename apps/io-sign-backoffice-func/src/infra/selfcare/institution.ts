@@ -17,7 +17,7 @@ const institution = z.object({
 export type Institution = z.infer<typeof institution>;
 
 export type InstitutionRepository = {
-  getInstitutionById: (
+  getById: (
     internalInstitutionId: string
   ) => TE.TaskEither<Error, O.Option<Institution>>;
 };
@@ -35,7 +35,7 @@ export class SelfcareInstitutionRepository implements InstitutionRepository {
     this.#apiKey = apiKey;
   }
 
-  getInstitutionById(
+  getById(
     internalInstitutionId: string
   ): TE.TaskEither<Error, O.Option<Institution>> {
     return pipe(
@@ -64,11 +64,6 @@ export class SelfcareInstitutionRepository implements InstitutionRepository {
           ? TE.right(O.none)
           : pipe(
               TE.tryCatch(() => response.json(), E.toError),
-              TE.flatMapEither(parse(institution.pick({ description: true }))),
-              TE.map((description) => ({
-                ...description,
-                supportEmail: "silvia.cirulli@pagopa.it",
-              })),
               TE.flatMapEither(parse(institution)),
               TE.map(O.some)
             )
