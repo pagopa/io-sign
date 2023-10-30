@@ -9,7 +9,7 @@ import {
   InstitutionRepository,
 } from "@/infra/selfcare/institution";
 import { Issuer, IssuerRepository } from "@/infra/back-office/issuer";
-import { SlackRepository } from "@/infra/slack/channel";
+import { SlackRepository } from "@/infra/slack/message";
 
 describe("onSelfcareContractsMessage handler", () => {
   let issuerRepository: IssuerRepository;

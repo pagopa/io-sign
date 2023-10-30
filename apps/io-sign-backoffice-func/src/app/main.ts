@@ -1,14 +1,14 @@
 import { app } from "@azure/functions";
-import { healthHandler } from "@/infra/handlers/health";
 import { pipe, identity } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import { getConfigFromEnvironment } from "./config";
+import { healthHandler } from "@/infra/handlers/health";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
 import { SelfcareInstitutionRepository } from "@/infra/selfcare/institution";
 import { BackOfficeIssuerRepository } from "@/infra/back-office/issuer";
-import { SlackChannelRepository } from "@/infra/slack/channel";
+import { SlackMessageRepository } from "@/infra/slack/message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { azureFunction } from "@/infra/handlers/handler-kit/handler-kit-azure-func";
-import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -31,7 +31,7 @@ const institutionRepository = new SelfcareInstitutionRepository(
   config.selfcare.api.key
 );
 
-const slackRepository = new SlackChannelRepository(config.slack.webhookUrl);
+const slackRepository = new SlackMessageRepository(config.slack.webhookUrl);
 
 app.http("health", {
   methods: ["GET"],

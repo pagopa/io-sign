@@ -1,5 +1,5 @@
 import { pipe } from "fp-ts/lib/function";
-import { SlackEnvironment } from "./channel";
+import { SlackEnvironment } from "./message";
 
 export const sendMessageToSlack =
   (message: string) =>

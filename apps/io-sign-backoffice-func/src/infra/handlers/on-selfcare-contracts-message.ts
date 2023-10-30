@@ -12,7 +12,7 @@ import { sendMessageToSlack } from "../slack/use-cases";
 import { IssuerMessage } from "../slack/issuer-message";
 import { IssuerEnvironment } from "../back-office/issuer";
 import { issuerAlreadyExists } from "../back-office/use-cases";
-import { SlackEnvironment } from "../slack/channel";
+import { SlackEnvironment } from "../slack/message";
 import { of } from "./handler-kit/handler";
 
 declare const inactivateIssuer: (

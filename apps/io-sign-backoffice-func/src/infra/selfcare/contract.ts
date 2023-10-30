@@ -28,15 +28,15 @@ const closedIoSignContract = baseContract.merge(
   })
 );
 
+const ioSignContract = z.union([activeIoSignContract, closedIoSignContract]);
+
+export const ioSignContracts = z.array(ioSignContract);
+
 export type ActiveIoSignContract = z.infer<typeof activeIoSignContract>;
 
 export type ClosedIoSignContract = z.infer<typeof closedIoSignContract>;
 
-const ioSignContract = z.union([activeIoSignContract, closedIoSignContract]);
-
-export type IoSignContract = z.infer<typeof ioSignContract>;
-
-export const ioSignContracts = z.array(ioSignContract);
+type IoSignContract = z.infer<typeof ioSignContract>;
 
 export type IoSignContracts = z.infer<typeof ioSignContracts>;
 

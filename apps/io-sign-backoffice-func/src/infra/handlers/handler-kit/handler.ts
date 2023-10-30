@@ -22,11 +22,6 @@ export const of = <I, A, R = object>(
   pipe(
     RTE.ask<HandlerEnvironment<I>>(),
     RTE.flatMapEither(({ input, schema }) => pipe(input, parse(schema))),
-    // RTE.tap((input) => L.debugRTE("input decoded", { input })),
+    RTE.tap((input) => L.debugRTE("input decoded", { input })),
     RTE.flatMap(endpoint)
-    // RTE.mapError((error) => {
-    //   // L.debugRTE("error error", { error });
-    //   console.log("error errorr!!! ");
-    //   return error;
-    // })
   );
