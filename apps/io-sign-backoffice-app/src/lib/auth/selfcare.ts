@@ -5,8 +5,8 @@ import * as jose from "jose";
 const ConfigFromEnvironment = z
   .object({
     AUTH_SELFCARE_JWK_SET_URL: z.string().url(),
-    AUTH_SELFCARE_JWT_ISSUER: z.string().nonempty(),
-    AUTH_SELFCARE_JWT_AUDIENCE: z.string().nonempty(),
+    AUTH_SELFCARE_JWT_ISSUER: z.string().min(1),
+    AUTH_SELFCARE_JWT_AUDIENCE: z.string().min(1),
   })
   .transform((e) => ({
     remoteJWKSetUrl: new URL(e.AUTH_SELFCARE_JWK_SET_URL),
@@ -29,8 +29,8 @@ const Claims = z.object({
   iat: z.number(),
   uid: z.string().uuid(),
   email: z.string().email().optional(),
-  name: z.string().nonempty(),
-  family_name: z.string().nonempty(),
+  name: z.string().min(1),
+  family_name: z.string().min(1),
   organization: z.object({
     id: z.string().uuid(),
   }),

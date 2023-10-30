@@ -7,8 +7,8 @@ const UserRole = z
 export const institutionSchema = z
   .object({
     id: z.string().uuid(),
-    description: z.string().nonempty(),
-    taxCode: z.string().nonempty(),
+    description: z.string().min(1),
+    taxCode: z.string().min(1),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
     supportEmail: z.string().email().optional(),
@@ -25,10 +25,10 @@ export const institutionSchema = z
 export type Institution = z.infer<typeof institutionSchema>;
 
 const onboardingSchema = z.object({
-  productId: z.string().nonempty(),
-  status: z.string().nonempty(),
+  productId: z.string().min(1),
+  status: z.string().min(1),
   billing: z.object({
-    vatNumber: z.string().nonempty(),
+    vatNumber: z.string().min(1),
   }),
 });
 
@@ -40,9 +40,9 @@ export const getIOSignOnboarding = (list: Onboarding[]) =>
 export const institutionDetailSchema = z
   .object({
     id: z.string().uuid(),
-    taxCode: z.string().nonempty(),
+    taxCode: z.string().min(1),
     supportEmail: z.string().email(),
-    description: z.string().nonempty(),
+    description: z.string().min(1),
     onboarding: z.array(onboardingSchema),
   })
   .transform(({ description: name, onboarding, ...fields }) => ({
@@ -56,8 +56,8 @@ export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
 
 export const productSchema = z
   .object({
-    id: z.string().nonempty(),
-    title: z.string().nonempty(),
+    id: z.string().min(1),
+    title: z.string().min(1),
     urlBO: z.string().url(),
   })
   .transform(({ id, title, urlBO: productUrl }) => ({

@@ -7,16 +7,8 @@ import {
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
 import { z } from "zod";
+import { issuerSchema as issuer } from "@io-sign/io-sign/issuer";
 import { parse } from "../handlers/handler-kit/validation";
-
-const issuer = z.object({
-  id: z.string().min(1),
-  type: z.enum(["PA"]),
-  externalId: z.string().min(1),
-  institutionId: z.string().uuid(),
-  supportEmail: z.string().email(),
-  status: z.enum(["active", "inactive"]),
-});
 
 export type Issuer = z.infer<typeof issuer>;
 

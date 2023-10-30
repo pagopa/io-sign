@@ -6,7 +6,7 @@ import { z, ZodError } from "zod";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
-  issuer: z.string().nonempty(),
+  issuer: z.string().min(1),
 });
 
 type Params = z.infer<typeof pathSchema>;
