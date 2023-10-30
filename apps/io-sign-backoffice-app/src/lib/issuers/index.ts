@@ -6,7 +6,7 @@ export const issuerSchema = z.object({
   externalId: z.string().nonempty(),
   institutionId: z.string().uuid(),
   supportEmail: z.string().email(),
-  state: z.enum(["active", "inactive"]),
+  status: z.enum(["active", "inactive"]),
 });
 
 export type Issuer = z.infer<typeof issuerSchema>;
