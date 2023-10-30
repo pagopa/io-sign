@@ -1,6 +1,3 @@
-import * as RE from "fp-ts/lib/ReaderEither";
-import { sequenceS } from "fp-ts/lib/Apply";
-import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 import { z } from "zod";
 
 const ConfigFromEnvironment = z
@@ -13,10 +10,12 @@ const ConfigFromEnvironment = z
 
 export type SlackConfig = z.infer<typeof ConfigFromEnvironment>;
 
-export const getSlackConfigFromEnvironment: RE.ReaderEither<
-  NodeJS.ProcessEnv,
-  Error,
-  SlackConfig
-> = sequenceS(RE.Apply)({
-  webhookUrl: readFromEnvironment("SLACK_WEBHOOK_URL"),
-});
+export const getSlackConfigFromEnvironment = () => {
+  const result = ConfigFromEnvironment.safeParse(process.env);
+  if (!result.success) {
+    throw new Error("error parsing slack config", {
+      cause: result.error.issues,
+    });
+  }
+  return result.data;
+};

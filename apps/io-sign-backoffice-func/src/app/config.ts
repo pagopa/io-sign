@@ -1,6 +1,3 @@
-import { pipe } from "fp-ts/function";
-import * as RE from "fp-ts/lib/ReaderEither";
-import { sequenceS } from "fp-ts/lib/Apply";
 import {
   BackOfficeConfig,
   getBackOfficeConfigFromEnvironment,
@@ -11,7 +8,7 @@ import {
 } from "@/infra/slack/config";
 import {
   SelfcareConfig,
-  getSelfCareConfigFromEnvironment,
+  getSelfcareConfigFromEnvironment,
 } from "@/infra/selfcare/config";
 
 type Config = {
@@ -20,19 +17,8 @@ type Config = {
   selfcare: SelfcareConfig;
 };
 
-export const getConfigFromEnvironment: RE.ReaderEither<
-  NodeJS.ProcessEnv,
-  Error,
-  Config
-> = pipe(
-  sequenceS(RE.Apply)({
-    backOffice: getBackOfficeConfigFromEnvironment,
-    selfcare: getSelfCareConfigFromEnvironment,
-    slack: getSlackConfigFromEnvironment,
-  }),
-  RE.map((config) => ({
-    selfcare: config.selfcare,
-    slack: config.slack,
-    backOffice: config.backOffice,
-  }))
-);
+export const getConfigFromEnvironment: () => Config = () => ({
+  backOffice: getBackOfficeConfigFromEnvironment(),
+  slack: getSlackConfigFromEnvironment(),
+  selfcare: getSelfcareConfigFromEnvironment(),
+});

@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import { pipe, identity } from "fp-ts/lib/function";
-import * as E from "fp-ts/lib/Either";
 import { getConfigFromEnvironment } from "./config";
 import { healthHandler } from "@/infra/handlers/health";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
@@ -10,16 +8,7 @@ import { SlackMessageRepository } from "@/infra/slack/message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { azureFunction } from "@/infra/handlers/handler-kit/handler-kit-azure-func";
 
-const configOrError = pipe(
-  getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
-);
-
-if (configOrError instanceof Error) {
-  throw configOrError;
-}
-
-const config = configOrError;
+const config = getConfigFromEnvironment();
 
 const issuerRepository = new BackOfficeIssuerRepository(
   config.backOffice.apiBasePath,
@@ -39,7 +28,7 @@ app.http("health", {
 });
 
 app.eventHub("onSelfcareContractsMessage", {
-  connection: "SelfCareEventHubConnectionString",
+  connection: "SelfcareEventHubConnectionString",
   eventHubName: config.selfcare.eventHub.contractsName,
   cardinality: "many",
   handler: azureFunction(onSelfcareContractsMessageHandler)({
