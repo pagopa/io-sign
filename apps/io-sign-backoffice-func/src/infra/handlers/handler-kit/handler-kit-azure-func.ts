@@ -5,7 +5,7 @@ import { z } from "zod";
 import * as L from "@pagopa/logger";
 import { EventHubHandler, InvocationContext } from "@azure/functions";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { Handler } from "./handler";
+import { Handler, isHandlerEnvironment } from "./handler";
 
 const getLogger = (ctx: InvocationContext): L.Logger => ({
   log: (s, _level) => () => {
@@ -19,7 +19,7 @@ const getLogger = (ctx: InvocationContext): L.Logger => ({
 const azureFunctionTE =
   <I, A, R>(
     h: Handler<I, A, R>,
-    deps: R & { schema: z.ZodSchema<I> } // deps: R -> deps: Omit<R, "logger" | "input">
+    deps: Omit<R, "logger" | "input"> & { schema: z.ZodSchema<I> }
   ) =>
   (messages: unknown, ctx: InvocationContext) =>
     pipe(
@@ -30,12 +30,16 @@ const azureFunctionTE =
       }),
       TE.fromEither,
       TE.map(({ input, logger }) => ({ input, logger, ...deps })),
+      TE.filterOrElse(
+        isHandlerEnvironment<R, I>,
+        () => new Error("Unmeet dependencies")
+      ),
       TE.chainW(h)
     );
 
 export const azureFunction: <I, A, R>(
   h: Handler<I, A, R>
 ) => (
-  deps: R & { schema: z.ZodSchema<I> } // deps: R -> deps: Omit<R, "logger" | "input">
+  deps: Omit<R, "logger" | "input"> & { schema: z.ZodSchema<I> }
 ) => EventHubHandler = (h) => (deps) => (messages, ctx) =>
   pipe(azureFunctionTE(h, deps)(messages, ctx), TE.toUnion)();

@@ -10,6 +10,11 @@ type HandlerEnvironment<T> = {
   logger: L.Logger;
 };
 
+export const isHandlerEnvironment = <R, I>(
+  u: unknown
+): u is R & HandlerEnvironment<I> =>
+  typeof u === "object" && u !== null && "logger" in u && "input" in u;
+
 export type Handler<I, A, R = object> = RTE.ReaderTaskEither<
   R & HandlerEnvironment<I>,
   Error,
