@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.0.2
+
+### Patch Changes
+
+- 4e63143: Update Zod to fix email validation issues
+
 ## 1.0.1
 
 ### Patch Changes

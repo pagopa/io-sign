@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -36,7 +36,7 @@
     "react-is": "^18.2.0",
     "server-only": "^0.0.1",
     "ulid": "^2.3.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
