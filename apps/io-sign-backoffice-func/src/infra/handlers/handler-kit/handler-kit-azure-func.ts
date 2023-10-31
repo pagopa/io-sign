@@ -3,7 +3,7 @@ import * as RE from "fp-ts/lib/ReaderEither";
 import * as TE from "fp-ts/lib/TaskEither";
 import { z } from "zod";
 import * as L from "@pagopa/logger";
-import { EventHubHandler, InvocationContext } from "@azure/functions";
+import { InvocationContext } from "@azure/functions";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { Handler, isHandlerEnvironment } from "./handler";
 
@@ -37,9 +37,8 @@ const azureFunctionTE =
       TE.chainW(h)
     );
 
-export const azureFunction: <I, A, R>(
-  h: Handler<I, A, R>
-) => (
-  deps: Omit<R, "logger" | "input"> & { schema: z.ZodSchema<I> }
-) => EventHubHandler = (h) => (deps) => (messages, ctx) =>
-  pipe(azureFunctionTE(h, deps)(messages, ctx), TE.toUnion)();
+export const azureFunction =
+  <I, A, R>(h: Handler<I, A, R>) =>
+  (deps: Omit<R, "logger" | "input"> & { schema: z.ZodSchema<I> }) =>
+  (messages: unknown, ctx: InvocationContext) =>
+    pipe(azureFunctionTE(h, deps)(messages, ctx), TE.toUnion)();
