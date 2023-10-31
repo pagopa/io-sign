@@ -19,6 +19,9 @@ import { sendMessage } from "@/lib/slack";
 import { getInstitution } from "@/lib/institutions/use-cases";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 
+import assert from "node:assert";
+import { enqueueApiKey } from "./queue";
+
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
     ...payload,
@@ -40,9 +43,7 @@ export class ApiKeyAlreadyExistsError extends Error {
 export async function createApiKey(payload: CreateApiKeyPayload) {
   try {
     const institution = await getInstitution(payload.institutionId);
-    if (!institution) {
-      throw new Error("institution does not exists");
-    }
+    assert(institution, "institution does not exists");
     // check if the api key for the given input already exists
     const apiKeyAlreadyExists = await apiKeyExists(
       payload.institutionId,
@@ -57,6 +58,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     await createApiKeySubscription(apiKey);
     try {
       await insertApiKey(apiKey);
+      await enqueueApiKey(apiKey);
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
     }

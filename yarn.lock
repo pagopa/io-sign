@@ -190,6 +190,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/core-http@npm:^3.0.0":
+  version: 3.0.3
+  resolution: "@azure/core-http@npm:3.0.3"
+  dependencies:
+    "@azure/abort-controller": ^1.0.0
+    "@azure/core-auth": ^1.3.0
+    "@azure/core-tracing": 1.0.0-preview.13
+    "@azure/core-util": ^1.1.1
+    "@azure/logger": ^1.0.0
+    "@types/node-fetch": ^2.5.0
+    "@types/tunnel": ^0.0.3
+    form-data: ^4.0.0
+    node-fetch: ^2.6.7
+    process: ^0.11.10
+    tslib: ^2.2.0
+    tunnel: ^0.0.6
+    uuid: ^8.3.0
+    xml2js: ^0.5.0
+  checksum: 5cc11ea0d6b8cab603b5c563b7211f6a0ac9ff58c18e56e58e83b0ae1a1d0c1734b077a1b24d170ff11bb5e1ee6836925114352cc9d08df3736b24a406a4e05d
+  languageName: node
+  linkType: hard
+
 "@azure/core-lro@npm:^2.2.0":
   version: 2.4.0
   resolution: "@azure/core-lro@npm:2.4.0"
@@ -502,6 +524,20 @@ __metadata:
     "@azure/logger": ^1.0.0
     tslib: ^2.2.0
   checksum: 774fa24fb5bd6fdcf8a1af4a8c01b82b5a3a7747d7043d57178147d46a2b98321c2f07e019d9cd421ab61cc121268a2b210deacefd661465f77ad41e20081c4d
+  languageName: node
+  linkType: hard
+
+"@azure/storage-queue@npm:^12.15.0":
+  version: 12.15.0
+  resolution: "@azure/storage-queue@npm:12.15.0"
+  dependencies:
+    "@azure/abort-controller": ^1.0.0
+    "@azure/core-http": ^3.0.0
+    "@azure/core-paging": ^1.1.1
+    "@azure/core-tracing": 1.0.0-preview.13
+    "@azure/logger": ^1.0.0
+    tslib: ^2.2.0
+  checksum: 604322f113552e34cca0b202990c3616418b27344e9ba302711cfb219f00749dee959f119afeb557b03cd2d043430f140cadacf1d246eaf19c3872e3692ab160
   languageName: node
   linkType: hard
 
@@ -12061,6 +12097,7 @@ __metadata:
     "@azure/arm-apimanagement": ^9.1.0
     "@azure/cosmos": ^3.17.3
     "@azure/identity": ^3.3.0
+    "@azure/storage-queue": ^12.15.0
     "@emotion/react": ^11.11.1
     "@emotion/styled": ^11.11.0
     "@hookform/resolvers": ^3.3.1
@@ -19270,6 +19307,16 @@ __metadata:
     sax: ">=0.6.0"
     xmlbuilder: ~11.0.0
   checksum: ca0cf2dfbf6deeaae878a891c8fbc0db6fd04398087084edf143cdc83d0509ad0fe199b890f62f39c4415cf60268a27a6aed0d343f0658f8779bd7add690fa98
+  languageName: node
+  linkType: hard
+
+"xml2js@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "xml2js@npm:0.5.0"
+  dependencies:
+    sax: ">=0.6.0"
+    xmlbuilder: ~11.0.0
+  checksum: 1aa71d62e5bc2d89138e3929b9ea46459157727759cbc62ef99484b778641c0cd21fb637696c052d901a22f82d092a3e740a16b4ce218e81ac59b933535124ea
   languageName: node
   linkType: hard
 
