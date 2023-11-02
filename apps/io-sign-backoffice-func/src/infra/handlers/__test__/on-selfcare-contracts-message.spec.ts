@@ -10,6 +10,7 @@ import {
 } from "@/infra/selfcare/institution";
 import { Issuer, IssuerRepository } from "@/infra/back-office/issuer";
 import { SlackRepository } from "@/infra/slack/message";
+import { IoTsType } from "../validation";
 
 describe("onSelfcareContractsMessage handler", () => {
   let issuerRepository: IssuerRepository;
@@ -49,7 +50,7 @@ describe("onSelfcareContractsMessage handler", () => {
 
   it("should return a left either when the input validation fails", () => {
     const run = onSelfcareContractsMessageHandler({
-      schema: ioSignContracts,
+      inputDecoder: IoTsType(ioSignContracts),
       input: { foo: "foo" },
       issuerRepository,
       slackRepository,
@@ -82,7 +83,7 @@ describe("onSelfcareContractsMessage handler", () => {
       },
     ];
     const run = onSelfcareContractsMessageHandler({
-      schema: ioSignContracts,
+      inputDecoder: IoTsType(ioSignContracts),
       input,
       issuerRepository,
       slackRepository,
@@ -116,7 +117,7 @@ describe("onSelfcareContractsMessage handler", () => {
       },
     ];
     const run = onSelfcareContractsMessageHandler({
-      schema: ioSignContracts,
+      inputDecoder: IoTsType(ioSignContracts),
       input,
       issuerRepository,
       slackRepository,

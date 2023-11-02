@@ -7,6 +7,7 @@ import { BackOfficeIssuerRepository } from "@/infra/back-office/issuer";
 import { SlackMessageRepository } from "@/infra/slack/message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { azureFunction } from "@/infra/handlers/handler-kit/handler-kit-azure-func";
+import { IoTsType } from "@/infra/handlers/validation";
 
 const config = getConfigFromEnvironment();
 
@@ -28,13 +29,13 @@ app.http("health", {
 });
 
 app.eventHub("onSelfcareContractsMessage", {
-  connection: "SelfcareEventHubConnectionString",
+  connection: "SelfCareEventHubConnectionString",
   eventHubName: config.selfcare.eventHub.contractsName,
   cardinality: "many",
   handler: azureFunction(onSelfcareContractsMessageHandler)({
     issuerRepository,
     slackRepository,
     institutionRepository,
-    schema: ioSignContracts,
+    inputDecoder: IoTsType(ioSignContracts),
   }),
 });

@@ -7,7 +7,7 @@ import {
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
 import { pipe } from "fp-ts/lib/function";
-import { parse } from "../handlers/handler-kit/validation";
+import { safeParse } from "../handlers/validation";
 
 const institution = z.object({
   description: z.string().min(1),
@@ -64,7 +64,7 @@ export class SelfcareInstitutionRepository implements InstitutionRepository {
           ? TE.right(O.none)
           : pipe(
               TE.tryCatch(() => response.json(), E.toError),
-              TE.flatMapEither(parse(institution)),
+              TE.flatMapEither(safeParse(institution)),
               TE.map(O.some)
             )
       )

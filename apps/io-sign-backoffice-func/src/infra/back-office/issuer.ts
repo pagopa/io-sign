@@ -8,7 +8,7 @@ import {
 } from "@io-sign/io-sign/infra/client-utils";
 import { z } from "zod";
 import { issuerSchema as issuer } from "@io-sign/io-sign/issuer";
-import { parse } from "../handlers/handler-kit/validation";
+import { safeParse } from "../handlers/validation";
 
 export type Issuer = z.infer<typeof issuer>;
 
@@ -60,7 +60,7 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
           ? TE.right(O.none)
           : pipe(
               TE.tryCatch(() => response.json(), E.toError),
-              TE.flatMapEither(parse(issuer)),
+              TE.flatMapEither(safeParse(issuer)),
               TE.map(O.some)
             )
       )

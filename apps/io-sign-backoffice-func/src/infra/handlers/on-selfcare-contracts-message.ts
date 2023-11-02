@@ -1,6 +1,7 @@
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { of } from "@pagopa/handler-kit";
 import {
   ActiveIoSignContract,
   ClosedIoSignContract,
@@ -13,7 +14,6 @@ import { IssuerMessage } from "../slack/issuer-message";
 import { IssuerEnvironment } from "../back-office/issuer";
 import { issuerAlreadyExists } from "../back-office/use-cases";
 import { SlackEnvironment } from "../slack/message";
-import { of } from "./handler-kit/handler";
 
 declare const inactivateIssuer: (
   contract: ClosedIoSignContract

@@ -11037,6 +11037,7 @@ __metadata:
     "@azure/functions": ^4.0.1
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
+    "@pagopa/handler-kit": ^1.1.0
     "@pagopa/logger": ^1.0.1
     "@rushstack/eslint-patch": ^1.5.1
     "@types/node": ^20.8.8

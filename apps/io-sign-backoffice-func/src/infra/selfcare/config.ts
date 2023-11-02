@@ -2,15 +2,15 @@ import { z } from "zod";
 
 const ConfigFromEnvironment = z
   .object({
-    SelfcareEventHubConnectionString: z.string(),
+    SelfCareEventHubConnectionString: z.string(),
     SELFCARE_API_BASE_PATH: z.string(),
     SELFCARE_API_KEY: z.string(),
+    SELFCARE_EVENT_HUB_CONTRACTS_NAME: z.string(),
   })
-  .extend({ SELF_CARE_EVENT_HUB_CONTRACTS_NAME: z.string() })
   .transform((e) => ({
     eventHub: {
-      connectionString: e.SelfcareEventHubConnectionString,
-      contractsName: e.SELF_CARE_EVENT_HUB_CONTRACTS_NAME,
+      connectionString: e.SelfCareEventHubConnectionString,
+      contractsName: e.SELFCARE_EVENT_HUB_CONTRACTS_NAME,
     },
     api: { basePath: e.SELFCARE_API_BASE_PATH, key: e.SELFCARE_API_KEY },
   }));
