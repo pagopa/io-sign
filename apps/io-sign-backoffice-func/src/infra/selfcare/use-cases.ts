@@ -7,8 +7,7 @@ export const getSupportEmail =
   (internalInstitutionId: string) =>
   ({ institutionRepository }: InstitutionEnvironment) =>
     pipe(
-      internalInstitutionId,
-      institutionRepository.getById.bind(institutionRepository),
+      institutionRepository.getById(internalInstitutionId),
       TE.flatMap(
         O.match(
           () =>
