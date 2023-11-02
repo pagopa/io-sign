@@ -7,10 +7,7 @@ export const issuerAlreadyExists =
   (id: Issuer["id"], internalInstitutionId: Issuer["institutionId"]) =>
   ({ issuerRepository }: IssuerEnvironment) =>
     pipe(
-      issuerRepository.getById.bind(issuerRepository)(
-        id,
-        internalInstitutionId
-      ),
+      issuerRepository.getById(id, internalInstitutionId),
       TE.flatMap((issuer) =>
         O.isSome(issuer)
           ? TE.left(new Error("An issuer with this id already exists"))

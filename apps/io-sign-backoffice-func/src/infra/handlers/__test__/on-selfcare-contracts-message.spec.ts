@@ -4,17 +4,12 @@ import { it, describe, expect, vi, beforeAll } from "vitest";
 import { onSelfcareContractsMessageHandler } from "../on-selfcare-contracts-message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import * as issuerMessage from "@/infra/slack/issuer-message";
-import {
-  Institution,
-  InstitutionRepository,
-} from "@/infra/selfcare/institution";
 import { Issuer, IssuerRepository } from "@/infra/back-office/issuer";
 import { SlackRepository } from "@/infra/slack/message";
 import { IoTsType } from "../validation";
 
 describe("onSelfcareContractsMessage handler", () => {
   let issuerRepository: IssuerRepository;
-  let institutionRepository: InstitutionRepository;
   let slackRepository: SlackRepository;
 
   const issuer: Issuer = {
@@ -26,12 +21,7 @@ describe("onSelfcareContractsMessage handler", () => {
     status: "active",
   };
 
-  const selfcareInstitution: Institution = {
-    supportEmail: "supportEmail",
-    description: "description",
-  };
-
-  const mocks = { issuer, selfcareInstitution };
+  const mocks = { issuer };
 
   beforeAll(() => {
     issuerRepository = {
@@ -39,9 +29,6 @@ describe("onSelfcareContractsMessage handler", () => {
         mocks.issuer.id === id
           ? TE.right(O.some(mocks.issuer))
           : TE.right(O.none),
-    };
-    institutionRepository = {
-      getById: () => TE.right(O.some(mocks.selfcareInstitution)),
     };
     slackRepository = {
       sendMessage: () => TE.right(undefined),
@@ -54,7 +41,6 @@ describe("onSelfcareContractsMessage handler", () => {
       input: { foo: "foo" },
       issuerRepository,
       slackRepository,
-      institutionRepository,
       logger: { log: (s, _l) => () => console.log(s) },
     });
     expect(run()).resolves.toEqual(
@@ -87,7 +73,6 @@ describe("onSelfcareContractsMessage handler", () => {
       input,
       issuerRepository,
       slackRepository,
-      institutionRepository,
       logger: { log: (s, _l) => () => console.log(s) },
     });
     expect(run()).resolves.toEqual(
@@ -121,7 +106,6 @@ describe("onSelfcareContractsMessage handler", () => {
       input,
       issuerRepository,
       slackRepository,
-      institutionRepository,
       logger: { log: (s, _l) => () => console.log(s) },
     });
     await run();

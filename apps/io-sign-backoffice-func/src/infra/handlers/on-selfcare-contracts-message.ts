@@ -8,7 +8,6 @@ import {
   IoSignContracts,
   isActive,
 } from "../selfcare/contract";
-import { getSupportEmail } from "../selfcare/use-cases";
 import { sendMessageToSlack } from "../slack/use-cases";
 import { IssuerMessage } from "../slack/issuer-message";
 import { IssuerEnvironment } from "../back-office/issuer";
@@ -25,12 +24,10 @@ const sendOnboardingMessage = (contract: ActiveIoSignContract) =>
       contract.billing.vatNumber,
       contract.internalIstitutionID
     ),
-    RTE.flatMap(() => getSupportEmail(contract.internalIstitutionID)),
-    RTE.map((email) =>
+    RTE.map(() =>
       IssuerMessage({
         internalInstitutionId: contract.internalIstitutionID,
         vatNumber: contract.billing.vatNumber,
-        email,
         description: contract.institution.description,
       })
     ),
