@@ -1,5 +1,5 @@
+import { it, describe, expect, vi, beforeEach } from "vitest";
 import * as TE from "fp-ts/lib/TaskEither";
-import { it, describe, expect, vi, beforeAll } from "vitest";
 import { onSelfcareContractsMessageHandler } from "../on-selfcare-contracts-message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import * as issuerMessage from "@/infra/slack/issuer-message";
@@ -9,30 +9,35 @@ import * as O from "fp-ts/lib/Option";
 import { GetById, Issuer } from "@/infra/back-office/issuer";
 import { SendMessage } from "@/infra/slack/message";
 
+const issuer: Issuer = {
+  id: "id",
+  type: "PA",
+  externalId: "externalId",
+  institutionId: "27e11a61-85bb-4dd5-95ff-d7f337058d99",
+  supportEmail: "foo.bar@pagopa.it",
+  status: "active",
+};
+
+const mocks = { issuer };
+
+type FunctionsTestContext = {
+  getById: GetById["getById"];
+  sendMessage: SendMessage["sendMessage"];
+};
+
+beforeEach<FunctionsTestContext>((ctx) => {
+  ctx.getById = (id, institutionId) =>
+    mocks.issuer.id === id && mocks.issuer.institutionId === institutionId
+      ? TE.right(O.some(issuer))
+      : TE.right(O.none);
+  ctx.sendMessage = () => TE.right(undefined);
+});
+
 describe("onSelfcareContractsMessage handler", () => {
-  let getById: GetById["getById"];
-  let sendMessage: SendMessage["sendMessage"];
-
-  const issuer: Issuer = {
-    id: "id",
-    type: "PA",
-    externalId: "externalId",
-    institutionId: "27e11a61-85bb-4dd5-95ff-d7f337058d99",
-    supportEmail: "foo.bar@pagopa.it",
-    status: "active",
-  };
-
-  const mocks = { issuer };
-
-  beforeAll(() => {
-    getById = (id) =>
-      mocks.issuer.id === id
-        ? TE.right(O.some(mocks.issuer))
-        : TE.right(O.none);
-    sendMessage = () => TE.right(undefined);
-  });
-
-  it("should return a left either when the input validation fails", () => {
+  it<FunctionsTestContext>("should return a left either when the input validation fails", ({
+    getById,
+    sendMessage,
+  }) => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input: { foo: "foo" },
@@ -47,11 +52,14 @@ describe("onSelfcareContractsMessage handler", () => {
     );
   });
 
-  it("should return a left either when the issuer already exists", async () => {
+  it<FunctionsTestContext>("should return a left either when the issuer already exists", async ({
+    getById,
+    sendMessage,
+  }) => {
     const input = [
       {
         id: "id",
-        internalIstitutionID: "internalIstitutionID",
+        internalIstitutionID: "27e11a61-85bb-4dd5-95ff-d7f337058d99",
         state: "ACTIVE",
         institution: {
           address: "address",
@@ -80,11 +88,10 @@ describe("onSelfcareContractsMessage handler", () => {
     }
   });
 
-  it("should call IssuerMessage function", async () => {
-    const response = {
-      status: 404,
-    } as Response;
-
+  it<FunctionsTestContext>("should call IssuerMessage function", async ({
+    getById,
+    sendMessage,
+  }) => {
     const IssuerMessageSpy = vi.spyOn(issuerMessage, "IssuerMessage");
     const input = [
       {
