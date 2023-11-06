@@ -18,11 +18,5 @@ export const safeParse =
   <T>(schema: z.ZodSchema<T>) =>
   (i: unknown): E.Either<z.ZodError, T> => {
     const result = schema.safeParse(i);
-    if (!result.success) {
-      const error = result.error;
-      return error instanceof z.ZodError
-        ? E.left(error)
-        : E.left(new z.ZodError([]));
-    }
-    return E.right(result.data);
+    return result.success ? E.right(result.data) : E.left(result.error);
   };

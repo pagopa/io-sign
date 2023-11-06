@@ -1,47 +1,44 @@
 import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
 import { it, describe, expect, vi, beforeAll } from "vitest";
 import { onSelfcareContractsMessageHandler } from "../on-selfcare-contracts-message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import * as issuerMessage from "@/infra/slack/issuer-message";
-import { Issuer, IssuerRepository } from "@/infra/back-office/issuer";
-import { SlackRepository } from "@/infra/slack/message";
 import { IoTsType } from "../validation";
+import { isLeft } from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import { GetById, Issuer } from "@/infra/back-office/issuer";
+import { SendMessage } from "@/infra/slack/message";
 
 describe("onSelfcareContractsMessage handler", () => {
-  let issuerRepository: IssuerRepository;
-  let slackRepository: SlackRepository;
+  let getById: GetById["getById"];
+  let sendMessage: SendMessage["sendMessage"];
 
   const issuer: Issuer = {
     id: "id",
     type: "PA",
     externalId: "externalId",
-    institutionId: "institutionId",
-    supportEmail: "supportEmail",
+    institutionId: "27e11a61-85bb-4dd5-95ff-d7f337058d99",
+    supportEmail: "foo.bar@pagopa.it",
     status: "active",
   };
 
   const mocks = { issuer };
 
   beforeAll(() => {
-    issuerRepository = {
-      getById: (id) =>
-        mocks.issuer.id === id
-          ? TE.right(O.some(mocks.issuer))
-          : TE.right(O.none),
-    };
-    slackRepository = {
-      sendMessage: () => TE.right(undefined),
-    };
+    getById = (id) =>
+      mocks.issuer.id === id
+        ? TE.right(O.some(mocks.issuer))
+        : TE.right(O.none);
+    sendMessage = () => TE.right(undefined);
   });
 
   it("should return a left either when the input validation fails", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input: { foo: "foo" },
-      issuerRepository,
-      slackRepository,
       logger: { log: (s, _l) => () => console.log(s) },
+      getById,
+      sendMessage,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -50,7 +47,7 @@ describe("onSelfcareContractsMessage handler", () => {
     );
   });
 
-  it("should return a left either when the issuer already exists", () => {
+  it("should return a left either when the issuer already exists", async () => {
     const input = [
       {
         id: "id",
@@ -71,18 +68,23 @@ describe("onSelfcareContractsMessage handler", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input,
-      issuerRepository,
-      slackRepository,
       logger: { log: (s, _l) => () => console.log(s) },
+      getById,
+      sendMessage,
     });
-    expect(run()).resolves.toEqual(
-      expect.objectContaining({
-        _tag: "Left",
-      })
-    );
+    const result = await run();
+    expect(isLeft(result)).toBe(true);
+    expect.assertions(2);
+    if (result._tag === "Left") {
+      expect(result.left.message).toBe("An issuer with this id already exists");
+    }
   });
 
   it("should call IssuerMessage function", async () => {
+    const response = {
+      status: 404,
+    } as Response;
+
     const IssuerMessageSpy = vi.spyOn(issuerMessage, "IssuerMessage");
     const input = [
       {
@@ -104,9 +106,9 @@ describe("onSelfcareContractsMessage handler", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input,
-      issuerRepository,
-      slackRepository,
       logger: { log: (s, _l) => () => console.log(s) },
+      getById,
+      sendMessage,
     });
     await run();
     expect(IssuerMessageSpy).toHaveBeenCalled();

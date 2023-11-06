@@ -6,10 +6,7 @@ const ConfigFromEnvironment = z
     SELFCARE_EVENT_HUB_CONTRACTS_NAME: z.string(),
   })
   .transform((e) => ({
-    eventHub: {
-      connectionString: e.SelfCareEventHubConnectionString,
-      contractsName: e.SELFCARE_EVENT_HUB_CONTRACTS_NAME,
-    },
+    eventHubContractsName: e.SELFCARE_EVENT_HUB_CONTRACTS_NAME,
   }));
 
 export type SelfcareConfig = z.infer<typeof ConfigFromEnvironment>;

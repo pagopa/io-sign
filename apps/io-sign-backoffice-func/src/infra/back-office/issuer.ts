@@ -1,54 +1,38 @@
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
+import * as O from "fp-ts/lib/Option";
+import { issuerSchema as issuer } from "@io-sign/io-sign/issuer";
+import { z } from "zod";
 import {
   defaultHeader,
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
-import { z } from "zod";
-import { issuerSchema as issuer } from "@io-sign/io-sign/issuer";
 import { safeParse } from "../handlers/validation";
 
 export type Issuer = z.infer<typeof issuer>;
 
-export type IssuerRepository = {
+export type GetById = {
   getById: (
     id: Issuer["id"],
     institutionId: Issuer["institutionId"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
 };
 
-export type IssuerEnvironment = {
-  issuerRepository: IssuerRepository;
-};
-
-export class BackOfficeIssuerRepository implements IssuerRepository {
-  #basePath: string;
-  #apiKey: string;
-
-  constructor(basePath: string, apiKey: string) {
-    this.#basePath = basePath;
-    this.#apiKey = apiKey;
-  }
-
-  getById(
-    id: Issuer["id"],
-    institutionId: Issuer["institutionId"]
-  ): TE.TaskEither<Error, O.Option<Issuer>> {
-    return pipe(
+export const getById =
+  (apiBasePath: string, apiKey: string) =>
+  (id: Issuer["id"], institutionId: Issuer["institutionId"]) =>
+    pipe(
       TE.tryCatch(
         () =>
-          fetch(
-            `${this.#basePath}/institutions/${institutionId}/issuers/${id}`,
-            {
-              method: "GET",
-              headers: {
-                ...defaultHeader,
-                "Ocp-Apim-Subscription-Key": this.#apiKey,
-              },
-            }
-          ),
+          fetch(`${apiBasePath}/institutions/${institutionId}/issuers/${id}`, {
+            method: "GET",
+            headers: {
+              ...defaultHeader,
+              "Ocp-Apim-Subscription-Key": apiKey,
+            },
+            keepalive: true,
+          }),
         E.toError
       ),
       TE.filterOrElse(
@@ -65,5 +49,3 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
             )
       )
     );
-  }
-}

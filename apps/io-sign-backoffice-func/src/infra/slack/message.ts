@@ -1,40 +1,28 @@
-import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 import { isSuccessful } from "@io-sign/io-sign/infra/client-utils";
 
-export type SlackRepository = {
+export type SendMessage = {
   sendMessage: (message: string) => TE.TaskEither<Error, void>;
 };
 
-export type SlackEnvironment = {
-  slackRepository: SlackRepository;
-};
-
-export class SlackMessageRepository implements SlackRepository {
-  #webhookUrl: string;
-
-  constructor(webhookUrl: string) {
-    this.#webhookUrl = webhookUrl;
-  }
-
-  sendMessage(text: string): TE.TaskEither<Error, void> {
-    return pipe(
-      TE.tryCatch(
-        () =>
-          fetch(this.#webhookUrl, {
-            method: "POST",
-            body: JSON.stringify({
-              text,
-            }),
+export const sendMessage = (webhookUrl: string) => (message: string) =>
+  pipe(
+    TE.tryCatch(
+      () =>
+        fetch(webhookUrl, {
+          method: "POST",
+          body: JSON.stringify({
+            text: message,
           }),
-        E.toError
-      ),
-      TE.filterOrElse(
-        isSuccessful,
-        () => new Error("The attempt to post message on slack failed.")
-      ),
-      TE.map(() => undefined)
-    );
-  }
-}
+          keepalive: true,
+        }),
+      E.toError
+    ),
+    TE.filterOrElse(
+      isSuccessful,
+      () => new Error("The attempt to post message on slack failed.")
+    ),
+    TE.map(() => undefined)
+  );

@@ -10,13 +10,11 @@ import {
 } from "../selfcare/contract";
 import { sendMessageToSlack } from "../slack/use-cases";
 import { IssuerMessage } from "../slack/issuer-message";
-import { IssuerEnvironment } from "../back-office/issuer";
 import { issuerAlreadyExists } from "../back-office/use-cases";
-import { SlackEnvironment } from "../slack/message";
 
 declare const inactivateIssuer: (
   contract: ClosedIoSignContract
-) => RTE.ReaderTaskEither<SlackEnvironment & IssuerEnvironment, Error, void>;
+) => RTE.ReaderTaskEither<unknown, Error, void>;
 
 const sendOnboardingMessage = (contract: ActiveIoSignContract) =>
   pipe(

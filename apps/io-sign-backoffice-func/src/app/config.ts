@@ -17,7 +17,7 @@ type Config = {
   selfcare: SelfcareConfig;
 };
 
-export const getConfigFromEnvironment: () => Config = () => ({
+export const getConfigFromEnvironment = (): Config => ({
   backOffice: getBackOfficeConfigFromEnvironment(),
   slack: getSlackConfigFromEnvironment(),
   selfcare: getSelfcareConfigFromEnvironment(),

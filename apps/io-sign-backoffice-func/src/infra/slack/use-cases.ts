@@ -1,6 +1,6 @@
-import { SlackEnvironment } from "./message";
+import { SendMessage } from "./message";
 
 export const sendMessageToSlack =
   (message: string) =>
-  ({ slackRepository }: SlackEnvironment) =>
-    slackRepository.sendMessage(message);
+  ({ sendMessage }: SendMessage) =>
+    sendMessage(message);

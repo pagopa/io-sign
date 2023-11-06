@@ -3635,6 +3635,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pagopa/handler-kit-azure-func@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@pagopa/handler-kit-azure-func@npm:2.0.1"
+  dependencies:
+    "@pagopa/handler-kit": ^1.0.1
+    "@pagopa/logger": ^1.0.1
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.20
+  checksum: 03911b856f038fadc2f9049f45bab0a23b6bc4e3cfcdb625179db4184e7b54b901c62a40f6a9f9e6dd0fd8a65fc1c5e0c2baf3d0c170fb87113a8d257867cb4b
+  languageName: node
+  linkType: hard
+
 "@pagopa/handler-kit@npm:^1.0.0, @pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
   version: 1.1.0
   resolution: "@pagopa/handler-kit@npm:1.1.0"
@@ -11038,6 +11050,7 @@ __metadata:
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
+    "@pagopa/handler-kit-azure-func": ^2.0.1
     "@pagopa/logger": ^1.0.1
     "@rushstack/eslint-patch": ^1.5.1
     "@types/node": ^20.8.8

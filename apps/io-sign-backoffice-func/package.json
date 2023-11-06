@@ -14,6 +14,7 @@
   "dependencies": {
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "^1.1.0",
+    "@pagopa/handler-kit-azure-func": "^2.0.1",
     "@pagopa/logger": "^1.0.1",
     "fp-ts": "^2.16.1",
     "zod": "^3.22.4"
