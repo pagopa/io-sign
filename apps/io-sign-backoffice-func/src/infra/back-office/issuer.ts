@@ -10,6 +10,7 @@ import {
 } from "@io-sign/io-sign/infra/client-utils";
 import { Agent } from "undici";
 import { safeParse } from "../handlers/validation";
+import { fetchWithTimeout } from "../http/fetch";
 
 export type Issuer = z.infer<typeof issuer>;
 
@@ -26,17 +27,20 @@ export const getById =
     pipe(
       TE.tryCatch(
         () =>
-          fetch(`${apiBasePath}/institutions/${institutionId}/issuers/${id}`, {
-            method: "GET",
-            headers: {
-              ...defaultHeader,
-              "Ocp-Apim-Subscription-Key": apiKey,
-            },
-            dispatcher: new Agent({
-              keepAliveTimeout: 10,
-              keepAliveMaxTimeout: 10,
-            }),
-          }),
+          fetchWithTimeout(
+            `${apiBasePath}/institutions/${institutionId}/issuers/${id}`,
+            {
+              method: "GET",
+              headers: {
+                ...defaultHeader,
+                "Ocp-Apim-Subscription-Key": apiKey,
+              },
+              dispatcher: new Agent({
+                keepAliveTimeout: 10,
+                keepAliveMaxTimeout: 10,
+              }),
+            }
+          ),
         E.toError
       ),
       TE.filterOrElse(
