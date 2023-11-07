@@ -9,6 +9,7 @@ import {
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
 import { safeParse } from "../handlers/validation";
+import { Agent } from "undici";
 
 export type Issuer = z.infer<typeof issuer>;
 
@@ -31,7 +32,10 @@ export const getById =
               ...defaultHeader,
               "Ocp-Apim-Subscription-Key": apiKey,
             },
-            keepalive: true,
+            dispatcher: new Agent({
+              keepAliveTimeout: 10,
+              keepAliveMaxTimeout: 10,
+            }),
           }),
         E.toError
       ),
