@@ -3768,6 +3768,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pagopa/ts-commons@npm:^12.3.0":
+  version: 12.3.0
+  resolution: "@pagopa/ts-commons@npm:12.3.0"
+  dependencies:
+    abort-controller: ^3.0.0
+    agentkeepalive: ^4.1.4
+    applicationinsights: ^1.8.10
+    fp-ts: 2.14.0
+    io-ts: 2.2.20
+    jose: ^4.11.2
+    json-set-map: ^1.1.2
+    jsonwebtoken: ^9.0.1
+    node-fetch: ^2.6.0
+    semver: ^7.3.7
+    ulid: ^2.3.0
+    validator: ^13.7.0
+  checksum: b1f9e0719e94a15bd161e7d4b95b80b439766a4962fc25a6854e91006cf4b8a612372428e0cac8e4a7074267e329b9e27c1b95779aa761c96f29c6dddf4af92d
+  languageName: node
+  linkType: hard
+
 "@parse5/tools@npm:^0.3.0":
   version: 0.3.0
   resolution: "@parse5/tools@npm:0.3.0"
@@ -9941,6 +9961,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fp-ts@npm:2.14.0":
+  version: 2.14.0
+  resolution: "fp-ts@npm:2.14.0"
+  checksum: 39928f45fead3a62640480e48bb8c082ce6368d68ea7a338d4953cb5c2edc738a1465ffecf7850aa9561c25e0d730beabeb850e4c12ad91aac25f8303874be20
+  languageName: node
+  linkType: hard
+
 "fp-ts@npm:^2.10.5, fp-ts@npm:^2.11.0, fp-ts@npm:^2.12.3, fp-ts@npm:^2.13.1, fp-ts@npm:^2.16.1":
   version: 2.16.1
   resolution: "fp-ts@npm:2.16.1"
@@ -11052,6 +11079,7 @@ __metadata:
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^2.0.1
     "@pagopa/logger": ^1.0.1
+    "@pagopa/ts-commons": ^12.3.0
     "@rushstack/eslint-patch": ^1.5.1
     "@types/node": ^20.8.8
     eslint: ^8.50.0
@@ -11086,7 +11114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:^2.2.16, io-ts@npm:^2.2.18, io-ts@npm:^2.2.19, io-ts@npm:^2.2.20":
+"io-ts@npm:2.2.20, io-ts@npm:^2.2.16, io-ts@npm:^2.2.18, io-ts@npm:^2.2.19, io-ts@npm:^2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
@@ -12006,7 +12034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^9.0.0":
+"jsonwebtoken@npm:^9.0.0, jsonwebtoken@npm:^9.0.1":
   version: 9.0.2
   resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:
