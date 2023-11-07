@@ -8,8 +8,8 @@ import {
   defaultHeader,
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
-import { safeParse } from "../handlers/validation";
 import { Agent } from "undici";
+import { safeParse } from "../handlers/validation";
 
 export type Issuer = z.infer<typeof issuer>;
 
