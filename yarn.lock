@@ -275,7 +275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.5.0":
+"@azure/functions@npm:^3.2.0, @azure/functions@npm:^3.5.0":
   version: 3.5.1
   resolution: "@azure/functions@npm:3.5.1"
   dependencies:
@@ -293,16 +293,6 @@ __metadata:
     long: ^4.0.0
     undici: ^5.13.0
   checksum: 1aefbab740b70c6d274fe75e287051ac6593b6d39156952491c68c0b4cf93d1b5d8dda48a8e2ae17ae359b4b2b252255555b39904f132ef8be870ac511fcf073
-  languageName: node
-  linkType: hard
-
-"@azure/functions@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@azure/functions@npm:4.1.0"
-  dependencies:
-    long: ^4.0.0
-    undici: ^5.13.0
-  checksum: 141ea564b3862ba2e39412347751ce625e7de73036a777a6d29311ba9aa4d98174db8c2e01ad60983e8813460e1f0c69702b5fc4cc770956ac96ddbd36967565
   languageName: node
   linkType: hard
 
@@ -6844,24 +6834,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-functions-core-tools@npm:^4.0.5455":
-  version: 4.0.5455
-  resolution: "azure-functions-core-tools@npm:4.0.5455"
-  dependencies:
-    chalk: 3.0.0
-    extract-zip: ^2.0.1
-    https-proxy-agent: 5.0.0
-    progress: 2.0.3
-    rimraf: 3.0.2
-  bin:
-    azfun: lib/main.js
-    azurefunctions: lib/main.js
-    func: lib/main.js
-  checksum: 7f5615c2a205da5796cc61d9f2c0960407ec919ff9cc73b542c2cddb105517ac9ba905a1ed06afea2898591f142719bbc4be6f2a8d3e295c69b56133a8701778
-  conditions: (os=win32 | os=darwin | os=linux)
-  languageName: node
-  linkType: hard
-
 "azure-storage@npm:^2.10.5":
   version: 2.10.7
   resolution: "azure-storage@npm:2.10.7"
@@ -10934,7 +10906,7 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^3.17.1
     "@azure/event-hubs": ^5.9.0
-    "@azure/functions": ^4.1.0
+    "@azure/functions": ^3.2.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/io-sign": "workspace:^"
@@ -10946,7 +10918,7 @@ __metadata:
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
     "@vitest/coverage-c8": ^0.33.0
-    azure-functions-core-tools: ^4.0.5455
+    azure-functions-core-tools: ^4.0.5148
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
