@@ -8,7 +8,6 @@ import {
   defaultHeader,
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
-import { Agent } from "undici";
 import { safeParse } from "../handlers/validation";
 import { fetchWithTimeoutAndKeepAlive } from "../http/fetch";
 
