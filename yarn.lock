@@ -275,7 +275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.2.0, @azure/functions@npm:^3.5.0":
+"@azure/functions@npm:^3.5.0":
   version: 3.5.1
   resolution: "@azure/functions@npm:3.5.1"
   dependencies:
@@ -293,6 +293,16 @@ __metadata:
     long: ^4.0.0
     undici: ^5.13.0
   checksum: 1aefbab740b70c6d274fe75e287051ac6593b6d39156952491c68c0b4cf93d1b5d8dda48a8e2ae17ae359b4b2b252255555b39904f132ef8be870ac511fcf073
+  languageName: node
+  linkType: hard
+
+"@azure/functions@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@azure/functions@npm:4.1.0"
+  dependencies:
+    long: ^4.0.0
+    undici: ^5.13.0
+  checksum: 141ea564b3862ba2e39412347751ce625e7de73036a777a6d29311ba9aa4d98174db8c2e01ad60983e8813460e1f0c69702b5fc4cc770956ac96ddbd36967565
   languageName: node
   linkType: hard
 
@@ -3768,26 +3778,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/ts-commons@npm:^12.3.0":
-  version: 12.3.0
-  resolution: "@pagopa/ts-commons@npm:12.3.0"
-  dependencies:
-    abort-controller: ^3.0.0
-    agentkeepalive: ^4.1.4
-    applicationinsights: ^1.8.10
-    fp-ts: 2.14.0
-    io-ts: 2.2.20
-    jose: ^4.11.2
-    json-set-map: ^1.1.2
-    jsonwebtoken: ^9.0.1
-    node-fetch: ^2.6.0
-    semver: ^7.3.7
-    ulid: ^2.3.0
-    validator: ^13.7.0
-  checksum: b1f9e0719e94a15bd161e7d4b95b80b439766a4962fc25a6854e91006cf4b8a612372428e0cac8e4a7074267e329b9e27c1b95779aa761c96f29c6dddf4af92d
-  languageName: node
-  linkType: hard
-
 "@parse5/tools@npm:^0.3.0":
   version: 0.3.0
   resolution: "@parse5/tools@npm:0.3.0"
@@ -6850,6 +6840,24 @@ __metadata:
     azurefunctions: lib/main.js
     func: lib/main.js
   checksum: 8d033ef9f0cf6f9b72cfd90ed2259a4030dc796d914efd2c023b6f560e599b4c7c0344d94051836884ba6ec17a778ba0853deec88f6c11226d2e1877355bb562
+  conditions: (os=win32 | os=darwin | os=linux)
+  languageName: node
+  linkType: hard
+
+"azure-functions-core-tools@npm:^4.0.5455":
+  version: 4.0.5455
+  resolution: "azure-functions-core-tools@npm:4.0.5455"
+  dependencies:
+    chalk: 3.0.0
+    extract-zip: ^2.0.1
+    https-proxy-agent: 5.0.0
+    progress: 2.0.3
+    rimraf: 3.0.2
+  bin:
+    azfun: lib/main.js
+    azurefunctions: lib/main.js
+    func: lib/main.js
+  checksum: 7f5615c2a205da5796cc61d9f2c0960407ec919ff9cc73b542c2cddb105517ac9ba905a1ed06afea2898591f142719bbc4be6f2a8d3e295c69b56133a8701778
   conditions: (os=win32 | os=darwin | os=linux)
   languageName: node
   linkType: hard
@@ -9961,13 +9969,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fp-ts@npm:2.14.0":
-  version: 2.14.0
-  resolution: "fp-ts@npm:2.14.0"
-  checksum: 39928f45fead3a62640480e48bb8c082ce6368d68ea7a338d4953cb5c2edc738a1465ffecf7850aa9561c25e0d730beabeb850e4c12ad91aac25f8303874be20
-  languageName: node
-  linkType: hard
-
 "fp-ts@npm:^2.10.5, fp-ts@npm:^2.11.0, fp-ts@npm:^2.12.3, fp-ts@npm:^2.13.1, fp-ts@npm:^2.16.1":
   version: 2.16.1
   resolution: "fp-ts@npm:2.16.1"
@@ -10933,7 +10934,7 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^3.17.1
     "@azure/event-hubs": ^5.9.0
-    "@azure/functions": ^3.2.0
+    "@azure/functions": ^4.1.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/io-sign": "workspace:^"
@@ -10945,7 +10946,7 @@ __metadata:
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
     "@vitest/coverage-c8": ^0.33.0
-    azure-functions-core-tools: ^4.0.5148
+    azure-functions-core-tools: ^4.0.5455
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
@@ -11079,7 +11080,6 @@ __metadata:
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^2.0.1
     "@pagopa/logger": ^1.0.1
-    "@pagopa/ts-commons": ^12.3.0
     "@rushstack/eslint-patch": ^1.5.1
     "@types/node": ^20.8.8
     eslint: ^8.50.0
@@ -11114,7 +11114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"io-ts@npm:2.2.20, io-ts@npm:^2.2.16, io-ts@npm:^2.2.18, io-ts@npm:^2.2.19, io-ts@npm:^2.2.20":
+"io-ts@npm:^2.2.16, io-ts@npm:^2.2.18, io-ts@npm:^2.2.19, io-ts@npm:^2.2.20":
   version: 2.2.20
   resolution: "io-ts@npm:2.2.20"
   peerDependencies:
@@ -12034,7 +12034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^9.0.0, jsonwebtoken@npm:^9.0.1":
+"jsonwebtoken@npm:^9.0.0":
   version: 9.0.2
   resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:

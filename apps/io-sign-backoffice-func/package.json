@@ -16,7 +16,6 @@
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^2.0.1",
     "@pagopa/logger": "^1.0.1",
-    "@pagopa/ts-commons": "^12.3.0",
     "fp-ts": "^2.16.1",
     "undici": "^5.27.2",
     "zod": "^3.22.4"
