@@ -1,5 +1,12 @@
 # io-func-sign-issuer
 
+## 0.16.4
+
+### Patch Changes
+
+- Updated dependencies [45c91d2]
+  - @io-sign/io-sign@1.0.5
+
 ## 0.16.3
 
 ### Patch Changes
