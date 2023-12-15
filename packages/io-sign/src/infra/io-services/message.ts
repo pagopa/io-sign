@@ -76,7 +76,7 @@ export const makeSubmitMessageForUser =
                  * in any case we are enabled to use the attachments feature.
                  * The user associated with the service has been added to a particular group (ApiThirdPartyMessageWrite) on the APIM.
                  */
-                feature_level_type: FeatureLevelTypeEnum.STANDARD,
+                feature_level_type: FeatureLevelTypeEnum.ADVANCED,
               },
             }),
           E.toError
