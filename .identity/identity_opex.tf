@@ -11,7 +11,7 @@ module "opex_identity_ci" {
   github_federations = [
     {
       repository = "io-sign"
-      subject = github_repository_environment.github_repository_environment_opex_ci.environment
+      subject    = github_repository_environment.github_repository_environment_opex_ci.environment
     }
   ]
 
@@ -36,7 +36,7 @@ module "opex_identity_cd" {
   github_federations = [
     {
       repository = "io-sign"
-      subject = github_repository_environment.github_repository_environment_opex_cd.environment
+      subject    = github_repository_environment.github_repository_environment_opex_cd.environment
     }
   ]
 

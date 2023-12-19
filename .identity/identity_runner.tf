@@ -1,8 +1,8 @@
 locals {
   github_federations = tolist([
     for w in local.web_apps_map : {
-       repository = "io-sign"
-       subject = github_repository_environment.web_apps[w.name].environment
+      repository = "io-sign"
+      subject    = github_repository_environment.web_apps[w.name].environment
     }
   ])
 }

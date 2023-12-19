@@ -1,13 +1,10 @@
 locals {
-  prefix   = "${var.prefix}-${var.env_short}"
-  project  = "${var.prefix}-${var.env_short}-${var.domain}"
+  prefix  = "${var.prefix}-${var.env_short}"
+  project = "${var.prefix}-${var.env_short}-${var.domain}"
 
   resource_group_name = "${local.project}-backend-rg"
 
   web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
-
-  # TODO: delete
-  app_name = "github-${var.github.org}-${var.github.repository}-${var.env}"
 
   repo_secrets = {
     "AZURE_SUBSCRIPTION_ID" = data.azurerm_client_config.current.subscription_id

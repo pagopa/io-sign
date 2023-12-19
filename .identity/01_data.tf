@@ -1,5 +1,5 @@
 data "azurerm_resource_group" "rg_identity" {
-  name     = "${local.prefix}-identity-rg"
+  name = "${local.prefix}-identity-rg"
 }
 
 data "azurerm_resources" "web_apps" {

@@ -50,12 +50,6 @@ variable "github" {
   }
 }
 
-variable "github_token" {
-  type        = string
-  sensitive   = true
-  description = "GitHub Organization and repository name"
-}
-
 variable "opex_environment_ci_roles" {
   type = object({
     subscription    = list(string)
@@ -78,13 +72,6 @@ variable "web_apps_environment_cd_roles" {
     resource_groups = map(list(string))
   })
   description = "GitHub Continous Delivery roles for web apps managed identity"
-}
-
-variable "github_repository_environment_cd" {
-  type = object({
-    reviewers_teams = list(string)
-  })
-  description = "GitHub Continous Integration roles"
 }
 
 variable "location" {

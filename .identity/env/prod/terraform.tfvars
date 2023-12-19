@@ -46,7 +46,3 @@ web_apps_environment_cd_roles = {
     ]
   }
 }
-
-github_repository_environment_cd = {
-  reviewers_teams = ["io-sign-maintainers"]
-}
