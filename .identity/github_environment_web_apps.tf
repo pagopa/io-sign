@@ -30,6 +30,7 @@ resource "github_repository_environment" "web_apps" {
   }
 }
 
+# TODO: delete
 resource "azurerm_federated_identity_credential" "web_apps" {
   for_each            = local.web_apps_map
   name                = each.value.name
@@ -40,6 +41,7 @@ resource "azurerm_federated_identity_credential" "web_apps" {
   subject             = "repo:${var.github.org}/${var.github.repository}:environment:${github_repository_environment.web_apps[each.key].environment}"
 }
 
+# TODO: delete
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "web_app_subscription_id" {
   for_each        = local.web_apps_map
@@ -49,6 +51,7 @@ resource "github_actions_environment_secret" "web_app_subscription_id" {
   plaintext_value = data.azurerm_subscription.current.subscription_id
 }
 
+# TODO: delete
 #tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "web_app_tenant_id" {
   for_each        = local.web_apps_map
@@ -58,13 +61,12 @@ resource "github_actions_environment_secret" "web_app_tenant_id" {
   plaintext_value = data.azurerm_client_config.current.tenant_id
 }
 
-#tfsec:ignore:github-actions-no-plain-text-action-secrets # not real secret
 resource "github_actions_environment_secret" "web_app_client_id" {
   for_each        = local.web_apps_map
   repository      = var.github.repository
   environment     = github_repository_environment.web_apps[each.key].environment
   secret_name     = "AZURE_CLIENT_ID"
-  plaintext_value = azurerm_user_assigned_identity.runner.client_id
+  plaintext_value = module.web_apps_identity_cd.identity_client_id
 }
 
 resource "github_actions_environment_variable" "web_app_resouce_group" {
