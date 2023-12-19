@@ -6,6 +6,13 @@ locals {
 
   web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
 
+  github_federations = tolist([
+    for w in local.web_apps_map : {
+      repository = "io-sign"
+      subject    = github_repository_environment.web_apps[w.name].environment
+    }
+  ])
+
   repo_secrets = {
     "AZURE_SUBSCRIPTION_ID" = data.azurerm_client_config.current.subscription_id
     "AZURE_TENANT_ID"       = data.azurerm_client_config.current.tenant_id

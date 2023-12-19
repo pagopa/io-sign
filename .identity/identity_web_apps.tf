@@ -1,12 +1,3 @@
-locals {
-  github_federations = tolist([
-    for w in local.web_apps_map : {
-      repository = "io-sign"
-      subject    = github_repository_environment.web_apps[w.name].environment
-    }
-  ])
-}
-
 module "web_apps_identity_cd" {
   source = "github.com/pagopa/terraform-azurerm-v3//github_federated_identity?ref=v7.34.2"
 
