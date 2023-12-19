@@ -1,3 +1,7 @@
+variable "tags" {
+  type = map(any)
+}
+
 variable "prefix" {
   type = string
   validation {
@@ -46,25 +50,28 @@ variable "github" {
   }
 }
 
-variable "github_token" {
-  type        = string
-  sensitive   = true
-  description = "GitHub Organization and repository name"
-}
-
-variable "environment_cd_roles" {
+variable "opex_environment_ci_roles" {
   type = object({
     subscription    = list(string)
     resource_groups = map(list(string))
   })
-  description = "GitHub Continous Delivery roles"
+  description = "Continous Integration roles for opex managed identiy"
 }
 
-variable "github_repository_environment_cd" {
+variable "opex_environment_cd_roles" {
   type = object({
-    reviewers_teams = list(string)
+    subscription    = list(string)
+    resource_groups = map(list(string))
   })
-  description = "GitHub Continous Integration roles"
+  description = "Continous Delivery roles for opex managed identiy"
+}
+
+variable "web_apps_environment_cd_roles" {
+  type = object({
+    subscription    = list(string)
+    resource_groups = map(list(string))
+  })
+  description = "GitHub Continous Delivery roles for web apps managed identity"
 }
 
 variable "location" {
