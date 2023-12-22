@@ -9,6 +9,8 @@ on:
       - '.github/workflows/opex_api_issuer.yaml'
       - '.opex/api_issuer/**'
 
+  workflow_dispatch:
+
 env:
   API_NAME: api_issuer
 
@@ -32,7 +34,7 @@ jobs:
       # from https://github.com/pagopa/opex-dashboard-azure-action/
       - uses: pagopa/opex-dashboard-azure-action@v1.1.0
         with:
-          environment: prod
+          environment: 'prod'
           api-name: ${{ env.API_NAME }}
           config: .opex/${{ env.API_NAME }}/env/prod/config.yaml
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
