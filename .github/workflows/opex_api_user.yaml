@@ -20,6 +20,9 @@ jobs:
   opex:
     runs-on: ubuntu-22.04
     environment: opex-prod-cd
+    strategy:
+      matrix:
+        environment: [prod]
     steps:
       - name: Checkout
         id: checkout

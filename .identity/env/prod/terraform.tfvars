@@ -30,7 +30,8 @@ opex_environment_cd_roles = {
       "Contributor"
     ],
     "terraform-state-rg" = [
-      "Storage Blob Data Contributor"
+      "Storage Blob Data Contributor",
+      "Reader and Data Access"
     ]
   }
 }
