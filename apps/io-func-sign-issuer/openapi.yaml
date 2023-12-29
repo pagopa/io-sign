@@ -542,6 +542,7 @@ components:
     DossierTitle:
       type: string
       minLength: 3
+      maxLength: 75
 
     CreateDossierBody:
       type: object
