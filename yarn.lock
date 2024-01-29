@@ -167,9 +167,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-http@npm:^2.0.0":
-  version: 2.3.1
-  resolution: "@azure/core-http@npm:2.3.1"
+"@azure/core-http@npm:^3.0.0":
+  version: 3.0.4
+  resolution: "@azure/core-http@npm:3.0.4"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/core-auth": ^1.3.0
@@ -181,12 +181,11 @@ __metadata:
     form-data: ^4.0.0
     node-fetch: ^2.6.7
     process: ^0.11.10
-    tough-cookie: ^4.0.0
     tslib: ^2.2.0
     tunnel: ^0.0.6
     uuid: ^8.3.0
-    xml2js: ^0.4.19
-  checksum: 8c5753cd17d4a66feab47b97b98e7e5b083e276f6e2950ef81a3b3d91a8a45d619704b04ef2a1d224019524728306d39516a8d47af1ca6512f73089acaaa5757
+    xml2js: ^0.5.0
+  checksum: dc7cb65f782c2e947b4f8464347b5a9f5a13f557c5287a23ec87e4271ab96026fc5b9fe825fe6eacc97a09acc82c815482cef4d118e01cf9ec8bab0efeb157f9
   languageName: node
   linkType: hard
 
@@ -332,7 +331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/cosmos@npm:^3.17.1, @azure/cosmos@npm:^3.17.2":
+"@azure/cosmos@npm:^3.17.1":
   version: 3.17.2
   resolution: "@azure/cosmos@npm:3.17.2"
   dependencies:
@@ -394,48 +393,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.2.0, @azure/functions@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "@azure/functions@npm:3.5.0"
-  dependencies:
-    iconv-lite: ^0.6.3
-    long: ^4.0.0
-    uuid: ^8.3.0
-  checksum: 105ddb7378d4b21e769de3d998b9e88913782356ac0edca20e1c0dbd1ac7fb15f6ca04f86121ce1ed5b2ec49564b64788d2046bf6e71f0199555e37c88cfaf8d
-  languageName: node
-  linkType: hard
-
-"@azure/functions@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@azure/functions@npm:4.0.1"
+"@azure/functions@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@azure/functions@npm:4.1.0"
   dependencies:
     long: ^4.0.0
     undici: ^5.13.0
-  checksum: 1aefbab740b70c6d274fe75e287051ac6593b6d39156952491c68c0b4cf93d1b5d8dda48a8e2ae17ae359b4b2b252255555b39904f132ef8be870ac511fcf073
+  checksum: 141ea564b3862ba2e39412347751ce625e7de73036a777a6d29311ba9aa4d98174db8c2e01ad60983e8813460e1f0c69702b5fc4cc770956ac96ddbd36967565
   languageName: node
   linkType: hard
 
-"@azure/identity@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@azure/identity@npm:3.3.0"
+"@azure/identity@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@azure/identity@npm:4.0.1"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/core-auth": ^1.5.0
     "@azure/core-client": ^1.4.0
     "@azure/core-rest-pipeline": ^1.1.0
     "@azure/core-tracing": ^1.0.0
-    "@azure/core-util": ^1.0.0
+    "@azure/core-util": ^1.3.0
     "@azure/logger": ^1.0.0
-    "@azure/msal-browser": ^2.37.1
-    "@azure/msal-common": ^13.1.0
-    "@azure/msal-node": ^1.17.3
+    "@azure/msal-browser": ^3.5.0
+    "@azure/msal-node": ^2.5.1
     events: ^3.0.0
     jws: ^4.0.0
     open: ^8.0.0
     stoppable: ^1.1.0
     tslib: ^2.2.0
-    uuid: ^8.3.0
-  checksum: 95c6f8761ad6bbfd3fbf8a88d1a4af17199fb6b61134a761d51a2df096cb175a5841f02ca5ae3285378c64676e72ce6cddc58143306eef5086a63459c2cef914
+  checksum: 2c975ca70b274dc185022c2b19f1774079fd5cfb08c78ec3500e4baf973911b2958031d5fa36369d3c9acdeb25db457cc497991e7393b383103c058e097703e5
   languageName: node
   linkType: hard
 
@@ -448,60 +434,60 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-browser@npm:^2.37.1":
-  version: 2.38.0
-  resolution: "@azure/msal-browser@npm:2.38.0"
+"@azure/msal-browser@npm:^3.5.0":
+  version: 3.7.1
+  resolution: "@azure/msal-browser@npm:3.7.1"
   dependencies:
-    "@azure/msal-common": 13.2.0
-  checksum: 44f5b6e238c29c9986bf4ef419b090b92532987f454ca2c10ecc95e9176f9f6efbafa819b5022bc3c0da38d97704526bb321f2317e30854802ae781ba3366ff1
+    "@azure/msal-common": 14.6.1
+  checksum: 756cc9aef745739408be6dace5fb8aee0e63c98d6998a38c70e5eea18257ce4a79ec100e88d370402c28e1688bf13280e5166633a560e8bcfbad0525d3bb46ac
   languageName: node
   linkType: hard
 
-"@azure/msal-common@npm:13.2.0, @azure/msal-common@npm:^13.1.0":
-  version: 13.2.0
-  resolution: "@azure/msal-common@npm:13.2.0"
-  checksum: 44f4e2c545cd47c7763502ce34bee89cd1c1d8378526606b6af675cfab6ae2254616245b1f0b1621b61697df0d35277398834ad7c44613d56f4a019dd9cd6431
+"@azure/msal-common@npm:14.6.1":
+  version: 14.6.1
+  resolution: "@azure/msal-common@npm:14.6.1"
+  checksum: 6d9da0a2863a4b076208d6ab75ff1fd2f7a3cb8018f4ee937cc769d27603ffa1c137a4a64b7bdf4e1d37d0b6275243ae758824f0adb554a5e8f37b83ee942763
   languageName: node
   linkType: hard
 
-"@azure/msal-node@npm:^1.17.3":
-  version: 1.18.0
-  resolution: "@azure/msal-node@npm:1.18.0"
+"@azure/msal-node@npm:^2.5.1":
+  version: 2.6.2
+  resolution: "@azure/msal-node@npm:2.6.2"
   dependencies:
-    "@azure/msal-common": 13.2.0
+    "@azure/msal-common": 14.6.1
     jsonwebtoken: ^9.0.0
     uuid: ^8.3.0
-  checksum: e856204cc2b5ad8916ac58032eed7b611b02e4d59d2a374f13a4dac87739a1e0b96cb57c1144e48e4f8dc6d51e59df5dfe37770c1ee4ce9e83ca7f490718639e
+  checksum: 7d842c1269bd0892d6545c64cc49a5c8a739ded35103b7faa389dde0b0318c9c057df06626baa40d40dfa164db65be8544c7c32796aa3454716ec817c1749380
   languageName: node
   linkType: hard
 
-"@azure/storage-blob@npm:^12.12.0":
-  version: 12.12.0
-  resolution: "@azure/storage-blob@npm:12.12.0"
+"@azure/storage-blob@npm:^12.17.0":
+  version: 12.17.0
+  resolution: "@azure/storage-blob@npm:12.17.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
-    "@azure/core-http": ^2.0.0
+    "@azure/core-http": ^3.0.0
     "@azure/core-lro": ^2.2.0
     "@azure/core-paging": ^1.1.1
     "@azure/core-tracing": 1.0.0-preview.13
     "@azure/logger": ^1.0.0
     events: ^3.0.0
     tslib: ^2.2.0
-  checksum: bb7f6514a251f8ec337718088b8c9ba80e27b34c786b7fb380fdca19eb3735a0da917dcfcdacef27d0eb256d007a37f89f3d6b08c55405cbcc04685f2a51da3b
+  checksum: 2e5d3f26577f698498bba7ff7b7cfeb942709a713d9c72864b80633bee28e2b369370afc55f18e49ccc02b4dad9d1de3a4602caa99dce1f8d8196c8472a8add1
   languageName: node
   linkType: hard
 
-"@azure/storage-queue@npm:^12.11.0":
-  version: 12.11.0
-  resolution: "@azure/storage-queue@npm:12.11.0"
+"@azure/storage-queue@npm:^12.16.0":
+  version: 12.16.0
+  resolution: "@azure/storage-queue@npm:12.16.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
-    "@azure/core-http": ^2.0.0
+    "@azure/core-http": ^3.0.0
     "@azure/core-paging": ^1.1.1
     "@azure/core-tracing": 1.0.0-preview.13
     "@azure/logger": ^1.0.0
     tslib: ^2.2.0
-  checksum: 774fa24fb5bd6fdcf8a1af4a8c01b82b5a3a7747d7043d57178147d46a2b98321c2f07e019d9cd421ab61cc121268a2b210deacefd661465f77ad41e20081c4d
+  checksum: 703489765ef0952408f2cc4ed01df9090130103d07b7db667ae31ff4bf1ea0af7ef406d31e0f62935bdd0bb2328078c997e42cecf7333128b76e0ed78af7c8d1
   languageName: node
   linkType: hard
 
@@ -3556,8 +3542,8 @@ __metadata:
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
     "@azure/event-hubs": ^5.9.0
-    "@azure/storage-blob": ^12.12.0
-    "@azure/storage-queue": ^12.11.0
+    "@azure/storage-blob": ^12.17.0
+    "@azure/storage-queue": ^12.16.0
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/io-functions-commons": ^26.2.1
@@ -7366,9 +7352,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"azure-functions-core-tools@npm:^4.0.5148":
-  version: 4.0.5148
-  resolution: "azure-functions-core-tools@npm:4.0.5148"
+"azure-functions-core-tools@npm:^4.0.5455":
+  version: 4.0.5455
+  resolution: "azure-functions-core-tools@npm:4.0.5455"
   dependencies:
     chalk: 3.0.0
     extract-zip: ^2.0.1
@@ -7379,7 +7365,7 @@ __metadata:
     azfun: lib/main.js
     azurefunctions: lib/main.js
     func: lib/main.js
-  checksum: 565e91a934a9ccf614fbce670b61acfb67b32b26beb2c98fcf8d6ac207206ca36da6087a07550fd15f652fe9e08c9d0f7e7485031b27bdb730266071af20adca
+  checksum: 7f5615c2a205da5796cc61d9f2c0960407ec919ff9cc73b542c2cddb105517ac9ba905a1ed06afea2898591f142719bbc4be6f2a8d3e295c69b56133a8701778
   conditions: (os=win32 | os=darwin | os=linux)
   languageName: node
   linkType: hard
@@ -11959,11 +11945,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-issuer@workspace:apps/io-func-sign-issuer"
   dependencies:
-    "@azure/cosmos": ^3.17.1
+    "@azure/cosmos": ^3.17.3
     "@azure/event-hubs": ^5.9.0
-    "@azure/functions": ^3.2.0
-    "@azure/storage-blob": ^12.12.0
-    "@azure/storage-queue": ^12.11.0
+    "@azure/functions": ^4.1.0
+    "@azure/storage-blob": ^12.17.0
+    "@azure/storage-queue": ^12.16.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
@@ -11973,7 +11959,7 @@ __metadata:
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
     "@vitest/coverage-c8": ^0.33.0
-    azure-functions-core-tools: ^4.0.5148
+    azure-functions-core-tools: ^4.0.5455
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
@@ -11994,8 +11980,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-support@workspace:apps/io-func-sign-support"
   dependencies:
-    "@azure/cosmos": ^3.17.1
-    "@azure/functions": ^3.5.0
+    "@azure/cosmos": ^3.17.3
+    "@azure/functions": ^4.1.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.0.0
@@ -12007,7 +11993,7 @@ __metadata:
     "@rushstack/eslint-patch": ^1.2.0
     "@types/node": ^18.15.5
     "@vitest/coverage-c8": ^0.33.0
-    azure-functions-core-tools: ^4.0.5148
+    azure-functions-core-tools: ^4.0.5455
     eslint: ^8.28.0
     fp-ts: ^2.13.1
     npm-pack-zip: ^1.3.0
@@ -12022,10 +12008,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-user@workspace:apps/io-func-sign-user"
   dependencies:
-    "@azure/cosmos": ^3.17.2
+    "@azure/cosmos": ^3.17.3
     "@azure/event-hubs": ^5.9.0
-    "@azure/storage-blob": ^12.12.0
-    "@azure/storage-queue": ^12.11.0
+    "@azure/storage-blob": ^12.17.0
+    "@azure/storage-queue": ^12.16.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
@@ -12036,7 +12022,7 @@ __metadata:
     "@pagopa/ts-commons": ^10.14.2
     "@rushstack/eslint-patch": ^1.2.0
     "@vitest/coverage-c8": ^0.33.0
-    azure-functions-core-tools: ^4.0.5148
+    azure-functions-core-tools: ^4.0.5455
     date-fns: ^2.29.3
     eslint: ^8.28.0
     fp-ts: ^2.13.1
@@ -12060,7 +12046,7 @@ __metadata:
   dependencies:
     "@azure/arm-apimanagement": ^9.1.0
     "@azure/cosmos": ^3.17.3
-    "@azure/identity": ^3.3.0
+    "@azure/identity": ^4.0.1
     "@emotion/react": ^11.11.1
     "@emotion/styled": ^11.11.0
     "@hookform/resolvers": ^3.3.1
@@ -12100,7 +12086,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func"
   dependencies:
-    "@azure/functions": ^4.0.1
+    "@azure/functions": ^4.1.0
     "@pagopa/eslint-config": ^3.0.0
     "@rushstack/eslint-patch": ^1.5.1
     eslint: ^8.50.0
@@ -15481,7 +15467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"psl@npm:^1.1.28, psl@npm:^1.1.33":
+"psl@npm:^1.1.28":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
   checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
@@ -15580,13 +15566,6 @@ __metadata:
   version: 0.2.0
   resolution: "querystring@npm:0.2.0"
   checksum: 8258d6734f19be27e93f601758858c299bdebe71147909e367101ba459b95446fbe5b975bf9beb76390156a592b6f4ac3a68b6087cea165c259705b8b4e56a69
-  languageName: node
-  linkType: hard
-
-"querystringify@npm:^2.1.1":
-  version: 2.2.0
-  resolution: "querystringify@npm:2.2.0"
-  checksum: 5641ea231bad7ef6d64d9998faca95611ed4b11c2591a8cae741e178a974f6a8e0ebde008475259abe1621cb15e692404e6b6626e927f7b849d5c09392604b15
   languageName: node
   linkType: hard
 
@@ -16099,13 +16078,6 @@ __metadata:
   version: 2.0.0
   resolution: "require-main-filename@npm:2.0.0"
   checksum: e9e294695fea08b076457e9ddff854e81bffbe248ed34c1eec348b7abbd22a0d02e8d75506559e2265e96978f3c4720bd77a6dad84755de8162b357eb6c778c7
-  languageName: node
-  linkType: hard
-
-"requires-port@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "requires-port@npm:1.0.0"
-  checksum: eee0e303adffb69be55d1a214e415cf42b7441ae858c76dfc5353148644f6fd6e698926fc4643f510d5c126d12a705e7c8ed7e38061113bdf37547ab356797ff
   languageName: node
   linkType: hard
 
@@ -17608,18 +17580,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^4.0.0":
-  version: 4.1.2
-  resolution: "tough-cookie@npm:4.1.2"
-  dependencies:
-    psl: ^1.1.33
-    punycode: ^2.1.1
-    universalify: ^0.2.0
-    url-parse: ^1.5.3
-  checksum: a7359e9a3e875121a84d6ba40cc184dec5784af84f67f3a56d1d2ae39b87c0e004e6ba7c7331f9622a7d2c88609032473488b28fe9f59a1fec115674589de39a
-  languageName: node
-  linkType: hard
-
 "tough-cookie@npm:~2.5.0":
   version: 2.5.0
   resolution: "tough-cookie@npm:2.5.0"
@@ -18410,13 +18370,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"universalify@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "universalify@npm:0.2.0"
-  checksum: e86134cb12919d177c2353196a4cc09981524ee87abf621f7bc8d249dbbbebaec5e7d1314b96061497981350df786e4c5128dbf442eba104d6e765bc260678b5
-  languageName: node
-  linkType: hard
-
 "universalify@npm:^2.0.0":
   version: 2.0.0
   resolution: "universalify@npm:2.0.0"
@@ -18477,16 +18430,6 @@ __metadata:
   dependencies:
     punycode: ^2.1.0
   checksum: 7167432de6817fe8e9e0c9684f1d2de2bb688c94388f7569f7dbdb1587c9f4ca2a77962f134ec90be0cc4d004c939ff0d05acc9f34a0db39a3c797dada262633
-  languageName: node
-  linkType: hard
-
-"url-parse@npm:^1.5.3":
-  version: 1.5.10
-  resolution: "url-parse@npm:1.5.10"
-  dependencies:
-    querystringify: ^2.1.1
-    requires-port: ^1.0.0
-  checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
   languageName: node
   linkType: hard
 
@@ -19263,13 +19206,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml2js@npm:^0.4.19":
-  version: 0.4.23
-  resolution: "xml2js@npm:0.4.23"
+"xml2js@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "xml2js@npm:0.5.0"
   dependencies:
     sax: ">=0.6.0"
     xmlbuilder: ~11.0.0
-  checksum: ca0cf2dfbf6deeaae878a891c8fbc0db6fd04398087084edf143cdc83d0509ad0fe199b890f62f39c4415cf60268a27a6aed0d343f0658f8779bd7add690fa98
+  checksum: 1aa71d62e5bc2d89138e3929b9ea46459157727759cbc62ef99484b778641c0cd21fb637696c052d901a22f82d092a3e740a16b4ce218e81ac59b933535124ea
   languageName: node
   linkType: hard
 

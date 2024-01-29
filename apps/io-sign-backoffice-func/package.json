@@ -10,7 +10,7 @@
     "start": "func start"
   },
   "dependencies": {
-    "@azure/functions": "^4.0.1"
+    "@azure/functions": "^4.1.0"
   },
   "devDependencies": {
     "@pagopa/eslint-config": "^3.0.0",
