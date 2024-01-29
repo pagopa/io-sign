@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@azure/cosmos": "^3.17.3",
-    "@azure/event-hubs": "^5.9.0",
+    "@azure/event-hubs": "^5.11.3",
     "@azure/storage-blob": "^12.17.0",
     "@azure/storage-queue": "^12.16.0",
     "@io-sign/io-sign": "workspace:^",

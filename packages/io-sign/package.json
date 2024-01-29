@@ -16,7 +16,7 @@
     "dist"
   ],
   "dependencies": {
-    "@azure/event-hubs": "^5.9.0",
+    "@azure/event-hubs": "^5.11.3",
     "@azure/storage-blob": "^12.17.0",
     "@azure/storage-queue": "^12.16.0",
     "@pagopa/handler-kit": "^1.1.0",

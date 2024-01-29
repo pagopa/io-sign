@@ -110,9 +110,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-amqp@npm:^3.1.0":
-  version: 3.2.1
-  resolution: "@azure/core-amqp@npm:3.2.1"
+"@azure/core-amqp@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "@azure/core-amqp@npm:4.1.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/core-auth": ^1.3.0
@@ -120,14 +120,12 @@ __metadata:
     "@azure/logger": ^1.0.0
     buffer: ^6.0.0
     events: ^3.0.0
-    jssha: ^3.1.0
     process: ^0.11.10
-    rhea: ^2.0.3
-    rhea-promise: ^2.1.0
+    rhea: ^3.0.0
+    rhea-promise: ^3.0.0
     tslib: ^2.2.0
-    url: ^0.11.0
     util: ^0.12.1
-  checksum: b8af026351c80c8b0aa46541a2ea8c81e9d6ec5a498ee9c2643643455a7a6bd6f7f0a9a442fb2cf6020591c0ab05acf322521e3415cc1abfbf04d8d57dcd35e2
+  checksum: 4faa8ec742d49646ff3b8bc4d9fee009cdd9eaf0beb71bbe25d2ee07cbe470c72aaf865769d6e7dface52d38781b29cb114b586048184f5cde0f2b4830fdf32f
   languageName: node
   linkType: hard
 
@@ -331,6 +329,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/core-util@npm:^1.5.0":
+  version: 1.6.1
+  resolution: "@azure/core-util@npm:1.6.1"
+  dependencies:
+    "@azure/abort-controller": ^1.0.0
+    tslib: ^2.2.0
+  checksum: 1f8cd130993f161c98925070af863510cbcc79e0471864e4b16852afc2ee7413c9c7fabe72f20f3e521ee75c3cd7e3085661fdc8d5d0a643a6e1b1b7bf691ddd
+  languageName: node
+  linkType: hard
+
 "@azure/cosmos@npm:^3.17.1":
   version: 3.17.2
   resolution: "@azure/cosmos@npm:3.17.2"
@@ -372,24 +380,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/event-hubs@npm:^5.9.0":
-  version: 5.9.0
-  resolution: "@azure/event-hubs@npm:5.9.0"
+"@azure/event-hubs@npm:^5.11.3":
+  version: 5.11.3
+  resolution: "@azure/event-hubs@npm:5.11.3"
   dependencies:
     "@azure/abort-controller": ^1.0.0
-    "@azure/core-amqp": ^3.1.0
+    "@azure/core-amqp": ^4.0.0
     "@azure/core-auth": ^1.3.0
     "@azure/core-tracing": ^1.0.0
-    "@azure/core-util": ^1.2.0
+    "@azure/core-util": ^1.5.0
     "@azure/logger": ^1.0.0
     buffer: ^6.0.0
     is-buffer: ^2.0.3
     jssha: ^3.1.0
     process: ^0.11.10
-    rhea-promise: ^2.1.0
+    rhea-promise: ^3.0.0
     tslib: ^2.2.0
-    uuid: ^8.3.0
-  checksum: 2b48366d8fd7388808abaa1f14f77e18c8f518206389b9698470e3ef72c9721b2955483a51634e3e3771d0423b388fe542c2789fb0e466ace293722a9b9e8c86
+  checksum: 72b2ca9f0b96236cd1a3fe3b1035601dc9684577fd964b5d5f65767f95a25abc59b1f4a9ce7645cb96550e15ce7d69c133e5f9baed3ae0d3306e96bcd408d5f9
   languageName: node
   linkType: hard
 
@@ -3541,7 +3548,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
-    "@azure/event-hubs": ^5.9.0
+    "@azure/event-hubs": ^5.11.3
     "@azure/storage-blob": ^12.17.0
     "@azure/storage-queue": ^12.16.0
     "@pagopa/eslint-config": ^3.0.0
@@ -8715,15 +8722,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:0.8.0 - 3.5.0, debug@npm:^3.1.0, debug@npm:^3.2.7":
-  version: 3.2.7
-  resolution: "debug@npm:3.2.7"
-  dependencies:
-    ms: ^2.1.1
-  checksum: b3d8c5940799914d30314b7c3304a43305fd0715581a919dacb8b3176d024a782062368405b47491516d2091d6462d4d11f2f4974a405048094f8bfebfa3071c
-  languageName: node
-  linkType: hard
-
 "debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -8742,6 +8740,15 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
+  languageName: node
+  linkType: hard
+
+"debug@npm:^3.1.0, debug@npm:^3.2.7":
+  version: 3.2.7
+  resolution: "debug@npm:3.2.7"
+  dependencies:
+    ms: ^2.1.1
+  checksum: b3d8c5940799914d30314b7c3304a43305fd0715581a919dacb8b3176d024a782062368405b47491516d2091d6462d4d11f2f4974a405048094f8bfebfa3071c
   languageName: node
   linkType: hard
 
@@ -11946,7 +11953,7 @@ __metadata:
   resolution: "io-func-sign-issuer@workspace:apps/io-func-sign-issuer"
   dependencies:
     "@azure/cosmos": ^3.17.3
-    "@azure/event-hubs": ^5.9.0
+    "@azure/event-hubs": ^5.11.3
     "@azure/functions": ^4.1.0
     "@azure/storage-blob": ^12.17.0
     "@azure/storage-queue": ^12.16.0
@@ -12009,7 +12016,7 @@ __metadata:
   resolution: "io-func-sign-user@workspace:apps/io-func-sign-user"
   dependencies:
     "@azure/cosmos": ^3.17.3
-    "@azure/event-hubs": ^5.9.0
+    "@azure/event-hubs": ^5.11.3
     "@azure/storage-blob": ^12.17.0
     "@azure/storage-queue": ^12.16.0
     "@io-sign/io-sign": "workspace:^"
@@ -15505,13 +15512,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:1.3.2":
-  version: 1.3.2
-  resolution: "punycode@npm:1.3.2"
-  checksum: b8807fd594b1db33335692d1f03e8beeddde6fda7fbb4a2e32925d88d20a3aa4cd8dcc0c109ccaccbd2ba761c208dfaaada83007087ea8bfb0129c9ef1b99ed6
-  languageName: node
-  linkType: hard
-
 "punycode@npm:^2.1.0, punycode@npm:^2.1.1":
   version: 2.1.1
   resolution: "punycode@npm:2.1.1"
@@ -15559,13 +15559,6 @@ __metadata:
   version: 6.5.3
   resolution: "qs@npm:6.5.3"
   checksum: 6f20bf08cabd90c458e50855559539a28d00b2f2e7dddcb66082b16a43188418cb3cb77cbd09268bcef6022935650f0534357b8af9eeb29bf0f27ccb17655692
-  languageName: node
-  linkType: hard
-
-"querystring@npm:0.2.0":
-  version: 0.2.0
-  resolution: "querystring@npm:0.2.0"
-  checksum: 8258d6734f19be27e93f601758858c299bdebe71147909e367101ba459b95446fbe5b975bf9beb76390156a592b6f4ac3a68b6087cea165c259705b8b4e56a69
   languageName: node
   linkType: hard
 
@@ -16223,23 +16216,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rhea-promise@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "rhea-promise@npm:2.1.0"
+"rhea-promise@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "rhea-promise@npm:3.0.1"
   dependencies:
     debug: ^3.1.0
-    rhea: ^2.0.3
+    rhea: ^3.0.0
     tslib: ^2.2.0
-  checksum: 94fb6c1e1af28977f4c9742aa7576517204cc5848438df16ebbfb03599350ba8f03ad0ee5e1ce45c08a78c5a4a4fdfb542fbcdd1d53392ba3ddaba04369d01c0
+  checksum: 8b4474ab934a29ba4a8b7788606f15b5ee87d25bbfa72b875ee84cf084347911bf127fe47fcc4a2d4e4c984cf34afb156bcc4694abd73d005e1ef69b2597f4f8
   languageName: node
   linkType: hard
 
-"rhea@npm:^2.0.3":
-  version: 2.0.8
-  resolution: "rhea@npm:2.0.8"
+"rhea@npm:^3.0.0":
+  version: 3.0.2
+  resolution: "rhea@npm:3.0.2"
   dependencies:
-    debug: 0.8.0 - 3.5.0
-  checksum: 1c7c0813b2ac814a2c7b984ec73bda0af55b95010b18f69f081298aa02555332903b9b6551b2c4bec89954c5ea37481f7e88b25d5068427132318e5d0213362b
+    debug: ^4.3.3
+  checksum: 1aef1c52e83102bbbab589a556f6d44a5b42c6e5673c24df3bca0c3e61a1a25873196ed5bf17895ad7e9f7f66e3cbebdb1b0ab9886340b3a4cbbdfe1c4673ab2
   languageName: node
   linkType: hard
 
@@ -18430,16 +18423,6 @@ __metadata:
   dependencies:
     punycode: ^2.1.0
   checksum: 7167432de6817fe8e9e0c9684f1d2de2bb688c94388f7569f7dbdb1587c9f4ca2a77962f134ec90be0cc4d004c939ff0d05acc9f34a0db39a3c797dada262633
-  languageName: node
-  linkType: hard
-
-"url@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "url@npm:0.11.0"
-  dependencies:
-    punycode: 1.3.2
-    querystring: 0.2.0
-  checksum: 50d100d3dd2d98b9fe3ada48cadb0b08aa6be6d3ac64112b867b56b19be4bfcba03c2a9a0d7922bfd7ac17d4834e88537749fe182430dfd9b68e520175900d90
   languageName: node
   linkType: hard
 
