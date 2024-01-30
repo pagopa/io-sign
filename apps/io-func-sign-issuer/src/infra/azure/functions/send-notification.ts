@@ -17,6 +17,7 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import { NotificationDetailView } from "../../http/models/NotificationDetailView";
 
 import {
@@ -32,7 +33,6 @@ import { makeGetIssuerBySubscriptionId } from "../../back-office/issuer";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { makeGetDossier } from "../cosmos/dossier";
 import { SendNotificationPayload } from "../../../signature-request-notification";
-import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,

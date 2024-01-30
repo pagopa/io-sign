@@ -14,13 +14,13 @@ import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import { makeMarkRequestAsRejected } from "../../../app/use-cases/mark-request-rejected";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeGetDossier } from "../cosmos/dossier";
-import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeRequestAsRejectedHandler = (
   db: Database,

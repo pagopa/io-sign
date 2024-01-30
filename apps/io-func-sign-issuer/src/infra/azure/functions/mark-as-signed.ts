@@ -17,13 +17,13 @@ import {
   makeCreateAndSendAnalyticsEvent,
   makeSendEvent,
 } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
 import { makeGetDossier } from "../cosmos/dossier";
-import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeRequestAsSignedHandler = (
   db: Database,
