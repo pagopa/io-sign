@@ -4,8 +4,8 @@ import * as RE from "fp-ts/lib/ReaderEither";
 import { pipe } from "fp-ts/lib/function";
 
 import { sequenceS } from "fp-ts/lib/Apply";
-import { readFromEnvironment } from "../env";
 import { Ulid } from "@pagopa/ts-commons/lib/strings";
+import { readFromEnvironment } from "../env";
 import { validate } from "../../validation";
 
 export const IOServicesConfig = t.type({
