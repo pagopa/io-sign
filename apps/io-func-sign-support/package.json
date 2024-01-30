@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-support",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "main": "./dist/web.js",
   "private": true,
   "files": [
