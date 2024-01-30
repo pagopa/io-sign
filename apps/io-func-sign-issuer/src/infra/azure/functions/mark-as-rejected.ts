@@ -14,6 +14,7 @@ import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import { makeMarkRequestAsRejected } from "../../../app/use-cases/mark-request-rejected";
 import {
   makeGetSignatureRequest,
@@ -25,6 +26,7 @@ const makeRequestAsRejectedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequestFromQueue = flow(
@@ -34,7 +36,7 @@ const makeRequestAsRejectedHandler = (
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
     eventHubAnalyticsClient

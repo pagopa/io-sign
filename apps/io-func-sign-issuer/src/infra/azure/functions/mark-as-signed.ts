@@ -17,6 +17,7 @@ import {
   makeCreateAndSendAnalyticsEvent,
   makeSendEvent,
 } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import {
   makeGetSignatureRequest,
   makeUpsertSignatureRequest,
@@ -28,6 +29,7 @@ const makeRequestAsSignedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubBillingClient: EventHubProducerClient,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
@@ -38,7 +40,7 @@ const makeRequestAsSignedHandler = (
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const sendBillingEvent = makeSendEvent(eventHubBillingClient);
