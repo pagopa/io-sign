@@ -20,11 +20,13 @@ import {
   makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeGetDossier } from "../cosmos/dossier";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeRequestAsRejectedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequestFromQueue = flow(
@@ -34,7 +36,7 @@ const makeRequestAsRejectedHandler = (
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
     eventHubAnalyticsClient

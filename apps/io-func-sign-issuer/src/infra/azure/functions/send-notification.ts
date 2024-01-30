@@ -32,17 +32,19 @@ import { makeGetIssuerBySubscriptionId } from "../../back-office/issuer";
 import { makeRequireIssuer } from "../../http/decoders/issuer";
 import { makeGetDossier } from "../cosmos/dossier";
 import { SendNotificationPayload } from "../../../signature-request-notification";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeSendNotificationHandler = (
   db: CosmosDatabase,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getDossier = makeGetDossier(db);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(

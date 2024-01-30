@@ -23,11 +23,13 @@ import {
 } from "../cosmos/signature-request";
 import { makeMarkRequestAsSigned } from "../../../app/use-cases/mark-request-signed";
 import { makeGetDossier } from "../cosmos/dossier";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 
 const makeRequestAsSignedHandler = (
   db: Database,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubBillingClient: EventHubProducerClient,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
@@ -38,7 +40,7 @@ const makeRequestAsSignedHandler = (
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const sendBillingEvent = makeSendEvent(eventHubBillingClient);

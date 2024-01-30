@@ -3,11 +3,12 @@ import * as E from "fp-ts/lib/Either";
 
 import * as Enc from "io-ts/lib/Encoder";
 
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { NonEmptyString, Ulid } from "@pagopa/ts-commons/lib/strings";
 import { pipe, flow, identity } from "fp-ts/lib/function";
 import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
 import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
 import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
+
 import {
   NotificationContent,
   NotificationContentWithAttachments,
@@ -35,23 +36,27 @@ export const NotificationContentToApiModel: Enc.Encoder<
 
 export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
   NewMessage,
-  NotificationContentWithAttachments
+  { notification: NotificationContentWithAttachments; configurationId: Ulid }
 > = {
-  encode: (message) => ({
+  encode: ({ notification, configurationId }) => ({
     content: {
-      ...NotificationContentToApiModel.encode(message).content,
+      ...NotificationContentToApiModel.encode(notification).content,
       third_party_data: {
-        id: message.signatureRequestId,
+        id: notification.signatureRequestId,
         has_attachments: true,
+        configuration_id: configurationId,
       },
     },
   }),
 };
 
 export const makeSubmitMessageForUser =
-  (ioApiClient: IOApiClient): SubmitNotificationForUser =>
+  (
+    ioApiClient: IOApiClient,
+    configurationId: Ulid
+  ): SubmitNotificationForUser =>
   (fiscalCode: FiscalCode) =>
-  (message: NotificationMessage) =>
+  (notification: NotificationMessage) =>
     pipe(
       fiscalCode,
       makeRetriveUserProfileSenderAllowed(ioApiClient),
@@ -67,9 +72,12 @@ export const makeSubmitMessageForUser =
           () =>
             ioApiClient.client.submitMessageforUserWithFiscalCodeInBody({
               message: {
-                ...("signatureRequestId" in message
-                  ? NotificationContentWithAttachmentsToApiModel.encode(message)
-                  : NotificationContentToApiModel.encode(message)),
+                ...("signatureRequestId" in notification
+                  ? NotificationContentWithAttachmentsToApiModel.encode({
+                      notification,
+                      configurationId,
+                    })
+                  : NotificationContentToApiModel.encode(notification)),
                 fiscal_code: fiscalCode,
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but

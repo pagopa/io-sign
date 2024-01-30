@@ -125,6 +125,7 @@ export const MarkAsRejected = makeRequestAsRejectedFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
+  config.pagopa.ioServices.configurationId,
   eventAnalyticsClient
 );
 
@@ -132,6 +133,7 @@ export const MarkAsSigned = makeRequestAsSignedFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
+  config.pagopa.ioServices.configurationId,
   eventHubBillingClient,
   eventAnalyticsClient
 );
@@ -150,6 +152,7 @@ export const SendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
+  config.pagopa.ioServices.configurationId,
   eventAnalyticsClient
 );
 
