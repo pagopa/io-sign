@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 0.16.5
+
+### Patch Changes
+
+- 2bbef78: Add configuration_id to submitMessageforUserWithFiscalCodeInBody
+- Updated dependencies [2bbef78]
+  - @io-sign/io-sign@1.0.6
+
 ## 0.16.4
 
 ### Patch Changes
