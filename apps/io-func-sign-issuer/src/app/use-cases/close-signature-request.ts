@@ -19,5 +19,5 @@ import {
 export const closeSignatureRequest = (request: SignatureRequest) =>
   pipe(
     getSignatureRequest(request.id, request.issuerId),
-    RTE.chain(upsertSignatureRequest),
+    RTE.chain(upsertSignatureRequest)
   );
