@@ -21,9 +21,9 @@ export const getBackOfficeConfigFromEnvironment: RE.ReaderEither<
     basePath: pipe(
       readFromEnvironment("BackOfficeApiBasePath"),
       RE.orElse(() =>
-        RE.right("https://api.io.pagopa.it/api/v1/sign/backoffice")
-      )
+        RE.right("https://api.io.pagopa.it/api/v1/sign/backoffice"),
+      ),
     ),
     apiKey: readFromEnvironment("BackOfficeApiKey"),
-  })
+  }),
 );

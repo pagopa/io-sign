@@ -83,5 +83,5 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     },
     slack: config.slack,
     backOffice: config.backOffice,
-  }))
+  })),
 );

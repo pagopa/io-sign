@@ -15,7 +15,7 @@ describe("requireSignerId", () => {
     expect(requireSignerId(req)).toEqual(
       expect.objectContaining({
         right: signerId,
-      })
+      }),
     );
   });
   it("fails with an Http Bad Request error when header is not found", () => {
@@ -26,7 +26,7 @@ describe("requireSignerId", () => {
           name: "HttpError",
           status: 400,
         }),
-      })
+      }),
     );
   });
 });

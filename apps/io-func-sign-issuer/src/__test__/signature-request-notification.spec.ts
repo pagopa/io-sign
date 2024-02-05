@@ -61,24 +61,24 @@ const mockSubmitNotification: SubmitNotificationForUser =
     pipe(
       { ioMessageId: "0000" },
       validate(Notification, "Invalid notification message"),
-      TE.fromEither
+      TE.fromEither,
     );
 
 const mockGetFiscalCodeBySignerId: GetFiscalCodeBySignerId = (
-  _id: Signer["id"]
+  _id: Signer["id"],
 ) =>
   TE.right(
     pipe(
       "AAABBB00A00B000A",
       validate(FiscalCode, "Fiscal code is not valid"),
-      O.fromEither
-    )
+      O.fromEither,
+    ),
   );
 
 const mockGetDossier: GetDossier =
   (_dossierId: Dossier["id"]) => (_issuerId: Issuer["id"]) =>
     TE.right(
-      pipe(dossier, validate(Dossier, "Dossier is not valid"), O.fromEither)
+      pipe(dossier, validate(Dossier, "Dossier is not valid"), O.fromEither),
     );
 
 const mockMakeMessageContent: MakeMessageContent =
@@ -96,7 +96,7 @@ describe("SignatureRequestNotification", () => {
         mockSubmitNotification,
         mockGetFiscalCodeBySignerId,
         mockGetDossier,
-        mockMakeMessageContent
+        mockMakeMessageContent,
       );
 
       const makeRequest = makeSendSignatureRequest(request)();
@@ -107,9 +107,9 @@ describe("SignatureRequestNotification", () => {
             data,
             E.fold(
               (error) => error.message,
-              (message) => message.ioMessageId
-            )
-          )
+              (message) => message.ioMessageId,
+            ),
+          ),
         ).toBe("0000");
       });
     });
@@ -122,19 +122,19 @@ describe("SignatureRequestNotification", () => {
           pipe(
             {},
             validate(Notification, "Invalid notification message"),
-            TE.fromEither
+            TE.fromEither,
           );
 
       const makeSendSignatureRequest = makeSendSignatureRequestNotification(
         mockInvalidSubmitNotification,
         mockGetFiscalCodeBySignerId,
         mockGetDossier,
-        mockMakeMessageContent
+        mockMakeMessageContent,
       );
 
       const makeRequest = makeSendSignatureRequest(request)();
       return makeRequest.then((data) =>
-        expect(pipe(data, E.isRight)).toBe(false)
+        expect(pipe(data, E.isRight)).toBe(false),
       );
     });
 
@@ -142,26 +142,26 @@ describe("SignatureRequestNotification", () => {
       const request = newSignatureRequest(dossier, newSigner(), issuer);
 
       const mockGetInvalidFiscalCodeBySignerId: GetFiscalCodeBySignerId = (
-        _id: Signer["id"]
+        _id: Signer["id"],
       ) =>
         TE.right(
           pipe(
             "AA",
             validate(FiscalCode, "Fiscal code is not valid"),
-            O.fromEither
-          )
+            O.fromEither,
+          ),
         );
 
       const makeSendSignatureRequest = makeSendSignatureRequestNotification(
         mockSubmitNotification,
         mockGetInvalidFiscalCodeBySignerId,
         mockGetDossier,
-        mockMakeMessageContent
+        mockMakeMessageContent,
       );
 
       const makeRequest = makeSendSignatureRequest(request)();
       return makeRequest.then((data) =>
-        expect(pipe(data, E.isRight)).toBe(false)
+        expect(pipe(data, E.isRight)).toBe(false),
       );
     });
   });

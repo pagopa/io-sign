@@ -80,7 +80,7 @@ describe("GetSignatureRequestsHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      })
+      }),
     );
   });
   it("should return a 200 HTTP response with empty array when there are not signature requests", () => {
@@ -107,7 +107,7 @@ describe("GetSignatureRequestsHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      })
+      }),
     );
   });
   it("should return a 400 HTTP response without signer header", () => {
@@ -126,7 +126,7 @@ describe("GetSignatureRequestsHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
   it("should return a 422 HTTP response on invalid signer", () => {
@@ -150,7 +150,7 @@ describe("GetSignatureRequestsHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 });

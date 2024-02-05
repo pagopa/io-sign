@@ -26,7 +26,7 @@ export const ClauseToApiModel: E.Encoder<
 };
 
 const toApiModelEnum = (
-  type: SignatureField["clause"]["type"]
+  type: SignatureField["clause"]["type"],
 ): ClauseTypeEnum => {
   switch (type) {
     case "OPTIONAL":
@@ -46,7 +46,7 @@ export const SignatureFieldAttributesToApiModel: E.Encoder<
 };
 
 export const SignatureFieldToBeCreatedAttributesToApiModel = (
-  pageHeight: NonNegativeNumber
+  pageHeight: NonNegativeNumber,
 ): E.Encoder<
   SignatureFieldToBeCreatedAttrs,
   SignatureFieldToBeCreatedAttributes
@@ -57,6 +57,6 @@ export const SignatureFieldToBeCreatedAttributesToApiModel = (
       bottom_left,
       top_right,
       page,
-    })
+    }),
   ),
 });

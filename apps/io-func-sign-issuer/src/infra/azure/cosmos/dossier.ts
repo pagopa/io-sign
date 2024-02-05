@@ -49,7 +49,7 @@ export class CosmosDbDossierRepository implements DossierRepository {
   getById(id: Dossier["id"], issuerId: Dossier["issuerId"]) {
     return pipe(
       this.#model.find([id, issuerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
   }
 }
@@ -63,7 +63,7 @@ export const makeGetDossier =
     pipe(
       new DossierModel(db),
       (model) => model.find([dossierId, issuerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
 export const makeInsertDossier =
   (db: cosmos.Database): InsertDossier =>
@@ -71,6 +71,6 @@ export const makeInsertDossier =
     pipe(
       new DossierModel(db),
       (model) => model.create(dossier),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
 // END

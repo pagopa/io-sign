@@ -55,8 +55,10 @@ export class ScanQrCodeDialogElement extends LitElement {
       <div class="content">
         <h1>${msg(str`Scan the QR code`)}</h1>
         <p>
-          ${msg(html`To view and sign the documents with IO, <br />
-            scan this code with your device`)}
+          ${msg(
+            html`To view and sign the documents with IO, <br />
+              scan this code with your device`,
+          )}
         </p>
         <div>
           <img class="qr-code" src="${this.qrCodeUrl}" />

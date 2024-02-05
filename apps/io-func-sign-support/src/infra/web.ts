@@ -16,7 +16,7 @@ import { InfoFunction } from "./azure/functions/info";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity)
+  E.getOrElseW(identity),
 );
 
 if (configOrError instanceof Error) {
@@ -32,14 +32,14 @@ const userDb = cosmosClient.database(config.azure.cosmos.userDbName);
 
 const tokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
+  config.pagopa.tokenizer.apiKey,
 );
 
 const issuerRepository = new CosmosDbIssuerRepository(issuerDb);
 
 const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
   userDb,
-  issuerDb
+  issuerDb,
 );
 
 const signerRepository = new PdvTokenizerSignerRepository(tokenizerClient);

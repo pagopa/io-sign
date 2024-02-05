@@ -19,15 +19,15 @@ export const newSigner = () => ({
 });
 
 export type GetSignerByFiscalCode = (
-  fiscalCode: FiscalCode
+  fiscalCode: FiscalCode,
 ) => TE.TaskEither<Error, O.Option<Signer>>;
 
 export type GetFiscalCodeBySignerId = (
-  id: Signer["id"]
+  id: Signer["id"],
 ) => TE.TaskEither<Error, O.Option<FiscalCode>>;
 
 export type GetSigner = (
-  id: Signer["id"]
+  id: Signer["id"],
 ) => TE.TaskEither<Error, O.Option<Signer>>;
 
 export const signerNotFoundError = new EntityNotFoundError("Signer");

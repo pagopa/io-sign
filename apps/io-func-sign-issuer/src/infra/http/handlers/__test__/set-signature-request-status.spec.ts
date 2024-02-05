@@ -87,7 +87,8 @@ describe("SetSignatureRequestHandler", () => {
       get: (id, issuerId) => {
         const signatureRequest = mocks.signatureRequests.find(
           (signatureRequest) =>
-            signatureRequest.id === id && signatureRequest.issuerId === issuerId
+            signatureRequest.id === id &&
+            signatureRequest.issuerId === issuerId,
         );
         return signatureRequest
           ? TE.right(O.some(signatureRequest))
@@ -135,7 +136,7 @@ describe("SetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -168,7 +169,7 @@ describe("SetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -201,7 +202,7 @@ describe("SetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -213,7 +214,7 @@ describe("SetSignatureRequestHandler", () => {
       },
       path: {
         signatureRequestId: mocks.signatureRequests.find(
-          (signatureRequest) => signatureRequest.status === "DRAFT"
+          (signatureRequest) => signatureRequest.status === "DRAFT",
         )?.id!,
       },
       body: "READY",
@@ -236,7 +237,7 @@ describe("SetSignatureRequestHandler", () => {
         right: expect.objectContaining({
           statusCode: 204,
         }),
-      })
+      }),
     );
   });
 
@@ -248,7 +249,8 @@ describe("SetSignatureRequestHandler", () => {
       },
       path: {
         signatureRequestId: mocks.signatureRequests.find(
-          (signatureRequest) => signatureRequest.status === "WAIT_FOR_SIGNATURE"
+          (signatureRequest) =>
+            signatureRequest.status === "WAIT_FOR_SIGNATURE",
         )?.id!,
       },
       body: "CANCELLED",
@@ -270,7 +272,7 @@ describe("SetSignatureRequestHandler", () => {
         right: expect.objectContaining({
           statusCode: 204,
         }),
-      })
+      }),
     );
   });
 });

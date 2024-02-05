@@ -19,7 +19,7 @@ export const getLollipopConfigFromEnvironment: RE.ReaderEither<
 > = sequenceS(RE.Apply)({
   apiBasePath: pipe(
     readFromEnvironment("LollipopApiBasePath"),
-    RE.orElse(() => RE.right("https://api.io.pagopa.it"))
+    RE.orElse(() => RE.right("https://api.io.pagopa.it")),
   ),
   apiKey: readFromEnvironment("LollipopApiKey"),
 });

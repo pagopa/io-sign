@@ -43,7 +43,7 @@ const signatureRequest: SignatureRequestSigned = {
 };
 
 const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-  undefined as unknown as EventHubProducerClient
+  undefined as unknown as EventHubProducerClient,
 );
 
 describe("EventHubs [infra]", () => {
@@ -51,7 +51,7 @@ describe("EventHubs [infra]", () => {
     it("should always return a right TaskEither", async () => {
       const result = pipe(
         signatureRequest,
-        createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED)
+        createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED),
       );
       await expect(result()).resolves.toStrictEqual(E.right(signatureRequest));
     });

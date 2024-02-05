@@ -50,7 +50,7 @@ export const getNamirialConfigFromEnvironment: RE.ReaderEither<
       password: config.testPassword,
     },
     requestTimeoutMs: config.requestTimeoutMs,
-  }))
+  })),
 );
 
 export const getNamirialCredentialsFromIssuerEnvironment =

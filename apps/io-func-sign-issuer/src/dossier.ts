@@ -36,7 +36,7 @@ export const newDossier = (
   issuer: Issuer,
   title: Dossier["title"],
   documentsMetadata: NonEmptyArray<DocumentMetadata>,
-  supportEmail?: Dossier["supportEmail"]
+  supportEmail?: Dossier["supportEmail"],
 ): Dossier => ({
   id: newId(),
   title,
@@ -51,7 +51,7 @@ export type DossierRepository = {
   insert: (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
   getById: (
     id: Dossier["id"],
-    issuerId: Dossier["issuerId"]
+    issuerId: Dossier["issuerId"],
   ) => TE.TaskEither<Error, O.Option<Dossier>>;
 };
 
@@ -67,22 +67,22 @@ export const insertDossier =
 export const getDossierById =
   (
     id: Dossier["id"],
-    issuerId: Dossier["issuerId"]
+    issuerId: Dossier["issuerId"],
   ): RTE.ReaderTaskEither<DossierEnvironment, Error, Dossier> =>
   ({ dossierRepository: repo }) =>
     pipe(
       repo.getById(id, issuerId),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("The specified dossier was not found")
-        )
-      )
+          () => new EntityNotFoundError("The specified dossier was not found"),
+        ),
+      ),
     );
 
 // LEGACY TYPES
 // This block can be removed when the entire app has been ported to handler-kit@1
 export type InsertDossier = (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
 export type GetDossier = (
-  dossierId: Dossier["id"]
+  dossierId: Dossier["id"],
 ) => (issuerId: Issuer["id"]) => TE.TaskEither<Error, O.Option<Dossier>>;
 // END

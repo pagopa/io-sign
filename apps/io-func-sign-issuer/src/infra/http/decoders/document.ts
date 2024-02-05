@@ -21,7 +21,7 @@ import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
 
 const toClauseType = (
-  type: ClauseTypeEnum
+  type: ClauseTypeEnum,
 ): SignatureField["clause"]["type"] => {
   switch (type) {
     case ClauseTypeEnum.OPTIONAL:
@@ -47,17 +47,17 @@ export const SignatureFieldFromApiModel = new t.Type<
         E.map((title) => ({
           title,
           type: toClauseType(type),
-        }))
+        })),
       ),
       attributes:
         "unique_name" in attrs
           ? pipe(
               NonEmptyString.decode(attrs.unique_name),
-              E.map((uniqueName) => ({ uniqueName }))
+              E.map((uniqueName) => ({ uniqueName })),
             )
           : E.right(attrs),
     }),
-  SignatureFieldToApiModel.encode
+  SignatureFieldToApiModel.encode,
 );
 
 export const DocumentMetadataFromApiModel = new t.Type<
@@ -76,11 +76,11 @@ export const DocumentMetadataFromApiModel = new t.Type<
         title,
         signatureFields,
         pdfDocumentMetadata: { pages: [], formFields: [] },
-      }))
+      })),
     ),
-  DocumentMetadataToApiModel.encode
+  DocumentMetadataToApiModel.encode,
 );
 
 export const DocumentsMetadataFromApiModel = tx.nonEmptyArray(
-  DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel)
+  DocumentMetadataApiModel.pipe(DocumentMetadataFromApiModel),
 );

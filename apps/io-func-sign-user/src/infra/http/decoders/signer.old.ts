@@ -14,13 +14,13 @@ const requireSignerId = (req: HttpRequest) =>
     req,
     header("x-iosign-signer-id"),
     E.fromOption(
-      () => new HttpBadRequestError("Missing x-iosign-signer-id in header")
+      () => new HttpBadRequestError("Missing x-iosign-signer-id in header"),
     ),
-    E.chainW(validate(Signer.props.id, "Invalid signer id"))
+    E.chainW(validate(Signer.props.id, "Invalid signer id")),
   );
 
 export const requireSigner = flow(
   requireSignerId,
   E.map((id) => ({ id })),
-  E.chainW(validate(Signer, "Invalid signer."))
+  E.chainW(validate(Signer, "Invalid signer.")),
 );

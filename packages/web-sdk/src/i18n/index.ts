@@ -23,7 +23,7 @@ export const setLocaleFromUserSettings = async (): Promise<void> => {
     setLocale(locale);
   } catch (e) {
     console.warn(
-      `Missing locale data for: "${navigator.language}". Using default locale: "${sourceLocale}" as fallback.`
+      `Missing locale data for: "${navigator.language}". Using default locale: "${sourceLocale}" as fallback.`,
     );
   }
 };

@@ -14,5 +14,5 @@ export const getDocumentContent = (document: DocumentReady) =>
     split("/"),
     last,
     getBlobClient,
-    RTE.chainTaskEitherK(downloadContentFromBlob)
+    RTE.chainTaskEitherK(downloadContentFromBlob),
   );

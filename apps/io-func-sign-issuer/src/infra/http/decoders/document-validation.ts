@@ -24,7 +24,7 @@ const BufferC = new t.Type<Buffer, Buffer>(
   "Buffer",
   Buffer.isBuffer,
   (i, ctx) => (Buffer.isBuffer(i) ? t.success(i) : t.failure(i, ctx)),
-  t.identity
+  t.identity,
 );
 
 const PdfFileC = t.type({
@@ -54,16 +54,16 @@ const parseSignatureFieldsFromBuffer = (b: Buffer) =>
     E.mapLeft(
       () =>
         new H.HttpBadRequestError(
-          "unable to get the signature fields: the given file is not a valid json file"
-        )
+          "unable to get the signature fields: the given file is not a valid json file",
+        ),
     ),
     E.chainW(
-      H.parse(t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel)))
-    )
+      H.parse(t.array(SignatureFieldApiModel.pipe(SignatureFieldFromApiModel))),
+    ),
   );
 
 const requireSignatureFields = (
-  files: Array<PdfFile | JsonFile>
+  files: Array<PdfFile | JsonFile>,
 ): E.Either<Error, DocumentMetadata["signatureFields"]> =>
   pipe(
     files,
@@ -71,9 +71,9 @@ const requireSignatureFields = (
     A.head,
     O.fold(
       () => E.right([]),
-      (file) => parseSignatureFieldsFromBuffer(file.data)
+      (file) => parseSignatureFieldsFromBuffer(file.data),
     ),
-    E.chainW(H.parse(DocumentMetadata.props.signatureFields))
+    E.chainW(H.parse(DocumentMetadata.props.signatureFields)),
   );
 
 const requirePdfDocumentContent = (files: Array<PdfFile | JsonFile>) =>
@@ -82,14 +82,14 @@ const requirePdfDocumentContent = (files: Array<PdfFile | JsonFile>) =>
     A.filter((file): file is PdfFile => file.type === "application/pdf"),
     A.head,
     E.fromOption(
-      () => new H.HttpBadRequestError("missing the pdf document to validate")
+      () => new H.HttpBadRequestError("missing the pdf document to validate"),
     ),
     E.map((file) => file.data),
-    TE.fromEither
+    TE.fromEither,
   );
 
 export const requireFilesForValidation = (
-  req: H.HttpRequest
+  req: H.HttpRequest,
 ): TE.TaskEither<
   Error,
   {
@@ -104,8 +104,8 @@ export const requireFilesForValidation = (
     E.mapLeft(
       () =>
         new H.HttpBadRequestError(
-          "missing files: the pdf document to be validated and a json document containing the signature fields"
-        )
+          "missing files: the pdf document to be validated and a json document containing the signature fields",
+        ),
     ),
     TE.fromEither,
     TE.chainW((files) =>
@@ -114,7 +114,7 @@ export const requireFilesForValidation = (
           signatureFields: TE.fromEither(requireSignatureFields(files)),
           documentContent,
           documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata)),
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );

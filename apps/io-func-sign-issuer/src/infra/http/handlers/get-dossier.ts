@@ -19,6 +19,6 @@ export const GetDossierHandler = H.of((req: H.HttpRequest) =>
     }),
     chainW(({ id, issuer }) => getDossierById(id, issuer.id)),
     map(flow(DossierToApiModel.encode, H.successJson)),
-    orElseW(logErrorAndReturnResponse)
-  )
+    orElseW(logErrorAndReturnResponse),
+  ),
 );

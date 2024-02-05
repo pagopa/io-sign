@@ -17,23 +17,23 @@ import { makeMarkRequestAsWaitForSignature } from "../../../app/use-cases/mark-r
 const makeRequestAsWaitForSignatureHandler = (db: Database) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestToBeSigned),
-    TE.fromEither
+    TE.fromEither,
   );
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const markAsWaitForSignature = makeMarkRequestAsWaitForSignature(
     getSignatureRequest,
-    upsertSignatureRequest
+    upsertSignatureRequest,
   );
   return createHandler(
     getSignatureRequestFromQueue,
     markAsWaitForSignature,
     identity,
-    () => undefined
+    () => undefined,
   );
 };
 
 export const makeRequestAsWaitForSignatureFunction = flow(
   makeRequestAsWaitForSignatureHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

@@ -14,7 +14,7 @@ const BOUNDARY = "--TESTBOUNDARY";
 type Part = [
   "text/plain" | "application/pdf" | "application/json",
   string,
-  Buffer
+  Buffer,
 ];
 
 const multipartRequest = (...parts: Part[]) => ({
@@ -26,9 +26,9 @@ const multipartRequest = (...parts: Part[]) => ({
     parts
       .map(
         ([mime, filename, data]) =>
-          `--${BOUNDARY}\r\nContent-Disposition: form-data; name="uploads[]"; filename="${filename}";\r\nContent-Type: ${mime}\r\n\r\n${data.toString()}`
+          `--${BOUNDARY}\r\nContent-Disposition: form-data; name="uploads[]"; filename="${filename}";\r\nContent-Type: ${mime}\r\n\r\n${data.toString()}`,
       )
-      .join("\r\n") + `\r\n--${BOUNDARY}--`
+      .join("\r\n") + `\r\n--${BOUNDARY}--`,
   ),
 });
 
@@ -45,7 +45,7 @@ describe("requireFilesForValidation", () => {
       ]),
       multipartRequest(
         ["application/pdf", "document.pdf", samplePdf],
-        ["application/json", "fields.json", Buffer.from(JSON.stringify({}))]
+        ["application/json", "fields.json", Buffer.from(JSON.stringify({}))],
       ),
       multipartRequest([
         "application/json",
@@ -54,7 +54,7 @@ describe("requireFilesForValidation", () => {
       ]),
     ];
     const results = await Promise.all(
-      requests.map((req) => requireFilesForValidation(req)())
+      requests.map((req) => requireFilesForValidation(req)()),
     );
     expect(results.every((result) => E.isLeft(result))).toBe(true);
   });
@@ -83,7 +83,7 @@ describe("requireFilesForValidation", () => {
               unique_name: "Signature2",
             },
           },
-        ])
+        ]),
       ),
     ] as Part;
     const requests = [
@@ -92,7 +92,7 @@ describe("requireFilesForValidation", () => {
       multipartRequest(validPdfFile),
     ];
     const results = await Promise.all(
-      requests.map((req) => requireFilesForValidation(req)())
+      requests.map((req) => requireFilesForValidation(req)()),
     );
     expect(results.every((result) => E.isRight(result))).toBe(true);
   });
@@ -103,7 +103,7 @@ describe("requireFilesForValidation", () => {
         "application/json",
         "fields.json",
         Buffer.from(JSON.stringify({ fields: "invalid" })),
-      ]
+      ],
     );
     const result = await requireFilesForValidation(req)();
     expect(E.isLeft(result)).toBe(true);
@@ -111,7 +111,7 @@ describe("requireFilesForValidation", () => {
   test("http request with an invalid pdf document (invalid = not a pdf)", async () => {
     const req = multipartRequest(
       ["application/pdf", "document.pdf", Buffer.from(`i'm not a pdf!`)],
-      ["application/json", "fields.json", Buffer.from(JSON.stringify([]))]
+      ["application/json", "fields.json", Buffer.from(JSON.stringify([]))],
     );
     const result = await requireFilesForValidation(req)();
     expect(E.isLeft(result)).toBe(true);

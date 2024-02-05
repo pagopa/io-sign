@@ -47,13 +47,13 @@ export const makeGetBase64SamlAssertion =
             "x-pagopa-lollipop-auth":
               `Bearer ${jwtAuthorization}` as LollipopAuthBearer,
           }),
-        E.toError
+        E.toError,
       ),
       TE.chainEitherK(
         flow(
           E.mapLeft(
             () =>
-              new Error("Unable to retrieve the assertion from lollipop api.")
+              new Error("Unable to retrieve the assertion from lollipop api."),
           ),
           E.chainW((response) => {
             switch (response.status) {
@@ -61,23 +61,23 @@ export const makeGetBase64SamlAssertion =
                 return E.right(response.value);
               case 404:
                 return E.left(
-                  new HttpNotFoundError(`Lollipop user assertion not found.`)
+                  new HttpNotFoundError(`Lollipop user assertion not found.`),
                 );
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `The attempt to get lollipop user assertion failed.`
-                  )
+                    `The attempt to get lollipop user assertion failed.`,
+                  ),
                 );
             }
-          })
-        )
+          }),
+        ),
       ),
       TE.chain((assertion) =>
         isAssertionSaml(assertionType)(assertion)
           ? TE.of(assertion.response_xml)
-          : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`))
+          : TE.left(new HttpBadRequestError(`OIDC Claims not supported yet.`)),
       ),
       TE.chainEitherK(stringToBase64Encode),
-      TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid"))
+      TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid")),
     );

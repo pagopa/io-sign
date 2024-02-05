@@ -24,7 +24,7 @@ export const makeCreateFilledDocumentUrl =
   (
     getFilledDocumentUrl: GetFilledDocumentUrl,
     notifyDocumentToFill: NotifyDocumentToFillEvent,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId
+    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
   ) =>
   ({
     signer,
@@ -41,8 +41,8 @@ export const makeCreateFilledDocumentUrl =
       TE.chain(
         TE.fromOption(
           () =>
-            new EntityNotFoundError("Fiscal code not found for this signer!")
-        )
+            new EntityNotFoundError("Fiscal code not found for this signer!"),
+        ),
       ),
       TE.chain(() => getFilledDocumentUrl(filledDocumentFileName)),
       TE.chainFirst(() =>
@@ -57,11 +57,11 @@ export const makeCreateFilledDocumentUrl =
           },
           validate(
             FillDocumentPayload,
-            "Invalid document to fill notification payload"
+            "Invalid document to fill notification payload",
           ),
           TE.fromEither,
-          TE.chain(notifyDocumentToFill)
-        )
+          TE.chain(notifyDocumentToFill),
+        ),
       ),
       TE.chainEitherKW((callbackDocumentUrl) =>
         pipe(
@@ -69,8 +69,8 @@ export const makeCreateFilledDocumentUrl =
           validate(FilledDocumentUrl, "Invalid filled document url"),
           E.map((url) => ({
             url,
-          }))
-        )
-      )
+          })),
+        ),
+      ),
     );
   };

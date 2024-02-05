@@ -32,19 +32,19 @@ import { createNewIssuerMessage } from "../../slack/issuer-message";
 const makeCreateIssuerHandler = (
   db: CosmosDatabase,
   selfCareConfig: SelfCareConfig,
-  slackConfig: SlackConfig
+  slackConfig: SlackConfig,
 ) => {
   const getContractsFromEventHub = flow(
     azure.fromEventHubMessage(GenericContracts, "contracts"),
-    TE.fromEither
+    TE.fromEither,
   );
 
   const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
-    selfCareConfig
+    selfCareConfig,
   );
 
   const postSlackMessage = makePostSlackMessage(makeFetchWithTimeout())(
-    slackConfig
+    slackConfig,
   );
 
   const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
@@ -55,7 +55,7 @@ const makeCreateIssuerHandler = (
       newIssuer,
       createNewIssuerMessage,
       postSlackMessage,
-      TE.map(() => newIssuer)
+      TE.map(() => newIssuer),
     );
 
   const createIssuerFromContract = (contract: GenericContract) =>
@@ -70,19 +70,19 @@ const makeCreateIssuerHandler = (
       // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
       TE.foldW(
         () => TE.of(undefined),
-        flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage))
-      )
+        flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage)),
+      ),
     );
 
   return createHandler(
     getContractsFromEventHub,
     flow(RA.map(createIssuerFromContract), RA.sequence(TE.ApplicativePar)),
     identity,
-    () => undefined
+    () => undefined,
   );
 };
 
 export const makeCreateIssuerFunction = flow(
   makeCreateIssuerHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

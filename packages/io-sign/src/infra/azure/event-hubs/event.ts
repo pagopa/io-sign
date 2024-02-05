@@ -38,12 +38,12 @@ export const makeCreateAndSendAnalyticsEvent =
       | SignatureRequestToBeSigned
       | SignatureRequestWaitForQtsp
       | SignatureRequestRejected
-      | SignatureRequestCancelled
+      | SignatureRequestCancelled,
   ): TE.TaskEither<Error, typeof signatureRequest> =>
     pipe(
       {
         eventAnalyticsClient,
         logger: ConsoleLogger,
       },
-      pipe(signatureRequest, createAndSendAnalyticsEvent(eventName))
+      pipe(signatureRequest, createAndSendAnalyticsEvent(eventName)),
     );

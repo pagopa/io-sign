@@ -54,7 +54,7 @@ class SignatureRequestModel extends CosmosdbModel<
     super(
       db.container("signature-requests"),
       NewSignatureRequest,
-      RetrievedSignatureRequest
+      RetrievedSignatureRequest,
     );
   }
 }
@@ -66,7 +66,7 @@ export const makeGetSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.find([id, signerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
 
 export const makeInsertSignatureRequest =
@@ -75,7 +75,7 @@ export const makeInsertSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.create(signatureRequest),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
 
 export const makeUpsertSignatureRequest =
@@ -84,7 +84,7 @@ export const makeUpsertSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.upsert(signatureRequest),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
 
 export class CosmosDbSignatureRequestRepository
@@ -110,25 +110,25 @@ export class CosmosDbSignatureRequestRepository
                   },
                 ],
                 query: `SELECT * FROM m WHERE m.signerId = @signerId`,
-              })
-            )
+              }),
+            ),
           ),
-        toCosmosErrorResponse
+        toCosmosErrorResponse,
       ),
       TE.mapLeft(toCosmosDatabaseError),
       TE.chainEitherKW(
         flow(
           RA.sequence(E.Applicative),
-          E.mapLeft((errors) => new H.ValidationError(failure(errors)))
-        )
-      )
+          E.mapLeft((errors) => new H.ValidationError(failure(errors))),
+        ),
+      ),
     );
   }
 
   get(id: SignatureRequest["id"], signerId: SignatureRequest["signerId"]) {
     return pipe(
       this.#model.find([id, signerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
   }
 

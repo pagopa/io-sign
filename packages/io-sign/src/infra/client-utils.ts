@@ -21,8 +21,8 @@ export const responseToJson =
         flow(
           schema.decode,
           E.mapLeft(
-            (errs) => new Error(`${message}\n [${readableReport(errs)}]`)
-          )
-        )
-      )
+            (errs) => new Error(`${message}\n [${readableReport(errs)}]`),
+          ),
+        ),
+      ),
     );

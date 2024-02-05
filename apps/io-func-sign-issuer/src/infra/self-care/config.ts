@@ -29,12 +29,12 @@ export const getSelfCareConfigFromEnvironment: RE.ReaderEither<
 > = pipe(
   sequenceS(RE.Apply)({
     eventHubConnectionString: readFromEnvironment(
-      "SelfCareEventHubConnectionString"
+      "SelfCareEventHubConnectionString",
     ),
     eventHubContractsName: RE.right("sc-contracts"),
     apiBasePath: pipe(
       readFromEnvironment("SelfCareApiBasePath"),
-      RE.orElse(() => RE.right("https://api.selfcare.pagopa.it/"))
+      RE.orElse(() => RE.right("https://api.selfcare.pagopa.it/")),
     ),
     apiKey: readFromEnvironment("SelfCareApiKey"),
   }),
@@ -53,6 +53,6 @@ export const getSelfCareConfigFromEnvironment: RE.ReaderEither<
         basePath: apiBasePath,
         apiKey,
       },
-    })
-  )
+    }),
+  ),
 );

@@ -60,23 +60,23 @@ export const GenericContracts = t.array(GenericContract);
 export type GenericContracts = t.TypeOf<typeof GenericContracts>;
 
 export const validateActiveContract = (
-  contract: GenericContract
+  contract: GenericContract,
 ): E.Either<Error, GenericContract> =>
   pipe(
     contract.state === "ACTIVE"
       ? E.right(contract)
-      : E.left(new Error("This contract is not active"))
+      : E.left(new Error("This contract is not active")),
   );
 
 export const addSupportMailToIoSignContract =
   (getInstitutionById: GetInstitutionById) =>
   (
-    contract: IoSignContract
+    contract: IoSignContract,
   ): TE.TaskEither<Error, IoSignContractWithSupportMail> =>
     pipe(
       getInstitutionById(contract.internalIstitutionID),
       TE.map((institution) => ({
         ...contract,
         supportEmail: institution.supportEmail,
-      }))
+      })),
     );

@@ -20,7 +20,7 @@ export const QtspClauseFromApiModel = new t.Type<
   "QtspClauseFromApiModel",
   QtspClause.is,
   ({ text }, _ctx) => E.right({ text }),
-  QtspClauseToApiModel.encode
+  QtspClauseToApiModel.encode,
 );
 
 export const requireQtspClauses = flow(
@@ -35,9 +35,9 @@ export const requireQtspClauses = flow(
         E.chain(
           validate(
             tx.nonEmptyArray(QtspClause),
-            "Invalid qtsp accepted clauses"
-          )
-        )
+            "Invalid qtsp accepted clauses",
+          ),
+        ),
       ),
       qtspClauses,
     }),
@@ -45,5 +45,5 @@ export const requireQtspClauses = flow(
     acceptedClauses,
     filledDocumentUrl: qtspClauses.filled_document_url,
     nonce: qtspClauses.nonce,
-  }))
+  })),
 );

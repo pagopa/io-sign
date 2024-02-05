@@ -26,13 +26,13 @@ export const makeGetSignedDocumentContent =
           TE.fromOption(
             () =>
               new EntityNotFoundError(
-                "The specified documentID does not exists."
-              )
+                "The specified documentID does not exists.",
+              ),
           ),
           TE.chainEitherKW(
-            validate(DocumentReady, "The document must be in READY status.")
+            validate(DocumentReady, "The document must be in READY status."),
           ),
-          TE.chain(getDocumentContent)
-        )
-      )
+          TE.chain(getDocumentContent),
+        ),
+      ),
     );

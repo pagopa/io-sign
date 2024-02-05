@@ -17,7 +17,7 @@ export const requireFiscalCode = (req: HttpRequest) =>
      */
     header("fiscal_code"),
     E.fromOption(
-      () => new HttpBadRequestError("Missing fiscal_code in header")
+      () => new HttpBadRequestError("Missing fiscal_code in header"),
     ),
-    E.chainW(validate(FiscalCode, "Invalid fiscal code"))
+    E.chainW(validate(FiscalCode, "Invalid fiscal code")),
   );

@@ -62,8 +62,8 @@ describe("signatureRequest status change", () => {
       pipe(
         markAsWaitForQtsp(signatureRequest),
         E.map((marked) => expect(marked.status).toBe("WAIT_FOR_QTSP")),
-        E.isRight
-      )
+        E.isRight,
+      ),
     ).toBe(true);
   });
 
@@ -74,8 +74,8 @@ describe("signatureRequest status change", () => {
         markAsRejected("Rejected reason")(signatureRequest),
         E.chain(markAsWaitForQtsp),
         E.map((marked) => expect(marked.status).toBe("WAIT_FOR_QTSP")),
-        E.isRight
-      )
+        E.isRight,
+      ),
     ).toBe(true);
   });
 
@@ -88,8 +88,8 @@ describe("signatureRequest status change", () => {
       pipe(
         markAsSigned(waitSignatureRequest),
         E.map((marked) => expect(marked.status).toBe("SIGNED")),
-        E.isRight
-      )
+        E.isRight,
+      ),
     ).toBe(true);
   });
 
@@ -102,8 +102,8 @@ describe("signatureRequest status change", () => {
       pipe(
         markAsSigned(waitSignatureRequest),
         E.chain(markAsWaitForQtsp),
-        E.isRight
-      )
+        E.isRight,
+      ),
     ).toBe(false);
   });
 });
@@ -115,7 +115,7 @@ describe("signedNoMoreThan90DaysAgo", () => {
       signedAt: addDays(signatureRequestSigned.signedAt, -89),
     };
     expect(
-      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
+      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight),
     ).toBe(true);
   });
 
@@ -125,7 +125,7 @@ describe("signedNoMoreThan90DaysAgo", () => {
       signedAt: addDays(signatureRequestSigned.signedAt, -90),
     };
     expect(
-      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight)
+      pipe(oldSignatureRequest, signedNoMoreThan90DaysAgo, E.isRight),
     ).toBe(false);
   });
 });

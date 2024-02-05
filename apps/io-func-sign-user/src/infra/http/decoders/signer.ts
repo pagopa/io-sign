@@ -11,18 +11,18 @@ export const requireSignerId = (req: H.HttpRequest) =>
     req.headers,
     lookup("x-iosign-signer-id"),
     E.fromOption(
-      () => new H.HttpBadRequestError("Missing x-iosign-signer-id in header")
+      () => new H.HttpBadRequestError("Missing x-iosign-signer-id in header"),
     ),
     E.chainW(
       H.parse(
         Signer.props.id,
-        "The content of x-iosign-signer-id is not a valid id"
-      )
-    )
+        "The content of x-iosign-signer-id is not a valid id",
+      ),
+    ),
   );
 
 export const requireSigner = flow(
   requireSignerId,
   E.map((id) => ({ id })),
-  E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer"))
+  E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer")),
 );

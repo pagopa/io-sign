@@ -35,5 +35,5 @@ export type NotificationMessage =
   | NotificationContentWithAttachments;
 
 export type SubmitNotificationForUser = (
-  fiscalCode: FiscalCode
+  fiscalCode: FiscalCode,
 ) => (message: NotificationMessage) => TE.TaskEither<Error, Notification>;

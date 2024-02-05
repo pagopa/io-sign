@@ -30,11 +30,11 @@ const grantReadAccessToDocuments =
       request.documents,
       A.map(toDocumentWithSasUrl("r", 5)),
       A.sequence(RTE.ApplicativeSeq),
-      RTE.map((documents) => ({ ...request, documents }))
+      RTE.map((documents) => ({ ...request, documents })),
     )(
       request.status === "SIGNED"
         ? r.signedContainerClient
-        : r.validatedContainerClient
+        : r.validatedContainerClient,
     );
 
 export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
@@ -44,16 +44,16 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       signatureRequestId: requireSignatureRequestId(req),
     }),
     RTE.chainW(({ signerId, signatureRequestId }) =>
-      getSignatureRequest(signatureRequestId, signerId.id)
+      getSignatureRequest(signatureRequestId, signerId.id),
     ),
     RTE.chainW(grantReadAccessToDocuments),
     RTE.map((request) =>
       pipe(
         SignatureRequestToApiModel.encode(request),
         H.successJson,
-        H.withHeader("x-io-sign-environment", getEnvironment(request))
-      )
+        H.withHeader("x-io-sign-environment", getEnvironment(request)),
+      ),
     ),
-    RTE.orElseW(logErrorAndReturnResponse)
-  )
+    RTE.orElseW(logErrorAndReturnResponse),
+  ),
 );

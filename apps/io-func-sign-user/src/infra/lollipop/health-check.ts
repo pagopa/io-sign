@@ -15,12 +15,12 @@ export type LollipopApiClientProblemSource = "LollipopApiClient";
 export const makeLollipopClientHealthCheck =
   (client: LollipopApiClient) =>
   (
-    fetchWithTimeout = makeFetchWithTimeout()
+    fetchWithTimeout = makeFetchWithTimeout(),
   ): HealthCheck<LollipopApiClientProblemSource, true> =>
     pipe(
       TE.tryCatch(
         () => fetchWithTimeout(client.baseUrl, { method: "HEAD" }),
-        toHealthProblems("LollipopApiClient")
+        toHealthProblems("LollipopApiClient"),
       ),
-      TE.map(() => true)
+      TE.map(() => true),
     );

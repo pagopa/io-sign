@@ -11,7 +11,7 @@ import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCrea
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 
 const toApiModelEnum = (
-  type: SignatureField["clause"]["type"]
+  type: SignatureField["clause"]["type"],
 ): ClauseTypeEnum => {
   switch (type) {
     case "OPTIONAL":
@@ -27,8 +27,8 @@ const matchAttributes =
   (
     onExisting: (a: SignatureFieldAttributes) => ExistingSignatureFieldAttrs,
     onToBeCreated: (
-      b: SignatureFieldToBeCreatedAttributes
-    ) => SignatureFieldToBeCreatedAttrs
+      b: SignatureFieldToBeCreatedAttributes,
+    ) => SignatureFieldToBeCreatedAttrs,
   ) =>
   (attrs: SignatureField["attributes"]): SignatureFieldApiModel["attrs"] => {
     if ("uniqueName" in attrs) {
@@ -54,7 +54,7 @@ export const SignatureFieldToApiModel: E.Encoder<
         coordinates,
         size,
         page,
-      })
+      }),
     )(attributes),
   }),
 };

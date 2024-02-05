@@ -11,12 +11,12 @@ import { Database } from "@azure/cosmos";
 export type AzureCosmosProblemSource = "AzureCosmosDB";
 
 export const makeAzureCosmosDbHealthCheck = (
-  db: Database
+  db: Database,
 ): HealthCheck<AzureCosmosProblemSource> =>
   pipe(
     TE.tryCatch(
       () => db.client.getDatabaseAccount(),
-      toHealthProblems("AzureCosmosDB")
+      toHealthProblems("AzureCosmosDB"),
     ),
-    TE.map(() => true)
+    TE.map(() => true),
   );

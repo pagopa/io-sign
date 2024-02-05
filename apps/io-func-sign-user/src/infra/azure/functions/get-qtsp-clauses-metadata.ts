@@ -30,7 +30,7 @@ const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 
 const encodeHttpSuccessResponse = flow(
   QtspClausesMetadataToApiModel.encode,
-  success(QtspClausesMetadataDetailView)
+  success(QtspClausesMetadataDetailView),
 );
 
 const requireIssuerEnvironment = (req: HttpRequest) =>
@@ -39,18 +39,20 @@ const requireIssuerEnvironment = (req: HttpRequest) =>
     header("x-iosign-issuer-environment"),
     E.fromOption(
       () =>
-        new HttpBadRequestError("Missing x-iosign-issuer-environment in header")
+        new HttpBadRequestError(
+          "Missing x-iosign-issuer-environment in header",
+        ),
     ),
     // TODO: [SFEQS-1557] This default value must be removed when the app will be updated with the new specifications
     E.fold(() => "TEST", identity),
-    validate(IssuerEnvironment, "Invalid issuer environment")
+    validate(IssuerEnvironment, "Invalid issuer environment"),
   );
 
 const getQtspClausesMetadataFunction = (config: NamirialConfig) => {
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     E.chainW(requireIssuerEnvironment),
-    TE.fromEither
+    TE.fromEither,
   );
 
   return createHandler(
@@ -61,14 +63,14 @@ const getQtspClausesMetadataFunction = (config: NamirialConfig) => {
         getNamirialCredentialsFromIssuerEnvironment(issuerEnvironment),
         getQtspClausesWithToken,
         TE.map(NamirialClausesToQtspClauses.encode),
-        TE.mapLeft((e) => new HttpError(e.message))
+        TE.mapLeft((e) => new HttpError(e.message)),
       ),
     error,
-    encodeHttpSuccessResponse
+    encodeHttpSuccessResponse,
   );
 };
 
 export const makeGetQtspClausesMetadataFunction = flow(
   getQtspClausesMetadataFunction,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

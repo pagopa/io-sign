@@ -19,28 +19,28 @@ import { makeNotifySignatureRequestWaitForSignatureEvent } from "../storage/sign
 const makeCreateSignatureRequestHandler = (
   db: Database,
   onWaitForSignatureQueueClient: QueueClient,
-  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
+  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode,
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestReady),
-    TE.fromEither
+    TE.fromEither,
   );
   const createSignatureRequest = makeCreateSignatureRequest(
     makeInsertSignatureRequest(db),
     makeNotifySignatureRequestWaitForSignatureEvent(
-      onWaitForSignatureQueueClient
+      onWaitForSignatureQueueClient,
     ),
-    generateSignatureRequestQrCode
+    generateSignatureRequestQrCode,
   );
   return createHandler(
     getSignatureRequestFromQueue,
     createSignatureRequest,
     identity,
-    () => undefined
+    () => undefined,
   );
 };
 
 export const makeCreateSignatureRequestFunction = flow(
   makeCreateSignatureRequestHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

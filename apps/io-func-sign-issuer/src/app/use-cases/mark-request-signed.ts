@@ -44,14 +44,14 @@ export const makeMarkRequestAsSigned =
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     sendBillingEvent: SendEvent,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
   ) =>
   (request: SignatureRequestSigned) => {
     const sendSignedNotification = makeSendSignatureRequestNotification(
       submitNotification,
       getFiscalCodeBySignerId,
       getDossier,
-      signedMessage
+      signedMessage,
     );
     return pipe(
       sequenceS(TE.ApplicativeSeq)({
@@ -60,9 +60,9 @@ export const makeMarkRequestAsSigned =
           getSignatureRequest(request.id),
           TE.chain(
             TE.fromOption(
-              () => new EntityNotFoundError("Signature Request not found.")
-            )
-          )
+              () => new EntityNotFoundError("Signature Request not found."),
+            ),
+          ),
         ),
       }),
       TE.chain(({ signatureRequest }) =>
@@ -76,17 +76,17 @@ export const makeMarkRequestAsSigned =
               request,
               sendSignedNotification,
               // This is a fire-and-forget operation
-              TE.altW(() => TE.right(request))
-            )
+              TE.altW(() => TE.right(request)),
+            ),
           ),
           TE.chain(() => pipe(request, createBillingEvent, sendBillingEvent)),
           TE.chainFirstW(() =>
             pipe(
               request,
-              createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED)
-            )
-          )
-        )
-      )
+              createAndSendAnalyticsEvent(EventName.SIGNATURE_SIGNED),
+            ),
+          ),
+        ),
+      ),
     );
   };

@@ -30,14 +30,14 @@ const requireDossierBody = (req: H.HttpRequest) =>
         title: pipe(body.title, H.parse(Dossier.props.title)),
         documentsMetadata: pipe(
           body.documents_metadata,
-          H.parse(DocumentsMetadataFromApiModel, "invalid document metadata")
+          H.parse(DocumentsMetadataFromApiModel, "invalid document metadata"),
         ),
         supportEmail: body.support_email
           ? pipe(body.support_email, H.parse(Dossier.props.supportEmail))
           : E.right(undefined),
-      })
+      }),
     ),
-    fromEither
+    fromEither,
   );
 
 export const CreateDossierHandler = H.of((req: H.HttpRequest) =>
@@ -47,10 +47,10 @@ export const CreateDossierHandler = H.of((req: H.HttpRequest) =>
       body: requireDossierBody(req),
     }),
     map(({ issuer, body: { title, documentsMetadata, supportEmail } }) =>
-      newDossier(issuer, title, documentsMetadata, supportEmail)
+      newDossier(issuer, title, documentsMetadata, supportEmail),
     ),
     chainW(insertDossier),
     map(flow(DossierToApiModel.encode, H.successJson, H.withStatusCode(201))),
-    orElseW(logErrorAndReturnResponse)
-  )
+    orElseW(logErrorAndReturnResponse),
+  ),
 );

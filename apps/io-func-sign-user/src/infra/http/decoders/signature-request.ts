@@ -15,7 +15,7 @@ import { flow, pipe } from "fp-ts/lib/function";
 const requireSignatureRequestIdFromPath = flow(
   path("signatureRequestId"),
   E.fromOption(() => new Error(`Missing "id" in path`)),
-  E.chainW(validate(SignatureRequestId, `Invalid "id" supplied.`))
+  E.chainW(validate(SignatureRequestId, `Invalid "id" supplied.`)),
 );
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -32,7 +32,7 @@ const signatureRequestNotFoundError = () =>
   new EntityNotFoundError("The specified Signature Request does not exists.");
 
 export const makeRequireSignatureRequest = (
-  getSignatureRequest: GetSignatureRequest
+  getSignatureRequest: GetSignatureRequest,
 ): RTE.ReaderTaskEither<HttpRequest, Error, SignatureRequest> =>
   pipe(
     sequenceS(RE.Apply)({
@@ -41,14 +41,14 @@ export const makeRequireSignatureRequest = (
     }),
     RTE.fromReaderEither,
     RTE.chainTaskEitherK(({ signer, signatureRequestId }) =>
-      pipe(signer.id, getSignatureRequest(signatureRequestId))
+      pipe(signer.id, getSignatureRequest(signatureRequestId)),
     ),
-    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError))
+    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError)),
   );
 
 export const makeRequireSignatureRequestByFiscalCode = (
   getSignatureRequest: GetSignatureRequest,
-  getSignerByFiscalCode: GetSignerByFiscalCode
+  getSignerByFiscalCode: GetSignerByFiscalCode,
 ): RTE.ReaderTaskEither<HttpRequest, Error, SignatureRequest> =>
   pipe(
     sequenceS(RE.Apply)({
@@ -63,14 +63,14 @@ export const makeRequireSignatureRequestByFiscalCode = (
         TE.chain(
           TE.fromOption(
             () =>
-              new EntityNotFoundError("The specified signer does not exists.")
-          )
+              new EntityNotFoundError("The specified signer does not exists."),
+          ),
         ),
         TE.map((signer) => signer.id),
-        TE.chain(getSignatureRequest(signatureRequestId))
-      )
+        TE.chain(getSignatureRequest(signatureRequestId)),
+      ),
     ),
-    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError))
+    RTE.chainW(RTE.fromOption(signatureRequestNotFoundError)),
   );
 
 export const requireSignatureRequestId = (req: H.HttpRequest) =>
@@ -78,5 +78,5 @@ export const requireSignatureRequestId = (req: H.HttpRequest) =>
     req.path,
     lookup("signatureRequestId"),
     RTE.fromOption(() => new H.HttpBadRequestError(`Missing "id" in path`)),
-    RTE.chainEitherKW(H.parse(SignatureRequestId, `Invalid "id" supplied`))
+    RTE.chainEitherKW(H.parse(SignatureRequestId, `Invalid "id" supplied`)),
   );

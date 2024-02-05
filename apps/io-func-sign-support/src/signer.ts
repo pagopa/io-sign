@@ -11,7 +11,7 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 export type SignerRepository = {
   getByFiscalCode: (
-    fiscalCode: FiscalCode
+    fiscalCode: FiscalCode,
   ) => TE.TaskEither<Error, O.Option<Signer>>;
 };
 
@@ -21,14 +21,14 @@ export type GetSignerByFiscalCodeEnvironment = {
 
 export const getSignerByFiscalCode =
   (
-    fiscalCode: FiscalCode
+    fiscalCode: FiscalCode,
   ): RTE.ReaderTaskEither<GetSignerByFiscalCodeEnvironment, Error, Signer> =>
   ({ signerRepository: repo }) =>
     pipe(
       repo.getByFiscalCode(fiscalCode),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("The specified Signer was not found")
-        )
-      )
+          () => new EntityNotFoundError("The specified Signer was not found"),
+        ),
+      ),
     );

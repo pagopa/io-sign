@@ -32,7 +32,7 @@ class IssuerModel {
   }
 
   findBySubscriptionId(
-    subscriptionId: Issuer["subscriptionId"]
+    subscriptionId: Issuer["subscriptionId"],
   ): TE.TaskEither<Error, O.Option<Issuer>> {
     return pipe(
       TE.tryCatch(
@@ -45,13 +45,13 @@ class IssuerModel {
                 ...defaultHeader,
                 "Ocp-Apim-Subscription-Key": this.#apiKey,
               },
-            }
+            },
           ),
-        E.toError
+        E.toError,
       ),
       TE.filterOrElse(
         isSuccessful,
-        () => new Error("The attempt to get issuer from back office failed.")
+        () => new Error("The attempt to get issuer from back office failed."),
       ),
       TE.chain(responseToJson(ApiKey, "Invalid format for institution")),
       TE.map(
@@ -74,9 +74,9 @@ class IssuerModel {
               department: "",
               state: "ACTIVE" as const,
             },
-            O.some
-          )
-      )
+            O.some,
+          ),
+      ),
     );
   }
 }
@@ -109,7 +109,7 @@ export const makeGetIssuerBySubscriptionId =
       getConfigFromEnvironment,
       TE.fromEither,
       TE.chain(({ backOffice: { basePath, apiKey } }) =>
-        new IssuerModel(basePath, apiKey).findBySubscriptionId(subscriptionId)
-      )
+        new IssuerModel(basePath, apiKey).findBySubscriptionId(subscriptionId),
+      ),
     );
 // END

@@ -41,7 +41,7 @@ class SignatureRequestFromIssuerModel extends CosmosdbModel<
     super(
       db.container("signature-requests"),
       NewSignatureRequest,
-      RetrievedSignatureRequest
+      RetrievedSignatureRequest,
     );
   }
 }
@@ -57,7 +57,7 @@ class SignatureRequestFromSignerModel extends CosmosdbModel<
     super(
       db.container("signature-requests"),
       NewSignatureRequest,
-      RetrievedSignatureRequest
+      RetrievedSignatureRequest,
     );
   }
 }
@@ -76,14 +76,14 @@ export class CosmosDbSignatureRequestRepository
   getByIssuerId(id: SignatureRequestId, issuerId: Issuer["id"]) {
     return pipe(
       this.#issuer.find([id, issuerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
   }
 
   getBySignerId(id: SignatureRequestId, signerId: Signer["id"]) {
     return pipe(
       this.#signer.find([id, signerId]),
-      TE.mapLeft(toCosmosDatabaseError)
+      TE.mapLeft(toCosmosDatabaseError),
     );
   }
 }

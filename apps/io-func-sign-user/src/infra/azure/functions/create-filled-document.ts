@@ -38,19 +38,19 @@ import { makeNotifyDocumentToFill } from "../storage/document-to-fill";
 import { CreateFilledDocumentPayload } from "../../../filled-document";
 
 export type GetFilledDocumentUrl = (
-  filledDocumentBlobName: string
+  filledDocumentBlobName: string,
 ) => TE.TaskEither<Error, string>;
 
 const makeCreateFilledDocumentHandler = (
   filledContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
-  tokenizer: PdvTokenizerClientWithApiKey
+  tokenizer: PdvTokenizerClientWithApiKey,
 ) => {
   const notifyDocumentToFill = makeNotifyDocumentToFill(documentsToFillQueue);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
 
   const getFilledDocumentUrl: GetFilledDocumentUrl = (
-    filledDocumentBlobName: string
+    filledDocumentBlobName: string,
   ) =>
     pipe(
       filledDocumentBlobName,
@@ -60,24 +60,24 @@ const makeCreateFilledDocumentHandler = (
           blobClient,
           deleteBlobIfExist,
           // if the file doesn't exist I can proceed anyway
-          TE.alt(() => TE.right(blobClient))
-        )
+          TE.alt(() => TE.right(blobClient)),
+        ),
       ),
       RTE.chainTaskEitherK(
         generateSasUrlFromBlob(
           pipe(
             defaultBlobGenerateSasUrlOptions(),
             withPermissions("r"),
-            withExpireInMinutes(120)
-          )
-        )
-      )
+            withExpireInMinutes(120),
+          ),
+        ),
+      ),
     )(filledContainerClient);
 
   const createFilledDocumentUrl = makeCreateFilledDocumentUrl(
     getFilledDocumentUrl,
     notifyDocumentToFill,
-    getFiscalCodeBySignerId
+    getFiscalCodeBySignerId,
   );
 
   const requireCreateFilledDocumentBody = flow(
@@ -88,7 +88,7 @@ const makeCreateFilledDocumentHandler = (
       email: body.email,
       familyName: body.family_name,
       name: body.name,
-    }))
+    })),
   );
 
   const requireCreateFilledDocumentPayload: RTE.ReaderTaskEither<
@@ -108,23 +108,23 @@ const makeCreateFilledDocumentHandler = (
         : pipe(
             E.tryCatch(
               () => Buffer.from(documentUrl, "base64").toString(),
-              E.toError
+              E.toError,
             ),
             E.chainW(
-              validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
+              validate(NonEmptyString, "Invalid encoded filledDocumentUrl"),
             ),
-            E.getOrElse(() => documentUrl)
+            E.getOrElse(() => documentUrl),
           ),
       email,
       familyName,
       name,
-    }))
+    })),
   );
 
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     TE.fromEither,
-    TE.chain(requireCreateFilledDocumentPayload)
+    TE.chain(requireCreateFilledDocumentPayload),
   );
 
   const encodeHttpSuccessResponse = (response: { url: ValidUrl }) =>
@@ -132,27 +132,27 @@ const makeCreateFilledDocumentHandler = (
       response,
       FilledDocumentToApiModel.encode,
       created(FilledDocumentDetailView),
-      withHeader("Location", response.url.href)
+      withHeader("Location", response.url.href),
     );
 
   return createHandler(
     decodeHttpRequest,
     createFilledDocumentUrl,
     error,
-    encodeHttpSuccessResponse
+    encodeHttpSuccessResponse,
   );
 };
 
 export const makeCreateFilledDocumentFunction = (
   filledContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey
+  pdvTokenizerClient: PdvTokenizerClientWithApiKey,
 ) =>
   pipe(
     makeCreateFilledDocumentHandler(
       filledContainerClient,
       documentsToFillQueue,
-      pdvTokenizerClient
+      pdvTokenizerClient,
     ),
-    azure.unsafeRun
+    azure.unsafeRun,
   );

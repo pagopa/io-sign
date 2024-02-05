@@ -15,12 +15,12 @@ export type TokenizerProblemSource = "PdvTokenizer";
 export const makePdvTokenizerHealthCheck =
   (client: PdvTokenizerClientWithApiKey) =>
   (
-    fetchWithTimeout = makeFetchWithTimeout()
+    fetchWithTimeout = makeFetchWithTimeout(),
   ): HealthCheck<TokenizerProblemSource, true> =>
     pipe(
       TE.tryCatch(
         () => fetchWithTimeout(client.baseUrl, { method: "HEAD" }),
-        toHealthProblems("PdvTokenizer")
+        toHealthProblems("PdvTokenizer"),
       ),
-      TE.map(() => true)
+      TE.map(() => true),
     );

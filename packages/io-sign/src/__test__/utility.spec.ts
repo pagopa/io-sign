@@ -12,8 +12,8 @@ describe("Utility", () => {
         pipe(
           "hello world",
           stringToBase64Encode,
-          E.fold(() => "invalid", identity)
-        )
+          E.fold(() => "invalid", identity),
+        ),
       ).toBe("aGVsbG8gd29ybGQ=");
     });
     it("should not convert an invalid string", () => {
@@ -27,8 +27,8 @@ describe("Utility", () => {
         pipe(
           "aGVsbG8gd29ybGQ=",
           stringFromBase64Encode,
-          E.fold(() => "invalid", identity)
-        )
+          E.fold(() => "invalid", identity),
+        ),
       ).toBe("hello world");
     });
     it("should not convert an invalid base64 string", () => {

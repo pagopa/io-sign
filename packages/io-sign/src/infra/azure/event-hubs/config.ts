@@ -17,9 +17,9 @@ export const getEventHubsConfigFromEnvironment: RE.ReaderEither<
   EventHubConfig
 > = sequenceS(RE.Apply)({
   billingConnectionString: readFromEnvironment(
-    "BillingEventHubConnectionString"
+    "BillingEventHubConnectionString",
   ),
   analyticsConnectionString: readFromEnvironment(
-    "AnalyticsEventHubConnectionString"
+    "AnalyticsEventHubConnectionString",
   ),
 });

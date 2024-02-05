@@ -31,11 +31,11 @@ const makeRequestAsSignedHandler = (
   ioApiClient: IOApiClient,
   configurationId: Ulid,
   eventHubBillingClient: EventHubProducerClient,
-  eventHubAnalyticsClient: EventHubProducerClient
+  eventHubAnalyticsClient: EventHubProducerClient,
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestSigned),
-    TE.fromEither
+    TE.fromEither,
   );
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -45,7 +45,7 @@ const makeRequestAsSignedHandler = (
 
   const sendBillingEvent = makeSendEvent(eventHubBillingClient);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient
+    eventHubAnalyticsClient,
   );
 
   const markAsSigned = makeMarkRequestAsSigned(
@@ -55,18 +55,18 @@ const makeRequestAsSignedHandler = (
     submitMessage,
     getFiscalCodeBySignerId,
     sendBillingEvent,
-    createAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent,
   );
 
   return createHandler(
     getSignatureRequestFromQueue,
     markAsSigned,
     identity,
-    () => undefined
+    () => undefined,
   );
 };
 
 export const makeRequestAsSignedFunction = flow(
   makeRequestAsSignedHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

@@ -38,5 +38,5 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
     },
-  }))
+  })),
 );

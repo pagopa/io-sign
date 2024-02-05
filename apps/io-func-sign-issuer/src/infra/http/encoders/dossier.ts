@@ -19,7 +19,7 @@ export const DossierToApiModel: E.Encoder<DossierDetailView, Dossier> = {
     created_at,
     updated_at,
     documents_metadata: documentsMetadata.map(
-      DocumentMetadataToApiModel.encode
+      DocumentMetadataToApiModel.encode,
     ),
   }),
 };

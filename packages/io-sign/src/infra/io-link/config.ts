@@ -18,6 +18,6 @@ export const getIoLinkConfigFromEnvironment: RE.ReaderEither<
 > = sequenceS(RE.Apply)({
   baseUrl: pipe(
     readFromEnvironment("IoLinkBaseUrl"),
-    RE.orElse(() => RE.right("https://continua.io.pagopa.it"))
+    RE.orElse(() => RE.right("https://continua.io.pagopa.it")),
   ),
 });

@@ -23,14 +23,14 @@ export type NamirialProblemSource =
 
 const formatProblem = (
   source: NamirialProblemSource,
-  message: string
+  message: string,
 ): HealthProblem<NamirialProblemSource> =>
   `${source}|${message}` as HealthProblem<NamirialProblemSource>;
 
 const checkGetTokenHealth = (config: NamirialCredentialsConfig) =>
   pipe(
     makeGetToken()(config),
-    TE.mapLeft((e) => [formatProblem("NamirialLogin", e.message)])
+    TE.mapLeft((e) => [formatProblem("NamirialLogin", e.message)]),
   );
 
 const checkGetTosHealth =
@@ -38,7 +38,7 @@ const checkGetTosHealth =
     pipe(
       token,
       makeGetClauses()(config),
-      TE.mapLeft((e) => [formatProblem("NamirialTos", e.message)])
+      TE.mapLeft((e) => [formatProblem("NamirialTos", e.message)]),
     );
 
 const checkTosUrlHealth =
@@ -47,18 +47,18 @@ const checkTosUrlHealth =
     pipe(
       TE.tryCatch(
         () => fetchWithTimeout(url, { method: "HEAD" }),
-        toHealthProblems("NamirialTosEndpoint")
+        toHealthProblems("NamirialTosEndpoint"),
       ),
-      TE.map(() => true)
+      TE.map(() => true),
     );
 
 const applicativeValidation = TE.getApplicativeTaskValidation(
   T.ApplicativePar,
-  RA.getSemigroup<HealthProblem<NamirialProblemSource>>()
+  RA.getSemigroup<HealthProblem<NamirialProblemSource>>(),
 );
 
 export const makeNamirialHealthCheck = (
-  config: NamirialCredentialsConfig
+  config: NamirialCredentialsConfig,
 ): HealthCheck<NamirialProblemSource, true> =>
   pipe(
     config,
@@ -71,8 +71,8 @@ export const makeNamirialHealthCheck = (
           checkTosUrlHealth()(tos.privacy_link),
           checkTosUrlHealth()(tos.terms_and_conditions_link),
         ],
-        A.sequence(applicativeValidation)
-      )
+        A.sequence(applicativeValidation),
+      ),
     ),
-    TE.map(() => true)
+    TE.map(() => true),
   );

@@ -83,7 +83,7 @@ describe("GetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -113,7 +113,7 @@ describe("GetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -144,7 +144,7 @@ describe("GetSignatureRequestHandler", () => {
             "x-io-sign-environment": "test",
           }),
         }),
-      })
+      }),
     );
   });
 });

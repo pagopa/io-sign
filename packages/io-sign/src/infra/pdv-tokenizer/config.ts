@@ -21,7 +21,7 @@ export const getPdvTokenizerConfigFromEnvironment: RE.ReaderEither<
 > = sequenceS(RE.Apply)({
   basePath: pipe(
     readFromEnvironment("PdvTokenizerApiBasePath"),
-    RE.orElse(() => RE.right("https://api.tokenizer.pdv.pagopa.it/"))
+    RE.orElse(() => RE.right("https://api.tokenizer.pdv.pagopa.it/")),
   ),
   apiKey: readFromEnvironment("PdvTokenizerApiKey"),
   requestTimeout: RE.right(1000),

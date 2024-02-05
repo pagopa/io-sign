@@ -23,11 +23,14 @@ const requireParameterFromHeader =
       req,
       header(headerName),
       E.fromOption(
-        () => new HttpBadRequestError(`Missing "${headerName}" in header`)
+        () => new HttpBadRequestError(`Missing "${headerName}" in header`),
       ),
       E.chainW(
-        validate(schema, `"${headerName}" header is not a valid ${schema.name}`)
-      )
+        validate(
+          schema,
+          `"${headerName}" header is not a valid ${schema.name}`,
+        ),
+      ),
     );
 
 export const BasicLollipopParams = t.type({
@@ -54,51 +57,51 @@ export type CreateSignatureLollipopParams = t.TypeOf<
 >;
 
 export const requireBasicLollipopParams = (
-  request: HttpRequest
+  request: HttpRequest,
 ): E.Either<Error, BasicLollipopParams> =>
   pipe(
     sequenceS(E.Applicative)({
       signatureInput: pipe(
         request,
-        requireParameterFromHeader("signature-input", LollipopSignatureInput)
+        requireParameterFromHeader("signature-input", LollipopSignatureInput),
       ),
       signature: pipe(
         request,
-        requireParameterFromHeader("signature", LollipopSignature)
+        requireParameterFromHeader("signature", LollipopSignature),
       ),
       jwtAuthorization: pipe(
         request,
         requireParameterFromHeader(
           "x-pagopa-lollipop-auth-jwt",
-          LollipopJWTAuthorization
-        )
+          LollipopJWTAuthorization,
+        ),
       ),
       assertionRef: pipe(
         request,
         requireParameterFromHeader(
           "x-pagopa-lollipop-assertion-ref",
-          LollipopAssertionRef
-        )
+          LollipopAssertionRef,
+        ),
       ),
       assertionType: pipe(
         request,
         requireParameterFromHeader(
           "x-pagopa-lollipop-assertion-type",
-          AssertionType
-        )
+          AssertionType,
+        ),
       ),
       publicKey: pipe(
         request,
         requireParameterFromHeader(
           "x-pagopa-lollipop-public-key",
-          LollipopPublicKey
-        )
+          LollipopPublicKey,
+        ),
       ),
-    })
+    }),
   );
 
 export const requireCreateSignatureLollipopParams = (
-  request: HttpRequest
+  request: HttpRequest,
 ): E.Either<Error, CreateSignatureLollipopParams> =>
   pipe(
     request,
@@ -110,21 +113,21 @@ export const requireCreateSignatureLollipopParams = (
             request,
             requireParameterFromHeader(
               "x-pagopa-lollipop-custom-tos-challenge",
-              NonEmptyString
-            )
+              NonEmptyString,
+            ),
           ),
           signChallenge: pipe(
             request,
             requireParameterFromHeader(
               "x-pagopa-lollipop-custom-sign-challenge",
-              NonEmptyString
-            )
+              NonEmptyString,
+            ),
           ),
         }),
         E.map((createSignatureLollipopParams) => ({
           ...lollipopBasic,
           ...createSignatureLollipopParams,
-        }))
-      )
-    )
+        })),
+      ),
+    ),
   );

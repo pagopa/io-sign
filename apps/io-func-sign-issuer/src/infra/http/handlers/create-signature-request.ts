@@ -36,14 +36,14 @@ const requireSignatureRequestBody = (req: H.HttpRequest) =>
               documents_metadata,
               H.parse(
                 DocumentsMetadataFromApiModel,
-                "invalid document metadata"
+                "invalid document metadata",
               ),
-              E.map(O.some)
+              E.map(O.some),
             )
           : E.right(O.none),
-      })
+      }),
     ),
-    RTE.fromEither
+    RTE.fromEither,
   );
 
 const getSigner = (signerId: Signer["id"]): TE.TaskEither<Error, Signer> =>
@@ -51,9 +51,9 @@ const getSigner = (signerId: Signer["id"]): TE.TaskEither<Error, Signer> =>
     mockGetSigner(signerId),
     TE.chain(
       TE.fromOption(
-        () => new EntityNotFoundError("The specified Signer does not exists.")
-      )
-    )
+        () => new EntityNotFoundError("The specified Signer does not exists."),
+      ),
+    ),
   );
 
 export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
@@ -63,10 +63,10 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       body: requireSignatureRequestBody(req),
     }),
     RTE.bindW("dossier", ({ issuer, body }) =>
-      getDossierById(body.dossierId, issuer.id)
+      getDossierById(body.dossierId, issuer.id),
     ),
     RTE.bindW("signer", ({ body }) =>
-      pipe(getSigner(body.signerId), RTE.fromTaskEither)
+      pipe(getSigner(body.signerId), RTE.fromTaskEither),
     ),
     RTE.map(
       ({
@@ -80,7 +80,7 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
         signer,
         expiresAt,
         documentsMetadata,
-      })
+      }),
     ),
     RTE.chainW(({ issuer, dossier, signer, expiresAt, documentsMetadata }) =>
       pipe(
@@ -88,23 +88,23 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
           dossier,
           signer,
           issuer,
-          O.toUndefined(documentsMetadata)
+          O.toUndefined(documentsMetadata),
         ),
         withExpiryDate(pipe(expiresAt, O.getOrElse(defaultExpiryDate))),
-        RTE.fromEither
-      )
+        RTE.fromEither,
+      ),
     ),
     RTE.chainW(insertSignatureRequest),
     RTE.chainFirstW((request) =>
-      pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED))
+      pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED)),
     ),
     RTE.map(
       flow(
         SignatureRequestToApiModel.encode,
         H.successJson,
-        H.withStatusCode(201)
-      )
+        H.withStatusCode(201),
+      ),
     ),
-    RTE.orElseW(logErrorAndReturnResponse)
-  )
+    RTE.orElseW(logErrorAndReturnResponse),
+  ),
 );

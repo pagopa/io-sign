@@ -55,5 +55,5 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
     }
     return t.failure(e, ctx, "Unsupported error type.");
   },
-  identity
+  identity,
 );

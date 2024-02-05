@@ -38,15 +38,15 @@ describe("Document", () => {
         pipe(
           maybeWaitForValidationDocument,
           E.map((doc) => doc.status),
-          E.getOrElse((e) => e.message)
-        )
+          E.getOrElse((e) => e.message),
+        ),
       ).toBe("WAIT_FOR_VALIDATION");
       expect(
         pipe(
           maybeWaitForValidationDocument,
           E.chain(startValidation),
-          E.getOrElseW(identity)
-        )
+          E.getOrElseW(identity),
+        ),
       ).toBeInstanceOf(Error);
     });
     describe('Given a "REJECTED" document', () => {
@@ -55,13 +55,13 @@ describe("Document", () => {
           newDocument(metadata),
           startValidation,
           E.chain(
-            markAsRejected("Test if the state machine resets the attributes")
+            markAsRejected("Test if the state machine resets the attributes"),
           ),
           E.chain(startValidation),
           E.map(
-            (document) => "rejectAt" in document || "rejectReason" in document
+            (document) => "rejectAt" in document || "rejectReason" in document,
           ),
-          E.getOrElse(() => false)
+          E.getOrElse(() => false),
         );
         expect(hasRejectedProperties).toBe(false);
       });
@@ -74,17 +74,17 @@ describe("Document", () => {
         pipe(
           document,
           markAsReady("https://my.document.url", { pages: [], formFields: [] }),
-          E.getOrElseW(identity)
-        )
+          E.getOrElseW(identity),
+        ),
       ).toBeInstanceOf(Error);
       const rejectedDocument = pipe(
         document,
         startValidation,
         E.chain(
           markAsRejected(
-            "the document must be rejected for the purpose of this unit test"
-          )
-        )
+            "the document must be rejected for the purpose of this unit test",
+          ),
+        ),
       );
       expect(
         pipe(
@@ -93,10 +93,10 @@ describe("Document", () => {
             markAsReady("https://my.document.url", {
               pages: [],
               formFields: [],
-            })
+            }),
           ),
-          E.getOrElseW(identity)
-        )
+          E.getOrElseW(identity),
+        ),
       ).toBeInstanceOf(Error);
     });
   });
@@ -109,7 +109,7 @@ describe("SignatureFields", () => {
   });
   it("should include at least one mandatory signature", () => {
     const newMockedSignatureField = (
-      type: SignatureField["clause"]["type"]
+      type: SignatureField["clause"]["type"],
     ): SignatureField => {
       const title = `field-${newId()}`;
       return {

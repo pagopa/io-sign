@@ -35,22 +35,22 @@ export const makeMarkRequestAsRejected =
     upsertSignatureRequest: UpsertSignatureRequest,
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
   ) =>
   (request: SignatureRequestRejected) => {
     const sendRejectedNotification = makeSendSignatureRequestNotification(
       submitNotification,
       getFiscalCodeBySignerId,
       getDossier,
-      rejectedMessage
+      rejectedMessage,
     );
 
     return pipe(
       pipe(request.issuerId, getSignatureRequest(request.id)),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("Signature Request not found.")
-        )
+          () => new EntityNotFoundError("Signature Request not found."),
+        ),
       ),
       TE.chainEitherK(markAsRejected(request.rejectedAt, request.rejectReason)),
       TE.chain(upsertSignatureRequest),
@@ -59,11 +59,14 @@ export const makeMarkRequestAsRejected =
           request,
           sendRejectedNotification,
           // This is a fire-and-forget operation
-          TE.altW(() => TE.right(request))
-        )
+          TE.altW(() => TE.right(request)),
+        ),
       ),
       TE.chainFirstW(() =>
-        pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_REJECTED))
-      )
+        pipe(
+          request,
+          createAndSendAnalyticsEvent(EventName.SIGNATURE_REJECTED),
+        ),
+      ),
     );
   };

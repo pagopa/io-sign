@@ -27,16 +27,16 @@ export const copyFromUrl = (source: string) => (blobClient: BlobClient) =>
         blobClient
           .beginCopyFromURL(source)
           .then((poller) => poller.pollUntilDone()),
-      () => new Error("Error on blob copy process")
+      () => new Error("Error on blob copy process"),
     ),
     TE.filterOrElse(
       (response) => response.copyStatus === "success",
       (response) =>
         new Error(
-          `Unable to copy blob! Current status is ${response.copyStatus}}`
-        )
+          `Unable to copy blob! Current status is ${response.copyStatus}}`,
+        ),
     ),
-    TE.map(() => blobClient.url)
+    TE.map(() => blobClient.url),
   );
 export class BlobStorageFileStorage implements FileStorage {
   #containerClient: ContainerClient;
@@ -84,8 +84,8 @@ export const makeGetUploadUrl =
         pipe(
           defaultBlobGenerateSasUrlOptions(),
           withPermissions("racw"),
-          withExpireInMinutes(15)
-        )
+          withExpireInMinutes(15),
+        ),
       ),
-      TE.chainEitherKW(validate(UploadUrl, "Invalid SAS Url generated."))
+      TE.chainEitherKW(validate(UploadUrl, "Invalid SAS Url generated.")),
     );

@@ -56,7 +56,7 @@ type ProblemSource =
 const InfoDetailView = t.string;
 const applicativeValidation = TE.getApplicativeTaskValidation(
   Task.ApplicativePar,
-  RA.getSemigroup<HealthProblem<ProblemSource>>()
+  RA.getSemigroup<HealthProblem<ProblemSource>>(),
 );
 
 export const makeInfoHandler = (
@@ -70,7 +70,7 @@ export const makeInfoHandler = (
   signedContainerClient: ContainerClient,
   documentsToFillQueue: QueueClient,
   qtspQueue: QueueClient,
-  onWaitForSignatureQueueClient: QueueClient
+  onWaitForSignatureQueueClient: QueueClient,
 ) =>
   createHandler(
     nopRequestDecoder,
@@ -92,10 +92,10 @@ export const makeInfoHandler = (
         ],
         RA.sequence(applicativeValidation),
         TE.map(() => "It's working!"),
-        TE.mapLeft((problems) => new HttpError(problems.join("\n\n")))
+        TE.mapLeft((problems) => new HttpError(problems.join("\n\n"))),
       ),
     error,
-    success(InfoDetailView)
+    success(InfoDetailView),
   );
 
 export const makeInfoFunction = flow(makeInfoHandler, azure.unsafeRun);

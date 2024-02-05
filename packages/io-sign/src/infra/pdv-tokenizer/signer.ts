@@ -20,7 +20,7 @@ export const makeGetSignerByFiscalCode =
             body: { pii: fiscalCode },
             api_key: clientPayload.apiKey,
           }),
-        E.toError
+        E.toError,
       ),
       TE.chain(
         flow(
@@ -34,8 +34,8 @@ export const makeGetSignerByFiscalCode =
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `The attempt to get signer's fiscal code from his identifier failed.`
-                  )
+                    `The attempt to get signer's fiscal code from his identifier failed.`,
+                  ),
                 );
             }
           }),
@@ -45,11 +45,11 @@ export const makeGetSignerByFiscalCode =
               O.fromNullable,
               O.map((tokenResponse) => ({
                 id: tokenResponse.token as NonEmptyString,
-              }))
-            )
-          )
-        )
-      )
+              })),
+            ),
+          ),
+        ),
+      ),
     );
 
 export const makeGetFiscalCodeBySignerId =
@@ -62,12 +62,12 @@ export const makeGetFiscalCodeBySignerId =
             token: signerId,
             api_key: clientPayload.apiKey,
           }),
-        E.toError
+        E.toError,
       ),
       TE.chain(
         flow(
           E.mapLeft(
-            () => new Error("Unable to get fiscal code from tokenizer!")
+            () => new Error("Unable to get fiscal code from tokenizer!"),
           ),
           E.chainW((response) => {
             switch (response.status) {
@@ -78,8 +78,8 @@ export const makeGetFiscalCodeBySignerId =
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `An error occurred to retrieve the fiscal code from the signerId`
-                  )
+                    `An error occurred to retrieve the fiscal code from the signerId`,
+                  ),
                 );
             }
           }),
@@ -87,9 +87,9 @@ export const makeGetFiscalCodeBySignerId =
           TE.map(
             flow(
               O.fromNullable,
-              O.map((piiResponse) => piiResponse.pii as FiscalCode)
-            )
-          )
-        )
-      )
+              O.map((piiResponse) => piiResponse.pii as FiscalCode),
+            ),
+          ),
+        ),
+      ),
     );

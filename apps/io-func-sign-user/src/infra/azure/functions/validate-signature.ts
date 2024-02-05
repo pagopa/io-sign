@@ -36,7 +36,7 @@ const makeValidateSignatureHandler = (
   qtspConfig: NamirialConfig,
   onSignedQueueClient: QueueClient,
   onRejectedQueueClient: QueueClient,
-  eventHubAnalyticsClient: EventHubProducerClient
+  eventHubAnalyticsClient: EventHubProducerClient,
 ) => {
   const getSignature = makeGetSignature(db);
   const upsertSignature = makeUpsertSignature(db);
@@ -48,10 +48,10 @@ const makeValidateSignatureHandler = (
   const notifySignatureRequestRejectedEvent =
     makeNotifySignatureRequestRejectedEvent(onRejectedQueueClient);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient
+    eventHubAnalyticsClient,
   );
   const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
-    makeGetToken()
+    makeGetToken(),
   )(qtspConfig);
 
   const validateSignature = makeValidateSignature(
@@ -63,23 +63,23 @@ const makeValidateSignatureHandler = (
     getQtspSignatureRequest,
     notifySignatureRequestSignedEvent,
     notifySignatureRequestRejectedEvent,
-    createAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent,
   );
 
   const decodeQueueMessage = flow(
     azure.fromQueueMessage(ValidateSignaturePayload),
-    TE.fromEither
+    TE.fromEither,
   );
 
   return createHandler(
     decodeQueueMessage,
     validateSignature,
     identity,
-    constVoid
+    constVoid,
   );
 };
 
 export const makeValidateSignatureFunction = flow(
   makeValidateSignatureHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

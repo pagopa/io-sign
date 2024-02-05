@@ -15,7 +15,7 @@ import { validateDocument } from "../../../app/use-cases/validate-upload";
 import { validationToApiModel } from "../encoders/document-validation";
 
 const requireFileFromValidationRTE = RTE.fromTaskEitherK(
-  requireFilesForValidation
+  requireFilesForValidation,
 );
 
 export const validateDocumentHandler = H.of((req: H.HttpRequest) =>
@@ -31,12 +31,12 @@ export const validateDocumentHandler = H.of((req: H.HttpRequest) =>
             // the error message contains the list of violations
             (e) => RT.of(e.message.split("\n")),
             // the validation went good so there are no violations (empty array)
-            () => RT.of([])
+            () => RT.of([]),
           ),
-          RT.map(validationToApiModel)
-        )
+          RT.map(validationToApiModel),
+        ),
     ),
     RTE.map(H.successJson),
-    RTE.orElseW(logErrorAndReturnResponse)
-  )
+    RTE.orElseW(logErrorAndReturnResponse),
+  ),
 );

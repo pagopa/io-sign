@@ -117,7 +117,7 @@ export const SignatureRequestToListApiModel: E.Encoder<
           created_at,
           updated_at,
           expires_at,
-        })
+        }),
       ),
     continuation_token: continuationToken,
   }),

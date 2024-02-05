@@ -79,11 +79,11 @@ export const BillingEvent = t.intersection([
 export type BillingEvent = t.TypeOf<typeof BillingEvent>;
 
 export const pricingPlanFromIssuerEnvironment = (
-  issuerEnvironment: IssuerEnvironment
+  issuerEnvironment: IssuerEnvironment,
 ) => (issuerEnvironment === "TEST" ? "FREE" : issuerEnvironment);
 
 export const createBillingEvent = (
-  signatureRequest: SignatureRequestSigned
+  signatureRequest: SignatureRequestSigned,
 ): BillingEvent => ({
   id: newId(),
   name: EventName.SIGNATURE_SIGNED,
@@ -92,7 +92,7 @@ export const createBillingEvent = (
   internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
   createdAt: new Date(),
   pricingPlan: pricingPlanFromIssuerEnvironment(
-    signatureRequest.issuerEnvironment
+    signatureRequest.issuerEnvironment,
   ),
   department: signatureRequest.issuerDepartment,
 });
@@ -117,7 +117,7 @@ export const createAnalyticsEvent =
     internalInstitutionId: signatureRequest.issuerInternalInstitutionId,
     createdAt: new Date(),
     pricingPlan: pricingPlanFromIssuerEnvironment(
-      signatureRequest.issuerEnvironment
+      signatureRequest.issuerEnvironment,
     ),
     dossierId: signatureRequest.dossierId,
     department: signatureRequest.issuerDepartment,
@@ -126,13 +126,13 @@ export const createAnalyticsEvent =
 export type GenericEvent = BillingEvent | AnalyticsEvent;
 
 export type SendEvent = (
-  event: GenericEvent
+  event: GenericEvent,
 ) => TE.TaskEither<Error, GenericEvent>;
 
 export type CreateAndSendAnalyticsEvent = (
-  eventName: EventName
+  eventName: EventName,
 ) => (
-  signatureRequest: SignatureRequest
+  signatureRequest: SignatureRequest,
 ) => TE.TaskEither<Error, typeof signatureRequest>;
 
 type EventData = {
@@ -155,7 +155,7 @@ type EventAnalyticsClient = {
 
 export const sendEvent =
   (
-    event: GenericEvent
+    event: GenericEvent,
   ): RTE.ReaderTaskEither<EventAnalyticsClient, Error, GenericEvent> =>
   ({ eventAnalyticsClient }) =>
     pipe(
@@ -163,15 +163,15 @@ export const sendEvent =
       TE.chain((eventDataBatch) =>
         eventDataBatch.tryAdd({ body: event })
           ? TE.right(eventDataBatch)
-          : TE.left(new Error("Unable to add new events to event batch!"))
+          : TE.left(new Error("Unable to add new events to event batch!")),
       ),
       TE.chain((eventDataBatch) =>
         TE.tryCatch(
           () => eventAnalyticsClient.sendBatch(eventDataBatch),
-          E.toError
-        )
+          E.toError,
+        ),
       ),
-      TE.map(() => event)
+      TE.map(() => event),
     );
 
 export const createAndSendAnalyticsEvent =
@@ -182,7 +182,7 @@ export const createAndSendAnalyticsEvent =
       sendEvent,
       RTE.map(() => signatureRequest),
       RTE.chainFirstW(() =>
-        L.debugRTE("Send analytics event", { eventName, signatureRequest })
+        L.debugRTE("Send analytics event", { eventName, signatureRequest }),
       ),
       // This is a fire and forget operation
       RTE.altW(() =>
@@ -192,8 +192,8 @@ export const createAndSendAnalyticsEvent =
             L.errorRTE("Unable to send analytics event", {
               eventName,
               signatureRequest,
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     );

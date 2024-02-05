@@ -99,7 +99,7 @@ describe("GetDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -128,7 +128,7 @@ describe("GetDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      })
+      }),
     );
   });
 
@@ -157,7 +157,7 @@ describe("GetDossierHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      })
+      }),
     );
   });
 });

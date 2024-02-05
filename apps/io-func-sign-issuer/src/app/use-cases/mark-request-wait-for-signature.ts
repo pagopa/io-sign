@@ -13,16 +13,16 @@ import {
 export const makeMarkRequestAsWaitForSignature =
   (
     getSignatureRequest: GetSignatureRequest,
-    upsertSignatureRequest: UpsertSignatureRequest
+    upsertSignatureRequest: UpsertSignatureRequest,
   ) =>
   (request: SignatureRequestToBeSigned) =>
     pipe(
       pipe(request.issuerId, getSignatureRequest(request.id)),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("Signature Request not found.")
-        )
+          () => new EntityNotFoundError("Signature Request not found."),
+        ),
       ),
       TE.chainEitherK(markAsWaitForSignature(request.qrCodeUrl)),
-      TE.chain(upsertSignatureRequest)
+      TE.chain(upsertSignatureRequest),
     );

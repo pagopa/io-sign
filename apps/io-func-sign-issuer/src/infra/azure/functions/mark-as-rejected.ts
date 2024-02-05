@@ -27,11 +27,11 @@ const makeRequestAsRejectedHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
   configurationId: Ulid,
-  eventHubAnalyticsClient: EventHubProducerClient
+  eventHubAnalyticsClient: EventHubProducerClient,
 ) => {
   const getSignatureRequestFromQueue = flow(
     azure.fromQueueMessage(SignatureRequestRejected),
-    TE.fromEither
+    TE.fromEither,
   );
   const getDossier = makeGetDossier(db);
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -39,7 +39,7 @@ const makeRequestAsRejectedHandler = (
   const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient
+    eventHubAnalyticsClient,
   );
 
   const markAsRejected = makeMarkRequestAsRejected(
@@ -48,18 +48,18 @@ const makeRequestAsRejectedHandler = (
     upsertSignatureRequest,
     submitMessage,
     getFiscalCodeBySignerId,
-    createAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent,
   );
 
   return createHandler(
     getSignatureRequestFromQueue,
     markAsRejected,
     identity,
-    () => undefined
+    () => undefined,
   );
 };
 
 export const makeRequestAsRejectedFunction = flow(
   makeRequestAsRejectedHandler,
-  azure.unsafeRun
+  azure.unsafeRun,
 );

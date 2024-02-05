@@ -22,7 +22,7 @@ describe("response", () => {
       expect(res.statusCode).toBe(500);
       expect(res.headers).toHaveProperty(
         "Content-Type",
-        "application/problem+json"
+        "application/problem+json",
       );
     });
   });
@@ -37,7 +37,7 @@ describe("response", () => {
       const res = error(new Error("Unexpected"));
       expect(res.headers).toHaveProperty(
         "Content-Type",
-        "application/problem+json"
+        "application/problem+json",
       );
     });
   });
