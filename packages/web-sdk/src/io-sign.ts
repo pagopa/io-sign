@@ -137,16 +137,18 @@ export class IOSignElement
       </io-button>
       ${when(
         this.showQrCode && this.signatureRequestId,
-        () => html`<io-sign-qr-dialog
-          .signatureRequestId=${this.signatureRequestId}
-          @close=${this.handleClose}
-        ></io-sign-qr-dialog>`
+        () =>
+          html`<io-sign-qr-dialog
+            .signatureRequestId=${this.signatureRequestId}
+            @close=${this.handleClose}
+          ></io-sign-qr-dialog>`
       )}
       ${when(
         this.state === "loading",
-        () => html`<io-sign-loader-dialog
-          @close=${this.handleClose}
-        ></io-sign-loader-dialog>`
+        () =>
+          html`<io-sign-loader-dialog
+            @close=${this.handleClose}
+          ></io-sign-loader-dialog>`
       )}`;
   }
 }
