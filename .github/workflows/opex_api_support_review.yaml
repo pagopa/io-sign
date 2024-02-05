@@ -18,9 +18,7 @@ permissions:
 jobs:
   opex-review:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [prod]
+    environment: opex-prod-ci
     steps:
       - name: Checkout
         id: checkout
@@ -33,5 +31,5 @@ jobs:
       - name: Validate opex dashbaord
         uses: ./.github/workflows/opex-review
         with:
-          environment: ${{ matrix.environment }}
+          environment: prod
           api_name: ${{ env.API_NAME }}

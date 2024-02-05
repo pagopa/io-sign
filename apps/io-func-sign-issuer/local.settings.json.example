@@ -11,6 +11,7 @@
     "AnalyticsEventHubConnectionString": "ANALYTICS_EVENT_HUB_CONNECTION_STRING",
     "IoServicesApiBasePath": "IO_SERVICES_API_URL",
     "IoServicesSubscriptionKey": "IO_SERVICES_API_SUBSCRIPTION_KEY",
+    "IoServicesConfigurationId": "IO_SERVICES_CONFIGURATION_ID",
     "PdvTokenizerApiBasePath": "PDV_TOKENIZER_SERVICES_API_URL",
     "PdvTokenizerApiKey": "PDV_TOKENIZER_SERVICES_API_KEY",
     "SelfCareEventHubConnectionString": "SELF_CARE_EVENT_HUB_CONNECTION_STRING",

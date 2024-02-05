@@ -1,6 +1,6 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "repository": "https://github.com/pagopa/io-sign",
   "exports": {
     "./*": "./dist/*.js"
@@ -21,7 +21,7 @@
     "@azure/storage-queue": "^12.11.0",
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/io-functions-commons": "^26.2.1",
-    "@pagopa/io-functions-services-sdk": "^3.27.0",
+    "@pagopa/io-functions-services-sdk": "^3.39.1",
     "@pagopa/logger": "1.0.1",
     "@pagopa/ts-commons": "^10.14.2",
     "date-fns": "^2.29.3",

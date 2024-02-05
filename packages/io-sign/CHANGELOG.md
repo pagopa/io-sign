@@ -1,5 +1,17 @@
 # @io-sign/io-sign
 
+## 1.0.6
+
+### Patch Changes
+
+- 2bbef78: Add configuration_id to submitMessageforUserWithFiscalCodeInBody
+
+## 1.0.5
+
+### Patch Changes
+
+- 45c91d2: submitMessageForUser now sends ADVANCED messages
+
 ## 1.0.4
 
 ### Patch Changes
