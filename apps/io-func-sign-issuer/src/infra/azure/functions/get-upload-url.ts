@@ -31,7 +31,7 @@ import { makeGetIssuerBySubscriptionId } from "../../back-office/issuer";
 
 const makeGetUploadUrlHandler = (
   db: CosmosDatabase,
-  containerClient: ContainerClient,
+  containerClient: ContainerClient
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const insertUploadMetadata = makeInsertUploadMetadata(db);
@@ -41,18 +41,18 @@ const makeGetUploadUrlHandler = (
 
   const requireSignatureRequest = makeRequireSignatureRequest(
     getIssuerBySubscriptionId,
-    getSignatureRequest,
+    getSignatureRequest
   );
 
   const getUploadUrl = makeGetUploadUrlUseCase(
     insertUploadMetadata,
-    getUploadUrlFromBlobStorage,
+    getUploadUrlFromBlobStorage
   );
 
   const requireDocumentIdFromPath = flow(
     path("documentId"),
     E.fromOption(() => new Error(`missing "id" in path`)),
-    E.chainW(validate(DocumentId, `invalid "id" supplied`)),
+    E.chainW(validate(DocumentId, `invalid "id" supplied`))
   );
 
   const requireGetUploadUrlPayload: RTE.ReaderTaskEither<
@@ -67,18 +67,18 @@ const makeGetUploadUrlHandler = (
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     TE.fromEither,
-    TE.chain(requireGetUploadUrlPayload),
+    TE.chain(requireGetUploadUrlPayload)
   );
 
   return createHandler(
     decodeHttpRequest,
     getUploadUrl,
     error,
-    flow(UploadUrlToApiModel.encode, success(UploadUrl)),
+    flow(UploadUrlToApiModel.encode, success(UploadUrl))
   );
 };
 
 export const makeGetUploadUrlFunction = flow(
   makeGetUploadUrlHandler,
-  azure.unsafeRun,
+  azure.unsafeRun
 );

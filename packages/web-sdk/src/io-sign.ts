@@ -90,7 +90,7 @@ export class IOSignElement
       new Event("io-sign.cta.click", {
         bubbles: true,
         composed: true,
-      }),
+      })
     );
   }
 
@@ -113,7 +113,7 @@ export class IOSignElement
       // TODO(SFEQS-1646): replace this hardcoded base url with a dynamic one
       const IOLink = new URL(
         `/fci/main?signatureRequestId=${this.signatureRequestId}`,
-        import.meta.env.VITE_IO_LINK_BASE_URL,
+        import.meta.env.VITE_IO_LINK_BASE_URL
       );
       window.location.href = IOLink.href;
     } else {
@@ -132,7 +132,7 @@ export class IOSignElement
             ["activating", () => html`<io-skeleton></io-skeleton>`],
             ["loading", () => html`<io-spinner></io-spinner>`],
           ],
-          () => html`${unsafeSVG(IOLogo)} Firma con IO`,
+          () => html`${unsafeSVG(IOLogo)} Firma con IO`
         )}
       </io-button>
       ${when(
@@ -141,14 +141,14 @@ export class IOSignElement
           html`<io-sign-qr-dialog
             .signatureRequestId=${this.signatureRequestId}
             @close=${this.handleClose}
-          ></io-sign-qr-dialog>`,
+          ></io-sign-qr-dialog>`
       )}
       ${when(
         this.state === "loading",
         () =>
           html`<io-sign-loader-dialog
             @close=${this.handleClose}
-          ></io-sign-loader-dialog>`,
+          ></io-sign-loader-dialog>`
       )}`;
   }
 }

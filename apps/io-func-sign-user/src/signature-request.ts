@@ -33,36 +33,36 @@ export const SignatureRequest = t.union([
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export type GetSignatureRequest = (
-  id: Id,
+  id: Id
 ) => (signerId: Id) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
 
 export type InsertSignatureRequest = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export type UpsertSignatureRequest = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export type NotifySignatureRequestWaitForSignatureEvent = (
-  requestToBeSigned: SignatureRequestToBeSigned,
+  requestToBeSigned: SignatureRequestToBeSigned
 ) => TE.TaskEither<Error, string>;
 
 export type NotifySignatureRequestSignedEvent = (
-  requestSigned: SignatureRequestSigned,
+  requestSigned: SignatureRequestSigned
 ) => TE.TaskEither<Error, string>;
 
 export type NotifySignatureRequestRejectedEvent = (
-  requestRejected: SignatureRequestRejected,
+  requestRejected: SignatureRequestRejected
 ) => TE.TaskEither<Error, string>;
 
 export type SignatureRequestRepository = {
   findBySignerId: (
-    signerId: Signer["id"],
+    signerId: Signer["id"]
   ) => TE.TaskEither<Error, ReadonlyArray<SignatureRequest>>;
   get: (
     id: SignatureRequest["id"],
-    signerId: SignatureRequest["signerId"],
+    signerId: SignatureRequest["signerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
 };
@@ -73,7 +73,7 @@ type SignatureRequestEnvironment = {
 
 export const getSignatureRequestsBySignerId =
   (
-    signerId: Signer["id"],
+    signerId: Signer["id"]
   ): RTE.ReaderTaskEither<
     {
       signatureRequestRepository: SignatureRequestRepository;
@@ -87,7 +87,7 @@ export const getSignatureRequestsBySignerId =
 export const getSignatureRequest =
   (
     id: SignatureRequest["id"],
-    signerId: SignatureRequest["signerId"],
+    signerId: SignatureRequest["signerId"]
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -98,14 +98,14 @@ export const getSignatureRequest =
       repo.get(id, signerId),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("Signature request not found"),
-        ),
-      ),
+          () => new EntityNotFoundError("Signature request not found")
+        )
+      )
     );
 
 export const upsertSignatureRequest =
   (
-    request: SignatureRequest,
+    request: SignatureRequest
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -153,8 +153,8 @@ const dispatch =
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited because the signature request has already been signed`,
-          ),
+            `${action.name} is prohibited because the signature request has already been signed`
+          )
         );
     }
   };
@@ -162,7 +162,7 @@ const dispatch =
 const onWaitForSignatureStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestToBeSigned,
+    request: SignatureRequestToBeSigned
   ): E.Either<
     Error,
     | SignatureRequestWaitForQtsp
@@ -194,8 +194,8 @@ const onWaitForSignatureStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`,
-          ),
+            `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`
+          )
         );
     }
   };
@@ -203,7 +203,7 @@ const onWaitForSignatureStatus =
 const onRejectedStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestRejected,
+    request: SignatureRequestRejected
   ): E.Either<Error, SignatureRequestWaitForQtsp> => {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (action.name) {
@@ -216,8 +216,8 @@ const onRejectedStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited if the signature request is in REJECTED status`,
-          ),
+            `${action.name} is prohibited if the signature request is in REJECTED status`
+          )
         );
     }
   };
@@ -225,7 +225,7 @@ const onRejectedStatus =
 const onWaitForQtspStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestWaitForQtsp,
+    request: SignatureRequestWaitForQtsp
   ): E.Either<Error, SignatureRequestSigned | SignatureRequestRejected> => {
     switch (action.name) {
       case "MARK_AS_SIGNED":
@@ -246,8 +246,8 @@ const onWaitForQtspStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited if the signature request is in WAIT_FOR_QTSP status`,
-          ),
+            `${action.name} is prohibited if the signature request is in WAIT_FOR_QTSP status`
+          )
         );
     }
   };
@@ -269,13 +269,13 @@ export const canBeWaitForQtsp = (request: SignatureRequest) =>
   pipe(request, dispatch({ name: "MARK_AS_WAIT_FOR_QTSP" }), E.isRight);
 
 export const signedNoMoreThan90DaysAgo = (
-  signatureRequest: SignatureRequest,
+  signatureRequest: SignatureRequest
 ): E.Either<Error, SignatureRequestSigned> =>
   pipe(
     signatureRequest,
     validate(
       SignatureRequestSigned,
-      "The signature request must be in SIGNED status.",
+      "The signature request must be in SIGNED status."
     ),
     E.chain((signatureRequest) =>
       pipe(
@@ -285,11 +285,11 @@ export const signedNoMoreThan90DaysAgo = (
             ? E.right(signatureRequest)
             : E.left(
                 new EntityNotFoundError(
-                  "More than 90 days have passed since signing.",
-                ),
-              ),
-      ),
-    ),
+                  "More than 90 days have passed since signing."
+                )
+              )
+      )
+    )
   );
 
 export const getEnvironment = (request: SignatureRequest) =>

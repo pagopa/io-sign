@@ -42,7 +42,7 @@ export const makeGetSignature =
     pipe(
       new SignatureModel(db),
       (model) => model.find([signatureId, signerID]),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export const makeInsertSignature =
@@ -51,7 +51,7 @@ export const makeInsertSignature =
     pipe(
       new SignatureModel(db),
       (model) => model.create(signature),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export const makeUpsertSignature =
@@ -60,5 +60,5 @@ export const makeUpsertSignature =
     pipe(
       new SignatureModel(db),
       (model) => model.upsert(request),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );

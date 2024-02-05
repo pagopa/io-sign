@@ -7,7 +7,7 @@ import {
 } from "../models/SignatureDetailView";
 
 const statusToApiModelEnum = (
-  status: Signature["status"],
+  status: Signature["status"]
 ): SignatureStatusEnum => {
   switch (status) {
     case "COMPLETED":

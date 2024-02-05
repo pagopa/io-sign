@@ -7,5 +7,5 @@ import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
 import { validateDocumentHandler } from "../../http/handlers/validate-document";
 
 export const validateDocumentFunction = httpAzureFunction(
-  validateDocumentHandler,
+  validateDocumentHandler
 );

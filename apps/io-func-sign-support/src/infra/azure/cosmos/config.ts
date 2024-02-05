@@ -21,10 +21,10 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
 > = pipe(
   RE.Do,
   RE.bind("connectionString", () =>
-    readFromEnvironment("CosmosDbConnectionString"),
+    readFromEnvironment("CosmosDbConnectionString")
   ),
   RE.bind("issuerDbName", () =>
-    readFromEnvironment("CosmosDbIssuerDatabaseName"),
+    readFromEnvironment("CosmosDbIssuerDatabaseName")
   ),
-  RE.bind("userDbName", () => readFromEnvironment("CosmosDbUserDatabaseName")),
+  RE.bind("userDbName", () => readFromEnvironment("CosmosDbUserDatabaseName"))
 );

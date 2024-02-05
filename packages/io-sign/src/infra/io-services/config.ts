@@ -26,6 +26,6 @@ export const getIoServicesConfigFromEnvironment: RE.ReaderEither<
   requestTimeout: RE.right(1000),
   configurationId: pipe(
     readFromEnvironment("IoServicesConfigurationId"),
-    RE.chainEitherKW(validate(Ulid)),
+    RE.chainEitherKW(validate(Ulid))
   ),
 });

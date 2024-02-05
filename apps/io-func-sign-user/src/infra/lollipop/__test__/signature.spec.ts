@@ -33,10 +33,10 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
         getSignatureFromHeaderName(
           signatureInput,
           sigantures,
-          "x-pagopa-lollipop-custom-tos-challenge",
+          "x-pagopa-lollipop-custom-tos-challenge"
         ),
-        E.getOrElse(() => "INVALID"),
-      ),
+        E.getOrElse(() => "INVALID")
+      )
     ).toBe(signature2);
   });
   it("should return correct signature for x-pagopa-lollipop-custom-sign-challenge", () => {
@@ -45,10 +45,10 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
         getSignatureFromHeaderName(
           signatureInput,
           sigantures,
-          "x-pagopa-lollipop-custom-sign-challenge",
+          "x-pagopa-lollipop-custom-sign-challenge"
         ),
-        E.getOrElse(() => "INVALID"),
-      ),
+        E.getOrElse(() => "INVALID")
+      )
     ).toBe(signature3);
   });
   it("should fail for x-pagopa-lollipop-custom-invalid", () => {
@@ -57,10 +57,10 @@ describe("lollipop infra: getSignatureFromHeaderName", () => {
         getSignatureFromHeaderName(
           signatureInput,
           sigantures,
-          "x-pagopa-lollipop-custom-invalid",
+          "x-pagopa-lollipop-custom-invalid"
         ),
-        E.getOrElse(() => "INVALID"),
-      ),
+        E.getOrElse(() => "INVALID")
+      )
     ).toBe("INVALID");
   });
 });
@@ -71,8 +71,8 @@ describe("lollipop infra: getSignaturePrefixFromHeaderName", () => {
       pipe(
         "x-pagopa-lollipop-custom-tos-challenge",
         getSignaturePrefixFromHeaderName(signatureInput),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe("sig2=");
   });
 
@@ -81,8 +81,8 @@ describe("lollipop infra: getSignaturePrefixFromHeaderName", () => {
       pipe(
         "x-pagopa-lollipop-custom-sign-challenge",
         getSignaturePrefixFromHeaderName(signatureInput),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe("sig3=");
   });
   it("should fail for x-pagopa-lollipop-custom-invalid header name", () => {
@@ -90,8 +90,8 @@ describe("lollipop infra: getSignaturePrefixFromHeaderName", () => {
       pipe(
         "x-pagopa-lollipop-custom-invalid",
         getSignaturePrefixFromHeaderName(signatureInput),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe("INVALID");
   });
 });
@@ -102,8 +102,8 @@ describe("lollipop infra: getSignatureFromPrefix", () => {
       pipe(
         "sig2=" as LollipopSignaturePrefix,
         getSignatureFromPrefix(sigantures),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe(signature2);
   });
 
@@ -112,8 +112,8 @@ describe("lollipop infra: getSignatureFromPrefix", () => {
       pipe(
         "sig1=" as LollipopSignaturePrefix,
         getSignatureFromPrefix(sigantures),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe(signature1);
   });
   it("shouldfail for sig4 prefix", () => {
@@ -121,8 +121,8 @@ describe("lollipop infra: getSignatureFromPrefix", () => {
       pipe(
         "sig4=" as LollipopSignaturePrefix,
         getSignatureFromPrefix(sigantures),
-        O.getOrElse(() => "INVALID"),
-      ),
+        O.getOrElse(() => "INVALID")
+      )
     ).toBe("INVALID");
   });
 });

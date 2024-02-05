@@ -57,7 +57,7 @@ export class ScanQrCodeDialogElement extends LitElement {
         <p>
           ${msg(
             html`To view and sign the documents with IO, <br />
-              scan this code with your device`,
+              scan this code with your device`
           )}
         </p>
         <div>

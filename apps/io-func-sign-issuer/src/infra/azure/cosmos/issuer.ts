@@ -49,7 +49,7 @@ class IssuerModel extends CosmosdbModel<
   }
 
   findBySubscriptionId(
-    subscriptionId: string,
+    subscriptionId: string
   ): TE.TaskEither<CosmosErrors, O.Option<RetrievedIssuer>> {
     return pipe(
       TE.tryCatch(
@@ -64,15 +64,15 @@ class IssuerModel extends CosmosdbModel<
               ],
               query: `SELECT * FROM m WHERE m.${partitionKey} = @partitionKey`,
             }),
-            asyncIterableToArray,
+            asyncIterableToArray
           ),
-        toCosmosErrorResponse,
+        toCosmosErrorResponse
       ),
       TE.map(RA.flatten),
       TE.chainW(
-        flow(E.sequenceArray, E.mapLeft(CosmosDecodingError), TE.fromEither),
+        flow(E.sequenceArray, E.mapLeft(CosmosDecodingError), TE.fromEither)
       ),
-      TE.map(RA.head),
+      TE.map(RA.head)
     );
   }
 }
@@ -97,18 +97,18 @@ export class CosmosDbIssuerRepository implements IssuerRepository {
               this.#issuerModel.find([
                 issuerByVatNumber.issuerId,
                 issuerByVatNumber.subscriptionId,
-              ]),
-          ),
-        ),
+              ])
+          )
+        )
       ),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
   }
 
   getBySubscriptionId(subscriptionId: Issuer["subscriptionId"]) {
     return pipe(
       this.#issuerModel.findBySubscriptionId(subscriptionId),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
   }
 }
@@ -130,12 +130,12 @@ export const makeGetIssuerByVatNumber =
                 model.find([
                   issuerByVatNumber.issuerId,
                   issuerByVatNumber.subscriptionId,
-                ]),
-              ),
-          ),
-        ),
+                ])
+              )
+          )
+        )
       ),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export const makeGetIssuerBySubscriptionId =
@@ -144,7 +144,7 @@ export const makeGetIssuerBySubscriptionId =
     pipe(
       new IssuerModel(db),
       (model) => model.findBySubscriptionId(subscriptionId),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 // END
 
@@ -154,7 +154,7 @@ export const makeInsertIssuer =
     pipe(
       new IssuerModel(db),
       (model) => model.create(issuer),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export type InsertIssuer = (issuer: Issuer) => TE.TaskEither<Error, Issuer>;
@@ -167,6 +167,6 @@ export const makeCheckIssuerWithSameVatNumber =
       TE.chain((existentIssuer) =>
         O.isSome(existentIssuer)
           ? TE.left(new Error("An issuer already exists with this vatNumber"))
-          : TE.right(issuer),
-      ),
+          : TE.right(issuer)
+      )
     );

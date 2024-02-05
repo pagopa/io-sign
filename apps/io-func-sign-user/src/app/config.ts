@@ -82,5 +82,5 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       ioLink: config.ioLink,
     },
     namirial: config.namirial,
-  })),
+  }))
 );

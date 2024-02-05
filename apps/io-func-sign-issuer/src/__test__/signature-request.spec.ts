@@ -47,8 +47,8 @@ describe("SignatureRequest", () => {
       const request = newSignatureRequest(dossier, newSigner(), issuer);
       expect(
         request.documents.every(
-          (document) => document.status === "WAIT_FOR_UPLOAD",
-        ),
+          (document) => document.status === "WAIT_FOR_UPLOAD"
+        )
       ).toBe(true);
     });
   });
@@ -62,8 +62,8 @@ describe("SignatureRequest", () => {
           withExpiryDate(newExpiryDate),
           E.map((request) => request.expiresAt),
           E.map(isEqual(newExpiryDate)),
-          E.getOrElse(() => false),
-        ),
+          E.getOrElse(() => false)
+        )
       ).toBe(true);
     });
     it("should return an error on invalid expiry date", () => {
@@ -71,8 +71,8 @@ describe("SignatureRequest", () => {
         pipe(
           newSignatureRequest(dossier, newSigner(), issuer),
           withExpiryDate(pipe(new Date(), subDays(100))),
-          E.isLeft,
-        ),
+          E.isLeft
+        )
       ).toBe(true);
     });
   });

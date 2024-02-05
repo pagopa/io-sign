@@ -43,7 +43,7 @@ const documentNotFoundError = new EntityNotFoundError("Document");
 export const newUploadMetadata =
   (documentId: Document["id"]) =>
   (
-    signatureRequest: SignatureRequest,
+    signatureRequest: SignatureRequest
   ): E.Either<EntityNotFoundError, UploadMetadata> =>
     pipe(
       signatureRequest,
@@ -57,7 +57,7 @@ export const newUploadMetadata =
         createdAt: new Date(),
         updatedAt: new Date(),
         validated: false,
-      })),
+      }))
     );
 
 export const markUploadMetadataAsValid = (uploadMetadata: UploadMetadata) =>
@@ -68,23 +68,23 @@ export const markUploadMetadataAsValid = (uploadMetadata: UploadMetadata) =>
   });
 
 export type InsertUploadMetadata = (
-  uploadMetadata: UploadMetadata,
+  uploadMetadata: UploadMetadata
 ) => TE.TaskEither<Error, UploadMetadata>;
 
 export const UploadUrl = UrlFromString;
 export type UploadUrl = t.TypeOf<typeof UploadUrl>;
 
 export type GetUploadUrl = (
-  uploadMetadata: UploadMetadata,
+  uploadMetadata: UploadMetadata
 ) => TE.TaskEither<Error, UploadUrl>;
 
 export const uploadMetadataNotFoundError = new EntityNotFoundError(
-  "UploadMetadata",
+  "UploadMetadata"
 );
 
 export type UploadMetadataRepository = {
   get: (
-    id: UploadMetadata["id"],
+    id: UploadMetadata["id"]
   ) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
   upsert: (meta: UploadMetadata) => TE.TaskEither<Error, UploadMetadata>;
 };
@@ -95,7 +95,7 @@ type UploadMetadataEnvironment = {
 
 export const getUploadMetadata =
   (
-    id: UploadMetadata["id"],
+    id: UploadMetadata["id"]
   ): RTE.ReaderTaskEither<UploadMetadataEnvironment, Error, UploadMetadata> =>
   ({ uploadMetadataRepository: repo }) =>
     pipe(
@@ -103,16 +103,14 @@ export const getUploadMetadata =
       TE.chain(
         TE.fromOption(
           () =>
-            new Error(
-              "Unable to find the metadata associated with this upload",
-            ),
-        ),
-      ),
+            new Error("Unable to find the metadata associated with this upload")
+        )
+      )
     );
 
 export const upsertUploadMetadata =
   (
-    meta: UploadMetadata,
+    meta: UploadMetadata
   ): RTE.ReaderTaskEither<UploadMetadataEnvironment, Error, UploadMetadata> =>
   ({ uploadMetadataRepository: repo }) =>
     repo.upsert(meta);
@@ -122,7 +120,7 @@ export type FileStorage = {
   download: (filename: string) => TE.TaskEither<Error, Buffer>;
   createFromUrl: (
     url: string,
-    filename: string,
+    filename: string
   ) => TE.TaskEither<Error, string>;
   remove: (filename: string) => TE.TaskEither<Error, void>;
   getUrl: (filename: string) => string;
@@ -130,7 +128,7 @@ export type FileStorage = {
 
 export const getUploadedDocument =
   (
-    filename: string,
+    filename: string
   ): RTE.ReaderTaskEither<
     { uploadedFileStorage: FileStorage },
     Error,
@@ -146,17 +144,17 @@ export const getUploadedDocument =
             identity,
             () =>
               new Error(
-                "the file referenced by the upload metadata does not exist",
-              ),
-          ),
-        ),
+                "the file referenced by the upload metadata does not exist"
+              )
+          )
+        )
       ),
-      TE.chain(uploadedFileStorage.download),
+      TE.chain(uploadedFileStorage.download)
     );
 
 export const removeDocumentFromStorage =
   (
-    filename: string,
+    filename: string
   ): RTE.ReaderTaskEither<{ uploadedFileStorage: FileStorage }, Error, void> =>
   ({ uploadedFileStorage: storage }) =>
     storage.remove(filename);
@@ -164,7 +162,7 @@ export const removeDocumentFromStorage =
 export const createDocumentFromUrl =
   (filename: string) =>
   (
-    url: string,
+    url: string
   ): RTE.ReaderTaskEither<
     { validatedFileStorage: FileStorage },
     Error,

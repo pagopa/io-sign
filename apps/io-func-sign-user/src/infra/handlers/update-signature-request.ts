@@ -20,7 +20,7 @@ export const UpdateSignatureRequestHandler = H.of(
       RTE.chainEitherK(markAsCancelled(new Date())),
       RTE.chain(upsertSignatureRequest),
       RTE.chainFirstW(
-        createAndSendAnalyticsEvent(EventName.SIGNATURE_CANCELLED),
-      ),
-    ),
+        createAndSendAnalyticsEvent(EventName.SIGNATURE_CANCELLED)
+      )
+    )
 );

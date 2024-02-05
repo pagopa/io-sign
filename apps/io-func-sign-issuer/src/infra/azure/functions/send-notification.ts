@@ -39,7 +39,7 @@ const makeSendNotificationHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
   configurationId: Ulid,
-  eventHubAnalyticsClient: EventHubProducerClient,
+  eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
@@ -48,7 +48,7 @@ const makeSendNotificationHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getDossier = makeGetDossier(db);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
-    eventHubAnalyticsClient,
+    eventHubAnalyticsClient
   );
 
   const sendNotification = makeSendNotification(
@@ -56,12 +56,12 @@ const makeSendNotificationHandler = (
     getFiscalCodeBySignerId,
     upsertSignatureRequest,
     getDossier,
-    createAndSendAnalyticsEvent,
+    createAndSendAnalyticsEvent
   );
 
   const requireSignatureRequest = makeRequireSignatureRequest(
     getIssuerBySubscriptionId,
-    getSignatureRequest,
+    getSignatureRequest
   );
 
   const requireSendNotificationPayload: RTE.ReaderTaskEither<
@@ -76,18 +76,18 @@ const makeSendNotificationHandler = (
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     TE.fromEither,
-    TE.chain(requireSendNotificationPayload),
+    TE.chain(requireSendNotificationPayload)
   );
 
   return createHandler(
     decodeHttpRequest,
     sendNotification,
     error,
-    flow(NotificationToApiModel.encode, success(NotificationDetailView)),
+    flow(NotificationToApiModel.encode, success(NotificationDetailView))
   );
 };
 
 export const makeSendNotificationFunction = flow(
   makeSendNotificationHandler,
-  azure.unsafeRun,
+  azure.unsafeRun
 );

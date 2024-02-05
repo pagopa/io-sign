@@ -35,10 +35,10 @@ export type GetAttachmentPayload = {
 const makeGetThirdPartyMessageAttachmentContentHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
   db: Database,
-  signedContainerClient: ContainerClient,
+  signedContainerClient: ContainerClient
 ) => {
   const getSignerByFiscalCode = makeGetSignerByFiscalCode(
-    pdvTokenizerClientWithApiKey,
+    pdvTokenizerClientWithApiKey
   );
 
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -46,7 +46,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
   const requireDocumentIdFromPath = flow(
     path("documentId"),
     E.fromOption(() => new Error(`missing "documentId" in path`)),
-    E.chainW(validate(DocumentId, `invalid "documentId" supplied`)),
+    E.chainW(validate(DocumentId, `invalid "documentId" supplied`))
   );
 
   const getDocumenContent: GetDocumentContent = (document: DocumentReady) =>
@@ -63,8 +63,8 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
     signatureRequest: flow(
       makeRequireSignatureRequestByFiscalCode(
         getSignatureRequest,
-        getSignerByFiscalCode,
-      ),
+        getSignerByFiscalCode
+      )
     ),
     documentId: RTE.fromReaderEither(requireDocumentIdFromPath),
   });
@@ -72,7 +72,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     TE.fromEither,
-    TE.chain(requireGetAttachmentPayload),
+    TE.chain(requireGetAttachmentPayload)
   );
 
   return createHandler(
@@ -80,11 +80,11 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
     ({ signatureRequest, documentId }) =>
       getSignedDocumentContent(signatureRequest, documentId),
     error,
-    successBuffer("application/pdf"),
+    successBuffer("application/pdf")
   );
 };
 
 export const makeGetThirdPartyMessageAttachmentContentFunction = flow(
   makeGetThirdPartyMessageAttachmentContentHandler,
-  azure.unsafeRun,
+  azure.unsafeRun
 );

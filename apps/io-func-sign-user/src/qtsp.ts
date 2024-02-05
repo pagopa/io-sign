@@ -16,7 +16,7 @@ const minMaxArray = <C extends t.Mixed>(min: number, max: number, a: C) =>
     t.array(a),
     (n: C[]): n is t.Branded<C[], IMinMaxArray<C>> =>
       min < n.length && n.length < max,
-    "minMaxArray",
+    "minMaxArray"
   );
 
 export const QtspClauses = t.type({

@@ -22,12 +22,12 @@ export type IOApiClient = {
 export const createIOApiClient = (
   baseUrl: string,
   subscriptionKey: string,
-  timeout = 1000 as Millisecond,
+  timeout = 1000 as Millisecond
 ): IOApiClient => ({
   client: createClient<"SubscriptionKey">({
     baseUrl,
     fetchApi: toFetch(
-      setFetchTimeout(timeout, abortableFetch),
+      setFetchTimeout(timeout, abortableFetch)
     ) as unknown as typeof fetch,
     withDefaults: (op) => (params) =>
       op({

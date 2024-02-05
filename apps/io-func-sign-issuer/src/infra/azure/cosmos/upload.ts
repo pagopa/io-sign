@@ -42,7 +42,7 @@ export const makeInsertUploadMetadata =
     pipe(
       new UploadMetadataModel(db),
       (model) => model.create(uploadMetadata),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export class CosmosDbUploadMetadataRepository

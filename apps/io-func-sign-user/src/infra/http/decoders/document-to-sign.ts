@@ -22,7 +22,7 @@ import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
 import { DocumentToSign, SignatureField } from "../../../signature-field";
 
 const toClauseType = (
-  type: ClauseTypeEnum,
+  type: ClauseTypeEnum
 ): SignatureField["clause"]["type"] => {
   switch (type) {
     case ClauseTypeEnum.OPTIONAL:
@@ -48,13 +48,13 @@ export const SignatureFieldFromApiModel = new t.Type<
         E.map((title) => ({
           title,
           type: toClauseType(type),
-        })),
+        }))
       ),
       attributes:
         "unique_name" in attrs
           ? pipe(
               NonEmptyString.decode(attrs.unique_name),
-              E.map((uniqueName) => ({ uniqueName })),
+              E.map((uniqueName) => ({ uniqueName }))
             )
           : pipe(
               attrs,
@@ -63,11 +63,11 @@ export const SignatureFieldFromApiModel = new t.Type<
                 bottomLeft: attrs.bottom_left,
                 topRight: attrs.top_right,
                 page: attrs.page,
-              })),
+              }))
             ),
     }),
 
-  identity,
+  identity
 );
 
 export const DocumentToSignFromApiModel = new t.Type<
@@ -86,9 +86,9 @@ export const DocumentToSignFromApiModel = new t.Type<
       E.map((signatureFields) => ({
         documentId: document_id,
         signatureFields,
-      })),
+      }))
     ),
-  identity,
+  identity
 );
 
 export const requireDocumentsSignature = flow(
@@ -105,11 +105,11 @@ export const requireDocumentsSignature = flow(
             errors.map((error) =>
               error.message !== undefined
                 ? error.message
-                : "Document to sign not valid!",
-            ),
-          ),
+                : "Document to sign not valid!"
+            )
+          )
       ),
-      E.chainW(validate(t.array(DocumentToSign), "Invalid documents to sign")),
-    ),
-  ),
+      E.chainW(validate(t.array(DocumentToSign), "Invalid documents to sign"))
+    )
+  )
 );

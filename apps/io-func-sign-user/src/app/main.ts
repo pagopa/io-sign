@@ -30,7 +30,7 @@ import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity),
+  E.getOrElseW(identity)
 );
 
 if (configOrError instanceof Error) {
@@ -44,66 +44,66 @@ const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
-  "analytics",
+  "analytics"
 );
 
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "filled-modules",
+  "filled-modules"
 );
 
 const documentsToFillQueue = new QueueClient(
   config.azure.storage.connectionString,
-  "waiting-for-documents-to-fill",
+  "waiting-for-documents-to-fill"
 );
 
 const qtspQueue = new QueueClient(
   config.azure.storage.connectionString,
-  "waiting-for-qtsp",
+  "waiting-for-qtsp"
 );
 
 const onWaitForSignatureQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "on-signature-request-wait-for-signature",
+  "on-signature-request-wait-for-signature"
 );
 
 const onSignedQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "on-signature-request-signed",
+  "on-signature-request-signed"
 );
 
 const onRejectedQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "on-signature-request-rejected",
+  "on-signature-request-rejected"
 );
 
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "validated-documents",
+  "validated-documents"
 );
 
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "signed-documents",
+  "signed-documents"
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey,
+  config.pagopa.tokenizer.apiKey
 );
 
 const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.basePath,
-  config.pagopa.ioServices.subscriptionKey,
+  config.pagopa.ioServices.subscriptionKey
 );
 
 const lollipopApiClient = createLollipopApiClient(
   config.pagopa.lollipop.apiBasePath,
-  config.pagopa.lollipop.apiKey,
+  config.pagopa.lollipop.apiKey
 );
 
 const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
-  config.pagopa.ioLink,
+  config.pagopa.ioLink
 );
 
 export const Info = makeInfoFunction(
@@ -117,27 +117,27 @@ export const Info = makeInfoFunction(
   signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
-  onWaitForSignatureQueueClient,
+  onWaitForSignatureQueueClient
 );
 
 export const CreateFilledDocument = makeCreateFilledDocumentFunction(
   filledContainerClient,
   documentsToFillQueue,
-  pdvTokenizerClient,
+  pdvTokenizerClient
 );
 
 export const FillDocument = makeFillDocumentFunction(
   pdvTokenizerClient,
-  filledContainerClient,
+  filledContainerClient
 );
 
 export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
   pdvTokenizerClient,
-  ioApiClient,
+  ioApiClient
 );
 
 export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
-  config.namirial,
+  config.namirial
 );
 
 export const CreateSignature = makeCreateSignatureFunction(
@@ -147,13 +147,13 @@ export const CreateSignature = makeCreateSignatureFunction(
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
-  config.namirial,
+  config.namirial
 );
 
 export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
   database,
   onWaitForSignatureQueueClient,
-  generateSignatureRequestQrCode,
+  generateSignatureRequestQrCode
 );
 
 export const ValidateSignature = makeValidateSignatureFunction(
@@ -162,7 +162,7 @@ export const ValidateSignature = makeValidateSignatureFunction(
   config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
-  eventHubAnalyticsClient,
+  eventHubAnalyticsClient
 );
 
 export const GetThirdPartyMessageDetails =
@@ -172,11 +172,11 @@ export const GetThirdPartyMessageAttachmentContent =
   makeGetThirdPartyMessageAttachmentContentFunction(
     pdvTokenizerClient,
     database,
-    signedContainerClient,
+    signedContainerClient
   );
 
 const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
-  database,
+  database
 );
 
 export const GetSignatureRequests = GetSignatureRequestsFunction({

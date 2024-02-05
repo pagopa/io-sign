@@ -48,7 +48,7 @@ export const validateExistingSignatureField =
       E.fromOption(() => [
         `(${clauseTitle}) the field "${uniqueName}" was not found is the uploaded document`,
       ]),
-      E.map(constVoid),
+      E.map(constVoid)
     );
 
 export const validateSignatureFieldToBeCreated =
@@ -58,7 +58,7 @@ export const validateSignatureFieldToBeCreated =
       page,
       coordinates: { x, y },
       size: { w, h },
-    }: SignatureFieldToBeCreatedAttributes,
+    }: SignatureFieldToBeCreatedAttributes
   ) =>
   (documentMetadata: PdfDocumentMetadata): E.Either<string[], void> =>
     pipe(
@@ -71,24 +71,24 @@ export const validateSignatureFieldToBeCreated =
         (page) => x + w < page.width && y + h < page.height,
         () => [
           `(${clauseTitle}) incompatible coordinates: they can't fit in the uploaded document`,
-        ],
+        ]
       ),
-      E.map(constVoid),
+      E.map(constVoid)
     );
 
 const isCompatibleWithSignatureFields = (
-  signatureFields: DocumentMetadata["signatureFields"],
+  signatureFields: DocumentMetadata["signatureFields"]
 ): RE.ReaderEither<PdfDocumentMetadata, Error, void> =>
   pipe(
     signatureFields,
     A.map(({ attributes, clause: { title } }) =>
       SignatureFieldAttributes.is(attributes)
         ? validateExistingSignatureField(title, attributes)
-        : validateSignatureFieldToBeCreated(title, attributes),
+        : validateSignatureFieldToBeCreated(title, attributes)
     ),
     A.sequence(RE.getApplicativeReaderValidation(A.getSemigroup<string>())),
     RE.mapLeft((problems) => new Error(problems.join("\n"))),
-    RE.map(constVoid),
+    RE.map(constVoid)
   );
 
 const loggingContext = (meta: UploadMetadata) => ({
@@ -101,7 +101,7 @@ export const validateDocument = (
   documentContent: Buffer,
   documentMetadata: PdfDocumentMetadata,
   signatureFields: DocumentMetadata["signatureFields"],
-  loggingContext?: Record<string, unknown>,
+  loggingContext?: Record<string, unknown>
 ) =>
   RTE.sequenceSeqArray([
     // check the magic number
@@ -112,10 +112,10 @@ export const validateDocument = (
         (bytes) => bytes === "%PDF",
         () =>
           new Error(
-            "the uploaded document has an invalid file signature (not a valid PDF)",
-          ),
+            "the uploaded document has an invalid file signature (not a valid PDF)"
+          )
       ),
-      RTE.map(constVoid),
+      RTE.map(constVoid)
     ),
     // check if the uploaded document metadata (document size, pages, existing signature fields)
     // are compatible with the given "signature fields" (existing or to be created)
@@ -124,8 +124,8 @@ export const validateDocument = (
       isCompatibleWithSignatureFields(signatureFields),
       RTE.fromEither,
       RTE.chainFirstW(() =>
-        L.debugRTE("the signature fields are valid", loggingContext),
-      ),
+        L.debugRTE("the signature fields are valid", loggingContext)
+      )
     ),
   ]);
 
@@ -140,17 +140,17 @@ export const validateUpload = flow(
   getUploadMetadata,
   RTE.bindTo("meta"),
   RTE.bindW("signatureRequest", ({ meta }) =>
-    getSignatureRequest(meta.signatureRequestId, meta.issuerId),
+    getSignatureRequest(meta.signatureRequestId, meta.issuerId)
   ),
   RTE.bindW("document", ({ signatureRequest, meta }) =>
     pipe(
       signatureRequest,
       getDocument(meta.documentId),
       E.fromOption(
-        () => new Error("no document was found with the specified document id"),
+        () => new Error("no document was found with the specified document id")
       ),
-      RTE.fromEither,
-    ),
+      RTE.fromEither
+    )
   ),
   // Mark document as "WAIT_FOR_VALIDATION"
   RTE.chainW(({ signatureRequest, document, ...ctx }) =>
@@ -162,8 +162,8 @@ export const validateUpload = flow(
         signatureRequest,
         document,
         ...ctx,
-      })),
-    ),
+      }))
+    )
   ),
   RTE.chainW(
     ({
@@ -183,14 +183,14 @@ export const validateUpload = flow(
           "documentMetadata",
           ({ documentContent }) =>
             () =>
-              getPdfMetadata(documentContent),
+              getPdfMetadata(documentContent)
         ),
 
         RTE.chainFirstW(({ documentMetadata }) =>
           L.debugRTE("obtained pdf metadata", {
             documentMetadata,
             ...loggingContext(meta),
-          }),
+          })
         ),
         // Validate document
         RTE.chainFirstW(({ documentContent, documentMetadata }) =>
@@ -198,8 +198,8 @@ export const validateUpload = flow(
             documentContent,
             documentMetadata,
             signatureFields,
-            loggingContext(meta),
-          ),
+            loggingContext(meta)
+          )
         ),
         // The uploaded PDF it's a valid Document for
         // the specified Signature Request. (mark as READY)
@@ -211,8 +211,8 @@ export const validateUpload = flow(
             RTE.chainEitherKW((url) =>
               pipe(
                 signatureRequest,
-                markDocumentAsReady(meta.documentId, url, documentMetadata),
-              ),
+                markDocumentAsReady(meta.documentId, url, documentMetadata)
+              )
             ),
             RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
             // Update upload metadata and remove document
@@ -226,18 +226,18 @@ export const validateUpload = flow(
                   L.infoRTE("validation done", {
                     isDocumentValid: true,
                     ...loggingContext(meta),
-                  }),
+                  })
                 ),
                 RTE.map((meta) => meta.id),
-                RTE.chainW(removeDocumentFromStorage),
-              ),
+                RTE.chainW(removeDocumentFromStorage)
+              )
             ),
             RTE.chainFirstW(() =>
               createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
-                signatureRequest,
-              ),
-            ),
-          ),
+                signatureRequest
+              )
+            )
+          )
         ),
         // Mark the document as REJECTED on error
         RTE.orElseW((e) =>
@@ -250,17 +250,17 @@ export const validateUpload = flow(
               L.infoRTE("validation done", {
                 isDocumentValid: false,
                 ...loggingContext(meta),
-              }),
+              })
             ),
             // Remove REJECTED file from temp storage
             RTE.chainW(() => removeDocumentFromStorage(meta.id)),
             RTE.chainFirstW(() =>
               createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
-                signatureRequest,
-              ),
-            ),
-          ),
-        ),
-      ),
-  ),
+                signatureRequest
+              )
+            )
+          )
+        )
+      )
+  )
 );

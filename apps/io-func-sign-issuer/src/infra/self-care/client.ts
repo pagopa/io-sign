@@ -26,7 +26,7 @@ export const SelfCareInstitution = t.type({
 export type SelfCareInstitution = t.TypeOf<typeof SelfCareInstitution>;
 
 export type GetInstitutionById = (
-  internalInstitutionId: GenericContract["internalIstitutionID"],
+  internalInstitutionId: GenericContract["internalIstitutionID"]
 ) => TE.TaskEither<Error, SelfCareInstitution>;
 
 export const makeGetInstitutionById =
@@ -44,19 +44,18 @@ export const makeGetInstitutionById =
                 ...defaultHeader,
                 "Ocp-Apim-Subscription-Key": api.apiKey,
               },
-            },
+            }
           ),
-        E.toError,
+        E.toError
       ),
       TE.filterOrElse(
         isSuccessful,
-        () =>
-          new Error("The attempt to get institution from self-care failed."),
+        () => new Error("The attempt to get institution from self-care failed.")
       ),
       TE.chain(
         responseToJson(
           SelfCareInstitution,
-          "Invalid format for self-care institution",
-        ),
-      ),
+          "Invalid format for self-care institution"
+        )
+      )
     );

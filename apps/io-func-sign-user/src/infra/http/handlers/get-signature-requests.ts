@@ -28,6 +28,6 @@ export const GetSignatureRequestsHandler = H.of(
     map((items) => ({ items })),
     chainEitherKW(H.parse(SignatureRequestList)),
     map(H.successJson),
-    orElseW(logErrorAndReturnResponse),
-  ),
+    orElseW(logErrorAndReturnResponse)
+  )
 );

@@ -18,10 +18,10 @@ import { signedNoMoreThan90DaysAgo } from "../../../signature-request";
 
 const makeGetThirdPartyMessageDetailsHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
-  db: Database,
+  db: Database
 ) => {
   const getSignerByFiscalCode = makeGetSignerByFiscalCode(
-    pdvTokenizerClientWithApiKey,
+    pdvTokenizerClientWithApiKey
   );
 
   const getSignatureRequest = makeGetSignatureRequest(db);
@@ -29,29 +29,29 @@ const makeGetThirdPartyMessageDetailsHandler = (
   const requireSignatureRequestByFiscalCode =
     makeRequireSignatureRequestByFiscalCode(
       getSignatureRequest,
-      getSignerByFiscalCode,
+      getSignerByFiscalCode
     );
 
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     TE.fromEither,
-    TE.chain(requireSignatureRequestByFiscalCode),
+    TE.chain(requireSignatureRequestByFiscalCode)
   );
 
   const encodeHttpSuccessResponse = flow(
     SignatureRequestToThirdPartyMessage.encode,
-    success(ThirdPartyMessage),
+    success(ThirdPartyMessage)
   );
 
   return createHandler(
     decodeHttpRequest,
     (request) => pipe(request, signedNoMoreThan90DaysAgo, TE.fromEither),
     error,
-    encodeHttpSuccessResponse,
+    encodeHttpSuccessResponse
   );
 };
 
 export const makeGetThirdPartyMessageDetailsFunction = flow(
   makeGetThirdPartyMessageDetailsHandler,
-  azure.unsafeRun,
+  azure.unsafeRun
 );

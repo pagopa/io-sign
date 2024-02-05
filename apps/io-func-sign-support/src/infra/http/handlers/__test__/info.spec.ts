@@ -20,7 +20,7 @@ describe("InfoHandler", () => {
         right: expect.objectContaining({
           statusCode: 200,
         }),
-      }),
+      })
     );
   });
 });

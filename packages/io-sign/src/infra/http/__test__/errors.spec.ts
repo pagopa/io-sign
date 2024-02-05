@@ -27,27 +27,27 @@ describe("errors", () => {
       const isEqual = pipe(
         HttpErrorFromError.decode(error),
         E.map((e) => e === error),
-        E.getOrElse(() => false),
+        E.getOrElse(() => false)
       );
       expect(isEqual).toBe(true);
     });
     it("should parse an EntityNotFoundError as HttpNotFoundError", () => {
       const entityNotFound = new EntityNotFoundError(
-        "The specified entity was not found",
+        "The specified entity was not found"
       );
       const isHttpNotFoundError = pipe(
         HttpErrorFromError.decode(entityNotFound),
         E.mapLeft(() => false),
         E.filterOrElse(
           (e) => e.name === "HttpError",
-          () => false,
+          () => false
         ),
         E.filterOrElse(
           (e) => e.status === 404,
-          () => false,
+          () => false
         ),
         E.map(HttpErrorFromError.is),
-        E.getOrElse(identity),
+        E.getOrElse(identity)
       );
       expect(isHttpNotFoundError).toBe(true);
     });
@@ -58,14 +58,14 @@ describe("errors", () => {
         E.mapLeft(() => false),
         E.filterOrElse(
           (e) => e.name === "HttpError",
-          () => false,
+          () => false
         ),
         E.filterOrElse(
           (e) => e.status === 400,
-          () => false,
+          () => false
         ),
         E.map(HttpErrorFromError.is),
-        E.getOrElse(identity),
+        E.getOrElse(identity)
       );
       expect(isHttpBadRequest).toBe(true);
     });
@@ -78,14 +78,14 @@ describe("errors", () => {
         E.mapLeft(() => false),
         E.filterOrElse(
           (e) => e.name === "HttpError",
-          () => false,
+          () => false
         ),
         E.filterOrElse(
           (e) => e.status === 400,
-          () => false,
+          () => false
         ),
         E.map(HttpErrorFromError.is),
-        E.getOrElse(identity),
+        E.getOrElse(identity)
       );
       expect(isHttpBadRequest).toBe(true);
     });

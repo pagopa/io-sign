@@ -35,25 +35,25 @@ export const GetRequestsByDossierHandler = H.of((req: H.HttpRequest) =>
           t.partial({
             continuationToken: NonEmptyString,
             limit: IntegerFromString.pipe(WithinRangeInteger(25, 101)),
-          }),
+          })
         ),
         fromEither,
         map(({ continuationToken, limit }) => ({
           continuationToken,
           maxItemCount: limit,
-        })),
+        }))
       ),
     }),
     chainW(({ dossierId, issuer, options }) =>
       pipe(
         getDossierById(dossierId, issuer.id),
-        map((dossier) => ({ dossier, options })),
-      ),
+        map((dossier) => ({ dossier, options }))
+      )
     ),
     chainW(({ dossier, options }) =>
-      findSignatureRequestsByDossier(dossier, options),
+      findSignatureRequestsByDossier(dossier, options)
     ),
     map(flow(SignatureRequestToListApiModel.encode, H.successJson)),
-    orElseW(logErrorAndReturnResponse),
-  ),
+    orElseW(logErrorAndReturnResponse)
+  )
 );

@@ -113,7 +113,7 @@ describe("GetSignatureRequestHandler", () => {
         right: expect.objectContaining({
           statusCode: 200,
         }),
-      }),
+      })
     );
   });
 
@@ -137,20 +137,20 @@ describe("GetSignatureRequestHandler", () => {
         issuerRepository,
       })();
     expect(
-      requestForSignatureRequestId(mocks.signatureRequest.id),
+      requestForSignatureRequestId(mocks.signatureRequest.id)
     ).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 200,
         }),
-      }),
+      })
     );
     expect(requestForSignatureRequestId(newId())).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 404,
         }),
-      }),
+      })
     );
   });
 
@@ -178,14 +178,14 @@ describe("GetSignatureRequestHandler", () => {
         right: expect.objectContaining({
           statusCode: 404,
         }),
-      }),
+      })
     );
     expect(requestWithRawFiscalCode(mocks.user.fiscalCode)).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 200,
         }),
-      }),
+      })
     );
   });
 
@@ -249,7 +249,7 @@ describe("GetSignatureRequestHandler", () => {
           right: expect.objectContaining({
             statusCode,
           }),
-        }),
+        })
       );
     });
   });

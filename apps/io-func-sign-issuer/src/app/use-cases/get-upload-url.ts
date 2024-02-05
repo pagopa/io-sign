@@ -24,10 +24,10 @@ export const makeGetUploadUrl =
         (req) => req.status === "DRAFT",
         () =>
           new ActionNotAllowedError(
-            `Unable to get the Upload Url. The Signature Request is in ${signatureRequest.status} status`,
-          ),
+            `Unable to get the Upload Url. The Signature Request is in ${signatureRequest.status} status`
+          )
       ),
       TE.chainEitherK(newUploadMetadata(documentId)),
       TE.chain(insertUploadMetadata),
-      TE.chain(getUploadUrl),
+      TE.chain(getUploadUrl)
     );

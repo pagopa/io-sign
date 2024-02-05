@@ -25,8 +25,8 @@ const grantReadAccessToDocuments =
       A.map(toDocumentWithSasUrl("r", 5)),
       A.sequence(RTE.ApplicativeSeq),
       RTE.map(
-        (documents): SignatureRequestSigned => ({ ...request, documents }),
-      ),
+        (documents): SignatureRequestSigned => ({ ...request, documents })
+      )
     )(r.signedContainerClient);
 
 export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
@@ -41,10 +41,10 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
         RTE.right(request),
         RTE.chainEitherK(H.parse(SignatureRequestSigned)),
         RTE.chain(grantReadAccessToDocuments),
-        RTE.alt(() => RTE.right(request)),
-      ),
+        RTE.alt(() => RTE.right(request))
+      )
     ),
     RTE.map(flow(SignatureRequestToApiModel.encode, H.successJson)),
-    RTE.orElseW(logErrorAndReturnResponse),
-  ),
+    RTE.orElseW(logErrorAndReturnResponse)
+  )
 );

@@ -55,17 +55,17 @@ describe("UploadMetadata", () => {
         E.fromOption(
           () =>
             new Error(
-              "invariant error: request should have at least one document",
-            ),
+              "invariant error: request should have at least one document"
+            )
         ),
-        E.chain((documentId) => pipe(request, newUploadMetadata(documentId))),
+        E.chain((documentId) => pipe(request, newUploadMetadata(documentId)))
       );
 
       expect(E.isRight(metaForFirstDocument)).toBe(true);
 
       const metaForNonExistingDocument = pipe(
         request,
-        newUploadMetadata(newId()),
+        newUploadMetadata(newId())
       );
 
       expect(E.isLeft(metaForNonExistingDocument)).toBe(true);

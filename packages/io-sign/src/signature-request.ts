@@ -35,7 +35,7 @@ export type SignatureRequestId = t.TypeOf<typeof SignatureRequestId>;
 
 export const makeSignatureRequestVariant = <S extends string, A, O>(
   status: S,
-  codec: t.Type<A, O>,
+  codec: t.Type<A, O>
 ) =>
   t.intersection([
     SignatureRequest,
@@ -49,7 +49,7 @@ export const SignatureRequestDraft = makeSignatureRequestVariant(
   "DRAFT",
   t.type({
     documents: t.array(Document),
-  }),
+  })
 );
 
 export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
@@ -58,7 +58,7 @@ export const SignatureRequestReady = makeSignatureRequestVariant(
   "READY",
   t.type({
     documents: t.array(DocumentReady),
-  }),
+  })
 );
 
 export type SignatureRequestReady = t.TypeOf<typeof SignatureRequestReady>;
@@ -73,7 +73,7 @@ export const SignatureRequestToBeSigned = makeSignatureRequestVariant(
     t.partial({
       notification: Notification,
     }),
-  ]),
+  ])
 );
 
 export type SignatureRequestToBeSigned = t.TypeOf<
@@ -90,7 +90,7 @@ export const SignatureRequestWaitForQtsp = makeSignatureRequestVariant(
     t.partial({
       notification: Notification,
     }),
-  ]),
+  ])
 );
 
 export type SignatureRequestWaitForQtsp = t.TypeOf<
@@ -107,7 +107,7 @@ export const SignatureRequestSigned = makeSignatureRequestVariant(
     t.partial({
       notification: Notification,
     }),
-  ]),
+  ])
 );
 
 export type SignatureRequestSigned = t.TypeOf<typeof SignatureRequestSigned>;
@@ -124,7 +124,7 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
     t.partial({
       notification: Notification,
     }),
-  ]),
+  ])
 );
 
 export type SignatureRequestRejected = t.TypeOf<
@@ -137,7 +137,7 @@ export const SignatureRequestCancelled = makeSignatureRequestVariant(
     cancelledAt: IsoDateFromString,
     qrCodeUrl: t.string,
     documents: t.array(DocumentReady),
-  }),
+  })
 );
 
 export type SignatureRequestCancelled = t.TypeOf<
@@ -154,11 +154,11 @@ export const getDocument = (id: Document["id"]) =>
         | SignatureRequestToBeSigned
         | SignatureRequestWaitForQtsp
         | SignatureRequestRejected
-        | SignatureRequestCancelled,
+        | SignatureRequestCancelled
     ) => request.documents,
-    findFirst((document: Document) => document.id === id),
+    findFirst((document: Document) => document.id === id)
   );
 
 export type GenerateSignatureRequestQrCode = (
-  signatureRequestId: SignatureRequestId,
+  signatureRequestId: SignatureRequestId
 ) => string;

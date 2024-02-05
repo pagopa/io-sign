@@ -27,14 +27,14 @@ export const toDocumentWithSasUrl =
           pipe(
             defaultBlobGenerateSasUrlOptions(),
             withPermissions(permissions),
-            withExpireInMinutes(expireInMinutes),
-          ),
-        ),
+            withExpireInMinutes(expireInMinutes)
+          )
+        )
       ),
       RTE.map((url) => ({
         ...document,
         url,
-      })),
+      }))
     );
 
 export const getDocumentUrl =
@@ -42,5 +42,5 @@ export const getDocumentUrl =
     pipe(
       document,
       toDocumentWithSasUrl(permissions, expireInMinutes),
-      RTE.map((el) => el.url),
+      RTE.map((el) => el.url)
     );

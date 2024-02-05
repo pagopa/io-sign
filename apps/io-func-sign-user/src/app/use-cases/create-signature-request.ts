@@ -17,7 +17,7 @@ import {
 export const makeCreateSignatureRequest = (
   insertSignatureRequest: InsertSignatureRequest,
   notifyWaitForSignatureEvent: NotifySignatureRequestWaitForSignatureEvent,
-  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode,
+  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
 ) =>
   flow(
     (request: SignatureRequestReady): SignatureRequestToBeSigned => ({
@@ -29,8 +29,8 @@ export const makeCreateSignatureRequest = (
     TE.chainEitherKW(
       validate(
         SignatureRequestToBeSigned,
-        "Unable to validate the Signature Request.",
-      ),
+        "Unable to validate the Signature Request."
+      )
     ),
-    TE.chainW(notifyWaitForSignatureEvent),
+    TE.chainW(notifyWaitForSignatureEvent)
   );

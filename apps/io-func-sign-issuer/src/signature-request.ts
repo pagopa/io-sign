@@ -60,7 +60,7 @@ export const newSignatureRequest = (
   dossier: Dossier,
   signer: Signer,
   issuer: Issuer,
-  documentsMetadata?: NonEmptyArray<DocumentMetadata>,
+  documentsMetadata?: NonEmptyArray<DocumentMetadata>
 ): SignatureRequest => ({
   id: newId(),
   issuerId: dossier.issuerId,
@@ -86,7 +86,7 @@ export const newSignatureRequest = (
         status: "WAIT_FOR_UPLOAD",
         createdAt: new Date(),
         updatedAt: new Date(),
-      })),
+      }))
   ),
 });
 
@@ -98,7 +98,7 @@ class InvalidExpiryDateError extends Error {
 }
 
 const documentNotFoundError = new EntityNotFoundError(
-  "The specified document does not exists.",
+  "The specified document does not exists."
 );
 
 const isExpiryDateValid = (expiryDate: Date) => (request: SignatureRequest) =>
@@ -110,12 +110,12 @@ export const withExpiryDate =
       E.right(request),
       E.filterOrElse(
         isExpiryDateValid(expiryDate),
-        () => new InvalidExpiryDateError(),
+        () => new InvalidExpiryDateError()
       ),
       E.map((request) => ({
         ...request,
         expiresAt: expiryDate,
-      })),
+      }))
     );
 
 export const replaceDocument =
@@ -124,11 +124,11 @@ export const replaceDocument =
       request.documents,
       findIndex((document: Document) => document.id === id),
       O.chain((index) => pipe(request.documents, updateAt(index, updated))),
-      O.map((documents) => ({ ...request, documents })),
+      O.map((documents) => ({ ...request, documents }))
     );
 
 export const canBeMarkedAsReady = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ): request is SignatureRequest & {
   documents: DocumentReady[];
 } =>
@@ -206,8 +206,8 @@ const dispatch =
       case "SIGNED":
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited because the signature request has already been signed`,
-          ),
+            `${action.name} is prohibited because the signature request has already been signed`
+          )
         );
       default:
         // TODO: maybe we can use a different error type
@@ -219,7 +219,7 @@ const dispatch =
 const onDraftStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestDraft,
+    request: SignatureRequestDraft
   ): E.Either<Error, SignatureRequestDraft | SignatureRequestReady> => {
     switch (action.name) {
       case "MARK_AS_READY":
@@ -232,8 +232,8 @@ const onDraftStatus =
         }
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is not possible unless all documents are READY`,
-          ),
+            `${action.name} is not possible unless all documents are READY`
+          )
         );
       case "START_DOCUMENT_VALIDATION":
         return pipe(
@@ -242,11 +242,11 @@ const onDraftStatus =
           E.fromOption(() => documentNotFoundError),
           E.chain(startValidation),
           E.map((updated) =>
-            replaceDocument(action.payload.documentId, updated)(request),
+            replaceDocument(action.payload.documentId, updated)(request)
           ),
           E.chain(
-            E.fromOption(() => new Error("Unable to start the validation")),
-          ),
+            E.fromOption(() => new Error("Unable to start the validation"))
+          )
         );
       case "MARK_DOCUMENT_AS_READY":
         return pipe(
@@ -256,17 +256,17 @@ const onDraftStatus =
           E.chain(
             setReadyStatus(
               action.payload.url,
-              action.payload.pdfDocumentMetadata,
-            ),
+              action.payload.pdfDocumentMetadata
+            )
           ),
           E.map((updated) =>
-            replaceDocument(action.payload.documentId, updated)(request),
+            replaceDocument(action.payload.documentId, updated)(request)
           ),
           E.chain(
             E.fromOption(
-              () => new Error("Unable to mark the document as READY"),
-            ),
-          ),
+              () => new Error("Unable to mark the document as READY")
+            )
+          )
         );
       case "MARK_DOCUMENT_AS_REJECTED":
         return pipe(
@@ -275,19 +275,19 @@ const onDraftStatus =
           E.fromOption(() => documentNotFoundError),
           E.chain(setRejectedStatus(action.payload.reason)),
           E.map((updated) =>
-            replaceDocument(action.payload.documentId, updated)(request),
+            replaceDocument(action.payload.documentId, updated)(request)
           ),
           E.chain(
             E.fromOption(
-              () => new Error("Unable to mark the document as REJECTED"),
-            ),
-          ),
+              () => new Error("Unable to mark the document as REJECTED")
+            )
+          )
         );
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited if the signature request is in DRAFT status`,
-          ),
+            `${action.name} is prohibited if the signature request is in DRAFT status`
+          )
         );
     }
   };
@@ -295,14 +295,14 @@ const onDraftStatus =
 const onReadyStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestReady,
+    request: SignatureRequestReady
   ): E.Either<Error, SignatureRequestToBeSigned> => {
     switch (action.name) {
       case "MARK_AS_READY":
         return E.left(
           new ActionNotAllowedError(
-            "Signature Request is already in READY status",
-          ),
+            "Signature Request is already in READY status"
+          )
         );
       case "MARK_AS_WAIT_FOR_SIGNATURE":
         return E.right({
@@ -314,8 +314,8 @@ const onReadyStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            `${action.name} is prohibited if the signature request is in READY status`,
-          ),
+            `${action.name} is prohibited if the signature request is in READY status`
+          )
         );
     }
   };
@@ -323,7 +323,7 @@ const onReadyStatus =
 const onWaitForSignatureStatus =
   (action: SignatureRequestAction) =>
   (
-    request: SignatureRequestToBeSigned,
+    request: SignatureRequestToBeSigned
   ): E.Either<
     Error,
     | SignatureRequestSigned
@@ -357,23 +357,23 @@ const onWaitForSignatureStatus =
     }
     return E.left(
       new ActionNotAllowedError(
-        `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`,
-      ),
+        `${action.name} is prohibited if the signature request is in WAIT_FOR_SIGNATURE status`
+      )
     );
   };
 
 export const markAsReady = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ): E.Either<Error, SignatureRequestReady & { dossierId: Dossier["id"] }> =>
   pipe(
     dispatch({ name: "MARK_AS_READY" })(request),
     E.filterOrElse(
       (
-        request,
+        request
       ): request is SignatureRequestReady & { dossierId: Dossier["id"] } =>
         request.status === "READY",
-      () => new Error("Unable to mark the Signature Request as READY"),
-    ),
+      () => new Error("Unable to mark the Signature Request as READY")
+    )
   );
 
 export const markAsWaitForSignature = (qrCodeUrl: string) =>
@@ -396,7 +396,7 @@ export const startValidationOnDocument = (documentId: Document["id"]) =>
 export const markDocumentAsReady = (
   documentId: Document["id"],
   url: string,
-  pdfDocumentMetadata: PdfDocumentMetadata,
+  pdfDocumentMetadata: PdfDocumentMetadata
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_READY",
@@ -405,7 +405,7 @@ export const markDocumentAsReady = (
 
 export const markDocumentAsRejected = (
   documentId: Document["id"],
-  reason: string,
+  reason: string
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_REJECTED",
@@ -413,34 +413,34 @@ export const markDocumentAsRejected = (
   });
 
 export type GetSignatureRequest = (
-  id: Id,
+  id: Id
 ) => (issuerId: Id) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
 
 export type InsertSignatureRequest = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export type UpsertSignatureRequest = (
-  request: SignatureRequest,
+  request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export type NotifySignatureRequestReadyEvent = (
-  requestReady: SignatureRequestReady,
+  requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
 
 export type SignatureRequestRepository = {
   get: (
     id: SignatureRequest["id"],
-    issuerId: SignatureRequest["issuerId"],
+    issuerId: SignatureRequest["issuerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
   patchDocument: (
     request: SignatureRequest,
-    documentId: Document["id"],
+    documentId: Document["id"]
   ) => TE.TaskEither<Error, SignatureRequest>;
   findByDossier: (
     dossier: Dossier,
-    options?: { maxItemCount?: number; continuationToken?: string },
+    options?: { maxItemCount?: number; continuationToken?: string }
   ) => Promise<{
     items: ReadonlyArray<unknown>;
     continuationToken?: string;
@@ -455,7 +455,7 @@ export type SignatureRequestEnvironment = {
 export const getSignatureRequest =
   (
     id: SignatureRequest["id"],
-    issuerId: SignatureRequest["issuerId"],
+    issuerId: SignatureRequest["issuerId"]
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -466,14 +466,14 @@ export const getSignatureRequest =
       repo.get(id, issuerId),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("Signature request not found"),
-        ),
-      ),
+          () => new EntityNotFoundError("Signature request not found")
+        )
+      )
     );
 
 export const insertSignatureRequest =
   (
-    request: SignatureRequest,
+    request: SignatureRequest
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -484,7 +484,7 @@ export const insertSignatureRequest =
 
 export const upsertSignatureRequest =
   (
-    request: SignatureRequest,
+    request: SignatureRequest
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -496,7 +496,7 @@ export const upsertSignatureRequest =
 export const patchSignatureRequestDocument =
   (documentId: Document["id"]) =>
   (
-    request: SignatureRequest,
+    request: SignatureRequest
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -511,7 +511,7 @@ export const findSignatureRequestsByDossier =
     options: {
       maxItemCount?: number;
       continuationToken?: string;
-    },
+    }
   ): RTE.ReaderTaskEither<
     SignatureRequestEnvironment,
     Error,
@@ -524,7 +524,7 @@ export const findSignatureRequestsByDossier =
     pipe(
       TE.tryCatch(
         () => repo.findByDossier(dossier, options),
-        (e) => (e instanceof Error ? e : new Error("error on find by dossier")),
+        (e) => (e instanceof Error ? e : new Error("error on find by dossier"))
       ),
       TE.chainEitherKW(
         H.parse(
@@ -535,7 +535,7 @@ export const findSignatureRequestsByDossier =
             t.partial({
               continuationToken: t.string,
             }),
-          ]),
-        ),
-      ),
+          ])
+        )
+      )
     );

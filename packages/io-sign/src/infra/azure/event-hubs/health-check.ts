@@ -14,12 +14,12 @@ import {
 export type AzureEventHubProblemSource = "AzureEventHub";
 
 export const makeAzureEventHubHealthCheck = (
-  client: EventHubProducerClient | EventHubConsumerClient,
+  client: EventHubProducerClient | EventHubConsumerClient
 ): HealthCheck<AzureEventHubProblemSource> =>
   pipe(
     TE.tryCatch(
       () => client.getPartitionIds(),
-      toHealthProblems("AzureEventHub"),
+      toHealthProblems("AzureEventHub")
     ),
-    TE.map(() => true),
+    TE.map(() => true)
   );

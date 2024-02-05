@@ -24,7 +24,7 @@ export const DocumentMetadataToApiModel: E.Encoder<
   encode: ({ title, signatureFields, pdfDocumentMetadata }) => {
     const fields: SignatureField[] = [];
     const heights = new Map<NonNegativeNumber, NonNegativeNumber>(
-      pdfDocumentMetadata.pages.map((p) => [p.number, p.height]),
+      pdfDocumentMetadata.pages.map((p) => [p.number, p.height])
     );
     for (const field of signatureFields) {
       const clause = ClauseToApiModel.encode(field.clause);
@@ -41,7 +41,7 @@ export const DocumentMetadataToApiModel: E.Encoder<
           fields.push({
             clause,
             attrs: SignatureFieldToBeCreatedAttributesToApiModel(
-              pageHeight,
+              pageHeight
             ).encode(field.attributes),
           });
         }

@@ -68,7 +68,7 @@ export class IODialogElement extends LitElement {
             () =>
               html`<button class="close" @click=${this.dispatchClose}>
                 ${unsafeSVG(closeIcon)}
-              </button>`,
+              </button>`
           )}
         </header>
         <main>

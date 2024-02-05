@@ -45,7 +45,7 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
   (
     upsertSignature: UpsertSignature,
     upsertSignatureRequest: UpsertSignatureRequest,
-    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
+    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent
   ) =>
   (signature: Signature, signatureRequest: SignatureRequest) =>
   (rejectedReason: string) =>
@@ -63,10 +63,10 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
           TE.fromEither,
           TE.chain(upsertSignatureRequest),
           TE.chainFirst((r) =>
-            notifySignatureRequestRejectedEvent(r as SignatureRequestRejected),
-          ),
-        ),
-      ),
+            notifySignatureRequestRejectedEvent(r as SignatureRequestRejected)
+          )
+        )
+      )
     );
 
 type RetrievedQtspSignatureRequest =
@@ -86,22 +86,22 @@ export const makeValidateSignature =
     getQtspSignatureRequest: GetQtspSignatureRequest,
     notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
     notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) => {
     const markSignatureAndSignatureRequestAsRejected =
       makeMarkSignatureAndSignatureRequestAsRejected(
         upsertSignature,
         upsertSignatureRequest,
-        notifySignatureRequestRejectedEvent,
+        notifySignatureRequestRejectedEvent
       );
     return pipe(
       signerId,
       getSignature(signatureId),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError(`Signature ${signatureId} not found`),
-        ),
+          () => new EntityNotFoundError(`Signature ${signatureId} not found`)
+        )
       ),
       TE.chainW((signature) =>
         pipe(
@@ -109,19 +109,19 @@ export const makeValidateSignature =
           getSignatureRequest(signature.signatureRequestId),
           TE.chainW(
             TE.fromOption(
-              () => new EntityNotFoundError("Signature Request not found."),
-            ),
+              () => new EntityNotFoundError("Signature Request not found.")
+            )
           ),
           TE.chain((signatureRequest) =>
             pipe(
               getQtspSignatureRequest(signatureRequest.issuerEnvironment)(
-                signature.qtspSignatureRequestId,
+                signature.qtspSignatureRequestId
               ),
               TE.fold(
                 (error): T.Task<RetrievedQtspSignatureRequest> =>
                   T.of({ retrieved: false, error }),
                 (qtspSignatureRequest): T.Task<RetrievedQtspSignatureRequest> =>
-                  T.of({ retrieved: true, qtspSignatureRequest }),
+                  T.of({ retrieved: true, qtspSignatureRequest })
               ),
               TE.fromTask,
               TE.chainFirstW((result) =>
@@ -129,19 +129,19 @@ export const makeValidateSignature =
                   signatureRequest,
                   !result.retrieved
                     ? createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR)
-                    : TE.right,
-                ),
+                    : TE.right
+                )
               ),
               TE.chain((result) =>
                 result.retrieved
                   ? TE.right(result.qtspSignatureRequest)
-                  : TE.left(result.error),
+                  : TE.left(result.error)
               ),
               TE.map((qtspSignatureRequest) => ({
                 qtspSignatureRequest,
                 signatureRequest,
-              })),
-            ),
+              }))
+            )
           ),
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
             switch (qtspSignatureRequest.status) {
@@ -149,8 +149,8 @@ export const makeValidateSignature =
                 return pipe(
                   TE.left(
                     new Error(
-                      "Signature request created by the QTSP but not ready yet. Retry!",
-                    ),
+                      "Signature request created by the QTSP but not ready yet. Retry!"
+                    )
                   ),
                   TE.chainFirstIOK(() =>
                     L.debug("Signature request created by the QTSP", {
@@ -158,12 +158,12 @@ export const makeValidateSignature =
                       qtspSignatureRequest,
                     })({
                       logger: ConsoleLogger,
-                    }),
-                  ),
+                    })
+                  )
                 );
               case "WAITING":
                 return TE.left(
-                  new Error("Signature request not ready yet. Retry!"),
+                  new Error("Signature request not ready yet. Retry!")
                 );
               case "READY":
                 return pipe(
@@ -175,15 +175,15 @@ export const makeValidateSignature =
                       qtspSignatureRequest,
                     })({
                       logger: ConsoleLogger,
-                    }),
+                    })
                   ),
                   TE.chain(() =>
                     TE.left(
                       new Error(
-                        "Certificate created. Signature request not ready yet. Retry. Retry!",
-                      ),
-                    ),
-                  ),
+                        "Certificate created. Signature request not ready yet. Retry. Retry!"
+                      )
+                    )
+                  )
                 );
 
               case "COMPLETED":
@@ -196,14 +196,14 @@ export const makeValidateSignature =
                       TE.fromOption(
                         () =>
                           new Error(
-                            `Signed document with id: ${document.id} not found`,
-                          ),
+                            `Signed document with id: ${document.id} not found`
+                          )
                       ),
                       TE.map((documentUrl) => ({
                         ...document,
                         url: documentUrl,
-                      })),
-                    ),
+                      }))
+                    )
                   ),
                   A.sequence(TE.ApplicativeSeq),
                   TE.map((documents) => ({
@@ -213,8 +213,8 @@ export const makeValidateSignature =
                   TE.chainEitherK(markAsSigned),
                   TE.chainFirst((r: SignatureRequest) =>
                     notifySignatureRequestSignedEvent(
-                      r as SignatureRequestSigned,
-                    ),
+                      r as SignatureRequestSigned
+                    )
                   ),
                   TE.chain(upsertSignatureRequest),
                   // Upsert signature
@@ -229,17 +229,17 @@ export const makeValidateSignature =
                       qtspSignatureRequest,
                     })({
                       logger: ConsoleLogger,
-                    }),
+                    })
                   ),
                   TE.alt(() =>
                     pipe(
                       "Signed document not found!",
                       markSignatureAndSignatureRequestAsRejected(
                         signature,
-                        signatureRequest,
-                      ),
-                    ),
-                  ),
+                        signatureRequest
+                      )
+                    )
+                  )
                 );
               case "FAILED":
                 const errorDetail =
@@ -250,8 +250,8 @@ export const makeValidateSignature =
                   errorDetail,
                   markSignatureAndSignatureRequestAsRejected(
                     signature,
-                    signatureRequest,
-                  ),
+                    signatureRequest
+                  )
                 );
 
               default:
@@ -259,12 +259,12 @@ export const makeValidateSignature =
                   "Invalid response status from QTSP!",
                   markSignatureAndSignatureRequestAsRejected(
                     signature,
-                    signatureRequest,
-                  ),
+                    signatureRequest
+                  )
                 );
             }
-          }),
-        ),
-      ),
+          })
+        )
+      )
     );
   };

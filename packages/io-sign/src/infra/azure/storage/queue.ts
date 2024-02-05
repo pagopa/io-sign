@@ -24,9 +24,9 @@ const sendMessage = (message: string) => (queueClient: QueueClient) =>
     TE.tryCatch(() => queueClient.sendMessage(message), E.toError),
     TE.filterOrElse(
       (response) => response.errorCode === undefined,
-      (response) => new StorageQueueError(response.errorCode),
+      (response) => new StorageQueueError(response.errorCode)
     ),
-    TE.map(({ messageId }) => messageId),
+    TE.map(({ messageId }) => messageId)
   );
 
 export const enqueue = flow(
@@ -34,5 +34,5 @@ export const enqueue = flow(
   E.mapLeft(() => new Error("Unable to serialize the message.")),
   E.map(toBase64),
   RTE.fromEither,
-  RTE.chainW(sendMessage),
+  RTE.chainW(sendMessage)
 );

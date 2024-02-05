@@ -53,7 +53,7 @@ export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
 export const makeSubmitMessageForUser =
   (
     ioApiClient: IOApiClient,
-    configurationId: Ulid,
+    configurationId: Ulid
   ): SubmitNotificationForUser =>
   (fiscalCode: FiscalCode) =>
   (notification: NotificationMessage) =>
@@ -64,8 +64,8 @@ export const makeSubmitMessageForUser =
         identity,
         () =>
           new ActionNotAllowedError(
-            "It is not allowed to send a message to this user.",
-          ),
+            "It is not allowed to send a message to this user."
+          )
       ),
       TE.chain(() =>
         TE.tryCatch(
@@ -87,8 +87,8 @@ export const makeSubmitMessageForUser =
                 feature_level_type: FeatureLevelTypeEnum.ADVANCED,
               },
             }),
-          E.toError,
-        ),
+          E.toError
+        )
       ),
       TE.chain(
         flow(
@@ -101,20 +101,20 @@ export const makeSubmitMessageForUser =
                 return E.left(new TooManyRequestsError(`Too many requests!`));
               case 500:
                 return E.left(
-                  new HttpError(`The message cannot be delivered.`),
+                  new HttpError(`The message cannot be delivered.`)
                 );
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `An error occurred while sending the message!`,
-                  ),
+                    `An error occurred while sending the message!`
+                  )
                 );
             }
           }),
-          TE.fromEither,
-        ),
+          TE.fromEither
+        )
       ),
       TE.map((createdMessage) => ({
         ioMessageId: createdMessage.id as NonEmptyString,
-      })),
+      }))
     );

@@ -101,7 +101,7 @@ export const SignatureRequestToApiModel: E.Encoder<
 };
 
 const toSignatureRequestStatusEnum = (
-  status: SignatureRequest["status"],
+  status: SignatureRequest["status"]
 ): SignatureRequestStatusEnum => {
   switch (status) {
     case "REJECTED":
@@ -154,7 +154,7 @@ export const SignatureRequestToThirdPartyMessage: E.Encoder<
         content_type: "application/pdf" as NonEmptyString,
         name: addPdfExtension(document.metadata.title),
         url: document.id,
-      })),
+      }))
     ),
   }),
 };

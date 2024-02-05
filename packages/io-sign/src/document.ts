@@ -97,11 +97,11 @@ export interface SignatureFieldsBrand {
 export const SignatureFields = t.brand(
   t.array(SignatureField),
   (
-    signatureFields,
+    signatureFields
   ): signatureFields is t.Branded<SignatureField[], SignatureFieldsBrand> =>
     signatureFields.length === 0 ||
     signatureFields.some((field) => field.clause.type !== "OPTIONAL"),
-  "SignatureFields",
+  "SignatureFields"
 );
 
 export const DocumentMetadata = t.type({
@@ -246,8 +246,8 @@ const onWaitForUploadOrReadyStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the document is in READY and WAIT_FOR_UPLOAD status",
-          ),
+            "This operation is prohibited if the document is in READY and WAIT_FOR_UPLOAD status"
+          )
         );
     }
   };
@@ -255,7 +255,7 @@ const onWaitForUploadOrReadyStatus =
 const onWaitForValidationStatus =
   (action: DocumentAction) =>
   (
-    document: DocumentToBeValidated,
+    document: DocumentToBeValidated
   ): E.Either<Error, DocumentReady | DocumentRejected> => {
     switch (action.name) {
       case "MARK_AS_READY":
@@ -265,7 +265,7 @@ const onWaitForValidationStatus =
             status: "READY",
             url: action.payload.url,
             updatedAt: new Date(),
-          }),
+          })
         );
       case "MARK_AS_REJECTED": {
         return E.right({
@@ -279,8 +279,8 @@ const onWaitForValidationStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the document is in WAIT_FOR_VALIDATION status",
-          ),
+            "This operation is prohibited if the document is in WAIT_FOR_VALIDATION status"
+          )
         );
     }
   };
@@ -305,8 +305,8 @@ const onRejectedStatus =
       default:
         return E.left(
           new ActionNotAllowedError(
-            "This operation is prohibited if the document is in REJECTED status",
-          ),
+            "This operation is prohibited if the document is in REJECTED status"
+          )
         );
     }
   };
@@ -317,7 +317,7 @@ export const startValidation = dispatch({
 
 export const markAsReady = (
   url: string,
-  pdfDocumentMetadata: PdfDocumentMetadata,
+  pdfDocumentMetadata: PdfDocumentMetadata
 ) =>
   dispatch({
     name: "MARK_AS_READY",

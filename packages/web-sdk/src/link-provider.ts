@@ -6,7 +6,7 @@ export interface IOLinkProvider {
 }
 
 export const IOLinkProviderContext = createContext<IOLinkProvider>(
-  Symbol("io-link-provider"),
+  Symbol("io-link-provider")
 );
 
 const buildUrlWithParams = (path: string, params: Record<string, string>) => {

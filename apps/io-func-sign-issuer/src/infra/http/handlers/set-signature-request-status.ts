@@ -33,8 +33,8 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
     validate(SetSignatureRequestStatusBody),
     E.filterOrElse(
       (status) => status === "READY" || status === "CANCELLED",
-      () => new Error("only READY or CANCELLED are allowed"),
-    ),
+      () => new Error("only READY or CANCELLED are allowed")
+    )
   );
 
 const getQueue =
@@ -56,7 +56,7 @@ const enqueueSignatureRequest =
       queueClient,
       getQueue(signatureRequest),
       TE.fromEither,
-      TE.chain(enqueue(signatureRequest)),
+      TE.chain(enqueue(signatureRequest))
     );
 
 export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
@@ -67,7 +67,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
       body: pipe(requireSetSignatureRequestStatusBody(req), RTE.fromEither),
     }),
     RTE.bindW("signatureRequest", ({ signatureRequestId, issuer }) =>
-      getSignatureRequest(signatureRequestId, issuer.id),
+      getSignatureRequest(signatureRequestId, issuer.id)
     ),
     RTE.chainW(({ signatureRequest, body }) => {
       switch (body) {
@@ -78,21 +78,21 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
             RTE.fromEither,
             RTE.chainW(upsertSignatureRequest),
             RTE.chainFirstW((req) =>
-              pipe(req, createAndSendAnalyticsEvent(EventName.SIGNATURE_READY)),
-            ),
+              pipe(req, createAndSendAnalyticsEvent(EventName.SIGNATURE_READY))
+            )
           );
         case SetSignatureRequestStatusBodyEnum.CANCELLED:
           return pipe(
             signatureRequest,
             markAsCancelled(new Date()),
             RTE.fromEither,
-            RTE.chainW(upsertSignatureRequest),
+            RTE.chainW(upsertSignatureRequest)
           );
       }
     }),
     // the updated signature request will now be sent to the queue to reflect the change on user-side as well
     RTE.chainW(enqueueSignatureRequest),
     RTE.map(() => H.empty),
-    RTE.orElseW(logErrorAndReturnResponse),
-  ),
+    RTE.orElseW(logErrorAndReturnResponse)
+  )
 );

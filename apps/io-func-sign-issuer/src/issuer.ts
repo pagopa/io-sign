@@ -13,10 +13,10 @@ import { Id } from "@io-sign/io-sign/id";
 
 export type IssuerRepository = {
   getByVatNumber: (
-    vatNumber: Issuer["vatNumber"],
+    vatNumber: Issuer["vatNumber"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
   getBySubscriptionId: (
-    subscriptionId: Issuer["subscriptionId"],
+    subscriptionId: Issuer["subscriptionId"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
 };
 
@@ -29,7 +29,7 @@ const getIssuerByField =
   (
     p: F extends "subscriptionId"
       ? Issuer["subscriptionId"]
-      : Issuer["vatNumber"],
+      : Issuer["vatNumber"]
   ): RTE.ReaderTaskEither<IssuerEnvironment, Error, Issuer> =>
   ({ issuerRepository: repo }) =>
     pipe(
@@ -38,9 +38,9 @@ const getIssuerByField =
         : repo.getByVatNumber(p),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("The specified issuer was not found"),
-        ),
-      ),
+          () => new EntityNotFoundError("The specified issuer was not found")
+        )
+      )
     );
 
 export const getIssuerByVatNumber = getIssuerByField("vatNumber");
@@ -73,7 +73,7 @@ export type ApiKey = t.TypeOf<typeof ApiKey>;
 
 export const getIssuerBySubscriptionId =
   (
-    subscriptionId: Issuer["subscriptionId"],
+    subscriptionId: Issuer["subscriptionId"]
   ): RTE.ReaderTaskEither<IssuerEnvironment, Error, Issuer> =>
   ({ issuerRepository: repo }) =>
     pipe(
@@ -81,14 +81,14 @@ export const getIssuerBySubscriptionId =
       repo.getBySubscriptionId.bind(repo),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("The specified issuer was not found"),
-        ),
-      ),
+          () => new EntityNotFoundError("The specified issuer was not found")
+        )
+      )
     );
 
 export const getIssuerEnvironment = (
   environment: ApiKey["environment"],
-  institutionId: ApiKey["institutionId"],
+  institutionId: ApiKey["institutionId"]
 ): Issuer["environment"] =>
   environment === "test"
     ? "TEST"
@@ -99,9 +99,9 @@ export const getIssuerEnvironment = (
 // LEGACY TYPES
 // This block can be removed when the entire app has been ported to handler-kit@1
 export type GetIssuerByVatNumber = (
-  vatNumber: Issuer["vatNumber"],
+  vatNumber: Issuer["vatNumber"]
 ) => TE.TaskEither<Error, O.Option<Issuer>>;
 export type GetIssuerBySubscriptionId = (
-  subscriptionId: Issuer["subscriptionId"],
+  subscriptionId: Issuer["subscriptionId"]
 ) => TE.TaskEither<Error, O.Option<Issuer>>;
 // END

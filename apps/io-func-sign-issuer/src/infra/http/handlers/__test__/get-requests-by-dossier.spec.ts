@@ -62,7 +62,7 @@ describe("GetRequestsByDossierHandler", () => {
   const request: SignatureRequest = newSignatureRequest(
     dossierWithRequests,
     { id: newId() },
-    issuer,
+    issuer
   );
 
   const mocks = { issuer, emptyDossier, dossierWithRequests, request };
@@ -134,7 +134,7 @@ describe("GetRequestsByDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -164,7 +164,7 @@ describe("GetRequestsByDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -197,7 +197,7 @@ describe("GetRequestsByDossierHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -231,7 +231,7 @@ describe("GetRequestsByDossierHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
 });

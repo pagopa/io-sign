@@ -23,7 +23,7 @@ describe("getSignerByFiscalCode", () => {
       "CVLYCU95L20C351Z",
       validate(FiscalCode, "Invalid fiscal code."),
       fromEither,
-      chainW((fiscalCode) => getSignerByFiscalCode(fiscalCode)),
+      chainW((fiscalCode) => getSignerByFiscalCode(fiscalCode))
     )({
       signerRepository,
     });

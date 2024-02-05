@@ -39,15 +39,15 @@ export const makeGetToken =
             method: "POST",
             headers: defaultHeader,
           }),
-        E.toError,
+        E.toError
       ),
       TE.filterOrElse(
         isSuccessful,
-        () => new Error("The attempt to get Namirial token failed."),
+        () => new Error("The attempt to get Namirial token failed.")
       ),
       TE.chain(
-        responseToJson(NamirialToken, `Invalid format for Namirial token`),
-      ),
+        responseToJson(NamirialToken, `Invalid format for Namirial token`)
+      )
     );
 
 export const makeGetClauses =
@@ -66,16 +66,16 @@ export const makeGetClauses =
                 Authorization: `Bearer ${token.access}`,
               },
             }),
-          E.toError,
-        ),
+          E.toError
+        )
       ),
       TE.filterOrElse(
         isSuccessful,
-        () => new Error("The attempt to get Namirial clauses failed."),
+        () => new Error("The attempt to get Namirial clauses failed.")
       ),
       TE.chain(
-        responseToJson(ClausesMetadata, `Invalid format for Namirial clauses`),
-      ),
+        responseToJson(ClausesMetadata, `Invalid format for Namirial clauses`)
+      )
     );
 
 export const makeCreateSignatureRequest =
@@ -97,8 +97,8 @@ export const makeCreateSignatureRequest =
               },
               body: JSON.stringify(body),
             }),
-          E.toError,
-        ),
+          E.toError
+        )
       ),
 
       TE.chain((response) =>
@@ -109,11 +109,11 @@ export const makeCreateSignatureRequest =
             (error): Error =>
               new HttpBadRequestError(
                 `The attempt to create Namirial signature request failed. | ${JSON.stringify(
-                  error,
-                )}`,
-              ),
-          ),
-        ),
+                  error
+                )}`
+              )
+          )
+        )
       ),
       TE.chainEitherKW(
         flow(
@@ -122,12 +122,12 @@ export const makeCreateSignatureRequest =
             (errs): Error =>
               new HttpBadRequestError(
                 `Invalid format for Namirial signature request: ${readableReport(
-                  errs,
-                )}`,
-              ),
-          ),
-        ),
-      ),
+                  errs
+                )}`
+              )
+          )
+        )
+      )
     );
 
 export const makeGetSignatureRequest =
@@ -147,20 +147,19 @@ export const makeGetSignatureRequest =
                 Authorization: `Bearer ${token.access}`,
               },
             }),
-          E.toError,
-        ),
+          E.toError
+        )
       ),
       TE.filterOrElse(
         isSuccessful,
-        () =>
-          new Error("The attempt to get Namirial signature request failed."),
+        () => new Error("The attempt to get Namirial signature request failed.")
       ),
       TE.chain(
         responseToJson(
           SignatureRequest,
-          `Invalid format for Namirial signature request`,
-        ),
-      ),
+          `Invalid format for Namirial signature request`
+        )
+      )
     );
 
 export const makeGetClausesWithToken =

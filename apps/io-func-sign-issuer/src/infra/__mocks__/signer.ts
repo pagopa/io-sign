@@ -15,7 +15,7 @@ import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 const cache = new Map<FiscalCode, Signer>();
 
 export const mockGetSignerByFiscalCode: GetSignerByFiscalCode = (
-  fiscalCode,
+  fiscalCode
 ) => {
   const cached = cache.get(fiscalCode);
   if (typeof cached !== "undefined") {

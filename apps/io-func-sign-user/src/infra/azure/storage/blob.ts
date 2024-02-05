@@ -11,11 +11,11 @@ export const makeGetBlobUrl =
     pipe(
       containerClient.getBlockBlobClient(blobName),
       O.fromNullable,
-      O.map((block) => block.url),
+      O.map((block) => block.url)
     );
 
 export type UploadBlob = (
-  blobName: string,
+  blobName: string
 ) => (content: Uint8Array) => TE.TaskEither<Error, string>;
 
 export const makeUploadBlob =
@@ -26,14 +26,14 @@ export const makeUploadBlob =
       TE.tryCatch(
         () =>
           containerClient.uploadBlockBlob(blobName, content, content.length),
-        toError,
+        toError
       ),
       TE.filterOrElse(
         (result) => result.response.errorCode === undefined,
         (result) =>
           new Error(
-            `Unable to upload blob! Error code: ${result.response.errorCode}`,
-          ),
+            `Unable to upload blob! Error code: ${result.response.errorCode}`
+          )
       ),
-      TE.map((result) => result.blockBlobClient.url),
+      TE.map((result) => result.blockBlobClient.url)
     );

@@ -27,14 +27,14 @@ export const getSignaturePrefixFromHeaderName =
       RA.filterMapWithIndex((index: number, signatureInput: string) =>
         pipe(signatureInput, S.startsWith(`sig${index + 1}=("${headerName}")`))
           ? O.some(`sig${index + 1}=`)
-          : O.none,
+          : O.none
       ),
       RA.head,
       O.chain(
         O.fromEitherK(
-          validate(LollipopSignaturePrefix, "Invalid signature prefix"),
-        ),
-      ),
+          validate(LollipopSignaturePrefix, "Invalid signature prefix")
+        )
+      )
     );
 
 /* Given a signatures string: sig1=:SomeValue:,sig2=:SomeOtherValue:
@@ -47,7 +47,7 @@ export const getSignatureFromPrefix =
     pipe(
       new RegExp(`${signaturePrefix}:([^:]+)`).exec(signatures),
       O.fromNullable,
-      O.chain(RA.lookup(1)),
+      O.chain(RA.lookup(1))
     );
 
 /* Given a LollipopSignature es: `sig1=:SIGNATURE_1:,sig2=:SIGNATURE_2:,sig3=:....` and a signatureInput like:
@@ -57,19 +57,19 @@ export const getSignatureFromPrefix =
 export const getSignatureFromHeaderName = (
   signatureInput: LollipopSignatureInput,
   signatures: LollipopSignature,
-  headerName: string,
+  headerName: string
 ) =>
   pipe(
     headerName,
     getSignaturePrefixFromHeaderName(signatureInput),
     O.chain(getSignatureFromPrefix(signatures)),
     E.fromOption(
-      () => new Error(`Signature of "${headerName}" header not found`),
+      () => new Error(`Signature of "${headerName}" header not found`)
     ),
     E.chainW(
       validate(
         NonEmptyString,
-        `Signature of "${headerName}" is not a valid signature`,
-      ),
-    ),
+        `Signature of "${headerName}" is not a valid signature`
+      )
+    )
   );

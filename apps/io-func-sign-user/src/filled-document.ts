@@ -36,5 +36,5 @@ export const FillDocumentPayload = t.intersection([
 export type FillDocumentPayload = t.TypeOf<typeof FillDocumentPayload>;
 
 export type NotifyDocumentToFillEvent = (
-  documentToFillNotification: FillDocumentPayload,
+  documentToFillNotification: FillDocumentPayload
 ) => TE.TaskEither<Error, string>;

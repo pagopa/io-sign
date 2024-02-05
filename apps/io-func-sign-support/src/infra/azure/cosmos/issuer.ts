@@ -45,7 +45,7 @@ class IssuerIdByVatNumberModel extends CosmosdbModel<
     super(
       db.container("issuers-by-vat-number"),
       NewIssuerByVatNumber,
-      RetrievedIssuerByVatNumber,
+      RetrievedIssuerByVatNumber
     );
   }
 }
@@ -61,7 +61,7 @@ export class CosmosDbIssuerRepository implements IssuerRepository {
     return pipe(
       this.#issuer.find([vatNumber]),
       TE.mapLeft(toCosmosDatabaseError),
-      TE.map(O.map(({ id: vatNumber, issuerId: id }) => ({ id, vatNumber }))),
+      TE.map(O.map(({ id: vatNumber, issuerId: id }) => ({ id, vatNumber })))
     );
   }
 }

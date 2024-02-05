@@ -25,16 +25,16 @@ const requireSubscriptionId_legacy = (req: HttpRequest) =>
     req,
     header("x-subscription-id"),
     E.fromOption(() => new Error("Missing X-Subscription-Id header")),
-    E.chainW(validate(Issuer.props.subscriptionId, "Invalid subscription id")),
+    E.chainW(validate(Issuer.props.subscriptionId, "Invalid subscription id"))
   );
 export const makeRequireIssuer = (
-  getIssuerBySubscriptionId: GetIssuerBySubscriptionId,
+  getIssuerBySubscriptionId: GetIssuerBySubscriptionId
 ) =>
   flow(
     requireSubscriptionId_legacy,
     TE.fromEither,
     TE.chain(getIssuerBySubscriptionId),
-    TE.chainW(TE.fromOption(() => new HttpUnauthorizedError())),
+    TE.chainW(TE.fromOption(() => new HttpUnauthorizedError()))
   );
 // ------ END BLOCK -------
 
@@ -43,19 +43,19 @@ const requireSubscriptionId = (req: H.HttpRequest) =>
     req.headers,
     lookup("x-subscription-id"),
     E.fromOption(
-      () => new H.HttpBadRequestError("Missing x-subscription-id in header"),
+      () => new H.HttpBadRequestError("Missing x-subscription-id in header")
     ),
     E.chainW(
       H.parse(
         Issuer.props.subscriptionId,
-        "The content of x-subscription-id is not a valid id",
-      ),
-    ),
+        "The content of x-subscription-id is not a valid id"
+      )
+    )
   );
 
 export const requireIssuer = flow(
   requireSubscriptionId,
   RTE.fromEither,
   RTE.chainW(getIssuerBySubscriptionId),
-  RTE.mapLeft((): Error => new H.HttpUnauthorizedError()),
+  RTE.mapLeft((): Error => new H.HttpUnauthorizedError())
 );

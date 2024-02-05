@@ -19,8 +19,8 @@ export const run: AzureFunction = (_, items: unknown) =>
         id: issuer.vatNumber,
         issuerId: issuer.id,
         subscriptionId: issuer.subscriptionId,
-      })),
+      }))
     ),
     TE.fromEither,
-    TE.toUnion,
+    TE.toUnion
   )();

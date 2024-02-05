@@ -70,7 +70,7 @@ describe("getSignedDocumentContent", () => {
 
     const makeRequest = getSignedDocumentContent(
       signatureRequest,
-      documentId,
+      documentId
     )();
     return makeRequest.then((data) => {
       expect(pipe(data, E.isRight)).toBe(true);

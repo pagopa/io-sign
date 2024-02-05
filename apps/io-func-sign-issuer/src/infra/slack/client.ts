@@ -25,11 +25,11 @@ export const makePostSlackMessage =
             }),
             headers: defaultHeader,
           }),
-        E.toError,
+        E.toError
       ),
       TE.filterOrElse(
         isSuccessful,
-        () => new Error("The attempt to post message on slack failed."),
+        () => new Error("The attempt to post message on slack failed.")
       ),
-      TE.map((response) => response.text),
+      TE.map((response) => response.text)
     );

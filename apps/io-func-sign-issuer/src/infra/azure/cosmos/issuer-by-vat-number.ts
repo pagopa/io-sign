@@ -36,7 +36,7 @@ export class IssuerByVatNumberModel extends CosmosdbModel<
     super(
       db.container("issuers-by-vat-number"),
       NewIssuerByVatNumber,
-      RetrievedIssuerByVatNumber,
+      RetrievedIssuerByVatNumber
     );
   }
 }

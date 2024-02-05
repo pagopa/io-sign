@@ -12,7 +12,7 @@ import { HttpBadRequestError } from "../http/errors";
 import { IOApiClient } from "./client";
 
 export type RetriveUserProfileSenderAllowed = (
-  fiscal_code: FiscalCode,
+  fiscal_code: FiscalCode
 ) => TE.TaskEither<Error, boolean>;
 
 export const makeRetriveUserProfileSenderAllowed =
@@ -24,7 +24,7 @@ export const makeRetriveUserProfileSenderAllowed =
           ioApiClient.client.getProfile({
             fiscal_code,
           }),
-        E.toError,
+        E.toError
       ),
       TE.chain(
         flow(
@@ -35,26 +35,26 @@ export const makeRetriveUserProfileSenderAllowed =
                 return E.right(response.value);
               case 404:
                 return E.left(
-                  new EntityNotFoundError(`User profile not found!`),
+                  new EntityNotFoundError(`User profile not found!`)
                 );
               case 403:
                 return E.left(
                   new ActionNotAllowedError(
-                    `You are not allowed to issue requests for this user!`,
-                  ),
+                    `You are not allowed to issue requests for this user!`
+                  )
                 );
               case 429:
                 return E.left(new TooManyRequestsError(`Too many requests!`));
               default:
                 return E.left(
                   new HttpBadRequestError(
-                    `An error occurred while getting the profile!`,
-                  ),
+                    `An error occurred while getting the profile!`
+                  )
                 );
             }
           }),
-          TE.fromEither,
-        ),
+          TE.fromEither
+        )
       ),
-      TE.map((userProfile) => userProfile.sender_allowed),
+      TE.map((userProfile) => userProfile.sender_allowed)
     );

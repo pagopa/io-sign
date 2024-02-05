@@ -107,7 +107,7 @@ describe("GetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -137,7 +137,7 @@ describe("GetSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -167,7 +167,7 @@ describe("GetSignatureRequestHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
 });

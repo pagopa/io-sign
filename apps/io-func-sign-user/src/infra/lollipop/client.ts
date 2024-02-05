@@ -22,12 +22,12 @@ export type LollipopApiClient = {
 export const createLollipopApiClient = (
   baseUrl: string,
   apiKey: string,
-  timeout = 1000 as Millisecond,
+  timeout = 1000 as Millisecond
 ): LollipopApiClient => ({
   client: createClient<"ApiKeyAuth">({
     baseUrl,
     fetchApi: toFetch(
-      setFetchTimeout(timeout, abortableFetch),
+      setFetchTimeout(timeout, abortableFetch)
     ) as unknown as typeof fetch,
     withDefaults: (op) => (params) =>
       op({

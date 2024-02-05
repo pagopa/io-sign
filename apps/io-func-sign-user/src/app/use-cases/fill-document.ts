@@ -26,7 +26,7 @@ type Fields = [
   EmailFieldB,
   FiscalCodeFieldB,
   NameFieldE,
-  FamilyNameFieldE,
+  FamilyNameFieldE
 ];
 
 /** Downloads the ToS pdf form, compiles and stores the filled document. */
@@ -34,7 +34,7 @@ export const makeFillDocument =
   (
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     uploadFilledDocument: UploadBlob,
-    fetchWithTimeout: typeof fetch,
+    fetchWithTimeout: typeof fetch
   ) =>
   ({
     signer,
@@ -50,8 +50,8 @@ export const makeFillDocument =
       TE.chain(
         TE.fromOption(
           () =>
-            new EntityNotFoundError("Fiscal code not found for this signer!"),
-        ),
+            new EntityNotFoundError("Fiscal code not found for this signer!")
+        )
       ),
       TE.chain((fiscalCode) => {
         const fields: Fields = [
@@ -87,7 +87,7 @@ export const makeFillDocument =
           TE.chain((blob) => TE.tryCatch(() => blob.arrayBuffer(), E.toError)),
           TE.map((arrayBuffer) => Buffer.from(arrayBuffer)),
           TE.chain(populatePdf(fields)),
-          TE.chain(uploadFilledDocument(filledDocumentFileName)),
+          TE.chain(uploadFilledDocument(filledDocumentFileName))
         );
-      }),
+      })
     );

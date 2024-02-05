@@ -19,7 +19,7 @@ export type Issuer = t.TypeOf<typeof Issuer>;
 
 export type IssuerRepository = {
   getByVatNumber: (
-    vatNumber: NonEmptyString,
+    vatNumber: NonEmptyString
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
 };
 
@@ -29,14 +29,14 @@ export type GetIssuerByVatNumberEnvironment = {
 
 export const getIssuerByVatNumber =
   (
-    vatNumber: NonEmptyString,
+    vatNumber: NonEmptyString
   ): RTE.ReaderTaskEither<GetIssuerByVatNumberEnvironment, Error, Issuer> =>
   ({ issuerRepository: repo }) =>
     pipe(
       repo.getByVatNumber(vatNumber),
       TE.chain(
         TE.fromOption(
-          () => new EntityNotFoundError("The specified Issuer was not found"),
-        ),
-      ),
+          () => new EntityNotFoundError("The specified Issuer was not found")
+        )
+      )
     );

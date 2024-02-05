@@ -15,12 +15,12 @@ export type IOServicesProblemSource = "IOServices";
 export const makeIOServicesHealthCheck =
   (client: IOApiClient) =>
   (
-    fetchWithTimeout = makeFetchWithTimeout(),
+    fetchWithTimeout = makeFetchWithTimeout()
   ): HealthCheck<IOServicesProblemSource, true> =>
     pipe(
       TE.tryCatch(
         () => fetchWithTimeout(client.baseUrl, { method: "HEAD" }),
-        toHealthProblems("IOServices"),
+        toHealthProblems("IOServices")
       ),
-      TE.map(() => true),
+      TE.map(() => true)
     );

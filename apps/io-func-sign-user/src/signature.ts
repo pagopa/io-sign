@@ -47,7 +47,7 @@ export type SignatureNotification = t.TypeOf<typeof SignatureNotification>;
 export const newSignature = (
   signer: Signer,
   signatureRequestId: Id,
-  qtspSignatureRequestId: Id,
+  qtspSignatureRequestId: Id
 ): Signature => ({
   id: newId(),
   signerId: signer.id,
@@ -59,19 +59,19 @@ export const newSignature = (
 });
 
 export type InsertSignature = (
-  signature: Signature,
+  signature: Signature
 ) => TE.TaskEither<Error, Signature>;
 
 export type GetSignature = (
-  signatureId: Signature["id"],
+  signatureId: Signature["id"]
 ) => (signerId: Signer["id"]) => TE.TaskEither<Error, O.Option<Signature>>;
 
 export type UpsertSignature = (
-  signature: Signature,
+  signature: Signature
 ) => TE.TaskEither<Error, Signature>;
 
 export type NotifySignatureReadyEvent = (
-  signatureNotification: SignatureNotification,
+  signatureNotification: SignatureNotification
 ) => TE.TaskEither<Error, string>;
 
 export const SignatureValidationParams = t.type({

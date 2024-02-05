@@ -18,7 +18,7 @@ import { FillDocumentPayload } from "../../../filled-document";
 const makeFillDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
   filledContainerClient: ContainerClient,
-  fetchWithTimeout: typeof fetch,
+  fetchWithTimeout: typeof fetch
 ) => {
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const uploadFilledDocument = makeUploadBlob(filledContainerClient);
@@ -26,12 +26,12 @@ const makeFillDocumentHandler = (
   const fillDocument = makeFillDocument(
     getFiscalCodeBySignerId,
     uploadFilledDocument,
-    fetchWithTimeout,
+    fetchWithTimeout
   );
 
   const decodeQueueMessage = flow(
     azure.fromQueueMessage(FillDocumentPayload),
-    TE.fromEither,
+    TE.fromEither
   );
 
   return createHandler(decodeQueueMessage, fillDocument, identity, constVoid);
@@ -39,13 +39,13 @@ const makeFillDocumentHandler = (
 
 export const makeFillDocumentFunction = (
   pdvTokenizerClient: PdvTokenizerClientWithApiKey,
-  filledContainerClient: ContainerClient,
+  filledContainerClient: ContainerClient
 ) =>
   pipe(
     makeFillDocumentHandler(
       pdvTokenizerClient,
       filledContainerClient,
-      makeFetchWithTimeout(),
+      makeFetchWithTimeout()
     ),
-    azure.unsafeRun,
+    azure.unsafeRun
   );

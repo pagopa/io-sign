@@ -34,7 +34,7 @@ const mocks = { issuer };
 
 type ValidateDocumentTestContext = {
   call: (
-    req: H.HttpRequest,
+    req: H.HttpRequest
   ) => TE.TaskEither<
     Error,
     H.HttpResponse<DocumentValidationResult | H.ProblemJson, H.HttpStatusCode>
@@ -44,7 +44,7 @@ type ValidateDocumentTestContext = {
 const buildMultipartBody = (
   boundary: string,
   pdfContent: Buffer,
-  fields: Buffer,
+  fields: Buffer
 ) => {
   const parts = [
     ["document", "doc.pdf", "application/pdf", pdfContent],
@@ -53,7 +53,7 @@ const buildMultipartBody = (
   const encoded = parts
     .map(
       ([name, filename, mime, data]) =>
-        `--${boundary}\r\ncontent-disposition: form-data; name="${name}"; filename="${filename}"\r\ncontent-type: ${mime}\r\n\r\n${data.toString()}`,
+        `--${boundary}\r\ncontent-disposition: form-data; name="${name}"; filename="${filename}"\r\ncontent-type: ${mime}\r\n\r\n${data.toString()}`
     )
     .join("\r\n");
   return Buffer.from(`${encoded}\r\n--${boundary}--`);
@@ -93,7 +93,7 @@ describe("validateDocumentHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
   test<ValidateDocumentTestContext>("success with is_valid true on valid files", (ctx) => {
@@ -106,7 +106,7 @@ describe("validateDocumentHandler", () => {
       body: buildMultipartBody(
         "TESTB",
         samplePdf,
-        Buffer.from(JSON.stringify([])),
+        Buffer.from(JSON.stringify([]))
       ),
     };
     const run = ctx.call(req);
@@ -121,7 +121,7 @@ describe("validateDocumentHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
   test<ValidateDocumentTestContext>("success with is_valid false and violations on invalid files", (ctx) => {
@@ -145,8 +145,8 @@ describe("validateDocumentHandler", () => {
                 unique_name: "clause-1",
               },
             },
-          ]),
-        ),
+          ])
+        )
       ),
     };
     const run = ctx.call(req);
@@ -164,7 +164,7 @@ describe("validateDocumentHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
   test<ValidateDocumentTestContext>("bad request on malformed request (missing files, not valid files)", (ctx) => {
@@ -175,7 +175,7 @@ describe("validateDocumentHandler", () => {
         "content-type": "multipart/form-data; boundary=XOXO",
       },
       body: Buffer.from(
-        `--XOXO\r\ncontent-disposition: form-data; name="file1"; filename="file1.txt";\r\ncontent-type: text/plain\r\n\r\nkisses from an invalid file\r\n--XOXO--`,
+        `--XOXO\r\ncontent-disposition: form-data; name="file1"; filename="file1.txt";\r\ncontent-type: text/plain\r\n\r\nkisses from an invalid file\r\n--XOXO--`
       ),
     };
     const run = ctx.call(req);
@@ -187,7 +187,7 @@ describe("validateDocumentHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 });

@@ -42,7 +42,7 @@ const requestToSignMessage: MakeMessageContent =
       dossier.title
     }.\n\n\nHai tempo fino al ${format(
       signatureRequest.expiresAt,
-      "dd/MM/yyyy HH:mm",
+      "dd/MM/yyyy HH:mm"
     )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
     }](mailto:${signatureRequest.issuerEmail}).`,
@@ -54,7 +54,7 @@ const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
     qrCodeUrl: t.string,
     documents: t.array(DocumentReady),
     notification: t.undefined,
-  }),
+  })
 );
 
 type SendNotificationResult =
@@ -67,14 +67,14 @@ export const makeSendNotification =
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     upsertSignatureRequest: UpsertSignatureRequest,
     getDossier: GetDossier,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   ({ signatureRequest }: SendNotificationPayload) => {
     const sendRequestToSignNotification = makeSendSignatureRequestNotification(
       submitNotification,
       getFiscalCodeBySignerId,
       getDossier,
-      requestToSignMessage,
+      requestToSignMessage
     );
     return pipe(
       sequenceS(TE.ApplySeq)({
@@ -82,9 +82,9 @@ export const makeSendNotification =
           signatureRequest,
           validate(
             SignatureRequestReadyToNotify,
-            "Notification can only be sent if the signature request is WAIT_FOR_SIGNATURE and it has not already been sent!",
+            "Notification can only be sent if the signature request is WAIT_FOR_SIGNATURE and it has not already been sent!"
           ),
-          TE.fromEither,
+          TE.fromEither
         ),
         notification: pipe(
           signatureRequest,
@@ -93,7 +93,7 @@ export const makeSendNotification =
             (error): T.Task<SendNotificationResult> =>
               T.of({ sent: false, error }),
             (notification): T.Task<SendNotificationResult> =>
-              T.of({ sent: true, notification }),
+              T.of({ sent: true, notification })
           ),
           TE.fromTask,
           TE.chainFirstW((result) =>
@@ -102,13 +102,13 @@ export const makeSendNotification =
               createAndSendAnalyticsEvent(
                 result.sent
                   ? EventName.NOTIFICATION_SENT
-                  : EventName.NOTIFICATION_REJECTED,
-              ),
-            ),
+                  : EventName.NOTIFICATION_REJECTED
+              )
+            )
           ),
           TE.chain((result) =>
-            result.sent ? TE.right(result.notification) : TE.left(result.error),
-          ),
+            result.sent ? TE.right(result.notification) : TE.left(result.error)
+          )
         ),
       }),
       TE.chainFirst(({ signatureRequest, notification }) =>
@@ -117,9 +117,9 @@ export const makeSendNotification =
             ...signatureRequest,
             notification,
           },
-          upsertSignatureRequest,
-        ),
+          upsertSignatureRequest
+        )
       ),
-      TE.map(({ notification }) => notification),
+      TE.map(({ notification }) => notification)
     );
   };

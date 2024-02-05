@@ -59,7 +59,7 @@ const makeGetDocumentUrlForSignature =
   (
     getSignatureRequest: GetSignatureRequest,
     getDownloadDocumentUrl: GetDocumentUrl,
-    getUploadSignedDocumentUrl: GetDocumentUrl,
+    getUploadSignedDocumentUrl: GetDocumentUrl
   ) =>
   (signerId: Id) =>
   (signatureRequestId: Id) =>
@@ -71,9 +71,9 @@ const makeGetDocumentUrlForSignature =
         TE.fromOption(
           () =>
             new EntityNotFoundError(
-              "The specified Signature Request does not exists.",
-            ),
-        ),
+              "The specified Signature Request does not exists."
+            )
+        )
       ),
       TE.map((signatureRequest) => signatureRequest.documents),
       TE.chain(
@@ -83,30 +83,30 @@ const makeGetDocumentUrlForSignature =
           TE.fromOption(
             () =>
               new EntityNotFoundError(
-                "The specified documentID does not exists.",
-              ),
-          ),
-        ),
+                "The specified documentID does not exists."
+              )
+          )
+        )
       ),
       TE.chain((document) =>
         sequenceS(TE.ApplicativeSeq)({
           urlIn: pipe(
             document,
             getDownloadDocumentUrl,
-            TE.chainEitherKW(validate(NonEmptyString, "Invalid download url")),
+            TE.chainEitherKW(validate(NonEmptyString, "Invalid download url"))
           ),
           urlOut: pipe(
             document,
             getUploadSignedDocumentUrl,
-            TE.chainEitherKW(validate(NonEmptyString, "Invalid upload url")),
+            TE.chainEitherKW(validate(NonEmptyString, "Invalid upload url"))
           ),
-        }),
+        })
       ),
       TE.chainFirstIOK((documentsUrl) =>
         L.debug("get documents url", { documentsUrl })({
           logger: ConsoleLogger,
-        }),
-      ),
+        })
+      )
     );
 
 /** Send a signature request to QTSP, create the Signature entity
@@ -121,7 +121,7 @@ export const makeCreateSignature =
     getSignatureRequest: GetSignatureRequest,
     getDownloadDocumentUrl: GetDocumentUrl,
     getUploadSignedDocumentUrl: GetDocumentUrl,
-    upsertSignatureRequest: UpsertSignatureRequest,
+    upsertSignatureRequest: UpsertSignatureRequest
   ) =>
   ({
     signatureRequestId,
@@ -136,8 +136,8 @@ export const makeCreateSignature =
       makeGetDocumentUrlForSignature(
         getSignatureRequest,
         getDownloadDocumentUrl,
-        getUploadSignedDocumentUrl,
-      )(signer.id),
+        getUploadSignedDocumentUrl
+      )(signer.id)
     );
 
     const retrieveSignatureRequest = pipe(
@@ -147,10 +147,10 @@ export const makeCreateSignature =
         TE.fromOption(
           () =>
             new EntityNotFoundError(
-              `Signature request ${signatureRequestId} not found`,
-            ),
-        ),
-      ),
+              `Signature request ${signatureRequestId} not found`
+            )
+        )
+      )
     );
 
     const createSignatureRequest = pipe(
@@ -162,10 +162,10 @@ export const makeCreateSignature =
             TE.fromOption(
               () =>
                 new EntityNotFoundError(
-                  "Fiscal code not found for this signer!",
-                ),
-            ),
-          ),
+                  "Fiscal code not found for this signer!"
+                )
+            )
+          )
         ),
         documentsToSign: pipe(
           documentsSignature,
@@ -176,10 +176,10 @@ export const makeCreateSignature =
               TE.map((documentUrl) => ({
                 ...documentUrl,
                 signatureFields: documentSignature.signatureFields,
-              })),
-            ),
+              }))
+            )
           ),
-          A.sequence(TE.ApplicativeSeq),
+          A.sequence(TE.ApplicativeSeq)
         ),
         signatureRequest: retrieveSignatureRequest,
       }),
@@ -204,14 +204,14 @@ export const makeCreateSignature =
               E.chainW(
                 validate(
                   NonEmptyString,
-                  "Unable to convert signatureInput to base64 string",
-                ),
+                  "Unable to convert signatureInput to base64 string"
+                )
               ),
               E.map((signatureInput) => ({
                 ...createSignaturePayload,
                 signatureInput,
-              })),
-            ),
+              }))
+            )
           ),
           TE.chainEitherKW((createSignaturePayload) =>
             pipe(
@@ -224,56 +224,56 @@ export const makeCreateSignature =
               E.chainW(
                 validate(
                   NonEmptyString,
-                  "Unable to convert publicKey to base64 string",
-                ),
+                  "Unable to convert publicKey to base64 string"
+                )
               ),
               E.map((publicKey) => ({
                 ...createSignaturePayload,
                 publicKey,
-              })),
-            ),
+              }))
+            )
           ),
           TE.chainFirstIOK((payload) =>
             L.debug("create QTSP SignatureRequest with payload", {
               payload,
             })({
               logger: ConsoleLogger,
-            }),
+            })
           ),
           TE.chain(
-            creatQtspSignatureRequest(signatureRequest.issuerEnvironment),
+            creatQtspSignatureRequest(signatureRequest.issuerEnvironment)
           ),
           TE.chainFirstIOK((qtspSignatureRequest) =>
             L.info("created QTSP signature request with id", {
               id: qtspSignatureRequest.id,
             })({
               logger: ConsoleLogger,
-            }),
+            })
           ),
           TE.filterOrElse(
             (qtspResponse) => qtspResponse.status === "CREATED",
             (e) =>
               e.last_error !== null
                 ? new ActionNotAllowedError(
-                    `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`,
+                    `An error occurred while the QTSP was creating the signature. ${e.last_error.detail}`
                   )
                 : new ActionNotAllowedError(
-                    "An error occurred while the QTSP was creating the signature.",
-                  ),
+                    "An error occurred while the QTSP was creating the signature."
+                  )
           ),
           TE.chainW((qtspResponse) =>
             pipe(
               newSignature(signer, signatureRequestId, qtspResponse.id),
-              insertSignature,
-            ),
+              insertSignature
+            )
           ),
           TE.chainFirst(() =>
             pipe(
               signatureRequest,
               markAsWaitForQtsp,
               TE.fromEither,
-              TE.chain(upsertSignatureRequest),
-            ),
+              TE.chain(upsertSignatureRequest)
+            )
           ),
           TE.chainFirst((signature) =>
             pipe(
@@ -281,11 +281,11 @@ export const makeCreateSignature =
                 signatureId: signature.id,
                 signerId: signature.signerId,
               },
-              notifySignatureReadyEvent,
-            ),
-          ),
-        ),
-      ),
+              notifySignatureReadyEvent
+            )
+          )
+        )
+      )
     );
 
     return pipe(
@@ -295,10 +295,10 @@ export const makeCreateSignature =
         !canBeCreated
           ? TE.left(
               new ActionNotAllowedError(
-                "Signature can only be created if the signature request is in WAIT_FOR_SIGNATURE or REJECTED status!",
-              ),
+                "Signature can only be created if the signature request is in WAIT_FOR_SIGNATURE or REJECTED status!"
+              )
             )
-          : createSignatureRequest,
-      ),
+          : createSignatureRequest
+      )
     );
   };

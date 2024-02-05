@@ -73,7 +73,7 @@ describe("CreateDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -100,7 +100,7 @@ describe("CreateDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -135,7 +135,7 @@ describe("CreateDossierHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -174,7 +174,7 @@ describe("CreateDossierHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -210,7 +210,7 @@ describe("CreateDossierHandler", () => {
             support_email: email,
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -244,7 +244,7 @@ describe("CreateDossierHandler", () => {
             support_email: issuer.email,
           }),
         }),
-      }),
+      })
     );
   });
 });

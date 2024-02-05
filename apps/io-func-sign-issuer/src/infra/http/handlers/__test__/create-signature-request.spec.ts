@@ -133,7 +133,7 @@ describe("CreateSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -162,7 +162,7 @@ describe("CreateSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -194,7 +194,7 @@ describe("CreateSignatureRequestHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -235,7 +235,7 @@ describe("CreateSignatureRequestHandler", () => {
             "Content-Type": "application/problem+json",
           }),
         }),
-      }),
+      })
     );
   });
 
@@ -278,8 +278,8 @@ describe("CreateSignatureRequestHandler", () => {
         (result) =>
           result.statusCode === 201
             ? result.body.documents.map((document) => document.metadata)
-            : [],
-      ),
+            : []
+      )
     );
 
     expect(run()).resolves.toEqual(
@@ -290,7 +290,7 @@ describe("CreateSignatureRequestHandler", () => {
             "Content-Type": "application/json",
           }),
         }),
-      }),
+      })
     );
     expect(metadata).toStrictEqual(documentsMetadata);
   });

@@ -51,9 +51,9 @@ describe("validateExistingSignatureField", () => {
       payload,
       validate(SignatureFieldAttributes),
       E.chainW((attr) =>
-        pipe(pdfDocumentMetadata, validateExistingSignatureField("test", attr)),
+        pipe(pdfDocumentMetadata, validateExistingSignatureField("test", attr))
       ),
-      E.isRight,
+      E.isRight
     );
     expect(data).toBe(expected);
   });
@@ -110,10 +110,10 @@ describe("validateSignatureFieldToBeCreated", () => {
       E.chainW((attr) =>
         pipe(
           pdfDocumentMetadata,
-          validateSignatureFieldToBeCreated("test", attr),
-        ),
+          validateSignatureFieldToBeCreated("test", attr)
+        )
       ),
-      E.isRight,
+      E.isRight
     );
     expect(data).toBe(expected);
   });

@@ -30,14 +30,14 @@ const mapToBeCreatedAttributes = (signatureField: SignatureField) =>
   pipe(
     signatureField.attributes,
     SignatureFieldToBeCreatedAttributes.decode,
-    option.fromEither,
+    option.fromEither
   );
 
 const mapAttributes = (signatureField: SignatureField) =>
   pipe(
     signatureField.attributes,
     SignatureFieldAttributes.decode,
-    option.fromEither,
+    option.fromEither
   );
 
 const QtspDocumentToSignToApiModel: E.Encoder<
@@ -50,12 +50,12 @@ const QtspDocumentToSignToApiModel: E.Encoder<
     signature_fields: pipe(
       signatureFields,
       A.filterMap(mapAttributes),
-      A.map((el) => el.uniqueName),
+      A.map((el) => el.uniqueName)
     ),
     signature_coordinates: pipe(
       signatureFields,
       A.filterMap(mapToBeCreatedAttributes),
-      A.map(SignatureFieldToBeCreatedToApiModel.encode),
+      A.map(SignatureFieldToBeCreatedToApiModel.encode)
     ),
     signatures_type: "PADES-LT",
     appearance_alias: "appio",
@@ -89,7 +89,7 @@ export const QtspCreateSignatureToApiModel: E.Encoder<
       signed_challenge: signature,
       signatures_type: "PADES",
       documents_to_sign: documentsToSign.map(
-        QtspDocumentToSignToApiModel.encode,
+        QtspDocumentToSignToApiModel.encode
       ),
     },
     signature_input: signatureInput,

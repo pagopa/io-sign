@@ -31,7 +31,7 @@ const serializationProblem = pipe(
   response,
   withStatusCode(500),
   // eslint-disable-next-line sonarjs/no-duplicate-string
-  withHeader("Content-Type", "application/problem+json"),
+  withHeader("Content-Type", "application/problem+json")
 );
 
 const jsonResponse =
@@ -41,7 +41,7 @@ const jsonResponse =
       validate(schema, "Unable to validate the success response."),
       E.map(flow(response, withStatusCode(statusCode))),
       E.chainW(serializeToJSON),
-      E.getOrElse(() => serializationProblem),
+      E.getOrElse(() => serializationProblem)
     );
 
 const bufferResponse =
@@ -52,7 +52,7 @@ const bufferResponse =
       response,
       withStatusCode(statusCode),
       withHeader("Content-Type", contentType),
-      withHeader("Content-Length", Buffer.byteLength(buffer).toString()),
+      withHeader("Content-Length", Buffer.byteLength(buffer).toString())
     );
 
 export const success = jsonResponse(200);
@@ -69,11 +69,11 @@ export const error = (e: Error) => {
     E.orElse(() => E.right(e)),
     E.map(
       flow(toProblemDetail, response, (res) =>
-        pipe(res, withStatusCode(res.body.status)),
-      ),
+        pipe(res, withStatusCode(res.body.status))
+      )
     ),
     E.chainW(serializeToJSON),
     E.map(withHeader("Content-Type", "application/problem+json")),
-    E.getOrElse(() => serializationProblem),
+    E.getOrElse(() => serializationProblem)
   );
 };

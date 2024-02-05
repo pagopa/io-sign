@@ -18,7 +18,7 @@ export type SendNotificationPayload = {
 };
 
 export type MakeMessageContent = (
-  dossier: Dossier,
+  dossier: Dossier
 ) => (signatureRequest: SignatureRequest) => NotificationMessage;
 
 // Sends a signature request notification by constructing the message with makeMessageContent.
@@ -27,7 +27,7 @@ export const makeSendSignatureRequestNotification =
     submitNotification: SubmitNotificationForUser,
     getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
     getDossier: GetDossier,
-    makeMessageContent: MakeMessageContent,
+    makeMessageContent: MakeMessageContent
   ) =>
   (signatureRequest: SignatureRequest) =>
     pipe(
@@ -38,17 +38,17 @@ export const makeSendSignatureRequestNotification =
             TE.fromOption(
               () =>
                 new EntityNotFoundError(
-                  "The fiscal code associated with this signer is not valid.",
-                ),
-            ),
-          ),
+                  "The fiscal code associated with this signer is not valid."
+                )
+            )
+          )
         ),
         dossier: pipe(
           signatureRequest.issuerId,
           getDossier(signatureRequest.dossierId),
           TE.chain(
-            TE.fromOption(() => new EntityNotFoundError("Dossier not found!")),
-          ),
+            TE.fromOption(() => new EntityNotFoundError("Dossier not found!"))
+          )
         ),
       }),
 
@@ -57,7 +57,7 @@ export const makeSendSignatureRequestNotification =
           signatureRequest,
           makeMessageContent(dossier),
           TE.fromNullable(new Error("Invalid message content")),
-          TE.chain(submitNotification(fiscalCode)),
-        ),
-      ),
+          TE.chain(submitNotification(fiscalCode))
+        )
+      )
     );

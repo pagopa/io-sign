@@ -9,11 +9,11 @@ export const stringToBase64Encode = (arrayBuffer: unknown) =>
     E.chainW((arrayBuffer) =>
       E.tryCatch(
         () => Buffer.from(arrayBuffer, "utf-8").toString("base64"),
-        E.toError,
-      ),
+        E.toError
+      )
     ),
     E.chainW(E.fromNullable(identity)),
-    E.mapLeft(() => new Error("Unable to convert string to base64")),
+    E.mapLeft(() => new Error("Unable to convert string to base64"))
   );
 
 export const stringFromBase64Encode = (arrayBuffer: unknown) =>
@@ -23,9 +23,9 @@ export const stringFromBase64Encode = (arrayBuffer: unknown) =>
     E.chainW((arrayBuffer) =>
       E.tryCatch(
         () => Buffer.from(arrayBuffer, "base64").toString("utf-8"),
-        E.toError,
-      ),
+        E.toError
+      )
     ),
     E.chainW(E.fromNullable(identity)),
-    E.mapLeft(() => new Error("Unable to convert base64 string to utf-8")),
+    E.mapLeft(() => new Error("Unable to convert base64 string to utf-8"))
   );

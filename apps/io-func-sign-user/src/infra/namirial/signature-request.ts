@@ -94,9 +94,9 @@ export const SignatureRequest = t.type({
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export type CreateSignatureRequest = (
-  issuerEnvironment: IssuerEnvironment,
+  issuerEnvironment: IssuerEnvironment
 ) => (
-  payload: QtspCreateSignaturePayload,
+  payload: QtspCreateSignaturePayload
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export const makeCreateSignatureRequestWithToken =
@@ -115,16 +115,16 @@ export const makeCreateSignatureRequestWithToken =
             pipe(
               createSignaturePayload,
               QtspCreateSignatureToApiModel.encode,
-              makeCreateSignatureRequest(fetchWithTimeout)(config)(token),
-            ),
-          ),
-        ),
+              makeCreateSignatureRequest(fetchWithTimeout)(config)(token)
+            )
+          )
+        )
     );
 
 export type GetSignatureRequest = (
-  issuerEnvironment: IssuerEnvironment,
+  issuerEnvironment: IssuerEnvironment
 ) => (
-  signatureRequestId: SignatureRequest["id"],
+  signatureRequestId: SignatureRequest["id"]
 ) => TE.TaskEither<Error, SignatureRequest>;
 
 export const makeGetSignatureRequestWithToken =
@@ -141,8 +141,8 @@ export const makeGetSignatureRequestWithToken =
           getToken(config),
           TE.chain((token) =>
             makeGetSignatureRequest(fetchWithTimeout)(config)(token)(
-              signatureRequestId,
-            ),
-          ),
-        ),
+              signatureRequestId
+            )
+          )
+        )
     );

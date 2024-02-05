@@ -43,7 +43,7 @@ import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
-  E.getOrElseW(identity),
+  E.getOrElseW(identity)
 );
 
 if (configOrError instanceof Error) {
@@ -57,53 +57,53 @@ const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubBillingClient = new EventHubProducerClient(
   config.azure.eventHubs.billingConnectionString,
-  "billing",
+  "billing"
 );
 
 const eventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
-  "analytics",
+  "analytics"
 );
 
 const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
   EventHubConsumerClient.defaultConsumerGroupName,
   config.pagopa.selfCare.eventHub.connectionString,
-  config.pagopa.selfCare.eventHub.contractsName,
+  config.pagopa.selfCare.eventHub.contractsName
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey,
+  config.pagopa.tokenizer.apiKey
 );
 
 const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.basePath,
-  config.pagopa.ioServices.subscriptionKey,
+  config.pagopa.ioServices.subscriptionKey
 );
 
 const uploadedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "uploaded-documents",
+  "uploaded-documents"
 );
 
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "validated-documents",
+  "validated-documents"
 );
 
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
-  "signed-documents",
+  "signed-documents"
 );
 
 const onSignatureRequestReadyQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "on-signature-request-ready",
+  "on-signature-request-ready"
 );
 
 const WaitingForSignatureRequestUpdatesQueueClient = new QueueClient(
   config.azure.storage.connectionString,
-  "waiting-for-signature-request-updates",
+  "waiting-for-signature-request-updates"
 );
 
 export const Info = makeInfoFunction(
@@ -115,7 +115,7 @@ export const Info = makeInfoFunction(
   eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
-  onSignatureRequestReadyQueueClient,
+  onSignatureRequestReadyQueueClient
 );
 
 export const MarkAsWaitForSignature =
@@ -126,7 +126,7 @@ export const MarkAsRejected = makeRequestAsRejectedFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   config.pagopa.ioServices.configurationId,
-  eventAnalyticsClient,
+  eventAnalyticsClient
 );
 
 export const MarkAsSigned = makeRequestAsSignedFunction(
@@ -135,17 +135,17 @@ export const MarkAsSigned = makeRequestAsSignedFunction(
   ioApiClient,
   config.pagopa.ioServices.configurationId,
   eventHubBillingClient,
-  eventAnalyticsClient,
+  eventAnalyticsClient
 );
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,
-  ioApiClient,
+  ioApiClient
 );
 
 export const GetUploadUrl = makeGetUploadUrlFunction(
   database,
-  uploadedContainerClient,
+  uploadedContainerClient
 );
 
 export const SendNotification = makeSendNotificationFunction(
@@ -153,29 +153,29 @@ export const SendNotification = makeSendNotificationFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   config.pagopa.ioServices.configurationId,
-  eventAnalyticsClient,
+  eventAnalyticsClient
 );
 
 export const CreateIssuer = makeCreateIssuerFunction(
   database,
   config.pagopa.selfCare,
-  config.slack,
+  config.slack
 );
 
 const issuerRepository = new BackOfficeIssuerRepository(
   config.backOffice.basePath,
-  config.backOffice.apiKey,
+  config.backOffice.apiKey
 );
 const dossierRepository = new CosmosDbDossierRepository(database);
 const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
 const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
-  database.container("signature-requests"),
+  database.container("signature-requests")
 );
 
 const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
 
 const validatedFileStorage = new BlobStorageFileStorage(
-  validatedContainerClient,
+  validatedContainerClient
 );
 
 export const GetDossier = GetDossierFunction({

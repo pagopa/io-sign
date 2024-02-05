@@ -44,7 +44,7 @@ class SignatureRequestModel extends CosmosdbModel<
     super(
       db.container("signature-requests"),
       NewSignatureRequest,
-      RetrievedSignatureRequest,
+      RetrievedSignatureRequest
     );
   }
 }
@@ -56,7 +56,7 @@ export const makeGetSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.find([id, issuerId]),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export const makeUpsertSignatureRequest =
@@ -65,7 +65,7 @@ export const makeUpsertSignatureRequest =
     pipe(
       new SignatureRequestModel(db),
       (model) => model.upsert(request),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
 
 export class CosmosDbSignatureRequestRepository
@@ -81,11 +81,11 @@ export class CosmosDbSignatureRequestRepository
 
   public get(
     id: SignatureRequest["id"],
-    issuerId: SignatureRequest["issuerId"],
+    issuerId: SignatureRequest["issuerId"]
   ) {
     return pipe(
       this.#model.find([id, issuerId]),
-      TE.mapLeft(toCosmosDatabaseError),
+      TE.mapLeft(toCosmosDatabaseError)
     );
   }
 
@@ -102,7 +102,7 @@ export class CosmosDbSignatureRequestRepository
    */
   public patchDocument: SignatureRequestRepository["patchDocument"] = (
     request: SignatureRequest,
-    documentId: Document["id"],
+    documentId: Document["id"]
   ) =>
     pipe(
       request.documents,
@@ -110,8 +110,8 @@ export class CosmosDbSignatureRequestRepository
       E.chainOptionK(
         () =>
           new Error(
-            `Unable to find document with id ${documentId} in signature request`,
-          ),
+            `Unable to find document with id ${documentId} in signature request`
+          )
       )(A.findIndex((requestDocument) => requestDocument.id === documentId)),
       TE.fromEither,
       TE.chain((index) =>
@@ -128,7 +128,7 @@ export class CosmosDbSignatureRequestRepository
                   value: request.documents[index],
                 },
               ]),
-            toCosmosErrorResponse,
+            toCosmosErrorResponse
           ),
           TE.chainW((patchResponse) =>
             pipe(
@@ -138,21 +138,21 @@ export class CosmosDbSignatureRequestRepository
                   code: 404,
                   message: "item not found for input id",
                   name: "Not Found",
-                }),
+                })
               ),
               TE.chainEitherKW(
-                flow(SignatureRequest.decode, E.mapLeft(CosmosDecodingError)),
-              ),
-            ),
+                flow(SignatureRequest.decode, E.mapLeft(CosmosDecodingError))
+              )
+            )
           ),
-          TE.mapLeft(toCosmosDatabaseError),
-        ),
-      ),
+          TE.mapLeft(toCosmosDatabaseError)
+        )
+      )
     );
 
   public async findByDossier(
     dossier: Dossier,
-    options: { maxItemCount?: number; continuationToken?: string } = {},
+    options: { maxItemCount?: number; continuationToken?: string } = {}
   ): Promise<{
     // TODO: take a decision on validation at "database level" via RFC
     items: ReadonlyArray<unknown>;
@@ -173,7 +173,7 @@ export class CosmosDbSignatureRequestRepository
           partitionKey: dossier.issuerId,
           continuationToken: options.continuationToken,
           maxItemCount: options.maxItemCount ?? 25,
-        },
+        }
       )
       .fetchNext();
     return {

@@ -10,5 +10,5 @@ export const requireDossierId = (req: H.HttpRequest) =>
     req.path,
     lookup("dossierId"),
     RTE.fromOption(() => new Error(`Missing "id" in path.`)),
-    RTE.chainEitherKW(H.parse(Dossier.props.id, `Invalid "id" supplied.`)),
+    RTE.chainEitherKW(H.parse(Dossier.props.id, `Invalid "id" supplied.`))
   );

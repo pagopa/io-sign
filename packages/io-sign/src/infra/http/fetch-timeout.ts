@@ -10,11 +10,11 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 export const makeFetchWithTimeout = (
   timeout: Millisecond = 10000 as Millisecond,
-  env: NodeJS.ProcessEnv = process.env,
+  env: NodeJS.ProcessEnv = process.env
 ) => {
   const httpApiFetch = agent.getHttpFetch(env);
   const abortableFetch = AbortableFetch(httpApiFetch);
   return toFetch(
-    setFetchTimeout(timeout, abortableFetch),
+    setFetchTimeout(timeout, abortableFetch)
   ) as unknown as typeof fetch;
 };

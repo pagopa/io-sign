@@ -14,7 +14,7 @@ import {
 export const makeMarkRequestAsReady = (
   upsertSignatureRequest: UpsertSignatureRequest,
   notifyReadyEvent: NotifySignatureRequestReadyEvent,
-  createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
+  createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
 ) =>
   flow(
     markAsReady,
@@ -23,14 +23,14 @@ export const makeMarkRequestAsReady = (
     TE.chainEitherKW(
       validate(
         SignatureRequestReady,
-        "Unable to validate the Signature Request.",
-      ),
+        "Unable to validate the Signature Request."
+      )
     ),
     TE.chainFirstW((signatureRequest) =>
       pipe(
         signatureRequest,
-        createAndSendAnalyticsEvent(EventName.SIGNATURE_READY),
-      ),
+        createAndSendAnalyticsEvent(EventName.SIGNATURE_READY)
+      )
     ),
-    TE.chain(notifyReadyEvent),
+    TE.chain(notifyReadyEvent)
   );

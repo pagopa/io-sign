@@ -27,18 +27,18 @@ import { SignerDetailView } from "../../http/models/SignerDetailView";
 
 const makeGetSignerByFiscalCodeHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
-  ioApiClient: IOApiClient,
+  ioApiClient: IOApiClient
 ) => {
   const retriveUserProfile = makeRetriveUserProfileSenderAllowed(ioApiClient);
   const getSignerByFiscalCode = makeGetSignerByFiscalCode(
-    pdvTokenizerClientWithApiKey,
+    pdvTokenizerClientWithApiKey
   );
 
   const getAllowedSignerByFiscalCode = (fiscalCode: FiscalCode) =>
     pipe(
       fiscalCode,
       retriveUserProfile,
-      TE.chain(() => getSignerByFiscalCode(fiscalCode)),
+      TE.chain(() => getSignerByFiscalCode(fiscalCode))
     );
 
   const requireFiscalCode: RE.ReaderEither<HttpRequest, Error, FiscalCode> =
@@ -46,35 +46,35 @@ const makeGetSignerByFiscalCodeHandler = (
       (req) => req.body,
       validate(GetSignerByFiscalCodeBody),
       E.map((body) => body.fiscal_code),
-      E.chain(validate(FiscalCode, "Not a valid fiscal code")),
+      E.chain(validate(FiscalCode, "Not a valid fiscal code"))
     );
 
   const decodeHttpRequest = flow(
     azure.fromHttpRequest,
     E.chain(requireFiscalCode),
-    TE.fromEither,
+    TE.fromEither
   );
 
   const encodeHttpSuccessResponse = (maybeSigner: O.Option<Signer>) =>
     pipe(
       maybeSigner,
       E.fromOption(() => signerNotFoundError),
-      E.fold(error, flow(SignerToApiModel.encode, success(SignerDetailView))),
+      E.fold(error, flow(SignerToApiModel.encode, success(SignerDetailView)))
     );
 
   return createHandler(
     decodeHttpRequest,
     getAllowedSignerByFiscalCode,
     error,
-    encodeHttpSuccessResponse,
+    encodeHttpSuccessResponse
   );
 };
 
 export const makeGetSignerFunction = (
   pdvTokenizerClient: PdvTokenizerClientWithApiKey,
-  ioApiClient: IOApiClient,
+  ioApiClient: IOApiClient
 ) =>
   pipe(
     makeGetSignerByFiscalCodeHandler(pdvTokenizerClient, ioApiClient),
-    azure.unsafeRun,
+    azure.unsafeRun
   );

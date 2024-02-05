@@ -35,11 +35,11 @@ export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 export type SignatureRequestRepository = {
   getByIssuerId: (
     id: SignatureRequestId,
-    issuerId: Issuer["id"],
+    issuerId: Issuer["id"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   getBySignerId: (
     id: SignatureRequestId,
-    signerId: Signer["id"],
+    signerId: Signer["id"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
 };
 
@@ -67,7 +67,7 @@ type GetSignatureRequestByIdEnvironment = {
 
 export const getSignatureRequestById =
   (
-    p: GetSignatureRequestByIdPayload,
+    p: GetSignatureRequestByIdPayload
   ): RTE.ReaderTaskEither<
     GetSignatureRequestByIdEnvironment,
     Error,
@@ -82,8 +82,8 @@ export const getSignatureRequestById =
         TE.fromOption(
           () =>
             new EntityNotFoundError(
-              "The specified Signature Request was not found",
-            ),
-        ),
-      ),
+              "The specified Signature Request was not found"
+            )
+        )
+      )
     );
