@@ -6,7 +6,7 @@
       "label": "func: host start",
       "command": "host start",
       "problemMatcher": "$func-node-watch",
-      "isBackground": true,
+      "isBackground": true
     }
   ]
 }
