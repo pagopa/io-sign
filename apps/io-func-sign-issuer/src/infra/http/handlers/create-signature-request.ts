@@ -4,10 +4,7 @@ import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { Signer } from "@io-sign/io-sign/signer";
 import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
@@ -21,7 +18,6 @@ import {
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
 import { insertSignatureRequest } from "../../../signature-request";
 import { DocumentsMetadataFromApiModel } from "../decoders/document";
-import { newId } from "@io-sign/io-sign/id";
 
 const requireSignatureRequestBody = (req: H.HttpRequest) =>
   pipe(
