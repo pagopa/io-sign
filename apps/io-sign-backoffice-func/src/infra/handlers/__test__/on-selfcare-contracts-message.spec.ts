@@ -65,10 +65,10 @@ describe("onSelfcareContractsMessage handler", () => {
           address: "address",
           description: "description",
           digitalAddress: "digitalAddress",
-          taxCode: "taxCode",
+          taxCode: "id",
         },
         billing: {
-          vatNumber: "id",
+          vatNumber: "vatNumber",
         },
         product: "prod-io-sign",
       },

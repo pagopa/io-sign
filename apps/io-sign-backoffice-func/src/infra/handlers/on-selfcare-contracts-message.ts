@@ -23,13 +23,13 @@ const sendOnboardingMessage =
   ({ getById, sendMessage }: GetById & SendMessage) =>
     pipe(
       issuerAlreadyExists(
-        contract.billing.vatNumber,
+        contract.institution.taxCode,
         contract.internalIstitutionID
       )({ getById }),
       TE.map(() =>
         IssuerMessage({
           internalInstitutionId: contract.internalIstitutionID,
-          vatNumber: contract.billing.vatNumber,
+          taxCode: contract.institution.taxCode,
           description: contract.institution.description,
         })
       ),

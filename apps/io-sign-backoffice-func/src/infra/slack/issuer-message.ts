@@ -1,10 +1,10 @@
 export const IssuerMessage = ({
   internalInstitutionId,
-  vatNumber,
+  taxCode,
   description,
 }: {
   internalInstitutionId: string;
-  vatNumber: string;
+  taxCode: string;
   description: string;
 }) =>
-  `(_backoffice_) *${description}* (institutionId: \`${internalInstitutionId}\`, vatNumber: \`${vatNumber}\`) ha effettuato l'onboarding 🎉`;
+  `(_backoffice_) *${description}* (\`institutionId: ${internalInstitutionId}\`, \`taxCode: ${taxCode}\`) ha effettuato l'onboarding 🎉`;
