@@ -1,5 +1,5 @@
 import { HttpRequest } from "handler-kit-legacy/lib/http";
-import { Signer, signerNotFoundError } from "@io-sign/io-sign/signer";
+import { Signer } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as RE from "fp-ts/lib/ReaderEither";
 
@@ -24,6 +24,7 @@ import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCo
 
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 const makeGetSignerByFiscalCodeHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
@@ -58,7 +59,7 @@ const makeGetSignerByFiscalCodeHandler = (
   const encodeHttpSuccessResponse = (maybeSigner: O.Option<Signer>) =>
     pipe(
       maybeSigner,
-      E.fromOption(() => signerNotFoundError),
+      E.fromOption(() => new EntityNotFoundError("Signer")),
       E.fold(error, flow(SignerToApiModel.encode, success(SignerDetailView)))
     );
 
