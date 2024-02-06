@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const contract = z.object({
+const contractSchema = z.object({
   id: z.string().min(1),
   internalIstitutionID: z.string().min(1),
   state: z.enum(["ACTIVE", "CLOSED"]),
@@ -16,11 +16,11 @@ const contract = z.object({
   product: z.literal("prod-io-sign"),
 });
 
-const activeIoSignContract = contract.merge(
+const activeIoSignContract = contractSchema.merge(
   z.object({ state: z.literal("ACTIVE") })
 );
 
-const closedIoSignContract = contract.merge(
+const closedIoSignContract = contractSchema.merge(
   z.object({
     state: z.literal("CLOSED"),
   })

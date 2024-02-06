@@ -7,7 +7,4 @@ export const IssuerMessage = ({
   vatNumber: string;
   description: string;
 }) =>
-  `👋🏻 A new issuer has just been onboarded to io-sign 🚀!\n
-    Description: ${description}\n
-    institutionId: \`${internalInstitutionId}\`\n
-    vatNumber: \`${vatNumber}\`\n`;
+  `(_backoffice_) *${description}* (institutionId: \`${internalInstitutionId}\`, vatNumber: \`${vatNumber}\`) ha effettuato l'onboarding 🎉`;

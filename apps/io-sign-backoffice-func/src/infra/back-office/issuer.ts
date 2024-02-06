@@ -9,7 +9,7 @@ import {
   isSuccessful,
 } from "@io-sign/io-sign/infra/client-utils";
 import { safeParse } from "../handlers/validation";
-import { fetchWithTimeoutAndKeepAlive } from "../http/fetch";
+import { dispatcher } from "../http/fetch";
 
 export type Issuer = z.infer<typeof issuer>;
 
@@ -26,16 +26,14 @@ export const getById =
     pipe(
       TE.tryCatch(
         () =>
-          fetchWithTimeoutAndKeepAlive(
-            `${apiBasePath}/institutions/${institutionId}/issuers/${id}`,
-            {
-              method: "GET",
-              headers: {
-                ...defaultHeader,
-                "Ocp-Apim-Subscription-Key": apiKey,
-              },
-            }
-          ),
+          fetch(`${apiBasePath}/institutions/${institutionId}/issuers/${id}`, {
+            method: "GET",
+            headers: {
+              ...defaultHeader,
+              "Ocp-Apim-Subscription-Key": apiKey,
+            },
+            dispatcher,
+          }),
         E.toError
       ),
       TE.filterOrElse(
