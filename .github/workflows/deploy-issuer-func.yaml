@@ -2,9 +2,6 @@ name: Deploy (issuer-func)
 
 on:
   workflow_dispatch: {}
-  push:
-    tags:
-      - io-func-sign-issuer@**
 
 jobs:
   deploy_workspace_to_azure:
