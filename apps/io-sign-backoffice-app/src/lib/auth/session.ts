@@ -12,7 +12,7 @@ const defaultCookieOptions = {
 const cookieName = "_iosign_session";
 
 const getSecret = cache(() => {
-  const Secret = z.string().nonempty();
+  const Secret = z.string().min(1);
   const result = Secret.safeParse(process.env.AUTH_SESSION_SECRET);
   if (!result.success) {
     throw new Error("error parsing the auth session secret from environment", {

@@ -15,7 +15,7 @@ const mocks: { issuer: Issuer } = vi.hoisted(() => ({
     institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
     type: "PA",
     supportEmail: "supportEmail@gmail.com",
-    state: "active",
+    status: "active",
   },
 }));
 

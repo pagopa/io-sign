@@ -1,4 +1,5 @@
 import * as t from "io-ts";
+import { z } from "zod";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
@@ -11,11 +12,11 @@ export const IssuerEnvironment = t.union([
 ]);
 export type IssuerEnvironment = t.TypeOf<typeof IssuerEnvironment>;
 
-export const IssuerState = t.union([
+export const IssuerStatus = t.union([
   t.literal("ACTIVE"),
   t.literal("INACTIVE"),
 ]);
-export type IssuerState = t.TypeOf<typeof IssuerState>;
+export type IssuerStatus = t.TypeOf<typeof IssuerStatus>;
 
 export const Issuer = t.type({
   id: Id,
@@ -27,7 +28,17 @@ export const Issuer = t.type({
   environment: IssuerEnvironment,
   vatNumber: NonEmptyString,
   department: t.string,
-  state: IssuerState,
+  status: IssuerStatus,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
+
+// this is the back office issuer schema
+export const issuerSchema = z.object({
+  id: z.string().min(1),
+  type: z.enum(["PA"]),
+  externalId: z.string().min(1),
+  institutionId: z.string().uuid(),
+  supportEmail: z.string().email(),
+  status: z.enum(["active", "inactive"]),
+});

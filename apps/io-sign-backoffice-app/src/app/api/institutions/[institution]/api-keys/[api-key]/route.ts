@@ -8,7 +8,7 @@ import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
-  "api-key": z.string().nonempty(),
+  "api-key": z.string().min(1),
 });
 
 type Params = z.infer<typeof pathSchema>;

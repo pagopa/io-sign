@@ -15,7 +15,7 @@ export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
     const newIssuer = issuerSchema.parse({
       externalId: ulid(),
       type: "PA",
-      state: "active",
+      status: "active",
       ...payload,
     });
     await insertIssuer(newIssuer);
