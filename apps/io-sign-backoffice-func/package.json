@@ -12,6 +12,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@azure/functions": "^4.2.0",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^2.0.1",
@@ -21,7 +22,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@azure/functions": "^4.0.1",
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.5.1",
     "@types/node": "^20.8.8",

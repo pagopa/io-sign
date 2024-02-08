@@ -286,13 +286,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@azure/functions@npm:4.0.1"
+"@azure/functions@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@azure/functions@npm:4.2.0"
   dependencies:
     long: ^4.0.0
     undici: ^5.13.0
-  checksum: 1aefbab740b70c6d274fe75e287051ac6593b6d39156952491c68c0b4cf93d1b5d8dda48a8e2ae17ae359b4b2b252255555b39904f132ef8be870ac511fcf073
+  checksum: 2c5f9e81c4239072952d05eb129f920f4a29762f8611a99f72dde39f34f5963ca85c8a6486f22dce062d2275bb1a9ae8a552a97bddd764248a163f6adcc894ea
   languageName: node
   linkType: hard
 
@@ -11055,7 +11055,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func"
   dependencies:
-    "@azure/functions": ^4.0.1
+    "@azure/functions": ^4.2.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
@@ -16824,16 +16824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.13.0":
-  version: 5.27.0
-  resolution: "undici@npm:5.27.0"
-  dependencies:
-    "@fastify/busboy": ^2.0.0
-  checksum: 3acad25bfe5957aa5edc24eb160b5da7a9c67a5061e2e001929bef4bafed07d93a2accb36d407179c35b3ae56adbe89b49e1dd80d8cea9fdc44dca2037174330
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.27.2":
+"undici@npm:^5.13.0, undici@npm:^5.27.2":
   version: 5.28.3
   resolution: "undici@npm:5.28.3"
   dependencies:
