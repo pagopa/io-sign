@@ -28,6 +28,7 @@ export const PricingPlan = t.keyof({
   DEFAULT: null,
   INTERNAL: null,
 });
+
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 /*
@@ -139,11 +140,11 @@ type EventData = {
   body: GenericEvent;
 };
 
-type EventDataBatch = {
+export type EventDataBatch = {
   tryAdd(eventData: EventData): boolean;
 };
 
-type EventProducerClient = {
+export type EventProducerClient = {
   createBatch(): Promise<EventDataBatch>;
   close: () => Promise<void>;
   sendBatch(batch: EventDataBatch): Promise<void>;
@@ -175,7 +176,14 @@ export const sendEvent =
     );
 
 export const createAndSendAnalyticsEvent =
-  (eventName: EventName) => (signatureRequest: SignatureRequest) =>
+  (eventName: EventName) =>
+  (
+    signatureRequest: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    EventAnalyticsClient & { logger: L.Logger },
+    Error,
+    SignatureRequest
+  > =>
     pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
@@ -197,3 +205,16 @@ export const createAndSendAnalyticsEvent =
         )
       )
     );
+
+type BillingEventEnvironment = {
+  billingEventProducer: EventProducerClient;
+};
+
+export const sendBillingEvent =
+  (
+    event: BillingEvent
+  ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
+  ({ billingEventProducer }) =>
+    sendEvent(event)({
+      eventAnalyticsClient: billingEventProducer,
+    });

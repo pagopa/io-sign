@@ -33,6 +33,7 @@ import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-reque
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
@@ -40,6 +41,13 @@ import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
 import { getConfigFromEnvironment } from "./config";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { ClosedSignatureRequest } from "../signature-request";
+
+import { ApplicationInsights } from "@io-sign/io-sign/infra/azure/appinsights/index";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
+
+import { IONotificationService } from "@io-sign/io-sign/infra/io-services/message";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -81,6 +89,36 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
+const notificationService = new IONotificationService(
+  ioApiClient,
+  config.pagopa.ioServices.configurationId
+);
+
+const telemetryClient = initAppInsights(
+  config.azure.appinsights.instrumentationKey,
+  {
+    samplingPercentage: config.azure.appinsights.samplingPercentage,
+  }
+);
+
+const telemetryService = new ApplicationInsights(telemetryClient);
+
+const issuerRepository = new BackOfficeIssuerRepository(
+  config.backOffice.basePath,
+  config.backOffice.apiKey
+);
+const dossierRepository = new CosmosDbDossierRepository(database);
+
+const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
+
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database.container("signature-requests")
+);
+
+const signerRepository = new PdvTokenizerSignerRepository(
+  pdvTokenizerClientWithApiKey
+);
+
 const uploadedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "uploaded-documents"
@@ -89,6 +127,12 @@ const uploadedContainerClient = new ContainerClient(
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
+);
+
+const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
+
+const validatedFileStorage = new BlobStorageFileStorage(
+  validatedContainerClient
 );
 
 const signedContainerClient = new ContainerClient(
@@ -138,6 +182,16 @@ export const MarkAsSigned = makeRequestAsSignedFunction(
   eventAnalyticsClient
 );
 
+export const CloseSignatureRequest = CloseSignatureRequestFunction({
+  signatureRequestRepository,
+  signerRepository,
+  telemetryService,
+  notificationService,
+  eventAnalyticsClient,
+  billingEventProducer: eventHubBillingClient,
+  inputDecoder: ClosedSignatureRequest,
+});
+
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient
@@ -160,22 +214,6 @@ export const CreateIssuer = makeCreateIssuerFunction(
   database,
   config.pagopa.selfCare,
   config.slack
-);
-
-const issuerRepository = new BackOfficeIssuerRepository(
-  config.backOffice.basePath,
-  config.backOffice.apiKey
-);
-const dossierRepository = new CosmosDbDossierRepository(database);
-const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
-const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
-  database.container("signature-requests")
-);
-
-const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
-
-const validatedFileStorage = new BlobStorageFileStorage(
-  validatedContainerClient
 );
 
 export const GetDossier = GetDossierFunction({

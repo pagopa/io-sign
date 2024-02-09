@@ -13,9 +13,8 @@ import {
 
 import { TooManyRequestsError } from "../../error";
 import { HttpBadRequestError } from "../http/errors";
-import { PdvTokenizerClient, PdvTokenizerClientWithApiKey } from "./client";
 import { validate } from "../../validation";
-import { parse } from "date-fns";
+import { PdvTokenizerClientWithApiKey } from "./client";
 
 /** @deprecated use "PdvTokenizerSignerRepository" instead */
 export const makeGetSignerByFiscalCode =

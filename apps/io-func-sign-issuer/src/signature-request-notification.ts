@@ -1,11 +1,16 @@
-import { pipe } from "fp-ts/lib/function";
+import { constFalse, constTrue, constVoid, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import {
+  GetFiscalCodeBySignerId,
+  getFiscalCodeBySignerId,
+} from "@io-sign/io-sign/signer";
 
 import {
   NotificationMessage,
   SubmitNotificationForUser,
+  submitNotification,
 } from "@io-sign/io-sign/notification";
 
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -13,15 +18,20 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SignatureRequest } from "./signature-request";
 import { Dossier, GetDossier } from "./dossier";
 
+/** @deprecated */
 export type SendNotificationPayload = {
   signatureRequest: SignatureRequest;
 };
 
+/** @deprecated */
 export type MakeMessageContent = (
   dossier: Dossier
 ) => (signatureRequest: SignatureRequest) => NotificationMessage;
 
-// Sends a signature request notification by constructing the message with makeMessageContent.
+/**
+ * @deprecated use "sendSignatureRequestNotification" instead
+ * Sends a signature request notification by constructing the message with makeMessageContent.
+ */
 export const makeSendSignatureRequestNotification =
   (
     submitNotification: SubmitNotificationForUser,
@@ -60,4 +70,21 @@ export const makeSendSignatureRequestNotification =
           TE.chain(submitNotification(fiscalCode))
         )
       )
+    );
+
+// Sends a Notification by constructing the message with makeNotificationMessage
+export const sendSignatureRequestNotification =
+  (
+    buildNotificationMessage: (request: SignatureRequest) => NotificationMessage
+  ) =>
+  (request: SignatureRequest) =>
+    pipe(
+      getFiscalCodeBySignerId(request.signerId),
+      RTE.chainW((fiscalCode) =>
+        submitNotification(fiscalCode, buildNotificationMessage(request))
+      ),
+      RTE.map(() => true),
+      // this is a fire-and-forget operation (does not returns errors, just bool with result)
+      // TODO(SFEQS-**) implement a retry strategy for IO messages
+      RTE.altW(() => RTE.right(false))
     );
