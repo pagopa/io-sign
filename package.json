@@ -17,5 +17,5 @@
     "@changesets/cli": "^2.26.2",
     "turbo": "^1.12.2"
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@3.8.0"
 }
