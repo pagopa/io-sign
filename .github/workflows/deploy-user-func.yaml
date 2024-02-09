@@ -2,9 +2,6 @@ name: Deploy (user-func)
 
 on:
   workflow_dispatch: {}
-  push:
-    tags:
-      - io-func-sign-user@**
 
 jobs:
   deploy_workspace_to_azure:
