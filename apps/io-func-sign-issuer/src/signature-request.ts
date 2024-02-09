@@ -29,6 +29,7 @@ import {
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { findIndex, updateAt } from "fp-ts/lib/Array";
+
 import {
   SignatureRequestReady,
   SignatureRequestToBeSigned,
@@ -53,6 +54,15 @@ export const SignatureRequest = t.union([
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
+
+// A request is defined "CLOSED" when its status is one of: CANCELLED, SIGNED, REJECTED.
+// Closed requests cannot be modified, whatever its outcome.
+export const ClosedSignatureRequest = t.union([
+  SignatureRequestSigned,
+  SignatureRequestRejected,
+]);
+
+export type ClosedSignatureRequest = t.TypeOf<typeof ClosedSignatureRequest>;
 
 export const defaultExpiryDate = () => pipe(new Date(), addDays(90));
 
