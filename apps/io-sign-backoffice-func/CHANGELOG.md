@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.1.0
+
+### Minor Changes
+
+- 5302648: Add integration with Google Spreadsheets
+
 ## 1.0.0
 
 ### Major Changes
