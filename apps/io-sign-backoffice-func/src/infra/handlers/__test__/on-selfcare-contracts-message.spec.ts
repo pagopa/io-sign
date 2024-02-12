@@ -2,12 +2,23 @@ import { it, describe, expect, vi, beforeEach } from "vitest";
 import * as TE from "fp-ts/lib/TaskEither";
 import { onSelfcareContractsMessageHandler } from "../on-selfcare-contracts-message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
-import * as issuerMessage from "@/infra/slack/issuer-message";
 import { IoTsType } from "../validation";
 import { isLeft } from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
-import { GetById, Issuer } from "@/infra/back-office/issuer";
-import { SendMessage } from "@/infra/slack/message";
+
+import { google } from "googleapis";
+
+const auth = new google.auth.GoogleAuth({
+  credentials: {
+    type: "service_account",
+    private_key: "private_key",
+    client_email: "client_email",
+  },
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+});
+
+import { BackofficeApiClient, Issuer } from "@/infra/back-office/client";
+import { Contact } from "@/index";
 
 const issuer: Issuer = {
   id: "id",
@@ -18,32 +29,58 @@ const issuer: Issuer = {
   status: "active",
 };
 
-const mocks = { issuer };
+const contacts: Contact[] = [
+  {
+    name: "Nome",
+    surname: "Cognome",
+    email: "nome.cognome@contatto.pagopa.it",
+  },
+];
 
-type FunctionsTestContext = {
-  getById: GetById["getById"];
-  sendMessage: SendMessage["sendMessage"];
-};
+const mocks = { issuer, contacts };
 
-beforeEach<FunctionsTestContext>((ctx) => {
-  ctx.getById = (id, institutionId) =>
-    mocks.issuer.id === id && mocks.issuer.institutionId === institutionId
-      ? TE.right(O.some(issuer))
-      : TE.right(O.none);
-  ctx.sendMessage = () => TE.right(undefined);
+vi.mock("@/infra/back-office/client", () => {
+  const BackofficeApiClient = vi.fn();
+  BackofficeApiClient.prototype.getIssuer = vi.fn(
+    (k: { id: string; institutionId: string }) =>
+      k.id === mocks.issuer.id && k.institutionId === mocks.issuer.institutionId
+        ? TE.right(O.some(mocks.issuer))
+        : TE.right(O.none)
+  );
+  BackofficeApiClient.prototype.getUsers = vi.fn(() =>
+    TE.right(mocks.contacts)
+  );
+  return { BackofficeApiClient };
 });
 
+const mockSaveContactsToSpreadsheets = vi.hoisted(() =>
+  vi.fn(() => vi.fn(() => TE.right(undefined)))
+);
+
+vi.mock("@/infra/google/sheets", () => ({
+  saveContactsToSpreadsheets: mockSaveContactsToSpreadsheets,
+}));
+
+const sendMessageMock = vi.hoisted(() =>
+  vi.fn(() => vi.fn(() => TE.right(undefined)))
+);
+
+vi.mock("@/infra/slack/message", () => ({
+  sendMessage: sendMessageMock,
+}));
+
 describe("onSelfcareContractsMessage handler", () => {
-  it<FunctionsTestContext>("should return a left either when the input validation fails", ({
-    getById,
-    sendMessage,
-  }) => {
+  it("should return a left either when the input validation fails", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input: { foo: "foo" },
       logger: { log: (s, _l) => () => console.log(s) },
-      getById,
-      sendMessage,
+      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      google: {
+        auth,
+        spreadsheetId: "",
+      },
+      slackWebhook: "https://my-web-hook",
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -52,10 +89,7 @@ describe("onSelfcareContractsMessage handler", () => {
     );
   });
 
-  it<FunctionsTestContext>("should return a left either when the issuer already exists", async ({
-    getById,
-    sendMessage,
-  }) => {
+  it("should return a left either when the issuer already exists", async () => {
     const input = [
       {
         id: "id",
@@ -77,8 +111,12 @@ describe("onSelfcareContractsMessage handler", () => {
       inputDecoder: IoTsType(ioSignContracts),
       input,
       logger: { log: (s, _l) => () => console.log(s) },
-      getById,
-      sendMessage,
+      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      google: {
+        auth,
+        spreadsheetId: "",
+      },
+      slackWebhook: "https://my-web-hook",
     });
     const result = await run();
     expect(isLeft(result)).toBe(true);
@@ -88,11 +126,7 @@ describe("onSelfcareContractsMessage handler", () => {
     }
   });
 
-  it<FunctionsTestContext>("should call IssuerMessage function", async ({
-    getById,
-    sendMessage,
-  }) => {
-    const IssuerMessageSpy = vi.spyOn(issuerMessage, "IssuerMessage");
+  it("sends two messages (onboarding, contact) and stores contacts to spreadsheet", async () => {
     const input = [
       {
         id: "id",
@@ -100,7 +134,7 @@ describe("onSelfcareContractsMessage handler", () => {
         state: "ACTIVE",
         institution: {
           address: "address",
-          description: "description",
+          description: "Comune di Test",
           digitalAddress: "digitalAddress",
           taxCode: "taxCode",
         },
@@ -114,10 +148,18 @@ describe("onSelfcareContractsMessage handler", () => {
       inputDecoder: IoTsType(ioSignContracts),
       input,
       logger: { log: (s, _l) => () => console.log(s) },
-      getById,
-      sendMessage,
+      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      google: {
+        auth,
+        spreadsheetId: "",
+      },
+      slackWebhook: "https://my-web-hook",
     });
     await run();
-    expect(IssuerMessageSpy).toHaveBeenCalled();
+    expect(sendMessageMock).toHaveBeenCalledTimes(2);
+    expect(mockSaveContactsToSpreadsheets).toHaveBeenCalledWith(
+      mocks.contacts,
+      input[0].institution.description
+    );
   });
 });

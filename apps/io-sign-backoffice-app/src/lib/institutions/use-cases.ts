@@ -6,10 +6,14 @@ export const getInstitution = cache((id: string) =>
   getSelfcareApiClient().getInstitution(id)
 );
 
-export const getUserInstitutions = cache((uid: string) =>
+export const getInstitutionsByUserId = cache((uid: string) =>
   getSelfcareApiClient().getInstitutions(uid)
 );
 
-export const getUserProductsByInstitutionId = cache(
-  (uid: string, iid: string) => getSelfcareApiClient().getProducts(uid, iid)
+export const getProductsByInstitutionId = cache((uid: string, iid: string) =>
+  getSelfcareApiClient().getProducts(uid, iid)
+);
+
+export const getUsersByInstitutionId = cache((iid: string) =>
+  getSelfcareApiClient().getUsers(iid)
 );

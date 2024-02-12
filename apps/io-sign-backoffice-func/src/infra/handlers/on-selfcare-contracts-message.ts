@@ -1,40 +1,62 @@
 import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { of } from "@pagopa/handler-kit";
+
 import {
   ActiveIoSignContract,
   ClosedIoSignContract,
   IoSignContracts,
   isActive,
 } from "../selfcare/contract";
-import { IssuerMessage } from "../slack/issuer-message";
-import { issuerAlreadyExists } from "../back-office/use-cases";
-import { GetById } from "../back-office/issuer";
-import { SendMessage } from "../slack/message";
+
+import {
+  getContactsByInstitutionId,
+  issuerAlreadyExists,
+} from "../back-office/use-cases";
+
+import { sendMessage } from "../slack/message";
+import { saveContactsToSpreadsheets } from "../google/sheets";
 
 declare const inactivateIssuer: (
   contract: ClosedIoSignContract
 ) => RTE.ReaderTaskEither<unknown, Error, void>;
 
-const sendOnboardingMessage =
-  (contract: ActiveIoSignContract) =>
-  ({ getById, sendMessage }: GetById & SendMessage) =>
-    pipe(
-      issuerAlreadyExists(
-        contract.institution.taxCode,
-        contract.internalIstitutionID
-      )({ getById }),
-      TE.map(() =>
-        IssuerMessage({
-          internalInstitutionId: contract.internalIstitutionID,
-          taxCode: contract.institution.taxCode,
-          description: contract.institution.description,
-        })
-      ),
-      TE.flatMap(sendMessage)
-    );
+const sendOnboardingMessage = ({
+  institution,
+  internalIstitutionID,
+}: ActiveIoSignContract) =>
+  pipe(
+    issuerAlreadyExists({
+      id: institution.taxCode,
+      institutionId: internalIstitutionID,
+    }),
+    RTE.filterOrElse(
+      (exists) => exists === false,
+      () => new Error("An issuer with this id already exists")
+    ),
+    RTE.flatMap(() =>
+      sendMessage(
+        `(_backoffice_) *${institution.description}* (\`institutionId: ${internalIstitutionID}\`, \`taxCode: ${institution.taxCode}\`) ha effettuato l'onboarding 🎉`
+      )
+    )
+  );
+
+const exportContacts = ({
+  institution,
+  internalIstitutionID,
+}: ActiveIoSignContract) =>
+  pipe(
+    getContactsByInstitutionId(internalIstitutionID),
+    RTE.flatMap((contacts) =>
+      saveContactsToSpreadsheets(contacts, institution.description)
+    ),
+    RTE.flatMap(() =>
+      sendMessage(
+        `(_backoffice_) I contatti di ${institution.description} sono stati salvati nel foglio di lavoro ✅`
+      )
+    )
+  );
 
 export const onSelfcareContractsMessageHandler = of(
   (contracts: IoSignContracts) =>
@@ -42,7 +64,10 @@ export const onSelfcareContractsMessageHandler = of(
       contracts,
       A.map((contract) =>
         isActive(contract)
-          ? sendOnboardingMessage(contract)
+          ? pipe(
+              sendOnboardingMessage(contract),
+              RTE.flatMap(() => exportContacts(contract))
+            )
           : inactivateIssuer(contract)
       ),
       A.sequence(RTE.ApplicativePar)

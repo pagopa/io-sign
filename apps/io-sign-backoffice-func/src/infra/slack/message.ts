@@ -4,15 +4,11 @@ import { pipe } from "fp-ts/lib/function";
 import { isSuccessful } from "@io-sign/io-sign/infra/client-utils";
 import { dispatcher } from "../http/fetch";
 
-export type SendMessage = {
-  sendMessage: (message: string) => TE.TaskEither<Error, void>;
-};
-
-export const sendMessage = (webhookUrl: string) => (message: string) =>
+export const sendMessage = (message: string) => (r: { slackWebhook: string }) =>
   pipe(
     TE.tryCatch(
       () =>
-        fetch(webhookUrl, {
+        fetch(r.slackWebhook, {
           method: "POST",
           body: JSON.stringify({
             text: message,

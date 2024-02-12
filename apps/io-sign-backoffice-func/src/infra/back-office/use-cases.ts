@@ -1,16 +1,17 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
-import { GetById, Issuer } from "./issuer";
+
+import { BackofficeApiClient, Issuer } from "./client";
+
+export type BackofficeEnvironment = {
+  backofficeApiClient: BackofficeApiClient;
+};
 
 export const issuerAlreadyExists =
-  (id: Issuer["id"], internalInstitutionId: Issuer["institutionId"]) =>
-  ({ getById }: GetById) =>
-    pipe(
-      getById(id, internalInstitutionId),
-      TE.flatMap((issuer) =>
-        O.isSome(issuer)
-          ? TE.left(new Error("An issuer with this id already exists"))
-          : TE.right(id)
-      )
-    );
+  (k: Pick<Issuer, "id" | "institutionId">) => (r: BackofficeEnvironment) =>
+    pipe(r.backofficeApiClient.getIssuer(k), TE.map(O.isSome));
+
+export const getContactsByInstitutionId =
+  (institutionId: Issuer["institutionId"]) => (r: BackofficeEnvironment) =>
+    r.backofficeApiClient.getUsers(institutionId);

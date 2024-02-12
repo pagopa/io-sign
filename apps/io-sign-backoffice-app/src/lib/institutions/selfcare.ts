@@ -7,6 +7,8 @@ import {
   Product,
   institutionDetailSchema,
   InstitutionDetail,
+  User,
+  userSchema,
 } from "./index";
 
 import { cache } from "react";
@@ -92,6 +94,25 @@ class SelfcareApiClient {
       return productSchema.array().parse(json);
     } catch (cause) {
       throw new Error("Unable to get institution products from self care", {
+        cause,
+      });
+    }
+  }
+
+  async getUsers(institutionId: string): Promise<User[]> {
+    const resource = new URL(
+      `external/v2/institutions/${institutionId}/users?userIdForAuth=0`,
+      this.#baseURL
+    );
+    try {
+      const response = await fetch(resource, this.#options);
+      if (response.status === 404) {
+        return [];
+      }
+      const json = await response.json();
+      return userSchema.array().parse(json);
+    } catch (cause) {
+      throw new Error("Unable to get institution users from self care", {
         cause,
       });
     }
