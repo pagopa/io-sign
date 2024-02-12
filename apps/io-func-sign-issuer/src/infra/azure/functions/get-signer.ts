@@ -20,11 +20,11 @@ import { validate } from "@io-sign/io-sign/validation";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 
 import { SignerToApiModel } from "../../http/encoders/signer";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 const makeGetSignerByFiscalCodeHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,

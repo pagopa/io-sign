@@ -1,5 +1,5 @@
 import { HttpRequest } from "handler-kit-legacy/lib/http";
-import { Signer, signerNotFoundError } from "@io-sign/io-sign/signer";
+import { Signer } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import * as RE from "fp-ts/lib/ReaderEither";
 
@@ -20,6 +20,7 @@ import { validate } from "@io-sign/io-sign/validation";
 import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 
 import { SignerToApiModel } from "../../http/encoders/signer";
@@ -58,7 +59,7 @@ const makeGetSignerByFiscalCodeHandler = (
   const encodeHttpSuccessResponse = (maybeSigner: O.Option<Signer>) =>
     pipe(
       maybeSigner,
-      E.fromOption(() => signerNotFoundError),
+      E.fromOption(() => new EntityNotFoundError("Signer")),
       E.fold(error, flow(SignerToApiModel.encode, success(SignerDetailView)))
     );
 
