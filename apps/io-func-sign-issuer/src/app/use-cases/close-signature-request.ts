@@ -74,7 +74,7 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
     getSignatureRequest(request.id, request.issuerId),
     RTE.chainEitherKW(markRequestAsClosed(request)),
     RTE.chain(upsertSignatureRequest),
-    RTE.chainFirstW(sendNotification),
+    RTE.chainFirstReaderTaskKW(sendNotification),
     RTE.chainFirstW(
       pipe(
         eventNameByRequestStatus[request.status],

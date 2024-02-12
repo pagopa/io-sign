@@ -1,6 +1,7 @@
-import { pipe } from "fp-ts/lib/function";
+import { constFalse, constTrue, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as RT from "fp-ts/lib/ReaderTask";
 
 import {
   GetFiscalCodeBySignerId,
@@ -83,8 +84,6 @@ export const sendSignatureRequestNotification =
       RTE.chainW((fiscalCode) =>
         submitNotification(fiscalCode, buildNotificationMessage(request))
       ),
-      RTE.map(() => true),
-      // this is a fire-and-forget operation (does not returns errors, just bool with result)
-      // TODO(SFEQS-**) implement a retry strategy for IO messages
-      RTE.altW(() => RTE.right(false))
+      RTE.bimap(constFalse, constTrue),
+      RTE.toUnion
     );
