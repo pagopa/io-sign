@@ -18,7 +18,7 @@ export async function GET(
 ) {
   try {
     pathSchema.parse(params);
-    const host = request.headers.get("host");
+    const host = request.headers.get("x-forwarded-host");
     assert(host === "api.io.pagopa.it");
   } catch (e) {
     return NextResponse.json(
