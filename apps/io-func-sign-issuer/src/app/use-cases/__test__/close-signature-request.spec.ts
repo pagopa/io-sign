@@ -31,8 +31,6 @@ import { EventName, EventProducerClient } from "@io-sign/io-sign/event";
 
 import { CloseSignatureRequestHandler } from "../../../infra/handlers/close-signature-request";
 
-import * as L from "@pagopa/logger";
-
 const issuer: Issuer = {
   id: newId(),
   subscriptionId: newId(),
@@ -42,7 +40,7 @@ const issuer: Issuer = {
   environment: "TEST",
   vatNumber: "14711371128" as NonEmptyString,
   department: "dep1" as NonEmptyString,
-  state: "ACTIVE",
+  status: "ACTIVE",
 };
 
 const dossier: Dossier = {
