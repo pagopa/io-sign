@@ -4,7 +4,7 @@ const ConfigFromEnvironment = z
   .object({
     GOOGLE_PRIVATE_KEY: z.string().min(1),
     GOOGLE_CLIENT_EMAIL: z.string().email(),
-    GOOGLE_SPREADHEET_ID: z.string().min(1),
+    GOOGLE_SPREADSHEET_ID: z.string().min(1),
   })
   .transform((e) => ({
     credentials: {
@@ -12,7 +12,7 @@ const ConfigFromEnvironment = z
       private_key: e.GOOGLE_PRIVATE_KEY,
       client_email: e.GOOGLE_CLIENT_EMAIL,
     },
-    spreadsheetId: e.GOOGLE_SPREADHEET_ID,
+    spreadsheetId: e.GOOGLE_SPREADSHEET_ID,
   }));
 
 export type GoogleConfig = z.infer<typeof ConfigFromEnvironment>;
