@@ -2,9 +2,6 @@ name: Deploy (issuer-func)
 
 on:
   workflow_dispatch: {}
-  push:
-    tags:
-      - io-func-sign-issuer@**
 
 jobs:
   deploy_workspace_to_azure:
@@ -14,3 +11,20 @@ jobs:
       environment: io-p-sign-issuer-func
       workspace-name: io-func-sign-issuer
     secrets: inherit
+
+  # tag the current commit as "latest" in order to make the latest
+  # released version easily referenceable in the documentation
+  add_tag_latest:
+    needs: deploy_workspace_to_azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/latest",
+              sha: context.sha
+            })

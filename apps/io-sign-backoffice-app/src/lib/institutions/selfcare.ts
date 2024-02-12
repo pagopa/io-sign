@@ -13,7 +13,7 @@ import { cache } from "react";
 
 const selfcareApiClientOptions = z.object({
   baseURL: z.string().url().default("https://api.selfcare.pagopa.it"),
-  ocpApimSubscriptionKey: z.string().nonempty(),
+  ocpApimSubscriptionKey: z.string().min(1),
   cache: z.object({
     lifetime: z.number().int().default(3600),
   }),
@@ -102,7 +102,7 @@ export const getSelfcareApiClient = cache(() => {
   const schema = z
     .object({
       SELFCARE_API_URL: z.string().url().optional(),
-      SELFCARE_API_KEY: z.string().nonempty(),
+      SELFCARE_API_KEY: z.string().min(1),
       SELFCARE_API_CACHE_LIFETIME: z.number().int().optional(),
     })
     .transform((env) => ({

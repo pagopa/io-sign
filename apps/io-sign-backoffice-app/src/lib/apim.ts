@@ -5,10 +5,10 @@ import { DefaultAzureCredential } from "@azure/identity";
 
 const Config = z
   .object({
-    AZURE_SUBSCRIPTION_ID: z.string().nonempty(),
-    APIM_RESOURCE_GROUP_NAME: z.string().nonempty(),
-    APIM_SERVICE_NAME: z.string().nonempty(),
-    APIM_PRODUCT_NAME: z.string().nonempty(),
+    AZURE_SUBSCRIPTION_ID: z.string().min(1),
+    APIM_RESOURCE_GROUP_NAME: z.string().min(1),
+    APIM_SERVICE_NAME: z.string().min(1),
+    APIM_PRODUCT_NAME: z.string().min(1),
   })
   .transform((env) => ({
     subscriptionId: env.AZURE_SUBSCRIPTION_ID,
@@ -61,7 +61,7 @@ class ApimProductClient {
       );
       const parsed = z
         .object({
-          primaryKey: z.string().nonempty(),
+          primaryKey: z.string().min(1),
         })
         .parse(secret);
       return parsed.primaryKey;
@@ -86,7 +86,7 @@ class ApimProductClient {
       );
       const parsed = z
         .object({
-          primaryKey: z.string().nonempty(),
+          primaryKey: z.string().min(1),
         })
         .parse(subscription);
       return parsed.primaryKey;
