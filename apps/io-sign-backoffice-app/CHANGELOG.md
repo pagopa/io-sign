@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.2.1
+
+### Patch Changes
+
+- ead5ea4: Fix restricted host
+
 ## 1.2.0
 
 ### Minor Changes
