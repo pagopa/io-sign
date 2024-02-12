@@ -21,7 +21,7 @@ import {
   upsertSignatureRequest,
 } from "../../signature-request";
 
-// TODO(): move here the signature request cancelation logic
+// TODO(SFEQS-2108): move here the signature request cancelation logic
 // since CANCELLED is an "end status" such as SIGNED and REJECTED
 // it should be treated in the same way, so:
 // - the user should be notified by a Message
