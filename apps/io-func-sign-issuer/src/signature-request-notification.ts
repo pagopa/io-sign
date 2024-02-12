@@ -1,7 +1,6 @@
 import { constFalse, constTrue, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as RT from "fp-ts/lib/ReaderTask";
 
 import {
   GetFiscalCodeBySignerId,
