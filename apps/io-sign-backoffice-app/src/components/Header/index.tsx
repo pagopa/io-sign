@@ -1,7 +1,7 @@
 import { getLoggedUser } from "@/lib/auth/use-cases";
 import {
-  getUserInstitutions,
-  getUserProductsByInstitutionId,
+  getInstitutionsByUserId,
+  getProductsByInstitutionId,
 } from "@/lib/institutions/use-cases";
 
 import ClientHeader from "./ClientHeader";
@@ -13,8 +13,8 @@ export type Props = {
 export default async function Header({ institutionId }: Props) {
   const loggedUser = await getLoggedUser();
   const [institutions, products] = await Promise.all([
-    getUserInstitutions(loggedUser.id),
-    getUserProductsByInstitutionId(loggedUser.id, institutionId),
+    getInstitutionsByUserId(loggedUser.id),
+    getProductsByInstitutionId(loggedUser.id, institutionId),
   ]);
   return (
     <ClientHeader

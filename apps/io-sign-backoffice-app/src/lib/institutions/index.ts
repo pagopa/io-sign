@@ -68,3 +68,11 @@ export const productSchema = z
   }));
 
 export type Product = z.infer<typeof productSchema>;
+
+export const userSchema = z.object({
+  name: z.string().min(1),
+  surname: z.string().min(1),
+  email: z.string().email(),
+});
+
+export type User = z.infer<typeof userSchema>;
