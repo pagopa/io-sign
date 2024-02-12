@@ -6,9 +6,11 @@ import { pipe } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { readFromEnvironment } from "../../env";
 
+import { NumberFromString } from "@pagopa/ts-commons/lib/numbers";
+
 export const ApplicationInsightsConfig = t.type({
   instrumentationKey: t.string,
-  samplingPercentage: t.number,
+  samplingPercentage: NumberFromString,
 });
 
 type ApplicationInsightsConfig = t.TypeOf<typeof ApplicationInsightsConfig>;
@@ -21,7 +23,7 @@ export const getApplicationInsightsConfigFromEnvironment: RE.ReaderEither<
   instrumentationKey: readFromEnvironment("APPINSIGHTS_INSTRUMENTATIONKEY"),
   samplingPercentage: pipe(
     readFromEnvironment("APPINSIGHTS_SAMPLING_PERCENTAGE"),
-    RE.chainEitherKW(t.number.decode),
+    RE.chainEitherKW(NumberFromString.decode),
     RE.altW(() => RE.right(5))
   ),
 });
