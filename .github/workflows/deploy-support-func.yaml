@@ -2,9 +2,6 @@ name: Deploy (support-func)
 
 on:
   workflow_dispatch: {}
-  push:
-    tags:
-      - io-func-sign-support@**
 
 jobs:
   deploy_workspace_to_azure:

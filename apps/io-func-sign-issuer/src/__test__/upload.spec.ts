@@ -31,7 +31,7 @@ describe("UploadMetadata", () => {
       environment: "TEST",
       vatNumber: "15376271001" as NonEmptyString,
       department: "",
-      state: "ACTIVE",
+      status: "ACTIVE",
     };
 
     const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [

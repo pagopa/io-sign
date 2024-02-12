@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.1.0
+
+### Minor Changes
+
+- a0cea83: Changed issuer's property from state to status
+
 ## 1.0.6
 
 ### Patch Changes

@@ -6,8 +6,8 @@ let cosmosClient: CosmosClient;
 
 const Config = z
   .object({
-    COSMOS_DB_CONNECTION_STRING: z.string().nonempty(),
-    COSMOS_DB_NAME: z.string().nonempty(),
+    COSMOS_DB_CONNECTION_STRING: z.string().min(1),
+    COSMOS_DB_NAME: z.string().min(1),
   })
   .transform((env) => ({
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
