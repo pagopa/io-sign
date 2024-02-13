@@ -11341,6 +11341,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-sign-backoffice-func@workspace:apps/io-sign-backoffice-func"
   dependencies:
+    "@azure/cosmos": ^3.17.3
     "@azure/functions": ^4.2.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0

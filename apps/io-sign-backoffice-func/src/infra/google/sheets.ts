@@ -3,7 +3,7 @@ import { google, Auth } from "googleapis";
 import { constVoid, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { Contact } from "../../index";
+import { User } from "@io-sign/io-sign/institution";
 
 type GoogleEnvironment = {
   google: {
@@ -12,8 +12,8 @@ type GoogleEnvironment = {
   };
 };
 
-const rows = (contacts: Contact[], institutionName: string) =>
-  contacts.map((contact) => ({
+const rows = (users: User[], institutionName: string) =>
+  users.map((user) => ({
     values: [
       {},
       {},
@@ -24,24 +24,24 @@ const rows = (contacts: Contact[], institutionName: string) =>
       },
       {
         userEnteredValue: {
-          stringValue: contact.name,
+          stringValue: user.name,
         },
       },
       {
         userEnteredValue: {
-          stringValue: contact.surname,
+          stringValue: user.surname,
         },
       },
       {
         userEnteredValue: {
-          stringValue: contact.email,
+          stringValue: user.email,
         },
       },
     ],
   }));
 
-export const saveContactsToSpreadsheets =
-  (contacts: Contact[], institutionName: string) => (r: GoogleEnvironment) => {
+export const saveUsersToSpreadsheet =
+  (users: User[], institutionName: string) => (r: GoogleEnvironment) => {
     const sheets = google.sheets({ version: "v4", auth: r.google.auth });
     const requestBody = {
       spreadsheetId: r.google.spreadsheetId,
@@ -50,7 +50,7 @@ export const saveContactsToSpreadsheets =
           {
             appendCells: {
               sheetId: 0,
-              rows: rows(contacts, institutionName),
+              rows: rows(users, institutionName),
               fields: "userEnteredValue",
             },
           },

@@ -1,12 +1,17 @@
-import { it, describe, expect, vi, beforeEach } from "vitest";
+import { it, describe, expect, vi } from "vitest";
 import * as TE from "fp-ts/lib/TaskEither";
 import { onSelfcareContractsMessageHandler } from "../on-selfcare-contracts-message";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "../validation";
 import { isLeft } from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
+
+import { User } from "@io-sign/io-sign/institution";
+import { Issuer, IssuerKey, IssuerRepository } from "@/issuer";
 
 import { google } from "googleapis";
+import { ApiKeyRepository } from "@/api-key";
+import { InstitutionRepository } from "@/institution";
+import { UserRepository } from "@/user";
 
 const auth = new google.auth.GoogleAuth({
   credentials: {
@@ -17,9 +22,6 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
-import { BackofficeApiClient, Issuer } from "@/infra/back-office/client";
-import { Contact } from "@/index";
-
 const issuer: Issuer = {
   id: "id",
   type: "PA",
@@ -29,7 +31,7 @@ const issuer: Issuer = {
   status: "active",
 };
 
-const contacts: Contact[] = [
+const users: User[] = [
   {
     name: "Nome",
     surname: "Cognome",
@@ -37,28 +39,44 @@ const contacts: Contact[] = [
   },
 ];
 
-const mocks = { issuer, contacts };
+const mocks = { issuer, users };
 
-vi.mock("@/infra/back-office/client", () => {
-  const BackofficeApiClient = vi.fn();
-  BackofficeApiClient.prototype.getIssuer = vi.fn(
-    (k: { id: string; institutionId: string }) =>
-      k.id === mocks.issuer.id && k.institutionId === mocks.issuer.institutionId
-        ? TE.right(O.some(mocks.issuer))
-        : TE.right(O.none)
-  );
-  BackofficeApiClient.prototype.getUsers = vi.fn(() =>
-    TE.right(mocks.contacts)
-  );
-  return { BackofficeApiClient };
-});
+const logger = {
+  log: () => () => {},
+};
 
-const mockSaveContactsToSpreadsheets = vi.hoisted(() =>
+class TestRepository
+  implements
+    ApiKeyRepository,
+    IssuerRepository,
+    InstitutionRepository,
+    UserRepository
+{
+  async getApiKeyById() {
+    return undefined;
+  }
+  async getIssuerByKey(k: IssuerKey) {
+    return k.id === mocks.issuer.id &&
+      k.institutionId === mocks.issuer.institutionId
+      ? mocks.issuer
+      : undefined;
+  }
+  async getInstitutionById(id: string) {
+    return undefined;
+  }
+  async getUsersByInstitutionId() {
+    return mocks.users;
+  }
+}
+
+const testRepository = new TestRepository();
+
+const mocksaveUsersToSpreadsheet = vi.hoisted(() =>
   vi.fn(() => vi.fn(() => TE.right(undefined)))
 );
 
 vi.mock("@/infra/google/sheets", () => ({
-  saveContactsToSpreadsheets: mockSaveContactsToSpreadsheets,
+  saveUsersToSpreadsheet: mocksaveUsersToSpreadsheet,
 }));
 
 const sendMessageMock = vi.hoisted(() =>
@@ -74,12 +92,14 @@ describe("onSelfcareContractsMessage handler", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input: { foo: "foo" },
-      logger: { log: (s, _l) => () => console.log(s) },
-      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      logger,
       google: {
         auth,
         spreadsheetId: "",
       },
+      userRepository: testRepository,
+      issuerRepository: testRepository,
+
       slackWebhook: "https://my-web-hook",
     });
     expect(run()).resolves.toEqual(
@@ -110,12 +130,13 @@ describe("onSelfcareContractsMessage handler", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input,
-      logger: { log: (s, _l) => () => console.log(s) },
-      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      logger,
       google: {
         auth,
         spreadsheetId: "",
       },
+      userRepository: testRepository,
+      issuerRepository: testRepository,
       slackWebhook: "https://my-web-hook",
     });
     const result = await run();
@@ -147,18 +168,19 @@ describe("onSelfcareContractsMessage handler", () => {
     const run = onSelfcareContractsMessageHandler({
       inputDecoder: IoTsType(ioSignContracts),
       input,
-      logger: { log: (s, _l) => () => console.log(s) },
-      backofficeApiClient: new BackofficeApiClient("url", "api-key"),
+      logger,
       google: {
         auth,
         spreadsheetId: "",
       },
+      userRepository: testRepository,
+      issuerRepository: testRepository,
       slackWebhook: "https://my-web-hook",
     });
     await run();
     expect(sendMessageMock).toHaveBeenCalledTimes(2);
-    expect(mockSaveContactsToSpreadsheets).toHaveBeenCalledWith(
-      mocks.contacts,
+    expect(mocksaveUsersToSpreadsheet).toHaveBeenCalledWith(
+      mocks.users,
       input[0].institution.description
     );
   });

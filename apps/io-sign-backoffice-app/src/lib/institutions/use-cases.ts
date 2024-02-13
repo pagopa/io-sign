@@ -13,7 +13,3 @@ export const getInstitutionsByUserId = cache((uid: string) =>
 export const getProductsByInstitutionId = cache((uid: string, iid: string) =>
   getSelfcareApiClient().getProducts(uid, iid)
 );
-
-export const getUsersByInstitutionId = cache((iid: string) =>
-  getSelfcareApiClient().getUsers(iid)
-);

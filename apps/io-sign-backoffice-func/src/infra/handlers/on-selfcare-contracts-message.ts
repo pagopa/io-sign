@@ -10,13 +10,11 @@ import {
   isActive,
 } from "../selfcare/contract";
 
-import {
-  getContactsByInstitutionId,
-  issuerAlreadyExists,
-} from "../back-office/use-cases";
-
 import { sendMessage } from "../slack/message";
-import { saveContactsToSpreadsheets } from "../google/sheets";
+import { saveUsersToSpreadsheet } from "../google/sheets";
+
+import { issuerAlreadyExists } from "@/issuer";
+import { getUsersByInstitutionId } from "@/user";
 
 declare const inactivateIssuer: (
   contract: ClosedIoSignContract
@@ -47,9 +45,9 @@ const exportContacts = ({
   internalIstitutionID,
 }: ActiveIoSignContract) =>
   pipe(
-    getContactsByInstitutionId(internalIstitutionID),
+    getUsersByInstitutionId(internalIstitutionID),
     RTE.flatMap((contacts) =>
-      saveContactsToSpreadsheets(contacts, institution.description)
+      saveUsersToSpreadsheet(contacts, institution.description)
     ),
     RTE.flatMap(() =>
       sendMessage(
