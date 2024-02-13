@@ -9,8 +9,6 @@ import { User } from "@io-sign/io-sign/institution";
 import { Issuer, IssuerKey, IssuerRepository } from "@/issuer";
 
 import { google } from "googleapis";
-import { ApiKeyRepository } from "@/api-key";
-import { InstitutionRepository } from "@/institution";
 import { UserRepository } from "@/user";
 
 const auth = new google.auth.GoogleAuth({
@@ -45,31 +43,17 @@ const logger = {
   log: () => () => {},
 };
 
-class TestRepository
-  implements
-    ApiKeyRepository,
-    IssuerRepository,
-    InstitutionRepository,
-    UserRepository
-{
-  async getApiKeyById() {
-    return undefined;
-  }
-  async getIssuerByKey(k: IssuerKey) {
+const testRepository: IssuerRepository & UserRepository = {
+  getIssuerByKey: async (k: IssuerKey) => {
     return k.id === mocks.issuer.id &&
       k.institutionId === mocks.issuer.institutionId
       ? mocks.issuer
       : undefined;
-  }
-  async getInstitutionById(id: string) {
-    return undefined;
-  }
-  async getUsersByInstitutionId() {
+  },
+  getUsersByInstitutionId: async () => {
     return mocks.users;
-  }
-}
-
-const testRepository = new TestRepository();
+  },
+};
 
 const mocksaveUsersToSpreadsheet = vi.hoisted(() =>
   vi.fn(() => vi.fn(() => TE.right(undefined)))
