@@ -1,5 +1,31 @@
 # io-func-sign-issuer
 
+## 0.17.0
+
+### Minor Changes
+
+- a0cea83: Changed issuer's property from state to status
+
+### Patch Changes
+
+- Updated dependencies [a0cea83]
+  - @io-sign/io-sign@1.1.0
+
+## 0.16.5
+
+### Patch Changes
+
+- 2bbef78: Add configuration_id to submitMessageforUserWithFiscalCodeInBody
+- Updated dependencies [2bbef78]
+  - @io-sign/io-sign@1.0.6
+
+## 0.16.4
+
+### Patch Changes
+
+- Updated dependencies [45c91d2]
+  - @io-sign/io-sign@1.0.5
+
 ## 0.16.3
 
 ### Patch Changes

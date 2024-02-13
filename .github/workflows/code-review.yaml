@@ -27,25 +27,25 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Cache turbo build setup
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version-file: ".node-version"
           cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache/turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: "Generate API models"
-        run: yarn workspaces foreach run generate:api-models
+        run: yarn workspaces foreach --all run generate:api-models
 
       - name: "Code review"
         run: yarn run code-review

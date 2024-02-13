@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">=1.3.0"
+  required_version = ">=1.6.0"
 
   required_providers {
     azuread = {
@@ -8,11 +8,11 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.42.0"
+      version = "3.84.0"
     }
     github = {
       source  = "integrations/github"
-      version = "5.17.0"
+      version = "5.39.0"
     }
   }
 
@@ -24,7 +24,9 @@ provider "azurerm" {
 }
 
 provider "github" {
-  owner = var.github.org
+  owner          = var.github.org
+  write_delay_ms = "200"
+  read_delay_ms  = "200"
 }
 
 data "azurerm_subscription" "current" {}

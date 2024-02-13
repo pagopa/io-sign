@@ -1,0 +1,36 @@
+{
+  "name": "io-sign-backoffice-func",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup-node",
+    "format": "prettier --write .",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
+    "start": "func start",
+    "test": "vitest run",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.2.0",
+    "@io-sign/io-sign": "workspace:^",
+    "@pagopa/handler-kit": "^1.1.0",
+    "@pagopa/handler-kit-azure-func": "^2.0.1",
+    "@pagopa/logger": "^1.0.1",
+    "fp-ts": "^2.16.1",
+    "googleapis": "^133.0.0",
+    "undici": "^5.27.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@pagopa/eslint-config": "^3.0.0",
+    "@rushstack/eslint-patch": "^1.5.1",
+    "@types/node": "^20.8.8",
+    "eslint": "^8.50.0",
+    "prettier": "2.7.1",
+    "tsup": "^7.2.0",
+    "typescript": "^4.8.4",
+    "vitest": "^0.34.6"
+  },
+  "main": "dist/main.js"
+}

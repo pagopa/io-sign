@@ -12,8 +12,8 @@
   "scriptFile": "../dist/main.js",
   "entryPoint": "ValidateSignature",
   "retry": {
-        "strategy": "fixedDelay",
-        "maxRetryCount": 2,
-        "delayInterval": "00:00:30"
-    }
+    "strategy": "fixedDelay",
+    "maxRetryCount": 2,
+    "delayInterval": "00:00:30"
+  }
 }

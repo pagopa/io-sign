@@ -65,6 +65,7 @@ export const ApiKey = t.type({
     type: NonEmptyString,
     institutionId: NonEmptyString,
     supportEmail: EmailString,
+    status: t.union([t.literal("active"), t.literal("inactive")]),
   }),
 });
 

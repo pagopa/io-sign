@@ -17,6 +17,7 @@ import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenize
 
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { EventHubProducerClient } from "@azure/event-hubs";
+import { Ulid } from "@pagopa/ts-commons/lib/strings";
 import { NotificationDetailView } from "../../http/models/NotificationDetailView";
 
 import {
@@ -37,12 +38,13 @@ const makeSendNotificationHandler = (
   db: CosmosDatabase,
   tokenizer: PdvTokenizerClientWithApiKey,
   ioApiClient: IOApiClient,
+  configurationId: Ulid,
   eventHubAnalyticsClient: EventHubProducerClient
 ) => {
   const getSignatureRequest = makeGetSignatureRequest(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
   const getIssuerBySubscriptionId = makeGetIssuerBySubscriptionId(db);
-  const submitMessage = makeSubmitMessageForUser(ioApiClient);
+  const submitMessage = makeSubmitMessageForUser(ioApiClient, configurationId);
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getDossier = makeGetDossier(db);
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(

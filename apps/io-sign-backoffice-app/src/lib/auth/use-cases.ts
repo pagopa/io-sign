@@ -32,6 +32,7 @@ export let authenticate = async (idToken: string) => {
       id: institution.taxCode,
       institutionId,
       supportEmail: institution.supportEmail,
+      name: institution.name,
     });
     const user = {
       id,
@@ -65,6 +66,7 @@ if (process.env.NODE_ENV === "development") {
       id: institution.taxCode,
       institutionId: institution.id,
       supportEmail: institution.supportEmail,
+      name: institution.name,
     });
     await createSessionCookie(user, Date.now() + 2592000);
     return { user, institutionId: institution.id };

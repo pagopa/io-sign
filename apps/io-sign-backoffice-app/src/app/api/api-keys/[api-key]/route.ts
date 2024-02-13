@@ -1,12 +1,13 @@
 import { getApiKeyById } from "@/lib/api-keys/cosmos";
 import { getInstitution } from "@/lib/institutions/use-cases";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
+import assert from "assert";
 import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
 
 const pathSchema = z.object({
-  "api-key": z.string().nonempty(),
+  "api-key": z.string().min(1),
 });
 
 type Params = z.infer<typeof pathSchema>;
@@ -17,6 +18,8 @@ export async function GET(
 ) {
   try {
     pathSchema.parse(params);
+    const host = request.headers.get("x-forwarded-host");
+    assert(host === "api.io.pagopa.it");
   } catch (e) {
     return NextResponse.json(
       {

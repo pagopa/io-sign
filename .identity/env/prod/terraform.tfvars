@@ -3,17 +3,47 @@ env       = "prod"
 env_short = "p"
 prefix    = "io"
 
-environment_cd_roles = {
-  subscription = [
-    "Reader",
-  ]
+tags = {
+  CreatedBy   = "Terraform"
+  Environment = "Prod"
+  Owner       = "io"
+  Source      = "https://github.com/pagopa/io-sign"
+  CostCenter  = "TS310 - PAGAMENTI & SERVIZI"
+}
+
+opex_environment_ci_roles = {
+  subscription = ["Reader"]
   resource_groups = {
-    io-p-sign-backend-rg = [
-      "Website Contributor",
+    "dashboards" = [
+      "Reader"
+    ],
+    "terraform-state-rg" = [
+      "Storage Blob Data Reader"
     ]
   }
 }
 
-github_repository_environment_cd = {
-  reviewers_teams = ["io-sign-maintainers"]
+opex_environment_cd_roles = {
+  subscription = ["Reader"]
+  resource_groups = {
+    "dashboards" = [
+      "Contributor"
+    ],
+    "terraform-state-rg" = [
+      "Storage Blob Data Contributor",
+      "Reader and Data Access"
+    ]
+  }
+}
+
+web_apps_environment_cd_roles = {
+  subscription = []
+  resource_groups = {
+    "io-p-github-runner-rg" = [
+      "Contributor",
+    ],
+    "io-p-sign-backend-rg" = [
+      "Contributor",
+    ]
+  }
 }

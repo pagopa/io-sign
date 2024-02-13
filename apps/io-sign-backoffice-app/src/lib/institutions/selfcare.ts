@@ -7,13 +7,15 @@ import {
   Product,
   institutionDetailSchema,
   InstitutionDetail,
+  User,
+  userSchema,
 } from "./index";
 
 import { cache } from "react";
 
 const selfcareApiClientOptions = z.object({
   baseURL: z.string().url().default("https://api.selfcare.pagopa.it"),
-  ocpApimSubscriptionKey: z.string().nonempty(),
+  ocpApimSubscriptionKey: z.string().min(1),
   cache: z.object({
     lifetime: z.number().int().default(3600),
   }),
@@ -96,13 +98,32 @@ class SelfcareApiClient {
       });
     }
   }
+
+  async getUsers(institutionId: string): Promise<User[]> {
+    const resource = new URL(
+      `external/v2/institutions/${institutionId}/users?userIdForAuth=0`,
+      this.#baseURL
+    );
+    try {
+      const response = await fetch(resource, this.#options);
+      if (response.status === 404) {
+        return [];
+      }
+      const json = await response.json();
+      return userSchema.array().parse(json);
+    } catch (cause) {
+      throw new Error("Unable to get institution users from self care", {
+        cause,
+      });
+    }
+  }
 }
 
 export const getSelfcareApiClient = cache(() => {
   const schema = z
     .object({
       SELFCARE_API_URL: z.string().url().optional(),
-      SELFCARE_API_KEY: z.string().nonempty(),
+      SELFCARE_API_KEY: z.string().min(1),
       SELFCARE_API_CACHE_LIFETIME: z.number().int().optional(),
     })
     .transform((env) => ({

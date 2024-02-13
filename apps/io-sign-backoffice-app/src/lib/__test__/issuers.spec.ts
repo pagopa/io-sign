@@ -15,6 +15,7 @@ const mocks: { issuer: Issuer } = vi.hoisted(() => ({
     institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
     type: "PA",
     supportEmail: "supportEmail@gmail.com",
+    status: "active",
   },
 }));
 
@@ -48,8 +49,9 @@ describe("createIssuerIfNotExists", () => {
       id: mocks.issuer.id,
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
+      name: "test",
     };
-    await createIssuerIfNotExists(payload);
+    await createIssuerIfNotExists({ ...payload, name: "test" });
     expect(create).not.toHaveBeenCalled();
   });
   it("should create an issuer", async () => {
@@ -58,7 +60,7 @@ describe("createIssuerIfNotExists", () => {
       institutionId: mocks.issuer.institutionId,
       supportEmail: mocks.issuer.supportEmail,
     };
-    await createIssuerIfNotExists(payload);
+    await createIssuerIfNotExists({ ...payload, name: "test" });
     expect(create).toHaveBeenCalledWith(expect.objectContaining(payload));
   });
 });

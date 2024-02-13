@@ -1,19 +1,18 @@
 import { z } from "zod";
-
-export const issuerSchema = z.object({
-  id: z.string().nonempty(),
-  type: z.enum(["PA"]),
-  externalId: z.string().nonempty(),
-  institutionId: z.string().uuid(),
-  supportEmail: z.string().email(),
-});
+import { issuerSchema } from "@io-sign/io-sign/issuer";
 
 export type Issuer = z.infer<typeof issuerSchema>;
 
-export const createIssuerPayloadSchema = issuerSchema.pick({
-  id: true,
-  institutionId: true,
-  supportEmail: true,
-});
+export const createIssuerPayloadSchema = issuerSchema
+  .pick({
+    id: true,
+    institutionId: true,
+    supportEmail: true,
+  })
+  .extend({
+    name: z.string().min(1),
+  });
 
 export type CreateIssuerPayload = z.infer<typeof createIssuerPayloadSchema>;
+
+export { issuerSchema };

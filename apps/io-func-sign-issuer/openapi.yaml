@@ -355,7 +355,7 @@ components:
       type: apiKey
       name: Ocp-Apim-Subscription-Key
       in: header
-      description: The API key obtained through the developer portal
+      description: The API key can be obtained from the reserved area
 
   responses:
     NotFound:

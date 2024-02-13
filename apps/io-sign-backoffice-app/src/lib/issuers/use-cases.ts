@@ -2,8 +2,9 @@ import { ulid } from "ulid";
 
 import { Institution } from "@/lib/institutions";
 
-import { CreateIssuerPayload } from "./index";
+import { CreateIssuerPayload, issuerSchema } from "./index";
 import { insertIssuer, getIssuer, replaceSupportEmail } from "./cosmos";
+import { sendMessage } from "@/lib/slack";
 
 export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
   try {
@@ -11,11 +12,16 @@ export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
     if (issuer) {
       return;
     }
-    await insertIssuer({
+    const newIssuer = issuerSchema.parse({
       externalId: ulid(),
       type: "PA",
+      status: "active",
       ...payload,
     });
+    await insertIssuer(newIssuer);
+    await sendMessage(
+      `(_backoffice_) *${payload.name}* (\`${newIssuer.externalId}\`) ha effettuato il primo accesso al portale 🎉`
+    );
   } catch (cause) {
     throw new Error("Error creating issuer", { cause });
   }

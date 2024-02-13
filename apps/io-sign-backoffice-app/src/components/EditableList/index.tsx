@@ -57,7 +57,7 @@ export default function EditableList({
 
   const list = useMemo(
     () => (showAll ? items : items.slice(0, limit)),
-    [showAll, items]
+    [showAll, items, limit]
   );
 
   const addItem = (item: string) => {
