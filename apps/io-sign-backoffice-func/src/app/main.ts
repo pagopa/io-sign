@@ -77,6 +77,8 @@ app.cosmosDB("createApiKeyById", {
   databaseName: config.cosmos.cosmosDbName,
   connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
   createLeaseCollectionIfNotExists: true,
+  leaseCollectionName: "leases",
+  leaseCollectionPrefix: "api-keys",
   return: output.cosmosDB({
     databaseName: config.cosmos.cosmosDbName,
     collectionName: "api-keys-by-id",
