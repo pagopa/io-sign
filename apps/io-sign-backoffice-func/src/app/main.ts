@@ -1,4 +1,4 @@
-import { app } from "@azure/functions";
+import { app, output } from "@azure/functions";
 import {
   httpAzureFunction,
   azureFunction,
@@ -15,6 +15,11 @@ import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
+
+import {
+  createApiKeyByIdHandler,
+  inputDecoder as createAPiKeyByIdInputDecoder,
+} from "@/infra/handlers/create-api-key-by-id";
 
 const config = getConfigFromEnvironment();
 
@@ -61,6 +66,24 @@ app.http("getApiKey", {
   authLevel: "function",
   route: "api-keys/{id}",
   handler: getApiKey,
+});
+
+const createApiKeyById = azureFunction(createApiKeyByIdHandler)({
+  inputDecoder: createAPiKeyByIdInputDecoder,
+});
+
+app.cosmosDB("createApiKeyById", {
+  collectionName: "api-keys",
+  databaseName: config.cosmos.cosmosDbName,
+  connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
+  createLeaseCollectionIfNotExists: true,
+  return: output.cosmosDB({
+    databaseName: config.cosmos.cosmosDbName,
+    collectionName: "api-keys-by-id",
+    createIfNotExists: false,
+    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
+  }),
+  handler: createApiKeyById,
 });
 
 app.http("health", {

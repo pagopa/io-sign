@@ -32,28 +32,26 @@ export const getCosmosDBConfigFromEnvironment = () => {
 export class BackofficeEntitiesRepository
   implements ApiKeyRepository, IssuerRepository
 {
+  #apiKeysById: Container;
   #apiKeys: Container;
   #issuers: Container;
 
   constructor(db: Database) {
     this.#apiKeys = db.container("api-keys");
+    this.#apiKeysById = db.container("api-keys-by-id");
     this.#issuers = db.container("issuers");
   }
 
   async getApiKeyById(id: ApiKey["id"]) {
     try {
-      const q = this.#apiKeys.items.query({
-        query: "SELECT * FROM c WHERE c.id = @id",
-        parameters: [
-          {
-            name: "@id",
-            value: id,
-          },
-        ],
-      });
-      const response = await q.fetchAll();
-      const apiKey = response.resources.at(0);
-      return apiKeySchema.or(z.undefined()).parse(apiKey);
+      const apiKeyById = await this.#apiKeysById.item(id, id).read();
+      const { institutionId } = apiKeySchema
+        .pick({
+          institutionId: true,
+        })
+        .parse(apiKeyById.resource);
+      const apiKey = await this.#apiKeys.item(id, institutionId).read();
+      return apiKeySchema.or(z.undefined()).parse(apiKey.resource);
     } catch (e) {
       throw new Error("Unable to get the Api Key from DB.", { cause: e });
     }
