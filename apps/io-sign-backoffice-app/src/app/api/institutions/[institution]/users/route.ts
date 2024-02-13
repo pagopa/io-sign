@@ -3,9 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getUsersByInstitutionId } from "@/lib/institutions/use-cases";
-import assert from "assert";
-
-import { getConfig } from "@/config";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
@@ -19,9 +16,6 @@ export async function GET(
 ) {
   try {
     pathSchema.parse(params);
-    const host = request.headers.get("x-forwarded-host");
-    assert(host !== null);
-    assert(host.includes(getConfig().apiHost));
   } catch (e) {
     return NextResponse.json(
       {
