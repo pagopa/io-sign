@@ -1,10 +1,13 @@
+import assert from "assert";
+
 import { getApiKeyById } from "@/lib/api-keys/cosmos";
 import { getInstitution } from "@/lib/institutions/use-cases";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
-import assert from "assert";
 import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
+
+import { getConfig } from "@/config";
 
 const pathSchema = z.object({
   "api-key": z.string().min(1),
@@ -19,7 +22,8 @@ export async function GET(
   try {
     pathSchema.parse(params);
     const host = request.headers.get("x-forwarded-host");
-    assert(host === "api.io.pagopa.it");
+    assert(host !== null);
+    assert(host.includes(getConfig().apiHost));
   } catch (e) {
     return NextResponse.json(
       {

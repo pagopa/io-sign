@@ -5,6 +5,7 @@ const ConfigFromEnvironment = z
   .object({
     NEXT_PUBLIC_SELFCARE_URL: z.string().url(),
     SELFCARE_LOGOUT_URL: z.string().url(),
+    API_HOST: z.string().min(1),
   })
   .transform((e) => ({
     selfCare: {
@@ -13,6 +14,7 @@ const ConfigFromEnvironment = z
         logoutUrl: e.SELFCARE_LOGOUT_URL,
       },
     },
+    apiHost: e.API_HOST,
   }));
 
 export type Config = z.infer<typeof ConfigFromEnvironment>;

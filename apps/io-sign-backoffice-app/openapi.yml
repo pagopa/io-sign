@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Back office API
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign/backoffice
     description: production
@@ -44,6 +44,28 @@ paths:
       responses:
         201:
           description: "issuer created"
+        default:
+          description: "error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+
+  /institutions/{id}/users:
+    get:
+      operationId: getInstitutionUsers
+      tags:
+        - Institution
+      summary: Get institution users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        200:
+          description: user list
         default:
           description: "error"
           content:
