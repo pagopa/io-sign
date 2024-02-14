@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Firma con IO - Back office API
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign/backoffice
     description: production
@@ -13,7 +13,7 @@ paths:
       operationId: getApiKey
       tags:
         - Issuer
-      summary: Get an API Key by Id
+      summary: Get an Api Key by Id
       parameters:
         - in: path
           name: id
@@ -27,25 +27,9 @@ paths:
             type: string
       responses:
         "200":
-          description: "the api key"
+          description: "Api Key detail"
         default:
-          description: "error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetail"
-
-  /issuers:
-    post:
-      operationId: createIssuer
-      tags:
-        - Issuer
-      summary: Create an Issuer
-      responses:
-        201:
-          description: "issuer created"
-        default:
-          description: "error"
+          description: "Error"
           content:
             application/json:
               schema:

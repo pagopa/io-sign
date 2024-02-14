@@ -50,7 +50,7 @@ const mocks: {
     supportEmail: "support@email.it",
     id: "101010",
     type: "PA",
-    state: "active",
+    status: "active",
   },
   secret: "0040820bee855345982b3ee534334b4",
 }));
