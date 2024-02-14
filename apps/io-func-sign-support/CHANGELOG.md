@@ -1,5 +1,12 @@
 # io-func-sign-support
 
+## 1.1.7
+
+### Patch Changes
+
+- Updated dependencies [bdc1236]
+  - @io-sign/io-sign@1.2.0
+
 ## 1.1.6
 
 ### Patch Changes
