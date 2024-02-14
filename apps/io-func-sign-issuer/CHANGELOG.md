@@ -1,5 +1,12 @@
 # io-func-sign-issuer
 
+## 0.17.1
+
+### Patch Changes
+
+- Updated dependencies [bdc1236]
+  - @io-sign/io-sign@1.2.0
+
 ## 0.17.0
 
 ### Minor Changes

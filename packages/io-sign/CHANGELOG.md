@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.2.0
+
+### Minor Changes
+
+- bdc1236: Removed public API endpoints from backoffice-app
+
 ## 1.1.0
 
 ### Minor Changes

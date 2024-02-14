@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [bdc1236]
+  - @io-sign/io-sign@1.2.0
+
 ## 0.4.3
 
 ### Patch Changes
