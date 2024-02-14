@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
-import { revokeApiKey, upsertApiKeyField } from "@/lib/api-keys/use-cases";
+import {
+  getApiKeyWithSecret,
+  revokeApiKey,
+  upsertApiKeyField,
+} from "@/lib/api-keys/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
@@ -91,6 +95,60 @@ export async function PATCH(
         },
       });
     }
+    return NextResponse.json(
+      {
+        title: "Internal Server Error",
+        detail: e instanceof Error ? e.message : "Something went wrong.",
+      },
+      {
+        status: 500,
+        headers: { "Content-Type": "application/problem+json" },
+      }
+    );
+  }
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Params }
+) {
+  try {
+    pathSchema.parse(params);
+  } catch (e) {
+    return NextResponse.json(
+      {
+        title: "Bad request",
+        status: 400,
+      },
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/problem+json",
+        },
+      }
+    );
+  }
+  try {
+    const apiKeys = await getApiKeyWithSecret(
+      params["api-key"],
+      params["institution"]
+    );
+    if (!apiKeys) {
+      return NextResponse.json(
+        {
+          title: "Not Found",
+          status: 404,
+        },
+        {
+          status: 404,
+          headers: {
+            "Content-Type": "application/problem+json",
+          },
+        }
+      );
+    }
+    return NextResponse.json(apiKeys, { status: 200 });
+  } catch (e) {
     return NextResponse.json(
       {
         title: "Internal Server Error",

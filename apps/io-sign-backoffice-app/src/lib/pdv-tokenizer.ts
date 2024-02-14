@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { cache } from "react";
+import { fiscalCodeSchema } from "./api-keys";
 
 const Config = z
   .object({
-    PDV_TOKENIZER_API_BASE_PATH: z.string().nonempty(),
-    PDV_TOKENIZER_API_KEY: z.string().nonempty(),
+    PDV_TOKENIZER_API_BASE_PATH: z.string().min(1),
+    PDV_TOKENIZER_API_KEY: z.string().min(1),
   })
   .transform((env) => ({
     pdvTokenizerApiBasePath: env.PDV_TOKENIZER_API_BASE_PATH,
@@ -21,7 +22,8 @@ const getTokenizerConfig = cache(() => {
   return result.data;
 });
 
-export async function getToken(pii: string): Promise<string> {
+// TODO: change name con qualcosa tipo getSignerIdFromFiscalCode
+export async function getTokenFromPii(pii: string): Promise<string> {
   const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } = getTokenizerConfig();
   const res = await fetch(
     `${pdvTokenizerApiBasePath}/tokenizer/v1/tokens/search`,
@@ -48,6 +50,33 @@ export async function getToken(pii: string): Promise<string> {
     })
     .parse(body);
   return parsedBody.token;
+}
+
+// TODO: Signer o SignerId? getFiscalCodeBySignerId ?
+export async function getPiiFromToken(token: string): Promise<string> {
+  const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } = getTokenizerConfig();
+  const res = await fetch(
+    `${pdvTokenizerApiBasePath}/tokenizer/v1/tokens/${token}/pii`,
+    {
+      headers: {
+        "x-api-key": pdvTokenizerApiKey,
+        Accept: "application/json, text/plain",
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    }
+  );
+  if (!res.ok) {
+    throw new Error("error getting pii on tokenizer");
+  }
+
+  const body = await res.json();
+  const parsedBody = z
+    .object({
+      pii: fiscalCodeSchema, // z.string().uuid()
+    })
+    .parse(body);
+  return parsedBody.pii;
 }
 
 export async function getTokenizerHealth() {

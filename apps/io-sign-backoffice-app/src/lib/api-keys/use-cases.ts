@@ -18,7 +18,7 @@ import { ulid } from "ulid";
 import { sendMessage } from "@/lib/slack";
 import { getInstitution } from "@/lib/institutions/use-cases";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
-import { getToken } from "../pdv-tokenizer";
+import { getPiiFromToken, getTokenFromPii } from "../pdv-tokenizer";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
@@ -57,7 +57,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     const apiKey = ApiKey(payload);
     await createApiKeySubscription(apiKey);
     try {
-      const tokens = await Promise.all(apiKey.testers.map(getToken));
+      const tokens = await Promise.all(apiKey.testers.map(getTokenFromPii));
       await insertApiKey({ ...apiKey, testers: tokens });
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
@@ -98,7 +98,9 @@ export async function getApiKeyWithSecret(
 ): Promise<ApiKeyWithSecret> {
   try {
     const apiKey = await getApiKey(id, institutionId);
-    return exposeApiKeySecret(apiKey);
+    const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
+    const apiKeyWithSecret = await exposeApiKeySecret(apiKey);
+    return { ...apiKeyWithSecret, testers };
   } catch (e) {
     throw new Error("unable to get the API Key", { cause: e });
   }

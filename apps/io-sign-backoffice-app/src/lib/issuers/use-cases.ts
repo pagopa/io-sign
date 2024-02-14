@@ -20,7 +20,7 @@ export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
     });
     await insertIssuer(newIssuer);
     await sendMessage(
-      `(_backoffice_) *${payload.name}* (\`${newIssuer.externalId}\`) ha effettuato il primo accesso al portale 🎉`
+      `(_backoffice_) *${payload.name}* (\`${newIssuer.externalId}\`) ha effettuato il primo accesso al portale 🥇`
     );
   } catch (cause) {
     throw new Error("Error creating issuer", { cause });

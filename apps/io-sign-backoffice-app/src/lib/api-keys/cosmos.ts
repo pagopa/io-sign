@@ -4,7 +4,7 @@ import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
-import { getToken } from "../pdv-tokenizer";
+import { getTokenFromPii } from "../pdv-tokenizer";
 
 const cosmosContainerName = "api-keys";
 
@@ -74,8 +74,8 @@ export async function upsertApiKeyField<
   try {
     const cosmos = getCosmosContainerClient(cosmosContainerName);
     const value =
-      field === "testers"
-        ? await Promise.all(newValue.map(getToken))
+      field === "testers" && Array.isArray(newValue) && newValue.length > 0 // TODO
+        ? await Promise.all(newValue.map(getTokenFromPii))
         : newValue;
     await cosmos.item(id, institutionId).patch({
       operations: [
