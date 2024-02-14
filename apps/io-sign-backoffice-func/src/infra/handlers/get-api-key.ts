@@ -8,11 +8,10 @@ import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
 
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
+import * as L from "@pagopa/logger";
 import { IoTsType } from "./validation";
 import { getApiKeyById } from "@/api-key";
 import { getInstitutionById, getIssuerByInstitution } from "@/institution";
-
-import * as L from "@pagopa/logger";
 
 export const getApiKey = (id: ApiKey["id"]) =>
   pipe(
