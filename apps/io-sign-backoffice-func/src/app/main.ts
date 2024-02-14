@@ -16,10 +16,7 @@ import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
 
-import {
-  createApiKeyByIdHandler,
-  inputDecoder as createAPiKeyByIdInputDecoder,
-} from "@/infra/handlers/create-api-key-by-id";
+import * as CreateApiKeyById from "@/infra/handlers/create-api-key-by-id";
 
 const config = getConfigFromEnvironment();
 
@@ -68,8 +65,8 @@ app.http("getApiKey", {
   handler: getApiKey,
 });
 
-const createApiKeyById = azureFunction(createApiKeyByIdHandler)({
-  inputDecoder: createAPiKeyByIdInputDecoder,
+const createApiKeyById = azureFunction(CreateApiKeyById.handler)({
+  inputDecoder: CreateApiKeyById.inputDecoder,
 });
 
 app.cosmosDB("createApiKeyById", {
@@ -79,6 +76,7 @@ app.cosmosDB("createApiKeyById", {
   createLeaseCollectionIfNotExists: true,
   leaseCollectionName: "leases",
   leaseCollectionPrefix: "api-keys",
+  startFromBeginning: true,
   return: output.cosmosDB({
     databaseName: config.cosmos.cosmosDbName,
     collectionName: "api-keys-by-id",

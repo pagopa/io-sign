@@ -12,16 +12,28 @@ import { IoTsType } from "./validation";
 import { getApiKeyById } from "@/api-key";
 import { getInstitutionById, getIssuerByInstitution } from "@/institution";
 
+import * as L from "@pagopa/logger";
+
 export const getApiKey = (id: ApiKey["id"]) =>
   pipe(
     getApiKeyById(id),
+    RTE.tapReaderIO((apiKey) =>
+      L.debug("Api Key retrieved.", {
+        apiKey,
+      })
+    ),
     RTE.flatMap((apiKey) =>
       pipe(
         getInstitutionById(apiKey.institutionId),
+        RTE.tapReaderIO((institution) =>
+          L.debug("Institution retrieved.", {
+            institution,
+          })
+        ),
         RTE.flatMap((institution) =>
           pipe(
             getIssuerByInstitution(institution),
-            RTE.map((issuer) => ({ issuer, institution, ...apiKey }))
+            RTE.map((issuer) => ({ ...apiKey, institution, issuer }))
           )
         )
       )

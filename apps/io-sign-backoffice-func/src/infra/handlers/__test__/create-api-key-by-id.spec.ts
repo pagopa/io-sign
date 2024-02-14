@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { inputDecoder, createApiKeyByIdHandler } from "../create-api-key-by-id";
+import * as CreateApiKeyById from "../create-api-key-by-id";
 
 import * as crypto from "node:crypto";
 
@@ -19,19 +19,21 @@ const apiKey: ApiKey = {
 
 describe("createApiKeyByIdHandler", () => {
   it("returns ApiKeyById from ApiKey", () => {
-    const result = createApiKeyByIdHandler({
-      input: apiKey,
-      inputDecoder,
+    const result = CreateApiKeyById.handler({
+      input: [apiKey],
+      inputDecoder: CreateApiKeyById.inputDecoder,
       logger: {
         log: () => () => {},
       },
     })();
     expect(result).resolves.toEqual(
       expect.objectContaining({
-        right: expect.objectContaining({
-          id: apiKey.id,
-          institutionId: apiKey.institutionId,
-        }),
+        right: expect.arrayContaining([
+          {
+            id: apiKey.id,
+            institutionId: apiKey.institutionId,
+          },
+        ]),
       })
     );
   });

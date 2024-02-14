@@ -49,7 +49,7 @@ export const institutionDetailSchema = z
   .object({
     id: z.string().uuid(),
     taxCode: z.string().min(1),
-    supportEmail: z.string().email(),
+    supportEmail: z.string(),
     description: z.string().min(1),
     onboarding: z.array(onboardingSchema),
   })

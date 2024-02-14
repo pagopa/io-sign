@@ -7011,6 +7011,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"azure-functions-core-tools@npm:^4.0.5455":
+  version: 4.0.5455
+  resolution: "azure-functions-core-tools@npm:4.0.5455"
+  dependencies:
+    chalk: 3.0.0
+    extract-zip: ^2.0.1
+    https-proxy-agent: 5.0.0
+    progress: 2.0.3
+    rimraf: 3.0.2
+  bin:
+    azfun: lib/main.js
+    azurefunctions: lib/main.js
+    func: lib/main.js
+  checksum: 7f5615c2a205da5796cc61d9f2c0960407ec919ff9cc73b542c2cddb105517ac9ba905a1ed06afea2898591f142719bbc4be6f2a8d3e295c69b56133a8701778
+  conditions: (os=win32 | os=darwin | os=linux)
+  languageName: node
+  linkType: hard
+
 "azure-storage@npm:^2.10.5":
   version: 2.10.7
   resolution: "azure-storage@npm:2.10.7"
@@ -11350,6 +11368,7 @@ __metadata:
     "@pagopa/logger": ^1.0.1
     "@rushstack/eslint-patch": ^1.5.1
     "@types/node": ^20.8.8
+    azure-functions-core-tools: ^4.0.5455
     eslint: ^8.50.0
     fp-ts: ^2.16.1
     googleapis: ^133.0.0
@@ -11367,6 +11386,7 @@ __metadata:
   resolution: "io-sign@workspace:."
   dependencies:
     "@changesets/cli": ^2.26.2
+    azure-functions-core-tools: ^4.0.5455
     turbo: ^1.12.2
   languageName: unknown
   linkType: soft

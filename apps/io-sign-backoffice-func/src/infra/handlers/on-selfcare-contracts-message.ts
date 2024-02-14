@@ -51,7 +51,7 @@ const exportContacts = ({
     ),
     RTE.flatMap(() =>
       sendMessage(
-        `(_backoffice_) I contatti di ${institution.description} sono stati salvati nel foglio di lavoro ✅`
+        `(_backoffice_) I contatti di *${institution.description}* sono stati salvati nel foglio di lavoro ✅`
       )
     )
   );

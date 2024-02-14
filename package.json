@@ -15,6 +15,7 @@
   ],
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
+    "azure-functions-core-tools": "^4.0.5455",
     "turbo": "^1.12.2"
   },
   "packageManager": "yarn@3.8.0"
