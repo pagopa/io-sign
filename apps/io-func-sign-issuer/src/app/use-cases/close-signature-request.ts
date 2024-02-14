@@ -89,9 +89,15 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
           () => new Error("to continue should be REJECTED")
         ),
         RTE.chainReaderIOK((request) =>
-          sendTelemetryEvent(EventName.SIGNATURE_REJECTED, {
-            signatureRequestId: request.id,
-          })
+          sendTelemetryEvent(
+            EventName.SIGNATURE_REJECTED,
+            {
+              signatureRequestId: request.id,
+            },
+            {
+              sampling: false,
+            }
+          )
         ),
         RTE.altW(() => RTE.right(void 0))
       )

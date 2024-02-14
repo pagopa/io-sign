@@ -8,11 +8,14 @@ export class ApplicationInsights implements TelemetryService {
     this.#telemetryClient = telemetryClient;
   }
 
-  trackEvent(name: string, context: object) {
+  trackEvent(name: string, context: object, options = { sampling: true }) {
     return () =>
       this.#telemetryClient.trackEvent({
         name,
-        properties: context,
+        ...context,
+        tagOverrides: {
+          samplingEnabled: options.sampling ? "true" : "false",
+        },
       });
   }
 }

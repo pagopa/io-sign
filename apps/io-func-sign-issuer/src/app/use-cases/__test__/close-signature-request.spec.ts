@@ -225,7 +225,7 @@ describe("closeSignatureRequest", () => {
   });
 
   describe("Given a REJECTED request", () => {
-    it("tracks a REJECTED telemetry event", async () => {
+    it("tracks a REJECTED telemetry event with sampling disabled", async () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.rejected
       )();
@@ -234,6 +234,9 @@ describe("closeSignatureRequest", () => {
         EventName.SIGNATURE_REJECTED,
         expect.objectContaining({
           signatureRequestId: mocks.signatureRequest.rejected.id,
+        }),
+        expect.objectContaining({
+          sampling: false,
         })
       );
     });
