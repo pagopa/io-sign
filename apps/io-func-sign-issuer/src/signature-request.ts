@@ -55,7 +55,7 @@ export const SignatureRequest = t.union([
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
-// A request is defined "CLOSED" when its status is one of: CANCELLED, SIGNED, REJECTED.
+// A request is defined "CLOSED" when its status is one of: SIGNED, REJECTED.
 // Closed requests cannot be modified, whatever its outcome.
 export const ClosedSignatureRequest = t.union([
   SignatureRequestSigned,

@@ -18,7 +18,7 @@ import {
   SignatureRequestCancelled,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
-import { SignerId } from "./signer";
+import { Signer } from "./signer";
 
 const EventId = Id;
 
@@ -54,7 +54,7 @@ export enum EventName {
 const BaseEvent = t.type({
   id: EventId,
   signatureRequestId: SignatureRequestId,
-  signerId: SignerId,
+  signerId: Signer.props.id,
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
@@ -140,7 +140,7 @@ type EventData = {
   body: GenericEvent;
 };
 
-export type EventDataBatch = {
+type EventDataBatch = {
   tryAdd(eventData: EventData): boolean;
 };
 

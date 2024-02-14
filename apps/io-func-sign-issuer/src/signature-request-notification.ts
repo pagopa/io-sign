@@ -72,7 +72,7 @@ export const makeSendSignatureRequestNotification =
       )
     );
 
-// Sends a Notification by constructing the message with makeNotificationMessage
+// Sends a notification by constructing the message with buildNotificationMessage
 export const sendSignatureRequestNotification =
   (
     buildNotificationMessage: (request: SignatureRequest) => NotificationMessage

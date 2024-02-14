@@ -9,8 +9,6 @@ export const Signer = t.type({
   id: Id,
 });
 
-export const SignerId = Signer.props.id;
-
 export type Signer = t.TypeOf<typeof Signer>;
 
 /** @deprecated use "SignerRepository" interface instead */

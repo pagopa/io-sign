@@ -23,8 +23,6 @@ import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
 
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
-import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
-import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
 import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
@@ -162,23 +160,6 @@ export const Info = makeInfoFunction(
 
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
-
-export const MarkAsRejected = makeRequestAsRejectedFunction(
-  database,
-  pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  config.pagopa.ioServices.configurationId,
-  eventAnalyticsClient
-);
-
-export const MarkAsSigned = makeRequestAsSignedFunction(
-  database,
-  pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  config.pagopa.ioServices.configurationId,
-  eventHubBillingClient,
-  eventAnalyticsClient
-);
 
 export const CloseSignatureRequest = CloseSignatureRequestFunction({
   signatureRequestRepository,
