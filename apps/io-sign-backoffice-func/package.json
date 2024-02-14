@@ -18,7 +18,6 @@
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^2.0.1",
     "@pagopa/logger": "^1.0.1",
-    "azure-functions-core-tools": "^4.0.5455",
     "fp-ts": "^2.16.1",
     "googleapis": "^133.0.0",
     "undici": "^5.27.2",
@@ -27,6 +26,7 @@
   "devDependencies": {
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.5.1",
+    "azure-functions-core-tools": "^4.0.5455",
     "@types/node": "^20.8.8",
     "eslint": "^8.50.0",
     "prettier": "2.7.1",
