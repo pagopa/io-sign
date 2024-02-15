@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 0.18.0
+
+### Minor Changes
+
+- 59caea4: Track REJECTED request, code refactor
+
+### Patch Changes
+
+- Updated dependencies [59caea4]
+  - @io-sign/io-sign@1.3.0
+
 ## 0.17.1
 
 ### Patch Changes

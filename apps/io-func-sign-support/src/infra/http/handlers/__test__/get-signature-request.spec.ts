@@ -3,7 +3,6 @@ import { describe, it, expect, beforeAll } from "vitest";
 import * as TE from "fp-ts/TaskEither";
 import * as O from "fp-ts/Option";
 import { newId } from "@io-sign/io-sign/id";
-import { newSigner } from "@io-sign/io-sign/signer";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { EmailString } from "@pagopa/ts-commons/lib/strings";
@@ -20,6 +19,8 @@ import {
   SignatureRequest,
 } from "../../../../signature-request";
 
+import { Signer } from "@io-sign/io-sign/signer";
+
 describe("GetSignatureRequestHandler", () => {
   let signerRepository: SignerRepository;
   let issuerRepository: IssuerRepository;
@@ -30,7 +31,7 @@ describe("GetSignatureRequestHandler", () => {
     format: L.format.simple,
   };
 
-  const signer = newSigner();
+  const signer: Signer = { id: newId() };
 
   const institution = { vatNumber: "15376371009" };
 

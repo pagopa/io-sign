@@ -5,11 +5,7 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as O from "fp-ts/lib/Option";
 
-import {
-  GetFiscalCodeBySignerId,
-  newSigner,
-  Signer,
-} from "@io-sign/io-sign/signer";
+import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { Notification } from "@io-sign/io-sign/notification";
@@ -30,6 +26,10 @@ import {
   MakeMessageContent,
   makeSendSignatureRequestNotification,
 } from "../signature-request-notification";
+
+const newSigner = () => ({
+  id: newId(),
+});
 
 const issuer: Issuer = {
   id: newId(),
