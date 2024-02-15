@@ -2,8 +2,7 @@
   "version": "2.0",
   "logging": {
     "logLevel": {
-      "Function": "Debug",
-      "Function.Console": "Debug",
+      "Function": "Error",
       "Host.Aggregator": "Information",
       "Host.Results": "Information",
       "Microsoft": "Information",
