@@ -13,14 +13,16 @@ import * as E from "fp-ts/lib/Either";
 import { pipe, identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { ApplicationInsights } from "@io-sign/io-sign/infra/azure/appinsights/index";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
+import { IONotificationService } from "@io-sign/io-sign/infra/io-services/message";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
 import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
 
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
-import { makeRequestAsRejectedFunction } from "../infra/azure/functions/mark-as-rejected";
-import { makeRequestAsSignedFunction } from "../infra/azure/functions/mark-as-signed";
 
 import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
@@ -33,12 +35,14 @@ import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-reque
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
+import { ClosedSignatureRequest } from "../signature-request";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -81,6 +85,36 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
+const notificationService = new IONotificationService(
+  ioApiClient,
+  config.pagopa.ioServices.configurationId
+);
+
+const telemetryClient = initAppInsights(
+  config.azure.appinsights.instrumentationKey,
+  {
+    samplingPercentage: config.azure.appinsights.samplingPercentage,
+  }
+);
+
+const telemetryService = new ApplicationInsights(telemetryClient);
+
+const issuerRepository = new BackOfficeIssuerRepository(
+  config.backOffice.basePath,
+  config.backOffice.apiKey
+);
+const dossierRepository = new CosmosDbDossierRepository(database);
+
+const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
+
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database.container("signature-requests")
+);
+
+const signerRepository = new PdvTokenizerSignerRepository(
+  pdvTokenizerClientWithApiKey
+);
+
 const uploadedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "uploaded-documents"
@@ -89,6 +123,12 @@ const uploadedContainerClient = new ContainerClient(
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
+);
+
+const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
+
+const validatedFileStorage = new BlobStorageFileStorage(
+  validatedContainerClient
 );
 
 const signedContainerClient = new ContainerClient(
@@ -121,22 +161,15 @@ export const Info = makeInfoFunction(
 export const MarkAsWaitForSignature =
   makeRequestAsWaitForSignatureFunction(database);
 
-export const MarkAsRejected = makeRequestAsRejectedFunction(
-  database,
-  pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  config.pagopa.ioServices.configurationId,
-  eventAnalyticsClient
-);
-
-export const MarkAsSigned = makeRequestAsSignedFunction(
-  database,
-  pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  config.pagopa.ioServices.configurationId,
-  eventHubBillingClient,
-  eventAnalyticsClient
-);
+export const CloseSignatureRequest = CloseSignatureRequestFunction({
+  signatureRequestRepository,
+  signerRepository,
+  telemetryService,
+  notificationService,
+  eventAnalyticsClient,
+  billingEventProducer: eventHubBillingClient,
+  inputDecoder: ClosedSignatureRequest,
+});
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,
@@ -160,22 +193,6 @@ export const CreateIssuer = makeCreateIssuerFunction(
   database,
   config.pagopa.selfCare,
   config.slack
-);
-
-const issuerRepository = new BackOfficeIssuerRepository(
-  config.backOffice.basePath,
-  config.backOffice.apiKey
-);
-const dossierRepository = new CosmosDbDossierRepository(database);
-const uploadMetadataRepository = new CosmosDbUploadMetadataRepository(database);
-const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
-  database.container("signature-requests")
-);
-
-const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
-
-const validatedFileStorage = new BlobStorageFileStorage(
-  validatedContainerClient
 );
 
 export const GetDossier = GetDossierFunction({

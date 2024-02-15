@@ -14,6 +14,7 @@ import {
   NotificationContentWithAttachments,
   NotificationMessage,
   SubmitNotificationForUser,
+  NotificationService,
 } from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
 
@@ -50,6 +51,7 @@ export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
   }),
 };
 
+/** @deprecated use "IONotificationService" */
 export const makeSubmitMessageForUser =
   (
     ioApiClient: IOApiClient,
@@ -118,3 +120,20 @@ export const makeSubmitMessageForUser =
         ioMessageId: createdMessage.id as NonEmptyString,
       }))
     );
+
+export class IONotificationService implements NotificationService {
+  #ioApiClient: IOApiClient;
+  #configurationId: Ulid;
+
+  constructor(ioApiClient: IOApiClient, configurationId: Ulid) {
+    this.#ioApiClient = ioApiClient;
+    this.#configurationId = configurationId;
+  }
+
+  submit(fiscalCode: FiscalCode, notification: NotificationMessage) {
+    return makeSubmitMessageForUser(
+      this.#ioApiClient,
+      this.#configurationId
+    )(fiscalCode)(notification);
+  }
+}

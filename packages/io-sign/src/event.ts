@@ -18,7 +18,7 @@ import {
   SignatureRequestCancelled,
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
-import { SignerId } from "./signer";
+import { Signer } from "./signer";
 
 const EventId = Id;
 
@@ -28,6 +28,7 @@ export const PricingPlan = t.keyof({
   DEFAULT: null,
   INTERNAL: null,
 });
+
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 /*
@@ -53,7 +54,7 @@ export enum EventName {
 const BaseEvent = t.type({
   id: EventId,
   signatureRequestId: SignatureRequestId,
-  signerId: SignerId,
+  signerId: Signer.props.id,
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
@@ -143,7 +144,7 @@ type EventDataBatch = {
   tryAdd(eventData: EventData): boolean;
 };
 
-type EventProducerClient = {
+export type EventProducerClient = {
   createBatch(): Promise<EventDataBatch>;
   close: () => Promise<void>;
   sendBatch(batch: EventDataBatch): Promise<void>;
@@ -175,7 +176,14 @@ export const sendEvent =
     );
 
 export const createAndSendAnalyticsEvent =
-  (eventName: EventName) => (signatureRequest: SignatureRequest) =>
+  (eventName: EventName) =>
+  (
+    signatureRequest: SignatureRequest
+  ): RTE.ReaderTaskEither<
+    EventAnalyticsClient & { logger: L.Logger },
+    Error,
+    SignatureRequest
+  > =>
     pipe(
       signatureRequest,
       createAnalyticsEvent(eventName),
@@ -197,3 +205,16 @@ export const createAndSendAnalyticsEvent =
         )
       )
     );
+
+type BillingEventEnvironment = {
+  billingEventProducer: EventProducerClient;
+};
+
+export const sendBillingEvent =
+  (
+    event: BillingEvent
+  ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
+  ({ billingEventProducer }) =>
+    sendEvent(event)({
+      eventAnalyticsClient: billingEventProducer,
+    });

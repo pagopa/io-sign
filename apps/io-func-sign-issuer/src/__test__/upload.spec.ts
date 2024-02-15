@@ -9,14 +9,16 @@ import { pipe } from "fp-ts/lib/function";
 
 import { head } from "fp-ts/lib/Array";
 
-import { newSigner } from "@io-sign/io-sign/signer";
-
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { newUploadMetadata } from "../upload";
 import { newSignatureRequest } from "../signature-request";
 import { newDossier } from "../dossier";
+
+const newSigner = () => ({
+  id: newId(),
+});
 
 describe("UploadMetadata", () => {
   describe("newUploadMetadata", () => {
