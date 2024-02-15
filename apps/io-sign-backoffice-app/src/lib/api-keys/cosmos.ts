@@ -4,7 +4,6 @@ import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
 import { apiKeySchema, ApiKey } from "./index";
-import { getTokenFromPii } from "../pdv-tokenizer";
 
 const cosmosContainerName = "api-keys";
 
@@ -68,21 +67,17 @@ export async function getApiKey(
   }
 }
 
-export async function upsertApiKeyField<
+export async function patchApiKey<
   F extends keyof Pick<ApiKey, "cidrs" | "testers" | "status">
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
     const cosmos = getCosmosContainerClient(cosmosContainerName);
-    const value =
-      field === "testers" && Array.isArray(newValue) && newValue.length > 0 // TODO
-        ? await Promise.all(newValue.map(getTokenFromPii))
-        : newValue;
     await cosmos.item(id, institutionId).patch({
       operations: [
         {
           path: `/${field}`,
           op: "replace",
-          value,
+          value: newValue,
         },
       ],
     });

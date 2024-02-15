@@ -3,7 +3,7 @@ import {
   insertApiKey,
   getApiKeys,
   getApiKey,
-  upsertApiKeyField,
+  patchApiKey,
 } from "./cosmos";
 
 import {
@@ -109,10 +109,23 @@ export async function getApiKeyWithSecret(
 export async function revokeApiKey(id: string, institutionId: string) {
   try {
     await suspendApiKeySubscription({ id });
-    await upsertApiKeyField(id, institutionId, "status", "revoked");
+    await patchApiKey(id, institutionId, "status", "revoked");
   } catch (e) {
     throw new Error("Unable to revoke the API Key", { cause: e });
   }
 }
 
-export { upsertApiKeyField, getApiKeyById } from "./cosmos";
+export async function upsertApiKeyField(
+  id: string,
+  institutionId: string,
+  field: keyof Pick<ApiKey, "cidrs" | "status" | "testers">,
+  value: ApiKey[typeof field]
+) {
+  const newValue =
+    field === "testers" && Array.isArray(value)
+      ? await Promise.all(value.map(getTokenFromPii))
+      : value;
+  await patchApiKey(id, institutionId, field, newValue);
+}
+
+export { getApiKeyById } from "./cosmos";

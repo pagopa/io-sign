@@ -3,11 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
-import {
-  getApiKeyWithSecret,
-  revokeApiKey,
-  upsertApiKeyField,
-} from "@/lib/api-keys/use-cases";
+import { revokeApiKey, upsertApiKeyField } from "@/lib/api-keys/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
