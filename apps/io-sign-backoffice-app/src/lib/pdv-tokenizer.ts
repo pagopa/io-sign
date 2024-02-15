@@ -22,7 +22,6 @@ const getTokenizerConfig = cache(() => {
   return result.data;
 });
 
-// TODO: change name con qualcosa tipo getSignerIdFromFiscalCode
 export async function getTokenFromPii(pii: string): Promise<string> {
   const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } = getTokenizerConfig();
   const res = await fetch(
@@ -52,7 +51,6 @@ export async function getTokenFromPii(pii: string): Promise<string> {
   return parsedBody.token;
 }
 
-// TODO: Signer o SignerId? getFiscalCodeBySignerId ?
 export async function getPiiFromToken(token: string): Promise<string> {
   const { pdvTokenizerApiBasePath, pdvTokenizerApiKey } = getTokenizerConfig();
   const res = await fetch(
@@ -73,7 +71,7 @@ export async function getPiiFromToken(token: string): Promise<string> {
   const body = await res.json();
   const parsedBody = z
     .object({
-      pii: fiscalCodeSchema, // z.string().uuid()
+      pii: fiscalCodeSchema,
     })
     .parse(body);
   return parsedBody.pii;

@@ -84,7 +84,8 @@ export async function listApiKeys(institutionId: string) {
   try {
     const apiKeys: ApiKey[] = [];
     for await (const apiKey of getApiKeys(institutionId)) {
-      apiKeys.push(apiKey);
+      const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
+      apiKeys.push({ ...apiKey, testers });
     }
     return apiKeys;
   } catch (e) {
@@ -98,8 +99,8 @@ export async function getApiKeyWithSecret(
 ): Promise<ApiKeyWithSecret> {
   try {
     const apiKey = await getApiKey(id, institutionId);
-    const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
     const apiKeyWithSecret = await exposeApiKeySecret(apiKey);
+    const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
     return { ...apiKeyWithSecret, testers };
   } catch (e) {
     throw new Error("unable to get the API Key", { cause: e });
