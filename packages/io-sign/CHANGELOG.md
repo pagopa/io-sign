@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.3.0
+
+### Minor Changes
+
+- 59caea4: Track REJECTED request, code refactor
+
 ## 1.2.0
 
 ### Minor Changes
