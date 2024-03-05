@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.3.2
+
+### Patch Changes
+
+- 18d0b36: Added getLoggerUser in endpoints
+
 ## 1.3.1
 
 ### Patch Changes
