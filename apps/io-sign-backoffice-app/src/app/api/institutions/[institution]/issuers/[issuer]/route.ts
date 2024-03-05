@@ -1,4 +1,5 @@
 import { ValidationProblem } from "@/lib/api/responses";
+import { UnauthenticatedUserError, getLoggedUser } from "@/lib/auth/use-cases";
 import { replaceSupportEmail } from "@/lib/issuers/cosmos";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 import { NextRequest, NextResponse } from "next/server";
@@ -24,6 +25,32 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Params }
 ) {
+  try {
+    await getLoggedUser();
+  } catch (e) {
+    if (e instanceof UnauthenticatedUserError) {
+      return NextResponse.json(
+        {
+          title: "Unauthorized",
+          detail: e.message,
+        },
+        {
+          status: 401,
+          headers: { "Content-Type": "application/problem+json" },
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        title: "Internal Server Error",
+        detail: e instanceof Error ? e.message : "Something went wrong.",
+      },
+      {
+        status: 500,
+        headers: { "Content-Type": "application/problem+json" },
+      }
+    );
+  }
   try {
     pathSchema.parse(params);
   } catch (e) {
@@ -78,6 +105,32 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Params }
 ) {
+  try {
+    await getLoggedUser();
+  } catch (e) {
+    if (e instanceof UnauthenticatedUserError) {
+      return NextResponse.json(
+        {
+          title: "Unauthorized",
+          detail: e.message,
+        },
+        {
+          status: 401,
+          headers: { "Content-Type": "application/problem+json" },
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        title: "Internal Server Error",
+        detail: e instanceof Error ? e.message : "Something went wrong.",
+      },
+      {
+        status: 500,
+        headers: { "Content-Type": "application/problem+json" },
+      }
+    );
+  }
   try {
     pathSchema.parse(params);
   } catch (e) {
