@@ -5,6 +5,7 @@ import { z, ZodError } from "zod";
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
 import { revokeApiKey, upsertApiKeyField } from "@/lib/api-keys/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
+import { getLoggedUser, UnauthenticatedUserError } from "@/lib/auth/use-cases";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
@@ -52,6 +53,32 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Params }
 ) {
+  try {
+    await getLoggedUser();
+  } catch (e) {
+    if (e instanceof UnauthenticatedUserError) {
+      return NextResponse.json(
+        {
+          title: "Unauthorized",
+          detail: e.message,
+        },
+        {
+          status: 401,
+          headers: { "Content-Type": "application/problem+json" },
+        }
+      );
+    }
+    return NextResponse.json(
+      {
+        title: "Internal Server Error",
+        detail: e instanceof Error ? e.message : "Something went wrong.",
+      },
+      {
+        status: 500,
+        headers: { "Content-Type": "application/problem+json" },
+      }
+    );
+  }
   try {
     pathSchema.parse(params);
   } catch (e) {
