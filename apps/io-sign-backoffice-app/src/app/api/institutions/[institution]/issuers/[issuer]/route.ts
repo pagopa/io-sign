@@ -33,7 +33,7 @@ export async function PATCH(
     const parsedParams = pathSchema.safeParse(params);
     if (!parsedParams.success) {
       return NextResponse.json(
-        { title: "Bad request", status: 400 },
+        { title: "Bad request", detail: "Malformed request" },
         { status: 400, headers: { "Content-Type": "application/problem+json" } }
       );
     }
