@@ -5,7 +5,11 @@ import { z, ZodError } from "zod";
 import { cidrSchema, fiscalCodeSchema } from "@/lib/api-keys";
 import { revokeApiKey, upsertApiKeyField } from "@/lib/api-keys/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
-import { getLoggedUser, UnauthenticatedUserError } from "@/lib/auth/use-cases";
+import {
+  getLoggedUser,
+  isAllowedInstitution,
+  UnauthenticatedUserError,
+} from "@/lib/auth/use-cases";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
@@ -54,48 +58,24 @@ export async function PATCH(
   { params }: { params: Params }
 ) {
   try {
-    await getLoggedUser();
-  } catch (e) {
-    if (e instanceof UnauthenticatedUserError) {
+    const loggedUser = await getLoggedUser();
+    const parsedParams = pathSchema.safeParse(params);
+    if (!parsedParams.success) {
       return NextResponse.json(
-        {
-          title: "Unauthorized",
-          detail: e.message,
-        },
-        {
-          status: 401,
-          headers: { "Content-Type": "application/problem+json" },
-        }
+        { title: "Bad request", detail: "Malformed request" },
+        { status: 400, headers: { "Content-Type": "application/problem+json" } }
       );
     }
-    return NextResponse.json(
-      {
-        title: "Internal Server Error",
-        detail: e instanceof Error ? e.message : "Something went wrong.",
-      },
-      {
-        status: 500,
-        headers: { "Content-Type": "application/problem+json" },
-      }
+    const isAllowedInstitutionId = await isAllowedInstitution(
+      loggedUser.id,
+      params.institution
     );
-  }
-  try {
-    pathSchema.parse(params);
-  } catch (e) {
-    return NextResponse.json(
-      {
-        title: "Bad request",
-        status: 400,
-      },
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/problem+json",
-        },
-      }
-    );
-  }
-  try {
+    if (!isAllowedInstitutionId) {
+      return NextResponse.json(
+        { title: "Forbidden", detail: "The operation is forbidden" },
+        { status: 403, headers: { "Content-Type": "application/problem+json" } }
+      );
+    }
     const body = await request.json();
     const { field, newValue } = bodySchema.parse(body);
     if (field === "status" && newValue === "revoked") {
@@ -117,6 +97,11 @@ export async function PATCH(
           "Content-Type": "application/problem+json",
         },
       });
+    } else if (e instanceof UnauthenticatedUserError) {
+      return NextResponse.json(
+        { title: "Unauthorized", detail: "Unauthorized to update the API key" },
+        { status: 401, headers: { "Content-Type": "application/problem+json" } }
+      );
     }
     return NextResponse.json(
       {

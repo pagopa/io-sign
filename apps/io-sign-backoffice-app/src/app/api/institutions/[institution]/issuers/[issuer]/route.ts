@@ -1,7 +1,10 @@
 import { ValidationProblem } from "@/lib/api/responses";
-import { UnauthenticatedUserError, getLoggedUser } from "@/lib/auth/use-cases";
+import {
+  UnauthenticatedUserError,
+  getLoggedUser,
+  isAllowedInstitution,
+} from "@/lib/auth/use-cases";
 import { replaceSupportEmail } from "@/lib/issuers/cosmos";
-import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
 import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
@@ -21,133 +24,29 @@ const bodySchema = z
   .array()
   .length(1);
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Params }
-) {
-  try {
-    await getLoggedUser();
-  } catch (e) {
-    if (e instanceof UnauthenticatedUserError) {
-      return NextResponse.json(
-        {
-          title: "Unauthorized",
-          detail: e.message,
-        },
-        {
-          status: 401,
-          headers: { "Content-Type": "application/problem+json" },
-        }
-      );
-    }
-    return NextResponse.json(
-      {
-        title: "Internal Server Error",
-        detail: e instanceof Error ? e.message : "Something went wrong.",
-      },
-      {
-        status: 500,
-        headers: { "Content-Type": "application/problem+json" },
-      }
-    );
-  }
-  try {
-    pathSchema.parse(params);
-  } catch (e) {
-    return NextResponse.json(
-      {
-        title: "Bad request",
-        status: 400,
-      },
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/problem+json",
-        },
-      }
-    );
-  }
-  try {
-    const issuer = await getIssuerByInstitution({
-      id: params.institution,
-      taxCode: params.issuer,
-    });
-    if (!issuer) {
-      return NextResponse.json(
-        {
-          title: "Not Found",
-          status: 404,
-        },
-        {
-          status: 404,
-          headers: {
-            "Content-Type": "application/problem+json",
-          },
-        }
-      );
-    }
-    return NextResponse.json(issuer, { status: 200 });
-  } catch (e) {
-    return NextResponse.json(
-      {
-        title: "Internal Server Error",
-        detail: e instanceof Error ? e.message : "Something went wrong.",
-      },
-      {
-        status: 500,
-        headers: { "Content-Type": "application/problem+json" },
-      }
-    );
-  }
-}
-
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Params }
 ) {
   try {
-    await getLoggedUser();
-  } catch (e) {
-    if (e instanceof UnauthenticatedUserError) {
+    const loggedUser = await getLoggedUser();
+    const parsedParams = pathSchema.safeParse(params);
+    if (!parsedParams.success) {
       return NextResponse.json(
-        {
-          title: "Unauthorized",
-          detail: e.message,
-        },
-        {
-          status: 401,
-          headers: { "Content-Type": "application/problem+json" },
-        }
+        { title: "Bad request", detail: "Malformed request" },
+        { status: 400, headers: { "Content-Type": "application/problem+json" } }
       );
     }
-    return NextResponse.json(
-      {
-        title: "Internal Server Error",
-        detail: e instanceof Error ? e.message : "Something went wrong.",
-      },
-      {
-        status: 500,
-        headers: { "Content-Type": "application/problem+json" },
-      }
+    const isAllowedInstitutionId = await isAllowedInstitution(
+      loggedUser.id,
+      params.institution
     );
-  }
-  try {
-    pathSchema.parse(params);
-  } catch (e) {
-    return NextResponse.json(
-      {
-        title: "Bad request",
-        status: 400,
-      },
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/problem+json",
-        },
-      }
-    );
-  }
-  try {
+    if (!isAllowedInstitutionId) {
+      return NextResponse.json(
+        { title: "Forbidden", detail: "The operation is forbidden" },
+        { status: 403, headers: { "Content-Type": "application/problem+json" } }
+      );
+    }
     const body = await request.json();
     const {
       0: { value: newSupportEmail },
@@ -165,6 +64,11 @@ export async function PATCH(
           "Content-Type": "application/problem+json",
         },
       });
+    } else if (e instanceof UnauthenticatedUserError) {
+      return NextResponse.json(
+        { title: "Unauthorized", detail: "Unauthorized to update the issuer" },
+        { status: 401, headers: { "Content-Type": "application/problem+json" } }
+      );
     }
     return NextResponse.json(
       {
