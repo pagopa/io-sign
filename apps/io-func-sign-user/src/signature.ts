@@ -78,7 +78,9 @@ export const SignatureValidationParams = t.type({
   /* signatureInput contain the metadata for one or more message signatures generated from components within the HTTP message
    * Reference: https://www.ietf.org/archive/id/draft-ietf-httpbis-message-signatures-13.html#name-the-signature-input-http-fi
    */
-  signatureInput: PatternString("^(((sig[0-9]+)=[^,]*?)(, ?)?)+$"),
+  signatureInput: PatternString(
+    "^(?:sig\\d+=[^,]*)(?:,\\s*(?:sig\\d+=[^,]*))*$"
+  ),
   // This is the signature of QTSP TOS string used to demonstrate acceptance of the contract
   tosSignature: NonEmptyString,
   // This is the signature of the challenge relating to the documents to be signed and the related clauses
