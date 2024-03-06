@@ -41,10 +41,10 @@ export async function POST(
         { status: 401, headers: { "Content-Type": "application/problem+json" } }
       );
     } else if (e instanceof ZodError) {
-      return NextResponse.json(ValidationProblem(e), {
-        status: 422,
-        headers: { "Content-Type": "application/problem+json" },
-      });
+      return NextResponse.json(
+        { title: "Bad request", status: 400 },
+        { status: 400, headers: { "Content-Type": "application/problem+json" } }
+      );
     }
     return NextResponse.json(
       {
