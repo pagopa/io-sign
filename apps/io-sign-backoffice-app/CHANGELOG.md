@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.3.3
+
+### Patch Changes
+
+- 68db88e: Added isAllowedInstitution function
+
 ## 1.3.2
 
 ### Patch Changes
