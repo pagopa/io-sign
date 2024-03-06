@@ -7,7 +7,6 @@ import {
   isAllowedInstitution,
 } from "@/lib/auth/use-cases";
 import { insertTOSAcceptance } from "@/lib/consents/cosmos";
-import { ValidationProblem } from "@/lib/api/responses";
 
 const pathSchema = z.object({
   institution: z.string().uuid(),
