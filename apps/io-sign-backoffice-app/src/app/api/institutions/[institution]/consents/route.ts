@@ -37,7 +37,7 @@ export async function POST(
   } catch (e) {
     if (e instanceof UnauthenticatedUserError) {
       return NextResponse.json(
-        { title: "Unauthorized", detail: "Unauthorized to update consent" },
+        { title: "Unauthorized", detail: "Unauthorized to update the consent" },
         { status: 401, headers: { "Content-Type": "application/problem+json" } }
       );
     } else if (e instanceof ZodError) {
