@@ -1,9 +1,13 @@
 import { InstitutionDetail } from "../institutions";
-import { getInstitution } from "@/lib/institutions/use-cases";
+import {
+  getInstitution,
+  getInstitutionsByUserId,
+} from "@/lib/institutions/use-cases";
 import { createIssuerIfNotExists } from "@/lib/issuers/use-cases";
 import { userSchema } from "./index";
 import { verify } from "./selfcare";
 import { getPayloadFromSessionCookie, createSessionCookie } from "./session";
+import { User } from "@/lib/auth";
 
 export class UnauthenticatedUserError extends Error {
   constructor(e: unknown) {
@@ -81,3 +85,11 @@ export const getLoggedUser = async () => {
     throw new UnauthenticatedUserError(e);
   }
 };
+
+export async function isAllowedInstitution(
+  userId: User["id"],
+  institutionId: string
+) {
+  const institutions = await getInstitutionsByUserId(userId);
+  return institutions.some((institution) => institution.id === institutionId);
+}
