@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.5.1
+
+### Patch Changes
+
+- cea4a45: Changed SignatureInput regex
+
 ## 0.5.0
 
 ### Minor Changes
