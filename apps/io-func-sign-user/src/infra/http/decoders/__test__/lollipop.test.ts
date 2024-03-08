@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import * as E from "fp-ts/Either";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 import { AssertionTypeEnum } from "../../models/AssertionType";
 import { requireBasicLollipopParams } from "../lollipop";
-import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 // A LolliPoP valid SignatureInput with multiple signature
 const aValidMultiSignatureInput = `sig1=("@method" "@authority" "@path" "content-digest" "content-type" "content-length" "x-pagopa-original-url" "x-pagopa-original-method");created=1618884475;keyid="test-key-ecc-p256", sig2=("@method" "@authority" "@path" "content-digest" "content-type" "content-length" "forwarded");created=1618884480;keyid="test-key-rsa";alg="rsa-v1_5-sha256";expires=1618884540`;
