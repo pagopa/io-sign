@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.18.1
+
+### Patch Changes
+
+- 439b54b: Added environment to SIGNATURE_REJECTED event context
+
 ## 0.18.0
 
 ### Minor Changes
