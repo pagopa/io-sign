@@ -31,7 +31,7 @@ export default function AccountHeader({ loggedUser }: Props) {
     process.env.NEXT_PUBLIC_SELFCARE_URL ?? "https://selfcare.pagopa.it";
 
   const onAssistanceClick = useCallback(() => {
-    const url = new URL("assistenza", selfcareURL);
+    const url = new URL("assistenza?productId=prod-io-sign", selfcareURL);
     window.location.href = url.href;
   }, [selfcareURL]);
 
