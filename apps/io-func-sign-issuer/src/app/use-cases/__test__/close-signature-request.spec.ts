@@ -233,7 +233,10 @@ describe("closeSignatureRequest", () => {
       expect(telemetry.trackEvent).toBeCalledWith(
         EventName.SIGNATURE_REJECTED,
         expect.objectContaining({
-          signatureRequestId: mocks.signatureRequest.rejected.id,
+          properties: {
+            signatureRequestId: mocks.signatureRequest.rejected.id,
+            environment: "TEST",
+          },
         }),
         expect.objectContaining({
           sampling: false,

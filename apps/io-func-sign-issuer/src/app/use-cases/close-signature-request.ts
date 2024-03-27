@@ -92,7 +92,10 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
           sendTelemetryEvent(
             EventName.SIGNATURE_REJECTED,
             {
-              signatureRequestId: request.id,
+              properties: {
+                signatureRequestId: request.id,
+                environment: request.issuerEnvironment,
+              },
             },
             {
               sampling: false,
