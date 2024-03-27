@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.3.4
+
+### Patch Changes
+
+- a21fd37: Updated "Assistenza" redirect URL
+
 ## 1.3.3
 
 ### Patch Changes

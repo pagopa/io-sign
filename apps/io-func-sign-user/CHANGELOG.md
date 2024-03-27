@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.6.0
+
+### Minor Changes
+
+- a42eca9: Updated GetThirdPartyMessageDetails function
+
 ## 0.5.1
 
 ### Patch Changes
