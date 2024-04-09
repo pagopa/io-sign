@@ -2,11 +2,12 @@ import { useTranslations } from "next-intl";
 
 import { Typography, Stack, Link } from "@mui/material";
 
-import { getSupportContactsByPhase } from "@/lib/support";
+import { getSupportContact } from "@/lib/support";
 
 export default function SupportCard() {
   const t = useTranslations("firmaconio.overview.cards.support");
-  const contacts = getSupportContactsByPhase();
+  const contact = getSupportContact();
+  const stages = [{ name: "test", contact }, { name: "prod" }];
   return (
     <Stack
       p={3}
@@ -19,14 +20,19 @@ export default function SupportCard() {
         <Typography variant="h6">{t("title")}</Typography>
         <Typography variant="body2">{t("description")}</Typography>
       </Stack>
-      {contacts.map((contact) => (
-        <Stack key={contact.email} direction="row">
+      {stages.map(({ name, contact }) => (
+        <Stack direction="row" key={name}>
           <Typography width="157px" variant="body2">
-            {t(`environments.${contact.phase}.label`)}
+            {t(`environments.${name}.label`)}
           </Typography>
-          <Link href={`mailto:${contact.email}`} variant="body2">
-            {contact.email}
-          </Link>
+          <Typography style={{ whiteSpace: "pre" }} variant="body2">
+            {t(`environments.${name}.action`)}
+          </Typography>
+          {contact && (
+            <Link href={`mailto:${contact.email}`} variant="body2">
+              {contact.email}
+            </Link>
+          )}
         </Stack>
       ))}
     </Stack>

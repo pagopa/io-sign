@@ -183,13 +183,15 @@
           "title": "Informazioni"
         },
         "support": {
-          "description": "Usa uno dei contatti a seconda della fase in cui si trova il tuo ente",
+          "description": "Esegui una delle seguenti azioni a seconda della fase in cui si trova il tuo ente",
           "environments": {
             "prod": {
-              "label": "Fase di produzione"
+              "label": "Fase di produzione",
+              "action": "Vai su Assistenza in alto a destra "
             },
             "test": {
-              "label": "Fase di integrazione"
+              "label": "Fase di integrazione",
+              "action": "Scrivi a "
             }
           },
           "title": "Assistenza tecnica"
