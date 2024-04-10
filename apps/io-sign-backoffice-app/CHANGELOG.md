@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.3.5
+
+### Patch Changes
+
+- aad01c3: Updated Assistenza tecnica text
+
 ## 1.3.4
 
 ### Patch Changes
