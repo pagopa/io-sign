@@ -58,7 +58,7 @@ export const institutionDetailSchema = z
   .transform(({ description: name, onboarding, ...fields }) => ({
     ...fields,
     name,
-    vatNumber: getIOSignOnboarding(onboarding)?.billing.vatNumber ?? fields.id,
+    vatNumber: getIOSignOnboarding(onboarding)?.billing?.vatNumber ?? fields.id,
   }));
 
 export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
