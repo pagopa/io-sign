@@ -48,7 +48,7 @@ export const getIOSignOnboarding = (list: Onboarding[]) =>
 export const institutionDetailSchema = z
   .object({
     id: z.string().uuid(),
-    taxCode: z.string().min(1),
+    taxCode: z.string().min(1).optional(),
     supportEmail: z.string(),
     description: z.string().min(1),
     onboarding: z.array(onboardingSchema),
@@ -56,8 +56,7 @@ export const institutionDetailSchema = z
   .transform(({ description: name, onboarding, ...fields }) => ({
     ...fields,
     name,
-    vatNumber:
-      getIOSignOnboarding(onboarding)?.billing.vatNumber ?? fields.taxCode,
+    vatNumber: getIOSignOnboarding(onboarding)?.billing.vatNumber ?? fields.id,
   }));
 
 export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
