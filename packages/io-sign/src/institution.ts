@@ -8,7 +8,7 @@ export const institutionSchema = z
   .object({
     id: z.string().uuid(),
     description: z.string().min(1),
-    taxCode: z.string().min(1),
+    taxCode: z.string().min(1).optional(),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
     supportEmail: z.string().email().optional(),

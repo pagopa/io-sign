@@ -27,11 +27,8 @@ export async function createIssuerIfNotExists(payload: CreateIssuerPayload) {
   }
 }
 
-export function getIssuerByInstitution({
-  id: institutionId,
-  taxCode,
-}: Pick<Institution, "id" | "taxCode">) {
-  return getIssuer({ id: taxCode, institutionId });
+export function getIssuerByInstitution(institutionId: Institution["id"]) {
+  return getIssuer({ id: institutionId, institutionId });
 }
 
 export { replaceSupportEmail };
