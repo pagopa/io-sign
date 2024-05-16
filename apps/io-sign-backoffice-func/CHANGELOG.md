@@ -1,5 +1,13 @@
 # io-sign-backoffice-func
 
+## 1.2.2
+
+### Patch Changes
+
+- 71ea999: Set vatNumber in sc-contracts as optional field
+- Updated dependencies [71ea999]
+  - @io-sign/io-sign@1.3.1
+
 ## 1.2.1
 
 ### Patch Changes

@@ -10,9 +10,11 @@ const contractSchema = z.object({
     digitalAddress: z.string().min(1),
     taxCode: z.string().min(1).optional(),
   }),
-  billing: z.object({
-    vatNumber: z.string().min(1),
-  }),
+  billing: z
+    .object({
+      vatNumber: z.string().min(1).optional(),
+    })
+    .optional(),
   product: z.literal("prod-io-sign"),
 });
 

@@ -35,9 +35,11 @@ export type User = z.infer<typeof userSchema>;
 const onboardingSchema = z.object({
   productId: z.string().min(1),
   status: z.string().min(1),
-  billing: z.object({
-    vatNumber: z.string().min(1),
-  }),
+  billing: z
+    .object({
+      vatNumber: z.string().min(1).optional(),
+    })
+    .optional(),
 });
 
 type Onboarding = z.infer<typeof onboardingSchema>;
