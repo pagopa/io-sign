@@ -12,7 +12,7 @@ const contractSchema = z.object({
   }),
   billing: z
     .object({
-      vatNumber: z.string().min(1).nullish(),
+      vatNumber: z.string().min(1).optional(),
     })
     .optional(),
   product: z.literal("prod-io-sign"),
