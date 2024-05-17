@@ -37,7 +37,7 @@ const onboardingSchema = z.object({
   status: z.string().min(1),
   billing: z
     .object({
-      vatNumber: z.string().min(1).optional(),
+      vatNumber: z.string().min(1).nullish(),
     })
     .optional(),
 });
