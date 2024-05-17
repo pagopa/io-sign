@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-user",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "private": true,
   "files": [
     "**/function.json",
