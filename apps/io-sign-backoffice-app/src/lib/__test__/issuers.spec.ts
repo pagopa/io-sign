@@ -10,7 +10,7 @@ import {
 
 const mocks: { issuer: Issuer } = vi.hoisted(() => ({
   issuer: {
-    id: "103920",
+    id: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
     externalId: "01GG4NFBCN4ZH8ETCCKX3766KX",
     institutionId: "8a6031b8-ca40-4ac1-86b6-c3bda65803d7",
     type: "PA",
@@ -67,11 +67,8 @@ describe("createIssuerIfNotExists", () => {
 
 describe("getIssuer", () => {
   it("should return issuer", async () => {
-    expect(
-      getIssuerByInstitution({
-        id: mocks.issuer.institutionId,
-        taxCode: mocks.issuer.id,
-      })
+    await expect(
+      getIssuerByInstitution(mocks.issuer.institutionId)
     ).resolves.toEqual(mocks.issuer);
   });
 });

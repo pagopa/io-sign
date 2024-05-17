@@ -26,7 +26,7 @@ const sendOnboardingMessage = ({
 }: ActiveIoSignContract) =>
   pipe(
     issuerAlreadyExists({
-      id: institution.taxCode,
+      id: internalIstitutionID,
       institutionId: internalIstitutionID,
     }),
     RTE.filterOrElse(
