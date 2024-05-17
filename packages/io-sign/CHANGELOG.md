@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.3.3
+
+### Patch Changes
+
+- a8465c4: Set vatNumber property in sc-contracts as optional
+
 ## 1.3.2
 
 ### Patch Changes
