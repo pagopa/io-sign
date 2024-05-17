@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.3.4
+
+### Patch Changes
+
+- 47a84f8: Set vatNumber in sc-contracts as nullish
+
 ## 1.3.3
 
 ### Patch Changes
