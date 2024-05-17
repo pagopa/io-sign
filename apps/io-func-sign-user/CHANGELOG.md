@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [a8465c4]
+  - @io-sign/io-sign@1.3.3
+
 ## 0.6.2
 
 ### Patch Changes
