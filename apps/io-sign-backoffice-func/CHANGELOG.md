@@ -1,5 +1,13 @@
 # io-sign-backoffice-func
 
+## 1.2.3
+
+### Patch Changes
+
+- d9c3c17: Set vatNumber in sc-contracts as nullish
+- Updated dependencies [d9c3c17]
+  - @io-sign/io-sign@1.3.2
+
 ## 1.2.2
 
 ### Patch Changes
