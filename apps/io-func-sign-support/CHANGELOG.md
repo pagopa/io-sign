@@ -1,5 +1,12 @@
 # io-func-sign-support
 
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies [47a84f8]
+  - @io-sign/io-sign@1.3.4
+
 ## 1.2.3
 
 ### Patch Changes
