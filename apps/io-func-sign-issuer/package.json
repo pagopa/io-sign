@@ -30,7 +30,7 @@
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^26.2.1",
-    "@pagopa/ts-commons": "^10.14.2",
+    "@pagopa/ts-commons": "^13.0.0",
     "date-fns": "^2.29.3",
     "fp-ts": "^2.13.1",
     "handler-kit-legacy": "npm:@pagopa/handler-kit@0.5.1",
