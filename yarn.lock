@@ -84,6 +84,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@azure/abort-controller@npm:^2.0.0":
+  version: 2.1.2
+  resolution: "@azure/abort-controller@npm:2.1.2"
+  dependencies:
+    tslib: ^2.6.2
+  checksum: 22176c04ea01498311c6bbd336669f6e3faffad1cbb0c9ebc6ee9c1ff2cf958fd17ce73c7354b99d8bda9fcd311325ece7bee248875279174e3fc460e8b1a63d
+  languageName: node
+  linkType: hard
+
 "@azure/arm-apimanagement@npm:^9.1.0":
   version: 9.1.0
   resolution: "@azure/arm-apimanagement@npm:9.1.0"
@@ -127,6 +136,21 @@ __metadata:
     "@azure/core-util": "npm:^1.1.0"
     tslib: "npm:^2.2.0"
   checksum: 11c5ba072902693435dc2930e2fdfe2ff34836f4c2d6c87c6ac0566d48dc49157ebf49f4478cd3784dc0c4d57b502d3a12d74ea29f416725204a6e1aa937ef78
+  languageName: node
+  linkType: hard
+
+"@azure/core-client@npm:^1.0.0":
+  version: 1.9.2
+  resolution: "@azure/core-client@npm:1.9.2"
+  dependencies:
+    "@azure/abort-controller": ^2.0.0
+    "@azure/core-auth": ^1.4.0
+    "@azure/core-rest-pipeline": ^1.9.1
+    "@azure/core-tracing": ^1.0.0
+    "@azure/core-util": ^1.6.1
+    "@azure/logger": ^1.0.0
+    tslib: ^2.6.2
+  checksum: 961b829dfda4f734a763e9480a2ea622a7031ba2da4126d0add6e351a9f73ddc5782bf2b766735d976b61da3857014e0a90223d1f85d1c68468747a7a56851c3
   languageName: node
   linkType: hard
 
@@ -262,7 +286,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/cosmos@npm:^3.17.1, @azure/cosmos@npm:^3.17.2, @azure/cosmos@npm:^3.17.3":
+"@azure/core-util@npm:^1.6.1":
+  version: 1.9.0
+  resolution: "@azure/core-util@npm:1.9.0"
+  dependencies:
+    "@azure/abort-controller": ^2.0.0
+    tslib: ^2.6.2
+  checksum: 9246dc5bd246e7b94883ea8130fce04e2f22abd1e94afcff7a3e92a4c2da5e9b382dbf89a606b21d70bc8b01c7c89c84e803ca9da27f78d87f72bdff91ec7380
+  languageName: node
+  linkType: hard
+
+"@azure/core-xml@npm:^1.0.0":
+  version: 1.4.2
+  resolution: "@azure/core-xml@npm:1.4.2"
+  dependencies:
+    fast-xml-parser: ^4.3.2
+    tslib: ^2.6.2
+  checksum: f3815db55f0280db6080a3fc5b6187ad45cacf5c3842ea806a5565886edf2ebf2fa9fc1175407cf58d462341962a8396513943543b332b37b313ac3a79dc28fa
+  languageName: node
+  linkType: hard
+
+"@azure/cosmos@npm:^3.17.3":
   version: 3.17.3
   resolution: "@azure/cosmos@npm:3.17.3"
   dependencies:
@@ -280,6 +324,44 @@ __metadata:
     universal-user-agent: "npm:^6.0.0"
     uuid: "npm:^8.3.0"
   checksum: 699a18ade93aa206c1dee6cc6afa6992604006489e59b62e7b0f8ba86081b18af277ccfa87b9f8ccf24611b5c955e3ab8ebb7e972c3459aea3399e84c88ebc80
+  languageName: node
+  linkType: hard
+
+"@azure/cosmos@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@azure/cosmos@npm:4.0.0"
+  dependencies:
+    "@azure/abort-controller": ^1.0.0
+    "@azure/core-auth": ^1.3.0
+    "@azure/core-rest-pipeline": ^1.2.0
+    "@azure/core-tracing": ^1.0.0
+    debug: ^4.1.1
+    fast-json-stable-stringify: ^2.1.0
+    jsbi: ^3.1.3
+    node-abort-controller: ^3.0.0
+    priorityqueuejs: ^1.0.0
+    semaphore: ^1.0.5
+    tslib: ^2.2.0
+    universal-user-agent: ^6.0.0
+    uuid: ^8.3.0
+  checksum: 81a11c8c757c62bf3c6edde8ba9335cd86c301660df5091157a8f5c94858be3d490d931ed91f25bc2f970a426c536b361f42f503569d7222c0750eb0fc1ed506
+  languageName: node
+  linkType: hard
+
+"@azure/data-tables@npm:^13.2.2":
+  version: 13.2.2
+  resolution: "@azure/data-tables@npm:13.2.2"
+  dependencies:
+    "@azure/core-auth": ^1.3.0
+    "@azure/core-client": ^1.0.0
+    "@azure/core-paging": ^1.1.1
+    "@azure/core-rest-pipeline": ^1.1.0
+    "@azure/core-tracing": ^1.0.0
+    "@azure/core-xml": ^1.0.0
+    "@azure/logger": ^1.0.0
+    tslib: ^2.2.0
+    uuid: ^8.3.0
+  checksum: 8846ef61958ebd75e9377a107285d33132e8bc34d46517a0b263b58c5c9039d0161571ab544befd11fde1f3545c526d44698fe5ddc3cfeea3192a66de2aad2bc
   languageName: node
   linkType: hard
 
@@ -2988,7 +3070,7 @@ __metadata:
     "@azure/storage-queue": ^12.11.0
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
-    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/io-functions-services-sdk": ^3.39.1
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^12.2.0
@@ -3776,21 +3858,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/io-functions-commons@npm:^26.2.1":
-  version: 26.8.1
-  resolution: "@pagopa/io-functions-commons@npm:26.8.1"
+"@pagopa/io-functions-commons@npm:^29.0.0":
+  version: 29.1.2
+  resolution: "@pagopa/io-functions-commons@npm:29.1.2"
   dependencies:
-    "@azure/cosmos": ^3.17.1
-    "@pagopa/ts-commons": ^10.13.0
-    applicationinsights: ^1.8.10
+    "@azure/cosmos": ^4.0.0
+    "@azure/data-tables": ^13.2.2
+    "@pagopa/ts-commons": ^13.1.1
+    applicationinsights: ^2.9.5
     azure-storage: ^2.10.5
     cidr-matcher: ^2.1.1
-    fp-ts: ^2.10.5
     helmet: ^4.6.0
     helmet-csp: ^2.5.1
-    io-ts: ^2.2.16
     node-fetch: ^2.6.1
-    nodemailer: ^6.6.1
+    nodemailer: ^6.9.13
     nodemailer-sendgrid: ^1.0.3
     referrer-policy: ^1.1.0
     rehype-stringify: ^3.0.0
@@ -3804,7 +3885,9 @@ __metadata:
   peerDependencies:
     "@azure/functions": ^3.2.0
     express: ^4.15.3
-  checksum: 7cb19d6ce62d9d17793484f9c79a9923a536817156f36b7acc38ca516b5373ad8145394ec232d8a321072bb1206fa4a438d18769fc04094e8b981525465745d6
+    fp-ts: ^2.16.5
+    io-ts: ^2.2.21
+  checksum: 08b03c239e11f686f5c492d9507d9fee8c216b37625231f3778d57924c13124130a162b13371eefdc9134b0110be64a0a022c1ad8cce5caff33db42f2c5c0b0c
   languageName: node
   linkType: hard
 
@@ -3865,7 +3948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/ts-commons@npm:^10.0.0, @pagopa/ts-commons@npm:^10.13.0, @pagopa/ts-commons@npm:^10.15.0":
+"@pagopa/ts-commons@npm:^10.0.0, @pagopa/ts-commons@npm:^10.15.0":
   version: 10.15.0
   resolution: "@pagopa/ts-commons@npm:10.15.0"
   dependencies:
@@ -3883,7 +3966,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/ts-commons@npm:^13.0.0":
+"@pagopa/ts-commons@npm:^13.0.0, @pagopa/ts-commons@npm:^13.1.1":
   version: 13.1.1
   resolution: "@pagopa/ts-commons@npm:13.1.1"
   dependencies:
@@ -9900,6 +9983,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^4.3.2":
+  version: 4.4.0
+  resolution: "fast-xml-parser@npm:4.4.0"
+  dependencies:
+    strnum: ^1.0.5
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: ad33a4b5165a0ffcb6e17ae78825bd4619a8298844a8a8408f2ea141a0d2d9439d18865dc5254162f09fe54d510ff18e5d5c0a190869cab21fc745ee66be816b
+  languageName: node
+  linkType: hard
+
 "fastq@npm:^1.6.0":
   version: 1.15.0
   resolution: "fastq@npm:1.15.0"
@@ -11253,7 +11347,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-issuer@workspace:apps/io-func-sign-issuer"
   dependencies:
-    "@azure/cosmos": ^3.17.1
+    "@azure/cosmos": ^4.0.0
     "@azure/event-hubs": ^5.9.0
     "@azure/functions": ^3.2.0
     "@azure/storage-blob": ^12.12.0
@@ -11262,7 +11356,7 @@ __metadata:
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
-    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^13.0.0
     "@rushstack/eslint-patch": ^1.2.0
@@ -11288,13 +11382,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-support@workspace:apps/io-func-sign-support"
   dependencies:
-    "@azure/cosmos": ^3.17.1
+    "@azure/cosmos": ^4.0.0
     "@azure/functions": ^3.5.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.0.0
     "@pagopa/handler-kit-azure-func": ^1.0.0
-    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^12.0.2
     "@pagopa/ts-commons": ^13.0.0
@@ -11316,7 +11410,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "io-func-sign-user@workspace:apps/io-func-sign-user"
   dependencies:
-    "@azure/cosmos": ^3.17.2
+    "@azure/cosmos": ^4.0.0
     "@azure/event-hubs": ^5.9.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
@@ -11324,7 +11418,7 @@ __metadata:
     "@pagopa/eslint-config": ^3.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
-    "@pagopa/io-functions-commons": ^26.2.1
+    "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^12.2.0
     "@pagopa/ts-commons": ^13.0.0
@@ -13709,7 +13803,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.6.1":
+"nodemailer@npm:^6.9.13":
   version: 6.9.13
   resolution: "nodemailer@npm:6.9.13"
   checksum: 1b591ef480be2ff69480127cbff819e6593b1ef263b6f920e1a4e83e40280582daf7a14a809ef92f9828e2a70bdb3ce22b11924e209f2afe4975f9ff37e08e9d
@@ -16438,6 +16532,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"strnum@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "strnum@npm:1.0.5"
+  checksum: 651b2031db5da1bf4a77fdd2f116a8ac8055157c5420f5569f64879133825915ad461513e7202a16d7fec63c54fd822410d0962f8ca12385c4334891b9ae6dd2
+  languageName: node
+  linkType: hard
+
 "styled-jsx@npm:5.1.1":
   version: 5.1.1
   resolution: "styled-jsx@npm:5.1.1"
@@ -16897,7 +16998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.4.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
