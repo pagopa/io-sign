@@ -40,13 +40,13 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@azure/cosmos": "^3.17.1",
+    "@azure/cosmos": "^4.0.0",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "^1.0.0",
     "@pagopa/handler-kit-azure-func": "^1.0.0",
-    "@pagopa/io-functions-commons": "^26.2.1",
+    "@pagopa/io-functions-commons": "^29.0.0",
     "@pagopa/logger": "1.0.1",
-    "@pagopa/ts-commons": "^10.10.0",
+    "@pagopa/ts-commons": "^13.0.0",
     "fp-ts": "^2.13.1"
   }
 }
