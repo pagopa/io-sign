@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.3.5
+
+### Patch Changes
+
+- 7f33aac: Updated @pagopa/ts-commons and applicationinsights dependencies
+
 ## 1.3.4
 
 ### Patch Changes

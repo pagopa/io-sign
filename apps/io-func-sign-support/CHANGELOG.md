@@ -1,5 +1,13 @@
 # io-func-sign-support
 
+## 1.2.5
+
+### Patch Changes
+
+- 7f33aac: Updated @pagopa/ts-commons and applicationinsights dependencies
+- Updated dependencies [7f33aac]
+  - @io-sign/io-sign@1.3.5
+
 ## 1.2.4
 
 ### Patch Changes
