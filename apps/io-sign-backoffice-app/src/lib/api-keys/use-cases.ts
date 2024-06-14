@@ -3,7 +3,7 @@ import {
   insertApiKey,
   getApiKeys,
   getApiKey,
-  upsertApiKeyField,
+  patchApiKey,
 } from "./cosmos";
 
 import {
@@ -18,6 +18,7 @@ import { ulid } from "ulid";
 import { sendMessage } from "@/lib/slack";
 import { getInstitution } from "@/lib/institutions/use-cases";
 import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
+import { getPiiFromToken, getTokenFromPii } from "../pdv-tokenizer";
 
 function ApiKey(payload: CreateApiKeyPayload): ApiKey {
   const apiKey = {
@@ -43,7 +44,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     if (!institution) {
       throw new Error("institution does not exists");
     }
-    // check if the api key for the given input already exists
+    // check if the api key with the given displayName already exists for that institution
     const apiKeyAlreadyExists = await apiKeyExists(
       payload.institutionId,
       payload.displayName
@@ -56,9 +57,11 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     const apiKey = ApiKey(payload);
     await createApiKeySubscription(apiKey);
     try {
-      await insertApiKey(apiKey);
+      const tokens = await Promise.all(apiKey.testers.map(getTokenFromPii));
+      await insertApiKey({ ...apiKey, testers: tokens });
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
+      throw new Error("unable to create the API key", { cause: e });
     }
     const issuer = await getIssuerByInstitution(institution);
     await sendMessage(
@@ -81,7 +84,8 @@ export async function listApiKeys(institutionId: string) {
   try {
     const apiKeys: ApiKey[] = [];
     for await (const apiKey of getApiKeys(institutionId)) {
-      apiKeys.push(apiKey);
+      const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
+      apiKeys.push({ ...apiKey, testers });
     }
     return apiKeys;
   } catch (e) {
@@ -95,7 +99,9 @@ export async function getApiKeyWithSecret(
 ): Promise<ApiKeyWithSecret> {
   try {
     const apiKey = await getApiKey(id, institutionId);
-    return exposeApiKeySecret(apiKey);
+    const apiKeyWithSecret = await exposeApiKeySecret(apiKey);
+    const testers = await Promise.all(apiKey.testers.map(getPiiFromToken));
+    return { ...apiKeyWithSecret, testers };
   } catch (e) {
     throw new Error("unable to get the API Key", { cause: e });
   }
@@ -104,10 +110,23 @@ export async function getApiKeyWithSecret(
 export async function revokeApiKey(id: string, institutionId: string) {
   try {
     await suspendApiKeySubscription({ id });
-    await upsertApiKeyField(id, institutionId, "status", "revoked");
+    await patchApiKey(id, institutionId, "status", "revoked");
   } catch (e) {
     throw new Error("Unable to revoke the API Key", { cause: e });
   }
 }
 
-export { upsertApiKeyField, getApiKeyById } from "./cosmos";
+export async function upsertApiKeyField(
+  id: string,
+  institutionId: string,
+  field: keyof Pick<ApiKey, "cidrs" | "status" | "testers">,
+  value: ApiKey[typeof field]
+) {
+  const newValue =
+    field === "testers" && Array.isArray(value)
+      ? await Promise.all(value.map(getTokenFromPii))
+      : value;
+  await patchApiKey(id, institutionId, field, newValue);
+}
+
+export { getApiKeyById } from "./cosmos";
