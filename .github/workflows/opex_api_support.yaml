@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
 
       # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.1.0
+      - uses: pagopa/opex-dashboard-azure-action@f44f85839096c15ec358293f3a2dd2b10d367119 # v1.1.0
         with:
           environment: prod
           api-name: ${{ env.API_NAME }}
