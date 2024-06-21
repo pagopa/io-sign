@@ -5,7 +5,8 @@ resource "github_repository" "this" {
   #tfsec:ignore:github-repositories-private
   visibility = "public"
 
-  allow_auto_merge            = true
+  allow_auto_merge            = false
+  allow_update_branch         = true
   allow_rebase_merge          = false
   allow_merge_commit          = false
   allow_squash_merge          = true
@@ -18,11 +19,13 @@ resource "github_repository" "this" {
   has_wiki        = false
   has_discussions = false
   has_issues      = false
-  has_downloads   = false
+  has_downloads   = true
 
-  topics = ["io", "sign"]
+  homepage_url    = "https://firma.io.italia.it/"
+
+  topics = ["io-sign", "io"]
 
   vulnerability_alerts = true
 
-  archive_on_destroy = true
+  archive_on_destroy = false
 }

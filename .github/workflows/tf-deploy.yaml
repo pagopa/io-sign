@@ -2,12 +2,12 @@ name: PR - IO Sign TF Apply
 
 on: 
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "infra/resources/prod/**"
-      - ".github/workflows/tf_deploy.yaml"
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "infra/resources/prod/**"
+  #     - ".github/workflows/tf_deploy.yaml"
 jobs:
   prod_itn_core_deploy:
     uses: pagopa/dx/.github/workflows/infra_apply.yaml@main
