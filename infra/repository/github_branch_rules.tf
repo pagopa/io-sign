@@ -24,11 +24,11 @@ resource "github_branch_protection" "main" {
     dismiss_stale_reviews           = false
     require_code_owner_reviews      = true
     required_approving_review_count = 1
-    dismissal_restrictions          = [
+    dismissal_restrictions = [
       "/lucacavallaro",
     ]
     pull_request_bypassers = []
-    restrict_dismissals = true
+    restrict_dismissals    = true
   }
 
   allows_deletions = false

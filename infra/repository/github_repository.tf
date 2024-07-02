@@ -21,7 +21,7 @@ resource "github_repository" "this" {
   has_issues      = false
   has_downloads   = true
 
-  homepage_url    = "https://firma.io.italia.it/"
+  homepage_url = "https://firma.io.italia.it/"
 
   topics = ["io-sign", "io"]
 
