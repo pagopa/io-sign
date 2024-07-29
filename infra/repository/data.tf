@@ -34,8 +34,8 @@ data "azurerm_resources" "web_apps" {
   type                = "Microsoft.Web/sites"
 }
 
-data "azurerm_linux_web_app" "web_apps" {
-  for_each            = local.web_apps_map
-  resource_group_name = local.backend_resource_group_name
-  name                = each.value.name
-}
+# data "azurerm_linux_web_app" "web_apps" {
+#   for_each            = local.web_apps_map
+#   resource_group_name = local.backend_resource_group_name
+#   name                = each.value.name
+# }

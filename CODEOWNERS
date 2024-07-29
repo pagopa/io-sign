@@ -1,1 +1,7 @@
+# see https://help.github.com/en/articles/about-code-owners#example-of-a-codeowners-file
+
 @lucacavallaro @grausof
+
+# engineering-team-cloud-eng
+/infra/ @pagopa/engineering-team-cloud-eng
+/.github/ @pagopa/engineering-team-cloud-eng

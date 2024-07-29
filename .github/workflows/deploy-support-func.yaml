@@ -3,11 +3,24 @@ name: Deploy (support-func)
 on:
   workflow_dispatch: {}
 
+# jobs:
+#   deploy_workspace_to_azure:
+#     name: Deploy
+#     uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
+#     with:
+#       environment: io-p-sign-support-func
+#       workspace-name: io-func-sign-support
+#     secrets: inherit
+
 jobs:
-  deploy_workspace_to_azure:
+  deploy:
     name: Deploy
-    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
-    with:
-      environment: io-p-sign-support-func
-      workspace-name: io-func-sign-support
+    uses: pagopa/dx/.github/workflows/function_app_deploy.yaml@main
     secrets: inherit
+    with:
+      workspace_name: io-func-sign-support
+      environment: webapp-prod-cd
+      resource_group_name: io-p-sign-backend-rg
+      function_app_name: io-p-sign-support-func
+      health_check_path: /
+      use_staging_slot: true
