@@ -3,15 +3,6 @@ name: Deploy (backoffice-func)
 on:
   workflow_dispatch: {}
 
-# jobs:
-#   deploy_workspace_to_azure:
-#     name: Deploy
-#     uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
-#     with:
-#       environment: io-p-sign-backoffice-func
-#       workspace-name: io-sign-backoffice-func
-#     secrets: inherit
-
 jobs:
   deploy:
     name: Deploy

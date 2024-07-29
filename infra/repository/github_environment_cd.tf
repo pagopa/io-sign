@@ -35,14 +35,13 @@ resource "github_repository_environment" "github_repository_environment_opex_pro
     protected_branches     = false
     custom_branch_policies = true
   }
-
-  # reviewers {
-  #   teams = matchkeys(
-  #     data.github_organization_teams.all.teams[*].id,
-  #     data.github_organization_teams.all.teams[*].slug,
-  #     local.cd_opex.reviewers_teams
-  #   )
-  # }
+  reviewers {
+    teams = matchkeys(
+      data.github_organization_teams.all.teams[*].id,
+      data.github_organization_teams.all.teams[*].slug,
+      local.cd_opex.reviewers_teams
+    )
+  }
 }
 
 resource "github_actions_environment_secret" "env_opex_prod_cd_secrets" {
@@ -78,6 +77,8 @@ resource "github_actions_environment_secret" "web_app_client_id" {
   plaintext_value = each.value
 }
 
+
+## BACKUP
 # resource "github_repository_environment" "web_apps" {
 #   for_each    = local.web_apps_map
 #   environment = each.value.name
