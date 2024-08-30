@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.2.7
+
+### Patch Changes
+
+- f0084f8: Added base64 decode for GOOGLE_PRIVATE_KEY env var
+
 ## 1.2.6
 
 ### Patch Changes
