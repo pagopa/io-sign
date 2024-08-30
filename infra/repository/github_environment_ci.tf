@@ -7,10 +7,6 @@ resource "github_repository_environment" "github_repository_environment_prod_ci"
     custom_branch_policies = true
   }
 
-  # OLD:
-  # prevent_self_review = false
-  # no deployment_branch_policy
-
 }
 
 resource "github_actions_environment_secret" "env_prod_ci_secrets" {
