@@ -1,4 +1,4 @@
-# DX - GitHub federated Managed Identities
+# IO Sign - GitHub federated Managed Identities
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

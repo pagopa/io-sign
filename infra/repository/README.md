@@ -1,4 +1,4 @@
-# IO Infra - Repository
+# IO Sign - Repository
 
 <!-- markdownlint-disable -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
