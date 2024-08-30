@@ -10,7 +10,7 @@ jobs:
     secrets: inherit
     with:
       workspace_name: io-func-sign-issuer
-      environment: webapp-prod-cd
+      environment: webapp-prod
       resource_group_name: io-p-sign-backend-rg
       function_app_name: io-p-sign-issuer-func
       health_check_path: /api/v1/sign/info
