@@ -9,7 +9,7 @@ const ConfigFromEnvironment = z
   .transform((e) => ({
     credentials: {
       type: "service_account",
-      private_key: e.GOOGLE_PRIVATE_KEY,
+      private_key: Buffer.from(e.GOOGLE_PRIVATE_KEY, "base64").toString(),
       client_email: e.GOOGLE_CLIENT_EMAIL,
     },
     spreadsheetId: e.GOOGLE_SPREADSHEET_ID,
