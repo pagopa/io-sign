@@ -19,7 +19,7 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_cd.client_id
     }
-    reviewers_teams = ["io-backend-contributors", "io-backend-admin", "engineering-team-cloud-eng"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng"]
   }
 
   # OPEX
@@ -33,7 +33,7 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_opex_prod_cd.client_id
     }
-    reviewers_teams = ["io-backend-contributors", "io-backend-admin", "engineering-team-cloud-eng"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng"]
   }
 
   # WEB-APP
@@ -43,6 +43,6 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_cd.client_id
     }
-    reviewers_teams = ["io-backend-contributors", "io-backend-admin", "engineering-team-cloud-eng", "io-sign-maintainers"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng"]
   }
 }
