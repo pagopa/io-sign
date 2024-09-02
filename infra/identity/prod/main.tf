@@ -45,6 +45,22 @@ module "federated_identities_web_apps" {
     enable = false
   }
 
+  continuos_delivery = {
+    enable = true
+
+    roles = {
+      subscription = []
+      resource_groups = {
+        "io-p-github-runner-rg" = [
+          "Contributor",
+        ],
+        "io-p-sign-backend-rg" = [
+          "Contributor",
+        ]
+      }
+    }
+  }
+
   tags = local.tags
 }
 
