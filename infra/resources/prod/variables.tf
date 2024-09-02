@@ -43,6 +43,14 @@ variable "tags" {
 
 # domain specific
 
+variable "key_vault_common" {
+  type = object({
+    resource_group_name = string
+    name                = string
+    pat_secret_name     = string
+  })
+}
+
 # DNS
 variable "dns_ses_validation" {
   type = list(object({
@@ -75,6 +83,7 @@ variable "subnets_cidrs" {
 variable "storage_account" {
   type = object({
     enable_versioning             = bool
+    change_feed_enabled           = bool
     delete_after_days             = number
     replication_type              = string
     enable_low_availability_alert = bool

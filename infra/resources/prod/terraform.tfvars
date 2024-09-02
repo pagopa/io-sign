@@ -11,6 +11,13 @@ tags = {
   CostCenter  = "BD100 - STRATEGIC INNOVATION"
 }
 
+# Container App Job GitHub Runner
+key_vault_common = {
+  resource_group_name = "io-p-rg-common"
+  name                = "io-p-kv-common"
+  pat_secret_name     = "github-runner-pat"
+}
+
 # You can retrieve the list of current defined subnets using the CLI command
 # az network vnet subnet list --subscription PROD-IO --vnet-name io-p-vnet-common --resource-group io-p-rg-common --output table
 # and thus define new CIDRs according to the unallocated address space
@@ -23,7 +30,8 @@ subnets_cidrs = {
 }
 
 storage_account = {
-  enable_versioning             = false
+  enable_versioning             = true
+  change_feed_enabled           = true
   delete_after_days             = 90
   replication_type              = "GZRS"
   enable_low_availability_alert = true

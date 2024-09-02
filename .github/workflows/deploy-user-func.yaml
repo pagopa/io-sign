@@ -6,12 +6,11 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/function_app_deploy.yaml@main
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@main
     secrets: inherit
     with:
       workspace_name: io-func-sign-user
       environment: app-prod
       resource_group_name: io-p-sign-backend-rg
-      function_app_name: io-p-sign-user-func
-      health_check_path: /api/v1/sign/info
+      web_app_name: io-p-sign-user-func
       use_staging_slot: true
