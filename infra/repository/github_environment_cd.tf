@@ -56,7 +56,7 @@ resource "github_actions_environment_secret" "env_opex_prod_cd_secrets" {
 # -------------- WEB-APP ----------------
 
 resource "github_repository_environment" "github_repository_environment_web_apps_cd" {
-  environment = "webapp-prod-cd"
+  environment = "app-prod-cd"
   repository  = github_repository.this.name
 
   reviewers {
