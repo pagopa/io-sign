@@ -2,16 +2,16 @@ name: PR - IO Sign TF Validation
 
 on:
   workflow_dispatch:
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - edited
-  #     - synchronize
-  #     - reopened
-  #     - ready_for_review
-  #   paths:
-  #     - "infra/resources/prod/**"
-  #     - ".github/workflows/tf_code_review.yaml"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - "infra/resources/prod/**"
+      - ".github/workflows/tf-code-review.yaml"
 
 jobs:
   prod_itn_core_code_review:
