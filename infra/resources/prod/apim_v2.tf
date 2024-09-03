@@ -241,7 +241,7 @@ module "apim_v2_io_sign_backoffice_api_v1" {
   protocols = ["https"]
 
   content_format = "openapi"
-  content_value  = file("../../apps/io-sign-backoffice-func/openapi.yaml")
+  content_value  = file("../../../apps/io-sign-backoffice-func/openapi.yaml")
 
   xml_content = file("./api/backoffice/v1/base_policy.xml")
 }
