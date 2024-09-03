@@ -4,10 +4,13 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  deploy_workspace_to_azure:
+  deploy:
     name: Deploy
-    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
-    with:
-      environment: io-p-sign-backoffice-app
-      workspace-name: io-sign-backoffice-app
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@main
     secrets: inherit
+    with:
+      workspace_name: io-sign-backoffice-app
+      environment: app-prod
+      resource_group_name: io-p-sign-backend-rg
+      web_app_name: io-p-sign-backoffice-app
+      use_staging_slot: true

@@ -6,11 +6,14 @@ on:
 jobs:
   deploy_workspace_to_azure:
     name: Deploy
-    uses: pagopa/io-std/.github/workflows/deploy-workspace.yaml@main
-    with:
-      environment: io-p-sign-issuer-func
-      workspace-name: io-func-sign-issuer
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@main
     secrets: inherit
+    with:
+      workspace_name: io-func-sign-issuer
+      environment: app-prod
+      resource_group_name: io-p-sign-backend-rg
+      web_app_name: io-p-sign-issuer-func
+      use_staging_slot: true
 
   # tag the current commit as "latest" in order to make the latest
   # released version easily referenceable in the documentation

@@ -1,0 +1,19 @@
+name: PR - IO Sign TF Apply
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/resources/prod/**"
+      - ".github/workflows/tf-deploy.yaml"
+
+jobs:
+  prod_itn_core_deploy:
+    uses: pagopa/dx/.github/workflows/infra_apply.yaml@main
+    name: Prod - Code Deploy
+    secrets: inherit
+    with:
+      environment: prod
+      base_path: infra/resources
