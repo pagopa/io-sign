@@ -13,7 +13,7 @@ import {
   suspendApiKeySubscription,
 } from "./apim";
 
-import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
+import { type ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
 import { sendMessage } from "@/lib/slack";
 import { getInstitution } from "@/lib/institutions/use-cases";
@@ -60,7 +60,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     } catch (e) {
       await deleteApiKeySubscription(apiKey);
     }
-    const issuer = await getIssuerByInstitution(institution);
+    const issuer = await getIssuerByInstitution(institution.id);
     await sendMessage(
       `(_backoffice_) *${institution.name}* (\`${issuer?.externalId}\`) ha creato una nuova API Key di *${payload.environment}*.\nHa configurato *${payload.cidrs.length}* indirizzi IP di test e *${payload.testers.length}* codici fiscali.`
     );

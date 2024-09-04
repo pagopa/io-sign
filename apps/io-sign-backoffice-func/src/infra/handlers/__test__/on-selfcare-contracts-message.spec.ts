@@ -21,7 +21,7 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const issuer: Issuer = {
-  id: "id",
+  id: "27e11a61-85bb-4dd5-95ff-d7f337058d99",
   type: "PA",
   externalId: "externalId",
   institutionId: "27e11a61-85bb-4dd5-95ff-d7f337058d99",

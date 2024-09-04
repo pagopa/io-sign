@@ -8,7 +8,7 @@ const contractSchema = z.object({
     address: z.string().min(1),
     description: z.string().min(1),
     digitalAddress: z.string().min(1),
-    taxCode: z.string().min(1),
+    taxCode: z.string().min(1).optional(),
   }),
   billing: z
     .object({
