@@ -1,6 +1,7 @@
 {
   "name": "io-sign",
   "private": true,
+  "license": "MPL-2.0",
   "scripts": {
     "test": "turbo run test --no-daemon",
     "format": "turbo run format --no-daemon",
