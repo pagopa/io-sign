@@ -1,0 +1,91 @@
+publiccodeYmlVersion: '0.4'
+applicationSuite: IO
+categories:
+  - digital-citizenship
+  - document-management
+  - compliance-management
+  - office
+description:
+  it:
+    apiDocumentation: 'https://github.com/pagopa/io-sign'
+    documentation: 'https://developer.pagopa.it/firma-con-io/guides/manuale-operativo'
+    features:
+      - Firma da mobile app
+    localisedName: Firma con IO
+    longDescription: |+
+      #### **Una firma a valore legale, a disposizione di tutti**
+
+
+      **Firma con IO** è una **Firma Elettronica Qualificata** “one shot” con il
+      massimo valore legale, pari alla firma autografa, che consente agli
+      **enti** di digitalizzare l’iter di raccolta firme. Ai **cittadini basta
+      avere l'app IO** per firmare documenti e contratti direttamente sul
+      proprio dispositivo.
+
+
+      #### **Tutti i processi di firma, senza spostamenti**
+
+
+      Grazie a **Firma con IO** lo scambio di documenti tra enti e cittadini è
+      immediato. Non serve apporre la firma in presenza o scannerizzare copie
+      cartacee da inviare in pdf, perché tutto avviene su IO.
+
+
+      Un esempio? Qualsiasi realtà del **mondo accademico** può gestire da
+      remoto contratti occasionali, tirocini, dottorati, assegni di ricerca o
+      borse di studio che devono essere sottoscritti da studenti o
+      collaboratori, solitamente non dotati di una firma digitale certificata.
+
+
+      Per avere maggiori dettagli su come il tuo ente può integrare il servizio
+      di **Firma con IO**, consulta il [manuale
+      operativo](https://developer.pagopa.it/firma-con-io/guides/manuale-operativo).
+
+    shortDescription: |-
+      La soluzione per firmare i documenti e i contratti della PA direttamente
+      da mobile app
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - government
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: true
+    cie: true
+    pagopa: true
+    spid: true
+    io: true
+  riuso:
+    codiceIPA: 5N2TR557
+landingURL: 'https://firma.io.italia.it/'
+legal:
+  license: MPL-2.0
+  mainCopyrightOwner: PagoPA S.p.A
+  repoOwner: PagoPA S.p.A
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: PagoPA S.p.A.
+      email: ospo@pagopa.it
+      name: Open Source Program Office
+  type: internal
+name: Firma con IO
+platforms:
+  - ios
+  - android
+releaseDate: '2024-09-01'
+softwareType: addon
+softwareVersion: 1.2.7
+url: 'https://github.com/pagopa/io-sign'
+
