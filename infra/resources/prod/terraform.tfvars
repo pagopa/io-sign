@@ -41,9 +41,9 @@ cosmos = {
   zone_redundant = false
   additional_geo_locations = [
     {
-      location          = "northeurope"
+      location          = "italynorth"
       failover_priority = 1
-      zone_redundant    = false
+      zone_redundant    = true
     }
   ]
 }
