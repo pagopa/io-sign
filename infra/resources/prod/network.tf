@@ -454,7 +454,7 @@ resource "azurerm_private_endpoint" "cosno_itn" {
     name                           = "${local.project_itn}-sign-cosno-pep-01"
     private_connection_resource_id = module.cosmosdb_account.id
     is_manual_connection           = false
-    subresource_names              = ["sql"]
+    subresource_names              = ["Sql"]
   }
 
   tags = var.tags
