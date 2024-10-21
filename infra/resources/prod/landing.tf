@@ -22,7 +22,7 @@ data "azurerm_log_analytics_workspace" "common" {
 }
 
 module "landing_cdn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//cdn?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v3//cdn?ref=B2BP-990-allow-cdn-without-dns-record"
 
   name                  = "landing"
   prefix                = local.project
@@ -30,6 +30,7 @@ module "landing_cdn" {
   location              = azurerm_resource_group.integration_rg.location
   hostname              = "firma.io.italia.it"
   https_rewrite_enabled = true
+  create_dns_record     = false
 
   storage_account_replication_type = "GZRS"
 
@@ -69,6 +70,16 @@ module "landing_cdn" {
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.common.id
 
   advanced_threat_protection_enabled = false
+
+  tags = var.tags
+}
+
+resource "azurerm_dns_cname_record" "cloudfront" {
+  name                = "firma"
+  zone_name           = data.azurerm_dns_zone.io_italia_it.name
+  resource_group_name = data.azurerm_resource_group.core_ext.name
+  ttl                 = 3600
+  record              = var.landing_cdn_url
 
   tags = var.tags
 }

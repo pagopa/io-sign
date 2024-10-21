@@ -301,3 +301,5 @@ io_common = {
   appgateway_snet_name         = "io-p-appgateway-snet"
   vnet_common_name             = "io-p-vnet-common"
 }
+
+landing_cdn_url = "d26ojiou3fuq3h.cloudfront.net"
