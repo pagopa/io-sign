@@ -22,7 +22,7 @@ data "azurerm_log_analytics_workspace" "common" {
 }
 
 module "landing_cdn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//cdn?ref=B2BP-990-allow-cdn-without-dns-record"
+  source = "github.com/pagopa/terraform-azurerm-v3//cdn?ref=v8.52.0"
 
   name                  = "landing"
   prefix                = local.project
