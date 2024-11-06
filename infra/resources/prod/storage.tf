@@ -247,8 +247,8 @@ resource "azurerm_storage_queue" "itn_api_keys" {
 module "azure_storage_account" {
   source = "github.com/pagopa/dx//infra/modules/azure_storage_account?ref=main"
 
-  environment         = var.environment
-  resource_group_name = var.resource_group_name ###TO CHECK
+  environment         = local.itn_environment
+  resource_group_name = azurerm_resource_group.data_rg.name
   access_tier        = "Hot"
 
   ###TO CHECK
