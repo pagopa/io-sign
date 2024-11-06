@@ -243,3 +243,29 @@ resource "azurerm_storage_queue" "itn_api_keys" {
   name                 = "api-keys"
   storage_account_name = module.io_sign_storage_itn.name
 }
+
+module "azure_storage_account" {
+  source = "github.com/pagopa/dx//infra/modules/azure_storage_account?ref=main"
+
+  environment         = var.environment
+  resource_group_name = var.resource_group_name ###TO CHECK
+  access_tier        = "Hot"
+
+  ###TO CHECK
+  subnet_pep_id                        = data.azurerm_subnet.pep.id
+  private_dns_zone_resource_group_name = "${local.environment.prefix}-${local.environment.env_short}-rg-common"
+
+  subservices_enabled = {
+    blob  = true
+    file  = false
+    queue  = true
+    table  = false
+  }
+
+  force_public_network_access_enabled = false
+
+  ###TO CHECK
+  action_group_id = data.azurerm_monitor_action_group.example.id
+  
+  tags = var.tags
+}
