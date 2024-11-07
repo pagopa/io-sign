@@ -264,8 +264,7 @@ module "azure_storage_account" {
 
   force_public_network_access_enabled = false
 
-  ###TO CHECK
-  action_group_id = data.azurerm_monitor_action_group.example.id
+  action_group_id = data.azurerm_monitor_action_group.error_action_group.id
   
   tags = var.tags
 }
