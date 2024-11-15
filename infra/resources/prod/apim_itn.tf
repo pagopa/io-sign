@@ -3,6 +3,22 @@ data "azurerm_api_management" "apim_itn_api" {
   resource_group_name = "${local.project_itn}-common-rg-01"
 }
 
+# Role assignments
+
+resource "azurerm_role_assignment" "sign_backoffice_app_role" {
+  principal_id         = module.io_sign_backoffice_app.principal_id
+  role_definition_name = "API Management Service Contributor"
+  scope                = data.azurerm_api_management.apim_itn_api.id
+}
+
+resource "azurerm_role_assignment" "staging_sign_backoffice_app_role" {
+  principal_id         = module.io_sign_backoffice_app_staging_slot.principal_id
+  role_definition_name = "API Management Service Contributor"
+  scope                = data.azurerm_api_management.apim_itn_api.id
+}
+
+# Named values
+
 resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
   name                = "io-fn-sign-issuer-url"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
