@@ -4,6 +4,7 @@
   "version": "1.0.1",
   "type": "module",
   "main": "dist/io-sign.es.js",
+  "license": "MPL-2.0",
   "exports": {
     ".": "./dist/io-sign.es.js"
   },

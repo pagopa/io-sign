@@ -2,6 +2,7 @@
   "name": "io-func-sign-user",
   "version": "0.6.5",
   "private": true,
+  "license": "MPL-2.0",
   "files": [
     "**/function.json",
     "dist",

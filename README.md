@@ -123,3 +123,8 @@ This command generates static frontend files inside the `out` folder which can t
 ```bash
 yarn workspace io-sign-selfcare-frontend run export
 ```
+
+## LICENSING
+
+For detailed information regarding the licensing of this project please take
+a look at the [LICENSE](LICENSE) file. 
