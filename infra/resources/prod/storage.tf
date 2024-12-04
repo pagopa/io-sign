@@ -244,7 +244,7 @@ resource "azurerm_storage_queue" "itn_api_keys" {
   storage_account_name = module.io_sign_storage_itn.name
 }
 
-module "azure_storage_account" {
+module "io_sign_storage_itn_new" {
   source = "github.com/pagopa/dx//infra/modules/azure_storage_account?ref=main"
 
   environment         = local.itn_environment
@@ -267,4 +267,66 @@ module "azure_storage_account" {
   action_group_id = data.azurerm_monitor_action_group.error_action_group.name
   
   tags = var.tags
+}
+
+resource "azurerm_storage_container" "uploaded_documents" {
+  name                  = "uploaded-documents"
+  storage_account_name  = module.io_sign_storage_itn_new.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "validated_documents" {
+  name                  = "validated-documents"
+  storage_account_name  = module.io_sign_storage_itn_new.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "signed_documents" {
+  name                  = "signed-documents"
+  storage_account_name  = module.io_sign_storage_itn_new.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "filled_modules" {
+  name                  = "filled-modules"
+  storage_account_name  = module.io_sign_storage_itn_new.name
+  container_access_type = "private"
+}
+resource "azurerm_storage_queue" "waiting_for_documents_to_fill" {
+  name                 = "waiting-for-documents-to-fill"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "on_signature_request_ready" {
+  name                 = "on-signature-request-ready"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "on_signature_request_wait_for_signature" {
+  name                 = "on-signature-request-wait-for-signature"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "on_signature_request_rejected" {
+  name                 = "on-signature-request-rejected"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "on_signature_request_signed" {
+  name                 = "on-signature-request-signed"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "waiting_for_qtsp" {
+  name                 = "waiting-for-qtsp"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+resource "azurerm_storage_queue" "waiting_for_signature_request_updates" {
+  name                 = "waiting-for-signature-request-updates"
+  storage_account_name = module.io_sign_storage_itn_new.name
+}
+
+resource "azurerm_storage_queue" "api_keys" {
+  name                 = "api-keys"
+  storage_account_name = module.io_sign_storage_itn_new.name
 }
