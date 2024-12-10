@@ -30,7 +30,7 @@ export const apiKeySchema = z.object({
   displayName: z.string().min(3).max(40),
   environment: z.enum(["test", "prod"]),
   cidrs: z.array(cidrSchema).default([]),
-  testers: z.array(fiscalCodeSchema).default([]),
+  testers: z.array(z.string().uuid()).default([]),
   status: z.enum(["active", "revoked"]),
   createdAt: z.string().pipe(z.coerce.date()),
 });
@@ -43,12 +43,14 @@ export const apiKeyWithSecretSchema = apiKeySchema.extend({
 
 export type ApiKeyWithSecret = z.infer<typeof apiKeyWithSecretSchema>;
 
-export const createApiKeyPayloadSchema = apiKeySchema.pick({
-  institutionId: true,
-  displayName: true,
-  environment: true,
-  cidrs: true,
-  testers: true,
-});
+export const createApiKeyPayloadSchema = apiKeySchema
+  .pick({
+    institutionId: true,
+    displayName: true,
+    environment: true,
+    cidrs: true,
+    testers: true,
+  })
+  .extend({ testers: z.array(fiscalCodeSchema).default([]) });
 
 export type CreateApiKeyPayload = z.infer<typeof createApiKeyPayloadSchema>;
