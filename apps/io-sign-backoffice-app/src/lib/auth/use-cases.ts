@@ -33,7 +33,7 @@ export let authenticate = async (idToken: string) => {
       throw new Error(`Institution ${institutionId} does not exists`);
     }
     await createIssuerIfNotExists({
-      id: institution.taxCode,
+      id: institutionId,
       institutionId,
       supportEmail: institution.supportEmail,
       name: institution.name,
@@ -67,7 +67,7 @@ if (process.env.NODE_ENV === "development") {
       vatNumber: "0010213",
     };
     await createIssuerIfNotExists({
-      id: institution.taxCode,
+      id: institution.id,
       institutionId: institution.id,
       supportEmail: institution.supportEmail,
       name: institution.name,
