@@ -223,3 +223,8 @@ variable "io_sign_backoffice_func" {
   })
   description = "Configuration of the io-sign-backoffice func app"
 }
+
+variable "landing_cdn_url" {
+  type        = string
+  description = "The URL of the landing CDN hosted by PAWSBuilder"
+}

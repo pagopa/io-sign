@@ -19,6 +19,7 @@ No providers.
 | <a name="module_federated_identities"></a> [federated\_identities](#module\_federated\_identities) | github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github | main |
 | <a name="module_federated_identities_opex"></a> [federated\_identities\_opex](#module\_federated\_identities\_opex) | github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github | main |
 | <a name="module_federated_identities_web_apps"></a> [federated\_identities\_web\_apps](#module\_federated\_identities\_web\_apps) | github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github | main |
+| <a name="module_roles_ci"></a> [roles\_ci](#module\_roles\_ci) | github.com/pagopa/dx//infra/modules/azure_role_assignments | main |
 
 ## Resources
 

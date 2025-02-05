@@ -41,9 +41,9 @@ cosmos = {
   zone_redundant = false
   additional_geo_locations = [
     {
-      location          = "northeurope"
+      location          = "italynorth"
       failover_priority = 1
-      zone_redundant    = false
+      zone_redundant    = true
     }
   ]
 }
@@ -301,3 +301,5 @@ io_common = {
   appgateway_snet_name         = "io-p-appgateway-snet"
   vnet_common_name             = "io-p-vnet-common"
 }
+
+landing_cdn_url = "d26ojiou3fuq3h.cloudfront.net"
