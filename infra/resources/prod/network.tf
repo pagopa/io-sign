@@ -20,10 +20,10 @@ data "azurerm_subnet" "itn_private_endpoints_subnet" {
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
 }
 
-data "azurerm_subnet" "apim_v2" {
-  name                 = "apimv2api"
-  virtual_network_name = format("%s-vnet-common", local.product)
-  resource_group_name  = format("%s-rg-common", local.product)
+data "azurerm_subnet" "apim_itn" {
+  name                 = "${local.project_itn}-apim-snet-01"
+  virtual_network_name = "${local.project_itn}-common-vnet-01"
+  resource_group_name  = "${local.project_itn}-common-rg-01"
 }
 
 data "azurerm_nat_gateway" "nat_gateway" {
