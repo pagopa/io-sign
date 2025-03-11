@@ -109,9 +109,7 @@ module "io_sign_backoffice_func_staging_slot" {
 
   subnet_id = module.io_sign_backoffice_snet.id
 
-  allowed_subnets = [
-    module.io_sign_snet.id
-  ]
+  allowed_subnets = []
 
   tags = var.tags
 }

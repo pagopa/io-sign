@@ -64,10 +64,7 @@ module "io_sign_backoffice_app" {
 
   subnet_id = module.io_sign_backoffice_snet.id
 
-  allowed_subnets = [
-    data.azurerm_subnet.appgateway_snet.id,
-    data.azurerm_subnet.apim_itn.id
-  ]
+  allowed_subnets = []
 
   ip_restriction_default_action = "Deny"
 
@@ -138,10 +135,7 @@ module "io_sign_backoffice_app_staging_slot" {
 
   subnet_id = module.io_sign_backoffice_snet.id
 
-  allowed_subnets = [
-    data.azurerm_subnet.appgateway_snet.id,
-    data.azurerm_subnet.apim_itn.id
-  ]
+  allowed_subnets = []
 
   ip_restriction_default_action = "Deny"
 
