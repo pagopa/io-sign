@@ -4,11 +4,12 @@ domain    = "sign"
 location  = "westeurope"
 
 tags = {
-  CreatedBy   = "Terraform"
-  Environment = "Prod"
-  Owner       = "IO"
-  Source      = "https://github.com/pagopa/io-infra/src/sign"
-  CostCenter  = "BD100 - STRATEGIC INNOVATION"
+  CreatedBy      = "Terraform"
+  ManagementTeam = "IO Firma"
+  BusinessUnit   = "App IO"
+  Environment    = "Prod"
+  Source         = "https://github.com/pagopa/io-sign/blob/main/infra/resources/prod"
+  CostCenter     = "TS000 - Tecnologia e Servizi"
 }
 
 # Container App Job GitHub Runner

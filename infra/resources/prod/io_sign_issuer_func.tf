@@ -74,11 +74,8 @@ module "io_sign_issuer_func" {
     format("AzureWebJobs.%s.Disabled", to_disable)
   ]
 
-  subnet_id = module.io_sign_snet.id
-  allowed_subnets = [
-    module.io_sign_snet.id,
-    data.azurerm_subnet.apim_v2.id,
-  ]
+  subnet_id       = module.io_sign_snet.id
+  allowed_subnets = []
 
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
   system_identity_enabled                  = true
@@ -122,11 +119,8 @@ module "io_sign_issuer_func_staging_slot" {
     }
   )
 
-  subnet_id = module.io_sign_snet.id
-  allowed_subnets = [
-    module.io_sign_snet.id,
-    data.azurerm_subnet.apim_v2.id,
-  ]
+  subnet_id       = module.io_sign_snet.id
+  allowed_subnets = []
 
   tags = var.tags
 }
