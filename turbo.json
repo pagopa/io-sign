@@ -1,28 +1,48 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
-      "inputs": ["src/**/*.ts"],
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build", "generate:api-models"]
+      "inputs": [
+        "src/**/*.ts"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build",
+        "generate:api-models"
+      ]
     },
     "generate:api-models": {},
     "typecheck": {
-      "inputs": ["src/**/*.ts"],
+      "inputs": [
+        "src/**/*.ts"
+      ],
       "outputs": [],
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "format": {},
     "lint": {
-      "inputs": ["src/**/*.ts"],
+      "inputs": [
+        "src/**/*.ts"
+      ],
       "outputs": [],
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "test": {
-      "inputs": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+      "inputs": [
+        "src/**/*.spec.ts",
+        "src/**/*.test.ts"
+      ],
       "outputs": [],
-      "outputMode": "hash-only",
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputLogs": "hash-only"
     }
   }
 }
