@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@add-nextjs-support
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@0e5585c317867e00af0086fc2b0396e9d12c9693
     secrets: inherit
     with:
       workspace_name: io-sign-backoffice-app
