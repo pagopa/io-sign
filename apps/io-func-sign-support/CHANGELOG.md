@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.2.6
+
+### Patch Changes
+
+- e3838c6: Upgrade turbo to v2
+
 ## 1.2.5
 
 ### Patch Changes
