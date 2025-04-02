@@ -303,4 +303,4 @@ io_common = {
   vnet_common_name             = "io-p-vnet-common"
 }
 
-landing_cdn_url = "d26ojiou3fuq3h.cloudfront.net"
+landing_cdn_url = "d1z4jrsc2tpogm.cloudfront.net"
