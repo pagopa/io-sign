@@ -32,7 +32,7 @@ const apiKey: ApiKey = {
 };
 
 const issuer: Issuer = {
-  id: institution.taxCode,
+  id: institution.id,
   status: "active",
   type: "PA",
   institutionId: institution.id,

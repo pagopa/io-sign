@@ -29,4 +29,4 @@ export const getInstitutionById = (id: string) => (r: InstitutionEnvironment) =>
 
 export const getIssuerByInstitution = (
   institution: Pick<InstitutionDetail, "id" | "taxCode">
-) => getIssuer({ id: institution.taxCode, institutionId: institution.id });
+) => getIssuer({ id: institution.id, institutionId: institution.id });
