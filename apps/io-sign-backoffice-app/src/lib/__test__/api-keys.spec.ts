@@ -83,6 +83,13 @@ const { getApimClient } = vi.hoisted(() => ({
   }),
 }));
 
+const { getTokenFromPii, getPiiFromToken } = vi.hoisted(() => ({
+  getTokenFromPii: vi
+    .fn()
+    .mockResolvedValue("7af2e3e7-4923-4595-b0fe-aba33d8a7326"),
+  getPiiFromToken: vi.fn().mockResolvedValue("LLLSSS74E66H501K"),
+}));
+
 vi.mock("@/lib/cosmos", () => ({
   getCosmosContainerClient,
 }));
@@ -97,6 +104,11 @@ vi.mock("@/lib/institutions/use-cases", () => ({
 
 vi.mock("@/lib/issuers/use-cases", () => ({
   getIssuerByInstitution: vi.fn().mockResolvedValue(mocks.issuer),
+}));
+
+vi.mock("@/lib/pdv-tokenizer", () => ({
+  getTokenFromPii,
+  getPiiFromToken,
 }));
 
 describe("createApiKey", () => {
@@ -131,7 +143,7 @@ describe("createApiKey", () => {
     );
   });
 
-  it("should return a object { id, key } on success", () => {
+  it("should return an id on success", async () => {
     getCosmosContainerClient.mockReturnValueOnce({
       items: {
         query: vi.fn(() => ({
@@ -203,7 +215,10 @@ describe("upsertApiKeyField", () => {
         {
           op: "replace",
           path: `/${field}`,
-          value,
+          value:
+            field === "testers"
+              ? ["7af2e3e7-4923-4595-b0fe-aba33d8a7326"]
+              : value,
         },
       ],
     });

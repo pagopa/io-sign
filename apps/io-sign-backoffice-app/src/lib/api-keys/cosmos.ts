@@ -67,7 +67,7 @@ export async function getApiKey(
   }
 }
 
-export async function upsertApiKeyField<
+export async function patchApiKey<
   F extends keyof Pick<ApiKey, "cidrs" | "testers" | "status">
 >(id: string, institutionId: string, field: F, newValue: ApiKey[F]) {
   try {
