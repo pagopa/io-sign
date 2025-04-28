@@ -1,6 +1,6 @@
+import * as E from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { z } from "zod";
-import * as E from "fp-ts/lib/Either";
 
 export const IoTsType = <T>(schema: z.ZodSchema<T>) =>
   new t.Type<z.infer<typeof schema>>(
