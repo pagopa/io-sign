@@ -1,27 +1,25 @@
-import { constFalse, constTrue, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
-import {
-  GetFiscalCodeBySignerId,
-  getFiscalCodeBySignerId,
-} from "@io-sign/io-sign/signer";
-
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import {
   NotificationMessage,
   SubmitNotificationForUser,
-  submitNotification,
+  submitNotification
 } from "@io-sign/io-sign/notification";
-
+import {
+  GetFiscalCodeBySignerId,
+  getFiscalCodeBySignerId
+} from "@io-sign/io-sign/signer";
 import { sequenceS } from "fp-ts/lib/Apply";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { SignatureRequest } from "./signature-request";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { constFalse, constTrue, pipe } from "fp-ts/lib/function";
+
 import { Dossier, GetDossier } from "./dossier";
+import { SignatureRequest } from "./signature-request";
 
 /** @deprecated */
-export type SendNotificationPayload = {
+export interface SendNotificationPayload {
   signatureRequest: SignatureRequest;
-};
+}
 
 /** @deprecated */
 export type MakeMessageContent = (
@@ -59,7 +57,7 @@ export const makeSendSignatureRequestNotification =
           TE.chain(
             TE.fromOption(() => new EntityNotFoundError("Dossier not found!"))
           )
-        ),
+        )
       }),
 
       TE.chainW(({ fiscalCode, dossier }) =>

@@ -1,21 +1,19 @@
-import * as t from "io-ts";
-
 import * as cosmos from "@azure/cosmos";
-
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
-  CosmosdbModel,
   BaseModel,
   CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+import * as t from "io-ts";
+
 import {
   Dossier,
   DossierRepository,
   GetDossier,
-  InsertDossier,
+  InsertDossier
 } from "../../../dossier";
 
 const NewDossier = t.intersection([Dossier, BaseModel]);

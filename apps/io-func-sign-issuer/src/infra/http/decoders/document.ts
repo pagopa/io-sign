@@ -1,24 +1,17 @@
-import { pipe } from "fp-ts/lib/function";
-
+import { DocumentMetadata, SignatureFields } from "@io-sign/io-sign/document";
+import { SignatureField } from "@io-sign/io-sign/document";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { sequenceS } from "fp-ts/lib/Apply";
 import * as E from "fp-ts/lib/Either";
-
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 import * as tx from "io-ts-types";
 
-import * as t from "io-ts";
-import { DocumentMetadata, SignatureFields } from "@io-sign/io-sign/document";
-
-import { SignatureField } from "@io-sign/io-sign/document";
-
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-
-import { sequenceS } from "fp-ts/lib/Apply";
-
-import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
-
-import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
-import { SignatureFieldToApiModel } from "../encoders/signature-field";
 import { DocumentMetadataToApiModel } from "../encoders/document";
+import { SignatureFieldToApiModel } from "../encoders/signature-field";
+import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
+import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -46,7 +39,7 @@ export const SignatureFieldFromApiModel = new t.Type<
         SignatureField.props.clause.props.title.decode(title),
         E.map((title) => ({
           title,
-          type: toClauseType(type),
+          type: toClauseType(type)
         }))
       ),
       attributes:
@@ -55,7 +48,7 @@ export const SignatureFieldFromApiModel = new t.Type<
               NonEmptyString.decode(attrs.unique_name),
               E.map((uniqueName) => ({ uniqueName }))
             )
-          : E.right(attrs),
+          : E.right(attrs)
     }),
   SignatureFieldToApiModel.encode
 );
@@ -75,7 +68,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
       E.map((signatureFields) => ({
         title,
         signatureFields,
-        pdfDocumentMetadata: { pages: [], formFields: [] },
+        pdfDocumentMetadata: { pages: [], formFields: [] }
       }))
     ),
   DocumentMetadataToApiModel.encode

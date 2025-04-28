@@ -1,18 +1,15 @@
 import { Database } from "@azure/cosmos";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import { identity, flow } from "fp-ts/lib/function";
-
 import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, identity } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
 
+import { makeMarkRequestAsWaitForSignature } from "../../../app/use-cases/mark-request-wait-for-signature";
 import {
   makeGetSignatureRequest,
-  makeUpsertSignatureRequest,
+  makeUpsertSignatureRequest
 } from "../cosmos/signature-request";
-import { makeMarkRequestAsWaitForSignature } from "../../../app/use-cases/mark-request-wait-for-signature";
 
 const makeRequestAsWaitForSignatureHandler = (db: Database) => {
   const getSignatureRequestFromQueue = flow(

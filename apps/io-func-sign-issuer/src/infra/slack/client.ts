@@ -1,13 +1,11 @@
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
-
-import * as TE from "fp-ts/lib/TaskEither";
-
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import {
   defaultHeader,
-  isSuccessful,
+  isSuccessful
 } from "@io-sign/io-sign/infra/client-utils";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 import { SlackConfig } from "./config";
 
@@ -21,9 +19,9 @@ export const makePostSlackMessage =
           fetchWithTimeout(`${config.webhookUrl}`, {
             method: "POST",
             body: JSON.stringify({
-              text,
+              text
             }),
-            headers: defaultHeader,
+            headers: defaultHeader
           }),
         E.toError
       ),

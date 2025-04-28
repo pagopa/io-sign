@@ -1,14 +1,12 @@
+import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import * as E from "io-ts/lib/Encoder";
 
-import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import { DocumentDetailView as DocumentApiModel } from "../models/DocumentDetailView";
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
-
-import { StatusEnum as ToBeUploadedStatusEnum } from "../models/DocumentToBeUploaded";
-import { StatusEnum as ToBeValidatedStatusEnum } from "../models/DocumentToBeValidated";
 import { StatusEnum as ReadyStatusEnum } from "../models/DocumentReady";
 import { StatusEnum as RejectedStatusEnum } from "../models/DocumentRejected";
-
+import { StatusEnum as ToBeUploadedStatusEnum } from "../models/DocumentToBeUploaded";
+import { StatusEnum as ToBeValidatedStatusEnum } from "../models/DocumentToBeValidated";
 import { SignatureFieldToApiModel } from "./signature-field";
 
 export const DocumentMetadataToApiModel: E.Encoder<
@@ -17,8 +15,8 @@ export const DocumentMetadataToApiModel: E.Encoder<
 > = {
   encode: ({ title, signatureFields }) => ({
     title,
-    signature_fields: signatureFields.map(SignatureFieldToApiModel.encode),
-  }),
+    signature_fields: signatureFields.map(SignatureFieldToApiModel.encode)
+  })
 };
 
 export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
@@ -33,14 +31,14 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
       id,
       metadata: DocumentMetadataToApiModel.encode(metadata),
       created_at,
-      updated_at,
+      updated_at
     };
     switch (additionals.status) {
       case "WAIT_FOR_VALIDATION": {
         return {
           ...commonFields,
           status: ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION,
-          uploaded_at: additionals.uploadedAt,
+          uploaded_at: additionals.uploadedAt
         };
       }
       case "READY": {
@@ -48,7 +46,7 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
           ...commonFields,
           status: ReadyStatusEnum.READY,
           uploaded_at: additionals.uploadedAt,
-          url: additionals.url,
+          url: additionals.url
         };
       }
       case "REJECTED": {
@@ -57,15 +55,15 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
           status: RejectedStatusEnum.REJECTED,
           uploaded_at: additionals.uploadedAt,
           rejected_at: additionals.rejectedAt,
-          reject_reason: additionals.rejectReason,
+          reject_reason: additionals.rejectReason
         };
       }
       default: {
         return {
           status: ToBeUploadedStatusEnum.WAIT_FOR_UPLOAD,
-          ...commonFields,
+          ...commonFields
         };
       }
     }
-  },
+  }
 };

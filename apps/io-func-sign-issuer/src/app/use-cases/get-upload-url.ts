@@ -1,19 +1,19 @@
 import { Document } from "@io-sign/io-sign/document";
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
-import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
-import { SignatureRequest } from "../../signature-request";
+import { pipe } from "fp-ts/lib/function";
 
+import { SignatureRequest } from "../../signature-request";
 import {
   GetUploadUrl,
   InsertUploadMetadata,
-  newUploadMetadata,
+  newUploadMetadata
 } from "../../upload";
 
-export type GetUploadUrlPayload = {
+export interface GetUploadUrlPayload {
   signatureRequest: SignatureRequest;
   documentId: Document["id"];
-};
+}
 
 export const makeGetUploadUrl =
   (insertUploadMetadata: InsertUploadMetadata, getUploadUrl: GetUploadUrl) =>

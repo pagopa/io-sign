@@ -1,20 +1,18 @@
+import * as cosmos from "@azure/cosmos";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
-  CosmosdbModel,
   BaseModel,
   CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
-import * as t from "io-ts";
 import * as TE from "fp-ts/lib/TaskEither";
-
-import * as cosmos from "@azure/cosmos";
 import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
   InsertUploadMetadata,
   UploadMetadata,
-  UploadMetadataRepository,
+  UploadMetadataRepository
 } from "../../../upload";
 
 const NewUploadMetadata = t.intersection([UploadMetadata, BaseModel]);
@@ -22,7 +20,7 @@ type NewUploadMetadata = t.TypeOf<typeof NewUploadMetadata>;
 
 const RetrievedUploadMetadata = t.intersection([
   UploadMetadata,
-  CosmosResource,
+  CosmosResource
 ]);
 type RetrievedUploadMetadata = t.TypeOf<typeof RetrievedUploadMetadata>;
 

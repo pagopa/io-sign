@@ -1,12 +1,10 @@
-import { pipe } from "fp-ts/lib/function";
-
-import * as TE from "fp-ts/lib/TaskEither";
-
+import { Database } from "@azure/cosmos";
 import {
   HealthCheck,
-  toHealthProblems,
+  toHealthProblems
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
-import { Database } from "@azure/cosmos";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 export type AzureCosmosProblemSource = "AzureCosmosDB";
 

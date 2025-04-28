@@ -1,14 +1,14 @@
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { pipe } from "fp-ts/lib/function";
-import * as t from "io-ts";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
 import { GetInstitutionById } from "./client";
 
 export const ContractState = t.union([
   t.literal("ACTIVE"),
-  t.literal("CLOSED"),
+  t.literal("CLOSED")
 ]);
 export type ContractState = t.TypeOf<typeof ContractState>;
 
@@ -16,7 +16,7 @@ const Institution = t.type({
   address: NonEmptyString,
   description: NonEmptyString,
   digitalAddress: EmailString,
-  taxCode: NonEmptyString,
+  taxCode: NonEmptyString
 });
 
 const BaseContract = t.type({
@@ -25,32 +25,32 @@ const BaseContract = t.type({
   state: ContractState,
   institution: Institution,
   billing: t.type({
-    vatNumber: NonEmptyString,
-  }),
+    vatNumber: NonEmptyString
+  })
 });
 type BaseContract = t.TypeOf<typeof BaseContract>;
 
 export const GenericContract = t.intersection([
   BaseContract,
   t.type({
-    product: NonEmptyString,
-  }),
+    product: NonEmptyString
+  })
 ]);
 export type GenericContract = t.TypeOf<typeof GenericContract>;
 
 export const IoSignContract = t.intersection([
   BaseContract,
   t.type({
-    product: t.literal("prod-io-sign"),
-  }),
+    product: t.literal("prod-io-sign")
+  })
 ]);
 export type IoSignContract = t.TypeOf<typeof IoSignContract>;
 
 export const IoSignContractWithSupportMail = t.intersection([
   IoSignContract,
   t.type({
-    supportEmail: EmailString,
-  }),
+    supportEmail: EmailString
+  })
 ]);
 export type IoSignContractWithSupportMail = t.TypeOf<
   typeof IoSignContractWithSupportMail
@@ -77,6 +77,6 @@ export const addSupportMailToIoSignContract =
       getInstitutionById(contract.internalIstitutionID),
       TE.map((institution) => ({
         ...contract,
-        supportEmail: institution.supportEmail,
+        supportEmail: institution.supportEmail
       }))
     );
