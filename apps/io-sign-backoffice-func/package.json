@@ -3,6 +3,9 @@
   "version": "1.2.7",
   "private": true,
   "license": "MPL-2.0",
+  "engines": {
+    "node": "20.17.0"
+  },
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",
@@ -19,18 +22,18 @@
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^2.0.1",
     "@pagopa/logger": "^1.0.1",
-    "fp-ts": "^2.16.1",
+    "fp-ts": "^2.16.5",
     "googleapis": "^133.0.0",
     "undici": "^5.27.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@pagopa/eslint-config": "^3.0.0",
-    "@rushstack/eslint-patch": "^1.5.1",
-    "@types/node": "^20.8.8",
+    "@pagopa/eslint-config": "^4.0.0",
+    "@types/node": "^20.17.0",
     "azure-functions-core-tools": "^4.0.5455",
-    "eslint": "^8.50.0",
-    "prettier": "2.7.1",
+    "eslint": "8.57.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
     "tsup": "^7.2.0",
     "typescript": "^4.8.4",
     "vitest": "^1.2.2"
