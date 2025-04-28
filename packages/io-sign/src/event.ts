@@ -1,23 +1,23 @@
+import * as L from "@pagopa/logger";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
-import * as t from "io-ts";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as L from "@pagopa/logger";
-
+import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
+
 import { Id, newId } from "./id";
+import { IssuerEnvironment } from "./issuer";
 import {
+  SignatureRequestCancelled,
   SignatureRequestDraft,
   SignatureRequestId,
   SignatureRequestReady,
   SignatureRequestRejected,
   SignatureRequestSigned,
   SignatureRequestToBeSigned,
-  SignatureRequestWaitForQtsp,
-  SignatureRequestCancelled,
+  SignatureRequestWaitForQtsp
 } from "./signature-request";
-import { IssuerEnvironment } from "./issuer";
 import { Signer } from "./signer";
 
 const EventId = Id;
@@ -26,7 +26,7 @@ const EventId = Id;
 export const PricingPlan = t.keyof({
   FREE: null,
   DEFAULT: null,
-  INTERNAL: null,
+  INTERNAL: null
 });
 
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
@@ -47,7 +47,7 @@ export enum EventName {
   NOTIFICATION_REJECTED = "io.sign.signature_request.notification.rejected",
   CERTIFICATE_CREATED = "io.sign.qtsp.certificate.created",
   CERTIFICATE_REJECTED = "io.sign.qtsp.certificate.rejected",
-  QTSP_API_ERROR = "io.sign.qtsp.api.error",
+  QTSP_API_ERROR = "io.sign.qtsp.api.error"
 }
 
 // This is the structure of an event that is used for billing and analytics
@@ -58,7 +58,7 @@ const BaseEvent = t.type({
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
-  department: t.string,
+  department: t.string
 });
 
 type BaseEvent = t.TypeOf<typeof BaseEvent>;
@@ -74,7 +74,7 @@ type SignatureRequest =
 
 export const BillingEvent = t.intersection([
   BaseEvent,
-  t.type({ name: t.literal(EventName.SIGNATURE_SIGNED) }),
+  t.type({ name: t.literal(EventName.SIGNATURE_SIGNED) })
 ]);
 
 export type BillingEvent = t.TypeOf<typeof BillingEvent>;
@@ -95,15 +95,15 @@ export const createBillingEvent = (
   pricingPlan: pricingPlanFromIssuerEnvironment(
     signatureRequest.issuerEnvironment
   ),
-  department: signatureRequest.issuerDepartment,
+  department: signatureRequest.issuerDepartment
 });
 
 export const AnalyticsEvent = t.intersection([
   BaseEvent,
   t.type({
     name: t.string,
-    dossierId: Id,
-  }),
+    dossierId: Id
+  })
 ]);
 
 export type AnalyticsEvent = t.TypeOf<typeof AnalyticsEvent>;
@@ -121,7 +121,7 @@ export const createAnalyticsEvent =
       signatureRequest.issuerEnvironment
     ),
     dossierId: signatureRequest.dossierId,
-    department: signatureRequest.issuerDepartment,
+    department: signatureRequest.issuerDepartment
   });
 
 export type GenericEvent = BillingEvent | AnalyticsEvent;
@@ -136,23 +136,23 @@ export type CreateAndSendAnalyticsEvent = (
   signatureRequest: SignatureRequest
 ) => TE.TaskEither<Error, typeof signatureRequest>;
 
-type EventData = {
+interface EventData {
   body: GenericEvent;
-};
+}
 
-type EventDataBatch = {
+interface EventDataBatch {
   tryAdd(eventData: EventData): boolean;
-};
+}
 
-export type EventProducerClient = {
+export interface EventProducerClient {
   createBatch(): Promise<EventDataBatch>;
   close: () => Promise<void>;
   sendBatch(batch: EventDataBatch): Promise<void>;
-};
+}
 
-type EventAnalyticsClient = {
+interface EventAnalyticsClient {
   eventAnalyticsClient: EventProducerClient;
-};
+}
 
 export const sendEvent =
   (
@@ -199,16 +199,16 @@ export const createAndSendAnalyticsEvent =
           RTE.chainFirst(() =>
             L.errorRTE("Unable to send analytics event", {
               eventName,
-              signatureRequest,
+              signatureRequest
             })
           )
         )
       )
     );
 
-type BillingEventEnvironment = {
+interface BillingEventEnvironment {
   billingEventProducer: EventProducerClient;
-};
+}
 
 export const sendBillingEvent =
   (
@@ -216,5 +216,5 @@ export const sendBillingEvent =
   ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
   ({ billingEventProducer }) =>
     sendEvent(event)({
-      eventAnalyticsClient: billingEventProducer,
+      eventAnalyticsClient: billingEventProducer
     });

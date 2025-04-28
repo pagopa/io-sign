@@ -1,20 +1,19 @@
-import * as t from "io-ts";
-import * as TE from "fp-ts/lib/TaskEither";
-
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import * as TE from "fp-ts/lib/TaskEither";
+import * as t from "io-ts";
 
 import { Id } from "./id";
 
 export const NotificationId = Id;
 
 export const Notification = t.type({
-  ioMessageId: NotificationId,
+  ioMessageId: NotificationId
 });
 export type Notification = t.TypeOf<typeof Notification>;
 
 export const NotificationContent = t.type({
   subject: t.string,
-  markdown: t.string,
+  markdown: t.string
 });
 
 export type NotificationContent = t.TypeOf<typeof NotificationContent>;
@@ -22,8 +21,8 @@ export type NotificationContent = t.TypeOf<typeof NotificationContent>;
 export const NotificationContentWithAttachments = t.intersection([
   NotificationContent,
   t.type({
-    signatureRequestId: Id,
-  }),
+    signatureRequestId: Id
+  })
 ]);
 
 export type NotificationContentWithAttachments = t.TypeOf<
@@ -39,12 +38,12 @@ export type SubmitNotificationForUser = (
   fiscalCode: FiscalCode
 ) => (message: NotificationMessage) => TE.TaskEither<Error, Notification>;
 
-export type NotificationService = {
+export interface NotificationService {
   submit: (
     fiscalCode: FiscalCode,
     message: NotificationMessage
   ) => TE.TaskEither<Error, Notification>;
-};
+}
 
 export const submitNotification =
   (fiscalCode: FiscalCode, message: NotificationMessage) =>

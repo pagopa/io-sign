@@ -1,25 +1,21 @@
-import * as TE from "fp-ts/lib/TaskEither";
+import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
+import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
+import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
+import { NonEmptyString, Ulid } from "@pagopa/ts-commons/lib/strings";
 import * as E from "fp-ts/lib/Either";
-
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 import * as Enc from "io-ts/lib/Encoder";
 
-import { NonEmptyString, Ulid } from "@pagopa/ts-commons/lib/strings";
-import { pipe, flow, identity } from "fp-ts/lib/function";
-import { FiscalCode } from "@pagopa/io-functions-services-sdk/FiscalCode";
-import { FeatureLevelTypeEnum } from "@pagopa/io-functions-services-sdk/FeatureLevelType";
-import { NewMessage } from "@pagopa/io-functions-services-sdk/NewMessage";
-
+import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
 import {
   NotificationContent,
   NotificationContentWithAttachments,
   NotificationMessage,
-  SubmitNotificationForUser,
   NotificationService,
+  SubmitNotificationForUser
 } from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
-
-import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
-
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
 
@@ -30,9 +26,9 @@ export const NotificationContentToApiModel: Enc.Encoder<
   encode: (message) => ({
     content: {
       subject: message.subject,
-      markdown: message.markdown,
-    },
-  }),
+      markdown: message.markdown
+    }
+  })
 };
 
 export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
@@ -45,10 +41,10 @@ export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
       third_party_data: {
         id: notification.signatureRequestId,
         has_attachments: true,
-        configuration_id: configurationId,
-      },
-    },
-  }),
+        configuration_id: configurationId
+      }
+    }
+  })
 };
 
 /** @deprecated use "IONotificationService" */
@@ -77,7 +73,7 @@ export const makeSubmitMessageForUser =
                 ...("signatureRequestId" in notification
                   ? NotificationContentWithAttachmentsToApiModel.encode({
                       notification,
-                      configurationId,
+                      configurationId
                     })
                   : NotificationContentToApiModel.encode(notification)),
                 fiscal_code: fiscalCode,
@@ -86,8 +82,8 @@ export const makeSubmitMessageForUser =
                  * in any case we are enabled to use the attachments feature.
                  * The user associated with the service has been added to a particular group (ApiThirdPartyMessageWrite) on the APIM.
                  */
-                feature_level_type: FeatureLevelTypeEnum.ADVANCED,
-              },
+                feature_level_type: FeatureLevelTypeEnum.ADVANCED
+              }
             }),
           E.toError
         )
@@ -117,7 +113,7 @@ export const makeSubmitMessageForUser =
         )
       ),
       TE.map((createdMessage) => ({
-        ioMessageId: createdMessage.id as NonEmptyString,
+        ioMessageId: createdMessage.id as NonEmptyString
       }))
     );
 
