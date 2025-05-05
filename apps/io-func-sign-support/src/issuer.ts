@@ -1,31 +1,28 @@
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { Issuer as IssuerFull } from "@io-sign/io-sign/issuer";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as O from "fp-ts/Option";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import * as TE from "fp-ts/TaskEither";
-import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
-
-import { Issuer as IssuerFull } from "@io-sign/io-sign/issuer";
-
 import * as t from "io-ts";
-
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const Issuer = t.type({
   id: IssuerFull.props.id,
-  vatNumber: IssuerFull.props.vatNumber,
+  vatNumber: IssuerFull.props.vatNumber
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
 
-export type IssuerRepository = {
+export interface IssuerRepository {
   getByVatNumber: (
     vatNumber: NonEmptyString
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
-};
+}
 
-export type GetIssuerByVatNumberEnvironment = {
+export interface GetIssuerByVatNumberEnvironment {
   issuerRepository: IssuerRepository;
-};
+}
 
 export const getIssuerByVatNumber =
   (

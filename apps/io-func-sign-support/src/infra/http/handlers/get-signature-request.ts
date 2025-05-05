@@ -1,26 +1,21 @@
-import * as RTE from "fp-ts/ReaderTaskEither";
-import { pipe, flow } from "fp-ts/function";
-import { lookup } from "fp-ts/Record";
-
-import * as H from "@pagopa/handler-kit";
-
-import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
+import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
+import * as H from "@pagopa/handler-kit";
+import * as RTE from "fp-ts/ReaderTaskEither";
+import { lookup } from "fp-ts/Record";
+import { flow, pipe } from "fp-ts/function";
 
 import {
-  getSignatureRequestById,
-  GetSignatureRequestByIdPayload,
-} from "../../../signature-request";
-
-import {
-  getIssuerByVatNumber,
   GetIssuerByVatNumberEnvironment,
+  getIssuerByVatNumber
 } from "../../../issuer";
-
+import {
+  GetSignatureRequestByIdPayload,
+  getSignatureRequestById
+} from "../../../signature-request";
 import { getSignerByFiscalCode } from "../../../signer";
-
-import { RequireFiscalCodeOrVatNumber } from "../models/RequireFiscalCodeOrVatNumber";
 import { signatureRequestToApiModel } from "../encoders/signature-request";
+import { RequireFiscalCodeOrVatNumber } from "../models/RequireFiscalCodeOrVatNumber";
 
 export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(

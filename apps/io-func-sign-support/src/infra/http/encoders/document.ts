@@ -2,18 +2,17 @@ import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 
 import {
   Document as DocumentApiModel,
-  StatusEnum as DocumentStatusEnum,
+  StatusEnum as DocumentStatusEnum
 } from "../models/Document";
-
 import { DocumentMetadata as DocumentMetadataApiModel } from "../models/DocumentMetadata";
 import { signatureFieldToApiModel } from "./signature-field";
 
 export const documentMetadataToApiModel = ({
   title,
-  signatureFields,
+  signatureFields
 }: DocumentMetadata): DocumentMetadataApiModel => ({
   title,
-  signature_fields: signatureFields.map(signatureFieldToApiModel),
+  signature_fields: signatureFields.map(signatureFieldToApiModel)
 });
 
 export const documentToApiModel = ({
@@ -27,14 +26,14 @@ export const documentToApiModel = ({
     id,
     metadata: documentMetadataToApiModel(metadata),
     created_at,
-    updated_at,
+    updated_at
   };
   switch (extra.status) {
     case "WAIT_FOR_VALIDATION": {
       return {
         ...commonFields,
         status: DocumentStatusEnum.WAIT_FOR_VALIDATION,
-        uploaded_at: extra.uploadedAt,
+        uploaded_at: extra.uploadedAt
       };
     }
     case "READY": {
@@ -42,7 +41,7 @@ export const documentToApiModel = ({
         ...commonFields,
         status: DocumentStatusEnum.READY,
         uploaded_at: extra.uploadedAt,
-        url: extra.url,
+        url: extra.url
       };
     }
     case "REJECTED": {
@@ -51,13 +50,13 @@ export const documentToApiModel = ({
         status: DocumentStatusEnum.REJECTED,
         uploaded_at: extra.uploadedAt,
         rejected_at: extra.rejectedAt,
-        reject_reason: extra.rejectReason,
+        reject_reason: extra.rejectReason
       };
     }
     default: {
       return {
         status: DocumentStatusEnum.WAIT_FOR_UPLOAD,
-        ...commonFields,
+        ...commonFields
       };
     }
   }

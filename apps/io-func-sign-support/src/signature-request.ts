@@ -1,24 +1,21 @@
-import * as t from "io-ts";
-import * as TE from "fp-ts/TaskEither";
-import * as RTE from "fp-ts/ReaderTaskEither";
-import * as O from "fp-ts/Option";
-import { pipe } from "fp-ts/function";
-
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
+  SignatureRequestCancelled,
   SignatureRequestDraft,
-  SignatureRequestSigned,
+  SignatureRequestId,
   SignatureRequestReady,
   SignatureRequestRejected,
+  SignatureRequestSigned,
   SignatureRequestToBeSigned,
-  SignatureRequestWaitForQtsp,
-  SignatureRequestId,
-  SignatureRequestCancelled,
+  SignatureRequestWaitForQtsp
 } from "@io-sign/io-sign/signature-request";
-
 import { Signer } from "@io-sign/io-sign/signer";
-import { Issuer } from "@io-sign/io-sign/issuer";
-
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import * as O from "fp-ts/Option";
+import * as RTE from "fp-ts/ReaderTaskEither";
+import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/function";
+import * as t from "io-ts";
 
 export const SignatureRequest = t.union([
   SignatureRequestDraft,
@@ -27,12 +24,12 @@ export const SignatureRequest = t.union([
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
   SignatureRequestRejected,
-  SignatureRequestCancelled,
+  SignatureRequestCancelled
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
-export type SignatureRequestRepository = {
+export interface SignatureRequestRepository {
   getByIssuerId: (
     id: SignatureRequestId,
     issuerId: Issuer["id"]
@@ -41,29 +38,29 @@ export type SignatureRequestRepository = {
     id: SignatureRequestId,
     signerId: Signer["id"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
-};
+}
 
 export const GetSignatureRequestByIdPayload = t.intersection([
   t.type({
-    id: SignatureRequestId,
+    id: SignatureRequestId
   }),
   t.union([
     t.type({
-      issuerId: Issuer.props.id,
+      issuerId: Issuer.props.id
     }),
     t.type({
-      signerId: Signer.props.id,
-    }),
-  ]),
+      signerId: Signer.props.id
+    })
+  ])
 ]);
 
 export type GetSignatureRequestByIdPayload = t.TypeOf<
   typeof GetSignatureRequestByIdPayload
 >;
 
-type GetSignatureRequestByIdEnvironment = {
+interface GetSignatureRequestByIdEnvironment {
   signatureRequestRepository: SignatureRequestRepository;
-};
+}
 
 export const getSignatureRequestById =
   (
