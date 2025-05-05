@@ -1,16 +1,15 @@
 import { validate } from "@io-sign/io-sign/validation";
-import { HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { flow, pipe } from "fp-ts/lib/function";
-import * as E from "fp-ts/lib/Either";
-import * as tx from "io-ts-types";
-import * as t from "io-ts";
-
 import { sequenceS } from "fp-ts/lib/Apply";
-import { QtspClause as QtspClauseApiModel } from "../models/QtspClause";
-import { CreateSignatureBody } from "../models/CreateSignatureBody";
+import * as E from "fp-ts/lib/Either";
+import { flow, pipe } from "fp-ts/lib/function";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
+import * as t from "io-ts";
+import * as tx from "io-ts-types";
+
 import { QtspClause } from "../../../qtsp";
 import { QtspClauseToApiModel } from "../encoders/qtsp-clause";
+import { CreateSignatureBody } from "../models/CreateSignatureBody";
+import { QtspClause as QtspClauseApiModel } from "../models/QtspClause";
 
 export const QtspClauseFromApiModel = new t.Type<
   QtspClause,
@@ -19,6 +18,7 @@ export const QtspClauseFromApiModel = new t.Type<
 >(
   "QtspClauseFromApiModel",
   QtspClause.is,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ text }, _ctx) => E.right({ text }),
   QtspClauseToApiModel.encode
 );
@@ -39,11 +39,11 @@ export const requireQtspClauses = flow(
           )
         )
       ),
-      qtspClauses,
+      qtspClauses
     }),
   E.map(({ acceptedClauses, qtspClauses }) => ({
     acceptedClauses,
     filledDocumentUrl: qtspClauses.filled_document_url,
-    nonce: qtspClauses.nonce,
+    nonce: qtspClauses.nonce
   }))
 );

@@ -1,15 +1,14 @@
-import * as H from "@pagopa/handler-kit";
-import { lookup } from "fp-ts/lib/Record";
 import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
-import { HttpRequest, path } from "handler-kit-legacy/lib/http";
+import * as H from "@pagopa/handler-kit";
 import { sequenceS } from "fp-ts/lib/Apply";
-
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RE from "fp-ts/lib/ReaderEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { lookup } from "fp-ts/lib/Record";
+import * as TE from "fp-ts/lib/TaskEither";
 import { flow, pipe } from "fp-ts/lib/function";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 
 // TODO: replace with requireSignatureRequestId
 const requireSignatureRequestIdFromPath = flow(
@@ -23,10 +22,10 @@ import { GetSignerByFiscalCode } from "@io-sign/io-sign/signer";
 
 import {
   GetSignatureRequest,
-  SignatureRequest,
+  SignatureRequest
 } from "../../../signature-request";
-import { requireSigner } from "./signer.old";
 import { requireFiscalCode } from "./fiscal-code";
+import { requireSigner } from "./signer.old";
 
 const signatureRequestNotFoundError = () =>
   new EntityNotFoundError("The specified Signature Request does not exists.");
@@ -37,7 +36,7 @@ export const makeRequireSignatureRequest = (
   pipe(
     sequenceS(RE.Apply)({
       signer: requireSigner,
-      signatureRequestId: requireSignatureRequestIdFromPath,
+      signatureRequestId: requireSignatureRequestIdFromPath
     }),
     RTE.fromReaderEither,
     RTE.chainTaskEitherK(({ signer, signatureRequestId }) =>
@@ -53,7 +52,7 @@ export const makeRequireSignatureRequestByFiscalCode = (
   pipe(
     sequenceS(RE.Apply)({
       fiscalCode: requireFiscalCode,
-      signatureRequestId: requireSignatureRequestIdFromPath,
+      signatureRequestId: requireSignatureRequestIdFromPath
     }),
     RTE.fromReaderEither,
     RTE.chainTaskEitherK(({ fiscalCode, signatureRequestId }) =>

@@ -1,25 +1,18 @@
-import { validate, ValidationError } from "@io-sign/io-sign/validation";
-
-import { HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { flow, identity, pipe } from "fp-ts/lib/function";
-
+import { ValidationError, validate } from "@io-sign/io-sign/validation";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as RA from "fp-ts/lib/ReadonlyArray";
-import * as A from "fp-ts/lib/Array";
-
+import { flow, identity, pipe } from "fp-ts/lib/function";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 import * as t from "io-ts";
 
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-
-import { sequenceS } from "fp-ts/lib/Apply";
-import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { DocumentToSign as DocumentToSignApiModel } from "../models/DocumentToSign";
-
-import { CreateSignatureBody } from "../models/CreateSignatureBody";
-import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
-
 import { DocumentToSign, SignatureField } from "../../../signature-field";
+import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { CreateSignatureBody } from "../models/CreateSignatureBody";
+import { DocumentToSign as DocumentToSignApiModel } from "../models/DocumentToSign";
+import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
 
 const toClauseType = (
   type: ClauseTypeEnum
@@ -41,13 +34,14 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ clause: { title, type }, attrs }, _ctx) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
         E.map((title) => ({
           title,
-          type: toClauseType(type),
+          type: toClauseType(type)
         }))
       ),
       attributes:
@@ -62,9 +56,9 @@ export const SignatureFieldFromApiModel = new t.Type<
               E.map((attrs) => ({
                 bottomLeft: attrs.bottom_left,
                 topRight: attrs.top_right,
-                page: attrs.page,
+                page: attrs.page
               }))
-            ),
+            )
     }),
 
   identity
@@ -77,6 +71,7 @@ export const DocumentToSignFromApiModel = new t.Type<
 >(
   "DocumentToSignFromApiModel",
   DocumentToSign.is,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ document_id, signature_fields }, _ctx) =>
     pipe(
       signature_fields,
@@ -85,7 +80,7 @@ export const DocumentToSignFromApiModel = new t.Type<
       A.sequence(E.Applicative),
       E.map((signatureFields) => ({
         documentId: document_id,
-        signatureFields,
+        signatureFields
       }))
     ),
   identity

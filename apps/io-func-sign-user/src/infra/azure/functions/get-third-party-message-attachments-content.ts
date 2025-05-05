@@ -1,36 +1,31 @@
-import { flow, pipe } from "fp-ts/lib/function";
-
-import { sequenceS } from "fp-ts/lib/Apply";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
-import { HttpRequest, path } from "handler-kit-legacy/lib/http";
-
 import { Database } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
-
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { error, successBuffer } from "@io-sign/io-sign/infra/http/response";
-import { validate } from "@io-sign/io-sign/validation";
 import { Document, DocumentReady } from "@io-sign/io-sign/document";
 import { DocumentId } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
+import { error, successBuffer } from "@io-sign/io-sign/infra/http/response";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { validate } from "@io-sign/io-sign/validation";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { HttpRequest, path } from "handler-kit-legacy/lib/http";
 
-import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
-
-import { SignatureRequest } from "../../../signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";
+import { SignatureRequest } from "../../../signature-request";
+import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
+import { makeGetSignatureRequest } from "../cosmos/signature-request";
 
-export type GetAttachmentPayload = {
+export interface GetAttachmentPayload {
   signatureRequest: SignatureRequest;
   documentId: Document["id"];
-};
+}
 
 const makeGetThirdPartyMessageAttachmentContentHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
@@ -66,7 +61,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
         getSignerByFiscalCode
       )
     ),
-    documentId: RTE.fromReaderEither(requireDocumentIdFromPath),
+    documentId: RTE.fromReaderEither(requireDocumentIdFromPath)
   });
 
   const decodeHttpRequest = flow(

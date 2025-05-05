@@ -1,49 +1,46 @@
-import { flow, pipe } from "fp-ts/lib/function";
-import * as Task from "fp-ts/lib/Task";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RA from "fp-ts/lib/ReadonlyArray";
-import * as t from "io-ts";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
-
-import { error, success } from "@io-sign/io-sign/infra/http/response";
-import { HttpError } from "@io-sign/io-sign/infra/http/errors";
-
 import { Database } from "@azure/cosmos";
-import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import {
-  makePdvTokenizerHealthCheck,
-  TokenizerProblemSource,
-} from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { HttpError } from "@io-sign/io-sign/infra/http/errors";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import {
   IOServicesProblemSource,
-  makeIOServicesHealthCheck,
+  makeIOServicesHealthCheck
 } from "@io-sign/io-sign/infra/io-services/health-check";
-import { NamirialConfig } from "../../namirial/config";
-
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import {
-  makeNamirialHealthCheck,
+  TokenizerProblemSource,
+  makePdvTokenizerHealthCheck
+} from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
+import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
+import * as RA from "fp-ts/lib/ReadonlyArray";
+import * as Task from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import { createHandler, nopRequestDecoder } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
+import * as t from "io-ts";
+
+import { LollipopApiClient } from "../../lollipop/client";
+import {
+  LollipopApiClientProblemSource,
+  makeLollipopClientHealthCheck
+} from "../../lollipop/health-check";
+import { NamirialConfig } from "../../namirial/config";
+import {
   NamirialProblemSource,
+  makeNamirialHealthCheck
 } from "../../namirial/health-check";
 import {
   AzureCosmosProblemSource,
-  makeAzureCosmosDbHealthCheck,
+  makeAzureCosmosDbHealthCheck
 } from "../cosmos/health-check";
 import {
   AzureStorageProblemSource,
   makeAzureStorageContainerHealthCheck,
-  makeAzureStorageQueueHealthCheck,
+  makeAzureStorageQueueHealthCheck
 } from "../storage/health-check";
-import { LollipopApiClient } from "../../lollipop/client";
-import {
-  LollipopApiClientProblemSource,
-  makeLollipopClientHealthCheck,
-} from "../../lollipop/health-check";
 
 type ProblemSource =
   | AzureCosmosProblemSource
@@ -88,7 +85,7 @@ export const makeInfoHandler = (
           makeAzureStorageContainerHealthCheck(signedContainerClient),
           makeAzureStorageQueueHealthCheck(documentsToFillQueue),
           makeAzureStorageQueueHealthCheck(qtspQueue),
-          makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient),
+          makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient)
         ],
         RA.sequence(applicativeValidation),
         TE.map(() => "It's working!"),

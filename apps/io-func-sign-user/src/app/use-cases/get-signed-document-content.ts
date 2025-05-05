@@ -1,15 +1,14 @@
-import { pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-
-import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { Document, DocumentReady } from "@io-sign/io-sign/document";
+import { GetDocumentContent } from "@io-sign/io-sign/document-content";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-
 import { getDocument } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+
 import {
   SignatureRequest,
-  signedNoMoreThan90DaysAgo,
+  signedNoMoreThan90DaysAgo
 } from "../../signature-request";
 
 export const makeGetSignedDocumentContent =

@@ -1,20 +1,18 @@
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { validate } from "@io-sign/io-sign/validation";
-
-import { pipe } from "fp-ts/lib/function";
-import * as t from "io-ts";
-import * as E from "fp-ts/lib/Either";
-
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
-import { sequenceS } from "fp-ts/lib/Apply";
+import { validate } from "@io-sign/io-sign/validation";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { LollipopSignatureInput } from "../models/LollipopSignatureInput";
-import { LollipopSignature } from "../models/LollipopSignature";
-import { LollipopJWTAuthorization } from "../models/LollipopJWTAuthorization";
-import { LollipopAssertionRef } from "../models/LollipopAssertionRef";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
+import * as t from "io-ts";
+
 import { AssertionType } from "../models/AssertionType";
+import { LollipopAssertionRef } from "../models/LollipopAssertionRef";
+import { LollipopJWTAuthorization } from "../models/LollipopJWTAuthorization";
 import { LollipopPublicKey } from "../models/LollipopPublicKey";
+import { LollipopSignature } from "../models/LollipopSignature";
+import { LollipopSignatureInput } from "../models/LollipopSignatureInput";
 
 const requireParameterFromHeader =
   <T>(headerName: string, schema: t.Decoder<unknown, T>) =>
@@ -36,7 +34,7 @@ export const BasicLollipopParams = t.type({
   jwtAuthorization: LollipopJWTAuthorization,
   assertionRef: LollipopAssertionRef,
   assertionType: AssertionType,
-  publicKey: LollipopPublicKey,
+  publicKey: LollipopPublicKey
 });
 
 export type BasicLollipopParams = t.TypeOf<typeof BasicLollipopParams>;
@@ -45,8 +43,8 @@ export const CreateSignatureLollipopParams = t.intersection([
   BasicLollipopParams,
   t.type({
     tosChallenge: NonEmptyString,
-    signChallenge: NonEmptyString,
-  }),
+    signChallenge: NonEmptyString
+  })
 ]);
 
 export type CreateSignatureLollipopParams = t.TypeOf<
@@ -93,7 +91,7 @@ export const requireBasicLollipopParams = (
           "x-pagopa-lollipop-public-key",
           LollipopPublicKey
         )
-      ),
+      )
     })
   );
 
@@ -119,11 +117,11 @@ export const requireCreateSignatureLollipopParams = (
               "x-pagopa-lollipop-custom-sign-challenge",
               NonEmptyString
             )
-          ),
+          )
         }),
         E.map((createSignatureLollipopParams) => ({
           ...lollipopBasic,
-          ...createSignatureLollipopParams,
+          ...createSignatureLollipopParams
         }))
       )
     )

@@ -1,47 +1,40 @@
-import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
-
+import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
+import {
+  ActionNotAllowedError,
+  EntityNotFoundError
+} from "@io-sign/io-sign/error";
+import { Id } from "@io-sign/io-sign/id";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
+import {
+  stringFromBase64Encode,
+  stringToBase64Encode
+} from "@io-sign/io-sign/utility";
+import { validate } from "@io-sign/io-sign/validation";
 import * as L from "@pagopa/logger";
-
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import * as t from "io-ts";
+import * as J from "fp-ts/Json";
+import { sequenceS } from "fp-ts/lib/Apply";
 import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as J from "fp-ts/Json";
+import { flow, pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
-import { pipe, flow } from "fp-ts/lib/function";
-import {
-  ActionNotAllowedError,
-  EntityNotFoundError,
-} from "@io-sign/io-sign/error";
-
-import { Id } from "@io-sign/io-sign/id";
-
-import {
-  stringFromBase64Encode,
-  stringToBase64Encode,
-} from "@io-sign/io-sign/utility";
-
-import { sequenceS } from "fp-ts/lib/Apply";
-import { validate } from "@io-sign/io-sign/validation";
-import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
-import { QtspClauses } from "../../qtsp";
 import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infra/namirial/signature-request";
-
+import { QtspClauses } from "../../qtsp";
 import {
   InsertSignature,
-  newSignature,
   NotifySignatureReadyEvent,
   SignatureValidationParams,
+  newSignature
 } from "../../signature";
-
 import { DocumentToSign } from "../../signature-field";
 import {
-  canBeWaitForQtsp,
   GetSignatureRequest,
-  markAsWaitForQtsp,
   UpsertSignatureRequest,
+  canBeWaitForQtsp,
+  markAsWaitForQtsp
 } from "../../signature-request";
 
 export const CreateSignaturePayload = t.type({
@@ -50,7 +43,7 @@ export const CreateSignaturePayload = t.type({
   qtspClauses: QtspClauses,
   documentsSignature: t.array(DocumentToSign),
   email: EmailString,
-  signatureValidationParams: SignatureValidationParams,
+  signatureValidationParams: SignatureValidationParams
 });
 
 export type CreateSignaturePayload = t.TypeOf<typeof CreateSignaturePayload>;
@@ -99,12 +92,12 @@ const makeGetDocumentUrlForSignature =
             document,
             getUploadSignedDocumentUrl,
             TE.chainEitherKW(validate(NonEmptyString, "Invalid upload url"))
-          ),
+          )
         })
       ),
       TE.chainFirstIOK((documentsUrl) =>
         L.debug("get documents url", { documentsUrl })({
-          logger: ConsoleLogger,
+          logger: ConsoleLogger
         })
       )
     );
@@ -129,7 +122,7 @@ export const makeCreateSignature =
     qtspClauses,
     documentsSignature,
     email,
-    signatureValidationParams,
+    signatureValidationParams
   }: CreateSignaturePayload) => {
     const getDocumentUrlForSignature = pipe(
       signatureRequestId,
@@ -175,13 +168,13 @@ export const makeCreateSignature =
               getDocumentUrlForSignature,
               TE.map((documentUrl) => ({
                 ...documentUrl,
-                signatureFields: documentSignature.signatureFields,
+                signatureFields: documentSignature.signatureFields
               }))
             )
           ),
           A.sequence(TE.ApplicativeSeq)
         ),
-        signatureRequest: retrieveSignatureRequest,
+        signatureRequest: retrieveSignatureRequest
       }),
       TE.chain(({ documentsToSign, fiscalCode, signatureRequest }) =>
         pipe(
@@ -195,7 +188,7 @@ export const makeCreateSignature =
             signature: signatureValidationParams.challengeSignature,
             nonce: qtspClauses.nonce,
             documentsToSign,
-            signatureInput: signatureValidationParams.signatureInput,
+            signatureInput: signatureValidationParams.signatureInput
           }),
           TE.chainEitherKW((createSignaturePayload) =>
             pipe(
@@ -209,7 +202,7 @@ export const makeCreateSignature =
               ),
               E.map((signatureInput) => ({
                 ...createSignaturePayload,
-                signatureInput,
+                signatureInput
               }))
             )
           ),
@@ -229,15 +222,15 @@ export const makeCreateSignature =
               ),
               E.map((publicKey) => ({
                 ...createSignaturePayload,
-                publicKey,
+                publicKey
               }))
             )
           ),
           TE.chainFirstIOK((payload) =>
             L.debug("create QTSP SignatureRequest with payload", {
-              payload,
+              payload
             })({
-              logger: ConsoleLogger,
+              logger: ConsoleLogger
             })
           ),
           TE.chain(
@@ -245,9 +238,9 @@ export const makeCreateSignature =
           ),
           TE.chainFirstIOK((qtspSignatureRequest) =>
             L.info("created QTSP signature request with id", {
-              id: qtspSignatureRequest.id,
+              id: qtspSignatureRequest.id
             })({
-              logger: ConsoleLogger,
+              logger: ConsoleLogger
             })
           ),
           TE.filterOrElse(
@@ -279,7 +272,7 @@ export const makeCreateSignature =
             pipe(
               {
                 signatureId: signature.id,
-                signerId: signature.signerId,
+                signerId: signature.signerId
               },
               notifySignatureReadyEvent
             )

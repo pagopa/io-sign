@@ -1,34 +1,31 @@
-import { pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
   EmailString,
   FiscalCode,
-  NonEmptyString,
+  NonEmptyString
 } from "@pagopa/ts-commons/lib/strings";
-
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 import * as t from "io-ts";
 
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 import { QtspCreateSignaturePayload } from "../../qtsp";
-import {
-  getNamirialCredentialsFromIssuerEnvironment,
-  NamirialConfig,
-} from "./config";
-
 import {
   makeCreateSignatureRequest,
   makeGetSignatureRequest,
-  makeGetToken,
+  makeGetToken
 } from "./client";
+import {
+  NamirialConfig,
+  getNamirialCredentialsFromIssuerEnvironment
+} from "./config";
 import { QtspCreateSignatureToApiModel } from "./encoders/signature-request";
 
 export const SignatureCoordinate = t.type({
   page: NonNegativeNumber,
-  position: t.array(t.number),
+  position: t.array(t.number)
 });
 
 export type SignatureCoordinate = t.TypeOf<typeof SignatureCoordinate>;
@@ -39,7 +36,7 @@ export const DocumentToSign = t.type({
   signature_fields: t.array(t.string),
   signature_coordinates: t.array(SignatureCoordinate),
   signatures_type: t.literal("PADES-LT"),
-  appearance_alias: t.literal("appio"),
+  appearance_alias: t.literal("appio")
 });
 
 export type DocumentToSign = t.TypeOf<typeof DocumentToSign>;
@@ -47,7 +44,7 @@ export type DocumentToSign = t.TypeOf<typeof DocumentToSign>;
 export const Signature = t.type({
   signed_challenge: t.string,
   signatures_type: t.literal("PADES"),
-  documents_to_sign: t.array(DocumentToSign),
+  documents_to_sign: t.array(DocumentToSign)
 });
 
 export type Signature = t.TypeOf<typeof Signature>;
@@ -61,7 +58,7 @@ export const CreateSignatureRequestBody = t.type({
   nonce: NonEmptyString,
   tos_signature: t.string,
   signatures: Signature,
-  signature_input: NonEmptyString,
+  signature_input: NonEmptyString
 });
 
 export type CreateSignatureRequestBody = t.TypeOf<
@@ -73,7 +70,7 @@ const SignatureRequestStatusV = t.keyof({
   READY: null,
   WAITING: null,
   COMPLETED: null,
-  FAILED: null,
+  FAILED: null
 });
 
 export type SignatureRequestStatus = t.TypeOf<typeof SignatureRequestStatusV>;
@@ -85,10 +82,10 @@ export const SignatureRequest = t.type({
   last_error: t.union([
     t.type({
       code: t.number,
-      detail: t.string,
+      detail: t.string
     }),
-    t.null,
-  ]),
+    t.null
+  ])
 });
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;

@@ -1,34 +1,31 @@
-import { pipe, flow } from "fp-ts/lib/function";
-
-import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-
 import {
   HttpBadRequestError,
-  HttpNotFoundError,
+  HttpNotFoundError
 } from "@io-sign/io-sign/infra/http/errors";
-
 import { stringToBase64Encode } from "@io-sign/io-sign/utility";
-
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { validate } from "@io-sign/io-sign/validation";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
 import { LollipopJWTAuthorization } from "../http/models/LollipopJWTAuthorization";
 import { LollipopApiClient } from "./client";
-import { LollipopAuthBearer } from "./models/LollipopAuthBearer";
 import { AssertionType, AssertionTypeEnum } from "./models/AssertionType";
 import { LCUserInfo } from "./models/LCUserInfo";
+import { LollipopAuthBearer } from "./models/LollipopAuthBearer";
 import { SamlUserInfo } from "./models/SamlUserInfo";
 
-type LollipopParamsForSaml = {
+interface LollipopParamsForSaml {
   assertionRef: LollipopAssertionRef;
   jwtAuthorization: LollipopJWTAuthorization;
   assertionType: AssertionType;
-};
+}
 export type GetSamlAssertion = ({
   assertionRef,
   jwtAuthorization,
-  assertionType,
+  assertionType
 }: LollipopParamsForSaml) => TE.TaskEither<Error, NonEmptyString>;
 
 export const isAssertionSaml =
@@ -45,7 +42,7 @@ export const makeGetBase64SamlAssertion =
           lollipopClient.client.getAssertion({
             assertion_ref: assertionRef,
             "x-pagopa-lollipop-auth":
-              `Bearer ${jwtAuthorization}` as LollipopAuthBearer,
+              `Bearer ${jwtAuthorization}` as LollipopAuthBearer
           }),
         E.toError
       ),

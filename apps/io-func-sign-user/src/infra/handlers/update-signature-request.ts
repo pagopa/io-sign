@@ -1,15 +1,13 @@
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
+import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
+import * as H from "@pagopa/handler-kit";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
 import { pipe } from "fp-ts/lib/function";
 
-import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
-
-import * as H from "@pagopa/handler-kit";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import {
   getSignatureRequest,
   markAsCancelled,
-  upsertSignatureRequest,
+  upsertSignatureRequest
 } from "../../signature-request";
 
 export const UpdateSignatureRequestHandler = H.of(

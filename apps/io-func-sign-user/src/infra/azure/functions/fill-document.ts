@@ -1,19 +1,15 @@
+import { ContainerClient } from "@azure/storage-blob";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import * as TE from "fp-ts/lib/TaskEither";
+import { constVoid, flow, identity, pipe } from "fp-ts/lib/function";
 import { createHandler } from "handler-kit-legacy";
 import * as azure from "handler-kit-legacy/lib/azure";
 
-import * as TE from "fp-ts/lib/TaskEither";
-
-import { pipe, flow, identity, constVoid } from "fp-ts/lib/function";
-
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { ContainerClient } from "@azure/storage-blob";
-
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-
-import { makeUploadBlob } from "../storage/blob";
 import { makeFillDocument } from "../../../app/use-cases/fill-document";
 import { FillDocumentPayload } from "../../../filled-document";
+import { makeUploadBlob } from "../storage/blob";
 
 const makeFillDocumentHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,

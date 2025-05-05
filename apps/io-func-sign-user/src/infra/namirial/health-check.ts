@@ -1,20 +1,17 @@
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import {
+  HealthCheck,
+  HealthProblem,
+  toHealthProblems
+} from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
+import * as A from "fp-ts/lib/Array";
+import * as RA from "fp-ts/lib/ReadonlyArray";
+import * as T from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
-import * as TE from "fp-ts/lib/TaskEither";
-import * as T from "fp-ts/lib/Task";
-
-import * as RA from "fp-ts/lib/ReadonlyArray";
-import * as A from "fp-ts/lib/Array";
-
-import {
-  HealthProblem,
-  HealthCheck,
-  toHealthProblems,
-} from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
-
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { NamirialToken, makeGetClauses, makeGetToken } from "./client";
 import { NamirialCredentialsConfig } from "./config";
-import { makeGetClauses, makeGetToken, NamirialToken } from "./client";
 
 export type NamirialProblemSource =
   | "NamirialLogin"
@@ -69,7 +66,7 @@ export const makeNamirialHealthCheck = (
         [
           checkTosUrlHealth()(tos.document_link),
           checkTosUrlHealth()(tos.privacy_link),
-          checkTosUrlHealth()(tos.terms_and_conditions_link),
+          checkTosUrlHealth()(tos.terms_and_conditions_link)
         ],
         A.sequence(applicativeValidation)
       )

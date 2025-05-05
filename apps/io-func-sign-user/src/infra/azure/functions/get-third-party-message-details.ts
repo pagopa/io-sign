@@ -1,21 +1,18 @@
-import { flow, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
-
 import { Database } from "@azure/cosmos";
-
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { error, success } from "@io-sign/io-sign/infra/http/response";
-import { validate } from "@io-sign/io-sign/validation";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
+import { validate } from "@io-sign/io-sign/validation";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
 
-import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../../http/encoders/signature-request";
 import { ThirdPartyMessage } from "../../http/models/ThirdPartyMessage";
+import { makeGetSignatureRequest } from "../cosmos/signature-request";
 
 const makeGetThirdPartyMessageDetailsHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,

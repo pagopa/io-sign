@@ -1,14 +1,12 @@
-import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-
-import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Field, populatePdf } from "@io-sign/io-sign/infra/pdf";
+import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
-import { UploadBlob } from "../../infra/azure/storage/blob";
 import { FillDocumentPayload } from "../../filled-document";
+import { UploadBlob } from "../../infra/azure/storage/blob";
 
 // these types define the fields inside the PDF file to be enhanced
 // TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]
@@ -42,7 +40,7 @@ export const makeFillDocument =
     email,
     familyName,
     name,
-    filledDocumentFileName,
+    filledDocumentFileName
   }: FillDocumentPayload) =>
     pipe(
       signer.id,
@@ -57,28 +55,28 @@ export const makeFillDocument =
         const fields: Fields = [
           {
             fieldName: "QUADROB_name",
-            fieldValue: name,
+            fieldValue: name
           },
           {
             fieldName: "QUADROB_lastname",
-            fieldValue: familyName,
+            fieldValue: familyName
           },
           {
             fieldName: "QUADROB_email",
-            fieldValue: email,
+            fieldValue: email
           },
           {
             fieldName: "QUADROB_fiscalcode",
-            fieldValue: fiscalCode,
+            fieldValue: fiscalCode
           },
           {
             fieldName: "QUADROE_name",
-            fieldValue: name,
+            fieldValue: name
           },
           {
             fieldName: "QUADROE_lastname",
-            fieldValue: familyName,
-          },
+            fieldValue: familyName
+          }
         ];
 
         return pipe(

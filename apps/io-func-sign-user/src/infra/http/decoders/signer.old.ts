@@ -1,13 +1,9 @@
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { validate } from "@io-sign/io-sign/validation";
-
-import { pipe, flow } from "fp-ts/lib/function";
-
-import * as E from "fp-ts/lib/Either";
-
-import { Signer } from "@io-sign/io-sign/signer";
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
+import { Signer } from "@io-sign/io-sign/signer";
+import { validate } from "@io-sign/io-sign/validation";
+import * as E from "fp-ts/lib/Either";
+import { flow, pipe } from "fp-ts/lib/function";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
 
 const requireSignerId = (req: HttpRequest) =>
   pipe(

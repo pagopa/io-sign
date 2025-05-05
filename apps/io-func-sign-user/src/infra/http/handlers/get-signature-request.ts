@@ -1,24 +1,20 @@
-import * as H from "@pagopa/handler-kit";
-import { sequenceS } from "fp-ts/lib/Apply";
-
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
-import { pipe } from "fp-ts/lib/function";
-
 import { ContainerClient } from "@azure/storage-blob";
-
-import * as A from "fp-ts/lib/Array";
-
 import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
+import * as H from "@pagopa/handler-kit";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as A from "fp-ts/lib/Array";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { pipe } from "fp-ts/lib/function";
+
 import {
   SignatureRequest,
   getEnvironment,
-  getSignatureRequest,
+  getSignatureRequest
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
-import { requireSigner } from "../decoders/signer";
 import { requireSignatureRequestId } from "../decoders/signature-request";
+import { requireSigner } from "../decoders/signer";
 
 const grantReadAccessToDocuments =
   (request: SignatureRequest) =>
@@ -41,7 +37,7 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
       signerId: pipe(requireSigner(req), RTE.fromEither),
-      signatureRequestId: requireSignatureRequestId(req),
+      signatureRequestId: requireSignatureRequestId(req)
     }),
     RTE.chainW(({ signerId, signatureRequestId }) =>
       getSignatureRequest(signatureRequestId, signerId.id)
