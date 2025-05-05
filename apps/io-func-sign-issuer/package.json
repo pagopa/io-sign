@@ -3,6 +3,9 @@
   "version": "0.18.6",
   "private": true,
   "license": "MPL-2.0",
+  "engines": {
+    "node": "20.17.0"
+  },
   "files": [
     "**/function.json",
     "dist",
@@ -25,6 +28,7 @@
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
     "@azure/event-hubs": "^5.9.0",
+    "@azure/functions": "^4.2.0",
     "@azure/storage-blob": "^12.12.0",
     "@azure/storage-queue": "^12.11.0",
     "@io-sign/io-sign": "workspace:^",
@@ -42,7 +46,6 @@
     "newtype-ts": "^0.3.5"
   },
   "devDependencies": {
-    "@azure/functions": "^4.2.0",
     "@pagopa/eslint-config": "4.0.0",
     "@pagopa/openapi-codegen-ts": "^12.2.0",
     "@vitest/coverage-c8": "^0.33.0",
