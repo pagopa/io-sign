@@ -11483,6 +11483,7 @@ __metadata:
     eslint-plugin-prettier: ^5.0.0
     fp-ts: ^2.16.5
     googleapis: ^133.0.0
+    io-ts: ^2.2.21
     prettier: ^3.0.0
     tsup: ^7.2.0
     typescript: ^4.8.4
