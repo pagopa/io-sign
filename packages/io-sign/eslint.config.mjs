@@ -17,6 +17,14 @@ export default [
     }
   },
   {
-    ignores: ["node_modules", "dist", "**/*.spec.ts", "*.yaml"]
+    ignores: [
+      "node_modules",
+      "dist",
+      "**/*.spec.ts",
+      "*.yaml",
+      "**/models/*.ts",
+      "*.pdf",
+      "*.json"
+    ]
   }
 ];
