@@ -1,14 +1,13 @@
 import {
   SignatureField,
   SignatureFieldAttributes,
-  SignatureFieldToBeCreatedAttributes,
+  SignatureFieldToBeCreatedAttributes
 } from "@io-sign/io-sign/document";
 
-import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
-import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
-
 import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
+import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
+import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
 
 const toApiModelEnum = (
   type: SignatureField["clause"]["type"]
@@ -41,20 +40,20 @@ const matchAttributes =
 
 export const signatureFieldToApiModel = ({
   clause,
-  attributes,
+  attributes
 }: SignatureField): SignatureFieldApiModel => ({
   clause: {
     title: clause.title,
-    type: toApiModelEnum(clause.type),
+    type: toApiModelEnum(clause.type)
   },
   attrs: matchAttributes(
     ({ uniqueName: unique_name }) => ({
-      unique_name,
+      unique_name
     }),
     ({ coordinates, size, page }) => ({
       coordinates,
       size,
-      page,
+      page
     })
-  )(attributes),
+  )(attributes)
 });

@@ -1,17 +1,12 @@
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import * as H from "@pagopa/handler-kit";
-
+import * as RT from "fp-ts/lib/ReaderTask";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { pipe } from "fp-ts/lib/function";
 
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as RT from "fp-ts/lib/ReaderTask";
-
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { requireIssuer } from "../decoders/issuer";
-
-import { requireFilesForValidation } from "../decoders/document-validation";
-
 import { validateDocument } from "../../../app/use-cases/validate-upload";
-
+import { requireFilesForValidation } from "../decoders/document-validation";
+import { requireIssuer } from "../decoders/issuer";
 import { validationToApiModel } from "../encoders/document-validation";
 
 const requireFileFromValidationRTE = RTE.fromTaskEitherK(

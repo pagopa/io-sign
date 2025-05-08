@@ -1,47 +1,42 @@
 import { CosmosClient } from "@azure/cosmos";
-import { ContainerClient } from "@azure/storage-blob";
-import { QueueClient } from "@azure/storage-queue";
 import {
   EventHubConsumerClient,
-  EventHubProducerClient,
+  EventHubProducerClient
 } from "@azure/event-hubs";
-
-import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-
-import * as E from "fp-ts/lib/Either";
-import { pipe, identity } from "fp-ts/lib/function";
-
-import * as t from "io-ts";
-import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { ContainerClient } from "@azure/storage-blob";
+import { QueueClient } from "@azure/storage-queue";
 import { ApplicationInsights } from "@io-sign/io-sign/infra/azure/appinsights/index";
-import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
+import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { IONotificationService } from "@io-sign/io-sign/infra/io-services/message";
+import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
+import * as E from "fp-ts/lib/Either";
+import { identity, pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
+
+import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
 import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
 import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { makeInfoFunction } from "../infra/azure/functions/info";
-import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
-
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
-
-import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
+import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
 export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
-import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
-import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
 import { CosmosDbDossierRepository } from "../infra/azure/cosmos/dossier";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
+import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
+import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
+import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
-import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
-import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
-import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
-import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
-
-import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
-import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
+import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
+import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
 import { ClosedSignatureRequest } from "../signature-request";
 import { getConfigFromEnvironment } from "./config";
 
@@ -93,7 +88,7 @@ const notificationService = new IONotificationService(
 const telemetryClient = initAppInsights(
   config.azure.appinsights.instrumentationKey,
   {
-    samplingPercentage: config.azure.appinsights.samplingPercentage,
+    samplingPercentage: config.azure.appinsights.samplingPercentage
   }
 );
 
@@ -168,7 +163,7 @@ export const CloseSignatureRequest = CloseSignatureRequestFunction({
   notificationService,
   eventAnalyticsClient,
   billingEventProducer: eventHubBillingClient,
-  inputDecoder: ClosedSignatureRequest,
+  inputDecoder: ClosedSignatureRequest
 });
 
 export const GetSignerByFiscalCode = makeGetSignerFunction(
@@ -197,18 +192,18 @@ export const CreateIssuer = makeCreateIssuerFunction(
 
 export const GetDossier = GetDossierFunction({
   issuerRepository,
-  dossierRepository,
+  dossierRepository
 });
 
 export const CreateDossier = CreateDossierFunction({
   issuerRepository,
-  dossierRepository,
+  dossierRepository
 });
 
 export const GetRequestsByDossier = GetRequestsByDossierFunction({
   signatureRequestRepository,
   issuerRepository,
-  dossierRepository,
+  dossierRepository
 });
 
 export const ValidateUpload = ValidateUploadFunction({
@@ -217,24 +212,24 @@ export const ValidateUpload = ValidateUploadFunction({
   uploadedFileStorage,
   validatedFileStorage,
   inputDecoder: t.type({ uri: t.string }),
-  eventAnalyticsClient,
+  eventAnalyticsClient
 });
 
 export const ValidateDocument = validateDocumentFunction({
-  issuerRepository,
+  issuerRepository
 });
 
 export const GetSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signedContainerClient,
+  signedContainerClient
 });
 
 export const CreateSignatureRequest = CreateSignatureRequestFunction({
   issuerRepository,
   dossierRepository,
   signatureRequestRepository,
-  eventAnalyticsClient,
+  eventAnalyticsClient
 });
 
 export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
@@ -242,5 +237,5 @@ export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
   signatureRequestRepository,
   eventAnalyticsClient,
   ready: onSignatureRequestReadyQueueClient,
-  updated: WaitingForSignatureRequestUpdatesQueueClient,
+  updated: WaitingForSignatureRequestUpdatesQueueClient
 });

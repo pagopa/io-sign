@@ -1,21 +1,19 @@
-import * as t from "io-ts";
-
 import * as cosmos from "@azure/cosmos";
-
-import {
-  CosmosdbModel,
-  BaseModel,
-  CosmosResource,
-} from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
-  Signature,
+  BaseModel,
+  CosmosResource,
+  CosmosdbModel
+} from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
+
+import {
   GetSignature,
   InsertSignature,
-  UpsertSignature,
+  Signature,
+  UpsertSignature
 } from "../../../signature";
 
 const NewSignature = t.intersection([Signature, BaseModel]);

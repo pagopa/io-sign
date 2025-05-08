@@ -1,10 +1,8 @@
-import { pipe, flow } from "fp-ts/lib/function";
+import { Signer } from "@io-sign/io-sign/signer";
+import * as H from "@pagopa/handler-kit";
 import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
-
-import * as H from "@pagopa/handler-kit";
-
-import { Signer } from "@io-sign/io-sign/signer";
+import { flow, pipe } from "fp-ts/lib/function";
 
 export const requireSignerId = (req: H.HttpRequest) =>
   pipe(

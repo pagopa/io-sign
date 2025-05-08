@@ -1,8 +1,8 @@
 import * as H from "@pagopa/handler-kit";
-
-import { pipe } from "fp-ts/lib/function";
-import { lookup } from "fp-ts/lib/Record";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { lookup } from "fp-ts/lib/Record";
+import { pipe } from "fp-ts/lib/function";
+
 import { Dossier } from "../../../dossier";
 
 export const requireDossierId = (req: H.HttpRequest) =>

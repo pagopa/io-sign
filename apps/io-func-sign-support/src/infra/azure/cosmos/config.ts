@@ -1,15 +1,12 @@
-import * as t from "io-ts";
-
-import * as RE from "fp-ts/ReaderEither";
-
-import { pipe } from "fp-ts/function";
-
 import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
+import * as RE from "fp-ts/ReaderEither";
+import { pipe } from "fp-ts/function";
+import * as t from "io-ts";
 
 export const CosmosConfig = t.type({
   connectionString: t.string,
   issuerDbName: t.string,
-  userDbName: t.string,
+  userDbName: t.string
 });
 
 type CosmosConfig = t.TypeOf<typeof CosmosConfig>;

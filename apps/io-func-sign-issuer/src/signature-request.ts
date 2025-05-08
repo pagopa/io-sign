@@ -1,47 +1,37 @@
-import { Id, id as newId } from "@io-sign/io-sign/id";
-
-import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as O from "fp-ts/lib/Option";
-
-import * as t from "io-ts";
-
-import * as H from "@pagopa/handler-kit";
-
-import { Signer } from "@io-sign/io-sign/signer";
-
-import { pipe } from "fp-ts/lib/function";
-import { addDays, isBefore } from "date-fns/fp";
-
-import { ActionNotAllowedError } from "@io-sign/io-sign/error";
-
 import {
   Document,
-  startValidation,
-  markAsReady as setReadyStatus,
-  markAsRejected as setRejectedStatus,
+  DocumentMetadata,
   DocumentReady,
   PdfDocumentMetadata,
-  DocumentMetadata,
+  markAsReady as setReadyStatus,
+  markAsRejected as setRejectedStatus,
+  startValidation
 } from "@io-sign/io-sign/document";
-
+import { ActionNotAllowedError } from "@io-sign/io-sign/error";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-
-import { findIndex, updateAt } from "fp-ts/lib/Array";
-
+import { Id, id as newId } from "@io-sign/io-sign/id";
+import { Issuer } from "@io-sign/io-sign/issuer";
 import {
+  SignatureRequestCancelled,
+  SignatureRequestDraft,
   SignatureRequestReady,
-  SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestDraft,
-  getDocument,
-  SignatureRequestCancelled,
+  SignatureRequestToBeSigned,
+  getDocument
 } from "@io-sign/io-sign/signature-request";
-
-import { Issuer } from "@io-sign/io-sign/issuer";
+import { Signer } from "@io-sign/io-sign/signer";
+import * as H from "@pagopa/handler-kit";
+import { addDays, isBefore } from "date-fns/fp";
+import { findIndex, updateAt } from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
 import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
+import * as O from "fp-ts/lib/Option";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
+
 import { Dossier } from "./dossier";
 
 export const SignatureRequest = t.union([
@@ -50,7 +40,7 @@ export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestCancelled,
+  SignatureRequestCancelled
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -59,7 +49,7 @@ export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 // Closed requests cannot be modified, whatever its outcome.
 export const ClosedSignatureRequest = t.union([
   SignatureRequestSigned,
-  SignatureRequestRejected,
+  SignatureRequestRejected
 ]);
 
 export type ClosedSignatureRequest = t.TypeOf<typeof ClosedSignatureRequest>;
@@ -95,9 +85,9 @@ export const newSignatureRequest = (
         metadata,
         status: "WAIT_FOR_UPLOAD",
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }))
-  ),
+  )
 });
 
 class InvalidExpiryDateError extends Error {
@@ -124,7 +114,7 @@ export const withExpiryDate =
       ),
       E.map((request) => ({
         ...request,
-        expiresAt: expiryDate,
+        expiresAt: expiryDate
       }))
     );
 
@@ -140,58 +130,58 @@ export const replaceDocument =
 export const canBeMarkedAsReady = (
   request: SignatureRequest
 ): request is SignatureRequest & {
-  documents: DocumentReady[];
+  documents: Array<DocumentReady>;
 } =>
   request.status === "DRAFT" &&
   request.documents.every((document) => document.status === "READY");
 
-type Action_MARK_AS_READY = {
+interface Action_MARK_AS_READY {
   name: "MARK_AS_READY";
-};
+}
 
-type Action_MARK_AS_REJECTED = {
+interface Action_MARK_AS_REJECTED {
   name: "MARK_AS_REJECTED";
   rejectedAt: Date;
   rejectReason: string;
-};
+}
 
-type Action_MARK_AS_WAIT_FOR_SIGNATURE = {
+interface Action_MARK_AS_WAIT_FOR_SIGNATURE {
   name: "MARK_AS_WAIT_FOR_SIGNATURE";
   qrCodeUrl: string;
-};
+}
 
-type Action_MARK_AS_SIGNED = {
+interface Action_MARK_AS_SIGNED {
   name: "MARK_AS_SIGNED";
-};
+}
 
-type Action_START_DOCUMENT_VALIDATION = {
+interface Action_START_DOCUMENT_VALIDATION {
   name: "START_DOCUMENT_VALIDATION";
   payload: {
     documentId: Document["id"];
   };
-};
+}
 
-type Action_MARK_DOCUMENT_AS_READY = {
+interface Action_MARK_DOCUMENT_AS_READY {
   name: "MARK_DOCUMENT_AS_READY";
   payload: {
     documentId: Document["id"];
     url: string;
     pdfDocumentMetadata: PdfDocumentMetadata;
   };
-};
+}
 
-type Action_MARK_DOCUMENT_AS_REJECTED = {
+interface Action_MARK_DOCUMENT_AS_REJECTED {
   name: "MARK_DOCUMENT_AS_REJECTED";
   payload: {
     documentId: Document["id"];
     reason: string;
   };
-};
+}
 
-type Action_MARK_AS_CANCELLED = {
+interface Action_MARK_AS_CANCELLED {
   name: "MARK_AS_CANCELLED";
   cancelledAt: Date;
-};
+}
 
 type SignatureRequestAction =
   | Action_MARK_AS_READY
@@ -237,7 +227,7 @@ const onDraftStatus =
           return E.right({
             ...request,
             status: "READY",
-            updatedAt: new Date(),
+            updatedAt: new Date()
           });
         }
         return E.left(
@@ -319,7 +309,7 @@ const onReadyStatus =
           ...request,
           status: "WAIT_FOR_SIGNATURE",
           qrCodeUrl: action.qrCodeUrl,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       default:
         return E.left(
@@ -345,7 +335,7 @@ const onWaitForSignatureStatus =
         ...request,
         status: "SIGNED",
         signedAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     if (action.name === "MARK_AS_REJECTED") {
@@ -354,7 +344,7 @@ const onWaitForSignatureStatus =
         status: "REJECTED",
         rejectedAt: action.rejectedAt,
         rejectReason: action.rejectReason,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     if (action.name === "MARK_AS_CANCELLED") {
@@ -362,7 +352,7 @@ const onWaitForSignatureStatus =
         ...request,
         status: "CANCELLED",
         cancelledAt: action.cancelledAt,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     return E.left(
@@ -389,7 +379,7 @@ export const markAsReady = (
 export const markAsWaitForSignature = (qrCodeUrl: string) =>
   dispatch({
     name: "MARK_AS_WAIT_FOR_SIGNATURE",
-    qrCodeUrl,
+    qrCodeUrl
   });
 
 export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
@@ -410,7 +400,7 @@ export const markDocumentAsReady = (
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_READY",
-    payload: { documentId, url, pdfDocumentMetadata },
+    payload: { documentId, url, pdfDocumentMetadata }
   });
 
 export const markDocumentAsRejected = (
@@ -419,7 +409,7 @@ export const markDocumentAsRejected = (
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_REJECTED",
-    payload: { documentId, reason },
+    payload: { documentId, reason }
   });
 
 export type GetSignatureRequest = (
@@ -438,7 +428,7 @@ export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
 
-export type SignatureRequestRepository = {
+export interface SignatureRequestRepository {
   get: (
     id: SignatureRequest["id"],
     issuerId: SignatureRequest["issuerId"]
@@ -456,11 +446,11 @@ export type SignatureRequestRepository = {
     continuationToken?: string;
   }>;
   insert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
-};
+}
 
-export type SignatureRequestEnvironment = {
+export interface SignatureRequestEnvironment {
   signatureRequestRepository: SignatureRequestRepository;
-};
+}
 
 export const getSignatureRequest =
   (
@@ -540,11 +530,11 @@ export const findSignatureRequestsByDossier =
         H.parse(
           t.intersection([
             t.type({
-              items: t.array(SignatureRequest),
+              items: t.array(SignatureRequest)
             }),
             t.partial({
-              continuationToken: t.string,
-            }),
+              continuationToken: t.string
+            })
           ])
         )
       )

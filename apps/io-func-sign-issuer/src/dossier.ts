@@ -1,22 +1,16 @@
+import { DocumentMetadata } from "@io-sign/io-sign/document";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { Id, id as newId } from "@io-sign/io-sign/id";
+import { Issuer } from "@io-sign/io-sign/issuer";
+import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
+import * as O from "fp-ts/lib/Option";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 import * as t from "io-ts";
 import * as tx from "io-ts-types";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
-import { pipe } from "fp-ts/lib/function";
-
-import * as O from "fp-ts/lib/Option";
-import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
-
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
-
-import { Id, id as newId } from "@io-sign/io-sign/id";
-import { DocumentMetadata } from "@io-sign/io-sign/document";
-
-import { Issuer } from "@io-sign/io-sign/issuer";
-import { NonEmptyString, EmailString } from "@pagopa/ts-commons/lib/strings";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 export const DocumentsMetadata = tx.nonEmptyArray(DocumentMetadata);
 
@@ -27,7 +21,7 @@ export const Dossier = t.type({
   documentsMetadata: DocumentsMetadata,
   supportEmail: EmailString,
   createdAt: IsoDateFromString,
-  updatedAt: IsoDateFromString,
+  updatedAt: IsoDateFromString
 });
 
 export type Dossier = t.TypeOf<typeof Dossier>;
@@ -44,20 +38,20 @@ export const newDossier = (
   documentsMetadata,
   supportEmail: supportEmail ?? issuer.email, // the issuer has the chance to add a specific support email for a dossier. otherwise, the issuer's generic support email will be taken
   createdAt: new Date(),
-  updatedAt: new Date(),
+  updatedAt: new Date()
 });
 
-export type DossierRepository = {
+export interface DossierRepository {
   insert: (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
   getById: (
     id: Dossier["id"],
     issuerId: Dossier["issuerId"]
   ) => TE.TaskEither<Error, O.Option<Dossier>>;
-};
+}
 
-type DossierEnvironment = {
+interface DossierEnvironment {
   dossierRepository: DossierRepository;
-};
+}
 
 export const insertDossier =
   (d: Dossier): RTE.ReaderTaskEither<DossierEnvironment, Error, Dossier> =>

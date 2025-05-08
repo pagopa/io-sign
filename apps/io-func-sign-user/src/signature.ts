@@ -1,21 +1,17 @@
-import * as t from "io-ts";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
-
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
-
 import { Id, id as newId } from "@io-sign/io-sign/id";
-
 import { Signer } from "@io-sign/io-sign/signer";
+import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
 import { NonEmptyString, PatternString } from "@pagopa/ts-commons/lib/strings";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import * as t from "io-ts";
 
 const SignatureStatusV = t.keyof({
   CREATED: null,
   READY: null,
   WAITING: null,
   COMPLETED: null,
-  FAILED: null,
+  FAILED: null
 });
 
 export type SignatureStatus = t.TypeOf<typeof SignatureStatusV>;
@@ -28,18 +24,18 @@ export const Signature = t.intersection([
     qtspSignatureRequestId: Id,
     status: SignatureStatusV,
     createdAt: IsoDateFromString,
-    updatedAt: IsoDateFromString,
+    updatedAt: IsoDateFromString
   }),
   t.partial({
-    rejectedReason: t.string,
-  }),
+    rejectedReason: t.string
+  })
 ]);
 
 export type Signature = t.TypeOf<typeof Signature>;
 
 export const SignatureNotification = t.type({
   signatureId: Id,
-  signerId: Signer.props.id,
+  signerId: Signer.props.id
 });
 
 export type SignatureNotification = t.TypeOf<typeof SignatureNotification>;
@@ -55,7 +51,7 @@ export const newSignature = (
   qtspSignatureRequestId,
   status: "CREATED",
   createdAt: new Date(),
-  updatedAt: new Date(),
+  updatedAt: new Date()
 });
 
 export type InsertSignature = (
@@ -87,7 +83,7 @@ export const SignatureValidationParams = t.type({
   challengeSignature: NonEmptyString,
   publicKey: NonEmptyString,
   // SPID/CIE saml assertion. OIDC is not supported yet.
-  samlAssertionBase64: NonEmptyString,
+  samlAssertionBase64: NonEmptyString
 });
 
 export type SignatureValidationParams = t.TypeOf<

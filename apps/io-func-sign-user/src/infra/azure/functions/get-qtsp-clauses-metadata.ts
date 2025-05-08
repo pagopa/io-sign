@@ -1,30 +1,25 @@
-import { flow, identity, pipe } from "fp-ts/lib/function";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-
-import { createHandler } from "handler-kit-legacy";
-
-import { error, success } from "@io-sign/io-sign/infra/http/response";
-
 import {
   HttpBadRequestError,
-  HttpError,
+  HttpError
 } from "@io-sign/io-sign/infra/http/errors";
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
-import { validate } from "@io-sign/io-sign/validation";
-
+import { error, success } from "@io-sign/io-sign/infra/http/response";
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
+import { validate } from "@io-sign/io-sign/validation";
+import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, identity, pipe } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
+
+import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
 import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-metadata";
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import {
-  getNamirialCredentialsFromIssuerEnvironment,
   NamirialConfig,
+  getNamirialCredentialsFromIssuerEnvironment
 } from "../../namirial/config";
-import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
 
 const getQtspClausesWithToken = makeGetClausesWithToken()(makeGetToken());
 

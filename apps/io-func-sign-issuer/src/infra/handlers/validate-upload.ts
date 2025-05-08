@@ -1,12 +1,11 @@
 import * as H from "@pagopa/handler-kit";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { pipe, flow } from "fp-ts/lib/function";
-
-import { split } from "fp-ts/lib/string";
 import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";
-import { UploadMetadata } from "../../upload";
+import { flow, pipe } from "fp-ts/lib/function";
+import { split } from "fp-ts/lib/string";
 
 import { validateUpload } from "../../app/use-cases/validate-upload";
+import { UploadMetadata } from "../../upload";
 
 const extractFileNameFromURI = flow(split("/"), last);
 

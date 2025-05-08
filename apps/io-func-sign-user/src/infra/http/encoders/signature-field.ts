@@ -1,19 +1,17 @@
 import {
-  SignatureFieldAttributes,
   SignatureField,
-  SignatureFieldToBeCreatedAttributes,
+  SignatureFieldAttributes,
+  SignatureFieldToBeCreatedAttributes
 } from "@io-sign/io-sign/document";
-
-import * as E from "io-ts/lib/Encoder";
-import { flow } from "fp-ts/lib/function";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
-import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
-import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
-
-import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { flow } from "fp-ts/lib/function";
+import * as E from "io-ts/lib/Encoder";
 
 import { toSignatureFieldToBeCreatedAttributes } from "../../../signature-field";
+import { TypeEnum as ClauseTypeEnum } from "../models/Clause";
+import { ExistingSignatureFieldAttrs } from "../models/ExistingSignatureFieldAttrs";
+import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
+import { SignatureFieldToBeCreatedAttrs } from "../models/SignatureFieldToBeCreatedAttrs";
 
 export const ClauseToApiModel: E.Encoder<
   SignatureFieldApiModel["clause"],
@@ -21,8 +19,8 @@ export const ClauseToApiModel: E.Encoder<
 > = {
   encode: ({ title, type }) => ({
     title,
-    type: toApiModelEnum(type),
-  }),
+    type: toApiModelEnum(type)
+  })
 };
 
 const toApiModelEnum = (
@@ -42,7 +40,7 @@ export const SignatureFieldAttributesToApiModel: E.Encoder<
   ExistingSignatureFieldAttrs,
   SignatureFieldAttributes
 > = {
-  encode: ({ uniqueName: unique_name }) => ({ unique_name }),
+  encode: ({ uniqueName: unique_name }) => ({ unique_name })
 };
 
 export const SignatureFieldToBeCreatedAttributesToApiModel = (
@@ -56,7 +54,7 @@ export const SignatureFieldToBeCreatedAttributesToApiModel = (
     ({ bottomLeft: bottom_left, topRight: top_right, page }) => ({
       bottom_left,
       top_right,
-      page,
+      page
     })
-  ),
+  )
 });

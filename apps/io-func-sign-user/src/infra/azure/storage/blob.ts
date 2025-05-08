@@ -1,8 +1,8 @@
 import { ContainerClient } from "@azure/storage-blob";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/function";
 import { toError } from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 export type GetBlobUrl = (blobName: string) => O.Option<string>;
 export const makeGetBlobUrl =

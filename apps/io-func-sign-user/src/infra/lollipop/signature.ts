@@ -1,14 +1,12 @@
-import { pipe } from "fp-ts/lib/function";
-import * as t from "io-ts";
-
-import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
-import * as S from "fp-ts/lib/string";
-
-import * as RA from "fp-ts/lib/ReadonlyArray";
-
 import { validate } from "@io-sign/io-sign/validation";
 import { NonEmptyString, PatternString } from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as RA from "fp-ts/lib/ReadonlyArray";
+import { pipe } from "fp-ts/lib/function";
+import * as S from "fp-ts/lib/string";
+import * as t from "io-ts";
+
 import { LollipopSignature } from "../http/models/LollipopSignature";
 import { LollipopSignatureInput } from "../http/models/LollipopSignatureInput";
 

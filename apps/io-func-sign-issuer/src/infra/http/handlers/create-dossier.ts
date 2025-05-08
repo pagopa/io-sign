@@ -1,25 +1,21 @@
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import * as H from "@pagopa/handler-kit";
-
-import * as E from "fp-ts/lib/Either";
-
-import { pipe, flow } from "fp-ts/lib/function";
-import { sequenceS } from "fp-ts/lib/Apply";
-
 import {
   ApplyPar,
+  chainW,
   fromEither,
   map,
-  chainW,
-  orElseW,
+  orElseW
 } from "fp-ts/ReaderTaskEither";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as E from "fp-ts/lib/Either";
+import { flow, pipe } from "fp-ts/lib/function";
 
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { requireIssuer } from "../decoders/issuer";
-import { CreateDossierBody } from "../models/CreateDossierBody";
 import { Dossier, insertDossier, newDossier } from "../../../dossier";
-
 import { DocumentsMetadataFromApiModel } from "../decoders/document";
+import { requireIssuer } from "../decoders/issuer";
 import { DossierToApiModel } from "../encoders/dossier";
+import { CreateDossierBody } from "../models/CreateDossierBody";
 
 const requireDossierBody = (req: H.HttpRequest) =>
   pipe(
@@ -34,7 +30,7 @@ const requireDossierBody = (req: H.HttpRequest) =>
         ),
         supportEmail: body.support_email
           ? pipe(body.support_email, H.parse(Dossier.props.supportEmail))
-          : E.right(undefined),
+          : E.right(undefined)
       })
     ),
     fromEither
@@ -44,7 +40,7 @@ export const CreateDossierHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(ApplyPar)({
       issuer: requireIssuer(req),
-      body: requireDossierBody(req),
+      body: requireDossierBody(req)
     }),
     map(({ issuer, body: { title, documentsMetadata, supportEmail } }) =>
       newDossier(issuer, title, documentsMetadata, supportEmail)

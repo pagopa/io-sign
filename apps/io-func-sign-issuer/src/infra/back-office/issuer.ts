@@ -1,26 +1,23 @@
-import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
-
 import * as cosmos from "@azure/cosmos";
-
-import { pipe } from "fp-ts/lib/function";
-
-import { Issuer } from "@io-sign/io-sign/issuer";
-
-import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import {
   defaultHeader,
   isSuccessful,
-  responseToJson,
+  responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
+import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
+import { Issuer } from "@io-sign/io-sign/issuer";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+
+import { getConfigFromEnvironment } from "../../app/config";
 import {
   ApiKey,
   GetIssuerBySubscriptionId,
   IssuerRepository,
-  getIssuerEnvironment,
+  getIssuerEnvironment
 } from "../../issuer";
-import { getConfigFromEnvironment } from "../../app/config";
 
 class IssuerModel {
   #basePath: string;
@@ -43,8 +40,8 @@ class IssuerModel {
               method: "GET",
               headers: {
                 ...defaultHeader,
-                "Ocp-Apim-Subscription-Key": this.#apiKey,
-              },
+                "Ocp-Apim-Subscription-Key": this.#apiKey
+              }
             }
           ),
         E.toError
@@ -60,7 +57,7 @@ class IssuerModel {
           institutionId,
           environment,
           institution: { name, vatNumber },
-          issuer: { externalId: issuerId, supportEmail },
+          issuer: { externalId: issuerId, supportEmail }
         }) =>
           pipe(
             {
@@ -72,7 +69,7 @@ class IssuerModel {
               environment: getIssuerEnvironment(environment, institutionId),
               vatNumber,
               department: "",
-              status: "ACTIVE" as const,
+              status: "ACTIVE" as const
             },
             O.some
           )
@@ -88,6 +85,7 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
     this.#issuerModel = new IssuerModel(basePath, apiKey);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getByVatNumber(_vatNumber: Issuer["vatNumber"]) {
     return TE.left(new Error("non implemented"));
   }
@@ -102,14 +100,15 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
 
 // This function still takes cosmos.Database dependency to ensure pipeline compatibility.
 export const makeGetIssuerBySubscriptionId =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (_db: cosmos.Database): GetIssuerBySubscriptionId =>
-  (subscriptionId) =>
-    pipe(
-      process.env,
-      getConfigFromEnvironment,
-      TE.fromEither,
-      TE.chain(({ backOffice: { basePath, apiKey } }) =>
-        new IssuerModel(basePath, apiKey).findBySubscriptionId(subscriptionId)
-      )
-    );
+    (subscriptionId) =>
+      pipe(
+        process.env,
+        getConfigFromEnvironment,
+        TE.fromEither,
+        TE.chain(({ backOffice: { basePath, apiKey } }) =>
+          new IssuerModel(basePath, apiKey).findBySubscriptionId(subscriptionId)
+        )
+      );
 // END

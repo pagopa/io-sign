@@ -1,37 +1,30 @@
+import * as cosmos from "@azure/cosmos";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+import { Signer } from "@io-sign/io-sign/signer";
+import * as H from "@pagopa/handler-kit";
 import {
-  CosmosdbModel,
+  asyncIterableToArray,
+  flattenAsyncIterable
+} from "@pagopa/io-functions-commons/dist/src/utils/async";
+import {
   BaseModel,
   CosmosResource,
-  toCosmosErrorResponse,
+  CosmosdbModel,
+  toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
-import * as t from "io-ts";
-import * as TE from "fp-ts/lib/TaskEither";
-
-import * as cosmos from "@azure/cosmos";
-import { pipe, flow } from "fp-ts/lib/function";
-
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
-
 import * as E from "fp-ts/lib/Either";
 import * as RA from "fp-ts/lib/ReadonlyArray";
-
-import * as H from "@pagopa/handler-kit";
-
-import {
-  flattenAsyncIterable,
-  asyncIterableToArray,
-} from "@pagopa/io-functions-commons/dist/src/utils/async";
-
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 import { failure } from "io-ts/PathReporter";
 
-import { Signer } from "@io-sign/io-sign/signer";
 import {
-  SignatureRequest,
   GetSignatureRequest,
   InsertSignatureRequest,
-  UpsertSignatureRequest,
+  SignatureRequest,
   SignatureRequestRepository,
+  UpsertSignatureRequest
 } from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
@@ -39,7 +32,7 @@ type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
 
 const RetrievedSignatureRequest = t.intersection([
   SignatureRequest,
-  CosmosResource,
+  CosmosResource
 ]);
 
 type RetrievedSignatureRequest = t.TypeOf<typeof RetrievedSignatureRequest>;
@@ -106,10 +99,10 @@ export class CosmosDbSignatureRequestRepository
                 parameters: [
                   {
                     name: "@signerId",
-                    value: signerId,
-                  },
+                    value: signerId
+                  }
                 ],
-                query: `SELECT * FROM m WHERE m.signerId = @signerId`,
+                query: `SELECT * FROM m WHERE m.signerId = @signerId`
               })
             )
           ),

@@ -1,23 +1,20 @@
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { Signer } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-
+import * as O from "fp-ts/Option";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import * as TE from "fp-ts/TaskEither";
-import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 
-import { Signer } from "@io-sign/io-sign/signer";
-
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-
-export type SignerRepository = {
+export interface SignerRepository {
   getByFiscalCode: (
     fiscalCode: FiscalCode
   ) => TE.TaskEither<Error, O.Option<Signer>>;
-};
+}
 
-export type GetSignerByFiscalCodeEnvironment = {
+export interface GetSignerByFiscalCodeEnvironment {
   signerRepository: SignerRepository;
-};
+}
 
 export const getSignerByFiscalCode =
   (

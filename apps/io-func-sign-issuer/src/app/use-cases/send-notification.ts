@@ -1,32 +1,26 @@
-import { pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as T from "fp-ts/lib/Task";
-import * as t from "io-ts";
-
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-import { format } from "date-fns";
-
-import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
-
-import { validate } from "@io-sign/io-sign/validation";
-import { sequenceS } from "fp-ts/lib/Apply";
-
-import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request";
-
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
 import { Notification } from "@io-sign/io-sign/notification";
-import {
-  SignatureRequest,
-  UpsertSignatureRequest,
-} from "../../signature-request";
+import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request";
+import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { validate } from "@io-sign/io-sign/validation";
+import { format } from "date-fns";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as T from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
 import { Dossier, GetDossier } from "../../dossier";
-
+import {
+  SignatureRequest,
+  UpsertSignatureRequest
+} from "../../signature-request";
 import {
   MakeMessageContent,
-  makeSendSignatureRequestNotification,
   SendNotificationPayload,
+  makeSendSignatureRequestNotification
 } from "../../signature-request-notification";
 
 const requestToSignMessage: MakeMessageContent =
@@ -45,7 +39,7 @@ const requestToSignMessage: MakeMessageContent =
       "dd/MM/yyyy HH:mm"
     )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
-    }](mailto:${signatureRequest.issuerEmail}).`,
+    }](mailto:${signatureRequest.issuerEmail}).`
   });
 
 const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
@@ -53,7 +47,7 @@ const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
   t.type({
     qrCodeUrl: t.string,
     documents: t.array(DocumentReady),
-    notification: t.undefined,
+    notification: t.undefined
   })
 );
 
@@ -109,13 +103,13 @@ export const makeSendNotification =
           TE.chain((result) =>
             result.sent ? TE.right(result.notification) : TE.left(result.error)
           )
-        ),
+        )
       }),
       TE.chainFirst(({ signatureRequest, notification }) =>
         pipe(
           {
             ...signatureRequest,
-            notification,
+            notification
           },
           upsertSignatureRequest
         )

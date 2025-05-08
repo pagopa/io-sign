@@ -1,6 +1,6 @@
+import { Notification } from "@io-sign/io-sign/notification";
 import * as E from "io-ts/lib/Encoder";
 
-import { Notification } from "@io-sign/io-sign/notification";
 import { NotificationDetailView as NotificationApiModel } from "../models/NotificationDetailView";
 
 export const NotificationToApiModel: E.Encoder<
@@ -8,6 +8,6 @@ export const NotificationToApiModel: E.Encoder<
   Notification
 > = {
   encode: ({ ioMessageId: io_message_id }) => ({
-    io_message_id,
-  }),
+    io_message_id
+  })
 };

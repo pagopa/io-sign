@@ -1,23 +1,19 @@
-import * as t from "io-ts";
-
-import { pipe } from "fp-ts/lib/function";
-import { sequenceS } from "fp-ts/lib/Apply";
-import * as E from "fp-ts/lib/Either";
-import * as J from "fp-ts/lib/Json";
-import * as A from "fp-ts/lib/Array";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
-
-import * as H from "@pagopa/handler-kit";
-
-import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import {
   DocumentMetadata,
-  PdfDocumentMetadata,
+  PdfDocumentMetadata
 } from "@io-sign/io-sign/document";
+import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
+import * as H from "@pagopa/handler-kit";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as A from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
+import * as J from "fp-ts/lib/Json";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
-
 import { SignatureFieldFromApiModel } from "./document";
 
 const BufferC = new t.Type<Buffer, Buffer>(
@@ -29,14 +25,14 @@ const BufferC = new t.Type<Buffer, Buffer>(
 
 const PdfFileC = t.type({
   type: t.literal("application/pdf"),
-  data: BufferC,
+  data: BufferC
 });
 
 type PdfFile = t.TypeOf<typeof PdfFileC>;
 
 const JsonFileC = t.type({
   type: t.literal("application/json"),
-  data: BufferC,
+  data: BufferC
 });
 
 type JsonFile = t.TypeOf<typeof JsonFileC>;
@@ -44,7 +40,7 @@ type JsonFile = t.TypeOf<typeof JsonFileC>;
 const FilesFromBodyC = t.union([
   t.tuple([PdfFileC, JsonFileC]),
   t.tuple([JsonFileC, PdfFileC]),
-  t.tuple([PdfFileC]),
+  t.tuple([PdfFileC])
 ]);
 
 const parseSignatureFieldsFromBuffer = (b: Buffer) =>
@@ -113,7 +109,7 @@ export const requireFilesForValidation = (
         sequenceS(TE.ApplyPar)({
           signatureFields: TE.fromEither(requireSignatureFields(files)),
           documentContent,
-          documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata)),
+          documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata))
         })
       )
     )

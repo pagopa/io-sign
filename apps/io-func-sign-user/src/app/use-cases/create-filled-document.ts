@@ -1,20 +1,16 @@
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { validate } from "@io-sign/io-sign/validation";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-
-import { validate } from "@io-sign/io-sign/validation";
 
 import {
   CreateFilledDocumentPayload,
   FillDocumentPayload,
   FilledDocumentUrl,
-  NotifyDocumentToFillEvent,
+  NotifyDocumentToFillEvent
 } from "../../filled-document";
-
 import { GetFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
 
 /** Create and return the storage path (URL) for the ToS document.
@@ -31,7 +27,7 @@ export const makeCreateFilledDocumentUrl =
     documentUrl,
     email,
     familyName,
-    name,
+    name
   }: CreateFilledDocumentPayload) => {
     const filledDocumentFileName = `${signer.id}.pdf`;
 
@@ -53,7 +49,7 @@ export const makeCreateFilledDocumentUrl =
             familyName,
             name,
             filledDocumentFileName,
-            documentUrl,
+            documentUrl
           },
           validate(
             FillDocumentPayload,
@@ -68,7 +64,7 @@ export const makeCreateFilledDocumentUrl =
           callbackDocumentUrl,
           validate(FilledDocumentUrl, "Invalid filled document url"),
           E.map((url) => ({
-            url,
+            url
           }))
         )
       )

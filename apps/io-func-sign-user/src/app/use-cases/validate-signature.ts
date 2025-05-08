@@ -1,40 +1,38 @@
-import * as TE from "fp-ts/lib/TaskEither";
-import * as T from "fp-ts/lib/Task";
-import * as A from "fp-ts/lib/Array";
-
-import { pipe } from "fp-ts/lib/function";
-
+/* eslint-disable no-case-declarations */
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import * as L from "@pagopa/logger";
-import * as t from "io-ts";
-
-import {
-  SignatureRequestRejected,
-  SignatureRequestSigned,
-} from "@io-sign/io-sign/signature-request";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
-  markAsRejected,
-  markAsSigned,
+  SignatureRequestRejected,
+  SignatureRequestSigned
+} from "@io-sign/io-sign/signature-request";
+import * as L from "@pagopa/logger";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as A from "fp-ts/lib/Array";
+import * as T from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
+
+import { GetBlobUrl } from "../../infra/azure/storage/blob";
+import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
+import { SignatureRequest as QtspSignatureRequest } from "../../infra/namirial/signature-request";
+import { GetSignature, Signature, UpsertSignature } from "../../signature";
+import {
   NotifySignatureRequestRejectedEvent,
   NotifySignatureRequestSignedEvent,
   SignatureRequest,
+  markAsRejected,
+  markAsSigned
 } from "../../signature-request";
-import { GetSignature, Signature, UpsertSignature } from "../../signature";
-import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
 import {
   GetSignatureRequest,
-  UpsertSignatureRequest,
+  UpsertSignatureRequest
 } from "../../signature-request";
-import { GetBlobUrl } from "../../infra/azure/storage/blob";
-
-import { SignatureRequest as QtspSignatureRequest } from "../../infra/namirial/signature-request";
 
 export const ValidateSignaturePayload = t.type({
   signatureId: NonEmptyString,
-  signerId: NonEmptyString,
+  signerId: NonEmptyString
 });
 
 export type ValidateSignaturePayload = t.TypeOf<
@@ -53,7 +51,7 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
       {
         ...signature,
         status: "FAILED",
-        rejectedReason,
+        rejectedReason
       },
       upsertSignature,
       TE.chainFirst(() =>
@@ -139,7 +137,7 @@ export const makeValidateSignature =
               ),
               TE.map((qtspSignatureRequest) => ({
                 qtspSignatureRequest,
-                signatureRequest,
+                signatureRequest
               }))
             )
           ),
@@ -155,9 +153,9 @@ export const makeValidateSignature =
                   TE.chainFirstIOK(() =>
                     L.debug("Signature request created by the QTSP", {
                       signatureRequest,
-                      qtspSignatureRequest,
+                      qtspSignatureRequest
                     })({
-                      logger: ConsoleLogger,
+                      logger: ConsoleLogger
                     })
                   )
                 );
@@ -172,9 +170,9 @@ export const makeValidateSignature =
                   TE.chainFirstIOK(() =>
                     L.debug("Certificate created", {
                       signatureRequest,
-                      qtspSignatureRequest,
+                      qtspSignatureRequest
                     })({
-                      logger: ConsoleLogger,
+                      logger: ConsoleLogger
                     })
                   ),
                   TE.chain(() =>
@@ -201,14 +199,14 @@ export const makeValidateSignature =
                       ),
                       TE.map((documentUrl) => ({
                         ...document,
-                        url: documentUrl,
+                        url: documentUrl
                       }))
                     )
                   ),
                   A.sequence(TE.ApplicativeSeq),
                   TE.map((documents) => ({
                     ...signatureRequest,
-                    documents,
+                    documents
                   })),
                   TE.chainEitherK(markAsSigned),
                   TE.chainFirst((r: SignatureRequest) =>
@@ -220,15 +218,15 @@ export const makeValidateSignature =
                   // Upsert signature
                   TE.map(() => ({
                     ...signature,
-                    status: "COMPLETED" as const,
+                    status: "COMPLETED" as const
                   })),
                   TE.chain(upsertSignature),
                   TE.chainFirstIOK(() =>
                     L.debug("Signed by the QTSP", {
                       signatureRequest,
-                      qtspSignatureRequest,
+                      qtspSignatureRequest
                     })({
-                      logger: ConsoleLogger,
+                      logger: ConsoleLogger
                     })
                   ),
                   TE.alt(() =>

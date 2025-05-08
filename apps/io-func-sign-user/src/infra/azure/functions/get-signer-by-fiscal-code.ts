@@ -1,29 +1,23 @@
-import { HttpRequest } from "handler-kit-legacy/lib/http";
-import { Signer } from "@io-sign/io-sign/signer";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import * as RE from "fp-ts/lib/ReaderEither";
-
-import * as E from "fp-ts/lib/Either";
-
-import { flow, pipe } from "fp-ts/lib/function";
-
-import * as azure from "handler-kit-legacy/lib/azure";
-
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
+import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-
-import * as TE from "fp-ts/lib/TaskEither";
-
-import * as O from "fp-ts/lib/Option";
-import { createHandler } from "handler-kit-legacy";
+import { Signer } from "@io-sign/io-sign/signer";
 import { validate } from "@io-sign/io-sign/validation";
-import { error, success } from "@io-sign/io-sign/infra/http/response";
-import { makeRetriveUserProfileSenderAllowed } from "@io-sign/io-sign/infra/io-services/profile";
-import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as RE from "fp-ts/lib/ReaderEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azure from "handler-kit-legacy/lib/azure";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { SignerToApiModel } from "../../http/encoders/signer";
+import { GetSignerByFiscalCodeBody } from "../../http/models/GetSignerByFiscalCodeBody";
 import { SignerDetailView } from "../../http/models/SignerDetailView";
 
 const makeGetSignerByFiscalCodeHandler = (

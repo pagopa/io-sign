@@ -1,31 +1,29 @@
+import { CosmosClient } from "@azure/cosmos";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
+import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
+import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-
+import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
-import { CosmosClient } from "@azure/cosmos";
-import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-
-import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
-import { EventHubProducerClient } from "@azure/event-hubs";
-import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
-import { makeInfoFunction } from "../infra/azure/functions/info";
+import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
-import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
-import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
-import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
-import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
-import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
-import { createLollipopApiClient } from "../infra/lollipop/client";
-import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
-import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
+import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
+import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
+import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
+import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
+import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
+import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
+import { makeInfoFunction } from "../infra/azure/functions/info";
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
+import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
+import { createLollipopApiClient } from "../infra/lollipop/client";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -180,17 +178,17 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
 );
 
 export const GetSignatureRequests = GetSignatureRequestsFunction({
-  signatureRequestRepository,
+  signatureRequestRepository
 });
 
 export const GetSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient,
-  signedContainerClient,
+  signedContainerClient
 });
 
 export const UpdateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient,
+  eventAnalyticsClient: eventHubAnalyticsClient
 });

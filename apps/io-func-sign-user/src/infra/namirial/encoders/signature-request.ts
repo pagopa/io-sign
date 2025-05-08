@@ -1,20 +1,19 @@
-import { pipe } from "fp-ts/lib/function";
+import { SignatureFieldAttributes } from "@io-sign/io-sign/document";
+import { option } from "fp-ts";
 import * as A from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/function";
 import * as E from "io-ts/lib/Encoder";
 
-import { option } from "fp-ts";
-import { SignatureFieldAttributes } from "@io-sign/io-sign/document";
 import { QtspCreateSignaturePayload, QtspDocumentToSign } from "../../../qtsp";
-
+import {
+  SignatureField,
+  SignatureFieldToBeCreatedAttributes
+} from "../../../signature-field";
 import {
   CreateSignatureRequestBody as CreateSignatureRequestApiModel,
   DocumentToSign as DocumentToSignApiModel,
-  SignatureCoordinate as SignatureCoordinateApiModel,
+  SignatureCoordinate as SignatureCoordinateApiModel
 } from "../signature-request";
-import {
-  SignatureField,
-  SignatureFieldToBeCreatedAttributes,
-} from "../../../signature-field";
 
 const SignatureFieldToBeCreatedToApiModel: E.Encoder<
   SignatureCoordinateApiModel,
@@ -22,8 +21,8 @@ const SignatureFieldToBeCreatedToApiModel: E.Encoder<
 > = {
   encode: ({ bottomLeft, topRight, page }) => ({
     page,
-    position: [bottomLeft.x, bottomLeft.y, topRight.x, topRight.y],
-  }),
+    position: [bottomLeft.x, bottomLeft.y, topRight.x, topRight.y]
+  })
 };
 
 const mapToBeCreatedAttributes = (signatureField: SignatureField) =>
@@ -58,8 +57,8 @@ const QtspDocumentToSignToApiModel: E.Encoder<
       A.map(SignatureFieldToBeCreatedToApiModel.encode)
     ),
     signatures_type: "PADES-LT",
-    appearance_alias: "appio",
-  }),
+    appearance_alias: "appio"
+  })
 };
 
 export const QtspCreateSignatureToApiModel: E.Encoder<
@@ -76,7 +75,7 @@ export const QtspCreateSignatureToApiModel: E.Encoder<
     tosSignature,
     signature,
     documentsToSign,
-    signatureInput,
+    signatureInput
   }) => ({
     fiscal_code: fiscalCode,
     public_key: publicKey,
@@ -90,8 +89,8 @@ export const QtspCreateSignatureToApiModel: E.Encoder<
       signatures_type: "PADES",
       documents_to_sign: documentsToSign.map(
         QtspDocumentToSignToApiModel.encode
-      ),
+      )
     },
-    signature_input: signatureInput,
-  }),
+    signature_input: signatureInput
+  })
 };

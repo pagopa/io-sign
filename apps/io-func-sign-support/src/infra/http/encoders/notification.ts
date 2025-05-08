@@ -1,4 +1,5 @@
 import { Notification } from "@io-sign/io-sign/notification";
+
 import { Notification as NotificationApiModel } from "../models/Notification";
 
 export const notificationToApiModel = (

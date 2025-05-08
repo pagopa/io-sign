@@ -1,6 +1,7 @@
+import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import * as E from "io-ts/lib/Encoder";
-import { newId } from "@io-sign/io-sign/id";
+
 import { IoSignContractWithSupportMail } from "./contract";
 
 // Create an Issuer entity from a self-care contract
@@ -19,6 +20,6 @@ export const ioSignContractToIssuer: E.Encoder<
     vatNumber: billing.vatNumber,
     taxCode: institution.taxCode,
     department: "",
-    status: "ACTIVE",
-  }),
+    status: "ACTIVE"
+  })
 };

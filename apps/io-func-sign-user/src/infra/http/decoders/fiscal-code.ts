@@ -1,13 +1,9 @@
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { validate } from "@io-sign/io-sign/validation";
-
-import { pipe } from "fp-ts/lib/function";
-
-import * as E from "fp-ts/lib/Either";
-
 import { HttpBadRequestError } from "@io-sign/io-sign/infra/http/errors";
+import { validate } from "@io-sign/io-sign/validation";
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
 
 export const requireFiscalCode = (req: HttpRequest) =>
   pipe(

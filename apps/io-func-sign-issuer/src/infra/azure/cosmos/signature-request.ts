@@ -1,28 +1,27 @@
+import * as cosmos from "@azure/cosmos";
+import { Document } from "@io-sign/io-sign/document";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+import { validate } from "@io-sign/io-sign/validation";
 import {
-  CosmosdbModel,
   BaseModel,
-  CosmosResource,
-  toCosmosErrorResponse,
   CosmosDecodingError,
   CosmosErrorResponse,
+  CosmosResource,
+  CosmosdbModel,
+  toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-import { Document } from "@io-sign/io-sign/document";
-
-import * as t from "io-ts";
+import * as A from "fp-ts/lib/Array";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as A from "fp-ts/lib/Array";
-import * as cosmos from "@azure/cosmos";
-import { pipe, flow } from "fp-ts/lib/function";
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+import { flow, pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
-import { validate } from "@io-sign/io-sign/validation";
 import { Dossier } from "../../../dossier";
 import {
   GetSignatureRequest,
-  UpsertSignatureRequest,
   SignatureRequest,
   SignatureRequestRepository,
+  UpsertSignatureRequest
 } from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
@@ -30,7 +29,7 @@ type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
 
 const RetrievedSignatureRequest = t.intersection([
   SignatureRequest,
-  CosmosResource,
+  CosmosResource
 ]);
 type RetrievedSignatureRequest = t.TypeOf<typeof RetrievedSignatureRequest>;
 
@@ -125,8 +124,8 @@ export class CosmosDbSignatureRequestRepository
                 {
                   op: "replace",
                   path: `/documents/${index}`,
-                  value: request.documents[index],
-                },
+                  value: request.documents[index]
+                }
               ]),
             toCosmosErrorResponse
           ),
@@ -137,7 +136,7 @@ export class CosmosDbSignatureRequestRepository
                 CosmosErrorResponse({
                   code: 404,
                   message: "item not found for input id",
-                  name: "Not Found",
+                  name: "Not Found"
                 })
               ),
               TE.chainEitherKW(
@@ -164,21 +163,21 @@ export class CosmosDbSignatureRequestRepository
           parameters: [
             {
               name: "@dossierId",
-              value: dossier.id,
-            },
+              value: dossier.id
+            }
           ],
-          query: "SELECT * FROM m WHERE m.dossierId = @dossierId",
+          query: "SELECT * FROM m WHERE m.dossierId = @dossierId"
         },
         {
           partitionKey: dossier.issuerId,
           continuationToken: options.continuationToken,
-          maxItemCount: options.maxItemCount ?? 25,
+          maxItemCount: options.maxItemCount ?? 25
         }
       )
       .fetchNext();
     return {
       items,
-      continuationToken,
+      continuationToken
     };
   }
 }

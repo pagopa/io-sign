@@ -1,24 +1,20 @@
+import * as cosmos from "@azure/cosmos";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
+import { Issuer } from "@io-sign/io-sign/issuer";
+import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
+import { Signer } from "@io-sign/io-sign/signer";
 import {
-  CosmosdbModel,
   BaseModel,
   CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
 import * as TE from "fp-ts/TaskEither";
-
+import { pipe } from "fp-ts/function";
 import * as t from "io-ts";
 
-import * as cosmos from "@azure/cosmos";
-
-import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
-import { Issuer } from "@io-sign/io-sign/issuer";
-import { Signer } from "@io-sign/io-sign/signer";
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
-
-import { pipe } from "fp-ts/function";
 import {
-  SignatureRequestRepository,
   SignatureRequest,
+  SignatureRequestRepository
 } from "../../../signature-request";
 
 const NewSignatureRequest = t.intersection([SignatureRequest, BaseModel]);
@@ -26,7 +22,7 @@ type NewSignatureRequest = t.TypeOf<typeof NewSignatureRequest>;
 
 const RetrievedSignatureRequest = t.intersection([
   SignatureRequest,
-  CosmosResource,
+  CosmosResource
 ]);
 
 type RetrievedSignatureRequest = t.TypeOf<typeof RetrievedSignatureRequest>;
@@ -52,7 +48,6 @@ class SignatureRequestFromSignerModel extends CosmosdbModel<
   RetrievedSignatureRequest,
   "signerId"
 > {
-  // eslint-disable-next-line sonarjs/no-identical-functions
   constructor(db: cosmos.Database) {
     super(
       db.container("signature-requests"),

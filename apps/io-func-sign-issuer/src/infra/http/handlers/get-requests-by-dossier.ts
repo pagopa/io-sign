@@ -1,27 +1,25 @@
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import * as H from "@pagopa/handler-kit";
-
+import {
+  IntegerFromString,
+  WithinRangeInteger
+} from "@pagopa/ts-commons/lib/numbers";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { sequenceS } from "fp-ts/lib/Apply";
 import {
   ApplyPar,
   chainW,
-  map,
-  orElseW,
   fromEither,
+  map,
+  orElseW
 } from "fp-ts/lib/ReaderTaskEither";
-
-import { pipe, flow } from "fp-ts/lib/function";
-import { sequenceS } from "fp-ts/lib/Apply";
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import {
-  WithinRangeInteger,
-  IntegerFromString,
-} from "@pagopa/ts-commons/lib/numbers";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { flow, pipe } from "fp-ts/lib/function";
 import * as t from "io-ts";
-import { requireIssuer } from "../decoders/issuer";
 
-import { requireDossierId } from "../decoders/dossier";
 import { getDossierById } from "../../../dossier";
 import { findSignatureRequestsByDossier } from "../../../signature-request";
+import { requireDossierId } from "../decoders/dossier";
+import { requireIssuer } from "../decoders/issuer";
 import { SignatureRequestToListApiModel } from "../encoders/signature-request";
 
 export const GetRequestsByDossierHandler = H.of((req: H.HttpRequest) =>
@@ -34,15 +32,15 @@ export const GetRequestsByDossierHandler = H.of((req: H.HttpRequest) =>
         H.parse(
           t.partial({
             continuationToken: NonEmptyString,
-            limit: IntegerFromString.pipe(WithinRangeInteger(25, 101)),
+            limit: IntegerFromString.pipe(WithinRangeInteger(25, 101))
           })
         ),
         fromEither,
         map(({ continuationToken, limit }) => ({
           continuationToken,
-          maxItemCount: limit,
+          maxItemCount: limit
         }))
-      ),
+      )
     }),
     chainW(({ dossierId, issuer, options }) =>
       pipe(

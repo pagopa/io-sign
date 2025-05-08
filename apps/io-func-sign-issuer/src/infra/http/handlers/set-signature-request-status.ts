@@ -1,31 +1,28 @@
-import * as H from "@pagopa/handler-kit";
-
-import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
+import { QueueClient } from "@azure/storage-queue";
 import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
+import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
+import { validate } from "@io-sign/io-sign/validation";
+import * as H from "@pagopa/handler-kit";
+import { sequenceS } from "fp-ts/lib/Apply";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
-import { sequenceS } from "fp-ts/lib/Apply";
 
-import { validate } from "@io-sign/io-sign/validation";
-
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { QueueClient } from "@azure/storage-queue";
-import {
-  SetSignatureRequestStatusBody,
-  SetSignatureRequestStatusBodyEnum,
-} from "../../http/models/SetSignatureRequestStatusBody";
 import {
   SignatureRequest,
   getSignatureRequest,
   markAsCancelled,
   markAsReady,
-  upsertSignatureRequest,
+  upsertSignatureRequest
 } from "../../../signature-request";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { requireSignatureRequestId } from "../../http/decoders/signature-request";
+import {
+  SetSignatureRequestStatusBody,
+  SetSignatureRequestStatusBodyEnum
+} from "../../http/models/SetSignatureRequestStatusBody";
 
 const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
   pipe(
@@ -64,7 +61,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
     sequenceS(RTE.ApplyPar)({
       signatureRequestId: requireSignatureRequestId(req),
       issuer: requireIssuer(req),
-      body: pipe(requireSetSignatureRequestStatusBody(req), RTE.fromEither),
+      body: pipe(requireSetSignatureRequestStatusBody(req), RTE.fromEither)
     }),
     RTE.bindW("signatureRequest", ({ signatureRequestId, issuer }) =>
       getSignatureRequest(signatureRequestId, issuer.id)

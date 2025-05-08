@@ -1,13 +1,12 @@
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
+import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
-import * as TE from "fp-ts/lib/TaskEither";
-
 import {
-  UpsertSignatureRequest,
-  markAsWaitForSignature,
   GetSignatureRequest,
+  UpsertSignatureRequest,
+  markAsWaitForSignature
 } from "../../signature-request";
 
 export const makeMarkRequestAsWaitForSignature =

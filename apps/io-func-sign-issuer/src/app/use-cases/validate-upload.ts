@@ -1,52 +1,45 @@
-import { pipe, flow, constVoid } from "fp-ts/lib/function";
-import * as E from "fp-ts/lib/Either";
-
-import * as RE from "fp-ts/lib/ReaderEither";
-
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as A from "fp-ts/lib/Array";
-
-import * as L from "@pagopa/logger";
-
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
-
 import {
-  SignatureFieldAttributes,
-  SignatureFieldToBeCreatedAttributes,
   DocumentMetadata,
+  SignatureFieldAttributes,
+  SignatureFieldToBeCreatedAttributes
 } from "@io-sign/io-sign/document";
-
-import { getDocument } from "@io-sign/io-sign/signature-request";
-
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
-import {
-  getUploadMetadata,
-  upsertUploadMetadata,
-  getUploadedDocument,
-  createDocumentFromUrl,
-  markUploadMetadataAsValid,
-  removeDocumentFromStorage,
-  getUploadedDocumentUrl,
-  UploadMetadata,
-} from "../../upload";
+import { getDocument } from "@io-sign/io-sign/signature-request";
+import * as L from "@pagopa/logger";
+import * as A from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
+import * as RE from "fp-ts/lib/ReaderEither";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { constVoid, flow, pipe } from "fp-ts/lib/function";
 
 import {
   getSignatureRequest,
   markDocumentAsReady,
   markDocumentAsRejected,
-  startValidationOnDocument,
   patchSignatureRequestDocument,
+  startValidationOnDocument
 } from "../../signature-request";
+import {
+  UploadMetadata,
+  createDocumentFromUrl,
+  getUploadMetadata,
+  getUploadedDocument,
+  getUploadedDocumentUrl,
+  markUploadMetadataAsValid,
+  removeDocumentFromStorage,
+  upsertUploadMetadata
+} from "../../upload";
 
 export const validateExistingSignatureField =
   (clauseTitle: string, { uniqueName }: SignatureFieldAttributes) =>
-  (documentMetadata: PdfDocumentMetadata): E.Either<string[], void> =>
+  (documentMetadata: PdfDocumentMetadata): E.Either<Array<string>, void> =>
     pipe(
       documentMetadata.formFields,
       A.findFirst((field) => field.name === uniqueName),
       E.fromOption(() => [
-        `(${clauseTitle}) the field "${uniqueName}" was not found is the uploaded document`,
+        `(${clauseTitle}) the field "${uniqueName}" was not found is the uploaded document`
       ]),
       E.map(constVoid)
     );
@@ -57,20 +50,20 @@ export const validateSignatureFieldToBeCreated =
     {
       page,
       coordinates: { x, y },
-      size: { w, h },
+      size: { w, h }
     }: SignatureFieldToBeCreatedAttributes
   ) =>
-  (documentMetadata: PdfDocumentMetadata): E.Either<string[], void> =>
+  (documentMetadata: PdfDocumentMetadata): E.Either<Array<string>, void> =>
     pipe(
       documentMetadata.pages,
       A.findFirst((p) => p.number === page),
       E.fromOption(() => [
-        `(${clauseTitle}) incompatible coordinates: unable to find page ${page} in the uploaded document`,
+        `(${clauseTitle}) incompatible coordinates: unable to find page ${page} in the uploaded document`
       ]),
       E.filterOrElse(
         (page) => x + w < page.width && y + h < page.height,
         () => [
-          `(${clauseTitle}) incompatible coordinates: they can't fit in the uploaded document`,
+          `(${clauseTitle}) incompatible coordinates: they can't fit in the uploaded document`
         ]
       ),
       E.map(constVoid)
@@ -93,7 +86,7 @@ const isCompatibleWithSignatureFields = (
 
 const loggingContext = (meta: UploadMetadata) => ({
   uploadId: meta.id,
-  signatureRequestId: meta.signatureRequestId,
+  signatureRequestId: meta.signatureRequestId
 });
 
 // Validate a PDF document
@@ -126,7 +119,7 @@ export const validateDocument = (
       RTE.chainFirstW(() =>
         L.debugRTE("the signature fields are valid", loggingContext)
       )
-    ),
+    )
   ]);
 
 // from a blob uri get the "upload metadata" (entity that tracks the upload)
@@ -161,7 +154,7 @@ export const validateUpload = flow(
       RTE.map((signatureRequest) => ({
         signatureRequest,
         document,
-        ...ctx,
+        ...ctx
       }))
     )
   ),
@@ -169,9 +162,9 @@ export const validateUpload = flow(
     ({
       signatureRequest,
       document: {
-        metadata: { signatureFields },
+        metadata: { signatureFields }
       },
-      meta,
+      meta
     }) =>
       pipe(
         // Download the PDF document and save its content
@@ -189,7 +182,7 @@ export const validateUpload = flow(
         RTE.chainFirstW(({ documentMetadata }) =>
           L.debugRTE("obtained pdf metadata", {
             documentMetadata,
-            ...loggingContext(meta),
+            ...loggingContext(meta)
           })
         ),
         // Validate document
@@ -225,7 +218,7 @@ export const validateUpload = flow(
                 RTE.chainFirstW(() =>
                   L.infoRTE("validation done", {
                     isDocumentValid: true,
-                    ...loggingContext(meta),
+                    ...loggingContext(meta)
                   })
                 ),
                 RTE.map((meta) => meta.id),
@@ -249,7 +242,7 @@ export const validateUpload = flow(
             RTE.chainFirstW(() =>
               L.infoRTE("validation done", {
                 isDocumentValid: false,
-                ...loggingContext(meta),
+                ...loggingContext(meta)
               })
             ),
             // Remove REJECTED file from temp storage

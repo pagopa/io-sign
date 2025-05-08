@@ -1,21 +1,17 @@
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import * as H from "@pagopa/handler-kit";
-
 import {
-  fromEither,
-  chainW,
-  map,
-  orElseW,
   chainEitherKW,
+  chainW,
+  fromEither,
+  map,
+  orElseW
 } from "fp-ts/ReaderTaskEither";
-
+import * as RA from "fp-ts/ReadonlyArray";
 import { flow } from "fp-ts/function";
 
-import * as RA from "fp-ts/ReadonlyArray";
-
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { requireSignerId } from "../decoders/signer";
-
 import { getSignatureRequestsBySignerId } from "../../../signature-request";
+import { requireSignerId } from "../decoders/signer";
 import { SignatureRequestToListView } from "../encoders/signature-request";
 import { SignatureRequestList } from "../models/SignatureRequestList";
 

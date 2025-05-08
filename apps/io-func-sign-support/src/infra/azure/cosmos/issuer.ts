@@ -1,26 +1,21 @@
+import * as cosmos from "@azure/cosmos";
+import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 import {
-  CosmosdbModel,
   BaseModel,
   CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
-
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import * as O from "fp-ts/Option";
 import * as TE from "fp-ts/TaskEither";
-
+import { pipe } from "fp-ts/function";
 import * as t from "io-ts";
 
-import * as cosmos from "@azure/cosmos";
-
-import * as O from "fp-ts/Option";
-
-import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
-
-import { pipe } from "fp-ts/function";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Issuer, IssuerRepository } from "../../../issuer";
 
 const IssuerByVatNumber = t.type({
   id: Issuer.props.vatNumber,
-  issuerId: Issuer.props.id,
+  issuerId: Issuer.props.id
 });
 
 type IssuerByVatNumber = t.TypeOf<typeof IssuerByVatNumber>;
@@ -30,7 +25,7 @@ type NewIssuerByVatNumber = t.TypeOf<typeof IssuerByVatNumber>;
 
 const RetrievedIssuerByVatNumber = t.intersection([
   IssuerByVatNumber,
-  CosmosResource,
+  CosmosResource
 ]);
 
 type RetrievedIssuerByVatNumber = t.TypeOf<typeof RetrievedIssuerByVatNumber>;

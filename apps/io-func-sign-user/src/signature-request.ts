@@ -1,33 +1,31 @@
 import {
-  SignatureRequestToBeSigned,
+  ActionNotAllowedError,
+  EntityNotFoundError
+} from "@io-sign/io-sign/error";
+import { Id } from "@io-sign/io-sign/id";
+import {
+  SignatureRequestCancelled,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestWaitForQtsp,
-  SignatureRequestCancelled,
+  SignatureRequestToBeSigned,
+  SignatureRequestWaitForQtsp
 } from "@io-sign/io-sign/signature-request";
-
-import { Id } from "@io-sign/io-sign/id";
-import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as O from "fp-ts/lib/Option";
-import { differenceInDays } from "date-fns";
-
-import * as t from "io-ts";
-import { pipe } from "fp-ts/lib/function";
-import {
-  ActionNotAllowedError,
-  EntityNotFoundError,
-} from "@io-sign/io-sign/error";
-import { validate } from "@io-sign/io-sign/validation";
 import { Signer } from "@io-sign/io-sign/signer";
+import { validate } from "@io-sign/io-sign/validation";
+import { differenceInDays } from "date-fns";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
+import * as t from "io-ts";
 
 export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
-  SignatureRequestCancelled,
+  SignatureRequestCancelled
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -56,7 +54,7 @@ export type NotifySignatureRequestRejectedEvent = (
   requestRejected: SignatureRequestRejected
 ) => TE.TaskEither<Error, string>;
 
-export type SignatureRequestRepository = {
+export interface SignatureRequestRepository {
   findBySignerId: (
     signerId: Signer["id"]
   ) => TE.TaskEither<Error, ReadonlyArray<SignatureRequest>>;
@@ -65,11 +63,11 @@ export type SignatureRequestRepository = {
     signerId: SignatureRequest["signerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
-};
+}
 
-type SignatureRequestEnvironment = {
+interface SignatureRequestEnvironment {
   signatureRequestRepository: SignatureRequestRepository;
-};
+}
 
 export const getSignatureRequestsBySignerId =
   (
@@ -114,25 +112,25 @@ export const upsertSignatureRequest =
   ({ signatureRequestRepository: repo }) =>
     repo.upsert(request);
 
-type Action_MARK_AS_SIGNED = {
+interface Action_MARK_AS_SIGNED {
   name: "MARK_AS_SIGNED";
-};
+}
 
-type Action_MARK_AS_REJECTED = {
+interface Action_MARK_AS_REJECTED {
   name: "MARK_AS_REJECTED";
   payload: {
     reason: string;
   };
-};
+}
 
-type Action_MARK_AS_WAIT_FOR_QTSP = {
+interface Action_MARK_AS_WAIT_FOR_QTSP {
   name: "MARK_AS_WAIT_FOR_QTSP";
-};
+}
 
-type Action_MARK_AS_CANCELLED = {
+interface Action_MARK_AS_CANCELLED {
   name: "MARK_AS_CANCELLED";
   cancelledAt: Date;
-};
+}
 
 type SignatureRequestAction =
   | Action_MARK_AS_SIGNED
@@ -174,7 +172,7 @@ const onWaitForSignatureStatus =
         return E.right({
           ...request,
           updatedAt: new Date(),
-          status: "WAIT_FOR_QTSP",
+          status: "WAIT_FOR_QTSP"
         });
       case "MARK_AS_REJECTED":
         return E.right({
@@ -182,14 +180,14 @@ const onWaitForSignatureStatus =
           status: "REJECTED",
           updatedAt: new Date(),
           rejectedAt: new Date(),
-          rejectReason: action.payload.reason,
+          rejectReason: action.payload.reason
         });
       case "MARK_AS_CANCELLED":
         return E.right({
           ...request,
           status: "CANCELLED",
           cancelledAt: action.cancelledAt,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       default:
         return E.left(
@@ -205,13 +203,12 @@ const onRejectedStatus =
   (
     request: SignatureRequestRejected
   ): E.Either<Error, SignatureRequestWaitForQtsp> => {
-    // eslint-disable-next-line sonarjs/no-small-switch
     switch (action.name) {
       case "MARK_AS_WAIT_FOR_QTSP":
         return E.right({
           ...request,
           updatedAt: new Date(),
-          status: "WAIT_FOR_QTSP",
+          status: "WAIT_FOR_QTSP"
         });
       default:
         return E.left(
@@ -233,7 +230,7 @@ const onWaitForQtspStatus =
           ...request,
           updatedAt: new Date(),
           status: "SIGNED",
-          signedAt: new Date(),
+          signedAt: new Date()
         });
       case "MARK_AS_REJECTED":
         return E.right({
@@ -241,7 +238,7 @@ const onWaitForQtspStatus =
           status: "REJECTED",
           updatedAt: new Date(),
           rejectedAt: new Date(),
-          rejectReason: action.payload.reason,
+          rejectReason: action.payload.reason
         });
       default:
         return E.left(
@@ -257,12 +254,12 @@ export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
 export const markAsRejected = (reason: string) =>
   dispatch({
     name: "MARK_AS_REJECTED",
-    payload: { reason },
+    payload: { reason }
   });
 export const markAsCancelled = (cancelledAt: Date) =>
   dispatch({
     name: "MARK_AS_CANCELLED",
-    cancelledAt,
+    cancelledAt
   });
 
 export const canBeWaitForQtsp = (request: SignatureRequest) =>

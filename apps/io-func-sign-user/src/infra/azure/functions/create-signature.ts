@@ -1,59 +1,49 @@
 import { Database as CosmosDatabase } from "@azure/cosmos";
-
-import { createHandler } from "handler-kit-legacy";
-import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
-
-import { HttpRequest } from "handler-kit-legacy/lib/http";
-
-import { success, error } from "@io-sign/io-sign/infra/http/response";
-import { validate } from "@io-sign/io-sign/validation";
-import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-
-import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { pipe, flow } from "fp-ts/lib/function";
-import { sequenceS } from "fp-ts/lib/Apply";
-
-import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
+import { QueueClient } from "@azure/storage-queue";
 import { DocumentReady } from "@io-sign/io-sign/document";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
+import { error, success } from "@io-sign/io-sign/infra/http/response";
+import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
+import { validate } from "@io-sign/io-sign/validation";
 import * as L from "@pagopa/logger";
-import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
-
-import { requireSigner } from "../../http/decoders/signer.old";
-import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
-import { requireDocumentsSignature } from "../../http/decoders/document-to-sign";
-import { requireQtspClauses } from "../../http/decoders/qtsp-clause";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { sequenceS } from "fp-ts/lib/Apply";
+import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
+import { createHandler } from "handler-kit-legacy";
+import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
+import { HttpRequest } from "handler-kit-legacy/lib/http";
 
 import {
   CreateSignaturePayload,
-  makeCreateSignature,
+  makeCreateSignature
 } from "../../../app/use-cases/create-signature";
+import { requireDocumentsSignature } from "../../http/decoders/document-to-sign";
+import { requireCreateSignatureLollipopParams } from "../../http/decoders/lollipop";
+import { requireQtspClauses } from "../../http/decoders/qtsp-clause";
+import { requireSigner } from "../../http/decoders/signer.old";
+import { SignatureToApiModel } from "../../http/encoders/signature";
+import { CreateSignatureBody } from "../../http/models/CreateSignatureBody";
+import { SignatureDetailView } from "../../http/models/SignatureDetailView";
+import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
+import { LollipopApiClient } from "../../lollipop/client";
+import { getSignatureFromHeaderName } from "../../lollipop/signature";
 import { makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
 import { makeCreateSignatureRequestWithToken } from "../../namirial/signature-request";
-
 import { makeInsertSignature } from "../cosmos/signature";
-
-import { SignatureToApiModel } from "../../http/encoders/signature";
-import { SignatureDetailView } from "../../http/models/SignatureDetailView";
-
 import {
   makeGetSignatureRequest,
-  makeUpsertSignatureRequest,
+  makeUpsertSignatureRequest
 } from "../cosmos/signature-request";
-
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
-import { requireCreateSignatureLollipopParams } from "../../http/decoders/lollipop";
-import { LollipopApiClient } from "../../lollipop/client";
-import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
-import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 const makeCreateSignatureHandler = (
   tokenizer: PdvTokenizerClientWithApiKey,
@@ -67,9 +57,8 @@ const makeCreateSignatureHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getBase64SamlAssertion = makeGetBase64SamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
-  const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
-    makeGetToken()
-  )(qtspConfig);
+  const creatQtspSignatureRequest =
+    makeCreateSignatureRequestWithToken()(makeGetToken())(qtspConfig);
 
   const insertSignature = makeInsertSignature(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
@@ -98,7 +87,7 @@ const makeCreateSignatureHandler = (
     validate(CreateSignatureBody),
     E.map((body) => ({
       email: body.email,
-      signatureRequestId: body.signature_request_id,
+      signatureRequestId: body.signature_request_id
     }))
   );
 
@@ -112,18 +101,16 @@ const makeCreateSignatureHandler = (
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),
-      lollipopParams: RTE.fromReaderEither(
-        requireCreateSignatureLollipopParams
-      ),
+      lollipopParams: RTE.fromReaderEither(requireCreateSignatureLollipopParams)
     }),
     RTE.chainFirstIOK(() =>
       L.info("creating signature")({
-        logger: ConsoleLogger,
+        logger: ConsoleLogger
       })
     ),
     RTE.chainFirstIOK((params) =>
       L.debug("creating signature with params", { params })({
-        logger: ConsoleLogger,
+        logger: ConsoleLogger
       })
     ),
     RTE.chainTaskEitherK((sequence) =>
@@ -145,7 +132,7 @@ const makeCreateSignatureHandler = (
               "x-pagopa-lollipop-custom-sign-challenge"
             ),
             TE.fromEither
-          ),
+          )
         }),
         TE.map(({ samlAssertionBase64, tosSignature, challengeSignature }) => ({
           ...sequence,
@@ -153,12 +140,12 @@ const makeCreateSignatureHandler = (
             ...sequence.lollipopParams,
             samlAssertionBase64,
             tosSignature,
-            challengeSignature,
-          },
+            challengeSignature
+          }
         })),
         TE.chainFirstIOK((lollipopParams) =>
           L.debug("retrived lollipop params: ", { lollipopParams })({
-            logger: ConsoleLogger,
+            logger: ConsoleLogger
           })
         )
       )
@@ -169,7 +156,7 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         qtspClauses,
         body: { email, signatureRequestId },
-        lollipopParams,
+        lollipopParams
       }) => ({
         signer,
         qtspClauses: {
@@ -184,7 +171,7 @@ const makeCreateSignatureHandler = (
                   validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
                 ),
                 E.getOrElse(() => qtspClauses.filledDocumentUrl)
-              ),
+              )
         },
         documentsSignature,
         email,
@@ -194,13 +181,13 @@ const makeCreateSignatureHandler = (
           publicKey: lollipopParams.publicKey,
           samlAssertionBase64: lollipopParams.samlAssertionBase64,
           tosSignature: lollipopParams.tosSignature,
-          challengeSignature: lollipopParams.challengeSignature,
-        },
+          challengeSignature: lollipopParams.challengeSignature
+        }
       })
     ),
     RTE.chainFirstIOK((payload) =>
       L.debug("create signature payload", { payload })({
-        logger: ConsoleLogger,
+        logger: ConsoleLogger
       })
     )
   );
