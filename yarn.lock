@@ -4767,7 +4767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rushstack/eslint-patch@npm:^1.2.0, @rushstack/eslint-patch@npm:^1.3.3, @rushstack/eslint-patch@npm:^1.5.1":
+"@rushstack/eslint-patch@npm:^1.2.0, @rushstack/eslint-patch@npm:^1.3.3":
   version: 1.5.1
   resolution: "@rushstack/eslint-patch@npm:1.5.1"
   checksum: e4c25322312dbaa29e835a7ab4fbac53c8731dd0da65e46646e38945e296429e7fb91c2ef3da5af5d5938d44b0cde1d5290438ebb3dcb015e02b80b5e2530d24
@@ -5964,7 +5964,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.4.5, @types/node@npm:^20.8.8":
+"@types/node@npm:^20.17.0":
+  version: 20.17.47
+  resolution: "@types/node@npm:20.17.47"
+  dependencies:
+    undici-types: ~6.19.2
+  checksum: e3afa4dcc70a833d6a93c1d7824f4a406b920bdd57eaae82d11e2524fe157bf1c4f0ffd3f9f6ee76b5452737d20233e7d5ad0c98e0198ba1332a2989f0bd9fb9
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.4.5":
   version: 20.11.16
   resolution: "@types/node@npm:20.11.16"
   dependencies:
@@ -9939,7 +9948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.12.0, eslint@npm:^8.28.0, eslint@npm:^8.50.0":
+"eslint@npm:^8.12.0, eslint@npm:^8.28.0":
   version: 8.52.0
   resolution: "eslint@npm:8.52.0"
   dependencies:
@@ -11820,17 +11829,17 @@ __metadata:
     "@azure/cosmos": ^3.17.3
     "@azure/functions": ^4.2.0
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": ^3.0.0
+    "@pagopa/eslint-config": ^4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^2.0.1
     "@pagopa/logger": ^1.0.1
-    "@rushstack/eslint-patch": ^1.5.1
-    "@types/node": ^20.8.8
+    "@types/node": ^20.17.0
     azure-functions-core-tools: ^4.0.5455
-    eslint: ^8.50.0
+    eslint: 8.57.0
+    eslint-plugin-prettier: ^5.0.0
     fp-ts: ^2.16.1
     googleapis: ^133.0.0
-    prettier: 2.7.1
+    prettier: ^3.0.0
     tsup: ^7.2.0
     typescript: ^4.8.4
     undici: ^5.27.2
@@ -17841,6 +17850,13 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.19.2":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: de51f1b447d22571cf155dfe14ff6d12c5bdaec237c765085b439c38ca8518fc360e88c70f99469162bf2e14188a7b0bcb06e1ed2dc031042b984b0bb9544017
   languageName: node
   linkType: hard
 
