@@ -1,16 +1,15 @@
-import { pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-
 import { ApiKey } from "@io-sign/io-sign/api-key";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
-export type ApiKeyRepository = {
+export interface ApiKeyRepository {
   getApiKeyById(id: ApiKey["id"]): Promise<ApiKey | undefined>;
-};
+}
 
-type ApiKeyEnvironment = {
+interface ApiKeyEnvironment {
   apiKeyRepository: ApiKeyRepository;
-};
+}
 
 export const getApiKeyById = (id: ApiKey["id"]) => (r: ApiKeyEnvironment) =>
   pipe(

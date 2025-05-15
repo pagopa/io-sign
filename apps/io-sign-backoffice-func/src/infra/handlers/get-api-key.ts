@@ -1,24 +1,21 @@
-import * as H from "@pagopa/handler-kit";
-
-import { pipe } from "fp-ts/lib/function";
-import { lookup } from "fp-ts/lib/Record";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
-import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
-
-import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-
-import * as L from "@pagopa/logger";
-import { IoTsType } from "./validation";
 import { getApiKeyById } from "@/api-key";
 import { getInstitutionById, getIssuerByInstitution } from "@/institution";
+import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
+import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
+import * as H from "@pagopa/handler-kit";
+import * as L from "@pagopa/logger";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { lookup } from "fp-ts/lib/Record";
+import { pipe } from "fp-ts/lib/function";
+
+import { IoTsType } from "./validation";
 
 export const getApiKey = (id: ApiKey["id"]) =>
   pipe(
     getApiKeyById(id),
     RTE.tapReaderIO((apiKey) =>
       L.debug("Api Key retrieved.", {
-        apiKey,
+        apiKey
       })
     ),
     RTE.flatMap((apiKey) =>
@@ -26,7 +23,7 @@ export const getApiKey = (id: ApiKey["id"]) =>
         getInstitutionById(apiKey.institutionId),
         RTE.tapReaderIO((institution) =>
           L.debug("Institution retrieved.", {
-            institution,
+            institution
           })
         ),
         RTE.flatMap((institution) =>

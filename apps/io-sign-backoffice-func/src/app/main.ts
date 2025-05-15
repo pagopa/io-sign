@@ -1,28 +1,26 @@
-import { app, output } from "@azure/functions";
-import {
-  httpAzureFunction,
-  azureFunction,
-} from "@pagopa/handler-kit-azure-func";
-
-import { google } from "googleapis";
-
-import { CosmosClient } from "@azure/cosmos";
-import { getConfigFromEnvironment } from "./config";
+import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
+import * as CreateApiKeyById from "@/infra/handlers/create-api-key-by-id";
+import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
 import { healthHandler } from "@/infra/handlers/health";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
-import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
-import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
-import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
+import { ioSignContracts } from "@/infra/selfcare/contract";
+import { CosmosClient } from "@azure/cosmos";
+import { app, output } from "@azure/functions";
+import {
+  azureFunction,
+  httpAzureFunction
+} from "@pagopa/handler-kit-azure-func";
+import { google } from "googleapis";
 
-import * as CreateApiKeyById from "@/infra/handlers/create-api-key-by-id";
+import { getConfigFromEnvironment } from "./config";
 
 const config = getConfigFromEnvironment();
 
 const googleAuth = new google.auth.GoogleAuth({
   credentials: config.google.credentials,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
 const cosmos = new CosmosClient(config.cosmos.cosmosDbConnectionString);
@@ -41,32 +39,32 @@ const onSelfcareContractsMessage = azureFunction(
   userRepository: selfcareApiClient,
   google: {
     auth: googleAuth,
-    spreadsheetId: config.google.spreadsheetId,
-  },
+    spreadsheetId: config.google.spreadsheetId
+  }
 });
 
 app.eventHub("onSelfcareContractsMessage", {
   connection: "SelfCareEventHubConnectionString",
   eventHubName: config.selfcare.contracts.eventHubContractsName,
   cardinality: "many",
-  handler: onSelfcareContractsMessage,
+  handler: onSelfcareContractsMessage
 });
 
 const getApiKey = httpAzureFunction(getApiKeyHandler)({
   institutionRepository: selfcareApiClient,
   issuerRepository: backofficeRepository,
-  apiKeyRepository: backofficeRepository,
+  apiKeyRepository: backofficeRepository
 });
 
 app.http("getApiKey", {
   methods: ["GET"],
   authLevel: "function",
   route: "api-keys/{id}",
-  handler: getApiKey,
+  handler: getApiKey
 });
 
 const createApiKeyById = azureFunction(CreateApiKeyById.handler)({
-  inputDecoder: CreateApiKeyById.inputDecoder,
+  inputDecoder: CreateApiKeyById.inputDecoder
 });
 
 app.cosmosDB("createApiKeyById", {
@@ -81,12 +79,12 @@ app.cosmosDB("createApiKeyById", {
     databaseName: config.cosmos.cosmosDbName,
     collectionName: "api-keys-by-id",
     createIfNotExists: false,
-    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
+    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING"
   }),
-  handler: createApiKeyById,
+  handler: createApiKeyById
 });
 
 app.http("health", {
   methods: ["GET"],
-  handler: healthHandler,
+  handler: healthHandler
 });
