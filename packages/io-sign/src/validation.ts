@@ -1,14 +1,17 @@
-import * as t from "io-ts";
-import { failure } from "io-ts/PathReporter";
 import * as E from "fp-ts/lib/Either";
 import { flow } from "fp-ts/lib/function";
+import * as t from "io-ts";
+import { failure } from "io-ts/PathReporter";
 
 export class ValidationError extends Error {
   name = "ValidationError";
   title = "Validation Error";
-  violations: string[];
+  violations: Array<string>;
   static defaultMessage = "Your request parameters didn't validate";
-  constructor(violations: string[], message = ValidationError.defaultMessage) {
+  constructor(
+    violations: Array<string>,
+    message = ValidationError.defaultMessage
+  ) {
     super(message);
     this.violations = violations;
   }

@@ -1,19 +1,18 @@
-import * as E from "fp-ts/lib/Either";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
 import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { pipe, flow } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow, pipe } from "fp-ts/lib/function";
 
+import { TooManyRequestsError } from "../../error";
 import {
   GetFiscalCodeBySignerId,
   GetSignerByFiscalCode,
   Signer,
-  SignerRepository,
+  SignerRepository
 } from "../../signer";
-
-import { TooManyRequestsError } from "../../error";
-import { HttpBadRequestError } from "../http/errors";
 import { validate } from "../../validation";
+import { HttpBadRequestError } from "../http/errors";
 import { PdvTokenizerClientWithApiKey } from "./client";
 
 /** @deprecated use "PdvTokenizerSignerRepository" instead */
@@ -25,7 +24,7 @@ export const makeGetSignerByFiscalCode =
         () =>
           clientPayload.client.saveUsingPUT({
             body: { pii: fiscalCode },
-            api_key: clientPayload.apiKey,
+            api_key: clientPayload.apiKey
           }),
         E.toError
       ),
@@ -51,7 +50,7 @@ export const makeGetSignerByFiscalCode =
             flow(
               O.fromNullable,
               O.map((tokenResponse) => ({
-                id: tokenResponse.token as NonEmptyString,
+                id: tokenResponse.token as NonEmptyString
               }))
             )
           )
@@ -68,7 +67,7 @@ export const makeGetFiscalCodeBySignerId =
         () =>
           clientPayload.client.findPiiUsingGET({
             token: signerId,
-            api_key: clientPayload.apiKey,
+            api_key: clientPayload.apiKey
           }),
         E.toError
       ),
@@ -115,7 +114,7 @@ export class PdvTokenizerSignerRepository implements SignerRepository {
         () =>
           this.#pdv.client.saveUsingPUT({
             body: { pii: fiscalCode },
-            api_key: this.#pdv.apiKey,
+            api_key: this.#pdv.apiKey
           }),
         E.toError
       ),
@@ -146,7 +145,7 @@ export class PdvTokenizerSignerRepository implements SignerRepository {
         () =>
           this.#pdv.client.findPiiUsingGET({
             token: id,
-            api_key: this.#pdv.apiKey,
+            api_key: this.#pdv.apiKey
           }),
         E.toError
       ),

@@ -1,4 +1,5 @@
 import { TelemetryClient } from "applicationinsights";
+
 import { TelemetryService } from "../../../telemetry";
 
 export class ApplicationInsights implements TelemetryService {
@@ -14,8 +15,8 @@ export class ApplicationInsights implements TelemetryService {
         name,
         ...context,
         tagOverrides: {
-          samplingEnabled: options.sampling ? "true" : "false",
-        },
+          samplingEnabled: options.sampling ? "true" : "false"
+        }
       });
   }
 }

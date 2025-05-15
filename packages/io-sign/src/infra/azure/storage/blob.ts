@@ -1,18 +1,15 @@
 import {
+  BlobClient,
   BlobGenerateSasUrlOptions,
   BlobSASPermissions,
-  SASProtocol,
-  BlobClient,
   ContainerClient,
+  SASProtocol
 } from "@azure/storage-blob";
-
-import * as R from "fp-ts/lib/Reader";
-import * as TE from "fp-ts/lib/TaskEither";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-
-import { pipe } from "fp-ts/lib/function";
-
 import { addMinutes } from "date-fns";
+import * as R from "fp-ts/lib/Reader";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 
 export const blobExists = (blobClient: BlobClient) =>
   TE.tryCatch(
@@ -30,7 +27,7 @@ export const getBlobClient = (blobName: string) =>
 export const defaultBlobGenerateSasUrlOptions =
   (): BlobGenerateSasUrlOptions => ({
     contentType: "application/pdf",
-    protocol: SASProtocol.HttpsAndHttp,
+    protocol: SASProtocol.HttpsAndHttp
   });
 
 export const withPermissions = (permissions: string) =>
@@ -38,7 +35,7 @@ export const withPermissions = (permissions: string) =>
     R.ask<BlobGenerateSasUrlOptions>(),
     R.map((options) => ({
       ...options,
-      permissions: BlobSASPermissions.parse(permissions),
+      permissions: BlobSASPermissions.parse(permissions)
     }))
   );
 
@@ -48,7 +45,7 @@ export const withExpireInMinutes = (minutes: number) =>
     R.map((options) => ({
       ...options,
       startsOn: new Date(),
-      expiresOn: addMinutes(new Date(), minutes),
+      expiresOn: addMinutes(new Date(), minutes)
     }))
   );
 

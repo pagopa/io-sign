@@ -1,6 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
 import { identity } from "fp-ts/lib/function";
-
 import * as t from "io-ts";
 
 export class HttpError extends Error {

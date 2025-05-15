@@ -1,17 +1,15 @@
+import * as RTE from "fp-ts/ReaderTaskEither";
 import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";
+import { pipe } from "fp-ts/lib/function";
 import { split } from "fp-ts/lib/string";
 
-import { pipe } from "fp-ts/lib/function";
-
-import * as RTE from "fp-ts/ReaderTaskEither";
 import { DocumentReady } from "../../../document";
-
 import {
-  generateSasUrlFromBlob,
   defaultBlobGenerateSasUrlOptions,
-  withExpireInMinutes,
-  withPermissions,
+  generateSasUrlFromBlob,
   getBlobClient,
+  withExpireInMinutes,
+  withPermissions
 } from "./blob";
 
 export const toDocumentWithSasUrl =
@@ -33,7 +31,7 @@ export const toDocumentWithSasUrl =
       ),
       RTE.map((url) => ({
         ...document,
-        url,
+        url
       }))
     );
 

@@ -1,34 +1,27 @@
-/* eslint-disable sonarjs/no-small-switch */
-
+import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
+import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
+import {
+  NonEmptyString,
+  WithinRangeString
+} from "@pagopa/ts-commons/lib/strings";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 import * as t from "io-ts";
 
-import * as E from "fp-ts/lib/Either";
-
-import {
-  WithinRangeString,
-  NonEmptyString,
-} from "@pagopa/ts-commons/lib/strings";
-
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
-
-import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
-
-import { pipe } from "fp-ts/lib/function";
-
 import { ActionNotAllowedError } from "./error";
-import { id, Id } from "./id";
+import { Id, id } from "./id";
 
 const ClauseType = t.keyof({
   REQUIRED: null,
   UNFAIR: null,
-  OPTIONAL: null,
+  OPTIONAL: null
 });
 
 const ClauseTitle = WithinRangeString(5, 80);
 
 export const Clause = t.type({
   title: ClauseTitle,
-  type: ClauseType,
+  type: ClauseType
 });
 
 export type Clause = t.TypeOf<typeof Clause>;
@@ -36,7 +29,7 @@ export type Clause = t.TypeOf<typeof Clause>;
 export const isRequired = (c: Clause) => c.type !== "OPTIONAL";
 
 export const SignatureFieldAttributes = t.type({
-  uniqueName: NonEmptyString,
+  uniqueName: NonEmptyString
 });
 
 export type SignatureFieldAttributes = t.TypeOf<
@@ -46,13 +39,13 @@ export type SignatureFieldAttributes = t.TypeOf<
 export const SignatureFieldToBeCreatedAttributes = t.type({
   coordinates: t.type({
     x: t.number,
-    y: t.number,
+    y: t.number
   }),
   page: NonNegativeNumber,
   size: t.type({
     w: NonNegativeNumber,
-    h: NonNegativeNumber,
-  }),
+    h: NonNegativeNumber
+  })
 });
 
 export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
@@ -62,9 +55,9 @@ export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
 export const SignatureField = t.type({
   attributes: t.union([
     SignatureFieldAttributes,
-    SignatureFieldToBeCreatedAttributes,
+    SignatureFieldToBeCreatedAttributes
   ]),
-  clause: Clause,
+  clause: Clause
 });
 
 export type SignatureField = t.TypeOf<typeof SignatureField>;
@@ -72,13 +65,13 @@ export type SignatureField = t.TypeOf<typeof SignatureField>;
 export const PdfDocumentMetadataPage = t.type({
   number: NonNegativeNumber,
   width: NonNegativeNumber,
-  height: NonNegativeNumber,
+  height: NonNegativeNumber
 });
 export type PdfDocumentMetadataPage = t.TypeOf<typeof PdfDocumentMetadataPage>;
 
 export const PdfDocumentMetadataFormField = t.type({
   type: t.literal("PDFSignature"),
-  name: t.string,
+  name: t.string
 });
 export type PdfDocumentMetadataFormField = t.TypeOf<
   typeof PdfDocumentMetadataFormField
@@ -86,7 +79,7 @@ export type PdfDocumentMetadataFormField = t.TypeOf<
 
 export const PdfDocumentMetadata = t.type({
   pages: t.array(PdfDocumentMetadataPage),
-  formFields: t.array(PdfDocumentMetadataFormField),
+  formFields: t.array(PdfDocumentMetadataFormField)
 });
 export type PdfDocumentMetadata = t.TypeOf<typeof PdfDocumentMetadata>;
 
@@ -98,7 +91,10 @@ export const SignatureFields = t.brand(
   t.array(SignatureField),
   (
     signatureFields
-  ): signatureFields is t.Branded<SignatureField[], SignatureFieldsBrand> =>
+  ): signatureFields is t.Branded<
+    Array<SignatureField>,
+    SignatureFieldsBrand
+  > =>
     signatureFields.length === 0 ||
     signatureFields.some((field) => field.clause.type !== "OPTIONAL"),
   "SignatureFields"
@@ -107,7 +103,7 @@ export const SignatureFields = t.brand(
 export const DocumentMetadata = t.type({
   title: WithinRangeString(3, 60),
   signatureFields: SignatureFields,
-  pdfDocumentMetadata: PdfDocumentMetadata,
+  pdfDocumentMetadata: PdfDocumentMetadata
 });
 
 export type DocumentMetadata = t.TypeOf<typeof DocumentMetadata>;
@@ -118,12 +114,12 @@ const commonFields = {
   id: DocumentId,
   metadata: DocumentMetadata,
   createdAt: IsoDateFromString,
-  updatedAt: IsoDateFromString,
+  updatedAt: IsoDateFromString
 };
 
 const DocumentToBeUploaded = t.type({
   ...commonFields,
-  status: t.literal("WAIT_FOR_UPLOAD"),
+  status: t.literal("WAIT_FOR_UPLOAD")
 });
 
 export type DocumentToBeUploaded = t.TypeOf<typeof DocumentToBeUploaded>;
@@ -131,7 +127,7 @@ export type DocumentToBeUploaded = t.TypeOf<typeof DocumentToBeUploaded>;
 const DocumentToBeValidated = t.type({
   ...commonFields,
   status: t.literal("WAIT_FOR_VALIDATION"),
-  uploadedAt: IsoDateFromString,
+  uploadedAt: IsoDateFromString
 });
 
 export type DocumentToBeValidated = t.TypeOf<typeof DocumentToBeValidated>;
@@ -140,7 +136,7 @@ export const DocumentReady = t.type({
   ...commonFields,
   status: t.literal("READY"),
   uploadedAt: IsoDateFromString,
-  url: t.string,
+  url: t.string
 });
 
 export type DocumentReady = t.TypeOf<typeof DocumentReady>;
@@ -150,7 +146,7 @@ const DocumentRejected = t.type({
   status: t.literal("REJECTED"),
   uploadedAt: IsoDateFromString,
   rejectedAt: IsoDateFromString,
-  rejectReason: t.string,
+  rejectReason: t.string
 });
 
 export type DocumentRejected = t.TypeOf<typeof DocumentRejected>;
@@ -159,7 +155,7 @@ export const Document = t.union([
   DocumentToBeUploaded,
   DocumentToBeValidated,
   DocumentReady,
-  DocumentRejected,
+  DocumentRejected
 ]);
 
 export type Document = t.TypeOf<typeof Document>;
@@ -169,7 +165,7 @@ export const newDocument = (metadata: DocumentMetadata): Document => ({
   status: "WAIT_FOR_UPLOAD",
   metadata,
   createdAt: new Date(),
-  updatedAt: new Date(),
+  updatedAt: new Date()
 });
 
 export const updatePdfDocumentMetadata =
@@ -179,28 +175,28 @@ export const updatePdfDocumentMetadata =
     metadata: {
       signatureFields: document.metadata.signatureFields,
       title: document.metadata.title,
-      pdfDocumentMetadata,
-    },
+      pdfDocumentMetadata
+    }
   });
 
-type Action_START_VALIDATION = {
+interface Action_START_VALIDATION {
   name: "START_VALIDATION";
-};
+}
 
-type Action_MARK_AS_READY = {
+interface Action_MARK_AS_READY {
   name: "MARK_AS_READY";
   payload: {
     url: string;
     pdfDocumentMetadata: PdfDocumentMetadata;
   };
-};
+}
 
-type Action_MARK_AS_REJECTED = {
+interface Action_MARK_AS_REJECTED {
   name: "MARK_AS_REJECTED";
   payload: {
     reason: string;
   };
-};
+}
 
 type DocumentAction =
   | Action_START_VALIDATION
@@ -228,7 +224,7 @@ const onWaitForUploadOrReadyStatus =
   ({
     id,
     metadata,
-    createdAt,
+    createdAt
   }: DocumentToBeUploaded | DocumentReady): E.Either<
     Error,
     DocumentToBeValidated
@@ -241,7 +237,7 @@ const onWaitForUploadOrReadyStatus =
           metadata,
           status: "WAIT_FOR_VALIDATION",
           uploadedAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       default:
         return E.left(
@@ -264,7 +260,7 @@ const onWaitForValidationStatus =
             ...document,
             status: "READY",
             url: action.payload.url,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
         );
       case "MARK_AS_REJECTED": {
@@ -273,7 +269,7 @@ const onWaitForValidationStatus =
           status: "REJECTED",
           rejectedAt: new Date(),
           rejectReason: action.payload.reason,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       }
       default:
@@ -290,7 +286,7 @@ const onRejectedStatus =
   ({
     id,
     createdAt,
-    metadata,
+    metadata
   }: DocumentRejected): E.Either<Error, DocumentToBeValidated> => {
     switch (action.name) {
       case "START_VALIDATION":
@@ -300,7 +296,7 @@ const onRejectedStatus =
           metadata,
           status: "WAIT_FOR_VALIDATION",
           uploadedAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       default:
         return E.left(
@@ -312,7 +308,7 @@ const onRejectedStatus =
   };
 
 export const startValidation = dispatch({
-  name: "START_VALIDATION",
+  name: "START_VALIDATION"
 });
 
 export const markAsReady = (
@@ -323,14 +319,14 @@ export const markAsReady = (
     name: "MARK_AS_READY",
     payload: {
       url,
-      pdfDocumentMetadata,
-    },
+      pdfDocumentMetadata
+    }
   });
 
 export const markAsRejected = (reason: string) =>
   dispatch({
     name: "MARK_AS_REJECTED",
     payload: {
-      reason,
-    },
+      reason
+    }
   });
