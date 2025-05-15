@@ -1,7 +1,7 @@
 import {
-  CosmosdbModel,
   BaseModel,
   CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as TE from "fp-ts/TaskEither";
@@ -20,7 +20,7 @@ import { Issuer, IssuerRepository } from "../../../issuer";
 
 const IssuerByVatNumber = t.type({
   id: Issuer.props.vatNumber,
-  issuerId: Issuer.props.id,
+  issuerId: Issuer.props.id
 });
 
 type IssuerByVatNumber = t.TypeOf<typeof IssuerByVatNumber>;
@@ -30,7 +30,7 @@ type NewIssuerByVatNumber = t.TypeOf<typeof IssuerByVatNumber>;
 
 const RetrievedIssuerByVatNumber = t.intersection([
   IssuerByVatNumber,
-  CosmosResource,
+  CosmosResource
 ]);
 
 type RetrievedIssuerByVatNumber = t.TypeOf<typeof RetrievedIssuerByVatNumber>;

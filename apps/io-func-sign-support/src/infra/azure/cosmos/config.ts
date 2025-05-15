@@ -9,7 +9,7 @@ import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 export const CosmosConfig = t.type({
   connectionString: t.string,
   issuerDbName: t.string,
-  userDbName: t.string,
+  userDbName: t.string
 });
 
 type CosmosConfig = t.TypeOf<typeof CosmosConfig>;
