@@ -385,14 +385,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.2.0, @azure/functions@npm:^3.5.0":
+"@azure/functions@npm:^3.5.0":
   version: 3.5.1
   resolution: "@azure/functions@npm:3.5.1"
   dependencies:
-    iconv-lite: "npm:^0.6.3"
-    long: "npm:^4.0.0"
-    uuid: "npm:^8.3.0"
+    iconv-lite: ^0.6.3
+    long: ^4.0.0
+    uuid: ^8.3.0
   checksum: f2616ae78ed57df195e7243efbc726163471b0dbe93b6e0b05410a3fe362220ce0eab93d18e218dacc51dc99e30a47bc991d451e60cf50be573a060046d5ad52
+  languageName: node
+  linkType: hard
+
+"@azure/functions@npm:^4.0.1":
+  version: 4.7.0
+  resolution: "@azure/functions@npm:4.7.0"
+  dependencies:
+    cookie: ^0.7.0
+    long: ^4.0.0
+    undici: ^5.13.0
+  checksum: 93493ed37cf7a34d8337d60fdb933237c3c6779d1dd5cb4dece390ae3429ec36aefde4021e8189e7b9eccd22837498fc2cc5522ff90b3aa3c513139b59fdb2ea
   languageName: node
   linkType: hard
 
@@ -2842,27 +2853,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/regexpp@npm:^4.4.0, @eslint-community/regexpp@npm:^4.5.1, @eslint-community/regexpp@npm:^4.6.1":
+"@eslint-community/regexpp@npm:^4.5.1, @eslint-community/regexpp@npm:^4.6.1":
   version: 4.10.0
   resolution: "@eslint-community/regexpp@npm:4.10.0"
   checksum: 2a6e345429ea8382aaaf3a61f865cae16ed44d31ca917910033c02dc00d505d939f10b81e079fa14d43b51499c640138e153b7e40743c4c094d9df97d4e56f7b
-  languageName: node
-  linkType: hard
-
-"@eslint/eslintrc@npm:^2.1.0":
-  version: 2.1.2
-  resolution: "@eslint/eslintrc@npm:2.1.2"
-  dependencies:
-    ajv: "npm:^6.12.4"
-    debug: "npm:^4.3.2"
-    espree: "npm:^9.6.0"
-    globals: "npm:^13.19.0"
-    ignore: "npm:^5.2.0"
-    import-fresh: "npm:^3.2.1"
-    js-yaml: "npm:^4.1.0"
-    minimatch: "npm:^3.1.2"
-    strip-json-comments: "npm:^3.1.1"
-  checksum: bc742a1e3b361f06fedb4afb6bf32cbd27171292ef7924f61c62f2aed73048367bcc7ac68f98c06d4245cd3fabc43270f844e3c1699936d4734b3ac5398814a7
   languageName: node
   linkType: hard
 
@@ -2883,24 +2877,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.44.0":
-  version: 8.44.0
-  resolution: "@eslint/js@npm:8.44.0"
-  checksum: fc539583226a28f5677356e9f00d2789c34253f076643d2e32888250e509a4e13aafe0880cb2425139051de0f3a48d25bfc5afa96b7304f203b706c17340e3cf
-  languageName: node
-  linkType: hard
-
 "@eslint/js@npm:8.57.0":
   version: 8.57.0
   resolution: "@eslint/js@npm:8.57.0"
   checksum: 315dc65b0e9893e2bff139bddace7ea601ad77ed47b4550e73da8c9c2d2766c7a575c3cddf17ef85b8fd6a36ff34f91729d0dcca56e73ca887c10df91a41b0bb
-  languageName: node
-  linkType: hard
-
-"@eslint/js@npm:8.57.1":
-  version: 8.57.1
-  resolution: "@eslint/js@npm:8.57.1"
-  checksum: 2afb77454c06e8316793d2e8e79a0154854d35e6782a1217da274ca60b5044d2c69d6091155234ed0551a1e408f86f09dd4ece02752c59568fa403e60611e880
   languageName: node
   linkType: hard
 
@@ -3063,17 +3043,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.11.10":
-  version: 0.11.13
-  resolution: "@humanwhocodes/config-array@npm:0.11.13"
-  dependencies:
-    "@humanwhocodes/object-schema": "npm:^2.0.1"
-    debug: "npm:^4.1.1"
-    minimatch: "npm:^3.0.5"
-  checksum: f8ea57b0d7ed7f2d64cd3944654976829d9da91c04d9c860e18804729a33f7681f78166ef4c761850b8c324d362f7d53f14c5c44907a6b38b32c703ff85e4805
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/config-array@npm:^0.11.14":
   version: 0.11.14
   resolution: "@humanwhocodes/config-array@npm:0.11.14"
@@ -3085,17 +3054,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@humanwhocodes/config-array@npm:0.13.0"
-  dependencies:
-    "@humanwhocodes/object-schema": ^2.0.3
-    debug: ^4.3.1
-    minimatch: ^3.0.5
-  checksum: eae69ff9134025dd2924f0b430eb324981494be26f0fddd267a33c28711c4db643242cf9fddf7dadb9d16c96b54b2d2c073e60a56477df86e0173149313bd5d6
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/module-importer@npm:^1.0.1":
   version: 1.0.1
   resolution: "@humanwhocodes/module-importer@npm:1.0.1"
@@ -3103,14 +3061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@humanwhocodes/object-schema@npm:2.0.1"
-  checksum: 24929487b1ed48795d2f08346a0116cc5ee4634848bce64161fb947109352c562310fd159fc64dda0e8b853307f5794605191a9547f7341158559ca3c8262a45
-  languageName: node
-  linkType: hard
-
-"@humanwhocodes/object-schema@npm:^2.0.2, @humanwhocodes/object-schema@npm:^2.0.3":
+"@humanwhocodes/object-schema@npm:^2.0.2":
   version: 2.0.3
   resolution: "@humanwhocodes/object-schema@npm:2.0.3"
   checksum: d3b78f6c5831888c6ecc899df0d03bcc25d46f3ad26a11d7ea52944dc36a35ef543fad965322174238d677a43d5c694434f6607532cff7077062513ad7022631
@@ -3122,23 +3073,25 @@ __metadata:
   resolution: "@io-sign/io-sign@workspace:packages/io-sign"
   dependencies:
     "@azure/event-hubs": ^5.9.0
+    "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
-    "@pagopa/eslint-config": ^4.0.0
+    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/io-functions-commons": ^29.0.0
-    "@pagopa/io-functions-services-sdk": ^3.39.1
+    "@pagopa/io-functions-services-sdk": ^3.40.1
     "@pagopa/logger": 1.0.1
-    "@pagopa/openapi-codegen-ts": ^12.2.0
+    "@pagopa/openapi-codegen-ts": ^14.0.0
     "@pagopa/ts-commons": ^13.0.0
     "@vitest/coverage-c8": ^0.33.0
     applicationinsights: ^2.9.5
     date-fns: ^2.29.3
     eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0
-    fp-ts: ^2.13.1
+    express: 4.17.3
+    fp-ts: ^2.16.5
     handler-kit-legacy: "npm:@pagopa/handler-kit@0.5.1"
-    io-ts: ^2.2.19
+    io-ts: ^2.2.21
     io-ts-types: ^0.5.19
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
@@ -3887,7 +3840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit-azure-func@npm:^1.0.0, @pagopa/handler-kit-azure-func@npm:^1.2.0":
+"@pagopa/handler-kit-azure-func@npm:^1.2.0":
   version: 1.2.0
   resolution: "@pagopa/handler-kit-azure-func@npm:1.2.0"
   dependencies:
@@ -3899,19 +3852,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit-azure-func@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@pagopa/handler-kit-azure-func@npm:2.0.1"
+"@pagopa/handler-kit-azure-func@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@pagopa/handler-kit-azure-func@npm:2.0.7"
   dependencies:
-    "@pagopa/handler-kit": "npm:^1.0.1"
-    "@pagopa/logger": "npm:^1.0.1"
-    fp-ts: "npm:^2.13.1"
-    io-ts: "npm:^2.2.20"
-  checksum: 03911b856f038fadc2f9049f45bab0a23b6bc4e3cfcdb625179db4184e7b54b901c62a40f6a9f9e6dd0fd8a65fc1c5e0c2baf3d0c170fb87113a8d257867cb4b
+    "@azure/functions": ^4.0.1
+    "@pagopa/handler-kit": ^1.0.1
+    "@pagopa/logger": ^1.0.1
+    fp-ts: ^2.13.1
+    io-ts: ^2.2.20
+  checksum: ae22c74c50aa77782a9cad959ea7217eb0d07f50b2f1dac46be2011fd5deee945c651eff29167b96a559bbff2301d520740bde32562858d0888ac751cc045f5a
   languageName: node
   linkType: hard
 
-"@pagopa/handler-kit@npm:^1.0.0, @pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
+"@pagopa/handler-kit@npm:^1.0.1, @pagopa/handler-kit@npm:^1.1.0":
   version: 1.1.0
   resolution: "@pagopa/handler-kit@npm:1.1.0"
   dependencies:
@@ -3958,14 +3912,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/io-functions-services-sdk@npm:^3.39.1":
-  version: 3.39.1
-  resolution: "@pagopa/io-functions-services-sdk@npm:3.39.1"
+"@pagopa/io-functions-services-sdk@npm:^3.40.1":
+  version: 3.40.1
+  resolution: "@pagopa/io-functions-services-sdk@npm:3.40.1"
   dependencies:
-    "@pagopa/ts-commons": "npm:^10.0.0"
-    fp-ts: "npm:^2.10.5"
-    io-ts: "npm:^2.2.16"
-  checksum: 7482235387b47f1ae6b8109da87990109889cbd5ae8ff7b0446cbe44c572fce6851a6d45f4e9a9aabff31b380f65ca484141bcb25647185df83800a294ce66ea
+    "@pagopa/ts-commons": ^10.0.0
+    fp-ts: ^2.10.5
+    io-ts: ^2.2.16
+  checksum: 66d33059417aa023549550c80351639c712bfa33d0225cd2a04df366c49586b4d2a43533097746e28f1a7ab389bdfbdef1ca2c2df34802652d6cebd3d443e3d2
   languageName: node
   linkType: hard
 
@@ -3994,24 +3948,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/openapi-codegen-ts@npm:^12.0.2, @pagopa/openapi-codegen-ts@npm:^12.2.0":
-  version: 12.2.1
-  resolution: "@pagopa/openapi-codegen-ts@npm:12.2.1"
+"@pagopa/openapi-codegen-ts@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@pagopa/openapi-codegen-ts@npm:14.0.0"
   dependencies:
-    "@pagopa/ts-commons": "npm:^10.15.0"
-    fs-extra: "npm:^6.0.0"
-    nunjucks: "npm:^3.2.3"
-    openapi-types: "npm:^10.0.0"
-    prettier: "npm:^1.12.1"
-    safe-identifier: "npm:^0.4.2"
-    swagger-parser: "npm:^10.0.3"
-    write-yaml-file: "npm:^4.1.3"
-    yargs: "npm:^15.0.1"
+    "@pagopa/ts-commons": ^10.15.0
+    fs-extra: ^6.0.0
+    nunjucks: ^3.2.3
+    openapi-types: ^10.0.0
+    prettier: ^1.12.1
+    safe-identifier: ^0.4.2
+    swagger-parser: ^10.0.3
+    write-yaml-file: ^4.1.3
+    yargs: ^15.0.1
+  peerDependencies:
+    fp-ts: ^2.16.5
+    io-ts: ^2.2.21
   bin:
     bundle-api-spec: dist/commands/bundle-api-spec/cli.js
     gen-api-models: dist/commands/gen-api-models/cli.js
     gen-api-sdk: dist/commands/gen-api-sdk/cli.js
-  checksum: 91c7d4bff615f37daf868ffcfa50da62b56f3d9f9f3800a1085275a6c5dc7fb04514ca6dc2cf5cc106a14572301af5f248eaeaa6c6e314f360ed0a5b74c594fd
+  checksum: ed826620c0ba09583b2d99a10d5637538161d695bec8367a99232d063c6d36aa7695503dc2e16e2034093b483c6499a9b5d094954b47cbebd1287cb9222c69c2
   languageName: node
   linkType: hard
 
@@ -5967,15 +5924,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.4.5":
-  version: 20.11.16
-  resolution: "@types/node@npm:20.11.16"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 51f0831c1219bf4698e7430aeb9892237bd851deeb25ce23c5bb0ceefcc77c3b114e48f4e98d9fc26def5a87ba9d8079f0281dd37bee691140a93f133812c152
-  languageName: node
-  linkType: hard
-
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.3
   resolution: "@types/normalize-package-data@npm:2.4.3"
@@ -6669,7 +6617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^6.10.0, ajv@npm:^6.12.3, ajv@npm:^6.12.4":
+"ajv@npm:^6.12.3, ajv@npm:^6.12.4":
   version: 6.12.6
   resolution: "ajv@npm:6.12.6"
   dependencies:
@@ -7350,6 +7298,24 @@ __metadata:
     inherits: "npm:^2.0.4"
     readable-stream: "npm:^3.4.0"
   checksum: 9e8521fa7e83aa9427c6f8ccdcba6e8167ef30cc9a22df26effcc5ab682ef91d2cbc23a239f945d099289e4bbcfae7a192e9c28c84c6202e710a0dfec3722662
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:1.19.2":
+  version: 1.19.2
+  resolution: "body-parser@npm:1.19.2"
+  dependencies:
+    bytes: 3.1.2
+    content-type: ~1.0.4
+    debug: 2.6.9
+    depd: ~1.1.2
+    http-errors: 1.8.1
+    iconv-lite: 0.4.24
+    on-finished: ~2.3.0
+    qs: 6.9.7
+    raw-body: 2.4.3
+    type-is: ~1.6.18
+  checksum: 7f777ea65670e2622ca4a785b5dcb2a68451b3bb8d4d0f41091d307d56b640dba588a9ae04d85dda2cdd5e42788266a783528d5417e5643720fd611fd52522e7
   languageName: node
   linkType: hard
 
@@ -8243,10 +8209,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:0.4.2":
+  version: 0.4.2
+  resolution: "cookie@npm:0.4.2"
+  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
+  languageName: node
+  linkType: hard
+
 "cookie@npm:0.5.0":
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: 1f4bd2ca5765f8c9689a7e8954183f5332139eb72b6ff783d8947032ec1fdf43109852c178e21a953a30c0dd42257828185be01b49d1eb1a67fd054ca588a180
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^0.7.0":
+  version: 0.7.2
+  resolution: "cookie@npm:0.7.2"
+  checksum: 9bf8555e33530affd571ea37b615ccad9b9a34febbf2c950c86787088eb00a8973690833b0f8ebd6b69b753c62669ea60cec89178c1fb007bf0749abed74f93e
   languageName: node
   linkType: hard
 
@@ -8581,6 +8561,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"depd@npm:~1.1.2":
+  version: 1.1.2
+  resolution: "depd@npm:1.1.2"
+  checksum: 6b406620d269619852885ce15965272b829df6f409724415e0002c8632ab6a8c0a08ec1f0bd2add05dc7bd7507606f7e2cc034fa24224ab829580040b835ecd9
+  languageName: node
+  linkType: hard
+
 "dequal@npm:^2.0.2, dequal@npm:^2.0.3":
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
@@ -8592,6 +8579,13 @@ __metadata:
   version: 1.2.0
   resolution: "destroy@npm:1.2.0"
   checksum: 0acb300b7478a08b92d810ab229d5afe0d2f4399272045ab22affa0d99dbaf12637659411530a6fcd597a9bdac718fc94373a61a95b4651bbc7b83684a565e38
+  languageName: node
+  linkType: hard
+
+"destroy@npm:~1.0.4":
+  version: 1.0.4
+  resolution: "destroy@npm:1.0.4"
+  checksum: da9ab4961dc61677c709da0c25ef01733042614453924d65636a7db37308fef8a24cd1e07172e61173d471ca175371295fbc984b0af5b2b4ff47cd57bd784c03
   languageName: node
   linkType: hard
 
@@ -9532,7 +9526,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-scope@npm:^7.2.0, eslint-scope@npm:^7.2.2":
+"eslint-scope@npm:^7.2.2":
   version: 7.2.2
   resolution: "eslint-scope@npm:7.2.2"
   dependencies:
@@ -9546,55 +9540,6 @@ __metadata:
   version: 3.4.3
   resolution: "eslint-visitor-keys@npm:3.4.3"
   checksum: 36e9ef87fca698b6fd7ca5ca35d7b2b6eeaaf106572e2f7fd31c12d3bfdaccdb587bba6d3621067e5aece31c8c3a348b93922ab8f7b2cbc6aaab5e1d89040c60
-  languageName: node
-  linkType: hard
-
-"eslint@npm:8.44.0":
-  version: 8.44.0
-  resolution: "eslint@npm:8.44.0"
-  dependencies:
-    "@eslint-community/eslint-utils": "npm:^4.2.0"
-    "@eslint-community/regexpp": "npm:^4.4.0"
-    "@eslint/eslintrc": "npm:^2.1.0"
-    "@eslint/js": "npm:8.44.0"
-    "@humanwhocodes/config-array": "npm:^0.11.10"
-    "@humanwhocodes/module-importer": "npm:^1.0.1"
-    "@nodelib/fs.walk": "npm:^1.2.8"
-    ajv: "npm:^6.10.0"
-    chalk: "npm:^4.0.0"
-    cross-spawn: "npm:^7.0.2"
-    debug: "npm:^4.3.2"
-    doctrine: "npm:^3.0.0"
-    escape-string-regexp: "npm:^4.0.0"
-    eslint-scope: "npm:^7.2.0"
-    eslint-visitor-keys: "npm:^3.4.1"
-    espree: "npm:^9.6.0"
-    esquery: "npm:^1.4.2"
-    esutils: "npm:^2.0.2"
-    fast-deep-equal: "npm:^3.1.3"
-    file-entry-cache: "npm:^6.0.1"
-    find-up: "npm:^5.0.0"
-    glob-parent: "npm:^6.0.2"
-    globals: "npm:^13.19.0"
-    graphemer: "npm:^1.4.0"
-    ignore: "npm:^5.2.0"
-    import-fresh: "npm:^3.0.0"
-    imurmurhash: "npm:^0.1.4"
-    is-glob: "npm:^4.0.0"
-    is-path-inside: "npm:^3.0.3"
-    js-yaml: "npm:^4.1.0"
-    json-stable-stringify-without-jsonify: "npm:^1.0.1"
-    levn: "npm:^0.4.1"
-    lodash.merge: "npm:^4.6.2"
-    minimatch: "npm:^3.1.2"
-    natural-compare: "npm:^1.4.0"
-    optionator: "npm:^0.9.3"
-    strip-ansi: "npm:^6.0.1"
-    strip-json-comments: "npm:^3.1.0"
-    text-table: "npm:^0.2.0"
-  bin:
-    eslint: bin/eslint.js
-  checksum: d06309ce4aafb9d27d558c8e5e5aa5cba3bbec3ce8ceccbc7d4b7a35f2b67fd40189159155553270e2e6febeb69bd8a3b60d6241c8f5ddc2ef1702ccbd328501
   languageName: node
   linkType: hard
 
@@ -9643,54 +9588,6 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 3a48d7ff85ab420a8447e9810d8087aea5b1df9ef68c9151732b478de698389ee656fd895635b5f2871c89ee5a2652b3f343d11e9db6f8486880374ebc74a2d9
-  languageName: node
-  linkType: hard
-
-"eslint@npm:^8.57.0":
-  version: 8.57.1
-  resolution: "eslint@npm:8.57.1"
-  dependencies:
-    "@eslint-community/eslint-utils": ^4.2.0
-    "@eslint-community/regexpp": ^4.6.1
-    "@eslint/eslintrc": ^2.1.4
-    "@eslint/js": 8.57.1
-    "@humanwhocodes/config-array": ^0.13.0
-    "@humanwhocodes/module-importer": ^1.0.1
-    "@nodelib/fs.walk": ^1.2.8
-    "@ungap/structured-clone": ^1.2.0
-    ajv: ^6.12.4
-    chalk: ^4.0.0
-    cross-spawn: ^7.0.2
-    debug: ^4.3.2
-    doctrine: ^3.0.0
-    escape-string-regexp: ^4.0.0
-    eslint-scope: ^7.2.2
-    eslint-visitor-keys: ^3.4.3
-    espree: ^9.6.1
-    esquery: ^1.4.2
-    esutils: ^2.0.2
-    fast-deep-equal: ^3.1.3
-    file-entry-cache: ^6.0.1
-    find-up: ^5.0.0
-    glob-parent: ^6.0.2
-    globals: ^13.19.0
-    graphemer: ^1.4.0
-    ignore: ^5.2.0
-    imurmurhash: ^0.1.4
-    is-glob: ^4.0.0
-    is-path-inside: ^3.0.3
-    js-yaml: ^4.1.0
-    json-stable-stringify-without-jsonify: ^1.0.1
-    levn: ^0.4.1
-    lodash.merge: ^4.6.2
-    minimatch: ^3.1.2
-    natural-compare: ^1.4.0
-    optionator: ^0.9.3
-    strip-ansi: ^6.0.1
-    text-table: ^0.2.0
-  bin:
-    eslint: bin/eslint.js
-  checksum: e2489bb7f86dd2011967759a09164e65744ef7688c310bc990612fc26953f34cc391872807486b15c06833bdff737726a23e9b4cdba5de144c311377dc41d91b
   languageName: node
   linkType: hard
 
@@ -9837,6 +9734,44 @@ __metadata:
   version: 3.1.1
   resolution: "exponential-backoff@npm:3.1.1"
   checksum: 3d21519a4f8207c99f7457287291316306255a328770d320b401114ec8481986e4e467e854cb9914dd965e0a1ca810a23ccb559c642c88f4c7f55c55778a9b48
+  languageName: node
+  linkType: hard
+
+"express@npm:4.17.3":
+  version: 4.17.3
+  resolution: "express@npm:4.17.3"
+  dependencies:
+    accepts: ~1.3.8
+    array-flatten: 1.1.1
+    body-parser: 1.19.2
+    content-disposition: 0.5.4
+    content-type: ~1.0.4
+    cookie: 0.4.2
+    cookie-signature: 1.0.6
+    debug: 2.6.9
+    depd: ~1.1.2
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    etag: ~1.8.1
+    finalhandler: ~1.1.2
+    fresh: 0.5.2
+    merge-descriptors: 1.0.1
+    methods: ~1.1.2
+    on-finished: ~2.3.0
+    parseurl: ~1.3.3
+    path-to-regexp: 0.1.7
+    proxy-addr: ~2.0.7
+    qs: 6.9.7
+    range-parser: ~1.2.1
+    safe-buffer: 5.2.1
+    send: 0.17.2
+    serve-static: 1.14.2
+    setprototypeof: 1.2.0
+    statuses: ~1.5.0
+    type-is: ~1.6.18
+    utils-merge: 1.0.1
+    vary: ~1.1.2
+  checksum: 967e53b74a37eafdf9789b9938c8df86102928b4985b1ad5e385c709deeab405a364de95ca744bc2cc5d05b5d9cc1efc69ae2ae17688a462038648d5a924bfad
   languageName: node
   linkType: hard
 
@@ -10103,6 +10038,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"finalhandler@npm:~1.1.2":
+  version: 1.1.2
+  resolution: "finalhandler@npm:1.1.2"
+  dependencies:
+    debug: 2.6.9
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    on-finished: ~2.3.0
+    parseurl: ~1.3.3
+    statuses: ~1.5.0
+    unpipe: ~1.0.0
+  checksum: 617880460c5138dd7ccfd555cb5dde4d8f170f4b31b8bd51e4b646bb2946c30f7db716428a1f2882d730d2b72afb47d1f67cc487b874cb15426f95753a88965e
+  languageName: node
+  linkType: hard
+
 "find-cache-dir@npm:^2.0.0":
   version: 2.1.0
   resolution: "find-cache-dir@npm:2.1.0"
@@ -10295,10 +10245,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fp-ts@npm:^2.10.5, fp-ts@npm:^2.11.0, fp-ts@npm:^2.12.3, fp-ts@npm:^2.13.1, fp-ts@npm:^2.16.1":
+"fp-ts@npm:^2.10.5, fp-ts@npm:^2.11.0, fp-ts@npm:^2.12.3, fp-ts@npm:^2.13.1":
   version: 2.16.1
   resolution: "fp-ts@npm:2.16.1"
   checksum: 94e8bb1d037fdc44414ac93bbabecc3f94fb798d6564e77427ae2ecfa0f77681ec35968598d7b0cbf8274566469c7b42e8727390eb889e1121c199341939c2a3
+  languageName: node
+  linkType: hard
+
+"fp-ts@npm:^2.16.5":
+  version: 2.16.10
+  resolution: "fp-ts@npm:2.16.10"
+  checksum: b2a2769d4e59d77487f60b3052587584e0811333911a9b7b6035650a2705b6096fdb924b89e45f2d92422e454ad2b548908fc54ebc4af7ea5c0c7bccdb6a0809
   languageName: node
   linkType: hard
 
@@ -11102,6 +11059,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"http-errors@npm:1.8.1":
+  version: 1.8.1
+  resolution: "http-errors@npm:1.8.1"
+  dependencies:
+    depd: ~1.1.2
+    inherits: 2.0.4
+    setprototypeof: 1.2.0
+    statuses: ">= 1.5.0 < 2"
+    toidentifier: 1.0.1
+  checksum: d3c7e7e776fd51c0a812baff570bdf06fe49a5dc448b700ab6171b1250e4cf7db8b8f4c0b133e4bfe2451022a5790c1ca6c2cae4094dedd6ac8304a1267f91d2
+  languageName: node
+  linkType: hard
+
 "http-errors@npm:2.0.0":
   version: 2.0.0
   resolution: "http-errors@npm:2.0.0"
@@ -11265,7 +11235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1":
+"import-fresh@npm:^3.2.1":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
   dependencies:
@@ -11363,24 +11333,25 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^4.0.0
     "@azure/event-hubs": ^5.9.0
-    "@azure/functions": ^3.2.0
+    "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": ^4.0.0
+    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
-    "@pagopa/openapi-codegen-ts": ^12.2.0
+    "@pagopa/openapi-codegen-ts": ^14.0.0
     "@pagopa/ts-commons": ^13.0.0
     "@vitest/coverage-c8": ^0.33.0
     azure-functions-core-tools: ^4.0.5455
     date-fns: ^2.29.3
     eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0
-    fp-ts: ^2.13.1
+    express: 4.17.3
+    fp-ts: ^2.16.5
     handler-kit-legacy: "npm:@pagopa/handler-kit@0.5.1"
-    io-ts: ^2.2.19
+    io-ts: ^2.2.21
     io-ts-types: ^0.5.19
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
@@ -11400,18 +11371,20 @@ __metadata:
     "@azure/functions": ^3.5.0
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^4.0.0
-    "@pagopa/handler-kit": ^1.0.0
-    "@pagopa/handler-kit-azure-func": ^1.0.0
+    "@pagopa/handler-kit": ^1.1.0
+    "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/logger": 1.0.1
-    "@pagopa/openapi-codegen-ts": ^12.0.2
+    "@pagopa/openapi-codegen-ts": ^14.0.0
     "@pagopa/ts-commons": ^13.0.0
     "@types/node": ^20.17.0
     "@vitest/coverage-c8": ^0.33.0
     azure-functions-core-tools: ^4.0.5455
-    eslint: ^8.57.0
+    eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0
-    fp-ts: ^2.13.1
+    express: 4.17.3
+    fp-ts: ^2.16.5
+    io-ts: ^2.2.21
     npm-pack-zip: ^1.3.0
     prettier: ^3.0.0
     tsup: ^7.2.0
@@ -11426,6 +11399,7 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^4.0.0
     "@azure/event-hubs": ^5.9.0
+    "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/io-sign": "workspace:^"
@@ -11434,16 +11408,17 @@ __metadata:
     "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/logger": 1.0.1
-    "@pagopa/openapi-codegen-ts": ^12.2.0
+    "@pagopa/openapi-codegen-ts": ^14.0.0
     "@pagopa/ts-commons": ^13.0.0
     "@vitest/coverage-c8": ^0.33.0
     azure-functions-core-tools: ^4.0.5455
     date-fns: ^2.29.3
     eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0
-    fp-ts: ^2.13.1
+    express: 4.17.3
+    fp-ts: ^2.16.5
     handler-kit-legacy: "npm:@pagopa/handler-kit@0.5.1"
-    io-ts: ^2.2.19
+    io-ts: ^2.2.21
     io-ts-types: ^0.5.19
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
@@ -11474,13 +11449,13 @@ __metadata:
     "@mui/system": ^5.14.5
     "@pagopa/mui-italia": ^1.0.1
     "@types/lodash": ^4.14.197
-    "@types/node": ^20.4.5
+    "@types/node": ^20.17.0
     "@types/react": ^18.2.20
     "@types/react-dom": ^18.2.7
     "@typescript-eslint/eslint-plugin": ^6.5.0
     "@typescript-eslint/parser": ^6.5.0
     "@vitest/coverage-c8": ^0.33.0
-    eslint: 8.44.0
+    eslint: 8.57.0
     eslint-config-next: ^13.5.5
     eslint-config-prettier: ^9.0.0
     jose: ^4.14.4
@@ -11509,14 +11484,15 @@ __metadata:
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/eslint-config": ^4.0.0
     "@pagopa/handler-kit": ^1.1.0
-    "@pagopa/handler-kit-azure-func": ^2.0.1
+    "@pagopa/handler-kit-azure-func": ^2.0.7
     "@pagopa/logger": ^1.0.1
     "@types/node": ^20.17.0
     azure-functions-core-tools: ^4.0.5455
     eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0
-    fp-ts: ^2.16.1
+    fp-ts: ^2.16.5
     googleapis: ^133.0.0
+    io-ts: ^2.2.21
     prettier: ^3.0.0
     tsup: ^7.2.0
     typescript: ^4.8.4
@@ -11554,6 +11530,15 @@ __metadata:
   peerDependencies:
     fp-ts: ^2.5.0
   checksum: 72517bf72ab1ad61b81960cb37f46e7a9f6dc84235b7d9b62f346ca84120dd89134b652fc3a0b9751129331084fd3e059349561bb96587d91ba7b40985fe7aac
+  languageName: node
+  linkType: hard
+
+"io-ts@npm:^2.2.21":
+  version: 2.2.22
+  resolution: "io-ts@npm:2.2.22"
+  peerDependencies:
+    fp-ts: ^2.5.0
+  checksum: d1b6a5f9d3e0ce1f4304955c0c40e3f1c31d9d5a42df83fc0d42eb356aa8b2c29c1342615aa51704f0309a75d1ba2924e87de87484a89e9326de62a869bad118
   languageName: node
   linkType: hard
 
@@ -14067,6 +14052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"on-finished@npm:~2.3.0":
+  version: 2.3.0
+  resolution: "on-finished@npm:2.3.0"
+  dependencies:
+    ee-first: 1.1.1
+  checksum: 1db595bd963b0124d6fa261d18320422407b8f01dc65863840f3ddaaf7bcad5b28ff6847286703ca53f4ec19595bd67a2f1253db79fc4094911ec6aa8df1671b
+  languageName: node
+  linkType: hard
+
 "on-headers@npm:~1.0.2":
   version: 1.0.2
   resolution: "on-headers@npm:1.0.2"
@@ -14921,6 +14915,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qs@npm:6.9.7":
+  version: 6.9.7
+  resolution: "qs@npm:6.9.7"
+  checksum: 5bbd263332ccf320a1f36d04a2019a5834dc20bcb736431eaccde2a39dcba03fb26d2fd00174f5d7bc26aaad1cad86124b18440883ac042ea2a0fca6170c1bf1
+  languageName: node
+  linkType: hard
+
 "qs@npm:^6.10.0, qs@npm:^6.7.0":
   version: 6.11.2
   resolution: "qs@npm:6.11.2"
@@ -14962,6 +14963,18 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 0a268d4fea508661cf5743dfe3d5f47ce214fd6b7dec1de0da4d669dd4ef3d2144468ebe4179049eff253d9d27e719c88dae55be64f954e80135a0cada804ec9
+  languageName: node
+  linkType: hard
+
+"raw-body@npm:2.4.3":
+  version: 2.4.3
+  resolution: "raw-body@npm:2.4.3"
+  dependencies:
+    bytes: 3.1.2
+    http-errors: 1.8.1
+    iconv-lite: 0.4.24
+    unpipe: 1.0.0
+  checksum: d2961fa3c71c9c22dc2c3fd60ff377bf36dfed7d7a748f2b25d585934a3e9df565bb9aa5bc2e3a716ea941f4bc2a6ddc795c8b0cf7219fb071029b59b1985394
   languageName: node
   linkType: hard
 
@@ -15867,6 +15880,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"send@npm:0.17.2":
+  version: 0.17.2
+  resolution: "send@npm:0.17.2"
+  dependencies:
+    debug: 2.6.9
+    depd: ~1.1.2
+    destroy: ~1.0.4
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    etag: ~1.8.1
+    fresh: 0.5.2
+    http-errors: 1.8.1
+    mime: 1.6.0
+    ms: 2.1.3
+    on-finished: ~2.3.0
+    range-parser: ~1.2.1
+    statuses: ~1.5.0
+  checksum: c28f36deb4ccba9b8d6e6a1e472b8e7c40a1f51575bdf8f67303568cc9e71131faa3adc36fdb72611616ccad1584358bbe4c3ebf419e663ecc5de868ad3d3f03
+  languageName: node
+  linkType: hard
+
 "send@npm:0.18.0":
   version: 0.18.0
   resolution: "send@npm:0.18.0"
@@ -15885,6 +15919,18 @@ __metadata:
     range-parser: "npm:~1.2.1"
     statuses: "npm:2.0.1"
   checksum: 74fc07ebb58566b87b078ec63e5a3e41ecd987e4272ba67b7467e86c6ad51bc6b0b0154133b6d8b08a2ddda360464f71382f7ef864700f34844a76c8027817a8
+  languageName: node
+  linkType: hard
+
+"serve-static@npm:1.14.2":
+  version: 1.14.2
+  resolution: "serve-static@npm:1.14.2"
+  dependencies:
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    parseurl: ~1.3.3
+    send: 0.17.2
+  checksum: d97f3183b1dfcd8ce9c0e37e18e87fd31147ed6c8ee0b2c3a089d795e44ee851ca5061db01574f806d54f4e4b70bc694d9ca64578653514e04a28cbc97a1de05
   languageName: node
   linkType: hard
 
@@ -16270,6 +16316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"statuses@npm:>= 1.5.0 < 2, statuses@npm:~1.5.0":
+  version: 1.5.0
+  resolution: "statuses@npm:1.5.0"
+  checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
+  languageName: node
+  linkType: hard
+
 "std-env@npm:^3.3.3":
   version: 3.4.3
   resolution: "std-env@npm:3.4.3"
@@ -16529,7 +16582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-json-comments@npm:^3.0.1, strip-json-comments@npm:^3.1.0, strip-json-comments@npm:^3.1.1":
+"strip-json-comments@npm:^3.0.1, strip-json-comments@npm:^3.1.1":
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: 492f73e27268f9b1c122733f28ecb0e7e8d8a531a6662efbd08e22cccb3f9475e90a1b82cab06a392f6afae6d2de636f977e231296400d0ec5304ba70f166443

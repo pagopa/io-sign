@@ -3,6 +3,9 @@
   "version": "1.2.7",
   "private": true,
   "license": "MPL-2.0",
+  "engines": {
+    "node": "20.17.0"
+  },
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",
@@ -17,10 +20,11 @@
     "@azure/functions": "^4.2.0",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "^1.1.0",
-    "@pagopa/handler-kit-azure-func": "^2.0.1",
+    "@pagopa/handler-kit-azure-func": "^2.0.7",
     "@pagopa/logger": "^1.0.1",
-    "fp-ts": "^2.16.1",
+    "fp-ts": "^2.16.5",
     "googleapis": "^133.0.0",
+    "io-ts": "^2.2.21",
     "undici": "^5.27.2",
     "zod": "^3.22.4"
   },
