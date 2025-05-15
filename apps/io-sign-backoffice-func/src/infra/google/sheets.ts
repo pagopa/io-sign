@@ -1,47 +1,45 @@
-import { google, Auth } from "googleapis";
-
-import { constVoid, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
-
 import { User } from "@io-sign/io-sign/institution";
+import * as TE from "fp-ts/lib/TaskEither";
+import { constVoid, pipe } from "fp-ts/lib/function";
+import { Auth, google } from "googleapis";
 
-type GoogleEnvironment = {
+interface GoogleEnvironment {
   google: {
     auth: Auth.GoogleAuth;
     spreadsheetId: string;
   };
-};
+}
 
-const rows = (users: User[], institutionName: string) =>
+const rows = (users: Array<User>, institutionName: string) =>
   users.map((user) => ({
     values: [
       {},
       {},
       {
         userEnteredValue: {
-          stringValue: institutionName,
-        },
+          stringValue: institutionName
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.name,
-        },
+          stringValue: user.name
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.surname,
-        },
+          stringValue: user.surname
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.email,
-        },
-      },
-    ],
+          stringValue: user.email
+        }
+      }
+    ]
   }));
 
 export const saveUsersToSpreadsheet =
-  (users: User[], institutionName: string) => (r: GoogleEnvironment) => {
+  (users: Array<User>, institutionName: string) => (r: GoogleEnvironment) => {
     const sheets = google.sheets({ version: "v4", auth: r.google.auth });
     const requestBody = {
       spreadsheetId: r.google.spreadsheetId,
@@ -51,11 +49,11 @@ export const saveUsersToSpreadsheet =
             appendCells: {
               sheetId: 0,
               rows: rows(users, institutionName),
-              fields: "userEnteredValue",
-            },
-          },
-        ],
-      },
+              fields: "userEnteredValue"
+            }
+          }
+        ]
+      }
     };
     return pipe(
       TE.tryCatch(

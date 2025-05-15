@@ -9,7 +9,7 @@ import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import {
   getSignatureRequest,
   markAsCancelled,
-  upsertSignatureRequest,
+  upsertSignatureRequest
 } from "../../signature-request";
 
 export const UpdateSignatureRequestHandler = H.of(

@@ -1,20 +1,18 @@
-import { z } from "zod";
-
-import { Container, Database } from "@azure/cosmos";
-
-import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
-import { issuerSchema } from "@io-sign/io-sign/issuer";
 import { ApiKeyRepository } from "@/api-key";
 import { IssuerKey, IssuerRepository } from "@/issuer";
+import { Container, Database } from "@azure/cosmos";
+import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
+import { issuerSchema } from "@io-sign/io-sign/issuer";
+import { z } from "zod";
 
 const ConfigFromEnvironment = z
   .object({
     COSMOS_DB_CONNECTION_STRING: z.string().min(1),
-    COSMOS_DB_NAME: z.string().min(1),
+    COSMOS_DB_NAME: z.string().min(1)
   })
   .transform((env) => ({
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
-    cosmosDbName: env.COSMOS_DB_NAME,
+    cosmosDbName: env.COSMOS_DB_NAME
   }));
 
 export type CosmosDBConfig = z.infer<typeof ConfigFromEnvironment>;
@@ -23,7 +21,7 @@ export const getCosmosDBConfigFromEnvironment = () => {
   const result = ConfigFromEnvironment.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing CosmosDB config", {
-      cause: result.error.issues,
+      cause: result.error.issues
     });
   }
   return result.data;
@@ -47,7 +45,7 @@ export class BackofficeEntitiesRepository
       const apiKeyById = await this.#apiKeysById.item(id, id).read();
       const { institutionId } = apiKeySchema
         .pick({
-          institutionId: true,
+          institutionId: true
         })
         .parse(apiKeyById.resource);
       const apiKey = await this.#apiKeys.item(id, institutionId).read();

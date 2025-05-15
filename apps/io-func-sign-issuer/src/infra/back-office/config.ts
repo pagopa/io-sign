@@ -7,7 +7,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 export const BackOfficeConfig = t.type({
   basePath: t.string,
-  apiKey: t.string,
+  apiKey: t.string
 });
 
 export type BackOfficeConfig = t.TypeOf<typeof BackOfficeConfig>;
@@ -24,6 +24,6 @@ export const getBackOfficeConfigFromEnvironment: RE.ReaderEither<
         RE.right("https://api.io.pagopa.it/api/v1/sign/backoffice")
       )
     ),
-    apiKey: readFromEnvironment("BackOfficeApiKey"),
+    apiKey: readFromEnvironment("BackOfficeApiKey")
   })
 );

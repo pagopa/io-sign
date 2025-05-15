@@ -1,5 +1,5 @@
 import * as RTE from "fp-ts/ReaderTaskEither";
-import { pipe, flow } from "fp-ts/function";
+import { flow, pipe } from "fp-ts/function";
 import { lookup } from "fp-ts/Record";
 
 import * as H from "@pagopa/handler-kit";
@@ -8,13 +8,13 @@ import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 import {
-  getSignatureRequestById,
   GetSignatureRequestByIdPayload,
+  getSignatureRequestById
 } from "../../../signature-request";
 
 import {
-  getIssuerByVatNumber,
   GetIssuerByVatNumberEnvironment,
+  getIssuerByVatNumber
 } from "../../../issuer";
 
 import { getSignerByFiscalCode } from "../../../signer";

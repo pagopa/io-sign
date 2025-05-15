@@ -1,6 +1,6 @@
 import { IO } from "fp-ts/lib/IO";
 
-export type TelemetryService = {
+export interface TelemetryService {
   trackEvent: (
     name: string,
     context: object,
@@ -8,11 +8,11 @@ export type TelemetryService = {
       sampling: boolean;
     }
   ) => IO<void>;
-};
+}
 
-type TelemetryEnvironment = {
+interface TelemetryEnvironment {
   telemetryService: TelemetryService;
-};
+}
 
 export const sendTelemetryEvent =
   (name: string, context: object, options = { sampling: true }) =>

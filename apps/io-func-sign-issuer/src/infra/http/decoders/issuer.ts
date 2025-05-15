@@ -1,11 +1,11 @@
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
 
 import * as H from "@pagopa/handler-kit";
 import { lookup } from "fp-ts/lib/Record";
 
 import { validate } from "@io-sign/io-sign/validation";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -14,8 +14,8 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { HttpUnauthorizedError } from "@io-sign/io-sign/infra/http/errors";
 import {
-  getIssuerBySubscriptionId,
   GetIssuerBySubscriptionId,
+  getIssuerBySubscriptionId
 } from "../../../issuer";
 
 // ------- DECODERS FOR HANDLER-KIT LEGACY ----------- //

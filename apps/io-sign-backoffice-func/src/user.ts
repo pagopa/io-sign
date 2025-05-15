@@ -1,17 +1,16 @@
 import { Institution, User } from "@io-sign/io-sign/institution";
-
-import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
 
-export type UserRepository = {
+export interface UserRepository {
   getUsersByInstitutionId: (
     institutionId: Institution["id"]
-  ) => Promise<User[]>;
-};
+  ) => Promise<Array<User>>;
+}
 
-export type UserEnvironment = {
+export interface UserEnvironment {
   userRepository: UserRepository;
-};
+}
 
 export const getUsersByInstitutionId =
   (institutionId: Institution["id"]) => (r: UserEnvironment) =>
