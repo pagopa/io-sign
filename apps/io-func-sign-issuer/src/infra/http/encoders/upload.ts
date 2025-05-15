@@ -3,5 +3,5 @@ import { UploadUrl as UploadUrlApiModel } from "../models/UploadUrl";
 import { UploadUrl } from "../../../upload";
 
 export const UploadUrlToApiModel: E.Encoder<UploadUrlApiModel, UploadUrl> = {
-  encode: (uploadUrl) => uploadUrl.href,
+  encode: (uploadUrl) => uploadUrl.href
 };

@@ -5,23 +5,23 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import { identity, flow, pipe } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import {
-  addSupportMailToIoSignContract,
   GenericContract,
   GenericContracts,
   IoSignContract,
-  validateActiveContract,
+  addSupportMailToIoSignContract,
+  validateActiveContract
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
 import {
   makeCheckIssuerWithSameVatNumber,
-  makeInsertIssuer,
+  makeInsertIssuer
 } from "../cosmos/issuer";
 import { makeGetInstitutionById } from "../../self-care/client";
 import { SelfCareConfig } from "../../self-care/config";

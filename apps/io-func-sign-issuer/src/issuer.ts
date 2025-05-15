@@ -11,18 +11,18 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Id } from "@io-sign/io-sign/id";
 
-export type IssuerRepository = {
+export interface IssuerRepository {
   getByVatNumber: (
     vatNumber: Issuer["vatNumber"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
   getBySubscriptionId: (
     subscriptionId: Issuer["subscriptionId"]
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
-};
+}
 
-type IssuerEnvironment = {
+interface IssuerEnvironment {
   issuerRepository: IssuerRepository;
-};
+}
 
 const getIssuerByField =
   <F extends "subscriptionId" | "vatNumber">(field: F) =>
@@ -57,7 +57,7 @@ export const ApiKey = t.type({
   institution: t.type({
     id: NonEmptyString,
     name: NonEmptyString,
-    vatNumber: NonEmptyString,
+    vatNumber: NonEmptyString
   }),
   issuer: t.type({
     id: NonEmptyString,
@@ -65,8 +65,8 @@ export const ApiKey = t.type({
     type: NonEmptyString,
     institutionId: NonEmptyString,
     supportEmail: EmailString,
-    status: t.union([t.literal("active"), t.literal("inactive")]),
-  }),
+    status: t.union([t.literal("active"), t.literal("inactive")])
+  })
 });
 
 export type ApiKey = t.TypeOf<typeof ApiKey>;
@@ -93,8 +93,8 @@ export const getIssuerEnvironment = (
   environment === "test"
     ? "TEST"
     : institutionId === "4a4149af-172e-4950-9cc8-63ccc9a6d865"
-    ? "INTERNAL"
-    : "DEFAULT";
+      ? "INTERNAL"
+      : "DEFAULT";
 
 // LEGACY TYPES
 // This block can be removed when the entire app has been ported to handler-kit@1

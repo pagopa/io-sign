@@ -9,7 +9,7 @@ import * as A from "fp-ts/lib/Array";
 
 import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { getSignatureRequest } from "../../../signature-request";
@@ -33,7 +33,7 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
       id: requireSignatureRequestId(req),
-      issuer: requireIssuer(req),
+      issuer: requireIssuer(req)
     }),
     RTE.chainW(({ id, issuer }) => getSignatureRequest(id, issuer.id)),
     RTE.chainW((request) =>
