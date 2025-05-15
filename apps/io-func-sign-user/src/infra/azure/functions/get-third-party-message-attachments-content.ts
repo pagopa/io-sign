@@ -27,10 +27,10 @@ import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/sig
 import { SignatureRequest } from "../../../signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";
 
-export type GetAttachmentPayload = {
+export interface GetAttachmentPayload {
   signatureRequest: SignatureRequest;
   documentId: Document["id"];
-};
+}
 
 const makeGetThirdPartyMessageAttachmentContentHandler = (
   pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
@@ -66,7 +66,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
         getSignerByFiscalCode
       )
     ),
-    documentId: RTE.fromReaderEither(requireDocumentIdFromPath),
+    documentId: RTE.fromReaderEither(requireDocumentIdFromPath)
   });
 
   const decodeHttpRequest = flow(

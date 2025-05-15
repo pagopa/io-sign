@@ -1,7 +1,7 @@
 import {
-  SignatureFieldAttributes,
   SignatureField,
-  SignatureFieldToBeCreatedAttributes,
+  SignatureFieldAttributes,
+  SignatureFieldToBeCreatedAttributes
 } from "@io-sign/io-sign/document";
 
 import * as E from "io-ts/lib/Encoder";
@@ -21,8 +21,8 @@ export const ClauseToApiModel: E.Encoder<
 > = {
   encode: ({ title, type }) => ({
     title,
-    type: toApiModelEnum(type),
-  }),
+    type: toApiModelEnum(type)
+  })
 };
 
 const toApiModelEnum = (
@@ -42,7 +42,7 @@ export const SignatureFieldAttributesToApiModel: E.Encoder<
   ExistingSignatureFieldAttrs,
   SignatureFieldAttributes
 > = {
-  encode: ({ uniqueName: unique_name }) => ({ unique_name }),
+  encode: ({ uniqueName: unique_name }) => ({ unique_name })
 };
 
 export const SignatureFieldToBeCreatedAttributesToApiModel = (
@@ -56,7 +56,7 @@ export const SignatureFieldToBeCreatedAttributesToApiModel = (
     ({ bottomLeft: bottom_left, topRight: top_right, page }) => ({
       bottom_left,
       top_right,
-      page,
+      page
     })
-  ),
+  )
 });

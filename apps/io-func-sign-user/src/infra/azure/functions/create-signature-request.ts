@@ -4,11 +4,11 @@ import * as azure from "handler-kit-legacy/lib/azure";
 import { createHandler } from "handler-kit-legacy";
 
 import * as TE from "fp-ts/lib/TaskEither";
-import { identity, flow } from "fp-ts/lib/function";
+import { flow, identity } from "fp-ts/lib/function";
 
 import {
   GenerateSignatureRequestQrCode,
-  SignatureRequestReady,
+  SignatureRequestReady
 } from "@io-sign/io-sign/signature-request";
 
 import { QueueClient } from "@azure/storage-queue";

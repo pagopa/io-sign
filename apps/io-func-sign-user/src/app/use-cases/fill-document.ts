@@ -42,7 +42,7 @@ export const makeFillDocument =
     email,
     familyName,
     name,
-    filledDocumentFileName,
+    filledDocumentFileName
   }: FillDocumentPayload) =>
     pipe(
       signer.id,
@@ -57,28 +57,28 @@ export const makeFillDocument =
         const fields: Fields = [
           {
             fieldName: "QUADROB_name",
-            fieldValue: name,
+            fieldValue: name
           },
           {
             fieldName: "QUADROB_lastname",
-            fieldValue: familyName,
+            fieldValue: familyName
           },
           {
             fieldName: "QUADROB_email",
-            fieldValue: email,
+            fieldValue: email
           },
           {
             fieldName: "QUADROB_fiscalcode",
-            fieldValue: fiscalCode,
+            fieldValue: fiscalCode
           },
           {
             fieldName: "QUADROE_name",
-            fieldValue: name,
+            fieldValue: name
           },
           {
             fieldName: "QUADROE_lastname",
-            fieldValue: familyName,
-          },
+            fieldValue: familyName
+          }
         ];
 
         return pipe(
