@@ -29,7 +29,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@pagopa/eslint-config": "^4.0.0",
+    "@pagopa/eslint-config": "4.0.0",
     "@types/node": "^20.17.0",
     "azure-functions-core-tools": "^4.0.5455",
     "eslint": "8.57.0",
