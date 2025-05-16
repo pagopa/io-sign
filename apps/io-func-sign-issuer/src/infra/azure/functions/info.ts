@@ -15,32 +15,32 @@ import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healt
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import {
+  makePdvTokenizerHealthCheck,
   TokenizerProblemSource,
-  makePdvTokenizerHealthCheck
 } from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import {
   IOServicesProblemSource,
-  makeIOServicesHealthCheck
+  makeIOServicesHealthCheck,
 } from "@io-sign/io-sign/infra/io-services/health-check";
 
 import {
   EventHubConsumerClient,
-  EventHubProducerClient
+  EventHubProducerClient,
 } from "@azure/event-hubs";
 import {
   AzureEventHubProblemSource,
-  makeAzureEventHubHealthCheck
+  makeAzureEventHubHealthCheck,
 } from "@io-sign/io-sign/infra/azure/event-hubs/health-check";
 import {
   AzureCosmosProblemSource,
-  makeAzureCosmosDbHealthCheck
+  makeAzureCosmosDbHealthCheck,
 } from "../cosmos/health-check";
 import {
   AzureStorageProblemSource,
   makeAzureStorageContainerHealthCheck,
-  makeAzureStorageQueueHealthCheck
+  makeAzureStorageQueueHealthCheck,
 } from "../storage/health-check";
 
 type ProblemSource =
@@ -80,7 +80,7 @@ export const makeInfoHandler = (
           makeAzureEventHubHealthCheck(eventHubSelfCareContractsConsumer),
           makeAzureStorageContainerHealthCheck(uploadedContainerClient),
           makeAzureStorageContainerHealthCheck(validatedContainerClient),
-          makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient)
+          makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient),
         ],
         RA.sequence(applicativeValidation),
         TE.map(() => "It's working!"),

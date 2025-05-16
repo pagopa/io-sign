@@ -13,7 +13,7 @@ import * as H from "@pagopa/handler-kit";
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import {
   DocumentMetadata,
-  PdfDocumentMetadata
+  PdfDocumentMetadata,
 } from "@io-sign/io-sign/document";
 
 import { SignatureField as SignatureFieldApiModel } from "../models/SignatureField";
@@ -29,14 +29,14 @@ const BufferC = new t.Type<Buffer, Buffer>(
 
 const PdfFileC = t.type({
   type: t.literal("application/pdf"),
-  data: BufferC
+  data: BufferC,
 });
 
 type PdfFile = t.TypeOf<typeof PdfFileC>;
 
 const JsonFileC = t.type({
   type: t.literal("application/json"),
-  data: BufferC
+  data: BufferC,
 });
 
 type JsonFile = t.TypeOf<typeof JsonFileC>;
@@ -44,7 +44,7 @@ type JsonFile = t.TypeOf<typeof JsonFileC>;
 const FilesFromBodyC = t.union([
   t.tuple([PdfFileC, JsonFileC]),
   t.tuple([JsonFileC, PdfFileC]),
-  t.tuple([PdfFileC])
+  t.tuple([PdfFileC]),
 ]);
 
 const parseSignatureFieldsFromBuffer = (b: Buffer) =>
@@ -113,7 +113,7 @@ export const requireFilesForValidation = (
         sequenceS(TE.ApplyPar)({
           signatureFields: TE.fromEither(requireSignatureFields(files)),
           documentContent,
-          documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata))
+          documentMetadata: pipe(documentContent, TE.chain(getPdfMetadata)),
         })
       )
     )

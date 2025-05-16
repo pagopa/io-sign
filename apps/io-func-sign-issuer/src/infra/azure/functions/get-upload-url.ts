@@ -20,8 +20,8 @@ import { makeGetSignatureRequest } from "../cosmos/signature-request";
 import { makeGetUploadUrl } from "../../azure/storage/upload";
 
 import {
+  makeGetUploadUrl as makeGetUploadUrlUseCase,
   GetUploadUrlPayload,
-  makeGetUploadUrl as makeGetUploadUrlUseCase
 } from "../../../app/use-cases/get-upload-url";
 
 import { UploadUrlToApiModel } from "../../http/encoders/upload";
@@ -61,7 +61,7 @@ const makeGetUploadUrlHandler = (
     GetUploadUrlPayload
   > = sequenceS(RTE.ApplyPar)({
     signatureRequest: requireSignatureRequest,
-    documentId: RTE.fromReaderEither(requireDocumentIdFromPath)
+    documentId: RTE.fromReaderEither(requireDocumentIdFromPath),
   });
 
   const decodeHttpRequest = flow(

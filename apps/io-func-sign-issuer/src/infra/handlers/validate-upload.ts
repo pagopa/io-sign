@@ -1,6 +1,6 @@
 import * as H from "@pagopa/handler-kit";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 
 import { split } from "fp-ts/lib/string";
 import { last } from "fp-ts/lib/ReadonlyNonEmptyArray";

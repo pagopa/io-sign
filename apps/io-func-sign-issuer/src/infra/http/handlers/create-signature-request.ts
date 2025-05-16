@@ -1,6 +1,6 @@
 import * as H from "@pagopa/handler-kit";
 import * as O from "fp-ts/lib/Option";
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as E from "fp-ts/lib/Either";
@@ -13,7 +13,7 @@ import { getDossierById } from "../../../dossier";
 import {
   defaultExpiryDate,
   newSignatureRequest,
-  withExpiryDate
+  withExpiryDate,
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
 import { insertSignatureRequest } from "../../../signature-request";
@@ -37,7 +37,7 @@ const requireSignatureRequestBody = (req: H.HttpRequest) =>
               ),
               E.map(O.some)
             )
-          : E.right(O.none)
+          : E.right(O.none),
       })
     ),
     RTE.fromEither
@@ -47,7 +47,7 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
       issuer: requireIssuer(req),
-      body: requireSignatureRequestBody(req)
+      body: requireSignatureRequestBody(req),
     }),
     RTE.bindW("dossier", ({ issuer, body }) =>
       getDossierById(body.dossierId, issuer.id)
@@ -56,13 +56,13 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
       ({
         issuer,
         dossier,
-        body: { expiresAt, documentsMetadata, signerId }
+        body: { expiresAt, documentsMetadata, signerId },
       }) => ({
         issuer,
         dossier,
         signer: { id: signerId },
         expiresAt,
-        documentsMetadata
+        documentsMetadata,
       })
     ),
     RTE.chainW(({ issuer, dossier, signer, expiresAt, documentsMetadata }) =>

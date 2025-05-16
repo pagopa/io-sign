@@ -1,7 +1,7 @@
 import {
+  CosmosdbModel,
   BaseModel,
   CosmosResource,
-  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as t from "io-ts";
@@ -14,7 +14,7 @@ import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/error
 import {
   InsertUploadMetadata,
   UploadMetadata,
-  UploadMetadataRepository
+  UploadMetadataRepository,
 } from "../../../upload";
 
 const NewUploadMetadata = t.intersection([UploadMetadata, BaseModel]);
@@ -22,7 +22,7 @@ type NewUploadMetadata = t.TypeOf<typeof NewUploadMetadata>;
 
 const RetrievedUploadMetadata = t.intersection([
   UploadMetadata,
-  CosmosResource
+  CosmosResource,
 ]);
 type RetrievedUploadMetadata = t.TypeOf<typeof RetrievedUploadMetadata>;
 

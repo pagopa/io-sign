@@ -46,7 +46,7 @@ export const SignatureFieldFromApiModel = new t.Type<
         SignatureField.props.clause.props.title.decode(title),
         E.map((title) => ({
           title,
-          type: toClauseType(type)
+          type: toClauseType(type),
         }))
       ),
       attributes:
@@ -55,7 +55,7 @@ export const SignatureFieldFromApiModel = new t.Type<
               NonEmptyString.decode(attrs.unique_name),
               E.map((uniqueName) => ({ uniqueName }))
             )
-          : E.right(attrs)
+          : E.right(attrs),
     }),
   SignatureFieldToApiModel.encode
 );
@@ -75,7 +75,7 @@ export const DocumentMetadataFromApiModel = new t.Type<
       E.map((signatureFields) => ({
         title,
         signatureFields,
-        pdfDocumentMetadata: { pages: [], formFields: [] }
+        pdfDocumentMetadata: { pages: [], formFields: [] },
       }))
     ),
   DocumentMetadataToApiModel.encode

@@ -9,14 +9,14 @@ import * as R from "fp-ts/lib/Reader";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { pipe, flow, identity } from "fp-ts/lib/function";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { Issuer } from "@io-sign/io-sign/issuer";
 
 import {
+  getDocument,
   SignatureRequestId,
-  getDocument
 } from "@io-sign/io-sign/signature-request";
 
 import { SignatureRequest } from "./signature-request";
@@ -29,11 +29,11 @@ export const UploadMetadata = t.intersection([
     issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,
-    validated: t.boolean
+    validated: t.boolean,
   }),
   t.partial({
-    url: t.string
-  })
+    url: t.string,
+  }),
 ]);
 
 export type UploadMetadata = t.TypeOf<typeof UploadMetadata>;
@@ -56,7 +56,7 @@ export const newUploadMetadata =
         issuerId: signatureRequest.issuerId,
         createdAt: new Date(),
         updatedAt: new Date(),
-        validated: false
+        validated: false,
       }))
     );
 
@@ -64,7 +64,7 @@ export const markUploadMetadataAsValid = (uploadMetadata: UploadMetadata) =>
   pipe({
     ...uploadMetadata,
     validated: true,
-    updatedAt: new Date()
+    updatedAt: new Date(),
   });
 
 export type InsertUploadMetadata = (
@@ -82,16 +82,16 @@ export const uploadMetadataNotFoundError = new EntityNotFoundError(
   "UploadMetadata"
 );
 
-export interface UploadMetadataRepository {
+export type UploadMetadataRepository = {
   get: (
     id: UploadMetadata["id"]
   ) => TE.TaskEither<Error, O.Option<UploadMetadata>>;
   upsert: (meta: UploadMetadata) => TE.TaskEither<Error, UploadMetadata>;
-}
+};
 
-interface UploadMetadataEnvironment {
+type UploadMetadataEnvironment = {
   uploadMetadataRepository: UploadMetadataRepository;
-}
+};
 
 export const getUploadMetadata =
   (
@@ -115,7 +115,7 @@ export const upsertUploadMetadata =
   ({ uploadMetadataRepository: repo }) =>
     repo.upsert(meta);
 
-export interface FileStorage {
+export type FileStorage = {
   exists: (filename: string) => TE.TaskEither<Error, boolean>;
   download: (filename: string) => TE.TaskEither<Error, Buffer>;
   createFromUrl: (
@@ -124,7 +124,7 @@ export interface FileStorage {
   ) => TE.TaskEither<Error, string>;
   remove: (filename: string) => TE.TaskEither<Error, void>;
   getUrl: (filename: string) => string;
-}
+};
 
 export const getUploadedDocument =
   (

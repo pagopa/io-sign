@@ -2,15 +2,15 @@ import * as H from "@pagopa/handler-kit";
 
 import * as E from "fp-ts/lib/Either";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import {
   ApplyPar,
-  chainW,
   fromEither,
   map,
-  orElseW
+  chainW,
+  orElseW,
 } from "fp-ts/ReaderTaskEither";
 
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
@@ -34,7 +34,7 @@ const requireDossierBody = (req: H.HttpRequest) =>
         ),
         supportEmail: body.support_email
           ? pipe(body.support_email, H.parse(Dossier.props.supportEmail))
-          : E.right(undefined)
+          : E.right(undefined),
       })
     ),
     fromEither
@@ -44,7 +44,7 @@ export const CreateDossierHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(ApplyPar)({
       issuer: requireIssuer(req),
-      body: requireDossierBody(req)
+      body: requireDossierBody(req),
     }),
     map(({ issuer, body: { title, documentsMetadata, supportEmail } }) =>
       newDossier(issuer, title, documentsMetadata, supportEmail)

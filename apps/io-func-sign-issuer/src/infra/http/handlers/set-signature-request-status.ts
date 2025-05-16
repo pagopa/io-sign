@@ -15,14 +15,14 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { QueueClient } from "@azure/storage-queue";
 import {
   SetSignatureRequestStatusBody,
-  SetSignatureRequestStatusBodyEnum
+  SetSignatureRequestStatusBodyEnum,
 } from "../../http/models/SetSignatureRequestStatusBody";
 import {
   SignatureRequest,
   getSignatureRequest,
   markAsCancelled,
   markAsReady,
-  upsertSignatureRequest
+  upsertSignatureRequest,
 } from "../../../signature-request";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { requireSignatureRequestId } from "../../http/decoders/signature-request";
@@ -64,7 +64,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
     sequenceS(RTE.ApplyPar)({
       signatureRequestId: requireSignatureRequestId(req),
       issuer: requireIssuer(req),
-      body: pipe(requireSetSignatureRequestStatusBody(req), RTE.fromEither)
+      body: pipe(requireSetSignatureRequestStatusBody(req), RTE.fromEither),
     }),
     RTE.bindW("signatureRequest", ({ signatureRequestId, issuer }) =>
       getSignatureRequest(signatureRequestId, issuer.id)

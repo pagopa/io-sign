@@ -22,7 +22,7 @@ import { NotificationDetailView } from "../../http/models/NotificationDetailView
 
 import {
   makeGetSignatureRequest,
-  makeUpsertSignatureRequest
+  makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 
 import { makeRequireSignatureRequest } from "../../http/decoders/signature-request";
@@ -70,7 +70,7 @@ const makeSendNotificationHandler = (
     SendNotificationPayload
   > = sequenceS(RTE.ApplyPar)({
     signatureRequest: requireSignatureRequest,
-    issuer: makeRequireIssuer(getIssuerBySubscriptionId)
+    issuer: makeRequireIssuer(getIssuerBySubscriptionId),
   });
 
   const decodeHttpRequest = flow(

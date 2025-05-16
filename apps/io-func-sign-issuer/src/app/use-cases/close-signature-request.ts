@@ -3,10 +3,10 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import {
-  EventName,
   createAndSendAnalyticsEvent,
   createBillingEvent,
-  sendBillingEvent
+  EventName,
+  sendBillingEvent,
 } from "@io-sign/io-sign/event";
 
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
@@ -14,11 +14,11 @@ import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
 import {
   ClosedSignatureRequest,
-  SignatureRequest,
   getSignatureRequest,
   markAsRejected,
   markAsSigned,
-  upsertSignatureRequest
+  SignatureRequest,
+  upsertSignatureRequest,
 } from "../../signature-request";
 
 // TODO(SFEQS-2108): move here the signature request cancelation logic
@@ -36,12 +36,12 @@ const buildNotificationMessage = (
     return {
       subject: `${prefix} - Documenti firmati`,
       markdown: `I documenti che hai firmato sono pronti!\n\n\nHai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a ${supportEmail}.`,
-      signatureRequestId: request.id
+      signatureRequestId: request.id,
     };
   }
   return {
     subject: `${prefix} - C'è un problema con la firma`,
-    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a ${supportEmail}.`
+    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a ${supportEmail}.`,
   };
 };
 
@@ -60,7 +60,7 @@ const eventNameByRequestStatus: Record<
   EventName
 > = {
   SIGNED: EventName.SIGNATURE_SIGNED,
-  REJECTED: EventName.SIGNATURE_REJECTED
+  REJECTED: EventName.SIGNATURE_REJECTED,
 };
 
 const sendNotification = sendSignatureRequestNotification(
@@ -94,11 +94,11 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
             {
               properties: {
                 signatureRequestId: request.id,
-                environment: request.issuerEnvironment
-              }
+                environment: request.issuerEnvironment,
+              },
             },
             {
-              sampling: false
+              sampling: false,
             }
           )
         ),

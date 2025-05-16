@@ -7,17 +7,17 @@ import { pipe } from "fp-ts/lib/function";
 
 const SelfCareApiConfig = t.type({
   basePath: t.string,
-  apiKey: t.string
+  apiKey: t.string,
 });
 
 const SelfCareEventHubConfig = t.type({
   connectionString: t.string,
-  contractsName: t.string
+  contractsName: t.string,
 });
 
 export const SelfCareConfig = t.type({
   eventHub: SelfCareEventHubConfig,
-  api: SelfCareApiConfig
+  api: SelfCareApiConfig,
 });
 
 export type SelfCareConfig = t.TypeOf<typeof SelfCareConfig>;
@@ -36,23 +36,23 @@ export const getSelfCareConfigFromEnvironment: RE.ReaderEither<
       readFromEnvironment("SelfCareApiBasePath"),
       RE.orElse(() => RE.right("https://api.selfcare.pagopa.it/"))
     ),
-    apiKey: readFromEnvironment("SelfCareApiKey")
+    apiKey: readFromEnvironment("SelfCareApiKey"),
   }),
   RE.map(
     ({
       eventHubConnectionString,
       eventHubContractsName,
       apiBasePath,
-      apiKey
+      apiKey,
     }) => ({
       eventHub: {
         connectionString: eventHubConnectionString,
-        contractsName: eventHubContractsName
+        contractsName: eventHubContractsName,
       },
       api: {
         basePath: apiBasePath,
-        apiKey
-      }
+        apiKey,
+      },
     })
   )
 );

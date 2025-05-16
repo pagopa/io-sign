@@ -8,6 +8,6 @@ export const NotificationToApiModel: E.Encoder<
   Notification
 > = {
   encode: ({ ioMessageId: io_message_id }) => ({
-    io_message_id
-  })
+    io_message_id,
+  }),
 };

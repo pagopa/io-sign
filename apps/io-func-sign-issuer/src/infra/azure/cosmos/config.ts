@@ -6,7 +6,7 @@ import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const CosmosConfig = t.type({
   connectionString: t.string,
-  dbName: t.string
+  dbName: t.string,
 });
 
 type CosmosConfig = t.TypeOf<typeof CosmosConfig>;
@@ -17,5 +17,5 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
   CosmosConfig
 > = sequenceS(RE.Apply)({
   connectionString: readFromEnvironment("CosmosDbConnectionString"),
-  dbName: readFromEnvironment("CosmosDbDatabaseName")
+  dbName: readFromEnvironment("CosmosDbDatabaseName"),
 });

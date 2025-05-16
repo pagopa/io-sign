@@ -7,13 +7,13 @@ import { SignatureRequest } from "../../signature-request";
 import {
   GetUploadUrl,
   InsertUploadMetadata,
-  newUploadMetadata
+  newUploadMetadata,
 } from "../../upload";
 
-export interface GetUploadUrlPayload {
+export type GetUploadUrlPayload = {
   signatureRequest: SignatureRequest;
   documentId: Document["id"];
-}
+};
 
 export const makeGetUploadUrl =
   (insertUploadMetadata: InsertUploadMetadata, getUploadUrl: GetUploadUrl) =>

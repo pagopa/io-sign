@@ -5,9 +5,9 @@ import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import {
-  GetSignatureRequest,
   UpsertSignatureRequest,
-  markAsWaitForSignature
+  markAsWaitForSignature,
+  GetSignatureRequest,
 } from "../../signature-request";
 
 export const makeMarkRequestAsWaitForSignature =
