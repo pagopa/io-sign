@@ -1,11 +1,11 @@
 import * as H from "@pagopa/handler-kit";
 
 import {
-  chainEitherKW,
-  chainW,
   fromEither,
+  chainW,
   map,
-  orElseW
+  orElseW,
+  chainEitherKW,
 } from "fp-ts/ReaderTaskEither";
 
 import { flow } from "fp-ts/function";

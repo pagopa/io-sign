@@ -180,17 +180,17 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
 );
 
 export const GetSignatureRequests = GetSignatureRequestsFunction({
-  signatureRequestRepository
+  signatureRequestRepository,
 });
 
 export const GetSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient,
-  signedContainerClient
+  signedContainerClient,
 });
 
 export const UpdateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient
+  eventAnalyticsClient: eventHubAnalyticsClient,
 });

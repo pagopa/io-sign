@@ -1,4 +1,4 @@
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
 

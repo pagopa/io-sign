@@ -3,7 +3,7 @@ import * as azure from "handler-kit-legacy/lib/azure";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { constVoid, flow, identity } from "fp-ts/lib/function";
+import { flow, identity, constVoid } from "fp-ts/lib/function";
 
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 
@@ -13,8 +13,8 @@ import { QueueClient } from "@azure/storage-queue";
 import { EventHubProducerClient } from "@azure/event-hubs";
 
 import {
+  makeValidateSignature,
   ValidateSignaturePayload,
-  makeValidateSignature
 } from "../../../app/use-cases/validate-signature";
 import { makeGetSignature, makeUpsertSignature } from "../cosmos/signature";
 import { makeGetToken } from "../../namirial/client";
@@ -22,12 +22,12 @@ import { makeGetSignatureRequestWithToken } from "../../namirial/signature-reque
 import { NamirialConfig } from "../../namirial/config";
 import {
   makeGetSignatureRequest,
-  makeUpsertSignatureRequest
+  makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 import { makeGetBlobUrl } from "../storage/blob";
 import {
   makeNotifySignatureRequestRejectedEvent,
-  makeNotifySignatureRequestSignedEvent
+  makeNotifySignatureRequestSignedEvent,
 } from "../storage/signature-request";
 
 const makeValidateSignatureHandler = (
@@ -50,8 +50,9 @@ const makeValidateSignatureHandler = (
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
     eventHubAnalyticsClient
   );
-  const getQtspSignatureRequest =
-    makeGetSignatureRequestWithToken()(makeGetToken())(qtspConfig);
+  const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
+    makeGetToken()
+  )(qtspConfig);
 
   const validateSignature = makeValidateSignature(
     getSignature,

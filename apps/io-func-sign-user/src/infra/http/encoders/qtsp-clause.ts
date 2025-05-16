@@ -5,6 +5,6 @@ import { QtspClause as QtspClauseApiModel } from "../models/QtspClause";
 
 export const QtspClauseToApiModel: E.Encoder<QtspClauseApiModel, QtspClause> = {
   encode: ({ text }) => ({
-    text
-  })
+    text,
+  }),
 };

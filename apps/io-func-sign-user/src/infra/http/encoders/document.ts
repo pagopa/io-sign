@@ -1,9 +1,9 @@
 import * as E from "io-ts/lib/Encoder";
 
 import {
-  DocumentMetadata,
   DocumentReady,
-  SignatureFieldAttributes
+  DocumentMetadata,
+  SignatureFieldAttributes,
 } from "@io-sign/io-sign/document";
 
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
@@ -14,7 +14,7 @@ import { SignatureField } from "../models/SignatureField";
 import {
   ClauseToApiModel,
   SignatureFieldAttributesToApiModel,
-  SignatureFieldToBeCreatedAttributesToApiModel
+  SignatureFieldToBeCreatedAttributesToApiModel,
 } from "./signature-field";
 
 export const DocumentMetadataToApiModel: E.Encoder<
@@ -22,25 +22,27 @@ export const DocumentMetadataToApiModel: E.Encoder<
   DocumentMetadata
 > = {
   encode: ({ title, signatureFields, pdfDocumentMetadata }) => {
-    const fields: Array<SignatureField> = [];
+    const fields: SignatureField[] = [];
     const heights = new Map<NonNegativeNumber, NonNegativeNumber>(
       pdfDocumentMetadata.pages.map((p) => [p.number, p.height])
     );
     for (const field of signatureFields) {
       const clause = ClauseToApiModel.encode(field.clause);
       if (SignatureFieldAttributes.is(field.attributes)) {
+        // eslint-disable-next-line functional/immutable-data
         fields.push({
           clause,
-          attrs: SignatureFieldAttributesToApiModel.encode(field.attributes)
+          attrs: SignatureFieldAttributesToApiModel.encode(field.attributes),
         });
       } else if (heights.has(field.attributes.page)) {
         const pageHeight = heights.get(field.attributes.page);
         if (pageHeight) {
+          // eslint-disable-next-line functional/immutable-data
           fields.push({
             clause,
             attrs: SignatureFieldToBeCreatedAttributesToApiModel(
               pageHeight
-            ).encode(field.attributes)
+            ).encode(field.attributes),
           });
         }
       }
@@ -48,9 +50,9 @@ export const DocumentMetadataToApiModel: E.Encoder<
     return {
       title,
       // removes all signature fields from DocumentMetadata if they reference to non-existent document page
-      signature_fields: signatureFields.length === fields.length ? fields : []
+      signature_fields: signatureFields.length === fields.length ? fields : [],
     };
-  }
+  },
 };
 
 export const DocumentReadyToDetailView: E.Encoder<
@@ -62,6 +64,6 @@ export const DocumentReadyToDetailView: E.Encoder<
     created_at: document.createdAt,
     updated_at: document.updatedAt,
     metadata: DocumentMetadataToApiModel.encode(document.metadata),
-    url: document.url
-  })
+    url: document.url,
+  }),
 };

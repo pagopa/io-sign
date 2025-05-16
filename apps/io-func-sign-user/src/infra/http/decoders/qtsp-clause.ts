@@ -19,7 +19,6 @@ export const QtspClauseFromApiModel = new t.Type<
 >(
   "QtspClauseFromApiModel",
   QtspClause.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ text }, _ctx) => E.right({ text }),
   QtspClauseToApiModel.encode
 );
@@ -40,11 +39,11 @@ export const requireQtspClauses = flow(
           )
         )
       ),
-      qtspClauses
+      qtspClauses,
     }),
   E.map(({ acceptedClauses, qtspClauses }) => ({
     acceptedClauses,
     filledDocumentUrl: qtspClauses.filled_document_url,
-    nonce: qtspClauses.nonce
+    nonce: qtspClauses.nonce,
   }))
 );

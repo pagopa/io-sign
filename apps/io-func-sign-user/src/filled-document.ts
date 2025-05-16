@@ -9,7 +9,7 @@ export const FilledDocumentUrl = UrlFromString;
 export type FilledDocumentUrl = t.TypeOf<typeof FilledDocumentUrl>;
 
 export const FilledDocument = t.type({
-  url: FilledDocumentUrl
+  url: FilledDocumentUrl,
 });
 
 export type FilledDocument = t.TypeOf<typeof FilledDocument>;
@@ -19,7 +19,7 @@ export const CreateFilledDocumentPayload = t.type({
   documentUrl: NonEmptyString,
   email: EmailString,
   familyName: NonEmptyString,
-  name: NonEmptyString
+  name: NonEmptyString,
 });
 
 export type CreateFilledDocumentPayload = t.TypeOf<
@@ -29,8 +29,8 @@ export type CreateFilledDocumentPayload = t.TypeOf<
 export const FillDocumentPayload = t.intersection([
   CreateFilledDocumentPayload,
   t.type({
-    filledDocumentFileName: NonEmptyString
-  })
+    filledDocumentFileName: NonEmptyString,
+  }),
 ]);
 
 export type FillDocumentPayload = t.TypeOf<typeof FillDocumentPayload>;

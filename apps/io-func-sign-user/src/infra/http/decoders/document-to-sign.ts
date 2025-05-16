@@ -1,4 +1,4 @@
-import { ValidationError, validate } from "@io-sign/io-sign/validation";
+import { validate, ValidationError } from "@io-sign/io-sign/validation";
 
 import { HttpRequest } from "handler-kit-legacy/lib/http";
 
@@ -41,14 +41,13 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ clause: { title, type }, attrs }, _ctx) =>
     sequenceS(E.Apply)({
       clause: pipe(
         SignatureField.props.clause.props.title.decode(title),
         E.map((title) => ({
           title,
-          type: toClauseType(type)
+          type: toClauseType(type),
         }))
       ),
       attributes:
@@ -63,9 +62,9 @@ export const SignatureFieldFromApiModel = new t.Type<
               E.map((attrs) => ({
                 bottomLeft: attrs.bottom_left,
                 topRight: attrs.top_right,
-                page: attrs.page
+                page: attrs.page,
               }))
-            )
+            ),
     }),
 
   identity
@@ -78,7 +77,6 @@ export const DocumentToSignFromApiModel = new t.Type<
 >(
   "DocumentToSignFromApiModel",
   DocumentToSign.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ document_id, signature_fields }, _ctx) =>
     pipe(
       signature_fields,
@@ -87,7 +85,7 @@ export const DocumentToSignFromApiModel = new t.Type<
       A.sequence(E.Applicative),
       E.map((signatureFields) => ({
         documentId: document_id,
-        signatureFields
+        signatureFields,
       }))
     ),
   identity

@@ -10,7 +10,7 @@ export const Certificate = t.type({
   issuer: NonEmptyString,
   valid_from: IsoDateFromString,
   valid_to: IsoDateFromString,
-  data: NonEmptyString
+  data: NonEmptyString,
 });
 
 export type Certificate = t.TypeOf<typeof Certificate>;

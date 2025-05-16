@@ -7,14 +7,14 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as A from "fp-ts/lib/Array";
 
 import {
-  HealthCheck,
   HealthProblem,
-  toHealthProblems
+  HealthCheck,
+  toHealthProblems,
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { NamirialCredentialsConfig } from "./config";
-import { NamirialToken, makeGetClauses, makeGetToken } from "./client";
+import { makeGetClauses, makeGetToken, NamirialToken } from "./client";
 
 export type NamirialProblemSource =
   | "NamirialLogin"
@@ -69,7 +69,7 @@ export const makeNamirialHealthCheck = (
         [
           checkTosUrlHealth()(tos.document_link),
           checkTosUrlHealth()(tos.privacy_link),
-          checkTosUrlHealth()(tos.terms_and_conditions_link)
+          checkTosUrlHealth()(tos.terms_and_conditions_link),
         ],
         A.sequence(applicativeValidation)
       )

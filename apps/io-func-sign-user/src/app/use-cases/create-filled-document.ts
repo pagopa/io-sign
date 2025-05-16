@@ -12,7 +12,7 @@ import {
   CreateFilledDocumentPayload,
   FillDocumentPayload,
   FilledDocumentUrl,
-  NotifyDocumentToFillEvent
+  NotifyDocumentToFillEvent,
 } from "../../filled-document";
 
 import { GetFilledDocumentUrl } from "../../infra/azure/functions/create-filled-document";
@@ -31,7 +31,7 @@ export const makeCreateFilledDocumentUrl =
     documentUrl,
     email,
     familyName,
-    name
+    name,
   }: CreateFilledDocumentPayload) => {
     const filledDocumentFileName = `${signer.id}.pdf`;
 
@@ -53,7 +53,7 @@ export const makeCreateFilledDocumentUrl =
             familyName,
             name,
             filledDocumentFileName,
-            documentUrl
+            documentUrl,
           },
           validate(
             FillDocumentPayload,
@@ -68,7 +68,7 @@ export const makeCreateFilledDocumentUrl =
           callbackDocumentUrl,
           validate(FilledDocumentUrl, "Invalid filled document url"),
           E.map((url) => ({
-            url
+            url,
           }))
         )
       )

@@ -5,7 +5,7 @@ import * as azureLegacyHandler from "handler-kit-legacy/lib/azure";
 
 import { HttpRequest } from "handler-kit-legacy/lib/http";
 
-import { error, success } from "@io-sign/io-sign/infra/http/response";
+import { success, error } from "@io-sign/io-sign/infra/http/response";
 import { validate } from "@io-sign/io-sign/validation";
 import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
@@ -14,7 +14,7 @@ import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokeniz
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { QueueClient } from "@azure/storage-queue";
@@ -33,7 +33,7 @@ import { requireQtspClauses } from "../../http/decoders/qtsp-clause";
 
 import {
   CreateSignaturePayload,
-  makeCreateSignature
+  makeCreateSignature,
 } from "../../../app/use-cases/create-signature";
 import { makeGetToken } from "../../namirial/client";
 import { NamirialConfig } from "../../namirial/config";
@@ -46,7 +46,7 @@ import { SignatureDetailView } from "../../http/models/SignatureDetailView";
 
 import {
   makeGetSignatureRequest,
-  makeUpsertSignatureRequest
+  makeUpsertSignatureRequest,
 } from "../cosmos/signature-request";
 
 import { makeNotifySignatureReadyEvent } from "../storage/signature";
@@ -67,8 +67,9 @@ const makeCreateSignatureHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getBase64SamlAssertion = makeGetBase64SamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
-  const creatQtspSignatureRequest =
-    makeCreateSignatureRequestWithToken()(makeGetToken())(qtspConfig);
+  const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
+    makeGetToken()
+  )(qtspConfig);
 
   const insertSignature = makeInsertSignature(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);
@@ -97,7 +98,7 @@ const makeCreateSignatureHandler = (
     validate(CreateSignatureBody),
     E.map((body) => ({
       email: body.email,
-      signatureRequestId: body.signature_request_id
+      signatureRequestId: body.signature_request_id,
     }))
   );
 
@@ -111,16 +112,18 @@ const makeCreateSignatureHandler = (
       body: RTE.fromReaderEither(requireCreateSignatureBody),
       documentsSignature: RTE.fromReaderEither(requireDocumentsSignature),
       qtspClauses: RTE.fromReaderEither(requireQtspClauses),
-      lollipopParams: RTE.fromReaderEither(requireCreateSignatureLollipopParams)
+      lollipopParams: RTE.fromReaderEither(
+        requireCreateSignatureLollipopParams
+      ),
     }),
     RTE.chainFirstIOK(() =>
       L.info("creating signature")({
-        logger: ConsoleLogger
+        logger: ConsoleLogger,
       })
     ),
     RTE.chainFirstIOK((params) =>
       L.debug("creating signature with params", { params })({
-        logger: ConsoleLogger
+        logger: ConsoleLogger,
       })
     ),
     RTE.chainTaskEitherK((sequence) =>
@@ -142,7 +145,7 @@ const makeCreateSignatureHandler = (
               "x-pagopa-lollipop-custom-sign-challenge"
             ),
             TE.fromEither
-          )
+          ),
         }),
         TE.map(({ samlAssertionBase64, tosSignature, challengeSignature }) => ({
           ...sequence,
@@ -150,12 +153,12 @@ const makeCreateSignatureHandler = (
             ...sequence.lollipopParams,
             samlAssertionBase64,
             tosSignature,
-            challengeSignature
-          }
+            challengeSignature,
+          },
         })),
         TE.chainFirstIOK((lollipopParams) =>
           L.debug("retrived lollipop params: ", { lollipopParams })({
-            logger: ConsoleLogger
+            logger: ConsoleLogger,
           })
         )
       )
@@ -166,7 +169,7 @@ const makeCreateSignatureHandler = (
         documentsSignature,
         qtspClauses,
         body: { email, signatureRequestId },
-        lollipopParams
+        lollipopParams,
       }) => ({
         signer,
         qtspClauses: {
@@ -181,7 +184,7 @@ const makeCreateSignatureHandler = (
                   validate(NonEmptyString, "Invalid encoded filledDocumentUrl")
                 ),
                 E.getOrElse(() => qtspClauses.filledDocumentUrl)
-              )
+              ),
         },
         documentsSignature,
         email,
@@ -191,13 +194,13 @@ const makeCreateSignatureHandler = (
           publicKey: lollipopParams.publicKey,
           samlAssertionBase64: lollipopParams.samlAssertionBase64,
           tosSignature: lollipopParams.tosSignature,
-          challengeSignature: lollipopParams.challengeSignature
-        }
+          challengeSignature: lollipopParams.challengeSignature,
+        },
       })
     ),
     RTE.chainFirstIOK((payload) =>
       L.debug("create signature payload", { payload })({
-        logger: ConsoleLogger
+        logger: ConsoleLogger,
       })
     )
   );

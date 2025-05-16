@@ -3,7 +3,7 @@ import { Signature } from "../../../signature";
 
 import {
   SignatureDetailView as SignatureApiModel,
-  StatusEnum as SignatureStatusEnum
+  StatusEnum as SignatureStatusEnum,
 } from "../models/SignatureDetailView";
 
 const statusToApiModelEnum = (
@@ -32,13 +32,13 @@ export const SignatureToApiModel: E.Encoder<SignatureApiModel, Signature> = {
     qtspSignatureRequestId,
     status,
     createdAt,
-    updatedAt
+    updatedAt,
   }) => ({
     id,
     signature_request_id: signatureRequestId,
     qtsp_signature_request_id: qtspSignatureRequestId,
     status: statusToApiModelEnum(status),
     created_at: createdAt,
-    updated_at: updatedAt
-  })
+    updated_at: updatedAt,
+  }),
 };

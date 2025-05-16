@@ -7,7 +7,7 @@ export const ClausesMetadata = t.type({
   privacy_link: NonEmptyString,
   terms_and_conditions_link: NonEmptyString,
   clauses: t.array(t.type({ text: NonEmptyString })),
-  nonce: NonEmptyString
+  nonce: NonEmptyString,
 });
 
 export type ClausesMetadata = t.TypeOf<typeof ClausesMetadata>;

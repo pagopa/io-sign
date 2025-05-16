@@ -1,4 +1,4 @@
-import { HttpRequest, header } from "handler-kit-legacy/lib/http";
+import { header, HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { validate } from "@io-sign/io-sign/validation";
 
@@ -36,7 +36,7 @@ export const BasicLollipopParams = t.type({
   jwtAuthorization: LollipopJWTAuthorization,
   assertionRef: LollipopAssertionRef,
   assertionType: AssertionType,
-  publicKey: LollipopPublicKey
+  publicKey: LollipopPublicKey,
 });
 
 export type BasicLollipopParams = t.TypeOf<typeof BasicLollipopParams>;
@@ -45,8 +45,8 @@ export const CreateSignatureLollipopParams = t.intersection([
   BasicLollipopParams,
   t.type({
     tosChallenge: NonEmptyString,
-    signChallenge: NonEmptyString
-  })
+    signChallenge: NonEmptyString,
+  }),
 ]);
 
 export type CreateSignatureLollipopParams = t.TypeOf<
@@ -93,7 +93,7 @@ export const requireBasicLollipopParams = (
           "x-pagopa-lollipop-public-key",
           LollipopPublicKey
         )
-      )
+      ),
     })
   );
 
@@ -119,11 +119,11 @@ export const requireCreateSignatureLollipopParams = (
               "x-pagopa-lollipop-custom-sign-challenge",
               NonEmptyString
             )
-          )
+          ),
         }),
         E.map((createSignatureLollipopParams) => ({
           ...lollipopBasic,
-          ...createSignatureLollipopParams
+          ...createSignatureLollipopParams,
         }))
       )
     )

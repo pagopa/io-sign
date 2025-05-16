@@ -12,6 +12,6 @@ export const NamirialClausesToQtspClauses: E.Encoder<
     privacyUrl: clauses.privacy_link,
     termsAndConditionsUrl: clauses.terms_and_conditions_link,
     privacyText: clauses.privacy_text,
-    nonce: clauses.nonce
-  })
+    nonce: clauses.nonce,
+  }),
 };

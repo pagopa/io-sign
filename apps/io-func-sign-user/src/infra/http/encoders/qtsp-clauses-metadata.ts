@@ -14,13 +14,13 @@ export const QtspClausesMetadataToApiModel: E.Encoder<
     privacyUrl,
     termsAndConditionsUrl,
     privacyText,
-    nonce
+    nonce,
   }) => ({
     clauses,
     document_url: documentUrl,
     privacy_url: privacyUrl,
     terms_and_conditions_url: termsAndConditionsUrl,
     privacy_text: privacyText,
-    nonce
-  })
+    nonce,
+  }),
 };

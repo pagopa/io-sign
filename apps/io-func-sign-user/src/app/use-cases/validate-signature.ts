@@ -11,22 +11,22 @@ import * as t from "io-ts";
 
 import {
   SignatureRequestRejected,
-  SignatureRequestSigned
+  SignatureRequestSigned,
 } from "@io-sign/io-sign/signature-request";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
+  markAsRejected,
+  markAsSigned,
   NotifySignatureRequestRejectedEvent,
   NotifySignatureRequestSignedEvent,
   SignatureRequest,
-  markAsRejected,
-  markAsSigned
 } from "../../signature-request";
 import { GetSignature, Signature, UpsertSignature } from "../../signature";
 import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
 import {
   GetSignatureRequest,
-  UpsertSignatureRequest
+  UpsertSignatureRequest,
 } from "../../signature-request";
 import { GetBlobUrl } from "../../infra/azure/storage/blob";
 
@@ -34,7 +34,7 @@ import { SignatureRequest as QtspSignatureRequest } from "../../infra/namirial/s
 
 export const ValidateSignaturePayload = t.type({
   signatureId: NonEmptyString,
-  signerId: NonEmptyString
+  signerId: NonEmptyString,
 });
 
 export type ValidateSignaturePayload = t.TypeOf<
@@ -53,7 +53,7 @@ export const makeMarkSignatureAndSignatureRequestAsRejected =
       {
         ...signature,
         status: "FAILED",
-        rejectedReason
+        rejectedReason,
       },
       upsertSignature,
       TE.chainFirst(() =>
@@ -139,7 +139,7 @@ export const makeValidateSignature =
               ),
               TE.map((qtspSignatureRequest) => ({
                 qtspSignatureRequest,
-                signatureRequest
+                signatureRequest,
               }))
             )
           ),
@@ -155,9 +155,9 @@ export const makeValidateSignature =
                   TE.chainFirstIOK(() =>
                     L.debug("Signature request created by the QTSP", {
                       signatureRequest,
-                      qtspSignatureRequest
+                      qtspSignatureRequest,
                     })({
-                      logger: ConsoleLogger
+                      logger: ConsoleLogger,
                     })
                   )
                 );
@@ -172,9 +172,9 @@ export const makeValidateSignature =
                   TE.chainFirstIOK(() =>
                     L.debug("Certificate created", {
                       signatureRequest,
-                      qtspSignatureRequest
+                      qtspSignatureRequest,
                     })({
-                      logger: ConsoleLogger
+                      logger: ConsoleLogger,
                     })
                   ),
                   TE.chain(() =>
@@ -201,14 +201,14 @@ export const makeValidateSignature =
                       ),
                       TE.map((documentUrl) => ({
                         ...document,
-                        url: documentUrl
+                        url: documentUrl,
                       }))
                     )
                   ),
                   A.sequence(TE.ApplicativeSeq),
                   TE.map((documents) => ({
                     ...signatureRequest,
-                    documents
+                    documents,
                   })),
                   TE.chainEitherK(markAsSigned),
                   TE.chainFirst((r: SignatureRequest) =>
@@ -220,15 +220,15 @@ export const makeValidateSignature =
                   // Upsert signature
                   TE.map(() => ({
                     ...signature,
-                    status: "COMPLETED" as const
+                    status: "COMPLETED" as const,
                   })),
                   TE.chain(upsertSignature),
                   TE.chainFirstIOK(() =>
                     L.debug("Signed by the QTSP", {
                       signatureRequest,
-                      qtspSignatureRequest
+                      qtspSignatureRequest,
                     })({
-                      logger: ConsoleLogger
+                      logger: ConsoleLogger,
                     })
                   ),
                   TE.alt(() =>
@@ -242,7 +242,6 @@ export const makeValidateSignature =
                   )
                 );
               case "FAILED":
-                // eslint-disable-next-line no-case-declarations
                 const errorDetail =
                   qtspSignatureRequest.last_error !== null
                     ? qtspSignatureRequest.last_error.detail

@@ -1,22 +1,22 @@
 import * as t from "io-ts";
 import { NonNegativeNumber } from "@pagopa/ts-commons/lib/numbers";
 import {
-  SignatureFieldToBeCreatedAttributes as AttributesWithCoordsAndSize,
   Clause,
-  SignatureFieldAttributes
+  SignatureFieldAttributes,
+  SignatureFieldToBeCreatedAttributes as AttributesWithCoordsAndSize,
 } from "@io-sign/io-sign/document";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const SignatureFieldToBeCreatedAttributes = t.type({
   bottomLeft: t.type({
     x: t.number,
-    y: t.number
+    y: t.number,
   }),
   topRight: t.type({
     x: t.number,
-    y: t.number
+    y: t.number,
   }),
-  page: NonNegativeNumber
+  page: NonNegativeNumber,
 });
 
 export type SignatureFieldToBeCreatedAttributes = t.TypeOf<
@@ -28,31 +28,31 @@ export const toSignatureFieldToBeCreatedAttributes =
   ({
     coordinates,
     size,
-    page
+    page,
   }: AttributesWithCoordsAndSize): SignatureFieldToBeCreatedAttributes => ({
     bottomLeft: {
       x: Math.round(coordinates.x),
-      y: Math.round(pageHeight - coordinates.y - size.h)
+      y: Math.round(pageHeight - coordinates.y - size.h),
     },
     topRight: {
       x: Math.round(coordinates.x + size.w),
-      y: Math.round(pageHeight - coordinates.y)
+      y: Math.round(pageHeight - coordinates.y),
     },
-    page
+    page,
   });
 
 export const SignatureField = t.type({
   attributes: t.union([
     SignatureFieldAttributes,
-    SignatureFieldToBeCreatedAttributes
+    SignatureFieldToBeCreatedAttributes,
   ]),
-  clause: Clause
+  clause: Clause,
 });
 
 export type SignatureField = t.TypeOf<typeof SignatureField>;
 
 export const DocumentToSign = t.type({
   documentId: NonEmptyString,
-  signatureFields: t.array(SignatureField)
+  signatureFields: t.array(SignatureField),
 });
 export type DocumentToSign = t.TypeOf<typeof DocumentToSign>;

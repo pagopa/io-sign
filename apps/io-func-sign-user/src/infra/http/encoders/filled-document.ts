@@ -8,6 +8,6 @@ export const FilledDocumentToApiModel: E.Encoder<
   FilledDocument
 > = {
   encode: ({ url: filled_document_url }) => ({
-    filled_document_url: filled_document_url.href
-  })
+    filled_document_url: filled_document_url.href,
+  }),
 };

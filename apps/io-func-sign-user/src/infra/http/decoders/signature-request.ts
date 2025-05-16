@@ -23,7 +23,7 @@ import { GetSignerByFiscalCode } from "@io-sign/io-sign/signer";
 
 import {
   GetSignatureRequest,
-  SignatureRequest
+  SignatureRequest,
 } from "../../../signature-request";
 import { requireSigner } from "./signer.old";
 import { requireFiscalCode } from "./fiscal-code";
@@ -37,7 +37,7 @@ export const makeRequireSignatureRequest = (
   pipe(
     sequenceS(RE.Apply)({
       signer: requireSigner,
-      signatureRequestId: requireSignatureRequestIdFromPath
+      signatureRequestId: requireSignatureRequestIdFromPath,
     }),
     RTE.fromReaderEither,
     RTE.chainTaskEitherK(({ signer, signatureRequestId }) =>
@@ -53,7 +53,7 @@ export const makeRequireSignatureRequestByFiscalCode = (
   pipe(
     sequenceS(RE.Apply)({
       fiscalCode: requireFiscalCode,
-      signatureRequestId: requireSignatureRequestIdFromPath
+      signatureRequestId: requireSignatureRequestIdFromPath,
     }),
     RTE.fromReaderEither,
     RTE.chainTaskEitherK(({ fiscalCode, signatureRequestId }) =>

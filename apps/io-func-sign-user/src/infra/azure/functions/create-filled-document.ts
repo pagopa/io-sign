@@ -8,7 +8,7 @@ import * as E from "fp-ts/lib/Either";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe, flow } from "fp-ts/lib/function";
 import { HttpRequest, withHeader } from "handler-kit-legacy/lib/http";
 
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -22,11 +22,11 @@ import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokeniz
 import { ValidUrl } from "@pagopa/ts-commons/lib/url";
 import {
   defaultBlobGenerateSasUrlOptions,
-  deleteBlobIfExist,
   generateSasUrlFromBlob,
-  getBlobClient,
+  withPermissions,
   withExpireInMinutes,
-  withPermissions
+  getBlobClient,
+  deleteBlobIfExist,
 } from "@io-sign/io-sign/infra/azure/storage/blob";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
@@ -87,7 +87,7 @@ const makeCreateFilledDocumentHandler = (
       documentUrl: body.document_url,
       email: body.email,
       familyName: body.family_name,
-      name: body.name
+      name: body.name,
     }))
   );
 
@@ -98,7 +98,7 @@ const makeCreateFilledDocumentHandler = (
   > = pipe(
     sequenceS(RTE.ApplyPar)({
       signer: RTE.fromReaderEither(requireSigner),
-      body: RTE.fromReaderEither(requireCreateFilledDocumentBody)
+      body: RTE.fromReaderEither(requireCreateFilledDocumentBody),
     }),
     RTE.map(({ signer, body: { documentUrl, email, familyName, name } }) => ({
       signer,
@@ -117,7 +117,7 @@ const makeCreateFilledDocumentHandler = (
           ),
       email,
       familyName,
-      name
+      name,
     }))
   );
 

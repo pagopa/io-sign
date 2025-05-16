@@ -56,22 +56,22 @@ export const SignatureRequestToApiModel: E.Encoder<
         environment:
           environment === "TEST"
             ? IssuerEnvironmentEnum.TEST
-            : IssuerEnvironmentEnum.DEFAULT
-      }
+            : IssuerEnvironmentEnum.DEFAULT,
+      },
     };
     switch (extra.status) {
       case "WAIT_FOR_SIGNATURE": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-          qr_code_url: extra.qrCodeUrl
+          qr_code_url: extra.qrCodeUrl,
         };
       }
       case "WAIT_FOR_QTSP": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
-          qr_code_url: extra.qrCodeUrl
+          qr_code_url: extra.qrCodeUrl,
         };
       }
       case "REJECTED": {
@@ -79,25 +79,25 @@ export const SignatureRequestToApiModel: E.Encoder<
           ...commonFields,
           status: SignatureRequestStatusEnum.REJECTED,
           reject_at: extra.rejectedAt,
-          reject_reason: extra.rejectReason
+          reject_reason: extra.rejectReason,
         };
       }
       case "SIGNED": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.SIGNED,
-          signed_at: extra.signedAt
+          signed_at: extra.signedAt,
         };
       }
       case "CANCELLED": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.CANCELLED,
-          cancelled_at: extra.cancelledAt
+          cancelled_at: extra.cancelledAt,
         };
       }
     }
-  }
+  },
 };
 
 const toSignatureRequestStatusEnum = (
@@ -129,7 +129,7 @@ export const SignatureRequestToListView: E.Encoder<
     status,
     createdAt: created_at,
     updatedAt: updated_at,
-    expiresAt: expires_at
+    expiresAt: expires_at,
   }) => ({
     id,
     signer_id,
@@ -138,8 +138,8 @@ export const SignatureRequestToListView: E.Encoder<
     status: toSignatureRequestStatusEnum(status),
     created_at,
     updated_at,
-    expires_at
-  })
+    expires_at,
+  }),
 };
 
 export const SignatureRequestToThirdPartyMessage: E.Encoder<
@@ -153,8 +153,8 @@ export const SignatureRequestToThirdPartyMessage: E.Encoder<
         id: document.id,
         content_type: "application/pdf" as NonEmptyString,
         name: addPdfExtension(document.metadata.title),
-        url: document.id
+        url: document.id,
       }))
-    )
-  })
+    ),
+  }),
 };

@@ -7,7 +7,7 @@ import { pipe } from "fp-ts/lib/function";
 
 export const LollipopConfig = t.type({
   apiBasePath: t.string,
-  apiKey: t.string
+  apiKey: t.string,
 });
 
 export type LollipopConfig = t.TypeOf<typeof LollipopConfig>;
@@ -21,5 +21,5 @@ export const getLollipopConfigFromEnvironment: RE.ReaderEither<
     readFromEnvironment("LollipopApiBasePath"),
     RE.orElse(() => RE.right("https://api.io.pagopa.it"))
   ),
-  apiKey: readFromEnvironment("LollipopApiKey")
+  apiKey: readFromEnvironment("LollipopApiKey"),
 });

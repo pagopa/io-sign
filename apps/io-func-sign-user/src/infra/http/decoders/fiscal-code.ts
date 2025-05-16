@@ -1,4 +1,4 @@
-import { HttpRequest, header } from "handler-kit-legacy/lib/http";
+import { header, HttpRequest } from "handler-kit-legacy/lib/http";
 
 import { validate } from "@io-sign/io-sign/validation";
 

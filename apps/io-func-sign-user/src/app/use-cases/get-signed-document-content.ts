@@ -9,7 +9,7 @@ import { getDocument } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
 import {
   SignatureRequest,
-  signedNoMoreThan90DaysAgo
+  signedNoMoreThan90DaysAgo,
 } from "../../signature-request";
 
 export const makeGetSignedDocumentContent =

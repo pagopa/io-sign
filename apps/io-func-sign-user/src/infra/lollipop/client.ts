@@ -3,7 +3,7 @@ import { agent } from "@pagopa/ts-commons";
 import {
   AbortableFetch,
   setFetchTimeout,
-  toFetch
+  toFetch,
 } from "@pagopa/ts-commons/lib/fetch";
 
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
@@ -14,10 +14,10 @@ import { Client, createClient } from "./models/client";
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
 
-export interface LollipopApiClient {
+export type LollipopApiClient = {
   client: Client<"ApiKeyAuth">;
   baseUrl: NonEmptyString;
-}
+};
 
 export const createLollipopApiClient = (
   baseUrl: string,
@@ -32,8 +32,8 @@ export const createLollipopApiClient = (
     withDefaults: (op) => (params) =>
       op({
         ...params,
-        ApiKeyAuth: apiKey
-      })
+        ApiKeyAuth: apiKey,
+      }),
   }),
-  baseUrl: baseUrl as NonEmptyString
+  baseUrl: baseUrl as NonEmptyString,
 });

@@ -3,7 +3,7 @@ import * as azure from "handler-kit-legacy/lib/azure";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
-import { constVoid, flow, identity, pipe } from "fp-ts/lib/function";
+import { pipe, flow, identity, constVoid } from "fp-ts/lib/function";
 
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";

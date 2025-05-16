@@ -13,7 +13,7 @@ export const Clauses = t.type({
   terms_and_conditions_link: UrlFromString,
   clauses: t.array(
     t.type({ id: NonEmptyString, text: NonEmptyString, accepted: t.boolean })
-  )
+  ),
 });
 
 export type Clauses = t.TypeOf<typeof Clauses>;

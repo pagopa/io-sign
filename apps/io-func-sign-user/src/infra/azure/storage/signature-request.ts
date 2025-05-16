@@ -3,9 +3,9 @@ import { QueueClient } from "@azure/storage-queue";
 import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
 import { pipe } from "fp-ts/lib/function";
 import {
-  NotifySignatureRequestRejectedEvent,
+  NotifySignatureRequestWaitForSignatureEvent,
   NotifySignatureRequestSignedEvent,
-  NotifySignatureRequestWaitForSignatureEvent
+  NotifySignatureRequestRejectedEvent,
 } from "../../../signature-request";
 
 export const makeNotifySignatureRequestWaitForSignatureEvent =
