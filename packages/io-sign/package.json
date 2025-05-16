@@ -17,7 +17,7 @@
     "dist"
   ],
   "engines": {
-    "node": "20.17.0"
+    "node": "^20.19.2"
   },
   "dependencies": {
     "@azure/event-hubs": "^5.9.0",

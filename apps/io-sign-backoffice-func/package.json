@@ -4,7 +4,7 @@
   "private": true,
   "license": "MPL-2.0",
   "engines": {
-    "node": "20.17.0"
+    "node": "^20.19.2"
   },
   "scripts": {
     "build": "tsup-node",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@pagopa/eslint-config": "4.0.0",
-    "@types/node": "^20.17.0",
+    "@types/node": "^20.19.2",
     "azure-functions-core-tools": "^4.0.5455",
     "eslint": "8.57.0",
     "eslint-plugin-prettier": "^5.0.0",
