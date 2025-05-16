@@ -1,12 +1,12 @@
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
+import * as TE from "fp-ts/lib/TaskEither";
+import * as O from "fp-ts/lib/Option";
 import { Id } from "./id";
 
 export const Signer = t.type({
-  id: Id
+  id: Id,
 });
 
 export type Signer = t.TypeOf<typeof Signer>;
@@ -21,18 +21,18 @@ export type GetFiscalCodeBySignerId = (
   id: Signer["id"]
 ) => TE.TaskEither<Error, O.Option<FiscalCode>>;
 
-export interface SignerRepository {
+export type SignerRepository = {
   getSignerByFiscalCode: (
     fiscalCode: FiscalCode
   ) => TE.TaskEither<Error, Signer>;
   getFiscalCodeBySignerId: (
     id: Signer["id"]
   ) => TE.TaskEither<Error, FiscalCode>;
-}
+};
 
-export interface SignerEnvironment {
+export type SignerEnvironment = {
   signerRepository: SignerRepository;
-}
+};
 
 export const getSignerByFiscalCode =
   (fiscalCode: FiscalCode) =>

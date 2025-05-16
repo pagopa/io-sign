@@ -1,20 +1,22 @@
-import * as E from "fp-ts/Either";
-import * as TE from "fp-ts/TaskEither";
-import { identity, pipe } from "fp-ts/function";
-import { sequenceS } from "fp-ts/lib/Apply";
-import * as A from "fp-ts/lib/Array";
-import { toError } from "fp-ts/lib/Either";
 import { PDFDocument } from "pdf-lib";
+import { sequenceS } from "fp-ts/lib/Apply";
 
-import { PdfDocumentMetadata } from "../document";
-import { EntityNotFoundError } from "../error";
+import * as TE from "fp-ts/TaskEither";
+import * as E from "fp-ts/Either";
+
+import { identity, pipe } from "fp-ts/function";
+import { toError } from "fp-ts/lib/Either";
+import * as A from "fp-ts/lib/Array";
+
 import { validate } from "../validation";
+import { EntityNotFoundError } from "../error";
+import { PdfDocumentMetadata } from "../document";
 
 const loadPdf = (buffer: Buffer) =>
   TE.tryCatch(
     () =>
       PDFDocument.load(buffer, {
-        updateMetadata: false
+        updateMetadata: false,
       }),
     toError
   );
@@ -35,7 +37,7 @@ export const getPdfMetadata = (
                 .getFields()
                 .map((field) => ({
                   type: field.constructor.name,
-                  name: field.getName()
+                  name: field.getName(),
                 }))
                 .filter((field) => field.type === "PDFSignature"),
             E.toError
@@ -47,10 +49,10 @@ export const getPdfMetadata = (
           () =>
             pdfDocument.getPages().map((page, number) => ({
               ...page.getSize(),
-              number
+              number,
             })),
           E.toError
-        )
+        ),
       })
     ),
     TE.chainEitherKW(
@@ -58,10 +60,10 @@ export const getPdfMetadata = (
     )
   );
 
-export interface Field {
+export type Field = {
   fieldName: string;
   fieldValue: string;
-}
+};
 
 const populate = (pdfDocument: PDFDocument) => (field: Field) =>
   pipe(
@@ -90,13 +92,13 @@ const getFieldValue =
           ),
           E.map((value) => ({
             fieldName,
-            fieldValue: value
+            fieldValue: value,
           }))
         )
       )
     );
 
-export const populatePdf = (pdfFields: Array<Field>) => (buffer: Buffer) =>
+export const populatePdf = (pdfFields: Field[]) => (buffer: Buffer) =>
   pipe(
     buffer,
     loadPdf,
@@ -111,7 +113,7 @@ export const populatePdf = (pdfFields: Array<Field>) => (buffer: Buffer) =>
   );
 
 export const getPdfFieldsValue =
-  (pdfFieldsName: Array<string>) => (buffer: Buffer) =>
+  (pdfFieldsName: string[]) => (buffer: Buffer) =>
     pipe(
       buffer,
       loadPdf,

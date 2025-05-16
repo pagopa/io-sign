@@ -1,16 +1,15 @@
 import * as t from "io-ts";
-
 import { ValidationError } from "../../validation";
 import { HttpError } from "./errors";
 
 const HttpProblemDetail = t.intersection([
   t.type({
     title: t.string,
-    status: t.number
+    status: t.number,
   }),
   t.partial({
-    detail: t.string
-  })
+    detail: t.string,
+  }),
 ]);
 
 const ValidationProblemDetail = t.type({
@@ -18,12 +17,12 @@ const ValidationProblemDetail = t.type({
   title: t.string,
   detail: t.string,
   status: t.literal(422),
-  violations: t.array(t.string)
+  violations: t.array(t.string),
 });
 
 export const ProblemDetail = t.union([
   HttpProblemDetail,
-  ValidationProblemDetail
+  ValidationProblemDetail,
 ]);
 
 export type ProblemDetail = t.TypeOf<typeof ProblemDetail>;
@@ -35,18 +34,18 @@ export const toProblemDetail = (e: Error): ProblemDetail => {
       title: e.title,
       detail: e.message,
       violations: e.violations,
-      status: 422
+      status: 422,
     };
   }
   if (e instanceof HttpError) {
     return {
       title: e.title,
       status: e.status,
-      detail: e.message
+      detail: e.message,
     };
   }
   return {
     title: "Something went wrong.",
-    status: 500
+    status: 500,
   };
 };

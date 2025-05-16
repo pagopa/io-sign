@@ -1,6 +1,8 @@
 import * as H from "@pagopa/handler-kit";
 import { errorRTE } from "@pagopa/logger";
+
 import * as RTE from "fp-ts/ReaderTaskEither";
+
 import { flow } from "fp-ts/function";
 
 // Encode domain errors to http errors
@@ -38,7 +40,7 @@ export const toProblemJson = (e: Error): H.ProblemJson => {
       title: "Validation Error",
       detail: "Your request didn't validate",
       status: 422,
-      violations: e.violations
+      violations: e.violations,
     };
   }
 
@@ -46,13 +48,13 @@ export const toProblemJson = (e: Error): H.ProblemJson => {
     return {
       title: e.title,
       status: e.status,
-      detail: e.message
+      detail: e.message,
     };
   }
   return {
     title: "Internal Server Error",
     detail: e.name,
-    status: 500
+    status: 500,
   };
 };
 

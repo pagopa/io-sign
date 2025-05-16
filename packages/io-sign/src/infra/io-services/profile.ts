@@ -1,12 +1,12 @@
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
-import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import { flow, pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
 
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { pipe, flow } from "fp-ts/lib/function";
 import {
   ActionNotAllowedError,
   EntityNotFoundError,
-  TooManyRequestsError
+  TooManyRequestsError,
 } from "../../error";
 import { HttpBadRequestError } from "../http/errors";
 import { IOApiClient } from "./client";
@@ -22,7 +22,7 @@ export const makeRetriveUserProfileSenderAllowed =
       TE.tryCatch(
         () =>
           ioApiClient.client.getProfile({
-            fiscal_code
+            fiscal_code,
           }),
         E.toError
       ),

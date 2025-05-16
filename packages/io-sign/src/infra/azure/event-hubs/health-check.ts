@@ -1,13 +1,15 @@
-import {
-  EventHubConsumerClient,
-  EventHubProducerClient
-} from "@azure/event-hubs";
+import { pipe } from "fp-ts/lib/function";
+
+import * as TE from "fp-ts/lib/TaskEither";
+
 import {
   HealthCheck,
-  toHealthProblems
+  toHealthProblems,
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/function";
+import {
+  EventHubConsumerClient,
+  EventHubProducerClient,
+} from "@azure/event-hubs";
 
 export type AzureEventHubProblemSource = "AzureEventHub";
 

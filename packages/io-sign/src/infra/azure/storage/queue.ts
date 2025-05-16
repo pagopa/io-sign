@@ -1,9 +1,12 @@
 import { QueueClient } from "@azure/storage-queue";
-import * as E from "fp-ts/lib/Either";
-import { stringify } from "fp-ts/lib/Json";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
+
 import * as TE from "fp-ts/lib/TaskEither";
-import { flow, pipe } from "fp-ts/lib/function";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as E from "fp-ts/lib/Either";
+
+import { stringify } from "fp-ts/lib/Json";
+
+import { pipe, flow } from "fp-ts/lib/function";
 
 class StorageQueueError extends Error {
   name = "StorageQueueError";

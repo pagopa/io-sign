@@ -1,20 +1,23 @@
-import { Client, createClient } from "@pagopa/io-functions-services-sdk/client";
 import { agent } from "@pagopa/ts-commons";
+
 import {
   AbortableFetch,
   setFetchTimeout,
-  toFetch
+  toFetch,
 } from "@pagopa/ts-commons/lib/fetch";
-import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
+
+import { createClient, Client } from "@pagopa/io-functions-services-sdk/client";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
 
-export interface IOApiClient {
+export type IOApiClient = {
   client: Client<"SubscriptionKey">;
   baseUrl: NonEmptyString;
-}
+};
 
 export const createIOApiClient = (
   baseUrl: string,
@@ -29,8 +32,8 @@ export const createIOApiClient = (
     withDefaults: (op) => (params) =>
       op({
         ...params,
-        SubscriptionKey: subscriptionKey
-      })
+        SubscriptionKey: subscriptionKey,
+      }),
   }),
-  baseUrl: baseUrl as NonEmptyString
+  baseUrl: baseUrl as NonEmptyString,
 });

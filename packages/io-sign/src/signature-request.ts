@@ -1,15 +1,16 @@
-import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
-import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { findFirst } from "fp-ts/lib/Array";
-import { flow } from "fp-ts/lib/function";
 import * as t from "io-ts";
 
-import { DocumentReady } from "./document";
-import { Document } from "./document";
+import { IsoDateFromString } from "@pagopa/ts-commons/lib/dates";
+import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+
+import { flow } from "fp-ts/lib/function";
+import { findFirst } from "fp-ts/lib/Array";
 import { Id } from "./id";
-import { Issuer, IssuerEnvironment } from "./issuer";
-import { Notification } from "./notification";
 import { Signer } from "./signer";
+import { DocumentReady } from "./document";
+import { Notification } from "./notification";
+import { Issuer, IssuerEnvironment } from "./issuer";
+import { Document } from "./document";
 
 const SignatureRequest = t.type({
   id: Id,
@@ -25,7 +26,7 @@ const SignatureRequest = t.type({
   dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
-  expiresAt: IsoDateFromString
+  expiresAt: IsoDateFromString,
 });
 
 export const SignatureRequestId = SignatureRequest.props.id;
@@ -39,15 +40,15 @@ export const makeSignatureRequestVariant = <S extends string, A, O>(
   t.intersection([
     SignatureRequest,
     t.type({
-      status: t.literal<S>(status)
+      status: t.literal<S>(status),
     }),
-    codec
+    codec,
   ]);
 
 export const SignatureRequestDraft = makeSignatureRequestVariant(
   "DRAFT",
   t.type({
-    documents: t.array(Document)
+    documents: t.array(Document),
   })
 );
 
@@ -56,7 +57,7 @@ export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
 export const SignatureRequestReady = makeSignatureRequestVariant(
   "READY",
   t.type({
-    documents: t.array(DocumentReady)
+    documents: t.array(DocumentReady),
   })
 );
 
@@ -67,11 +68,11 @@ export const SignatureRequestToBeSigned = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady)
+      documents: t.array(DocumentReady),
     }),
     t.partial({
-      notification: Notification
-    })
+      notification: Notification,
+    }),
   ])
 );
 
@@ -84,11 +85,11 @@ export const SignatureRequestWaitForQtsp = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady)
+      documents: t.array(DocumentReady),
     }),
     t.partial({
-      notification: Notification
-    })
+      notification: Notification,
+    }),
   ])
 );
 
@@ -101,11 +102,11 @@ export const SignatureRequestSigned = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       signedAt: IsoDateFromString,
-      documents: t.array(DocumentReady)
+      documents: t.array(DocumentReady),
     }),
     t.partial({
-      notification: Notification
-    })
+      notification: Notification,
+    }),
   ])
 );
 
@@ -118,11 +119,11 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
       rejectedAt: IsoDateFromString,
       rejectReason: t.string,
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady)
+      documents: t.array(DocumentReady),
     }),
     t.partial({
-      notification: Notification
-    })
+      notification: Notification,
+    }),
   ])
 );
 
@@ -135,7 +136,7 @@ export const SignatureRequestCancelled = makeSignatureRequestVariant(
   t.type({
     cancelledAt: IsoDateFromString,
     qrCodeUrl: t.string,
-    documents: t.array(DocumentReady)
+    documents: t.array(DocumentReady),
   })
 );
 

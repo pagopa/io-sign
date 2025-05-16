@@ -4,20 +4,24 @@
 // stable version of handler-kit.
 // tracked-by: SFEQS-1545
 
-import * as L from "@pagopa/logger";
-import * as E from "fp-ts/lib/Either";
-import { flow, pipe } from "fp-ts/lib/function";
 import {
   response,
-  serializeToJSON,
+  withStatusCode,
   withHeader,
-  withStatusCode
+  serializeToJSON,
 } from "handler-kit-legacy/lib/http";
+
+import { pipe, flow } from "fp-ts/lib/function";
+import * as E from "fp-ts/lib/Either";
+
 import * as t from "io-ts";
 
+import * as L from "@pagopa/logger";
 import { validate } from "../../validation";
+
 import { ConsoleLogger } from "../console-logger";
 import { HttpError, HttpErrorFromError } from "./errors";
+
 import { toProblemDetail } from "./problem-detail";
 
 const serializationProblem = pipe(
@@ -26,6 +30,7 @@ const serializationProblem = pipe(
   JSON.stringify,
   response,
   withStatusCode(500),
+  // eslint-disable-next-line sonarjs/no-duplicate-string
   withHeader("Content-Type", "application/problem+json")
 );
 
@@ -57,7 +62,7 @@ export const successBuffer = bufferResponse(200);
 export const error = (e: Error) => {
   // TODO: [SFEQS-1587] Here a side effect is introduced on a pure function to use logs on the legacy version of handler-kit
   L.error("Uncaught error from handler", { error: e })({
-    logger: ConsoleLogger
+    logger: ConsoleLogger,
   })();
   return pipe(
     HttpErrorFromError.decode(e),

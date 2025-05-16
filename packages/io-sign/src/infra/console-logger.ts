@@ -13,10 +13,10 @@ export const ConsoleLogger: L.Logger = {
       // eslint-disable-next-line no-console
       error: console.error,
       // eslint-disable-next-line no-console
-      fatal: console.error
+      fatal: console.error,
     };
     logFunc[level](s);
   },
   format:
-    process.env.NODE_ENV === "development" ? L.format.simple : L.format.json
+    process.env.NODE_ENV === "development" ? L.format.simple : L.format.json,
 };

@@ -8,7 +8,7 @@ export const cidrSchema = z.custom<string>((val) => {
   const result = z
     .object({
       ip: z.string().ip({ version: "v4" }),
-      subnet: z.enum(["8", "16", "24", "32"])
+      subnet: z.enum(["8", "16", "24", "32"]),
     })
     .safeParse({ ip, subnet });
   return result.success;
@@ -32,13 +32,13 @@ export const apiKeySchema = z.object({
   cidrs: z.array(cidrSchema).default([]),
   testers: z.array(fiscalCodeSchema).default([]),
   status: z.enum(["active", "revoked"]),
-  createdAt: z.string().pipe(z.coerce.date())
+  createdAt: z.string().pipe(z.coerce.date()),
 });
 
 export type ApiKey = z.infer<typeof apiKeySchema>;
 
 export const apiKeyWithSecretSchema = apiKeySchema.extend({
-  secret: z.string().min(1)
+  secret: z.string().min(1),
 });
 
 export type ApiKeyWithSecret = z.infer<typeof apiKeyWithSecretSchema>;
@@ -48,7 +48,7 @@ export const createApiKeyPayloadSchema = apiKeySchema.pick({
   displayName: true,
   environment: true,
   cidrs: true,
-  testers: true
+  testers: true,
 });
 
 export type CreateApiKeyPayload = z.infer<typeof createApiKeyPayloadSchema>;

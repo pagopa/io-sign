@@ -1,9 +1,11 @@
 import { agent } from "@pagopa/ts-commons";
+
 import {
   AbortableFetch,
   setFetchTimeout,
-  toFetch
+  toFetch,
 } from "@pagopa/ts-commons/lib/fetch";
+
 import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 export const makeFetchWithTimeout = (
