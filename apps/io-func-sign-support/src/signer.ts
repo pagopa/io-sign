@@ -9,15 +9,15 @@ import { Signer } from "@io-sign/io-sign/signer";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
-export interface SignerRepository {
+export type SignerRepository = {
   getByFiscalCode: (
     fiscalCode: FiscalCode
   ) => TE.TaskEither<Error, O.Option<Signer>>;
-}
+};
 
-export interface GetSignerByFiscalCodeEnvironment {
+export type GetSignerByFiscalCodeEnvironment = {
   signerRepository: SignerRepository;
-}
+};
 
 export const getSignerByFiscalCode =
   (

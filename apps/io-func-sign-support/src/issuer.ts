@@ -12,20 +12,20 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 export const Issuer = t.type({
   id: IssuerFull.props.id,
-  vatNumber: IssuerFull.props.vatNumber
+  vatNumber: IssuerFull.props.vatNumber,
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
 
-export interface IssuerRepository {
+export type IssuerRepository = {
   getByVatNumber: (
     vatNumber: NonEmptyString
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
-}
+};
 
-export interface GetIssuerByVatNumberEnvironment {
+export type GetIssuerByVatNumberEnvironment = {
   issuerRepository: IssuerRepository;
-}
+};
 
 export const getIssuerByVatNumber =
   (

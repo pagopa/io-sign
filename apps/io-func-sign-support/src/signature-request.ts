@@ -5,14 +5,14 @@ import * as O from "fp-ts/Option";
 import { pipe } from "fp-ts/function";
 
 import {
-  SignatureRequestCancelled,
   SignatureRequestDraft,
-  SignatureRequestId,
+  SignatureRequestSigned,
   SignatureRequestReady,
   SignatureRequestRejected,
-  SignatureRequestSigned,
   SignatureRequestToBeSigned,
-  SignatureRequestWaitForQtsp
+  SignatureRequestWaitForQtsp,
+  SignatureRequestId,
+  SignatureRequestCancelled,
 } from "@io-sign/io-sign/signature-request";
 
 import { Signer } from "@io-sign/io-sign/signer";
@@ -27,12 +27,12 @@ export const SignatureRequest = t.union([
   SignatureRequestWaitForQtsp,
   SignatureRequestSigned,
   SignatureRequestRejected,
-  SignatureRequestCancelled
+  SignatureRequestCancelled,
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
-export interface SignatureRequestRepository {
+export type SignatureRequestRepository = {
   getByIssuerId: (
     id: SignatureRequestId,
     issuerId: Issuer["id"]
@@ -41,29 +41,29 @@ export interface SignatureRequestRepository {
     id: SignatureRequestId,
     signerId: Signer["id"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
-}
+};
 
 export const GetSignatureRequestByIdPayload = t.intersection([
   t.type({
-    id: SignatureRequestId
+    id: SignatureRequestId,
   }),
   t.union([
     t.type({
-      issuerId: Issuer.props.id
+      issuerId: Issuer.props.id,
     }),
     t.type({
-      signerId: Signer.props.id
-    })
-  ])
+      signerId: Signer.props.id,
+    }),
+  ]),
 ]);
 
 export type GetSignatureRequestByIdPayload = t.TypeOf<
   typeof GetSignatureRequestByIdPayload
 >;
 
-interface GetSignatureRequestByIdEnvironment {
+type GetSignatureRequestByIdEnvironment = {
   signatureRequestRepository: SignatureRequestRepository;
-}
+};
 
 export const getSignatureRequestById =
   (
