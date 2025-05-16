@@ -1,11 +1,13 @@
-import { InstitutionRepository } from "@/institution";
-import { UserRepository } from "@/user";
+import { z } from "zod";
+
 import {
   Institution,
   institutionDetailSchema,
-  userSchema
+  userSchema,
 } from "@io-sign/io-sign/institution";
-import { z } from "zod";
+
+import { InstitutionRepository } from "@/institution";
+import { UserRepository } from "@/user";
 
 const ConfigFromEnvironment = z
   .object({
@@ -13,11 +15,11 @@ const ConfigFromEnvironment = z
       .string()
       .url()
       .default("https://api.selfcare.pagopa.it"),
-    SELFCARE_API_KEY: z.string().min(1)
+    SELFCARE_API_KEY: z.string().min(1),
   })
   .transform((env) => ({
     baseURL: env.SELFCARE_API_URL,
-    apiKey: env.SELFCARE_API_KEY
+    apiKey: env.SELFCARE_API_KEY,
   }));
 
 export type SelfcareApiClientConfig = z.infer<typeof ConfigFromEnvironment>;
@@ -26,7 +28,7 @@ export const getSelfcareApiClientConfigFromEnvironment = () => {
   const result = ConfigFromEnvironment.safeParse(process.env);
   if (!result.success) {
     throw new Error("error parsing SelfcareApiClient config", {
-      cause: result.error.issues
+      cause: result.error.issues,
     });
   }
   return result.data;
@@ -43,9 +45,9 @@ export class SelfcareApiClient
     this.#options = {
       headers: {
         "Ocp-Apim-Subscription-Key": opts.apiKey,
-        Accept: "application/json"
+        Accept: "application/json",
       },
-      credentials: "omit"
+      credentials: "omit",
     };
   }
 
@@ -77,7 +79,7 @@ export class SelfcareApiClient
       return userSchema.array().parse(json);
     } catch (cause) {
       throw new Error("Unable to get institution users from self care", {
-        cause
+        cause,
       });
     }
   }

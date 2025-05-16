@@ -1,18 +1,20 @@
-import { issuerAlreadyExists } from "@/issuer";
-import { getUsersByInstitutionId } from "@/user";
-import { of } from "@pagopa/handler-kit";
+import { pipe } from "fp-ts/lib/function";
 import * as A from "fp-ts/lib/Array";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { pipe } from "fp-ts/lib/function";
+import { of } from "@pagopa/handler-kit";
 
-import { saveUsersToSpreadsheet } from "../google/sheets";
 import {
   ActiveIoSignContract,
   ClosedIoSignContract,
   IoSignContracts,
-  isActive
+  isActive,
 } from "../selfcare/contract";
+
 import { sendMessage } from "../slack/message";
+import { saveUsersToSpreadsheet } from "../google/sheets";
+
+import { issuerAlreadyExists } from "@/issuer";
+import { getUsersByInstitutionId } from "@/user";
 
 declare const inactivateIssuer: (
   contract: ClosedIoSignContract
@@ -20,12 +22,12 @@ declare const inactivateIssuer: (
 
 const sendOnboardingMessage = ({
   institution,
-  internalIstitutionID
+  internalIstitutionID,
 }: ActiveIoSignContract) =>
   pipe(
     issuerAlreadyExists({
       id: institution.taxCode,
-      institutionId: internalIstitutionID
+      institutionId: internalIstitutionID,
     }),
     RTE.filterOrElse(
       (exists) => exists === false,
@@ -40,7 +42,7 @@ const sendOnboardingMessage = ({
 
 const exportContacts = ({
   institution,
-  internalIstitutionID
+  internalIstitutionID,
 }: ActiveIoSignContract) =>
   pipe(
     getUsersByInstitutionId(internalIstitutionID),

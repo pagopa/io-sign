@@ -1,18 +1,20 @@
-import { getIssuer } from "@/issuer";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
-import { InstitutionDetail } from "@io-sign/io-sign/institution";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
+import * as TE from "fp-ts/lib/TaskEither";
 
-export interface InstitutionRepository {
+import { InstitutionDetail } from "@io-sign/io-sign/institution";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
+
+import { getIssuer } from "@/issuer";
+
+export type InstitutionRepository = {
   getInstitutionById(
     id: InstitutionDetail["id"]
   ): Promise<InstitutionDetail | undefined>;
-}
+};
 
-interface InstitutionEnvironment {
+type InstitutionEnvironment = {
   institutionRepository: InstitutionRepository;
-}
+};
 
 export const getInstitutionById = (id: string) => (r: InstitutionEnvironment) =>
   pipe(

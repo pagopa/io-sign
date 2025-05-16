@@ -1,25 +1,25 @@
 import {
-  CosmosDBConfig,
-  getCosmosDBConfigFromEnvironment
-} from "@/infra/azure/cosmos";
-import {
-  GoogleConfig,
-  getGoogleConfigFromEnvironment
-} from "@/infra/google/config";
-import {
-  SelfcareApiClientConfig,
-  getSelfcareApiClientConfigFromEnvironment
-} from "@/infra/selfcare/api-client";
+  SlackConfig,
+  getSlackConfigFromEnvironment,
+} from "@/infra/slack/config";
 import {
   SelfcareConfig,
-  getSelfcareConfigFromEnvironment
+  getSelfcareConfigFromEnvironment,
 } from "@/infra/selfcare/config";
 import {
-  SlackConfig,
-  getSlackConfigFromEnvironment
-} from "@/infra/slack/config";
+  GoogleConfig,
+  getGoogleConfigFromEnvironment,
+} from "@/infra/google/config";
+import {
+  CosmosDBConfig,
+  getCosmosDBConfigFromEnvironment,
+} from "@/infra/azure/cosmos";
+import {
+  SelfcareApiClientConfig,
+  getSelfcareApiClientConfigFromEnvironment,
+} from "@/infra/selfcare/api-client";
 
-interface Config {
+type Config = {
   slack: SlackConfig;
   selfcare: {
     api: SelfcareApiClientConfig;
@@ -27,14 +27,14 @@ interface Config {
   };
   google: GoogleConfig;
   cosmos: CosmosDBConfig;
-}
+};
 
 export const getConfigFromEnvironment = (): Config => ({
   slack: getSlackConfigFromEnvironment(),
   selfcare: {
     api: getSelfcareApiClientConfigFromEnvironment(),
-    contracts: getSelfcareConfigFromEnvironment()
+    contracts: getSelfcareConfigFromEnvironment(),
   },
   google: getGoogleConfigFromEnvironment(),
-  cosmos: getCosmosDBConfigFromEnvironment()
+  cosmos: getCosmosDBConfigFromEnvironment(),
 });

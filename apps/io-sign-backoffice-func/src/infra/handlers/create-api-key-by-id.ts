@@ -1,7 +1,9 @@
+import { z } from "zod";
+
 import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
 import * as H from "@pagopa/handler-kit";
+
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import { z } from "zod";
 
 import { IoTsType } from "./validation";
 
@@ -9,7 +11,7 @@ export const inputDecoder = IoTsType(
   z.array(
     apiKeySchema.pick({
       id: true,
-      institutionId: true
+      institutionId: true,
     })
   )
 );
