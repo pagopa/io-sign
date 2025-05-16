@@ -46,7 +46,7 @@
     "newtype-ts": "^0.3.5"
   },
   "devDependencies": {
-    "@pagopa/eslint-config": "4.0.0",
+    "@io-sign/eslint-config": "workspace:^",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
     "@vitest/coverage-c8": "^0.33.0",
     "azure-functions-core-tools": "^4.0.5455",

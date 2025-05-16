@@ -43,7 +43,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@pagopa/eslint-config": "4.0.0",
+    "@io-sign/eslint-config": "workspace:^",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
     "@vitest/coverage-c8": "^0.33.0",
     "eslint": "8.57.0",

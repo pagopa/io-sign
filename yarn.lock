@@ -2884,6 +2884,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/js@npm:8.57.1":
+  version: 8.57.1
+  resolution: "@eslint/js@npm:8.57.1"
+  checksum: 2afb77454c06e8316793d2e8e79a0154854d35e6782a1217da274ca60b5044d2c69d6091155234ed0551a1e408f86f09dd4ece02752c59568fa403e60611e880
+  languageName: node
+  linkType: hard
+
 "@eslint/js@npm:^9.0.0":
   version: 9.26.0
   resolution: "@eslint/js@npm:9.26.0"
@@ -3054,6 +3061,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@humanwhocodes/config-array@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@humanwhocodes/config-array@npm:0.13.0"
+  dependencies:
+    "@humanwhocodes/object-schema": ^2.0.3
+    debug: ^4.3.1
+    minimatch: ^3.0.5
+  checksum: eae69ff9134025dd2924f0b430eb324981494be26f0fddd267a33c28711c4db643242cf9fddf7dadb9d16c96b54b2d2c073e60a56477df86e0173149313bd5d6
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/module-importer@npm:^1.0.1":
   version: 1.0.1
   resolution: "@humanwhocodes/module-importer@npm:1.0.1"
@@ -3061,12 +3079,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^2.0.2":
+"@humanwhocodes/object-schema@npm:^2.0.2, @humanwhocodes/object-schema@npm:^2.0.3":
   version: 2.0.3
   resolution: "@humanwhocodes/object-schema@npm:2.0.3"
   checksum: d3b78f6c5831888c6ecc899df0d03bcc25d46f3ad26a11d7ea52944dc36a35ef543fad965322174238d677a43d5c694434f6607532cff7077062513ad7022631
   languageName: node
   linkType: hard
+
+"@io-sign/eslint-config@workspace:^, @io-sign/eslint-config@workspace:packages/eslint-config":
+  version: 0.0.0-use.local
+  resolution: "@io-sign/eslint-config@workspace:packages/eslint-config"
+  dependencies:
+    "@pagopa/eslint-config": ~4.0.0
+    eslint: ^8.57.0
+    eslint-plugin-prettier: ^5.0.0
+    typescript: ^5.3.3
+  languageName: unknown
+  linkType: soft
 
 "@io-sign/io-sign@workspace:^, @io-sign/io-sign@workspace:packages/io-sign":
   version: 0.0.0-use.local
@@ -3076,7 +3105,7 @@ __metadata:
     "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
-    "@pagopa/eslint-config": 4.0.0
+    "@io-sign/eslint-config": "workspace:^"
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/io-functions-commons": ^29.0.0
     "@pagopa/io-functions-services-sdk": ^3.40.1
@@ -3807,19 +3836,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/eslint-config@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@pagopa/eslint-config@npm:4.0.0"
+"@pagopa/eslint-config@npm:~4.0.0":
+  version: 4.0.4
+  resolution: "@pagopa/eslint-config@npm:4.0.4"
   dependencies:
     "@eslint/js": ^9.0.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-perfectionist: ^2.9.0
     eslint-plugin-prettier: ^5.1.3
     eslint-plugin-vitest: ^0.5.3
+    typescript: ~5.8.3
     typescript-eslint: ^7.6.0
   peerDependencies:
-    eslint: 8.57.0
-  checksum: c570fa6cf208de9d0a41829cdc9859f16b27a8cde30fd941a7f591f4b946572249c837cbcefb4f37e60b3fe040badcfa484fe0c5d569928c3d425e20c25b6629
+    eslint: ^8.57.0
+  checksum: 7eaabb66a59ce5dfbf639e0024f5d829e57cbe7cf2d4e858466b7f3ae22d2b9f77a407f4accf8b91a1a55d40cf64469813dcfe9e07c43b36281d9498a3060d46
   languageName: node
   linkType: hard
 
@@ -9574,6 +9604,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint@npm:^8.57.0":
+  version: 8.57.1
+  resolution: "eslint@npm:8.57.1"
+  dependencies:
+    "@eslint-community/eslint-utils": ^4.2.0
+    "@eslint-community/regexpp": ^4.6.1
+    "@eslint/eslintrc": ^2.1.4
+    "@eslint/js": 8.57.1
+    "@humanwhocodes/config-array": ^0.13.0
+    "@humanwhocodes/module-importer": ^1.0.1
+    "@nodelib/fs.walk": ^1.2.8
+    "@ungap/structured-clone": ^1.2.0
+    ajv: ^6.12.4
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.3.2
+    doctrine: ^3.0.0
+    escape-string-regexp: ^4.0.0
+    eslint-scope: ^7.2.2
+    eslint-visitor-keys: ^3.4.3
+    espree: ^9.6.1
+    esquery: ^1.4.2
+    esutils: ^2.0.2
+    fast-deep-equal: ^3.1.3
+    file-entry-cache: ^6.0.1
+    find-up: ^5.0.0
+    glob-parent: ^6.0.2
+    globals: ^13.19.0
+    graphemer: ^1.4.0
+    ignore: ^5.2.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    is-path-inside: ^3.0.3
+    js-yaml: ^4.1.0
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash.merge: ^4.6.2
+    minimatch: ^3.1.2
+    natural-compare: ^1.4.0
+    optionator: ^0.9.3
+    strip-ansi: ^6.0.1
+    text-table: ^0.2.0
+  bin:
+    eslint: bin/eslint.js
+  checksum: e2489bb7f86dd2011967759a09164e65744ef7688c310bc990612fc26953f34cc391872807486b15c06833bdff737726a23e9b4cdba5de144c311377dc41d91b
+  languageName: node
+  linkType: hard
+
 "espree@npm:^9.6.0, espree@npm:^9.6.1":
   version: 9.6.1
   resolution: "espree@npm:9.6.1"
@@ -11319,8 +11397,8 @@ __metadata:
     "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
+    "@io-sign/eslint-config": "workspace:^"
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
@@ -11352,8 +11430,8 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^4.0.0
     "@azure/functions": ^3.5.0
+    "@io-sign/eslint-config": "workspace:^"
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
@@ -11385,8 +11463,8 @@ __metadata:
     "@azure/functions": ^3.5.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
+    "@io-sign/eslint-config": "workspace:^"
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^1.2.0
     "@pagopa/io-functions-commons": ^29.0.0
@@ -11464,8 +11542,8 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^3.17.3
     "@azure/functions": ^4.2.0
+    "@io-sign/eslint-config": "workspace:^"
     "@io-sign/io-sign": "workspace:^"
-    "@pagopa/eslint-config": 4.0.0
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^2.0.7
     "@pagopa/logger": ^1.0.1
@@ -17430,6 +17508,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.3.3, typescript@npm:~5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: cb1d081c889a288b962d3c8ae18d337ad6ee88a8e81ae0103fa1fecbe923737f3ba1dbdb3e6d8b776c72bc73bfa6d8d850c0306eed1a51377d2fccdfd75d92c4
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>, typescript@patch:typescript@npm%3A^2.9.2 || ^3.0.0 || ^4.0.0#~builtin<compat/typescript>, typescript@patch:typescript@npm%3A^4.7.4#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"
@@ -17447,6 +17535,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.3.3#~builtin<compat/typescript>, typescript@patch:typescript@~5.8.3#~builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=d69c25"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 1b503525a88ff0ff5952e95870971c4fb2118c17364d60302c21935dedcd6c37e6a0a692f350892bafcef6f4a16d09073fe461158547978d2f16fbe4cb18581c
   languageName: node
   linkType: hard
 
