@@ -3090,7 +3090,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@io-sign/eslint-config@workspace:packages/eslint-config"
   dependencies:
-    "@pagopa/eslint-config": ~4.0.0
+    "@pagopa/eslint-config": 4.0.3
     eslint: ^8.57.0
     eslint-plugin-prettier: ^5.0.0
     typescript: ^5.3.3
@@ -3836,20 +3836,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pagopa/eslint-config@npm:~4.0.0":
-  version: 4.0.4
-  resolution: "@pagopa/eslint-config@npm:4.0.4"
+"@pagopa/eslint-config@npm:4.0.3":
+  version: 4.0.3
+  resolution: "@pagopa/eslint-config@npm:4.0.3"
   dependencies:
     "@eslint/js": ^9.0.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-perfectionist: ^2.9.0
     eslint-plugin-prettier: ^5.1.3
     eslint-plugin-vitest: ^0.5.3
-    typescript: ~5.8.3
+    typescript: ~5.2.2
     typescript-eslint: ^7.6.0
   peerDependencies:
     eslint: ^8.57.0
-  checksum: 7eaabb66a59ce5dfbf639e0024f5d829e57cbe7cf2d4e858466b7f3ae22d2b9f77a407f4accf8b91a1a55d40cf64469813dcfe9e07c43b36281d9498a3060d46
+  checksum: 781a87399179411a8fafd14652a49f43401948cb6765c4f2e0bf823c8909ff44fd3e0793ba4792567f9cee6ad11d858c15d49c4c9f23546e406bdbf1780a18bb
   languageName: node
   linkType: hard
 
@@ -17498,7 +17498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.6":
+"typescript@npm:^5.1.6, typescript@npm:~5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
   bin:
@@ -17508,7 +17508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.3.3, typescript@npm:~5.8.3":
+"typescript@npm:^5.3.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -17528,7 +17528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>, typescript@patch:typescript@~5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
   bin:
@@ -17538,7 +17538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.3.3#~builtin<compat/typescript>, typescript@patch:typescript@~5.8.3#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.3.3#~builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#~builtin<compat/typescript>::version=5.8.3&hash=d69c25"
   bin:
