@@ -13,7 +13,7 @@ export default [
       "perfectionist/sort-objects": "off",
       "perfectionist/sort-object-types": "off",
       "perfectionist/sort-union-types": "off",
-      "@typescript-eslint/array-type": ["error", { default: "generic" }],
+      "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/no-inferrable-types": "off"
     }
   },
