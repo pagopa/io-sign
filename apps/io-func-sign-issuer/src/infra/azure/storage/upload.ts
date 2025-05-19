@@ -8,12 +8,12 @@ import { validate } from "@io-sign/io-sign/validation";
 import { toError } from "fp-ts/lib/Either";
 
 import {
-  defaultBlobGenerateSasUrlOptions,
-  withPermissions,
-  withExpireInMinutes,
-  generateSasUrlFromBlob,
   blobExists,
+  defaultBlobGenerateSasUrlOptions,
   deleteBlobIfExist,
+  generateSasUrlFromBlob,
+  withExpireInMinutes,
+  withPermissions
 } from "@io-sign/io-sign/infra/azure/storage/blob";
 
 import { GetUploadUrl, UploadUrl } from "../../../upload";
