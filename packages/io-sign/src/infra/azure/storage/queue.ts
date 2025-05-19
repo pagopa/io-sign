@@ -6,7 +6,7 @@ import * as E from "fp-ts/lib/Either";
 
 import { stringify } from "fp-ts/lib/Json";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 class StorageQueueError extends Error {
   name = "StorageQueueError";

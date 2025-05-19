@@ -14,8 +14,8 @@ export class ApplicationInsights implements TelemetryService {
         name,
         ...context,
         tagOverrides: {
-          samplingEnabled: options.sampling ? "true" : "false",
-        },
+          samplingEnabled: options.sampling ? "true" : "false"
+        }
       });
   }
 }

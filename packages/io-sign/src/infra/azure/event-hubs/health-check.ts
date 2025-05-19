@@ -4,11 +4,11 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import {
   HealthCheck,
-  toHealthProblems,
+  toHealthProblems
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 import {
   EventHubConsumerClient,
-  EventHubProducerClient,
+  EventHubProducerClient
 } from "@azure/event-hubs";
 
 export type AzureEventHubProblemSource = "AzureEventHub";

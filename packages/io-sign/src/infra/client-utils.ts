@@ -9,7 +9,7 @@ export const isSuccessful = (r: Response): boolean =>
   r.status >= 200 && r.status < 300;
 
 export const defaultHeader = {
-  "Content-Type": "application/json",
+  "Content-Type": "application/json"
 };
 
 export const responseToJson =
