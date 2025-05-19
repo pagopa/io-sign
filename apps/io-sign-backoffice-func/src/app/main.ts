@@ -1,7 +1,7 @@
 import { app, output } from "@azure/functions";
 import {
-  httpAzureFunction,
   azureFunction,
+  httpAzureFunction
 } from "@pagopa/handler-kit-azure-func";
 
 import { google } from "googleapis";
@@ -22,7 +22,7 @@ const config = getConfigFromEnvironment();
 
 const googleAuth = new google.auth.GoogleAuth({
   credentials: config.google.credentials,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
 const cosmos = new CosmosClient(config.cosmos.cosmosDbConnectionString);
@@ -41,32 +41,32 @@ const onSelfcareContractsMessage = azureFunction(
   userRepository: selfcareApiClient,
   google: {
     auth: googleAuth,
-    spreadsheetId: config.google.spreadsheetId,
-  },
+    spreadsheetId: config.google.spreadsheetId
+  }
 });
 
 app.eventHub("onSelfcareContractsMessage", {
   connection: "SelfCareEventHubConnectionString",
   eventHubName: config.selfcare.contracts.eventHubContractsName,
   cardinality: "many",
-  handler: onSelfcareContractsMessage,
+  handler: onSelfcareContractsMessage
 });
 
 const getApiKey = httpAzureFunction(getApiKeyHandler)({
   institutionRepository: selfcareApiClient,
   issuerRepository: backofficeRepository,
-  apiKeyRepository: backofficeRepository,
+  apiKeyRepository: backofficeRepository
 });
 
 app.http("getApiKey", {
   methods: ["GET"],
   authLevel: "function",
   route: "api-keys/{id}",
-  handler: getApiKey,
+  handler: getApiKey
 });
 
 const createApiKeyById = azureFunction(CreateApiKeyById.handler)({
-  inputDecoder: CreateApiKeyById.inputDecoder,
+  inputDecoder: CreateApiKeyById.inputDecoder
 });
 
 app.cosmosDB("createApiKeyById", {
@@ -81,12 +81,12 @@ app.cosmosDB("createApiKeyById", {
     databaseName: config.cosmos.cosmosDbName,
     collectionName: "api-keys-by-id",
     createIfNotExists: false,
-    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
+    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING"
   }),
-  handler: createApiKeyById,
+  handler: createApiKeyById
 });
 
 app.http("health", {
   methods: ["GET"],
-  handler: healthHandler,
+  handler: healthHandler
 });

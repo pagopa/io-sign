@@ -11,9 +11,9 @@ export const sendMessage = (message: string) => (r: { slackWebhook: string }) =>
         fetch(r.slackWebhook, {
           method: "POST",
           body: JSON.stringify({
-            text: message,
+            text: message
           }),
-          dispatcher,
+          dispatcher
         }),
       E.toError
     ),
