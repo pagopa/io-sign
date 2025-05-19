@@ -15,34 +15,34 @@ import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healt
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import {
-  makePdvTokenizerHealthCheck,
   TokenizerProblemSource,
+  makePdvTokenizerHealthCheck
 } from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import {
   IOServicesProblemSource,
-  makeIOServicesHealthCheck,
+  makeIOServicesHealthCheck
 } from "@io-sign/io-sign/infra/io-services/health-check";
 import { NamirialConfig } from "../../namirial/config";
 
 import {
-  makeNamirialHealthCheck,
   NamirialProblemSource,
+  makeNamirialHealthCheck
 } from "../../namirial/health-check";
 import {
   AzureCosmosProblemSource,
-  makeAzureCosmosDbHealthCheck,
+  makeAzureCosmosDbHealthCheck
 } from "../cosmos/health-check";
 import {
   AzureStorageProblemSource,
   makeAzureStorageContainerHealthCheck,
-  makeAzureStorageQueueHealthCheck,
+  makeAzureStorageQueueHealthCheck
 } from "../storage/health-check";
 import { LollipopApiClient } from "../../lollipop/client";
 import {
   LollipopApiClientProblemSource,
-  makeLollipopClientHealthCheck,
+  makeLollipopClientHealthCheck
 } from "../../lollipop/health-check";
 
 type ProblemSource =
@@ -88,7 +88,7 @@ export const makeInfoHandler = (
           makeAzureStorageContainerHealthCheck(signedContainerClient),
           makeAzureStorageQueueHealthCheck(documentsToFillQueue),
           makeAzureStorageQueueHealthCheck(qtspQueue),
-          makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient),
+          makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient)
         ],
         RA.sequence(applicativeValidation),
         TE.map(() => "It's working!"),

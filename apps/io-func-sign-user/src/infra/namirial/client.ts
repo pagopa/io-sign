@@ -10,18 +10,18 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 import {
   defaultHeader,
   isSuccessful,
-  responseToJson,
+  responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
 import { NamirialCredentialsConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
   CreateSignatureRequestBody as CreateSignatureRequestBody,
-  SignatureRequest,
+  SignatureRequest
 } from "./signature-request";
 
 export const NamirialToken = t.type({
   access: NonEmptyString,
-  refresh: NonEmptyString,
+  refresh: NonEmptyString
 });
 export type NamirialToken = t.TypeOf<typeof NamirialToken>;
 
@@ -34,10 +34,10 @@ export const makeGetToken =
           fetchWithTimeout(`${basePath}/api/token/`, {
             body: JSON.stringify({
               username,
-              password,
+              password
             }),
             method: "POST",
-            headers: defaultHeader,
+            headers: defaultHeader
           }),
         E.toError
       ),
@@ -63,8 +63,8 @@ export const makeGetClauses =
               method: "GET",
               headers: {
                 ...defaultHeader,
-                Authorization: `Bearer ${token.access}`,
-              },
+                Authorization: `Bearer ${token.access}`
+              }
             }),
           E.toError
         )
@@ -93,9 +93,9 @@ export const makeCreateSignatureRequest =
               headers: {
                 ...defaultHeader,
                 Authorization: `Bearer ${token.access}`,
-                "Content-Transfer-Encoding": "application/json",
+                "Content-Transfer-Encoding": "application/json"
               },
-              body: JSON.stringify(body),
+              body: JSON.stringify(body)
             }),
           E.toError
         )
@@ -144,8 +144,8 @@ export const makeGetSignatureRequest =
               method: "GET",
               headers: {
                 ...defaultHeader,
-                Authorization: `Bearer ${token.access}`,
-              },
+                Authorization: `Bearer ${token.access}`
+              }
             }),
           E.toError
         )

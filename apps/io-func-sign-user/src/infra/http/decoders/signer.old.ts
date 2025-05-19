@@ -1,8 +1,8 @@
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
 
 import { validate } from "@io-sign/io-sign/validation";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 
