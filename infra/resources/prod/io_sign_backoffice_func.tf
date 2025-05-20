@@ -21,7 +21,7 @@ module "io_sign_backoffice_func" {
   health_check_path            = "/health"
   health_check_maxpingfailures = 2
 
-  node_version    = "18"
+  node_version    = "20"
   runtime_version = "~4"
   always_on       = true
 
@@ -93,7 +93,7 @@ module "io_sign_backoffice_func_staging_slot" {
   storage_account_name       = module.io_sign_backoffice_func.storage_account.name
   storage_account_access_key = module.io_sign_backoffice_func.storage_account.primary_access_key
 
-  node_version                             = "18"
+  node_version                             = "20"
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
