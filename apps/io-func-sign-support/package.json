@@ -4,9 +4,6 @@
   "main": "./dist/web.js",
   "private": true,
   "license": "ISC",
-  "engines": {
-    "node": "^20.19.2"
-  },
   "files": [
     "**/function.json",
     "dist",

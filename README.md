@@ -17,7 +17,7 @@ It also contains `io-sign-selfcare-frontend` the frontend for self-care integrat
 
 In order to run the `io-sign` back-end/front-end locally you need the following tool installed on your machine.
 
-- `Node.js 20`
+- `Node.js 16`
 - `yarn 3`
 
 The preferred way to set up the local environment is using [nodenv](https://github.com/nodenv/nodenv) to manage `Node.js` installation and `corepack` (included with `Node.js`) to manage the installation of `yarn`.

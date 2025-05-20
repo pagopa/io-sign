@@ -16,9 +16,6 @@
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": "^20.19.2"
-  },
   "dependencies": {
     "@azure/event-hubs": "^5.9.0",
     "@azure/functions": "^3.5.0",
