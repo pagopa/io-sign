@@ -7,4 +7,5 @@
 "@io-sign/io-sign": minor
 ---
 
-Updated Node to version 20
+Upgraded linter and various libraries
+Fixed linting for the new configuration
