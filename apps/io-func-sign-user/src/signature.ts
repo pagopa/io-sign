@@ -15,7 +15,7 @@ const SignatureStatusV = t.keyof({
   READY: null,
   WAITING: null,
   COMPLETED: null,
-  FAILED: null,
+  FAILED: null
 });
 
 export type SignatureStatus = t.TypeOf<typeof SignatureStatusV>;
@@ -28,18 +28,18 @@ export const Signature = t.intersection([
     qtspSignatureRequestId: Id,
     status: SignatureStatusV,
     createdAt: IsoDateFromString,
-    updatedAt: IsoDateFromString,
+    updatedAt: IsoDateFromString
   }),
   t.partial({
-    rejectedReason: t.string,
-  }),
+    rejectedReason: t.string
+  })
 ]);
 
 export type Signature = t.TypeOf<typeof Signature>;
 
 export const SignatureNotification = t.type({
   signatureId: Id,
-  signerId: Signer.props.id,
+  signerId: Signer.props.id
 });
 
 export type SignatureNotification = t.TypeOf<typeof SignatureNotification>;
@@ -55,7 +55,7 @@ export const newSignature = (
   qtspSignatureRequestId,
   status: "CREATED",
   createdAt: new Date(),
-  updatedAt: new Date(),
+  updatedAt: new Date()
 });
 
 export type InsertSignature = (
@@ -87,7 +87,7 @@ export const SignatureValidationParams = t.type({
   challengeSignature: NonEmptyString,
   publicKey: NonEmptyString,
   // SPID/CIE saml assertion. OIDC is not supported yet.
-  samlAssertionBase64: NonEmptyString,
+  samlAssertionBase64: NonEmptyString
 });
 
 export type SignatureValidationParams = t.TypeOf<

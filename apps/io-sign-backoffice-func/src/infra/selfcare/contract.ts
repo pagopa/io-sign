@@ -8,14 +8,14 @@ const contractSchema = z.object({
     address: z.string().min(1),
     description: z.string().min(1),
     digitalAddress: z.string().min(1),
-    taxCode: z.string().min(1),
+    taxCode: z.string().min(1)
   }),
   billing: z
     .object({
-      vatNumber: z.string().min(1).nullish(),
+      vatNumber: z.string().min(1).nullish()
     })
     .optional(),
-  product: z.literal("prod-io-sign"),
+  product: z.literal("prod-io-sign")
 });
 
 const activeIoSignContract = contractSchema.merge(
@@ -24,7 +24,7 @@ const activeIoSignContract = contractSchema.merge(
 
 const closedIoSignContract = contractSchema.merge(
   z.object({
-    state: z.literal("CLOSED"),
+    state: z.literal("CLOSED")
   })
 );
 

@@ -18,15 +18,15 @@ import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { Notification } from "@io-sign/io-sign/notification";
 import {
   SignatureRequest,
-  UpsertSignatureRequest,
+  UpsertSignatureRequest
 } from "../../signature-request";
 
 import { Dossier, GetDossier } from "../../dossier";
 
 import {
   MakeMessageContent,
-  makeSendSignatureRequestNotification,
   SendNotificationPayload,
+  makeSendSignatureRequestNotification
 } from "../../signature-request-notification";
 
 const requestToSignMessage: MakeMessageContent =
@@ -45,7 +45,7 @@ const requestToSignMessage: MakeMessageContent =
       "dd/MM/yyyy HH:mm"
     )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
-    }](mailto:${signatureRequest.issuerEmail}).`,
+    }](mailto:${signatureRequest.issuerEmail}).`
   });
 
 const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
@@ -53,7 +53,7 @@ const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
   t.type({
     qrCodeUrl: t.string,
     documents: t.array(DocumentReady),
-    notification: t.undefined,
+    notification: t.undefined
   })
 );
 
@@ -109,13 +109,13 @@ export const makeSendNotification =
           TE.chain((result) =>
             result.sent ? TE.right(result.notification) : TE.left(result.error)
           )
-        ),
+        )
       }),
       TE.chainFirst(({ signatureRequest, notification }) =>
         pipe(
           {
             ...signatureRequest,
-            notification,
+            notification
           },
           upsertSignatureRequest
         )

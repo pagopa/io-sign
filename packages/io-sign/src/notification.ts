@@ -8,13 +8,13 @@ import { Id } from "./id";
 export const NotificationId = Id;
 
 export const Notification = t.type({
-  ioMessageId: NotificationId,
+  ioMessageId: NotificationId
 });
 export type Notification = t.TypeOf<typeof Notification>;
 
 export const NotificationContent = t.type({
   subject: t.string,
-  markdown: t.string,
+  markdown: t.string
 });
 
 export type NotificationContent = t.TypeOf<typeof NotificationContent>;
@@ -22,8 +22,8 @@ export type NotificationContent = t.TypeOf<typeof NotificationContent>;
 export const NotificationContentWithAttachments = t.intersection([
   NotificationContent,
   t.type({
-    signatureRequestId: Id,
-  }),
+    signatureRequestId: Id
+  })
 ]);
 
 export type NotificationContentWithAttachments = t.TypeOf<

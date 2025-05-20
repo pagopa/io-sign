@@ -6,7 +6,7 @@ import * as O from "fp-ts/lib/Option";
 import { Id } from "./id";
 
 export const Signer = t.type({
-  id: Id,
+  id: Id
 });
 
 export type Signer = t.TypeOf<typeof Signer>;

@@ -8,14 +8,14 @@ import * as L from "@pagopa/logger";
 import { pipe } from "fp-ts/lib/function";
 import { Id, newId } from "./id";
 import {
+  SignatureRequestCancelled,
   SignatureRequestDraft,
   SignatureRequestId,
   SignatureRequestReady,
   SignatureRequestRejected,
   SignatureRequestSigned,
   SignatureRequestToBeSigned,
-  SignatureRequestWaitForQtsp,
-  SignatureRequestCancelled,
+  SignatureRequestWaitForQtsp
 } from "./signature-request";
 import { IssuerEnvironment } from "./issuer";
 import { Signer } from "./signer";
@@ -26,7 +26,7 @@ const EventId = Id;
 export const PricingPlan = t.keyof({
   FREE: null,
   DEFAULT: null,
-  INTERNAL: null,
+  INTERNAL: null
 });
 
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
@@ -47,7 +47,7 @@ export enum EventName {
   NOTIFICATION_REJECTED = "io.sign.signature_request.notification.rejected",
   CERTIFICATE_CREATED = "io.sign.qtsp.certificate.created",
   CERTIFICATE_REJECTED = "io.sign.qtsp.certificate.rejected",
-  QTSP_API_ERROR = "io.sign.qtsp.api.error",
+  QTSP_API_ERROR = "io.sign.qtsp.api.error"
 }
 
 // This is the structure of an event that is used for billing and analytics
@@ -58,7 +58,7 @@ const BaseEvent = t.type({
   internalInstitutionId: Id,
   createdAt: IsoDateFromString,
   pricingPlan: PricingPlan,
-  department: t.string,
+  department: t.string
 });
 
 type BaseEvent = t.TypeOf<typeof BaseEvent>;
@@ -74,7 +74,7 @@ type SignatureRequest =
 
 export const BillingEvent = t.intersection([
   BaseEvent,
-  t.type({ name: t.literal(EventName.SIGNATURE_SIGNED) }),
+  t.type({ name: t.literal(EventName.SIGNATURE_SIGNED) })
 ]);
 
 export type BillingEvent = t.TypeOf<typeof BillingEvent>;
@@ -95,15 +95,15 @@ export const createBillingEvent = (
   pricingPlan: pricingPlanFromIssuerEnvironment(
     signatureRequest.issuerEnvironment
   ),
-  department: signatureRequest.issuerDepartment,
+  department: signatureRequest.issuerDepartment
 });
 
 export const AnalyticsEvent = t.intersection([
   BaseEvent,
   t.type({
     name: t.string,
-    dossierId: Id,
-  }),
+    dossierId: Id
+  })
 ]);
 
 export type AnalyticsEvent = t.TypeOf<typeof AnalyticsEvent>;
@@ -121,7 +121,7 @@ export const createAnalyticsEvent =
       signatureRequest.issuerEnvironment
     ),
     dossierId: signatureRequest.dossierId,
-    department: signatureRequest.issuerDepartment,
+    department: signatureRequest.issuerDepartment
   });
 
 export type GenericEvent = BillingEvent | AnalyticsEvent;
@@ -199,7 +199,7 @@ export const createAndSendAnalyticsEvent =
           RTE.chainFirst(() =>
             L.errorRTE("Unable to send analytics event", {
               eventName,
-              signatureRequest,
+              signatureRequest
             })
           )
         )
@@ -216,5 +216,5 @@ export const sendBillingEvent =
   ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
   ({ billingEventProducer }) =>
     sendEvent(event)({
-      eventAnalyticsClient: billingEventProducer,
+      eventAnalyticsClient: billingEventProducer
     });

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
@@ -12,13 +14,13 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 import {
   defaultHeader,
   isSuccessful,
-  responseToJson,
+  responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
 import {
   ApiKey,
   GetIssuerBySubscriptionId,
   IssuerRepository,
-  getIssuerEnvironment,
+  getIssuerEnvironment
 } from "../../issuer";
 import { getConfigFromEnvironment } from "../../app/config";
 
@@ -43,8 +45,8 @@ class IssuerModel {
               method: "GET",
               headers: {
                 ...defaultHeader,
-                "Ocp-Apim-Subscription-Key": this.#apiKey,
-              },
+                "Ocp-Apim-Subscription-Key": this.#apiKey
+              }
             }
           ),
         E.toError
@@ -60,7 +62,7 @@ class IssuerModel {
           institutionId,
           environment,
           institution: { name, vatNumber },
-          issuer: { externalId: issuerId, supportEmail },
+          issuer: { externalId: issuerId, supportEmail }
         }) =>
           pipe(
             {
@@ -72,7 +74,7 @@ class IssuerModel {
               environment: getIssuerEnvironment(environment, institutionId),
               vatNumber,
               department: "",
-              status: "ACTIVE" as const,
+              status: "ACTIVE" as const
             },
             O.some
           )

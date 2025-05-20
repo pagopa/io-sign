@@ -1,6 +1,6 @@
 import {
   GenerateSignatureRequestQrCode,
-  SignatureRequestId,
+  SignatureRequestId
 } from "../../signature-request";
 import { IoLinkConfig } from "./config";
 
