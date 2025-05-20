@@ -27,7 +27,7 @@
   "devDependencies": {
     "@pagopa/eslint-config": "^3.0.0",
     "@rushstack/eslint-patch": "^1.5.1",
-    "@types/node": "^20.8.8",
+    "@types/node": "^20.17.0",
     "azure-functions-core-tools": "^4.0.5455",
     "eslint": "^8.50.0",
     "prettier": "2.7.1",
