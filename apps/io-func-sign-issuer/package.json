@@ -25,7 +25,6 @@
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
     "@azure/event-hubs": "^5.9.0",
-    "@azure/functions": "^3.5.0",
     "@azure/storage-blob": "^12.12.0",
     "@azure/storage-queue": "^12.11.0",
     "@io-sign/io-sign": "workspace:^",
@@ -43,6 +42,7 @@
     "newtype-ts": "^0.3.5"
   },
   "devDependencies": {
+    "@azure/functions": "^3.5.0",
     "@io-sign/eslint-config": "workspace:^",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
     "@vitest/coverage-c8": "^0.33.0",
