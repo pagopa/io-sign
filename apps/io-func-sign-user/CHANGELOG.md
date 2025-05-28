@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.6.6
+
+### Patch Changes
+
+- 9c84a72: Updated document url validity
+
 ## 0.6.5
 
 ### Patch Changes
