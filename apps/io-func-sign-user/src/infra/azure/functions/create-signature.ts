@@ -76,11 +76,11 @@ const makeCreateSignatureHandler = (
   const notifySignature = makeNotifySignatureReadyEvent(qtspQueue);
 
   const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
-    pipe(document, getDocumentUrl("r", 30))(validatedContainerClient);
+    pipe(document, getDocumentUrl("r", 60))(validatedContainerClient);
 
   const getUploadSignedDocumentUrl: GetDocumentUrl = (
     document: DocumentReady
-  ) => pipe(document, getDocumentUrl("racw", 30))(signedContainerClient);
+  ) => pipe(document, getDocumentUrl("racw", 60))(signedContainerClient);
 
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
