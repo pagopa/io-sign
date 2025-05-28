@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.6.7
+
+### Patch Changes
+
+- 0519eea: Updated user package.json
+
 ## 0.6.6
 
 ### Patch Changes
