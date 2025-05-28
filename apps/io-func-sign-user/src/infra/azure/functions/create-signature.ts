@@ -76,7 +76,7 @@ const makeCreateSignatureHandler = (
   const notifySignature = makeNotifySignatureReadyEvent(qtspQueue);
 
   const getDownloadDocumentUrl: GetDocumentUrl = (document: DocumentReady) =>
-    pipe(document, getDocumentUrl("r", 10))(validatedContainerClient);
+    pipe(document, getDocumentUrl("r", 30))(validatedContainerClient);
 
   const getUploadSignedDocumentUrl: GetDocumentUrl = (
     document: DocumentReady
