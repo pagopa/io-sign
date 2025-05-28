@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.6.8
+
+### Patch Changes
+
+- f878b38: Updated URL saas token validity to 60
+
 ## 0.6.7
 
 ### Patch Changes
