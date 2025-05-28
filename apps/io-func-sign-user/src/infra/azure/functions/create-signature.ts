@@ -80,7 +80,7 @@ const makeCreateSignatureHandler = (
 
   const getUploadSignedDocumentUrl: GetDocumentUrl = (
     document: DocumentReady
-  ) => pipe(document, getDocumentUrl("racw", 10))(signedContainerClient);
+  ) => pipe(document, getDocumentUrl("racw", 30))(signedContainerClient);
 
   const createSignature = makeCreateSignature(
     getFiscalCodeBySignerId,
