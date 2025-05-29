@@ -1,13 +1,13 @@
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { SignatureRequestReady } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import {
-  UpsertSignatureRequest,
-  markAsReady,
   NotifySignatureRequestReadyEvent,
+  UpsertSignatureRequest,
+  markAsReady
 } from "../../signature-request";
 
 // TODO: [SFEQS-1213] refactor the signature request state machine in order to ensure type safety

@@ -6,12 +6,12 @@
 
 import {
   response,
-  withStatusCode,
-  withHeader,
   serializeToJSON,
+  withHeader,
+  withStatusCode
 } from "handler-kit-legacy/lib/http";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
 import * as t from "io-ts";
@@ -30,7 +30,6 @@ const serializationProblem = pipe(
   JSON.stringify,
   response,
   withStatusCode(500),
-  // eslint-disable-next-line sonarjs/no-duplicate-string
   withHeader("Content-Type", "application/problem+json")
 );
 
@@ -62,7 +61,7 @@ export const successBuffer = bufferResponse(200);
 export const error = (e: Error) => {
   // TODO: [SFEQS-1587] Here a side effect is introduced on a pure function to use logs on the legacy version of handler-kit
   L.error("Uncaught error from handler", { error: e })({
-    logger: ConsoleLogger,
+    logger: ConsoleLogger
   })();
   return pipe(
     HttpErrorFromError.decode(e),

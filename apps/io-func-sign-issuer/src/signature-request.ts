@@ -18,12 +18,12 @@ import { ActionNotAllowedError } from "@io-sign/io-sign/error";
 
 import {
   Document,
-  startValidation,
-  markAsReady as setReadyStatus,
-  markAsRejected as setRejectedStatus,
+  DocumentMetadata,
   DocumentReady,
   PdfDocumentMetadata,
-  DocumentMetadata,
+  markAsReady as setReadyStatus,
+  markAsRejected as setRejectedStatus,
+  startValidation
 } from "@io-sign/io-sign/document";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -31,13 +31,13 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { findIndex, updateAt } from "fp-ts/lib/Array";
 
 import {
+  SignatureRequestCancelled,
+  SignatureRequestDraft,
   SignatureRequestReady,
-  SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestDraft,
-  getDocument,
-  SignatureRequestCancelled,
+  SignatureRequestToBeSigned,
+  getDocument
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
@@ -50,7 +50,7 @@ export const SignatureRequest = t.union([
   SignatureRequestToBeSigned,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestCancelled,
+  SignatureRequestCancelled
 ]);
 
 export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
@@ -59,7 +59,7 @@ export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 // Closed requests cannot be modified, whatever its outcome.
 export const ClosedSignatureRequest = t.union([
   SignatureRequestSigned,
-  SignatureRequestRejected,
+  SignatureRequestRejected
 ]);
 
 export type ClosedSignatureRequest = t.TypeOf<typeof ClosedSignatureRequest>;
@@ -95,9 +95,9 @@ export const newSignatureRequest = (
         metadata,
         status: "WAIT_FOR_UPLOAD",
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }))
-  ),
+  )
 });
 
 class InvalidExpiryDateError extends Error {
@@ -124,7 +124,7 @@ export const withExpiryDate =
       ),
       E.map((request) => ({
         ...request,
-        expiresAt: expiryDate,
+        expiresAt: expiryDate
       }))
     );
 
@@ -237,7 +237,7 @@ const onDraftStatus =
           return E.right({
             ...request,
             status: "READY",
-            updatedAt: new Date(),
+            updatedAt: new Date()
           });
         }
         return E.left(
@@ -319,7 +319,7 @@ const onReadyStatus =
           ...request,
           status: "WAIT_FOR_SIGNATURE",
           qrCodeUrl: action.qrCodeUrl,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         });
       default:
         return E.left(
@@ -345,7 +345,7 @@ const onWaitForSignatureStatus =
         ...request,
         status: "SIGNED",
         signedAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     if (action.name === "MARK_AS_REJECTED") {
@@ -354,7 +354,7 @@ const onWaitForSignatureStatus =
         status: "REJECTED",
         rejectedAt: action.rejectedAt,
         rejectReason: action.rejectReason,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     if (action.name === "MARK_AS_CANCELLED") {
@@ -362,7 +362,7 @@ const onWaitForSignatureStatus =
         ...request,
         status: "CANCELLED",
         cancelledAt: action.cancelledAt,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
     }
     return E.left(
@@ -389,7 +389,7 @@ export const markAsReady = (
 export const markAsWaitForSignature = (qrCodeUrl: string) =>
   dispatch({
     name: "MARK_AS_WAIT_FOR_SIGNATURE",
-    qrCodeUrl,
+    qrCodeUrl
   });
 
 export const markAsSigned = dispatch({ name: "MARK_AS_SIGNED" });
@@ -410,7 +410,7 @@ export const markDocumentAsReady = (
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_READY",
-    payload: { documentId, url, pdfDocumentMetadata },
+    payload: { documentId, url, pdfDocumentMetadata }
   });
 
 export const markDocumentAsRejected = (
@@ -419,7 +419,7 @@ export const markDocumentAsRejected = (
 ) =>
   dispatch({
     name: "MARK_DOCUMENT_AS_REJECTED",
-    payload: { documentId, reason },
+    payload: { documentId, reason }
   });
 
 export type GetSignatureRequest = (
@@ -452,7 +452,7 @@ export type SignatureRequestRepository = {
     dossier: Dossier,
     options?: { maxItemCount?: number; continuationToken?: string }
   ) => Promise<{
-    items: ReadonlyArray<unknown>;
+    items: readonly unknown[];
     continuationToken?: string;
   }>;
   insert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
@@ -526,7 +526,7 @@ export const findSignatureRequestsByDossier =
     SignatureRequestEnvironment,
     Error,
     {
-      items: ReadonlyArray<SignatureRequest>;
+      items: readonly SignatureRequest[];
       continuationToken?: string;
     }
   > =>
@@ -540,11 +540,11 @@ export const findSignatureRequestsByDossier =
         H.parse(
           t.intersection([
             t.type({
-              items: t.array(SignatureRequest),
+              items: t.array(SignatureRequest)
             }),
             t.partial({
-              continuationToken: t.string,
-            }),
+              continuationToken: t.string
+            })
           ])
         )
       )
