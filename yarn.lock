@@ -5859,15 +5859,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 20.8.9
-  resolution: "@types/node@npm:20.8.9"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 0c05f3502a9507ff27e91dd6fd574fa6f391b3fafedcfe8e0c8d33351fb22d02c0121f854e5b6b3ecb9a8a468407ddf6e7ac0029fb236d4c7e1361ffc758a01f
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^12.7.1":
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
@@ -5884,12 +5875,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.17.0":
-  version: 20.17.48
-  resolution: "@types/node@npm:20.17.48"
+"@types/node@npm:^20.17.6":
+  version: 20.17.52
+  resolution: "@types/node@npm:20.17.52"
   dependencies:
     undici-types: ~6.19.2
-  checksum: 4daa43504b32cbc0abc5de3453da9043113c719139223d0a2cbca2f916e40823a1fef594eb5b346dce70dd711b9e28a106e7feffb51b214f8c78a32b0e91b4dc
+  checksum: 36a6cfd07edc0d4fbd6eb18aa753096df5045cba9714c29a68932885cc6899316193f2f6d32a54062add20a144b49f35bfebe0d8e1979e34780190eecb0e8888
   languageName: node
   linkType: hard
 
@@ -11393,7 +11384,7 @@ __metadata:
     "@pagopa/openapi-codegen-ts": ^12.0.2
     "@pagopa/ts-commons": ^13.0.0
     "@rushstack/eslint-patch": ^1.2.0
-    "@types/node": ^20.17.0
+    "@types/node": ^20.17.6
     "@vitest/coverage-c8": ^0.33.0
     azure-functions-core-tools: ^4.0.5455
     eslint: ^8.28.0
@@ -11460,7 +11451,7 @@ __metadata:
     "@mui/system": ^5.14.5
     "@pagopa/mui-italia": ^1.0.1
     "@types/lodash": ^4.14.197
-    "@types/node": ^20.17.0
+    "@types/node": ^20.17.6
     "@types/react": ^18.2.20
     "@types/react-dom": ^18.2.7
     "@typescript-eslint/eslint-plugin": ^6.5.0
@@ -11498,7 +11489,7 @@ __metadata:
     "@pagopa/handler-kit-azure-func": ^2.0.1
     "@pagopa/logger": ^1.0.1
     "@rushstack/eslint-patch": ^1.5.1
-    "@types/node": ^20.17.0
+    "@types/node": ^20.17.6
     azure-functions-core-tools: ^4.0.5455
     eslint: ^8.50.0
     fp-ts: ^2.16.1
