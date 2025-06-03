@@ -25,6 +25,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@azure/functions": "^3.5.0",
     "@io-sign/eslint-config": "workspace:^",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
     "@types/node": "^20.17.0",
@@ -40,14 +41,12 @@
   },
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
-    "@azure/functions": "^3.5.0",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^29.0.0",
     "@pagopa/logger": "1.0.1",
     "@pagopa/ts-commons": "^13.0.0",
-    "express": "4.17.3",
     "fp-ts": "^2.16.5",
     "io-ts": "^2.2.21"
   }

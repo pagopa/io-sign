@@ -33,7 +33,6 @@
     "@pagopa/io-functions-commons": "^29.0.0",
     "@pagopa/ts-commons": "^13.0.0",
     "date-fns": "^2.29.3",
-    "express": "4.17.3",
     "fp-ts": "^2.16.5",
     "handler-kit-legacy": "npm:@pagopa/handler-kit@0.5.1",
     "io-ts": "^2.2.21",
