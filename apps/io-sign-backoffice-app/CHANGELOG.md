@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.3.11
+
+### Patch Changes
+
+- e3838c6: Upgrade turbo to v2
+
 ## 1.3.10
 
 ### Patch Changes
