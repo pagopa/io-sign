@@ -19,5 +19,8 @@
     "azure-functions-core-tools": "^4.0.5455",
     "turbo": "latest"
   },
+  "resolutions": {
+    "@types/node@npm:*": "^20.17.6"
+  },
   "packageManager": "yarn@3.8.0"
 }
