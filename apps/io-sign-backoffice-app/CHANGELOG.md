@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.4.0
+
+### Minor Changes
+
+- 708c5d0: Upgraded Node to version 20
+
 ## 1.3.11
 
 ### Patch Changes
