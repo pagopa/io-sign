@@ -5901,15 +5901,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 20.8.9
-  resolution: "@types/node@npm:20.8.9"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 0c05f3502a9507ff27e91dd6fd574fa6f391b3fafedcfe8e0c8d33351fb22d02c0121f854e5b6b3ecb9a8a468407ddf6e7ac0029fb236d4c7e1361ffc758a01f
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^12.7.1":
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
@@ -5926,12 +5917,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.17.0":
-  version: 20.17.47
-  resolution: "@types/node@npm:20.17.47"
+"@types/node@npm:^20.17.6":
+  version: 20.17.52
+  resolution: "@types/node@npm:20.17.52"
   dependencies:
     undici-types: ~6.19.2
-  checksum: e3afa4dcc70a833d6a93c1d7824f4a406b920bdd57eaae82d11e2524fe157bf1c4f0ffd3f9f6ee76b5452737d20233e7d5ad0c98e0198ba1332a2989f0bd9fb9
+  checksum: 36a6cfd07edc0d4fbd6eb18aa753096df5045cba9714c29a68932885cc6899316193f2f6d32a54062add20a144b49f35bfebe0d8e1979e34780190eecb0e8888
   languageName: node
   linkType: hard
 
@@ -11330,7 +11321,7 @@ __metadata:
     "@pagopa/logger": 1.0.1
     "@pagopa/openapi-codegen-ts": ^14.0.0
     "@pagopa/ts-commons": ^13.0.0
-    "@types/node": ^20.17.0
+    "@types/node": ^20.17.6
     "@vitest/coverage-c8": ^0.33.0
     azure-functions-core-tools: ^4.0.5455
     eslint: 8.57.0
@@ -11399,7 +11390,7 @@ __metadata:
     "@mui/system": ^5.14.5
     "@pagopa/mui-italia": ^1.0.1
     "@types/lodash": ^4.14.197
-    "@types/node": ^20.17.0
+    "@types/node": ^20.17.6
     "@types/react": ^18.2.20
     "@types/react-dom": ^18.2.7
     "@typescript-eslint/eslint-plugin": ^6.5.0
@@ -11436,7 +11427,8 @@ __metadata:
     "@pagopa/handler-kit": ^1.1.0
     "@pagopa/handler-kit-azure-func": ^2.0.7
     "@pagopa/logger": ^1.0.1
-    "@types/node": ^20.17.0
+    "@rushstack/eslint-patch": ^1.5.1
+    "@types/node": ^20.17.6
     azure-functions-core-tools: ^4.0.5455
     eslint: 8.57.0
     eslint-plugin-prettier: ^5.0.0

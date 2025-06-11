@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-support",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "main": "./dist/web.js",
   "private": true,
   "license": "ISC",
@@ -28,7 +28,7 @@
     "@azure/functions": "^3.5.0",
     "@io-sign/eslint-config": "workspace:^",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
-    "@types/node": "^20.17.0",
+    "@types/node": "^20.17.6",
     "@vitest/coverage-c8": "^0.33.0",
     "azure-functions-core-tools": "^4.0.5455",
     "eslint": "8.57.0",
