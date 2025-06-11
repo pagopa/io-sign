@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.3.0
+
+### Minor Changes
+
+- 708c5d0: Upgraded Node to version 20
+
 ## 1.2.6
 
 ### Patch Changes

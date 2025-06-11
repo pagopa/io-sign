@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.19.0
+
+### Minor Changes
+
+- 708c5d0: Upgraded Node to version 20
+
 ## 0.18.6
 
 ### Patch Changes

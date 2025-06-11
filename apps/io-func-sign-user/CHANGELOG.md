@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.7.0
+
+### Minor Changes
+
+- 708c5d0: Upgraded Node to version 20
+
 ## 0.6.8
 
 ### Patch Changes
