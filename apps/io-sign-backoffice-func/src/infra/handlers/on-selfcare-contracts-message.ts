@@ -7,7 +7,7 @@ import {
   ActiveIoSignContract,
   ClosedIoSignContract,
   IoSignContracts,
-  isActive,
+  isActive
 } from "../selfcare/contract";
 
 import { sendMessage } from "../slack/message";
@@ -22,12 +22,12 @@ declare const inactivateIssuer: (
 
 const sendOnboardingMessage = ({
   institution,
-  internalIstitutionID,
+  internalIstitutionID
 }: ActiveIoSignContract) =>
   pipe(
     issuerAlreadyExists({
       id: institution.taxCode,
-      institutionId: internalIstitutionID,
+      institutionId: internalIstitutionID
     }),
     RTE.filterOrElse(
       (exists) => exists === false,
@@ -42,7 +42,7 @@ const sendOnboardingMessage = ({
 
 const exportContacts = ({
   institution,
-  internalIstitutionID,
+  internalIstitutionID
 }: ActiveIoSignContract) =>
   pipe(
     getUsersByInstitutionId(internalIstitutionID),

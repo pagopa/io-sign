@@ -11,14 +11,11 @@ export const inputDecoder = IoTsType(
   z.array(
     apiKeySchema.pick({
       id: true,
-      institutionId: true,
+      institutionId: true
     })
   )
 );
 
-export const handler = H.of(
-  (apiKeys: Array<Pick<ApiKey, "id" | "institutionId">>) =>
-    RTE.right(
-      apiKeys.map((k) => ({ id: k.id, institutionId: k.institutionId }))
-    )
+export const handler = H.of((apiKeys: Pick<ApiKey, "id" | "institutionId">[]) =>
+  RTE.right(apiKeys.map((k) => ({ id: k.id, institutionId: k.institutionId })))
 );

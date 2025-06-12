@@ -11,7 +11,7 @@ export const institutionSchema = z
     taxCode: z.string().min(1),
     userProductRoles: z.array(UserRole).default(["operator"]),
     logo: z.string().url(),
-    supportEmail: z.string().email().optional(),
+    supportEmail: z.string().email().optional()
   })
   .transform(({ id, description: name, taxCode, userProductRoles, logo }) => ({
     id,
@@ -19,7 +19,7 @@ export const institutionSchema = z
     taxCode,
     vatNumber: taxCode,
     productRole: userProductRoles.at(0) ?? "Operatore",
-    logo,
+    logo
   }));
 
 export type Institution = z.infer<typeof institutionSchema>;
@@ -27,7 +27,7 @@ export type Institution = z.infer<typeof institutionSchema>;
 export const userSchema = z.object({
   name: z.string().min(1),
   surname: z.string().min(1),
-  email: z.string().email(),
+  email: z.string().email()
 });
 
 export type User = z.infer<typeof userSchema>;
@@ -37,9 +37,9 @@ const onboardingSchema = z.object({
   status: z.string().min(1),
   billing: z
     .object({
-      vatNumber: z.string().min(1).nullish(),
+      vatNumber: z.string().min(1).nullish()
     })
-    .optional(),
+    .optional()
 });
 
 type Onboarding = z.infer<typeof onboardingSchema>;
@@ -53,13 +53,13 @@ export const institutionDetailSchema = z
     taxCode: z.string().min(1),
     supportEmail: z.string(),
     description: z.string().min(1),
-    onboarding: z.array(onboardingSchema),
+    onboarding: z.array(onboardingSchema)
   })
   .transform(({ description: name, onboarding, ...fields }) => ({
     ...fields,
     name,
     vatNumber:
-      getIOSignOnboarding(onboarding)?.billing?.vatNumber ?? fields.taxCode,
+      getIOSignOnboarding(onboarding)?.billing?.vatNumber ?? fields.taxCode
   }));
 
 export type InstitutionDetail = z.infer<typeof institutionDetailSchema>;
@@ -68,13 +68,13 @@ export const productSchema = z
   .object({
     id: z.string().min(1),
     title: z.string().min(1),
-    urlBO: z.string().url(),
+    urlBO: z.string().url()
   })
   .transform(({ id, title, urlBO: productUrl }) => ({
     id,
     title,
     productUrl,
-    linkType: "external" as const,
+    linkType: "external" as const
   }));
 
 export type Product = z.infer<typeof productSchema>;

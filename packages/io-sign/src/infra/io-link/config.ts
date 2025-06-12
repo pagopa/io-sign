@@ -6,7 +6,7 @@ import { pipe } from "fp-ts/lib/function";
 import { readFromEnvironment } from "../env";
 
 export const IoLinkConfig = t.type({
-  baseUrl: t.string,
+  baseUrl: t.string
 });
 
 export type IoLinkConfig = t.TypeOf<typeof IoLinkConfig>;
@@ -19,5 +19,5 @@ export const getIoLinkConfigFromEnvironment: RE.ReaderEither<
   baseUrl: pipe(
     readFromEnvironment("IoLinkBaseUrl"),
     RE.orElse(() => RE.right("https://continua.io.pagopa.it"))
-  ),
+  )
 });

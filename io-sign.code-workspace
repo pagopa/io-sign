@@ -25,6 +25,10 @@
     {
       "path": "packages/web-sdk",
       "name": "@io-sign/web-sdk"
+    },
+    {
+      "path": "packages/eslint-config",
+      "name": "@io-sign/eslint-config"
     }
   ],
   "settings": {

@@ -5,20 +5,20 @@ import * as RE from "fp-ts/lib/ReaderEither";
 
 import {
   PdvTokenizerConfig,
-  getPdvTokenizerConfigFromEnvironment,
+  getPdvTokenizerConfigFromEnvironment
 } from "@io-sign/io-sign/infra/pdv-tokenizer/config";
 import {
   CosmosConfig,
-  getCosmosConfigFromEnvironment,
+  getCosmosConfigFromEnvironment
 } from "../infra/azure/cosmos/config";
 
 export const Config = t.type({
   azure: t.type({
-    cosmos: CosmosConfig,
+    cosmos: CosmosConfig
   }),
   pagopa: t.type({
-    tokenizer: PdvTokenizerConfig,
-  }),
+    tokenizer: PdvTokenizerConfig
+  })
 });
 
 export type Config = t.TypeOf<typeof Config>;
@@ -33,10 +33,10 @@ export const getConfigFromEnvironment: RE.ReaderEither<
   RE.bind("tokenizer", () => getPdvTokenizerConfigFromEnvironment),
   RE.map((config) => ({
     azure: {
-      cosmos: config.cosmos,
+      cosmos: config.cosmos
     },
     pagopa: {
-      tokenizer: config.tokenizer,
-    },
+      tokenizer: config.tokenizer
+    }
   }))
 );

@@ -19,6 +19,6 @@ export const ioSignContractToIssuer: E.Encoder<
     vatNumber: billing.vatNumber,
     taxCode: institution.taxCode,
     department: "",
-    status: "ACTIVE",
-  }),
+    status: "ACTIVE"
+  })
 };
