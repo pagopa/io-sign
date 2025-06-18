@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.19.1
+
+### Patch Changes
+
+- b619a04: Add main in issuer-func package.json
+
 ## 0.19.0
 
 ### Minor Changes
