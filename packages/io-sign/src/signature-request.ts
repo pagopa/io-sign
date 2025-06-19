@@ -26,7 +26,7 @@ const SignatureRequest = t.type({
   dossierTitle: NonEmptyString,
   createdAt: IsoDateFromString,
   updatedAt: IsoDateFromString,
-  expiresAt: IsoDateFromString,
+  expiresAt: IsoDateFromString
 });
 
 export const SignatureRequestId = SignatureRequest.props.id;
@@ -40,15 +40,15 @@ export const makeSignatureRequestVariant = <S extends string, A, O>(
   t.intersection([
     SignatureRequest,
     t.type({
-      status: t.literal<S>(status),
+      status: t.literal<S>(status)
     }),
-    codec,
+    codec
   ]);
 
 export const SignatureRequestDraft = makeSignatureRequestVariant(
   "DRAFT",
   t.type({
-    documents: t.array(Document),
+    documents: t.array(Document)
   })
 );
 
@@ -57,7 +57,7 @@ export type SignatureRequestDraft = t.TypeOf<typeof SignatureRequestDraft>;
 export const SignatureRequestReady = makeSignatureRequestVariant(
   "READY",
   t.type({
-    documents: t.array(DocumentReady),
+    documents: t.array(DocumentReady)
   })
 );
 
@@ -68,11 +68,11 @@ export const SignatureRequestToBeSigned = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady),
+      documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification,
-    }),
+      notification: Notification
+    })
   ])
 );
 
@@ -85,11 +85,11 @@ export const SignatureRequestWaitForQtsp = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady),
+      documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification,
-    }),
+      notification: Notification
+    })
   ])
 );
 
@@ -102,11 +102,11 @@ export const SignatureRequestSigned = makeSignatureRequestVariant(
   t.intersection([
     t.type({
       signedAt: IsoDateFromString,
-      documents: t.array(DocumentReady),
+      documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification,
-    }),
+      notification: Notification
+    })
   ])
 );
 
@@ -119,11 +119,11 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
       rejectedAt: IsoDateFromString,
       rejectReason: t.string,
       qrCodeUrl: t.string,
-      documents: t.array(DocumentReady),
+      documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification,
-    }),
+      notification: Notification
+    })
   ])
 );
 
@@ -136,7 +136,7 @@ export const SignatureRequestCancelled = makeSignatureRequestVariant(
   t.type({
     cancelledAt: IsoDateFromString,
     qrCodeUrl: t.string,
-    documents: t.array(DocumentReady),
+    documents: t.array(DocumentReady)
   })
 );
 

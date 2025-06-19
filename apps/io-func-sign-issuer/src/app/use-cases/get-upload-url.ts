@@ -7,7 +7,7 @@ import { SignatureRequest } from "../../signature-request";
 import {
   GetUploadUrl,
   InsertUploadMetadata,
-  newUploadMetadata,
+  newUploadMetadata
 } from "../../upload";
 
 export type GetUploadUrlPayload = {

@@ -16,7 +16,7 @@ const loadPdf = (buffer: Buffer) =>
   TE.tryCatch(
     () =>
       PDFDocument.load(buffer, {
-        updateMetadata: false,
+        updateMetadata: false
       }),
     toError
   );
@@ -37,7 +37,7 @@ export const getPdfMetadata = (
                 .getFields()
                 .map((field) => ({
                   type: field.constructor.name,
-                  name: field.getName(),
+                  name: field.getName()
                 }))
                 .filter((field) => field.type === "PDFSignature"),
             E.toError
@@ -49,10 +49,10 @@ export const getPdfMetadata = (
           () =>
             pdfDocument.getPages().map((page, number) => ({
               ...page.getSize(),
-              number,
+              number
             })),
           E.toError
-        ),
+        )
       })
     ),
     TE.chainEitherKW(
@@ -92,7 +92,7 @@ const getFieldValue =
           ),
           E.map((value) => ({
             fieldName,
-            fieldValue: value,
+            fieldValue: value
           }))
         )
       )

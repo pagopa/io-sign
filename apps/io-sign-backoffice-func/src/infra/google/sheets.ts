@@ -1,4 +1,4 @@
-import { google, Auth } from "googleapis";
+import { Auth, google } from "googleapis";
 
 import { constVoid, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -19,25 +19,25 @@ const rows = (users: User[], institutionName: string) =>
       {},
       {
         userEnteredValue: {
-          stringValue: institutionName,
-        },
+          stringValue: institutionName
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.name,
-        },
+          stringValue: user.name
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.surname,
-        },
+          stringValue: user.surname
+        }
       },
       {
         userEnteredValue: {
-          stringValue: user.email,
-        },
-      },
-    ],
+          stringValue: user.email
+        }
+      }
+    ]
   }));
 
 export const saveUsersToSpreadsheet =
@@ -51,11 +51,11 @@ export const saveUsersToSpreadsheet =
             appendCells: {
               sheetId: 0,
               rows: rows(users, institutionName),
-              fields: "userEnteredValue",
-            },
-          },
-        ],
-      },
+              fields: "userEnteredValue"
+            }
+          }
+        ]
+      }
     };
     return pipe(
       TE.tryCatch(

@@ -11,7 +11,7 @@ import { validate } from "../../validation";
 export const IOServicesConfig = t.type({
   basePath: t.string,
   subscriptionKey: t.string,
-  configurationId: Ulid,
+  configurationId: Ulid
 });
 
 type IOServicesConfig = t.TypeOf<typeof IOServicesConfig>;
@@ -27,5 +27,5 @@ export const getIoServicesConfigFromEnvironment: RE.ReaderEither<
   configurationId: pipe(
     readFromEnvironment("IoServicesConfigurationId"),
     RE.chainEitherKW(validate(Ulid))
-  ),
+  )
 });

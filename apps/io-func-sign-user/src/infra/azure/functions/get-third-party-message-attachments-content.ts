@@ -66,7 +66,7 @@ const makeGetThirdPartyMessageAttachmentContentHandler = (
         getSignerByFiscalCode
       )
     ),
-    documentId: RTE.fromReaderEither(requireDocumentIdFromPath),
+    documentId: RTE.fromReaderEither(requireDocumentIdFromPath)
   });
 
   const decodeHttpRequest = flow(
