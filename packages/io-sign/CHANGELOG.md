@@ -1,5 +1,12 @@
 # @io-sign/io-sign
 
+## 1.4.0
+
+### Minor Changes
+
+- efd634a: Upgraded linter and various libraries
+  Fixed linting for the new configuration
+
 ## 1.3.5
 
 ### Patch Changes

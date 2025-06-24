@@ -1,5 +1,17 @@
 # io-sign-backoffice-app
 
+## 1.5.0
+
+### Minor Changes
+
+- efd634a: Upgraded linter and various libraries
+  Fixed linting for the new configuration
+
+### Patch Changes
+
+- Updated dependencies [efd634a]
+  - @io-sign/io-sign@1.4.0
+
 ## 1.4.0
 
 ### Minor Changes
