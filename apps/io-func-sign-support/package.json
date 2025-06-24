@@ -26,15 +26,15 @@
   "keywords": [],
   "devDependencies": {
     "@azure/functions": "^3.5.0",
-    "@pagopa/eslint-config": "^3.0.0",
-    "@pagopa/openapi-codegen-ts": "^12.0.2",
-    "@rushstack/eslint-patch": "^1.2.0",
+    "@io-sign/eslint-config": "workspace:^",
+    "@pagopa/openapi-codegen-ts": "^14.0.0",
     "@types/node": "^20.17.6",
     "@vitest/coverage-c8": "^0.33.0",
     "azure-functions-core-tools": "^4.0.5455",
-    "eslint": "^8.28.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "npm-pack-zip": "^1.3.0",
-    "prettier": "2.7.1",
+    "prettier": "^3.0.0",
     "tsup": "^7.2.0",
     "typescript": "^4.8.4",
     "vitest": "^1.2.2"
@@ -42,11 +42,12 @@
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.0.0",
-    "@pagopa/handler-kit-azure-func": "^1.0.0",
+    "@pagopa/handler-kit": "^1.1.0",
+    "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^29.0.0",
     "@pagopa/logger": "1.0.1",
     "@pagopa/ts-commons": "^13.0.0",
-    "fp-ts": "^2.13.1"
+    "fp-ts": "^2.16.5",
+    "io-ts": "^2.2.21"
   }
 }

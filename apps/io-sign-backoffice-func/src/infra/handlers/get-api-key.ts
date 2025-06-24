@@ -18,7 +18,7 @@ export const getApiKey = (id: ApiKey["id"]) =>
     getApiKeyById(id),
     RTE.tapReaderIO((apiKey) =>
       L.debug("Api Key retrieved.", {
-        apiKey,
+        apiKey
       })
     ),
     RTE.flatMap((apiKey) =>
@@ -26,7 +26,7 @@ export const getApiKey = (id: ApiKey["id"]) =>
         getInstitutionById(apiKey.institutionId),
         RTE.tapReaderIO((institution) =>
           L.debug("Institution retrieved.", {
-            institution,
+            institution
           })
         ),
         RTE.flatMap((institution) =>

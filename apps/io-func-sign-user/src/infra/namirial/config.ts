@@ -9,7 +9,7 @@ import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 export const NamirialCredentialsConfig = t.type({
   basePath: t.string,
   username: t.string,
-  password: t.string,
+  password: t.string
 });
 
 export type NamirialCredentialsConfig = t.TypeOf<
@@ -19,7 +19,7 @@ export type NamirialCredentialsConfig = t.TypeOf<
 export const NamirialConfig = t.type({
   prod: NamirialCredentialsConfig,
   test: NamirialCredentialsConfig,
-  requestTimeoutMs: t.number,
+  requestTimeoutMs: t.number
 });
 
 export type NamirialConfig = t.TypeOf<typeof NamirialConfig>;
@@ -36,20 +36,20 @@ export const getNamirialConfigFromEnvironment: RE.ReaderEither<
     testBasePath: readFromEnvironment("NamirialTestApiBasePath"),
     testUsername: readFromEnvironment("NamirialTestUsername"),
     testPassword: readFromEnvironment("NamirialTestPassword"),
-    requestTimeoutMs: RE.right(5000),
+    requestTimeoutMs: RE.right(5000)
   }),
   RE.map((config) => ({
     prod: {
       basePath: config.basePath,
       username: config.username,
-      password: config.password,
+      password: config.password
     },
     test: {
       basePath: config.testBasePath,
       username: config.testUsername,
-      password: config.testPassword,
+      password: config.testPassword
     },
-    requestTimeoutMs: config.requestTimeoutMs,
+    requestTimeoutMs: config.requestTimeoutMs
   }))
 );
 

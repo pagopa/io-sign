@@ -8,13 +8,13 @@ import { Id } from "./id";
 export const IssuerEnvironment = t.union([
   t.literal("TEST"),
   t.literal("DEFAULT"),
-  t.literal("INTERNAL"),
+  t.literal("INTERNAL")
 ]);
 export type IssuerEnvironment = t.TypeOf<typeof IssuerEnvironment>;
 
 export const IssuerStatus = t.union([
   t.literal("ACTIVE"),
-  t.literal("INACTIVE"),
+  t.literal("INACTIVE")
 ]);
 export type IssuerStatus = t.TypeOf<typeof IssuerStatus>;
 
@@ -28,7 +28,7 @@ export const Issuer = t.type({
   environment: IssuerEnvironment,
   vatNumber: NonEmptyString,
   department: t.string,
-  status: IssuerStatus,
+  status: IssuerStatus
 });
 
 export type Issuer = t.TypeOf<typeof Issuer>;
@@ -40,5 +40,5 @@ export const issuerSchema = z.object({
   externalId: z.string().min(1),
   institutionId: z.string().uuid(),
   supportEmail: z.string().email(),
-  status: z.enum(["active", "inactive"]),
+  status: z.enum(["active", "inactive"])
 });

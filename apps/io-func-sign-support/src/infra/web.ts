@@ -1,7 +1,7 @@
 import { CosmosClient } from "@azure/cosmos";
 
 import * as E from "fp-ts/Either";
-import { pipe, identity } from "fp-ts/function";
+import { identity, pipe } from "fp-ts/function";
 
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 
@@ -47,7 +47,7 @@ const signerRepository = new PdvTokenizerSignerRepository(tokenizerClient);
 export const GetSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signerRepository,
+  signerRepository
 });
 
 export const Info = InfoFunction({});

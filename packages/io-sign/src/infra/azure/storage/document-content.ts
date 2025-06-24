@@ -6,7 +6,7 @@ import { pipe } from "fp-ts/lib/function";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import { DocumentReady } from "../../../document";
 
-import { getBlobClient, downloadContentFromBlob } from "./blob";
+import { downloadContentFromBlob, getBlobClient } from "./blob";
 
 export const getDocumentContent = (document: DocumentReady) =>
   pipe(

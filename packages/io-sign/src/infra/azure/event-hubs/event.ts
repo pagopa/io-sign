@@ -4,21 +4,21 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { EventHubProducerClient } from "@azure/event-hubs";
 
 import {
-  createAndSendAnalyticsEvent,
   CreateAndSendAnalyticsEvent,
   EventName,
   GenericEvent,
-  sendEvent,
   SendEvent,
+  createAndSendAnalyticsEvent,
+  sendEvent
 } from "../../../event";
 import {
-  SignatureRequestDraft,
-  SignatureRequestSigned,
-  SignatureRequestReady,
-  SignatureRequestToBeSigned,
-  SignatureRequestWaitForQtsp,
-  SignatureRequestRejected,
   SignatureRequestCancelled,
+  SignatureRequestDraft,
+  SignatureRequestReady,
+  SignatureRequestRejected,
+  SignatureRequestSigned,
+  SignatureRequestToBeSigned,
+  SignatureRequestWaitForQtsp
 } from "../../../signature-request";
 import { ConsoleLogger } from "../../console-logger";
 
@@ -43,7 +43,7 @@ export const makeCreateAndSendAnalyticsEvent =
     pipe(
       {
         eventAnalyticsClient,
-        logger: ConsoleLogger,
+        logger: ConsoleLogger
       },
       pipe(signatureRequest, createAndSendAnalyticsEvent(eventName))
     );

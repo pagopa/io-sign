@@ -4,13 +4,13 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import {
   GetFiscalCodeBySignerId,
-  getFiscalCodeBySignerId,
+  getFiscalCodeBySignerId
 } from "@io-sign/io-sign/signer";
 
 import {
   NotificationMessage,
   SubmitNotificationForUser,
-  submitNotification,
+  submitNotification
 } from "@io-sign/io-sign/notification";
 
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -59,7 +59,7 @@ export const makeSendSignatureRequestNotification =
           TE.chain(
             TE.fromOption(() => new EntityNotFoundError("Dossier not found!"))
           )
-        ),
+        )
       }),
 
       TE.chainW(({ fiscalCode, dossier }) =>

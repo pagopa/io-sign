@@ -6,7 +6,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import {
   defaultHeader,
-  isSuccessful,
+  isSuccessful
 } from "@io-sign/io-sign/infra/client-utils";
 
 import { SlackConfig } from "./config";
@@ -21,9 +21,9 @@ export const makePostSlackMessage =
           fetchWithTimeout(`${config.webhookUrl}`, {
             method: "POST",
             body: JSON.stringify({
-              text,
+              text
             }),
-            headers: defaultHeader,
+            headers: defaultHeader
           }),
         E.toError
       ),

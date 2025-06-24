@@ -3,12 +3,12 @@ import * as t from "io-ts";
 import * as cosmos from "@azure/cosmos";
 
 import {
-  CosmosdbModel,
   BaseModel,
-  CosmosResource,
-  toCosmosErrorResponse,
   CosmosDecodingError,
   CosmosErrors,
+  CosmosResource,
+  CosmosdbModel,
+  toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import { asyncIterableToArray } from "@pagopa/io-functions-commons/dist/src/utils/async";
@@ -17,7 +17,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
-import { pipe, flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
@@ -26,7 +26,7 @@ import * as RA from "fp-ts/lib/ReadonlyArray";
 import {
   GetIssuerBySubscriptionId,
   GetIssuerByVatNumber,
-  IssuerRepository,
+  IssuerRepository
 } from "../../../issuer";
 import { IssuerByVatNumberModel } from "./issuer-by-vat-number";
 
@@ -59,10 +59,10 @@ class IssuerModel extends CosmosdbModel<
               parameters: [
                 {
                   name: "@partitionKey",
-                  value: subscriptionId,
-                },
+                  value: subscriptionId
+                }
               ],
-              query: `SELECT * FROM m WHERE m.${partitionKey} = @partitionKey`,
+              query: `SELECT * FROM m WHERE m.${partitionKey} = @partitionKey`
             }),
             asyncIterableToArray
           ),
@@ -96,7 +96,7 @@ export class CosmosDbIssuerRepository implements IssuerRepository {
             (issuerByVatNumber) =>
               this.#issuerModel.find([
                 issuerByVatNumber.issuerId,
-                issuerByVatNumber.subscriptionId,
+                issuerByVatNumber.subscriptionId
               ])
           )
         )
@@ -129,7 +129,7 @@ export const makeGetIssuerByVatNumber =
               pipe(new IssuerModel(db), (model) =>
                 model.find([
                   issuerByVatNumber.issuerId,
-                  issuerByVatNumber.subscriptionId,
+                  issuerByVatNumber.subscriptionId
                 ])
               )
           )

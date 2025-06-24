@@ -9,14 +9,14 @@ import * as R from "fp-ts/lib/Reader";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
-import { pipe, flow, identity } from "fp-ts/lib/function";
+import { flow, identity, pipe } from "fp-ts/lib/function";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { Issuer } from "@io-sign/io-sign/issuer";
 
 import {
-  getDocument,
   SignatureRequestId,
+  getDocument
 } from "@io-sign/io-sign/signature-request";
 
 import { SignatureRequest } from "./signature-request";
@@ -29,11 +29,11 @@ export const UploadMetadata = t.intersection([
     issuerId: Issuer.props.id,
     createdAt: IsoDateFromString,
     updatedAt: IsoDateFromString,
-    validated: t.boolean,
+    validated: t.boolean
   }),
   t.partial({
-    url: t.string,
-  }),
+    url: t.string
+  })
 ]);
 
 export type UploadMetadata = t.TypeOf<typeof UploadMetadata>;
@@ -56,7 +56,7 @@ export const newUploadMetadata =
         issuerId: signatureRequest.issuerId,
         createdAt: new Date(),
         updatedAt: new Date(),
-        validated: false,
+        validated: false
       }))
     );
 
@@ -64,7 +64,7 @@ export const markUploadMetadataAsValid = (uploadMetadata: UploadMetadata) =>
   pipe({
     ...uploadMetadata,
     validated: true,
-    updatedAt: new Date(),
+    updatedAt: new Date()
   });
 
 export type InsertUploadMetadata = (

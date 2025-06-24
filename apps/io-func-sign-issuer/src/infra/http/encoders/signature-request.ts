@@ -30,13 +30,13 @@ export const SignatureRequestToApiModel: E.Encoder<
       created_at,
       updated_at,
       expires_at,
-      documents: documents.map(DocumentToApiModel.encode),
+      documents: documents.map(DocumentToApiModel.encode)
     };
     switch (extra.status) {
       case "DRAFT": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.DRAFT,
+          status: SignatureRequestStatusEnum.DRAFT
         };
       }
       case "WAIT_FOR_SIGNATURE": {
@@ -47,13 +47,13 @@ export const SignatureRequestToApiModel: E.Encoder<
             extra.notification !== undefined
               ? NotificationToApiModel.encode(extra.notification)
               : undefined,
-          qr_code_url: extra.qrCodeUrl,
+          qr_code_url: extra.qrCodeUrl
         };
       }
       case "READY": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.READY,
+          status: SignatureRequestStatusEnum.READY
         };
       }
       case "REJECTED": {
@@ -65,7 +65,7 @@ export const SignatureRequestToApiModel: E.Encoder<
               : undefined,
           status: SignatureRequestStatusEnum.REJECTED,
           rejected_at: extra.rejectedAt,
-          reject_reason: extra.rejectReason,
+          reject_reason: extra.rejectReason
         };
       }
       case "SIGNED": {
@@ -76,24 +76,24 @@ export const SignatureRequestToApiModel: E.Encoder<
               ? NotificationToApiModel.encode(extra.notification)
               : undefined,
           status: SignatureRequestStatusEnum.SIGNED,
-          signed_at: extra.signedAt,
+          signed_at: extra.signedAt
         };
       }
       case "CANCELLED": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.CANCELLED,
-          cancelled_at: extra.cancelledAt,
+          cancelled_at: extra.cancelledAt
         };
       }
     }
-  },
+  }
 };
 
 export const SignatureRequestToListApiModel: E.Encoder<
   SignatureRequestList,
   {
-    items: ReadonlyArray<SignatureRequest>;
+    items: readonly SignatureRequest[];
     continuationToken?: string;
   }
 > = {
@@ -108,7 +108,7 @@ export const SignatureRequestToListApiModel: E.Encoder<
           status,
           created_at,
           updated_at,
-          expires_at,
+          expires_at
         }) => ({
           id,
           signer_id,
@@ -116,9 +116,9 @@ export const SignatureRequestToListApiModel: E.Encoder<
           status,
           created_at,
           updated_at,
-          expires_at,
+          expires_at
         })
       ),
-    continuation_token: continuationToken,
-  }),
+    continuation_token: continuationToken
+  })
 };

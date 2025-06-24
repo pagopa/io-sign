@@ -11,7 +11,7 @@ import { readFromEnvironment } from "../../env";
 
 export const ApplicationInsightsConfig = t.type({
   instrumentationKey: t.string,
-  samplingPercentage: NumberFromString,
+  samplingPercentage: NumberFromString
 });
 
 type ApplicationInsightsConfig = t.TypeOf<typeof ApplicationInsightsConfig>;
@@ -26,5 +26,5 @@ export const getApplicationInsightsConfigFromEnvironment: RE.ReaderEither<
     readFromEnvironment("APPINSIGHTS_SAMPLING_PERCENTAGE"),
     RE.chainEitherKW(NumberFromString.decode),
     RE.altW(() => RE.right(5))
-  ),
+  )
 });

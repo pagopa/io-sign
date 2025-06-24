@@ -7,11 +7,11 @@ import * as RTE from "fp-ts/ReaderTaskEither";
 import { DocumentReady } from "../../../document";
 
 import {
-  generateSasUrlFromBlob,
   defaultBlobGenerateSasUrlOptions,
-  withExpireInMinutes,
-  withPermissions,
+  generateSasUrlFromBlob,
   getBlobClient,
+  withExpireInMinutes,
+  withPermissions
 } from "./blob";
 
 export const toDocumentWithSasUrl =
@@ -33,7 +33,7 @@ export const toDocumentWithSasUrl =
       ),
       RTE.map((url) => ({
         ...document,
-        url,
+        url
       }))
     );
 

@@ -11,9 +11,9 @@ import { error, success } from "@io-sign/io-sign/infra/http/response";
 
 import {
   HttpBadRequestError,
-  HttpError,
+  HttpError
 } from "@io-sign/io-sign/infra/http/errors";
-import { header, HttpRequest } from "handler-kit-legacy/lib/http";
+import { HttpRequest, header } from "handler-kit-legacy/lib/http";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
@@ -21,8 +21,8 @@ import { QtspClausesMetadataToApiModel } from "../../http/encoders/qtsp-clauses-
 import { QtspClausesMetadataDetailView } from "../../http/models/QtspClausesMetadataDetailView";
 import { makeGetClausesWithToken, makeGetToken } from "../../namirial/client";
 import {
-  getNamirialCredentialsFromIssuerEnvironment,
   NamirialConfig,
+  getNamirialCredentialsFromIssuerEnvironment
 } from "../../namirial/config";
 import { NamirialClausesToQtspClauses } from "../../http/encoders/namirial-clauses-metadata";
 

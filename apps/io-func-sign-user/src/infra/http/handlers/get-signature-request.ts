@@ -14,7 +14,7 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
   SignatureRequest,
   getEnvironment,
-  getSignatureRequest,
+  getSignatureRequest
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { requireSigner } from "../decoders/signer";
@@ -41,7 +41,7 @@ export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
       signerId: pipe(requireSigner(req), RTE.fromEither),
-      signatureRequestId: requireSignatureRequestId(req),
+      signatureRequestId: requireSignatureRequestId(req)
     }),
     RTE.chainW(({ signerId, signatureRequestId }) =>
       getSignatureRequest(signatureRequestId, signerId.id)
