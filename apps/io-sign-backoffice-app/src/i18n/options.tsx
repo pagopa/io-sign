@@ -6,5 +6,5 @@ export const defaultTranslationValues: IntlConfig["defaultTranslationValues"] =
   {
     strong: (text) => <strong>{text}</strong>,
     email: (address) => <Link href={`mailto:${address}`}>{address}</Link>,
-    l3SupportEmail: "firmaconio-tech@pagopa.it",
+    l3SupportEmail: "io-service-management@pagopa.it",
   };
