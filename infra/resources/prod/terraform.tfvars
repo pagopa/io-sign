@@ -1,7 +1,8 @@
-prefix    = "io"
-env_short = "p"
-domain    = "sign"
-location  = "westeurope"
+prefix       = "io"
+env_short    = "p"
+domain       = "sign"
+location     = "westeurope"
+location_itn = "italynorth"
 
 tags = {
   CreatedBy      = "Terraform"

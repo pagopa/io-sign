@@ -34,6 +34,10 @@ variable "location" {
   type = string
 }
 
+variable "location_itn" {
+  type = string
+}
+
 variable "tags" {
   type = map(any)
   default = {
