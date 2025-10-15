@@ -1,4 +1,4 @@
-name: Deploy (backoffice-app)
+name: Deploy-itn (backoffice-app-itn)
 
 on:
   workflow_dispatch: {}

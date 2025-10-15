@@ -1,4 +1,4 @@
-name: Deploy (issuer-func)
+name: Deploy (issuer-func-itn)
 
 on:
   workflow_dispatch: {}

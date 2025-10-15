@@ -1,4 +1,4 @@
-name: Deploy (support-func)
+name: Deploy (support-func-itn)
 
 on:
   workflow_dispatch: {}

@@ -1,4 +1,4 @@
-name: Deploy (user-func)
+name: Deploy (user-func-itn)
 
 on:
   workflow_dispatch: {}
