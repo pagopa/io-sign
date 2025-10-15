@@ -1,0 +1,16 @@
+name: Deploy (user-func)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@cf9cc21cfc649c7ba6a962096c8088cdd695305e
+    secrets: inherit
+    with:
+      workspace_name: io-func-sign-user
+      environment: app-prod
+      resource_group_name: io-p-itn-sign-backend-rg-01
+      web_app_name: io-p-itn-sign-user-func-01
+      use_staging_slot: true
