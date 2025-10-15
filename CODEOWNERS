@@ -1,10 +1,9 @@
 # see https://help.github.com/en/articles/about-code-owners#example-of-a-codeowners-file
 
-- @lucacavallaro @grausof @pagopa/io-platform-contributors
+# io-platform-green-unit temporary added for itn migration
 
-# temporary added for itn migration
+* @lucacavallaro @grausof @pagopa/io-platform-contributors @pagopa/io-platform-green-unit
 
-- @pagopa/io-platform-green-unit
 
 # engineering-team-cloud-eng
 
