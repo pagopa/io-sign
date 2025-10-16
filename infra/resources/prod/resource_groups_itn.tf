@@ -5,13 +5,6 @@ resource "azurerm_resource_group" "data_rg_itn" {
   tags = var.tags
 }
 
-resource "azurerm_resource_group" "sign_itn" {
-  name     = format("%s-rg-01", local.project_itn_sign)
-  location = var.location_itn
-
-  tags = var.tags
-}
-
 resource "azurerm_resource_group" "backend_rg_itn" {
   name     = format("%s-backend-rg-01", local.project_itn_sign)
   location = var.location_itn
