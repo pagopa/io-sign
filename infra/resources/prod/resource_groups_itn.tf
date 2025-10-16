@@ -5,9 +5,10 @@ resource "azurerm_resource_group" "data_rg_itn" {
   tags = var.tags
 }
 
-resource "azurerm_resource_group" "sign_itn" {
-  name     = format("%s-rg-01", local.project_itn_sign)
-  location = var.location_itn
+#Already exists in prod ITN
+resource "azurerm_resource_group" "sign" {
+  name     = format("%s-itn-sign-rg-01", local.product)
+  location = "italynorth"
 
   tags = var.tags
 }
