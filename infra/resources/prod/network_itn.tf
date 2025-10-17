@@ -3,7 +3,7 @@ module "io_sign_snet_itn" {
   name                 = format("%s-snet", local.project_itn_sign)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
-  address_prefixes     = var.subnets_cidrs.issuer
+  address_prefixes     = var.subnets_cidrs_itn.issuer
 
   private_endpoint_network_policies_enabled = false
 
