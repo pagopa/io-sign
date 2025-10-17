@@ -31,6 +31,10 @@ subnets_cidrs = {
   backoffice = ["10.0.115.0/24"]
 }
 
+subnets_cidrs_itn = {
+  issuer = ["10.20.17.0/24"]
+}
+
 storage_account = {
   enable_versioning             = true
   change_feed_enabled           = true

@@ -84,6 +84,13 @@ variable "subnets_cidrs" {
   description = "The CIDR address prefixes of the subnets"
 }
 
+variable "subnets_cidrs_itn" {
+  type = map(
+    list(string)
+  )
+  description = "The CIDR address prefixes of the subnets"
+}
+
 variable "storage_account" {
   type = object({
     enable_versioning             = bool
