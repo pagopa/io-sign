@@ -1,0 +1,43 @@
+name: Deploy (issuer-func-itn)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  deploy_workspace_to_azure:
+    name: Deploy
+    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@cf9cc21cfc649c7ba6a962096c8088cdd695305e
+    secrets: inherit
+    with:
+      workspace_name: io-func-sign-issuer
+      environment: app-prod
+      resource_group_name: io-p-itn-sign-backend-rg-01
+      web_app_name: io-p-itn-sign-issuer-func-01
+      use_staging_slot: true
+
+  # tag the current commit as "latest" in order to make the latest
+  # released version easily referenceable in the documentation
+  add_tag_latest:
+    needs: deploy_workspace_to_azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "tags/latest"
+            })
+        continue-on-error: true
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/latest",
+              sha: context.sha
+            })
