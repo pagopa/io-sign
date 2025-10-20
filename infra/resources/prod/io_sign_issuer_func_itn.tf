@@ -109,7 +109,7 @@ module "io_sign_issuer_func_itn" {
     access_tier                       = "Hot"
   }
 
-  storage_account_name = format("%ssignissuerstfn01", replace(local.project_itn_sign, "-", ""))
+  storage_account_name = format("%sissuerstfn01", replace(local.project_itn_sign, "-", ""))
 
   subnet_id                     = module.io_sign_snet_itn.id
   ip_restriction_default_action = "Deny"
