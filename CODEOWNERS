@@ -2,9 +2,5 @@
 
 # io-platform-green-unit temporary added for itn migration
 
-- @lucacavallaro @grausof @pagopa/io-platform-contributors @pagopa/io-platform-green-unit
-
-# engineering-team-cloud-eng
-
-/infra/ @pagopa/engineering-team-devex @pagopa/io-platform-green-unit
-/.github/ @pagopa/engineering-team-devex @pagopa/io-platform-green-unit
+* @pagopa/io-platform-contributors @pagopa/io-platform-green-unit
+/infra/bootstrapper/ @pagopa/io-platform-contributors @pagopa/io-platform-green-unit @pagopa/engineering-team-devex 
