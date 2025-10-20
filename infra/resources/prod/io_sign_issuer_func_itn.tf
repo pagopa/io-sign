@@ -99,6 +99,18 @@ module "io_sign_issuer_func_itn" {
     format("AzureWebJobs.%s.Disabled", to_disable)
   ]
 
+  storage_account_info = {
+    advanced_threat_protection_enable = false
+    use_legacy_defender_version       = false
+    public_network_access_enabled     = false
+    account_kind                      = "StorageV2"
+    account_tier                      = "Standard"
+    account_replication_type          = "ZRS"
+    access_tier                       = "Hot"
+  }
+
+  storage_account_name = format("%sissuerstfn01", replace(local.project_itn_sign, "-", ""))
+
   subnet_id                     = module.io_sign_snet_itn.id
   ip_restriction_default_action = "Deny"
   allowed_subnets               = []
