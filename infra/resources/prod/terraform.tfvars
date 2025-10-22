@@ -32,8 +32,9 @@ subnets_cidrs = {
 }
 
 subnets_cidrs_itn = {
-  issuer = ["10.20.17.0/24"]
-  user   = ["10.20.1.0/24"]
+  issuer  = ["10.20.17.0/24"]
+  user    = ["10.20.1.0/24"]
+  support = ["10.20.38.0/24"]
 }
 
 storage_account = {
