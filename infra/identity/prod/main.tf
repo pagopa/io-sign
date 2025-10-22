@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "<= 3.108.0"
+      version = "<= 3.116.0"
     }
   }
 
@@ -19,8 +19,11 @@ provider "azurerm" {
   }
 }
 
+data "azurerm_subscription" "current" {}
+
 module "federated_identities" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "0.0.1"
 
   prefix    = local.prefix
   env_short = local.env_short
@@ -62,6 +65,7 @@ module "federated_identities" {
         "Storage Queue Data Contributor",
         "Storage Table Data Contributor",
         "Key Vault Contributor",
+        "User Access Administrator",
       ]
       resource_groups = {}
     }
@@ -72,8 +76,8 @@ module "federated_identities" {
 }
 
 module "federated_identities_web_apps" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
-
+  source    = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version   = "0.0.1"
   prefix    = local.prefix
   env_short = local.env_short
   env       = "app-${local.env}"
@@ -104,8 +108,8 @@ module "federated_identities_web_apps" {
 }
 
 module "federated_identities_opex" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
-
+  source    = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version   = "0.0.1"
   prefix    = local.prefix
   env_short = local.env_short
   env       = "opex-${local.env}"
@@ -151,9 +155,9 @@ module "federated_identities_opex" {
 
 # Access Policy
 module "roles_ci" {
-  source       = "github.com/pagopa/dx//infra/modules/azure_role_assignments?ref=main"
+  source       = "pagopa-dx/azure-role-assignments/azurerm"
+  version      = "~>0.0"
   principal_id = module.federated_identities.federated_ci_identity.id
-
   key_vault = [
     {
       name                = "io-p-sign-kv"
