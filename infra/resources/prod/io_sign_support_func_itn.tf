@@ -58,6 +58,12 @@ module "io_sign_support_func_itn" {
     access_tier                       = "Hot"
   }
 
+  sticky_app_setting_names = [
+    # Sticky the settings enabling triggered by queue and timer
+    for to_disable in local.io_sign_support_func_itn.staging_disabled :
+    format("AzureWebJobs.%s.Disabled", to_disable)
+  ]
+
   storage_account_name = format("%ssupportstfn01", replace(local.project_itn_sign, "-", ""))
 
   subnet_id                     = module.io_sign_support_snet_itn.id
@@ -108,7 +114,7 @@ module "io_sign_support_func_staging_slot_itn" {
 
 resource "azurerm_monitor_autoscale_setting" "io_sign_support_func_itn" {
   count               = var.io_sign_support_func.sku_tier == "PremiumV3" ? 1 : 0
-  name                = format("%s-autoscale-01", module.io_sign_support_func_itn.name)
+  name                = format("%s-autoscale", module.io_sign_support_func_itn.name)
   resource_group_name = azurerm_resource_group.backend_rg_itn.name
   location            = azurerm_resource_group.backend_rg_itn.location
   target_resource_id  = module.io_sign_support_func_itn.app_service_plan_id
