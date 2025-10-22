@@ -23,12 +23,13 @@ data "azurerm_subscription" "current" {}
 
 module "federated_identities" {
   source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
-  version = "0.0.1"
+  version = "~> 0.0"
 
   prefix    = local.prefix
   env_short = local.env_short
   env       = local.env
   domain    = local.domain
+  location  = local.location
 
   repositories = [local.repo_name]
 
@@ -76,12 +77,15 @@ module "federated_identities" {
 }
 
 module "federated_identities_web_apps" {
-  source    = "pagopa-dx/azure-federated-identity-with-github/azurerm"
-  version   = "0.0.1"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "~> 0.0"
+
   prefix    = local.prefix
   env_short = local.env_short
   env       = "app-${local.env}"
   domain    = "${local.domain}-app"
+  location  = local.location
+
 
   repositories = [local.repo_name]
   continuos_integration = {
@@ -108,12 +112,15 @@ module "federated_identities_web_apps" {
 }
 
 module "federated_identities_opex" {
-  source    = "pagopa-dx/azure-federated-identity-with-github/azurerm"
-  version   = "0.0.1"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "~> 0.0"
+
   prefix    = local.prefix
   env_short = local.env_short
   env       = "opex-${local.env}"
   domain    = "${local.domain}-opex"
+  location  = local.location
+
 
   repositories = [local.repo_name]
   continuos_integration = {

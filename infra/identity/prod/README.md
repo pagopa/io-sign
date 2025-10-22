@@ -18,9 +18,9 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_federated_identities"></a> [federated\_identities](#module\_federated\_identities) | pagopa-dx/azure-federated-identity-with-github/azurerm | 0.0.1 |
-| <a name="module_federated_identities_opex"></a> [federated\_identities\_opex](#module\_federated\_identities\_opex) | pagopa-dx/azure-federated-identity-with-github/azurerm | 0.0.1 |
-| <a name="module_federated_identities_web_apps"></a> [federated\_identities\_web\_apps](#module\_federated\_identities\_web\_apps) | pagopa-dx/azure-federated-identity-with-github/azurerm | 0.0.1 |
+| <a name="module_federated_identities"></a> [federated\_identities](#module\_federated\_identities) | pagopa-dx/azure-federated-identity-with-github/azurerm | ~> 0.0 |
+| <a name="module_federated_identities_opex"></a> [federated\_identities\_opex](#module\_federated\_identities\_opex) | pagopa-dx/azure-federated-identity-with-github/azurerm | ~> 0.0 |
+| <a name="module_federated_identities_web_apps"></a> [federated\_identities\_web\_apps](#module\_federated\_identities\_web\_apps) | pagopa-dx/azure-federated-identity-with-github/azurerm | ~> 0.0 |
 | <a name="module_roles_ci"></a> [roles\_ci](#module\_roles\_ci) | pagopa-dx/azure-role-assignments/azurerm | ~>0.0 |
 
 ## Resources
