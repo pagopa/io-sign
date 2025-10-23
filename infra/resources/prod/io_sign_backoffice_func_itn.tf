@@ -51,7 +51,13 @@ module "io_sign_backoffice_func_itn" {
 
   allowed_subnets = []
 
-  app_service_plan_id = module.io_sign_backoffice_app_itn.plan_id
+  app_service_plan_info = {
+    kind                         = "Linux"
+    sku_size                     = var.io_sign_backoffice_func.sku_size
+    maximum_elastic_worker_count = 0
+    worker_count                 = 1
+    zone_balancing_enabled       = false
+  }
 
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
   system_identity_enabled                  = true

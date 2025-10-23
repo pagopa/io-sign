@@ -165,6 +165,8 @@ io_sign_backoffice_app = {
 }
 
 io_sign_backoffice_func = {
+  sku_tier          = "PremiumV3"
+  sku_size          = "P1v3"
   autoscale_default = 1
   autoscale_minimum = 1
   autoscale_maximum = 3
