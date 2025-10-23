@@ -4,7 +4,7 @@ locals {
   env       = "prod"
   project   = "${local.prefix}-${local.env_short}"
   domain    = "sign"
-
+  location  = "westeurope"
   repo_name = "io-sign"
 
   tags = {
