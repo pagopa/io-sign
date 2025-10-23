@@ -231,7 +231,7 @@ resource "azurerm_private_endpoint" "io_sign_backoffice_func_itn" {
   subnet_id           = data.azurerm_subnet.itn_private_endpoints_subnet.id
 
   private_service_connection {
-    name                           = format("%s-backoffice-pep-01", local.project_itn_sign)
+    name                           = format("%s-backoffice-func-pep-01", local.project_itn_sign)
     private_connection_resource_id = module.io_sign_backoffice_func_itn.id
     is_manual_connection           = false
     subresource_names              = ["sites"]
