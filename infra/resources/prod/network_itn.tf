@@ -223,3 +223,46 @@ resource "azurerm_private_endpoint" "io_sign_support_func_staging_itn" {
 
   tags = var.tags
 }
+
+resource "azurerm_private_endpoint" "io_sign_backoffice_func_itn" {
+  name                = format("%s-backoffice-func-pep-01", local.project_itn_sign)
+  location            = azurerm_resource_group.data_rg_itn.location
+  resource_group_name = azurerm_resource_group.data_rg_itn.name
+  subnet_id           = data.azurerm_subnet.itn_private_endpoints_subnet.id
+
+  private_service_connection {
+    name                           = format("%s-backoffice-func-pep-01", local.project_itn_sign)
+    private_connection_resource_id = module.io_sign_backoffice_func_itn.id
+    is_manual_connection           = false
+    subresource_names              = ["sites"]
+  }
+
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.privatelink_azurewebsites_net.id]
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "io_sign_backoffice_func_staging_itn" {
+
+  name                = format("%s-backoffice-func-staging-pep-01", local.project_itn_sign)
+  location            = azurerm_resource_group.data_rg_itn.location
+  resource_group_name = azurerm_resource_group.data_rg_itn.name
+  subnet_id           = data.azurerm_subnet.itn_private_endpoints_subnet.id
+
+  private_service_connection {
+    name                           = format("%s-backoffice-func-staging-pep-01", local.project_itn_sign)
+    private_connection_resource_id = module.io_sign_backoffice_func_itn.id
+    is_manual_connection           = false
+    subresource_names              = ["sites-staging"]
+  }
+
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.privatelink_azurewebsites_net.id]
+  }
+
+  tags = var.tags
+}
