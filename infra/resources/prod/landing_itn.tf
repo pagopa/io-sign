@@ -1,0 +1,52 @@
+module "landing_cdn_itn" {
+  source = "github.com/pagopa/terraform-azurerm-v3//cdn?ref=v8.52.0"
+
+  name                  = "landing"
+  prefix                = local.project_itn_sign
+  resource_group_name   = azurerm_resource_group.integration_rg_itn.name
+  location              = azurerm_resource_group.integration_rg_itn.location
+  hostname              = "firma.io.italia.it"
+  https_rewrite_enabled = true
+  create_dns_record     = false
+
+  storage_account_replication_type = "GZRS"
+
+  index_document     = "index.html"
+  error_404_document = "index.html"
+
+  dns_zone_name                = data.azurerm_dns_zone.io_italia_it.name
+  dns_zone_resource_group_name = data.azurerm_resource_group.core_ext.name
+
+  keyvault_vault_name          = data.azurerm_key_vault.core_kv_common.name
+  keyvault_resource_group_name = data.azurerm_resource_group.core_rg_common.name
+  keyvault_subscription_id     = data.azurerm_subscription.current.subscription_id
+
+  querystring_caching_behaviour = "BypassCaching"
+
+  global_delivery_rule = {
+    cache_expiration_action       = []
+    cache_key_query_string_action = []
+    modify_request_header_action  = []
+
+    # HSTS
+    modify_response_header_action = [
+      {
+        action = "Overwrite"
+        name   = "Strict-Transport-Security"
+        value  = "max-age=31536000"
+      },
+      # Content-Security-Policy (in Report mode)
+      {
+        action = "Append"
+        name   = "Content-Security-Policy"
+        value  = "script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://cdn.matomo.cloud/pagopa.matomo.cloud/ https://pagopa.matomo.cloud/ https://recaptcha.net/ https://www.recaptcha.net/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline' recaptcha.net; worker-src 'none'; font-src data: 'self'; img-src data: 'self' recaptcha.net; object-src 'none'; "
+      }
+    ]
+  }
+
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.common.id
+
+  advanced_threat_protection_enabled = false
+
+  tags = var.tags
+}
