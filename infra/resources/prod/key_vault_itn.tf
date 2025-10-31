@@ -11,29 +11,29 @@ module "key_vault_itn" {
   tags = var.tags
 }
 
-# module "key_vault_secrets_itn" {
-#   source = "github.com/pagopa/terraform-azurerm-v3//key_vault_secrets_query?ref=v8.35.0"
+module "key_vault_secrets_itn" {
+  source = "github.com/pagopa/terraform-azurerm-v3//key_vault_secrets_query?ref=v8.35.0"
 
-#   resource_group = azurerm_resource_group.sec_rg_itn.name
-#   key_vault_name = module.key_vault_itn.name
+  resource_group = azurerm_resource_group.sec_rg_itn.name
+  key_vault_name = module.key_vault_itn.name
 
-#   secrets = [
-#     "IoServicesSubscriptionKey",
-#     "io-fn-sign-issuer-key",
-#     "io-fn-sign-support-key",
-#     "NamirialPassword",
-#     "NamirialTestPassword",
-#     "SelfCareEventHubConnectionString",
-#     "SelfCareApiKey",
-#     "SlackWebhookUrl",
-#     "LollipopPrimaryApiKey",
-#     "LollipopSecondaryApiKey",
-#     "PdvTokenizerApiKey",
-#     "BackOfficeApiKey",
-#     "io-services-configuration-id",
-#     "io-sign-backoffice-func-key"
-#   ]
-# }
+  secrets = [
+    "IoServicesSubscriptionKey",
+    "io-fn-sign-issuer-key",
+    "io-fn-sign-support-key",
+    "NamirialPassword",
+    "NamirialTestPassword",
+    "SelfCareEventHubConnectionString",
+    "SelfCareApiKey",
+    "SlackWebhookUrl",
+    "LollipopPrimaryApiKey",
+    "LollipopSecondaryApiKey",
+    "PdvTokenizerApiKey",
+    "BackOfficeApiKey",
+    "io-services-configuration-id",
+    "io-sign-backoffice-func-key"
+  ]
+}
 
 ## adgroup_admin group policy ##
 resource "azurerm_key_vault_access_policy" "adgroup_admin_itn" {
