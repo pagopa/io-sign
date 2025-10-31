@@ -110,3 +110,29 @@ resource "azurerm_key_vault_access_policy" "azdevops_platform_iac_policy_itn" {
   storage_permissions     = []
   certificate_permissions = ["SetIssuers", "DeleteIssuers", "Purge", "List", "Get", "ManageContacts", ]
 }
+
+data "azurerm_user_assigned_identity" "github_federated_ci" {
+  name                = "${local.project}-github-ci-identity"
+  resource_group_name = "${local.product}-identity-rg"
+}
+
+resource "azurerm_key_vault_access_policy" "github_ci_identity" {
+  key_vault_id = module.key_vault_itn.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_user_assigned_identity.github_federated_ci.principal_id
+
+  secret_permissions = ["Get", "List"]
+}
+
+data "azurerm_user_assigned_identity" "github_federated_cd" {
+  name                = "${local.project}-github-cd-identity"
+  resource_group_name = "${local.product}-identity-rg"
+}
+
+resource "azurerm_key_vault_access_policy" "github_cd_identity" {
+  key_vault_id = module.key_vault_itn.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_user_assigned_identity.github_federated_cd.principal_id
+
+  secret_permissions = ["Get", "List"]
+}
