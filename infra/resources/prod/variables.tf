@@ -34,6 +34,10 @@ variable "location" {
   type = string
 }
 
+variable "location_itn" {
+  type = string
+}
+
 variable "tags" {
   type = map(any)
   default = {
@@ -74,6 +78,13 @@ variable "dns_zone_names" {
 }
 
 variable "subnets_cidrs" {
+  type = map(
+    list(string)
+  )
+  description = "The CIDR address prefixes of the subnets"
+}
+
+variable "subnets_cidrs_itn" {
   type = map(
     list(string)
   )
@@ -212,6 +223,8 @@ variable "io_sign_backoffice_app" {
 
 variable "io_sign_backoffice_func" {
   type = object({
+    sku_size          = string
+    sku_tier          = string
     autoscale_default = number
     autoscale_minimum = number
     autoscale_maximum = number

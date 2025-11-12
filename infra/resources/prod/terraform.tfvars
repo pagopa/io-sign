@@ -1,7 +1,8 @@
-prefix    = "io"
-env_short = "p"
-domain    = "sign"
-location  = "westeurope"
+prefix       = "io"
+env_short    = "p"
+domain       = "sign"
+location     = "westeurope"
+location_itn = "italynorth"
 
 tags = {
   CreatedBy      = "Terraform"
@@ -28,6 +29,13 @@ subnets_cidrs = {
   eventhub   = ["10.0.104.0/24"],
   support    = ["10.0.147.0/24"]
   backoffice = ["10.0.115.0/24"]
+}
+
+subnets_cidrs_itn = {
+  issuer     = ["10.20.17.0/24"]
+  user       = ["10.20.1.0/24"]
+  support    = ["10.20.38.0/24"]
+  backoffice = ["10.20.39.0/24"]
 }
 
 storage_account = {
@@ -157,6 +165,8 @@ io_sign_backoffice_app = {
 }
 
 io_sign_backoffice_func = {
+  sku_tier          = "PremiumV3"
+  sku_size          = "P1v3"
   autoscale_default = 1
   autoscale_minimum = 1
   autoscale_maximum = 3
