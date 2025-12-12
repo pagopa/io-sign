@@ -8,7 +8,7 @@ export const cidrSchema = z.custom<string>((val) => {
   const result = z
     .object({
       ip: z.string().ip({ version: "v4" }),
-      subnet: z.enum(["8", "16", "24", "32"])
+      subnet: z.coerce.number().int().min(0).max(32)
     })
     .safeParse({ ip, subnet });
   return result.success;
