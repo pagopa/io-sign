@@ -23,7 +23,7 @@ resource "azurerm_api_management_api" "io_sign" {
 
   version_set_id = azurerm_api_management_api_version_set.io_sign_v1.id
   version        = "v1"
-  revision       = 1
+  revision       = "1"
 
   description  = "IO Sign Backend API"
   display_name = "IO Sign Backend"
