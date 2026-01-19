@@ -32,7 +32,7 @@ resource "azurerm_api_management_api" "io_sign" {
 
   import {
     content_format = "openapi-link"
-    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/158cff2cf879a06fe1a5af218fc9adf5bda90681/openapi/generated/api_io_sign.yaml"
+    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/066b5aa08e40a270164fe6dccd9ed4d08705c05a/openapi/generated/api_io_sign.yaml"
   }
 }
 
