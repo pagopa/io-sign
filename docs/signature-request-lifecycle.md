@@ -38,50 +38,26 @@ The system defines **7 distinct statuses** for a SignatureRequest:
 
 ## State Transition Flow
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│                    SIGNATURE REQUEST LIFECYCLE                  │
-└────────────────────────────────────────────────────────────────┘
-
-                         CREATE SIGNATURE REQUEST
-                                    │
-                                    ▼
-                            ┌───────────────┐
-                            │     DRAFT     │
-                            └───────┬───────┘
-                                    │
-                         All documents READY?
-                                    │
-                            MARK_AS_READY
-                                    │
-                                    ▼
-                            ┌───────────────┐
-                            │     READY     │
-                            └───────┬───────┘
-                                    │
-                    ┌───────────────┼───────────────┐
-                    │               │               │
-          MARK_AS_CANCELLED  MARK_AS_WAIT_FOR      │
-                    │           SIGNATURE           │
-                    │               │               │
-                    ▼               ▼               │
-            ┌───────────┐  ┌──────────────────┐    │
-            │ CANCELLED │  │ WAIT_FOR_        │    │
-            │           │  │ SIGNATURE        │    │
-            └───────────┘  └────────┬─────────┘    │
-                (Terminal)          │              │
-                            ┌───────┼───────┐      │
-                            │       │       │      │
-                     MARK_AS_SIGNED │  MARK_AS_   │
-                            │       │   REJECTED   │
-                            ▼       ▼       ▼      │
-                        ┌────────┐ ┌──────────┐   │
-                        │ SIGNED │ │ REJECTED │   │
-                        └────────┘ └──────────┘   │
-                        (Terminal)   (Terminal)   │
-                                                   │
-                            Alternative Path:     │
-                            Direct Cancellation ───┘
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT: CREATE SIGNATURE REQUEST
+    
+    DRAFT --> READY: MARK_AS_READY<br/>(All documents READY)
+    
+    READY --> WAIT_FOR_SIGNATURE: MARK_AS_WAIT_FOR_SIGNATURE
+    READY --> CANCELLED: MARK_AS_CANCELLED
+    
+    WAIT_FOR_SIGNATURE --> SIGNED: MARK_AS_SIGNED<br/>(Citizen completes signature)
+    WAIT_FOR_SIGNATURE --> REJECTED: MARK_AS_REJECTED<br/>(Citizen rejects or error)
+    WAIT_FOR_SIGNATURE --> CANCELLED: MARK_AS_CANCELLED
+    
+    SIGNED --> [*]
+    REJECTED --> [*]
+    CANCELLED --> [*]
+    
+    note right of SIGNED: Terminal State
+    note right of REJECTED: Terminal State
+    note right of CANCELLED: Terminal State
 ```
 
 ### State Transition Rules
@@ -445,39 +421,20 @@ trackEvent("SignatureRequestRejected", {
 
 Each document within a signature request has its own sub-lifecycle:
 
-```
-┌──────────────────────────────────────────────────────────┐
-│              DOCUMENT STATUS LIFECYCLE                    │
-└──────────────────────────────────────────────────────────┘
-
-                    DOCUMENT CREATED
-                           │
-                           ▼
-                  ┌─────────────────┐
-                  │ WAIT_FOR_UPLOAD │
-                  └────────┬─────────┘
-                           │
-                   File uploaded to
-                   Azure Blob Storage
-                           │
-                           ▼
-              ┌─────────────────────────┐
-              │ WAIT_FOR_VALIDATION     │
-              └───────────┬─────────────┘
-                          │
-                ValidateUpload
-                   Function
-                          │
-          ┌───────────────┴───────────────┐
-          │                               │
-    Validation                       Validation
-      Success                          Failed
-          │                               │
-          ▼                               ▼
-    ┌─────────┐                   ┌──────────┐
-    │  READY  │                   │ REJECTED │
-    └─────────┘                   └──────────┘
-   (Can sign)                    (Cannot sign)
+```mermaid
+stateDiagram-v2
+    [*] --> WAIT_FOR_UPLOAD: DOCUMENT CREATED
+    
+    WAIT_FOR_UPLOAD --> WAIT_FOR_VALIDATION: File uploaded to<br/>Azure Blob Storage
+    
+    WAIT_FOR_VALIDATION --> READY: Validation Success
+    WAIT_FOR_VALIDATION --> REJECTED: Validation Failed
+    
+    READY --> [*]
+    REJECTED --> [*]
+    
+    note right of READY: Can sign
+    note right of REJECTED: Cannot sign
 ```
 
 ### Document Status Definitions
@@ -531,11 +488,31 @@ class SignatureRequest {
 
 ### 3. Azure Queue Storage
 **Message Flow**:
-```
-issuer-func → [on-signature-request-ready] → user-func
-user-func → [on-signature-request-wait-for-signature] → issuer-func
-user-func → [on-signature-request-signed] → issuer-func
-user-func → [on-signature-request-rejected] → issuer-func
+
+```mermaid
+flowchart LR
+    subgraph Issuer["io-func-sign-issuer"]
+        I1[SetStatus]
+        I2[MarkAsWaitForSignature]
+        I3[CloseSignatureRequest]
+    end
+    
+    subgraph User["io-func-sign-user"]
+        U1[ProcessReady]
+        U2[CreateSignature]
+    end
+    
+    subgraph Queues["Azure Queues"]
+        Q1[on-signature-request-ready]
+        Q2[on-signature-request-wait-for-signature]
+        Q3[on-signature-request-signed]
+        Q4[on-signature-request-rejected]
+    end
+    
+    I1 --> Q1 --> U1
+    U1 --> Q2 --> I2
+    U2 --> Q3 --> I3
+    U2 --> Q4 --> I3
 ```
 
 ### 4. Event Hubs

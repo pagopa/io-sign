@@ -82,17 +82,16 @@ const config = issuerEnvironment === "TEST"
 
 Namirial uses **Bearer Token Authentication** via credential exchange:
 
-```
-┌─────────────┐     POST /api/token/      ┌─────────────┐
-│  io-sign    │ ──────────────────────── │  Namirial   │
-│  (client)   │     Basic Auth            │  (QTSP)     │
-└─────────────┘     username:password     └─────────────┘
-       │                                         │
-       │           { access, refresh }           │
-       │ ◄───────────────────────────────────────┤
-       │                                         │
-       │     GET/POST with Bearer token          │
-       │ ────────────────────────────────────────►
+```mermaid
+sequenceDiagram
+    participant Client as io-sign (client)
+    participant Namirial as Namirial (QTSP)
+    
+    Client->>Namirial: POST /api/token/<br/>Basic Auth (username:password)
+    Namirial-->>Client: { access, refresh }
+    
+    Client->>Namirial: GET/POST with Bearer token
+    Namirial-->>Client: Response
 ```
 
 ### Token Exchange
@@ -161,44 +160,27 @@ makeGetSignatureRequest(): (token: NamirialToken, id: string)
 
 ### High-Level Flow
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      SIGNATURE CREATION FLOW                             │
-└─────────────────────────────────────────────────────────────────────────┘
-
-  Client (IO App)                    io-func-sign-user                 Namirial
-       │                                    │                              │
-       │  POST /signature-requests/{id}/    │                              │
-       │       signature                    │                              │
-       │ ──────────────────────────────────►│                              │
-       │                                    │                              │
-       │                                    │  Validate Lollipop params    │
-       │                                    │  (SAML, public key, nonce)   │
-       │                                    │                              │
-       │                                    │  Get fiscal code (PDV)       │
-       │                                    │                              │
-       │                                    │  Get document URLs (Cosmos)  │
-       │                                    │                              │
-       │                                    │  POST /api/token/            │
-       │                                    │ ────────────────────────────►│
-       │                                    │                              │
-       │                                    │  { access, refresh }         │
-       │                                    │ ◄────────────────────────────│
-       │                                    │                              │
-       │                                    │  POST /api/requests/         │
-       │                                    │  (signature payload)         │
-       │                                    │ ────────────────────────────►│
-       │                                    │                              │
-       │                                    │  { id, status: "CREATED" }   │
-       │                                    │ ◄────────────────────────────│
-       │                                    │                              │
-       │                                    │  Insert Signature (Cosmos)   │
-       │                                    │  Update request → WAIT_QTSP  │
-       │                                    │  Enqueue to qtspQueue        │
-       │                                    │                              │
-       │  { signature_request_id }          │                              │
-       │ ◄──────────────────────────────────│                              │
-       │                                    │                              │
+```mermaid
+sequenceDiagram
+    participant App as Client (IO App)
+    participant Func as io-func-sign-user
+    participant Nam as Namirial
+    
+    App->>Func: POST /signature-requests/{id}/signature
+    
+    Note over Func: Validate Lollipop params<br/>(SAML, public key, nonce)
+    Note over Func: Get fiscal code (PDV)
+    Note over Func: Get document URLs (Cosmos)
+    
+    Func->>Nam: POST /api/token/
+    Nam-->>Func: { access, refresh }
+    
+    Func->>Nam: POST /api/requests/<br/>(signature payload)
+    Nam-->>Func: { id, status: "CREATED" }
+    
+    Note over Func: Insert Signature (Cosmos)<br/>Update request → WAIT_QTSP<br/>Enqueue to qtspQueue
+    
+    Func-->>App: { signature_request_id }
 ```
 
 ### Detailed Steps
@@ -242,17 +224,12 @@ Before creating a signature, the client must retrieve and display QTSP terms:
 **Endpoint**: `GET /qtsp/clauses`
 
 **Flow**:
-```
-GET /api/tos/ (Namirial)
-       │
-       ▼
-ClausesMetadata
-       │
-       ▼
-QtspClausesMetadata (encoded)
-       │
-       ▼
-Return to client
+
+```mermaid
+flowchart TB
+    A[GET /api/tos/ - Namirial] --> B[ClausesMetadata]
+    B --> C[QtspClausesMetadata - encoded]
+    C --> D[Return to client]
 ```
 
 ### Clauses Metadata Structure
@@ -296,28 +273,18 @@ The `nonce` from clauses metadata is critical:
 
 Signature validation is handled asynchronously via Azure Queue Storage:
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│                       ASYNC VALIDATION FLOW                                 │
-└────────────────────────────────────────────────────────────────────────────┘
-
-  CreateSignature              qtspQueue               ValidateSignature
-       │                           │                          │
-       │  { signatureId,           │                          │
-       │    signerId }             │                          │
-       │ ─────────────────────────►│                          │
-       │                           │                          │
-       │                           │  Queue trigger           │
-       │                           │ ─────────────────────────►
-       │                           │                          │
-       │                           │          GET /api/requests/{id}
-       │                           │          ─────────────────────────►
-       │                           │                          │
-       │                           │          { status: ... }  │
-       │                           │          ◄─────────────────
-       │                           │                          │
-       │                           │          Handle status    │
-       │                           │                          │
+```mermaid
+sequenceDiagram
+    participant CS as CreateSignature
+    participant Q as qtspQueue
+    participant VS as ValidateSignature
+    participant Nam as Namirial
+    
+    CS->>Q: { signatureId, signerId }
+    Q->>VS: Queue trigger
+    VS->>Nam: GET /api/requests/{id}
+    Nam-->>VS: { status: ... }
+    Note over VS: Handle status
 ```
 
 ### Queue Message Structure
@@ -375,19 +342,23 @@ async function validateSignature(message: SignatureNotification) {
 
 ### Queue Architecture
 
-```
-├── qtspQueue (waiting-for-qtsp)
-│   ├── Trigger: CreateSignature success
-│   ├── Consumer: ValidateSignature function
-│   └── Payload: { signatureId, signerId }
-│
-├── onSignedQueueClient (on-signature-request-signed)
-│   ├── Trigger: Namirial status = COMPLETED
-│   └── Consumer: io-func-sign-issuer
-│
-└── onRejectedQueueClient (on-signature-request-rejected)
-    ├── Trigger: Namirial status = FAILED
-    └── Consumer: io-func-sign-issuer
+```mermaid
+flowchart TB
+    subgraph qtsp["qtspQueue (waiting-for-qtsp)"]
+        Q1_trigger["Trigger: CreateSignature success"]
+        Q1_consumer["Consumer: ValidateSignature function"]
+        Q1_payload["Payload: { signatureId, signerId }"]
+    end
+    
+    subgraph signed["onSignedQueueClient (on-signature-request-signed)"]
+        Q2_trigger["Trigger: Namirial status = COMPLETED"]
+        Q2_consumer["Consumer: io-func-sign-issuer"]
+    end
+    
+    subgraph rejected["onRejectedQueueClient (on-signature-request-rejected)"]
+        Q3_trigger["Trigger: Namirial status = FAILED"]
+        Q3_consumer["Consumer: io-func-sign-issuer"]
+    end
 ```
 
 ---
@@ -655,64 +626,37 @@ const response = await makeFetchWithTimeout(url, {
 
 ## Sequence Diagram: Complete Flow
 
-```
-┌────────┐     ┌────────────────┐     ┌─────────┐     ┌──────────┐     ┌─────────┐
-│IO App  │     │io-func-sign-   │     │Namirial │     │Cosmos DB │     │Queues   │
-│        │     │user            │     │(QTSP)   │     │          │     │         │
-└───┬────┘     └───────┬────────┘     └────┬────┘     └────┬─────┘     └────┬────┘
-    │                  │                   │               │                │
-    │ GET /qtsp/clauses│                   │               │                │
-    │─────────────────►│                   │               │                │
-    │                  │ POST /api/token/  │               │                │
-    │                  │──────────────────►│               │                │
-    │                  │ { access }        │               │                │
-    │                  │◄──────────────────│               │                │
-    │                  │ GET /api/tos/     │               │                │
-    │                  │──────────────────►│               │                │
-    │                  │ { clauses, nonce }│               │                │
-    │                  │◄──────────────────│               │                │
-    │ { clauses }      │                   │               │                │
-    │◄─────────────────│                   │               │                │
-    │                  │                   │               │                │
-    │ User accepts ToS │                   │               │                │
-    │ and signs        │                   │               │                │
-    │                  │                   │               │                │
-    │ POST /signature  │                   │               │                │
-    │─────────────────►│                   │               │                │
-    │                  │ POST /api/token/  │               │                │
-    │                  │──────────────────►│               │                │
-    │                  │ { access }        │               │                │
-    │                  │◄──────────────────│               │                │
-    │                  │                   │               │                │
-    │                  │ POST /api/requests│               │                │
-    │                  │──────────────────►│               │                │
-    │                  │ { id, CREATED }   │               │                │
-    │                  │◄──────────────────│               │                │
-    │                  │                   │               │                │
-    │                  │                   │ Insert        │                │
-    │                  │                   │ Signature     │                │
-    │                  │───────────────────────────────────►                │
-    │                  │                   │               │                │
-    │                  │                   │               │ Enqueue        │
-    │                  │────────────────────────────────────────────────────►
-    │ { success }      │                   │               │                │
-    │◄─────────────────│                   │               │                │
-    │                  │                   │               │                │
-    │                  │                   │               │ Queue trigger  │
-    │                  │◄───────────────────────────────────────────────────│
-    │                  │                   │               │                │
-    │                  │ GET /api/requests/{id}            │                │
-    │                  │──────────────────►│               │                │
-    │                  │ { COMPLETED }     │               │                │
-    │                  │◄──────────────────│               │                │
-    │                  │                   │               │                │
-    │                  │                   │ Update        │                │
-    │                  │                   │ SIGNED        │                │
-    │                  │───────────────────────────────────►                │
-    │                  │                   │               │                │
-    │                  │                   │               │ Notify issuer  │
-    │                  │────────────────────────────────────────────────────►
-    │                  │                   │               │                │
+```mermaid
+sequenceDiagram
+    participant App as IO App
+    participant Func as io-func-sign-user
+    participant Nam as Namirial (QTSP)
+    participant DB as Cosmos DB
+    participant Q as Queues
+    
+    App->>Func: GET /qtsp/clauses
+    Func->>Nam: POST /api/token/
+    Nam-->>Func: { access }
+    Func->>Nam: GET /api/tos/
+    Nam-->>Func: { clauses, nonce }
+    Func-->>App: { clauses }
+    
+    Note over App: User accepts ToS and signs
+    
+    App->>Func: POST /signature
+    Func->>Nam: POST /api/token/
+    Nam-->>Func: { access }
+    Func->>Nam: POST /api/requests
+    Nam-->>Func: { id, CREATED }
+    Func->>DB: Insert Signature
+    Func->>Q: Enqueue
+    Func-->>App: { success }
+    
+    Q->>Func: Queue trigger
+    Func->>Nam: GET /api/requests/{id}
+    Nam-->>Func: { COMPLETED }
+    Func->>DB: Update SIGNED
+    Func->>Q: Notify issuer
 ```
 
 ---
