@@ -10,7 +10,7 @@ on:
       - apps/**
       - packages/**
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, edited, synchronize, reopened, ready_for_review]
     paths:
       - apps/**
       - packages/**
@@ -28,24 +28,15 @@ jobs:
           fetch-depth: 2
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".node-version"
-          cache: "yarn"
+        uses: pagopa/dx/.github/actions/node-setup@main
+        env:
+          TURBO_CACHE_DIR: .turbo
 
       - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Cache turbo build setup
-        uses: actions/cache@v3
-        with:
-          path: node_modules/.cache/turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: "Generate API models"
-        run: yarn workspaces foreach --all run generate:api-models
+        run: pnpm install --frozen-lockfile
 
       - name: "Code review"
-        run: yarn run code-review
+        run: pnpm run code-review --force
+
+      - name: "Generate API models"
+        run: pnpm -r run generate:api-models
