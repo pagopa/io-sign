@@ -22,7 +22,7 @@
     "build:package": "npm-pack-zip --add-version",
     "generate:lollipop-api-models": "rimraf ./src/infra/lollipop/models && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/io-functions-lollipop/f0a4485bf65f4f2d50ca1383a56a808c4f2ad4ea/openapi/external.yaml --no-strict --out-dir ./src/infra/lollipop/models --request-types --response-decoders --client",
     "generate:user-api-models": "rimraf ./src/infra/http/models && gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models",
-    "generate:api-models": "yarn generate:user-api-models & yarn generate:lollipop-api-models"
+    "generate:api-models": "pnpm generate:user-api-models & pnpm generate:lollipop-api-models"
   },
   "dependencies": {
     "@azure/cosmos": "^4.0.0",

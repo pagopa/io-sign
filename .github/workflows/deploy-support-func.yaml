@@ -6,11 +6,15 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@cf9cc21cfc649c7ba6a962096c8088cdd695305e
+    uses: pagopa/dx/.github/workflows/release-azure-appsvc.yaml@88a3aa43a737c747c0de2be045349b16cd6dcbe7
     secrets: inherit
     with:
       workspace_name: io-func-sign-support
       environment: app-prod
       resource_group_name: io-p-sign-backend-rg
       web_app_name: io-p-sign-support-func
-      use_staging_slot: true
+      disable_auto_staging_deploy: true
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write

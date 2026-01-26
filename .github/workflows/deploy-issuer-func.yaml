@@ -6,14 +6,18 @@ on:
 jobs:
   deploy_workspace_to_azure:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/web_app_deploy.yaml@cf9cc21cfc649c7ba6a962096c8088cdd695305e
+    uses: pagopa/dx/.github/workflows/release-azure-appsvc.yaml@88a3aa43a737c747c0de2be045349b16cd6dcbe7
     secrets: inherit
     with:
       workspace_name: io-func-sign-issuer
       environment: app-prod
       resource_group_name: io-p-sign-backend-rg
       web_app_name: io-p-sign-issuer-func
-      use_staging_slot: true
+      disable_auto_staging_deploy: true
+    permissions:
+      attestations: write
+      contents: read
+      id-token: write
 
   # tag the current commit as "latest" in order to make the latest
   # released version easily referenceable in the documentation
