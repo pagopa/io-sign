@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 2
 
       - name: Setup Node.js environment
-        uses: pagopa/dx/.github/actions/node-setup@main
+        uses: pagopa/dx/.github/actions/node-setup@0fd2b15f5b61751fa433be93682e4a48779b600b
         env:
           TURBO_CACHE_DIR: .turbo
 
