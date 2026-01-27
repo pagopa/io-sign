@@ -6,7 +6,7 @@ on:
 jobs:
   deploy_workspace_to_azure:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/release-azure-appsvc.yaml@88a3aa43a737c747c0de2be045349b16cd6dcbe7
+    uses: pagopa/dx/.github/workflows/release-azure-appsvc-v1.yaml@fd7c679d7cf2c9f6505cdef7e152086121c41b10
     secrets: inherit
     with:
       workspace_name: io-func-sign-issuer
