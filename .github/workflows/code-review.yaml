@@ -35,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: "Code review"
-        run: pnpm run code-review --force
-
       - name: "Generate API models"
         run: pnpm -r run generate:api-models
+
+      - name: "Code review"
+        run: pnpm run code-review --force
