@@ -9,7 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "build:pre-package": "cp -r .next/static .next/standalone/apps/io-sign-backoffice-app/.next && cp -r .next/standalone/node_modules .next/standalone/apps/io-sign-backoffice-app/",
+    "build:package": "pnpm build:pre-package && (cd .next/standalone/apps/io-sign-backoffice-app && zip -r -q ../../../../${npm_package_name}-${npm_package_version}.zip . -x package.json)"
   },
   "dependencies": {
     "@azure/arm-apimanagement": "^9.1.0",
