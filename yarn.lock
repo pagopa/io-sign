@@ -385,14 +385,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/functions@npm:^3.5.0":
-  version: 3.5.1
-  resolution: "@azure/functions@npm:3.5.1"
-  dependencies:
-    iconv-lite: ^0.6.3
-    long: ^4.0.0
-    uuid: ^8.3.0
-  checksum: f2616ae78ed57df195e7243efbc726163471b0dbe93b6e0b05410a3fe362220ce0eab93d18e218dacc51dc99e30a47bc991d451e60cf50be573a060046d5ad52
+"@azure/functions-extensions-base@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@azure/functions-extensions-base@npm:0.2.0"
+  checksum: ecc44eb8e1446d422dfb58e650bd1fd02be9485edd63b1bbcd1e2c7c83bc4a03e5ff5363b6cee4e2f69f83c6beeafb11326425d86602b403e468dfe9cb663158
   languageName: node
   linkType: hard
 
@@ -404,6 +400,17 @@ __metadata:
     long: ^4.0.0
     undici: ^5.13.0
   checksum: 93493ed37cf7a34d8337d60fdb933237c3c6779d1dd5cb4dece390ae3429ec36aefde4021e8189e7b9eccd22837498fc2cc5522ff90b3aa3c513139b59fdb2ea
+  languageName: node
+  linkType: hard
+
+"@azure/functions@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "@azure/functions@npm:4.11.0"
+  dependencies:
+    "@azure/functions-extensions-base": 0.2.0
+    cookie: ^0.7.0
+    long: ^4.0.0
+  checksum: d4928a92aed3cd1af302b6271818e3b82c014d958913788e688e03d7b586766b21adb042b26b4a1fe46549d0bbcfdad26e77ecb3306048c4ca4553f4c7aa27fb
   languageName: node
   linkType: hard
 
@@ -11405,7 +11412,7 @@ __metadata:
   dependencies:
     "@azure/cosmos": ^4.0.0
     "@azure/event-hubs": ^5.9.0
-    "@azure/functions": ^3.5.0
+    "@azure/functions": ^4.11.0
     "@azure/storage-blob": ^12.12.0
     "@azure/storage-queue": ^12.11.0
     "@io-sign/eslint-config": "workspace:^"
@@ -11439,7 +11446,7 @@ __metadata:
   resolution: "io-func-sign-support@workspace:apps/io-func-sign-support"
   dependencies:
     "@azure/cosmos": ^4.0.0
-    "@azure/functions": ^3.5.0
+    "@azure/functions": ^4.11.0
     "@io-sign/eslint-config": "workspace:^"
     "@io-sign/io-sign": "workspace:^"
     "@pagopa/handler-kit": ^1.1.0
