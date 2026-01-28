@@ -15,13 +15,13 @@ Since we are working on a multi-project codebase, we need a tool that allows us 
 
 We need a tool that:
 
-- is easy to install and maintain, and compatible to `yarn workspaces`
+- is easy to install and maintain, and compatible to `pnpm workspaces`
 - allows us to execute tasks across the projects
 - can executes task in parallel
 - can cache the results of task execution
 - works on CI
 
-The package manager we use (`yarn`) supports a subset of such use-cases, so we need to choose between two different (external) tools.
+The package manager we use (`pnpm`) supports a subset of such use-cases, so we need to choose between two different (external) tools.
 
 ### Option 1: Nx
 
