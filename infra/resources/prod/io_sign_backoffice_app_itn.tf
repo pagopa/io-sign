@@ -47,7 +47,7 @@ module "io_sign_backoffice_app_itn" {
   plan_name = format("%s-backoffice-app-asp-01", local.project_itn_sign)
   sku_name  = var.io_sign_backoffice_app.sku_name
 
-  node_version      = "20-lts"
+  node_version      = "22-lts"
   health_check_path = "/health"
   app_command_line  = "node server.js"
 
@@ -118,7 +118,7 @@ module "io_sign_backoffice_app_staging_slot_itn" {
   app_service_id   = module.io_sign_backoffice_app_itn.id
   app_service_name = module.io_sign_backoffice_app_itn.name
 
-  node_version      = "20-lts"
+  node_version      = "22-lts"
   health_check_path = "/health"
   app_command_line  = "node server.js"
 
