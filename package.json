@@ -20,7 +20,7 @@
     "turbo": "latest"
   },
   "resolutions": {
-    "@types/node@npm:*": "^20.17.6"
+    "@types/node@npm:*": "^22.10.5"
   },
   "packageManager": "yarn@3.8.0"
 }

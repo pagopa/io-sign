@@ -28,7 +28,7 @@ module "io_sign_support_func_itn" {
   always_on = true
 
   runtime_version = "~4"
-  node_version    = "20"
+  node_version    = "22"
 
   app_service_plan_info = {
     name                         = format("%s-support-func-asp-01", local.project_itn_sign)
@@ -94,7 +94,7 @@ module "io_sign_support_func_staging_slot_itn" {
 
   runtime_version                          = "~4"
   always_on                                = true
-  node_version                             = "20"
+  node_version                             = "22"
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
 
   app_settings = merge(
