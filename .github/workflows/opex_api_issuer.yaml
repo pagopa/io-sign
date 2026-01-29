@@ -10,7 +10,6 @@ on:
       - '.opex/api_issuer/**'
 
   workflow_dispatch:
-  
 
 env:
   API_NAME: api_issuer
