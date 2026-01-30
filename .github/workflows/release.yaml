@@ -16,14 +16,12 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".node-version"
-          cache: "yarn"
-          cache-dependency-path: "yarn.lock"
+        uses: pagopa/dx/.github/actions/node-setup@0fd2b15f5b61751fa433be93682e4a48779b600b
+        env:
+          TURBO_CACHE_DIR: .turbo
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
       - name: Create Release Pull Request or Tag
         id: changesets

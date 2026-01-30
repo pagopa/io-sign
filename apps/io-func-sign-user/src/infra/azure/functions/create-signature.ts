@@ -67,9 +67,8 @@ const makeCreateSignatureHandler = (
   const getFiscalCodeBySignerId = makeGetFiscalCodeBySignerId(tokenizer);
   const getBase64SamlAssertion = makeGetBase64SamlAssertion(lollipopApiClient);
   const getSignatureRequest = makeGetSignatureRequest(db);
-  const creatQtspSignatureRequest = makeCreateSignatureRequestWithToken()(
-    makeGetToken()
-  )(qtspConfig);
+  const creatQtspSignatureRequest =
+    makeCreateSignatureRequestWithToken()(makeGetToken())(qtspConfig);
 
   const insertSignature = makeInsertSignature(db);
   const upsertSignatureRequest = makeUpsertSignatureRequest(db);

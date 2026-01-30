@@ -13,7 +13,7 @@ import {
   suspendApiKeySubscription,
 } from "./apim";
 
-import { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
+import type { ApiKey, ApiKeyWithSecret, CreateApiKeyPayload } from "./index";
 import { ulid } from "ulid";
 import { sendMessage } from "@/lib/slack";
 import { getInstitution } from "@/lib/institutions/use-cases";
@@ -46,11 +46,11 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     // check if the api key for the given input already exists
     const apiKeyAlreadyExists = await apiKeyExists(
       payload.institutionId,
-      payload.displayName
+      payload.displayName,
     );
     if (apiKeyAlreadyExists) {
       throw new ApiKeyAlreadyExistsError(
-        "such name already exists for the institution"
+        "such name already exists for the institution",
       );
     }
     const apiKey = ApiKey(payload);
@@ -62,7 +62,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     }
     const issuer = await getIssuerByInstitution(institution);
     await sendMessage(
-      `(_backoffice_) *${institution.name}* (\`${issuer?.externalId}\`) ha creato una nuova API Key di *${payload.environment}*.\nHa configurato *${payload.cidrs.length}* indirizzi IP di test e *${payload.testers.length}* codici fiscali.`
+      `(_backoffice_) *${institution.name}* (\`${issuer?.externalId}\`) ha creato una nuova API Key di *${payload.environment}*.\nHa configurato *${payload.cidrs.length}* indirizzi IP di test e *${payload.testers.length}* codici fiscali.`,
     );
     return apiKey.id;
   } catch (e) {
@@ -91,7 +91,7 @@ export async function listApiKeys(institutionId: string) {
 
 export async function getApiKeyWithSecret(
   id: string,
-  institutionId: string
+  institutionId: string,
 ): Promise<ApiKeyWithSecret> {
   try {
     const apiKey = await getApiKey(id, institutionId);

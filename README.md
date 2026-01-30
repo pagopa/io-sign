@@ -11,16 +11,16 @@ This repository contains the code that composes the `io-sign` back-end, that is 
 
 These services are deployed as `Azure Function App`, and use the `Node.js` Azure runtime.
 
-It also contains `io-sign-selfcare-frontend` the frontend for self-care integration.
+It also contains `io-sign-backoffice-app` the frontend for self-care integration.
 
 ## Prerequisites
 
 In order to run the `io-sign` back-end/front-end locally you need the following tool installed on your machine.
 
 - `Node.js 20`
-- `yarn 3`
+- `pnpm 10.28.1`
 
-The preferred way to set up the local environment is using [nodenv](https://github.com/nodenv/nodenv) to manage `Node.js` installation and `corepack` (included with `Node.js`) to manage the installation of `yarn`.
+The preferred way to set up the local environment is using [nodenv](https://github.com/nodenv/nodenv) to manage `Node.js` installation and `corepack` (included with `Node.js`) to manage the installation of `pnpm`.
 
 ## Backend local development
 
@@ -32,11 +32,13 @@ To test the `Azure Functions` locally:
 
 ```bash
 # to install the dependencies
-yarn
+pnpm
+
 # to generate the TypeScript models based on OpenAPI specs
-yarn workspaces foreach run generate:api-models
+pnpm -r run generate:api-models
+
 # to build all projects
-yarn build
+pnpm build
 ```
 
 ## Frontend local development
@@ -47,15 +49,16 @@ To test the `webapp` locally:
 
 ```bash
 # to install the dependencies
-yarn
+pnpm
+
 # to build all projects
-yarn build
+pnpm build
 ```
 
 2. **Run the Web App**. Run (from the root folder) the following command
 
 ```bash
-yarn workspace io-sign-selfcare-frontend dev
+pnpm --filter io-sign-backoffice-app dev
 ```
 
 ## Release management
@@ -67,42 +70,43 @@ Each Pull Request that includes changes that require a version bump should inclu
 To create a new `changeset` file run the following command from the project root:
 
 ```bash
-yarn changeset
+pnpm changeset
 ```
 
 ## Useful commands
 
-This project uses `yarn@3` with workspaces to manage projects and dependencies. Here is a list of useful commands to work in this repo.
+This project uses `pnpm@10.28.1` with workspaces to manage projects and dependencies. Here is a list of useful commands to work in this repo.
 
 ### Work with workspaces
 
 ```bash
 # to execute COMMAND on WORKSPACE_NAME
-yarn workspace WORKSPACE_NAME run command
+pnpm --filter WORKSPACE_NAME run command
+
 # to execute COMMAD on all workspaces
-yarn workspace foreach run command
+pnpm -r run command
 
 # run unit tests on @io-sign/io-sign
-yarn workspace @io-sign/io-sign run test
+pnpm --filter @io-sign/io-sign run test
 
 # run the typecheck script on all workspaces
-yarn workspaces foreach run typecheck
+pnpm -r run typecheck
 
 # generate the API models for all workspaces
-yarn workspaces foreach run generate:api-models
+pnpm -r run generate:api-models
 ```
 
 ### Add dependencies
 
 ```bash
 # add a dependency to the workspace root
-yarn add turbo
+pnpm add turbo
 
 # add a jest as dev dependency on @io-sign/io-sign
-yarn workspace @io-sign/io-sign add -D jest
+pnpm --filter @io-sign/io-sign add -D jest
 
 # add io-ts as dependency on each workspace
-yarn workspace foreach add io-ts
+pnpm -r add io-ts
 ```
 
 ### Build the backend deployment package (for upload on Azure)
@@ -110,21 +114,21 @@ yarn workspace foreach add io-ts
 This command generates a deployment package (`ZIP`), in the workspace folder, with bundled dependencies, ready to be deployed on Azure.
 
 ```bash
-yarn workspace WORKSPACE_NAME run build:package
+pnpm --filter WORKSPACE_NAME run build:package
 
 # example
-yarn workspace io-func-sign-issuer run build:package
+pnpm --filter io-func-sign-issuer run build:package
 ```
 
 ### Build the frontend deployment package (for upload on Azure)
 
-This command generates static frontend files inside the `out` folder which can then be uploaded to a static website:
+This command generates static frontend files inside the `.next` folder which can then be uploaded to a static website:
 
 ```bash
-yarn workspace io-sign-selfcare-frontend run export
+pnpm --filter io-sign-backoffice-app run build
 ```
 
 ## LICENSING
 
 For detailed information regarding the licensing of this project please take
-a look at the [LICENSE](LICENSE) file. 
+a look at the [LICENSE](LICENSE) file.
