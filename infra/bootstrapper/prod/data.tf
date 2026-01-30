@@ -41,3 +41,11 @@ data "azuread_group" "admins" {
 data "azuread_group" "developers" {
   display_name = local.adgroups.devs_name
 }
+
+data "azurerm_resource_group" "sign_rg" {
+  name = local.functions.itn_io_sign_rg_name
+}
+
+data "azurerm_resource_group" "sign_integration_rg" {
+  name = local.functions.itn_io_sign_integration_rg_name
+}

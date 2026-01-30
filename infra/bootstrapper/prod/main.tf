@@ -10,6 +10,10 @@ module "repo" {
     instance_number = local.instance_number
   }
 
+  additional_resource_group_ids = [
+    data.azurerm_resource_group.sign_rg.id , data.azurerm_resource_group.sign_integration_rg.id
+  ]
+
   subscription_id = data.azurerm_subscription.current.id
   tenant_id       = data.azurerm_client_config.current.tenant_id
 

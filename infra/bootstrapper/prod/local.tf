@@ -33,6 +33,11 @@ locals {
     resource_group_name = "${local.prefix}-${local.env_short}-rg-common"
   }
 
+  functions = {
+    itn_io_sign_rg_name = "${local.prefix}-${local.env_short}-itn-sign-rg-01"
+    itn_io_sign_integration_rg_name = "${local.prefix}-${local.env_short}-itn-sign-integration-rg-01"
+  }
+
   tf_storage_account = {
     name                = "iopitntfst001"
     resource_group_name = "terraform-state-rg"
