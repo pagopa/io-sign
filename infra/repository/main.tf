@@ -1,34 +1,17 @@
-terraform {
+module "github_repository" {
+  source  = "pagopa-dx/github-environment-bootstrap/github"
+  version = "~> 1.1"
 
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "<= 3.105.0"
-    }
-
-    github = {
-      source  = "integrations/github"
-      version = "6.1.0"
-    }
-  }
-
-  backend "azurerm" {
-    resource_group_name  = "terraform-state-rg"
-    storage_account_name = "tfappprodio"
-    container_name       = "terraform-state"
-    key                  = "io-sign.repository.tfstate"
+  repository = {
+    name                     = local.repository.name
+    description              = local.repository.description
+    topics                   = local.repository.topics
+    reviewers_teams          = local.repository.reviewers_teams
+    default_branch_name      = local.repository.default_branch_name
+    jira_boards_ids          = local.repository.jira_boards_ids
+    infra_cd_policy_branches = local.repository.infra_cd_policy_branches
+    opex_cd_policy_branches  = local.repository.opex_cd_policy_branches
+    app_cd_policy_branches   = local.repository.app_cd_policy_branches
+    environments             = ["prod"]
   }
 }
-
-provider "azurerm" {
-  features {
-  }
-}
-
-provider "github" {
-  owner = "pagopa"
-}
-
-data "azurerm_client_config" "current" {}
-
-data "azurerm_subscription" "current" {}

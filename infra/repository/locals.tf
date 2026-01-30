@@ -1,49 +1,18 @@
 locals {
-  project = "io-p"
+  repository = {
+    name            = "io-sign"
+    description     = "Webservice that allows issuer and citizen to create digital signatures"
+    topics          = ["io", "sign"]
+    jira_boards_ids = ["IEL"]
 
-  identity_resource_group_name = "${local.project}-identity-rg"
-  backend_resource_group_name  = "${local.project}-sign-backend-rg"
+    default_branch_name      = "main"
+    infra_cd_policy_branches = ["main"]
+    opex_cd_policy_branches  = ["main"]
+    app_cd_policy_branches   = ["main"]
 
-  repo_secrets = {
-    "ARM_TENANT_ID"       = data.azurerm_client_config.current.tenant_id,
-    "ARM_SUBSCRIPTION_ID" = data.azurerm_subscription.current.subscription_id
-  }
-
-  ci = {
-    secrets = {
-      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_ci.client_id
-    }
-  }
-
-  cd = {
-    secrets = {
-      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_cd.client_id
-    }
-    # Temporary added io-platform-green-unit team to reviewers
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-platform-green-unit"]
-  }
-
-  # OPEX
-  ci_opex = {
-    secrets = {
-      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_opex_prod_ci.client_id
-    }
-  }
-
-  cd_opex = {
-    secrets = {
-      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_opex_prod_cd.client_id
-    }
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors"]
-  }
-
-  # WEB-APP
-  # web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
-
-  cd_web_apps = {
-    secrets = {
-      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_cd.client_id
-    }
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors"]
+    reviewers_teams = [
+      "io-ecosystem-n-links",
+      "engineering-team-cloud-eng"
+    ]
   }
 }
