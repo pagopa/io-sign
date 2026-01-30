@@ -72,7 +72,7 @@ module "io_sign_issuer_func_itn" {
   health_check_path            = "/api/v1/sign/info"
   health_check_maxpingfailures = 2
 
-  node_version    = "20"
+  node_version    = "22"
   runtime_version = "~4"
   always_on       = true
 
@@ -143,7 +143,7 @@ module "io_sign_issuer_func_staging_slot_itn" {
   storage_account_name       = module.io_sign_issuer_func_itn.storage_account.name
   storage_account_access_key = module.io_sign_issuer_func_itn.storage_account.primary_access_key
 
-  node_version                             = "20"
+  node_version                             = "22"
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
