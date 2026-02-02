@@ -11,7 +11,7 @@ module "repo" {
   }
 
   additional_resource_group_ids = [
-    data.azurerm_resource_group.sign_rg.id , data.azurerm_resource_group.sign_integration_rg.id
+    data.azurerm_resource_group.sign_rg.id , data.azurerm_resource_group.sign_integration_rg.id , data.azurerm_resource_group.sign_backend_rg.id
   ]
 
   subscription_id = data.azurerm_subscription.current.id

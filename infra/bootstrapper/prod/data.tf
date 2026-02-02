@@ -49,3 +49,7 @@ data "azurerm_resource_group" "sign_rg" {
 data "azurerm_resource_group" "sign_integration_rg" {
   name = local.functions.itn_io_sign_integration_rg_name
 }
+
+data "azurerm_resource_group" "sign_backend_rg" {
+  name = local.functions.itn_io_sign_backend_rg_name
+}

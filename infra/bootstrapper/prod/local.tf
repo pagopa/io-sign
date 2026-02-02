@@ -2,7 +2,7 @@ locals {
   prefix          = "io"
   env_short       = "p"
   location        = "italynorth"
-  domain          = "ecoLinks"
+  domain          = "sign"
   instance_number = "01"
 
   adgroups = {
@@ -35,6 +35,7 @@ locals {
 
   functions = {
     itn_io_sign_rg_name = "${local.prefix}-${local.env_short}-itn-sign-rg-01"
+    itn_io_sign_backend_rg_name = "${local.prefix}-${local.env_short}-itn-sign-backend-rg-01"
     itn_io_sign_integration_rg_name = "${local.prefix}-${local.env_short}-itn-sign-integration-rg-01"
   }
 
