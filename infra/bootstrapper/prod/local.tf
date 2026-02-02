@@ -6,8 +6,8 @@ locals {
   instance_number = "01"
 
   adgroups = {
-    admins_name = "io-p-adgroup-ecosystem-links-admins"
-    devs_name   = "io-p-adgroup-ecosystem-links-developers"
+    admins_name = "io-p-adgroup-ecosystem-n-links-admins"
+    devs_name   = "io-p-adgroup-ecosystem-n-links-developers"
   }
 
   runner = {
@@ -34,8 +34,8 @@ locals {
   }
 
   functions = {
-    itn_io_sign_rg_name = "${local.prefix}-${local.env_short}-itn-sign-rg-01"
-    itn_io_sign_backend_rg_name = "${local.prefix}-${local.env_short}-itn-sign-backend-rg-01"
+    itn_io_sign_rg_name             = "${local.prefix}-${local.env_short}-itn-sign-rg-01"
+    itn_io_sign_backend_rg_name     = "${local.prefix}-${local.env_short}-itn-sign-backend-rg-01"
     itn_io_sign_integration_rg_name = "${local.prefix}-${local.env_short}-itn-sign-integration-rg-01"
   }
 
