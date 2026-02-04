@@ -1,4 +1,4 @@
-name: Opex Dashboard api_support
+name: Opex Dashboard api_support review
 
 on:
   pull_request:
