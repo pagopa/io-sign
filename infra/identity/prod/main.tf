@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "<= 3.108.0"
+      version = ">= 3.114"
     }
   }
 
@@ -20,12 +20,14 @@ provider "azurerm" {
 }
 
 module "federated_identities" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "0.0.4"
 
   prefix    = local.prefix
   env_short = local.env_short
   env       = local.env
   domain    = local.domain
+  location  = "westeurope"
 
   repositories = [local.repo_name]
 
@@ -42,6 +44,7 @@ module "federated_identities" {
         "Storage Queue Data Reader",
         "Storage Table Data Reader",
         "Key Vault Reader",
+        "User Access Administrator"
       ]
       resource_groups = {
         terraform-state-rg = [
@@ -72,16 +75,29 @@ module "federated_identities" {
 }
 
 module "federated_identities_web_apps" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "0.0.4"
 
   prefix    = local.prefix
   env_short = local.env_short
   env       = "app-${local.env}"
   domain    = "${local.domain}-app"
+  location  = "westeurope"
 
   repositories = [local.repo_name]
   continuos_integration = {
-    enable = false
+    enable = true
+    roles = {
+      subscription = ["Reader"]
+      resource_groups = {
+        "io-p-sign-backend-rg" = [
+          "PagoPA IaC Reader", "PagoPA Static Web Apps List Secrets",
+        ],
+        "io-p-itn-sign-backend-rg-01" = [
+          "PagoPA IaC Reader", "PagoPA Static Web Apps List Secrets",
+        ],
+      }
+    }
   }
 
   continuos_delivery = {
@@ -90,11 +106,11 @@ module "federated_identities_web_apps" {
     roles = {
       subscription = []
       resource_groups = {
-        "io-p-github-runner-rg" = [
-          "Contributor",
+        "io-p-itn-sign-backend-rg-01" = [
+          "Contributor", "Website Contributor", "CDN Profile Contributor", "Container Apps Contributor", "Storage Blob Data Contributor", "PagoPA Static Web Apps List Secrets"
         ],
         "io-p-sign-backend-rg" = [
-          "Contributor",
+          "Contributor", "Website Contributor", "CDN Profile Contributor", "Container Apps Contributor", "Storage Blob Data Contributor", "PagoPA Static Web Apps List Secrets"
         ]
       }
     }
@@ -104,12 +120,14 @@ module "federated_identities_web_apps" {
 }
 
 module "federated_identities_opex" {
-  source = "github.com/pagopa/dx//infra/modules/azure_federated_identity_with_github?ref=main"
+  source  = "pagopa-dx/azure-federated-identity-with-github/azurerm"
+  version = "0.0.4"
 
   prefix    = local.prefix
   env_short = local.env_short
   env       = "opex-${local.env}"
   domain    = "${local.domain}-opex"
+  location  = "westeurope"
 
   repositories = [local.repo_name]
   continuos_integration = {
@@ -119,6 +137,12 @@ module "federated_identities_opex" {
       subscription = []
       resource_groups = {
         dashboards = [
+          "Reader"
+        ]
+        io-p-rg-common = [
+          "Reader"
+        ]
+        io-p-sign-integration-rg = [
           "Reader"
         ]
         terraform-state-rg = [
@@ -138,6 +162,12 @@ module "federated_identities_opex" {
         dashboards = [
           "Contributor"
         ]
+        io-p-rg-common = [
+          "Contributor"
+        ]
+        io-p-sign-integration-rg = [
+          "Contributor"
+        ]
         terraform-state-rg = [
           "Storage Blob Data Contributor",
           "Reader and Data Access"
@@ -151,7 +181,8 @@ module "federated_identities_opex" {
 
 # Access Policy
 module "roles_ci" {
-  source       = "github.com/pagopa/dx//infra/modules/azure_role_assignments?ref=main"
+  source       = "pagopa-dx/azure-role-assignments/azurerm"
+  version      = "0.1.3"
   principal_id = module.federated_identities.federated_ci_identity.id
 
   key_vault = [
