@@ -11,7 +11,14 @@ module "repo" {
   }
 
   additional_resource_group_ids = [
-    data.azurerm_resource_group.sign_rg.id , data.azurerm_resource_group.sign_integration_rg.id , data.azurerm_resource_group.sign_backend_rg.id
+    data.azurerm_resource_group.sign_itn_rg.id,
+    data.azurerm_resource_group.sign_itn_integration_rg.id,
+    data.azurerm_resource_group.sign_itn_backend_rg.id,
+    data.azurerm_resource_group.sign_sec_rg.id,
+    data.azurerm_resource_group.sign_infra_rg.id,
+    data.azurerm_resource_group.sign_data_rg.id,
+    data.azurerm_resource_group.sign_integration_rg.id,
+    data.azurerm_resource_group.sign_backend_rg.id
   ]
 
   subscription_id = data.azurerm_subscription.current.id

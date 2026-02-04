@@ -37,6 +37,11 @@ locals {
     itn_io_sign_rg_name             = "${local.prefix}-${local.env_short}-itn-sign-rg-01"
     itn_io_sign_backend_rg_name     = "${local.prefix}-${local.env_short}-itn-sign-backend-rg-01"
     itn_io_sign_integration_rg_name = "${local.prefix}-${local.env_short}-itn-sign-integration-rg-01"
+    io_sign_backend_rg_name         = "${local.prefix}-${local.env_short}-sign-backend-rg"
+    io_sign_integration_rg_name     = "${local.prefix}-${local.env_short}-sign-integration-rg"
+    io_sign_sec_rg_name             = "${local.prefix}-${local.env_short}-sign-sec-rg"
+    io_sign_infra_rg_name           = "${local.prefix}-${local.env_short}-sign-infra-rg"
+    io_sign_data_rg_name            = "${local.prefix}-${local.env_short}-sign-data-rg"
   }
 
   tf_storage_account = {
