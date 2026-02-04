@@ -1,4 +1,4 @@
-name: Opex Dashboard api_issuer
+name: Opex Dashboard api_issuer review
 
 on:
   pull_request:
