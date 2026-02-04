@@ -1,7 +1,9 @@
 locals {
   backoffice_func_settings = merge({
-    COSMOS_DB_CONNECTION_STRING = module.cosmosdb_account.connection_strings[0],
-    COSMOS_DB_NAME              = module.cosmosdb_sql_database_backoffice.name
+    COSMOS_DB_CONNECTION_STRING       = module.cosmosdb_account.connection_strings[0],
+    COSMOS_DB_NAME                    = module.cosmosdb_sql_database_backoffice.name,
+    WEBSITE_SWAP_WARMUP_PING_PATH     = "/health"
+    WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }, {
     for s in var.io_sign_backoffice_func.app_settings :
     s.name => s.key_vault_secret_name != null ? "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=${s.key_vault_secret_name})" : s.value

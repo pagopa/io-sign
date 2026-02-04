@@ -33,6 +33,8 @@ locals {
       SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
       BackOfficeApiBasePath             = "https://api.io.pagopa.it/api/v1/sign/backoffice"
       BackOfficeApiKey                  = module.key_vault_secrets.values["BackOfficeApiKey"].value
+      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
   }
 }
