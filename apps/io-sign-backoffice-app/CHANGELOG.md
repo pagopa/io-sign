@@ -1,5 +1,13 @@
 # io-sign-backoffice-app
 
+## 1.5.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 1.5.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @io-sign/web-sdk
 
+## 1.0.2
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+
 ## 1.0.1
 
 ### Patch Changes
