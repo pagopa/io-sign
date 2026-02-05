@@ -19,7 +19,7 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_cd.client_id
     }
-    
+
     reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
   }
 
