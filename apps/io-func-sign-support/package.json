@@ -25,7 +25,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@azure/functions": "^4.11.0",
+    "@azure/functions": "^4.0.1",
     "@io-sign/eslint-config": "workspace:^",
     "@pagopa/logger": "1.0.1",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
