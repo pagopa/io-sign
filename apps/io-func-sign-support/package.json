@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-support",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "./dist/main.js",
   "private": true,
   "license": "ISC",
@@ -50,4 +50,3 @@
     "vitest": "^1.2.2"
   }
 }
-

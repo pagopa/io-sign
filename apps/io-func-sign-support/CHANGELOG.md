@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.4.2
+
+### Patch Changes
+
+- 8b9ae67: Migrating from azure function programming model v3 to v4
+
 ## 1.4.1
 
 ### Patch Changes
