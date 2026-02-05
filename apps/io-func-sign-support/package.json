@@ -1,11 +1,10 @@
 {
   "name": "io-func-sign-support",
   "version": "1.4.1",
-  "main": "./dist/web.js",
+  "main": "./dist/main.js",
   "private": true,
   "license": "ISC",
   "files": [
-    "**/function.json",
     "dist",
     "host.json",
     "extensions.csproj"
@@ -24,8 +23,18 @@
     "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
   },
   "keywords": [],
-  "devDependencies": {
+  "dependencies": {
+    "@azure/cosmos": "^4.0.0",
     "@azure/functions": "^4.0.1",
+    "@io-sign/io-sign": "workspace:^",
+    "@pagopa/handler-kit": "^1.1.0",
+    "@pagopa/handler-kit-azure-func": "^1.2.0",
+    "@pagopa/io-functions-commons": "^29.0.0",
+    "@pagopa/ts-commons": "^13.0.0",
+    "fp-ts": "^2.16.5",
+    "io-ts": "^2.2.21"
+  },
+  "devDependencies": {
     "@io-sign/eslint-config": "workspace:^",
     "@pagopa/logger": "1.0.1",
     "@pagopa/openapi-codegen-ts": "^14.0.0",
@@ -39,15 +48,6 @@
     "tsup": "^7.2.0",
     "typescript": "^4.8.4",
     "vitest": "^1.2.2"
-  },
-  "dependencies": {
-    "@azure/cosmos": "^4.0.0",
-    "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.1.0",
-    "@pagopa/handler-kit-azure-func": "^1.2.0",
-    "@pagopa/io-functions-commons": "^29.0.0",
-    "@pagopa/ts-commons": "^13.0.0",
-    "fp-ts": "^2.16.5",
-    "io-ts": "^2.2.21"
   }
 }
+
