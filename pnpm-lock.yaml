@@ -119,18 +119,21 @@ importers:
       '@azure/cosmos':
         specifier: ^4.0.0
         version: 4.0.0
+      '@azure/functions':
+        specifier: ^4.11.1
+        version: 4.11.1
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
       '@pagopa/handler-kit':
-        specifier: ^1.1.0
-        version: 1.1.0(postcss@8.4.35)(typescript@4.9.5)
+        specifier: ^1.1.1
+        version: 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/handler-kit-azure-func':
-        specifier: ^1.2.0
-        version: 1.2.0(postcss@8.4.35)(typescript@4.9.5)
+        specifier: ^2.0.8
+        version: 2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: ^29.0.0
-        version: 29.1.2(@azure/functions@3.5.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
+        version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@pagopa/ts-commons':
         specifier: ^13.0.0
         version: 13.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
@@ -141,9 +144,6 @@ importers:
         specifier: ^2.2.21
         version: 2.2.22(fp-ts@2.16.10)
     devDependencies:
-      '@azure/functions':
-        specifier: ^3.5.0
-        version: 3.5.1
       '@io-sign/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
@@ -209,7 +209,7 @@ importers:
         version: 1.2.0(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: ^29.0.0
-        version: 29.1.2(@azure/functions@4.7.0)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
+        version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@pagopa/logger':
         specifier: ^1.0.1
         version: 1.0.1
@@ -400,7 +400,7 @@ importers:
         version: 3.17.3
       '@azure/functions':
         specifier: ^4.2.0
-        version: 4.7.0
+        version: 4.11.1
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
@@ -488,7 +488,7 @@ importers:
         version: 1.1.0(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: ^29.0.0
-        version: 29.1.2(@azure/functions@4.7.0)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
+        version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@pagopa/io-functions-services-sdk':
         specifier: ^3.40.1
         version: 3.40.1
@@ -734,12 +734,16 @@ packages:
     resolution: {integrity: sha512-Q8VK8hHNDA/5eVBrMtWeERxHLis/JagHp3W/NBqqUu22+sOqoHkXhOWqFfhwvqFrVwCRLMqUrbRJd26z9e8oTg==}
     engines: {node: '>=14.0.0'}
 
+  '@azure/functions-extensions-base@0.2.0':
+    resolution: {integrity: sha512-ncCkHBNQYJa93dBIh+toH0v1iSgCzSo9tr94s6SMBe7DPWREkaWh8cq33A5P4rPSFX1g5W+3SPvIzDr/6/VOWQ==}
+    engines: {node: '>=18.0'}
+
   '@azure/functions@3.5.1':
     resolution: {integrity: sha512-6UltvJiuVpvHSwLcK/Zc6NfUwlkDLOFFx97BHCJzlWNsfiWwzwmTsxJXg4kE/LemKTHxPpfoPE+kOJ8hAdiKFQ==}
 
-  '@azure/functions@4.7.0':
-    resolution: {integrity: sha512-y1caGX6LYrA7msAckQVb/quFOhWHSPiGzWfIML17t0ee2ydpinJTBF+Sti+URfLAH63dtmXJR4meraZkhhK9tw==}
-    engines: {node: '>=18.0'}
+  '@azure/functions@4.11.1':
+    resolution: {integrity: sha512-9cxn8H7jnNRUhvKW9dVz2EldfUR2GGwo1mKTjBNRx7HrFbrc8w1Mtk7DQ9OmziMt3gVgsRvC7Vs8haja2lPr3A==}
+    engines: {node: '>=20.0'}
 
   '@azure/identity@3.3.2':
     resolution: {integrity: sha512-aDLwgMXpNBEXOlfCP9r5Rn+inmbnTbadlOnrKI2dPS9Lpf4gHvpYBV+DEZKttakfJ+qn4iWWb7zONQSO3A4XSA==}
@@ -2360,11 +2364,23 @@ packages:
   '@pagopa/handler-kit-azure-func@2.0.7':
     resolution: {integrity: sha512-mm4bitnPxeuErieItpHaBa5/RpQTs9kh+smIBjfLDl4A5r4y3ozR6qURGLJaRTZjup5zQo0yYKMu7T7PmDJEsg==}
 
+  '@pagopa/handler-kit-azure-func@2.0.8':
+    resolution: {integrity: sha512-Y5iwgWt+dXg/uts8+zd7gnnj3lzL+kzU0jGSS4XeJkuqBPDFjvz3lG7QkqKNxdgSIp4S5pGx50qOya/g4BCHhA==}
+    peerDependencies:
+      fp-ts: ^2.13.1
+      io-ts: ^2.2.20
+
   '@pagopa/handler-kit@0.5.1':
     resolution: {integrity: sha512-bQxKLIoEUCdnjDcAjiIY0wMFGhjV476cRBqCfAMEg+txZx6fKZejdkd7IQTstPpxCwdrzVfq7T+n4z2z/yXiSA==}
 
   '@pagopa/handler-kit@1.1.0':
     resolution: {integrity: sha512-siLQ96LZ77gXxdiYXYdWiNhS7lao/M6Hj9aO6zxALnVR6BxBjvQm4k1Y3MT71oS9s4gUTFyPoFf672FVMI7UaQ==}
+
+  '@pagopa/handler-kit@1.1.1':
+    resolution: {integrity: sha512-dc1zD+1eEJhSdmAv2HTu7xyruPZ8YD4TvBEcM8xCdpP6LlWFq+v5hs1y6TJ710Tgs0u+01+N2GJPJRvxPItSmw==}
+    peerDependencies:
+      fp-ts: ^2.13.1
+      io-ts: ^2.2.20
 
   '@pagopa/io-functions-commons@29.1.2':
     resolution: {integrity: sha512-bI4zoC+/9apyZ7SWgjQe7iKrUxONC7Sn5fPja6uK/KT7Bb/hZlUwuWkxkweexk9YVTJiyWv696KlgzQox5aGgw==}
@@ -8243,17 +8259,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@azure/functions-extensions-base@0.2.0': {}
+
   '@azure/functions@3.5.1':
     dependencies:
       iconv-lite: 0.6.3
       long: 4.0.0
       uuid: 8.3.2
 
-  '@azure/functions@4.7.0':
+  '@azure/functions@4.11.1':
     dependencies:
+      '@azure/functions-extensions-base': 0.2.0
       cookie: 0.7.2
-      long: 4.0.0
-      undici: 5.28.3
 
   '@azure/identity@3.3.2':
     dependencies:
@@ -10035,8 +10052,22 @@ snapshots:
 
   '@pagopa/handler-kit-azure-func@2.0.7(postcss@8.4.35)(typescript@4.9.5)':
     dependencies:
-      '@azure/functions': 4.7.0
-      '@pagopa/handler-kit': 1.1.0(postcss@8.4.35)(typescript@4.9.5)
+      '@azure/functions': 4.11.1
+      '@pagopa/handler-kit': 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
+      '@pagopa/logger': 1.0.1
+      fp-ts: 2.16.10
+      io-ts: 2.2.22(fp-ts@2.16.10)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - postcss
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pagopa/handler-kit-azure-func@2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)':
+    dependencies:
+      '@azure/functions': 4.11.1
+      '@pagopa/handler-kit': 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/logger': 1.0.1
       fp-ts: 2.16.10
       io-ts: 2.2.22(fp-ts@2.16.10)
@@ -10053,6 +10084,21 @@ snapshots:
       io-ts: 2.2.22(fp-ts@2.16.10)
 
   '@pagopa/handler-kit@1.1.0(postcss@8.4.35)(typescript@4.9.5)':
+    dependencies:
+      '@pagopa/logger': 1.0.1
+      '@types/parse-multipart': 1.0.1
+      fp-ts: 2.16.10
+      io-ts: 2.2.22(fp-ts@2.16.10)
+      parse-multipart: 1.0.4
+      tsup: 6.7.0(postcss@8.4.35)(typescript@4.9.5)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - postcss
+      - supports-color
+      - ts-node
+      - typescript
+
+  '@pagopa/handler-kit@1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)':
     dependencies:
       '@pagopa/logger': 1.0.1
       '@types/parse-multipart': 1.0.1
@@ -10098,11 +10144,11 @@ snapshots:
       - encoding
       - supports-color
 
-  '@pagopa/io-functions-commons@29.1.2(@azure/functions@4.7.0)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))':
+  '@pagopa/io-functions-commons@29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))':
     dependencies:
       '@azure/cosmos': 4.0.0
       '@azure/data-tables': 13.2.2
-      '@azure/functions': 4.7.0
+      '@azure/functions': 4.11.1
       '@pagopa/ts-commons': 13.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       applicationinsights: 2.9.5
       azure-storage: 2.10.7
