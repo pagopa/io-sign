@@ -7,7 +7,7 @@
     "format": "turbo run format --no-daemon",
     "build": "turbo run build --no-daemon",
     "code-review": "turbo run typecheck lint test",
-    "version": "changeset version && pnpm install --mode update-lockfile",
+    "version": "changeset version",
     "release": "changeset tag"
   },
   "devDependencies": {
