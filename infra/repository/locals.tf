@@ -19,7 +19,7 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_cd.client_id
     }
-    
+
     reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
   }
 
@@ -39,6 +39,11 @@ locals {
 
   # WEB-APP
   # web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
+  ci_web_apps = {
+    secrets = {
+      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_ci.client_id
+    }
+  }
 
   cd_web_apps = {
     secrets = {

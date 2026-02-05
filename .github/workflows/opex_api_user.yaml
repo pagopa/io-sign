@@ -9,6 +9,8 @@ on:
       - ".github/workflows/opex_api_user.yaml"
       - ".opex/api_user/**"
 
+  workflow_dispatch:
+
 env:
   API_NAME: api_user
 
