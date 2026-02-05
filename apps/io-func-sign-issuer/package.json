@@ -31,6 +31,7 @@
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/handler-kit-azure-func": "^1.2.0",
     "@pagopa/io-functions-commons": "^29.0.0",
+    "@pagopa/logger": "^1.0.1",
     "@pagopa/ts-commons": "^13.0.0",
     "date-fns": "^2.29.3",
     "fp-ts": "^2.16.5",

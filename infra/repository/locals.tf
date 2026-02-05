@@ -39,6 +39,11 @@ locals {
 
   # WEB-APP
   # web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
+  ci_web_apps = {
+    secrets = {
+      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_ci.client_id
+    }
+  }
 
   cd_web_apps = {
     secrets = {

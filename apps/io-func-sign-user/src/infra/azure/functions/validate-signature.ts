@@ -50,9 +50,8 @@ const makeValidateSignatureHandler = (
   const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
     eventHubAnalyticsClient
   );
-  const getQtspSignatureRequest = makeGetSignatureRequestWithToken()(
-    makeGetToken()
-  )(qtspConfig);
+  const getQtspSignatureRequest =
+    makeGetSignatureRequestWithToken()(makeGetToken())(qtspConfig);
 
   const validateSignature = makeValidateSignature(
     getSignature,

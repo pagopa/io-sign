@@ -1,14 +1,16 @@
 locals {
   io_sign_support_func = {
     app_settings = {
-      FUNCTIONS_WORKER_PROCESS_COUNT = 4
-      AzureWebJobsDisableHomepage    = "true"
-      NODE_ENV                       = "production"
-      CosmosDbConnectionString       = module.cosmosdb_account.connection_strings[0]
-      CosmosDbIssuerDatabaseName     = module.cosmosdb_sql_database_issuer.name
-      CosmosDbUserDatabaseName       = module.cosmosdb_sql_database_user.name
-      PdvTokenizerApiBasePath        = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey             = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      FUNCTIONS_WORKER_PROCESS_COUNT    = 4
+      AzureWebJobsDisableHomepage       = "true"
+      NODE_ENV                          = "production"
+      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbIssuerDatabaseName        = module.cosmosdb_sql_database_issuer.name
+      CosmosDbUserDatabaseName          = module.cosmosdb_sql_database_user.name
+      PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
+      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/support/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
   }
 }
