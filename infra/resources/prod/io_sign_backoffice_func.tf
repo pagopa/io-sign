@@ -99,6 +99,7 @@ module "io_sign_backoffice_func_staging_slot" {
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  system_identity_enabled                  = true
 
   app_settings = merge(
     local.backoffice_func_settings,
