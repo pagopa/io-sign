@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.4.2
+
+### Patch Changes
+
+- a2f83d8: Migrating from azure function programming model v3 to v4
+
 ## 1.4.1
 
 ### Patch Changes
