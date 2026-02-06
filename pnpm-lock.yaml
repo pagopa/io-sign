@@ -399,17 +399,17 @@ importers:
         specifier: ^3.17.3
         version: 3.17.3
       '@azure/functions':
-        specifier: ^4.2.0
+        specifier: ^4.11.1
         version: 4.11.1
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
       '@pagopa/handler-kit':
-        specifier: ^1.1.0
-        version: 1.1.0(postcss@8.4.35)(typescript@4.9.5)
+        specifier: ^1.1.1
+        version: 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/handler-kit-azure-func':
-        specifier: ^2.0.7
-        version: 2.0.7(postcss@8.4.35)(typescript@4.9.5)
+        specifier: ^2.0.8
+        version: 2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/logger':
         specifier: ^1.0.1
         version: 1.0.1
@@ -2360,9 +2360,6 @@ packages:
 
   '@pagopa/handler-kit-azure-func@1.2.0':
     resolution: {integrity: sha512-9Hesil2IzDkVr1BmRAP6z/vk2P8hu2GCHZgLf5mDiUw5rxgfolOmCUWNYSjlOMURAUNCjn72+XvZt8wOWF9qVg==}
-
-  '@pagopa/handler-kit-azure-func@2.0.7':
-    resolution: {integrity: sha512-mm4bitnPxeuErieItpHaBa5/RpQTs9kh+smIBjfLDl4A5r4y3ozR6qURGLJaRTZjup5zQo0yYKMu7T7PmDJEsg==}
 
   '@pagopa/handler-kit-azure-func@2.0.8':
     resolution: {integrity: sha512-Y5iwgWt+dXg/uts8+zd7gnnj3lzL+kzU0jGSS4XeJkuqBPDFjvz3lG7QkqKNxdgSIp4S5pGx50qOya/g4BCHhA==}
@@ -10040,20 +10037,6 @@ snapshots:
   '@pagopa/handler-kit-azure-func@1.2.0(postcss@8.4.35)(typescript@4.9.5)':
     dependencies:
       '@pagopa/handler-kit': 1.1.0(postcss@8.4.35)(typescript@4.9.5)
-      '@pagopa/logger': 1.0.1
-      fp-ts: 2.16.10
-      io-ts: 2.2.22(fp-ts@2.16.10)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - postcss
-      - supports-color
-      - ts-node
-      - typescript
-
-  '@pagopa/handler-kit-azure-func@2.0.7(postcss@8.4.35)(typescript@4.9.5)':
-    dependencies:
-      '@azure/functions': 4.11.1
-      '@pagopa/handler-kit': 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(typescript@4.9.5)
       '@pagopa/logger': 1.0.1
       fp-ts: 2.16.10
       io-ts: 2.2.22(fp-ts@2.16.10)
