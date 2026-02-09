@@ -1,23 +1,28 @@
 version: "3.9"
 services:
   cosmos-db:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    #preview version wich supports ARM
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview
     mem_limit: 3G
     cpu_count: 2
     tty: true
     environment:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=3
       - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+      - PROTOCOL=https
     ports:
       - 8081:8081
       - 10251:10251
       - 10252:10252
       - 10253:10253
       - 10254:10254
-    volumes:
-      - cosmos-db-volume:/data/db
+    # volume persistence disabled for local debugging on macOS (permission issues)
+    # volumes:
+    #   - cosmos-db-volume:/data/db
       
   storage:
+    # amd64 emulation, the native image is unavailable.
+    platform: linux/amd64
     image: mcr.microsoft.com/azure-storage/azurite
     command: "azurite -l /data --blobHost 0.0.0.0 --queueHost 0.0.0.0 --skipApiVersionCheck"
     ports:
