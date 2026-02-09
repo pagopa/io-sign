@@ -2,8 +2,9 @@ import { createHandler } from "handler-kit-legacy";
 import * as azure from "handler-kit-legacy/lib/azure";
 
 import * as TE from "fp-ts/lib/TaskEither";
+import * as T from "fp-ts/lib/Task";
 
-import { constVoid, flow, identity } from "fp-ts/lib/function";
+import { constVoid, flow, identity, pipe } from "fp-ts/lib/function";
 
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 
@@ -29,6 +30,31 @@ import {
   makeNotifySignatureRequestRejectedEvent,
   makeNotifySignatureRequestSignedEvent
 } from "../storage/signature-request";
+
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 30000;
+
+const delay =
+  (ms: number): T.Task<void> =>
+  () =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+const withRetry = <A>(
+  task: TE.TaskEither<Error, A>,
+  retryCount: number = 0
+): TE.TaskEither<Error, A> =>
+  pipe(
+    task,
+    TE.orElse((error) => {
+      if (retryCount < MAX_RETRIES) {
+        return pipe(
+          delay(RETRY_DELAY_MS),
+          T.chain(() => withRetry(task, retryCount + 1))
+        );
+      }
+      return TE.left(error);
+    })
+  );
 
 const makeValidateSignatureHandler = (
   db: Database,
@@ -70,9 +96,13 @@ const makeValidateSignatureHandler = (
     TE.fromEither
   );
 
+  // Wrap validateSignature with retry logic
+  const validateSignatureWithRetry = (payload: ValidateSignaturePayload) =>
+    withRetry(validateSignature(payload));
+
   return createHandler(
     decodeQueueMessage,
-    validateSignature,
+    validateSignatureWithRetry,
     identity,
     constVoid
   );

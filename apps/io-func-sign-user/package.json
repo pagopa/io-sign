@@ -4,7 +4,6 @@
   "private": true,
   "license": "MPL-2.0",
   "files": [
-    "**/function.json",
     "dist",
     "host.json",
     "extensions.csproj"
@@ -28,10 +27,11 @@
     "@azure/cosmos": "^4.0.0",
     "@azure/event-hubs": "^5.9.0",
     "@azure/storage-blob": "^12.12.0",
+    "@azure/functions": "^4.11.1",
     "@azure/storage-queue": "^12.11.0",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.1.0",
-    "@pagopa/handler-kit-azure-func": "^1.2.0",
+    "@pagopa/handler-kit": "^1.1.1",
+    "@pagopa/handler-kit-azure-func": "^2.0.8",
     "@pagopa/io-functions-commons": "^29.0.0",
     "@pagopa/logger": "^1.0.1",
     "@pagopa/ts-commons": "^13.0.0",
