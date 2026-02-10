@@ -1,4 +1,10 @@
-version: "3.9"
+name: 'io-sign-dev'
+
+# Define a shared network for all services to communicate on
+networks:
+  dev-network:
+    driver: bridge
+
 services:
   cosmos-db:
     #preview version wich supports ARM
