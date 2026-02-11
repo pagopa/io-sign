@@ -24,29 +24,29 @@
   },
   "keywords": [],
   "dependencies": {
-    "@azure/cosmos": "^4.0.0",
-    "@azure/functions": "^4.11.1",
+    "@azure/cosmos": "catalog:",
+    "@azure/functions": "catalog:",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/handler-kit": "^1.1.1",
-    "@pagopa/handler-kit-azure-func": "^2.0.8",
-    "@pagopa/io-functions-commons": "^29.0.0",
-    "@pagopa/ts-commons": "^13.0.0",
-    "fp-ts": "^2.16.5",
-    "io-ts": "^2.2.21"
+    "@pagopa/handler-kit": "catalog:",
+    "@pagopa/handler-kit-azure-func": "catalog:",
+    "@pagopa/io-functions-commons": "catalog:",
+    "@pagopa/ts-commons": "catalog:",
+    "fp-ts": "catalog:",
+    "io-ts": "catalog:"
   },
   "devDependencies": {
     "@io-sign/eslint-config": "workspace:^",
-    "@pagopa/logger": "1.0.1",
-    "@pagopa/openapi-codegen-ts": "^14.0.0",
-    "@types/node": "^20.17.6",
-    "@vitest/coverage-c8": "^0.33.0",
-    "azure-functions-core-tools": "^4.0.5455",
-    "eslint": "8.57.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "npm-pack-zip": "^1.3.0",
-    "prettier": "^3.0.0",
-    "tsup": "^7.2.0",
+    "@pagopa/logger": "catalog:",
+    "@pagopa/openapi-codegen-ts": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-c8": "catalog:",
+    "azure-functions-core-tools": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "npm-pack-zip": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
     "typescript": "^4.8.4",
-    "vitest": "^1.2.2"
+    "vitest": "catalog:"
   }
 }
