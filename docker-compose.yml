@@ -1,10 +1,5 @@
 name: 'io-sign-dev'
 
-# Define a shared network for all services to communicate on
-networks:
-  dev-network:
-    driver: bridge
-
 services:
   cosmos-db:
     #preview version wich supports ARM
@@ -26,14 +21,22 @@ services:
     # volumes:
     #   - cosmos-db-volume:/data/db
       
-  storage:
-    # amd64 emulation, the native image is unavailable.
+  azurite:
     platform: linux/amd64
-    image: mcr.microsoft.com/azure-storage/azurite
-    command: "azurite -l /data --blobHost 0.0.0.0 --queueHost 0.0.0.0 --skipApiVersionCheck"
+    image: mcr.microsoft.com/azure-storage/azurite:latest
     ports:
       - 10000:10000
       - 10001:10001
+    command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+  
+  azurite-setup:
+    image: node:20-alpine
+    working_dir: /app
+    depends_on:
+      - azurite
+    volumes:
+      - ./setup-azurite-containers.js:/app/setup-azurite-containers.js
+    command: sh -c "npm install @azure/storage-blob @azure/storage-queue @azure/data-tables && node setup-azurite-containers.js"
 
 volumes:
   cosmos-db-volume:
