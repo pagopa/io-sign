@@ -1,3 +1,9 @@
+import {
+  HttpRequest,
+  HttpResponseInit,
+  InvocationContext,
+  app
+} from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
@@ -25,7 +31,7 @@ import { makeSendNotificationFunction } from "../infra/azure/functions/send-noti
 import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 
 import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
-export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
+import { run as CreateIssuerByVatNumberViewHandler } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
@@ -44,6 +50,37 @@ import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
 import { ClosedSignatureRequest } from "../signature-request";
 import { getConfigFromEnvironment } from "./config";
+
+interface V3Context {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  req: HttpRequest;
+  res?: HttpResponseInit;
+  done: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  log: (...args: any[]) => void;
+}
+
+const v3ToV4Adapter =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (v3Handler: any) =>
+    async (
+      request: HttpRequest,
+      context: InvocationContext
+    ): Promise<HttpResponseInit> => {
+      const v3Context: V3Context = {
+        ...context,
+        req: request,
+        res: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        done: () => {},
+        log: context.log
+      };
+
+      await v3Handler(v3Context, request);
+
+      return v3Context.res || { status: 500, body: "Internal Server Error" };
+    };
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -146,7 +183,8 @@ const WaitingForSignatureRequestUpdatesQueueClient = new QueueClient(
   "waiting-for-signature-request-updates"
 );
 
-export const Info = makeInfoFunction(
+// Info function
+const info = makeInfoFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient,
   database,
@@ -158,10 +196,24 @@ export const Info = makeInfoFunction(
   onSignatureRequestReadyQueueClient
 );
 
-export const MarkAsWaitForSignature =
-  makeRequestAsWaitForSignatureFunction(database);
+app.http("info", {
+  methods: ["GET"],
+  authLevel: "anonymous",
+  route: "info",
+  handler: v3ToV4Adapter(info)
+});
 
-export const CloseSignatureRequest = CloseSignatureRequestFunction({
+// MarkAsWaitForSignature queue function
+const markAsWaitForSignature = makeRequestAsWaitForSignatureFunction(database);
+
+app.storageQueue("markAsWaitForSignature", {
+  queueName: "on-signature-request-wait-for-signature",
+  connection: "StorageAccountConnectionString",
+  handler: markAsWaitForSignature
+});
+
+// CloseSignatureRequest queue function (used by both MarkAsRejected and MarkAsSigned)
+const closeSignatureRequest = CloseSignatureRequestFunction({
   signatureRequestRepository,
   signerRepository,
   telemetryService,
@@ -171,17 +223,47 @@ export const CloseSignatureRequest = CloseSignatureRequestFunction({
   inputDecoder: ClosedSignatureRequest
 });
 
-export const GetSignerByFiscalCode = makeGetSignerFunction(
+app.storageQueue("markAsRejected", {
+  queueName: "on-signature-request-rejected",
+  connection: "StorageAccountConnectionString",
+  handler: closeSignatureRequest
+});
+
+app.storageQueue("markAsSigned", {
+  queueName: "on-signature-request-signed",
+  connection: "StorageAccountConnectionString",
+  handler: closeSignatureRequest
+});
+
+// GetSignerByFiscalCode HTTP function
+const getSignerByFiscalCode = makeGetSignerFunction(
   pdvTokenizerClientWithApiKey,
   ioApiClient
 );
 
-export const GetUploadUrl = makeGetUploadUrlFunction(
+app.http("getSignerByFiscalCode", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signers",
+  handler: v3ToV4Adapter(getSignerByFiscalCode)
+});
+
+// GetUploadUrl HTTP function
+const getUploadUrl = makeGetUploadUrlFunction(
   database,
   uploadedContainerClient
 );
 
-export const SendNotification = makeSendNotificationFunction(
+app.http("getUploadUrl", {
+  methods: ["POST"],
+  authLevel: "function",
+  route:
+    "signature-requests/{signatureRequestId}/documents/{documentId}/upload-url",
+  handler: v3ToV4Adapter(getUploadUrl)
+});
+
+// SendNotification queue function
+const sendNotification = makeSendNotificationFunction(
   database,
   pdvTokenizerClientWithApiKey,
   ioApiClient,
@@ -189,29 +271,80 @@ export const SendNotification = makeSendNotificationFunction(
   eventAnalyticsClient
 );
 
-export const CreateIssuer = makeCreateIssuerFunction(
+app.storageQueue("sendNotification", {
+  queueName: "on-signature-request-ready",
+  connection: "StorageAccountConnectionString",
+  handler: sendNotification
+});
+
+// CreateIssuer HTTP function
+const createIssuer = makeCreateIssuerFunction(
   database,
   config.pagopa.selfCare,
   config.slack
 );
 
-export const GetDossier = GetDossierFunction({
+app.http("createIssuer", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "issuers",
+  handler: v3ToV4Adapter(createIssuer)
+});
+
+// CreateIssuerByVatNumberView Cosmos DB trigger
+app.cosmosDB("createIssuerByVatNumberView", {
+  databaseName: "%CosmosDbDatabaseName%",
+  containerName: "issuers",
+  connection: "CosmosDbConnectionString",
+  leaseContainerName: "leases",
+  leaseContainerPrefix: "issuers-by-vat",
+  createLeaseContainerIfNotExists: true,
+  startFromBeginning: true,
+  handler: CreateIssuerByVatNumberViewHandler
+});
+
+// GetDossier HTTP function
+const getDossier = GetDossierFunction({
   issuerRepository,
   dossierRepository
 });
 
-export const CreateDossier = CreateDossierFunction({
+app.http("getDossier", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "dossiers/{dossierId}",
+  handler: v3ToV4Adapter(getDossier)
+});
+
+// CreateDossier HTTP function
+const createDossier = CreateDossierFunction({
   issuerRepository,
   dossierRepository
 });
 
-export const GetRequestsByDossier = GetRequestsByDossierFunction({
+app.http("createDossier", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "dossiers",
+  handler: v3ToV4Adapter(createDossier)
+});
+
+// GetRequestsByDossier HTTP function
+const getRequestsByDossier = GetRequestsByDossierFunction({
   signatureRequestRepository,
   issuerRepository,
   dossierRepository
 });
 
-export const ValidateUpload = ValidateUploadFunction({
+app.http("getRequestsByDossier", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "dossiers/{dossierId}/signature-requests",
+  handler: v3ToV4Adapter(getRequestsByDossier)
+});
+
+// ValidateUpload queue function
+const validateUpload = ValidateUploadFunction({
   signatureRequestRepository,
   uploadMetadataRepository,
   uploadedFileStorage,
@@ -220,27 +353,65 @@ export const ValidateUpload = ValidateUploadFunction({
   eventAnalyticsClient
 });
 
-export const ValidateDocument = validateDocumentFunction({
+app.storageQueue("validateUpload", {
+  queueName: "on-document-uploaded",
+  connection: "StorageAccountConnectionString",
+  handler: validateUpload
+});
+
+// ValidateDocument HTTP function
+const validateDocument = validateDocumentFunction({
   issuerRepository
 });
 
-export const GetSignatureRequest = GetSignatureRequestFunction({
+app.http("validateDocument", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "documents/{documentId}/validate",
+  handler: v3ToV4Adapter(validateDocument)
+});
+
+// GetSignatureRequest HTTP function
+const getSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
   signedContainerClient
 });
 
-export const CreateSignatureRequest = CreateSignatureRequestFunction({
+app.http("getSignatureRequest", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}",
+  handler: v3ToV4Adapter(getSignatureRequest)
+});
+
+// CreateSignatureRequest HTTP function
+const createSignatureRequest = CreateSignatureRequestFunction({
   issuerRepository,
   dossierRepository,
   signatureRequestRepository,
   eventAnalyticsClient
 });
 
-export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
+app.http("createSignatureRequest", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "dossiers/{dossierId}/signature-requests",
+  handler: v3ToV4Adapter(createSignatureRequest)
+});
+
+// SetSignatureRequestStatus HTTP function
+const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   issuerRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
   ready: onSignatureRequestReadyQueueClient,
   updated: WaitingForSignatureRequestUpdatesQueueClient
+});
+
+app.http("setSignatureRequestStatus", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}/status",
+  handler: v3ToV4Adapter(setSignatureRequestStatus)
 });
