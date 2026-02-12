@@ -10,9 +10,12 @@ services:
     environment:
       - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=3
       - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
-      - PROTOCOL=https
+      - COSMOSDB_EMULATOR_URI=http://cosmos-db:8081
+      - COSMOSDB_EMULATOR_KEY='C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=='
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
     ports:
       - 8081:8081
+      - 1234:1234
       - 10251:10251
       - 10252:10252
       - 10253:10253
@@ -20,6 +23,18 @@ services:
     # volume persistence disabled for local debugging on macOS (permission issues)
     # volumes:
     #   - cosmos-db-volume:/data/db
+  
+  cosmos-db-setup:
+    image: node:20-alpine
+    working_dir: /app
+    depends_on:
+      - cosmos-db
+    environment:
+      - COSMOS_ENDPOINT=http://cosmos-db:8081
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+    volumes:
+      - ./setup-cosmos-containers.js:/app/setup-cosmos-containers.js
+    command: sh -c "npm install @azure/cosmos && node setup-cosmos-containers.js"
       
   azurite:
     platform: linux/amd64
@@ -27,6 +42,7 @@ services:
     ports:
       - 10000:10000
       - 10001:10001
+      - 10002:10002
     command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
   
   azurite-setup:
@@ -37,6 +53,34 @@ services:
     volumes:
       - ./setup-azurite-containers.js:/app/setup-azurite-containers.js
     command: sh -c "npm install @azure/storage-blob @azure/storage-queue @azure/data-tables && node setup-azurite-containers.js"
+
+  eventhubs:
+    image: "mcr.microsoft.com/azure-messaging/eventhubs-emulator:latest@sha256:25ec4141efb69933a0c82e6a787fa147a3895519e7d236d4c41ba568e03100eb"
+    depends_on:
+      - "azurite"
+    ports:
+      - "5672:5672"
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - "./eventhubs-emulator.json:/Eventhubs_Emulator/ConfigFiles/Config.json"
+    environment:
+      BLOB_SERVER: azurite
+      METADATA_SERVER: azurite
+      ACCEPT_EULA: Y
+
+  kafka-ui:
+    image: "provectuslabs/kafka-ui:latest@sha256:8f2ff02d64b0a7a2b71b6b3b3148b85f66d00ec20ad40c30bdcd415d46d31818"
+    depends_on:
+      - "eventhubs"
+    ports:
+      - "8002:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "eventhubs:9092"
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: "SASL_PLAINTEXT"
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: "PLAIN"
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="Endpoint=sb://eventhubs;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";'
 
 volumes:
   cosmos-db-volume:
