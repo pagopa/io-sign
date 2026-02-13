@@ -1,5 +1,7 @@
 name: Deploy OpEx Dashboards
+
 permissions:
+  id-token: write
   contents: read
 
 on:
@@ -15,4 +17,4 @@ jobs:
     secrets: inherit
     with:
       config_pattern: ".opex/**/config.yaml"
-      github_environment: opex-dev
+      github_environment: opex-prod
