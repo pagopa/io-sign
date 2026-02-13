@@ -80,14 +80,26 @@ paths:
   /info:
     get:
       operationId: getInfo
+      tags:
+        - Health Check
+      summary: Health check endpoint
       responses:
         "200":
           description: Used to check if the function is active
           content:
             application/json:
               schema:
-                type: string
-                example: "It works"
+                type: object
+                required:
+                  - message
+                  - version
+                properties:
+                  message:
+                    type: string
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "0.8.1"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
