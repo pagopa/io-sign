@@ -1,4 +1,6 @@
 name: Deploy OpEx Dashboards
+permissions:
+  contents: read
 
 on:
   push:
