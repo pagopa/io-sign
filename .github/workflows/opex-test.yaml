@@ -16,5 +16,3 @@ jobs:
   test_opex_dashboards:
     uses: pagopa/dx/.github/workflows/opex-dashboard-deploy.yaml@chores/opex-workflow
     secrets: inherit
-    with:
-      config_pattern: ".opex/**/config.yaml"
