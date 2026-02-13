@@ -49,7 +49,8 @@ module "io_sign_user_func" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
 
-  health_check_path = "/api/v1/sign/info"
+  health_check_path            = "/api/v1/sign/info"
+  health_check_maxpingfailures = 2
 
   node_version    = "20"
   runtime_version = "~4"

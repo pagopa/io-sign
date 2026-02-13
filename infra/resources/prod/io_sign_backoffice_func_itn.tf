@@ -19,7 +19,7 @@ module "io_sign_backoffice_func_itn" {
   location            = azurerm_resource_group.backend_rg_itn.location
   resource_group_name = azurerm_resource_group.backend_rg_itn.name
 
-  health_check_path            = "/health"
+  health_check_path            = "/info"
   health_check_maxpingfailures = 2
 
   node_version    = "20"
@@ -86,7 +86,7 @@ module "io_sign_backoffice_func_staging_slot_itn" {
   function_app_id     = module.io_sign_backoffice_func_itn.id
   app_service_plan_id = module.io_sign_backoffice_func_itn.app_service_plan_id
 
-  health_check_path            = "/health"
+  health_check_path            = "/info"
   health_check_maxpingfailures = 2
 
   storage_account_name       = module.io_sign_backoffice_func_itn.storage_account.name

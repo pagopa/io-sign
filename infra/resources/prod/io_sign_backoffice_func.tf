@@ -2,7 +2,7 @@ locals {
   backoffice_func_settings = merge({
     COSMOS_DB_CONNECTION_STRING       = module.cosmosdb_account.connection_strings[0],
     COSMOS_DB_NAME                    = module.cosmosdb_sql_database_backoffice.name,
-    WEBSITE_SWAP_WARMUP_PING_PATH     = "/health"
+    WEBSITE_SWAP_WARMUP_PING_PATH     = "/info"
     WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }, {
     for s in var.io_sign_backoffice_func.app_settings :
@@ -20,7 +20,7 @@ module "io_sign_backoffice_func" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
 
-  health_check_path            = "/health"
+  health_check_path            = "/info"
   health_check_maxpingfailures = 2
 
   node_version    = "20"
@@ -89,7 +89,7 @@ module "io_sign_backoffice_func_staging_slot" {
   function_app_id     = module.io_sign_backoffice_func.id
   app_service_plan_id = module.io_sign_backoffice_func.app_service_plan_id
 
-  health_check_path            = "/health"
+  health_check_path            = "/info"
   health_check_maxpingfailures = 2
 
   storage_account_name       = module.io_sign_backoffice_func.storage_account.name
