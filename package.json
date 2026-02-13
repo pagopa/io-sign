@@ -13,7 +13,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "azure-functions-core-tools": "catalog:",
-    "turbo": "latest"
+    "turbo": "^2.8.6"
   },
   "pnpm": {
     "overrides": {
