@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 0.20.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 0.20.0
 
 ### Minor Changes

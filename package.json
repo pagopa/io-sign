@@ -7,20 +7,18 @@
     "format": "turbo run format --no-daemon",
     "build": "turbo run build --no-daemon",
     "code-review": "turbo run typecheck lint test",
-    "version": "changeset version && yarn install --mode update-lockfile",
+    "version": "changeset version",
     "release": "changeset tag"
   },
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
-    "azure-functions-core-tools": "^4.0.5455",
-    "turbo": "latest"
+    "azure-functions-core-tools": "catalog:",
+    "turbo": "^2.8.6"
   },
-  "resolutions": {
-    "@types/node@npm:*": "^20.17.6"
+  "pnpm": {
+    "overrides": {
+      "@types/node": "catalog:"
+    }
   },
-  "packageManager": "yarn@3.8.0"
+  "packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316"
 }

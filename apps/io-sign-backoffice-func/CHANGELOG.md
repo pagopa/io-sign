@@ -1,5 +1,19 @@
 # io-sign-backoffice-func
 
+## 1.4.2
+
+### Patch Changes
+
+- a2f83d8: Migrating from azure function programming model v3 to v4
+
+## 1.4.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 1.4.0
 
 ### Minor Changes

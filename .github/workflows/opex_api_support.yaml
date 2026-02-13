@@ -1,0 +1,51 @@
+name: Opex Dashboard api_support
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/io-func-sign-support/openapi.yaml"
+      - ".github/workflows/opex_api_support.yaml"
+      - ".opex/api_support/**"
+
+  workflow_dispatch:
+
+env:
+  API_NAME: api_support
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  opex:
+    runs-on: ubuntu-22.04
+    environment: opex-prod-cd
+    strategy:
+      matrix:
+        environment: [prod]
+    steps:
+      - name: Checkout
+        id: checkout
+        # from https://github.com/actions/checkout/commits/main
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # from https://github.com/pagopa/opex-dashboard-azure-action/
+      - uses: pagopa/opex-dashboard-azure-action@v1.1.0
+        with:
+          environment: prod
+          api-name: ${{ env.API_NAME }}
+          config: .opex/${{ env.API_NAME }}/env/prod/config.yaml
+          tenant-id: ${{ env.ARM_TENANT_ID }}
+          client-id: ${{ env.ARM_CLIENT_ID }}
+          subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+          # from https://github.com/pagopa/opex-dashboard-azure-action/pkgs/container/opex-dashboard-azure-action
+          docker-version: sha256:7e454c1892b2aaf3717782c07a2fa01504db5cc7d07979fae863dfc00a9f0173
+        env:
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}

@@ -1,7 +1,9 @@
 locals {
   backoffice_func_settings = merge({
-    COSMOS_DB_CONNECTION_STRING = module.cosmosdb_account.connection_strings[0],
-    COSMOS_DB_NAME              = module.cosmosdb_sql_database_backoffice.name
+    COSMOS_DB_CONNECTION_STRING       = module.cosmosdb_account.connection_strings[0],
+    COSMOS_DB_NAME                    = module.cosmosdb_sql_database_backoffice.name,
+    WEBSITE_SWAP_WARMUP_PING_PATH     = "/health"
+    WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }, {
     for s in var.io_sign_backoffice_func.app_settings :
     s.name => s.key_vault_secret_name != null ? "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=${s.key_vault_secret_name})" : s.value
@@ -97,6 +99,7 @@ module "io_sign_backoffice_func_staging_slot" {
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
+  system_identity_enabled                  = true
 
   app_settings = merge(
     local.backoffice_func_settings,
@@ -114,4 +117,14 @@ module "io_sign_backoffice_func_staging_slot" {
   allowed_subnets = []
 
   tags = var.tags
+}
+
+resource "azurerm_key_vault_access_policy" "backoffice_func_staging_slot_key_vault_access_policy" {
+  key_vault_id = module.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = module.io_sign_backoffice_func_staging_slot.system_identity_principal
+
+  secret_permissions      = ["Get"]
+  storage_permissions     = []
+  certificate_permissions = []
 }
