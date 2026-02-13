@@ -19,8 +19,8 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_prod_cd.client_id
     }
-    # Temporary added io-platform-green-unit team to reviewers
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-platform-green-unit"]
+
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
   }
 
   # OPEX
@@ -34,16 +34,21 @@ locals {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_opex_prod_cd.client_id
     }
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
   }
 
   # WEB-APP
   # web_apps_map = { for w in data.azurerm_resources.web_apps.resources : w.name => w }
+  ci_web_apps = {
+    secrets = {
+      "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_ci.client_id
+    }
+  }
 
   cd_web_apps = {
     secrets = {
       "ARM_CLIENT_ID" = data.azurerm_user_assigned_identity.identity_app_prod_cd.client_id
     }
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
   }
 }

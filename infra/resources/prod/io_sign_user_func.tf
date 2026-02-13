@@ -36,6 +36,8 @@ locals {
       LollipopApiKey                    = module.key_vault_secrets.values["LollipopPrimaryApiKey"].value
       SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
+      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
   }
 }

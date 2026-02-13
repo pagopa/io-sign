@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'apps/io-func-sign-support/openapi.yaml'
-      - '.github/workflows/opex_api_support.yaml'
-      - '.opex/api_support/**'
+      - "apps/io-func-sign-support/openapi.yaml"
+      - ".github/workflows/opex_api_support.yaml"
+      - ".opex/api_support/**"
+
+  workflow_dispatch:
 
 env:
   API_NAME: api_support
@@ -47,4 +49,3 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  

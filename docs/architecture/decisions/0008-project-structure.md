@@ -14,7 +14,7 @@ This document aims to explain the structure of the codebase that we have adopted
 
 ## Decision
 
-We have made the decision to manage the entire codebase using a JavaScript monorepo, utilizing `yarn workspaces`. Below is a description of the folder structure of the project:
+We have made the decision to manage the entire codebase using a JavaScript monorepo, utilizing `pnpm workspaces`. Below is a description of the folder structure of the project:
 
 ### Top-level files and folders
 
