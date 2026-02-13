@@ -50,7 +50,13 @@ type ProblemSource =
   | TokenizerProblemSource
   | IOServicesProblemSource;
 
-const InfoDetailView = t.string;
+declare const APP_VERSION: string;
+
+const InfoDetailView = t.type({
+  message: t.string,
+  version: t.string
+});
+
 const applicativeValidation = TE.getApplicativeTaskValidation(
   Task.ApplicativePar,
   RA.getSemigroup<HealthProblem<ProblemSource>>()
@@ -83,7 +89,7 @@ export const makeInfoHandler = (
           makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient)
         ],
         RA.sequence(applicativeValidation),
-        TE.map(() => "It's working!"),
+        TE.map(() => ({ message: "It's working!", version: APP_VERSION })),
         TE.mapLeft((problems) => new HttpError(problems.join("\n\n")))
       ),
     error,
