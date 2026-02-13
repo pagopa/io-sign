@@ -20,7 +20,7 @@ importers:
         specifier: ^4.0.5455
         version: 4.0.5455
       turbo:
-        specifier: latest
+        specifier: ^2.8.6
         version: 2.8.6
 
   apps/io-func-sign-issuer:
