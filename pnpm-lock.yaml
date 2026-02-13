@@ -461,10 +461,10 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       ulid:
-        specifier: ^2.3.0
+        specifier: 'catalog:'
         version: 2.3.0
       zod:
-        specifier: ^3.22.4
+        specifier: 'catalog:'
         version: 3.22.4
     devDependencies:
       '@babel/types':
