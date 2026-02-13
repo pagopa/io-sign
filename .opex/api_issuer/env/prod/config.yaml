@@ -17,7 +17,7 @@ overrides:
     - api.io.pagopa.it
   endpoints:
     /api/v1/sign/dossiers:
-      availability_threshold: 0.90 # default 0.99
+      availability_threshold: 0.91 # default 0.99
       response_time_threshold: 3 # default 1
     /api/v1/sign/dossiers/{id}:
       availability_threshold: 0.90 # default 0.99
