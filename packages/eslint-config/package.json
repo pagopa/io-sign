@@ -8,9 +8,9 @@
     "index.js"
   ],
   "devDependencies": {
-    "@pagopa/eslint-config": "^4.0.5",
-    "eslint": "^8.57.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "typescript": "^5.3.3"
+    "@pagopa/eslint-config": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "typescript": "catalog:"
   }
 }
