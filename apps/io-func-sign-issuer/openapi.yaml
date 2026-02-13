@@ -19,12 +19,21 @@ paths:
       security: []
       responses:
         "200":
-          description: The service is healthy
+          description: Used to check if the function is active
           content:
             application/json:
               schema:
-                type: string
-                example: "It's working!"
+                type: object
+                required:
+                  - message
+                  - version
+                properties:
+                  message:
+                    type: string
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "0.20.1"
         "500":
           $ref: "#/components/responses/Unexpected"
         default:
