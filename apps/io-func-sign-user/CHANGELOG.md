@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 0.8.2
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
 ## 0.8.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.20.2
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
 ## 0.20.1
 
 ### Patch Changes
