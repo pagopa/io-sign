@@ -82,5 +82,73 @@ services:
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: "PLAIN"
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="Endpoint=sb://eventhubs;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";'
 
+  io-func-sign-issuer:
+    image: io-func-sign-issuer
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-issuer"
+        NODE_VERSION: "20.19.5"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-issuer
+    ports:
+      - ${FUNCTION_ISSUER_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+
+  io-func-sign-support:
+    image: io-func-sign-support
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-support"
+        NODE_VERSION: "20.19.5"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-support
+    ports:
+      - ${FUNCTION_SUPPORT_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+  
+  io-func-sign-user:
+    image: io-func-sign-user
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-user"
+        NODE_VERSION: "20.19.5"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-user
+    ports:
+      - ${FUNCTION_USER_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+  
+  io-sign-backoffice-func:
+    image: io-sign-backoffice-func
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-sign-backoffice-func"
+        NODE_VERSION: "20.19.5"
+    env_file:
+      - ./docker/generated/.env.io-sign-backoffice-func
+    ports:
+      - ${FUNCTION_BACKOFFICE_FUNC_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+
 volumes:
   cosmos-db-volume:
