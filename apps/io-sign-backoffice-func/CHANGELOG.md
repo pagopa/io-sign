@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.4.3
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
 ## 1.4.2
 
 ### Patch Changes
