@@ -20,15 +20,15 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
-    "azure-functions-core-tools": "^4.0.5455",
-    "dotenv-cli": "^3.2.0",
+    "azure-functions-core-tools": "catalog:",
+	"dotenv-cli": "^3.2.0",
     "envsub": "^4.1.0",
     "shx": "^0.3.4",
-    "turbo": "latest"
+    "turbo": "^2.8.6"
   },
   "pnpm": {
     "overrides": {
-      "@types/node": "^20.17.6"
+      "@types/node": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "esbuild"
