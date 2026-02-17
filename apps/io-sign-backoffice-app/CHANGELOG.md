@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.6.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
 ## 1.5.1
 
 ### Patch Changes
