@@ -5,6 +5,8 @@ info:
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign
     description: production
+  - url: http://localhost:7071/api/v1/sign
+    description: local
 security:
   - SubscriptionKey: []
 paths:
@@ -38,7 +40,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /dossiers/{id}:
+  /dossiers/{dossierId}:
     get:
       operationId: getDossier
       tags:
@@ -46,7 +48,7 @@ paths:
       summary: Get a Dossier by Id
       parameters:
         - in: path
-          name: id
+          name: dossierId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -70,7 +72,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /dossiers/{id}/signature-requests:
+  /dossiers/{dossierId}/signature-requests:
     get:
       operationId: getRequestsByDossier
       tags:
@@ -78,7 +80,7 @@ paths:
       summary: Get the Signature Requests created from a Dossier
       parameters:
         - in: path
-          name: id
+          name: dossierId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -174,7 +176,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{id}:
+  /signature-requests/{signatureRequestId}:
     get:
       operationId: getSignatureRequest
       tags:
@@ -182,7 +184,7 @@ paths:
       summary: Get a Signature Request by Id
       parameters:
         - in: path
-          name: id
+          name: signatureRequestId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -206,7 +208,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{id}/status:
+  /signature-requests/{signatureRequestId}/status:
     put:
       operationId: setSignatureRequestStatus
       tags:
@@ -214,7 +216,7 @@ paths:
       summary: Set the status of a Signature Request
       parameters:
         - in: path
-          name: id
+          name: signatureRequestId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -240,7 +242,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{req_id}/documents/{doc_id}/upload_url:
+  /signature-requests/{signatureRequestId}/documents/{documentId}/upload_url:
     get:
       operationId: getDocumentUploadUrl
       tags:
@@ -248,12 +250,12 @@ paths:
       summary: Get the Upload Url for the specified document
       parameters:
         - in: path
-          name: req_id
+          name: signatureRequestId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
         - in: path
-          name: doc_id
+          name: documentId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -277,7 +279,7 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{req_id}/notification:
+  /signature-requests/{signatureRequestId}/notification:
     put:
       operationId: sendNotification
       tags:
@@ -285,7 +287,7 @@ paths:
       summary: Send a signature request notification to user via IO message
       parameters:
         - in: path
-          name: req_id
+          name: signatureRequestId
           required: true
           schema:
             $ref: "#/components/schemas/Id"
@@ -355,7 +357,7 @@ components:
       type: apiKey
       name: Ocp-Apim-Subscription-Key
       in: header
-      description: The API key obtained through the developer portal
+      description: The API key can be obtained from the reserved area
 
   responses:
     NotFound:
@@ -631,6 +633,8 @@ components:
           $ref: "#/components/schemas/Id"
         expires_at:
           $ref: "#/components/schemas/Timestamp"
+        documents_metadata:
+          $ref: "#/components/schemas/DocumentMetadataList"
       required:
         - dossier_id
         - signer_id
@@ -768,6 +772,8 @@ components:
         qr_code_url:
           type: string
           format: uri
+        cancelled_at:
+          $ref: "#/components/schemas/Timestamp"
       required:
         - id
         - status
