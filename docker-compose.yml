@@ -1,7 +1,7 @@
 name: 'io-sign-dev'
 
 services:
-  cosmos-db:
+  cosmos-db-internal:
     #preview version wich supports ARM
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview
     mem_limit: 3G
@@ -14,15 +14,18 @@ services:
       - COSMOSDB_EMULATOR_KEY='C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=='
       - NODE_TLS_REJECT_UNAUTHORIZED=0
     ports:
-      - 8081:8081
       - 1234:1234
-      - 10251:10251
-      - 10252:10252
-      - 10253:10253
-      - 10254:10254
-    # volume persistence disabled for local debugging on macOS (permission issues)
-    # volumes:
-    #   - cosmos-db-volume:/data/db
+
+  cosmos-db:
+    image: alpine:latest
+    depends_on:
+      - cosmos-db-internal
+    ports:
+      - 8081:8081
+    command: >
+      sh -c "apk add --no-cache socat openssl &&
+             openssl req -x509 -newkey rsa:2048 -keyout /key.pem -out /cert.pem -days 365 -nodes -subj '/CN=cosmos-db' &&
+             socat OPENSSL-LISTEN:8081,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:cosmos-db-internal:8081"
   
   cosmos-db-setup:
     image: node:20-alpine
@@ -30,7 +33,7 @@ services:
     depends_on:
       - cosmos-db
     environment:
-      - COSMOS_ENDPOINT=http://cosmos-db:8081
+      - COSMOS_ENDPOINT=https://cosmos-db:8081
       - NODE_TLS_REJECT_UNAUTHORIZED=0
     volumes:
       - ./setup-cosmos-containers.js:/app/setup-cosmos-containers.js
@@ -54,20 +57,34 @@ services:
       - ./setup-azurite-containers.js:/app/setup-azurite-containers.js
     command: sh -c "npm install @azure/storage-blob @azure/storage-queue @azure/data-tables && node setup-azurite-containers.js"
 
-  eventhubs:
+  eventhubs-internal:
     image: "mcr.microsoft.com/azure-messaging/eventhubs-emulator:latest@sha256:25ec4141efb69933a0c82e6a787fa147a3895519e7d236d4c41ba568e03100eb"
     depends_on:
       - "azurite"
-    ports:
-      - "5672:5672"
-      - "9092:9092"
-      - "9093:9093"
     volumes:
       - "./eventhubs-emulator.json:/Eventhubs_Emulator/ConfigFiles/Config.json"
     environment:
       BLOB_SERVER: azurite
       METADATA_SERVER: azurite
       ACCEPT_EULA: Y
+
+  eventhubs:
+    image: alpine:latest
+    depends_on:
+      - eventhubs-internal
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "9092:9092"
+      - "9093:9093"
+    command: >
+      sh -c "apk add --no-cache socat openssl &&
+             openssl req -x509 -newkey rsa:2048 -keyout /key.pem -out /cert.pem -days 365 -nodes -subj '/CN=eventhubs' &&
+             socat OPENSSL-LISTEN:5671,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:eventhubs-internal:5672 &
+             socat TCP-LISTEN:5672,reuseaddr,fork TCP:eventhubs-internal:5672 &
+             socat TCP-LISTEN:9092,reuseaddr,fork TCP:eventhubs-internal:9092 &
+             socat TCP-LISTEN:9093,reuseaddr,fork TCP:eventhubs-internal:9093 &
+             wait"
 
   kafka-ui:
     image: "provectuslabs/kafka-ui:latest@sha256:8f2ff02d64b0a7a2b71b6b3b3148b85f66d00ec20ad40c30bdcd415d46d31818"

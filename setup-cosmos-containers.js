@@ -3,12 +3,17 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const { CosmosClient } = require("@azure/cosmos");
 
-const endpoint = process.env.COSMOS_ENDPOINT || "http://cosmos-db:8081";
+const endpoint = process.env.COSMOS_ENDPOINT || "https://cosmos-db:8081";
 const key =
 	process.env.COSMOS_KEY ||
 	"C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
-const client = new CosmosClient({ endpoint, key, connectionPolicy: { enableEndpointDiscovery: false } });
+const client = new CosmosClient({ 
+	endpoint, 
+	key, 
+	allowInsecureConnection: true,
+	connectionPolicy: { enableEndpointDiscovery: false } 
+});
 
 // Databases and their containers with specific partition keys
 const databases = [
