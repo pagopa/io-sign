@@ -257,7 +257,7 @@ module "apim_itn_io_sign_backoffice_api_v1" {
   protocols = ["https"]
 
   content_format = "openapi"
-  content_value  = file("../../../apps/io-sign-backoffice-func/openapi.yaml")
+  content_value  = file("./api/backoffice/v1/openapi.yaml")
 
   xml_content = file("./api/backoffice/v1/base_policy.xml")
 }

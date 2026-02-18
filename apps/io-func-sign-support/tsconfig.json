@@ -9,5 +9,6 @@
     "rootDir": "src",
     "noEmit": true,
     "sourceMap": true
-  }
+  },
+  "exclude": ["vitest.config.ts"]
 }

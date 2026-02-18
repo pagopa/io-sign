@@ -6,7 +6,7 @@ locals {
     APIM_RESOURCE_GROUP_NAME          = data.azurerm_api_management.apim_itn_api.resource_group_name,
     APIM_SERVICE_NAME                 = data.azurerm_api_management.apim_itn_api.name,
     APIM_PRODUCT_NAME                 = module.apim_itn_io_sign_product.product_id,
-    WEBSITE_SWAP_WARMUP_PING_PATH     = "/health"
+    WEBSITE_SWAP_WARMUP_PING_PATH     = "/info"
     WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     APPINSIGHTS_INSTRUMENTATIONKEY    = sensitive(data.azurerm_application_insights.application_insights.instrumentation_key)
     },
@@ -56,7 +56,7 @@ module "io_sign_backoffice_app" {
   sku_name  = var.io_sign_backoffice_app.sku_name
 
   node_version      = "20-lts"
-  health_check_path = "/health"
+  health_check_path = "/info"
   app_command_line  = "node server.js"
 
   app_settings = local.backoffice_app_settings
@@ -127,7 +127,7 @@ module "io_sign_backoffice_app_staging_slot" {
   app_service_name = module.io_sign_backoffice_app.name
 
   node_version      = "20-lts"
-  health_check_path = "/health"
+  health_check_path = "/info"
   app_command_line  = "node server.js"
 
   app_settings = local.backoffice_app_settings
