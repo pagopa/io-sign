@@ -19,10 +19,10 @@ overrides:
     /api/v1/sign/dossiers:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/dossiers/{id}:
+    /api/v1/sign/dossiers/{dossierId}:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/dossiers/{id}/signature-requests:
+    /api/v1/sign/dossiers/{dossierId}/signature-requests:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
     /api/v1/sign/signers:
@@ -31,16 +31,16 @@ overrides:
     /api/v1/sign/signature-requests:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/signature-requests/{id}:
+    /api/v1/sign/signature-requests/{signatureRequestId}:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/signature-requests/{id}/status:
+    /api/v1/sign/signature-requests/{signatureRequestId}/status:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/signature-requests/{req_id}/documents/{doc_id}/upload_url:
+    /api/v1/sign/signature-requests/{signatureRequestId}/documents/{documentId}/upload_url:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
-    /api/v1/sign/signature-requests/{req_id}/notification:
+    /api/v1/sign/signature-requests/{signatureRequestId}/notification:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1
     /api/v1/sign/validate-document:
