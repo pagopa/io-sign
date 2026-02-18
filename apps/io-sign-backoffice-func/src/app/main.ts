@@ -8,7 +8,7 @@ import { google } from "googleapis";
 
 import { CosmosClient } from "@azure/cosmos";
 import { getConfigFromEnvironment } from "./config";
-import { healthHandler } from "@/infra/handlers/health";
+import { infoHandler } from "@/infra/handlers/info";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
 import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
 import { ioSignContracts } from "@/infra/selfcare/contract";
@@ -86,7 +86,9 @@ app.cosmosDB("createApiKeyById", {
   handler: createApiKeyById
 });
 
-app.http("health", {
+const info = httpAzureFunction(infoHandler)({});
+
+app.http("info", {
   methods: ["GET"],
-  handler: healthHandler
+  handler: info
 });
