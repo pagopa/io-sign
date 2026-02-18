@@ -33,10 +33,12 @@ const sendMessage =
       TE.map(({ messageId }) => messageId)
     );
 
-export const enqueue = flow(
-  stringify,
-  E.mapLeft(() => new Error("Unable to serialize the message.")),
-  E.map(toBase64),
-  RTE.fromEither,
-  RTE.chainW(sendMessage)
-);
+export const enqueue = <A>(payload: A, visibilityTimeout?: number) =>
+  pipe(
+    payload,
+    stringify,
+    E.mapLeft(() => new Error("Unable to serialize the message.")),
+    E.map(toBase64),
+    RTE.fromEither,
+    RTE.chainW((message) => sendMessage(message, visibilityTimeout))
+  );
