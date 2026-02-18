@@ -118,8 +118,6 @@ catalogs:
 overrides:
   '@types/node': ^20.17.6
 
-pnpmfileChecksum: sha256-FMjTmt1bCo0SOOG7o/y8rRzputl19yL2BTfTrVHFYS4=
-
 importers:
 
   .:
