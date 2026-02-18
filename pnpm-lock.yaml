@@ -303,6 +303,9 @@ importers:
       '@azure/event-hubs':
         specifier: 'catalog:'
         version: 5.11.2
+      '@azure/functions':
+        specifier: 'catalog:'
+        version: 4.11.1
       '@azure/storage-blob':
         specifier: 'catalog:'
         version: 12.16.0
