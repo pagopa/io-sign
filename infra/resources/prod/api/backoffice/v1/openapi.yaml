@@ -10,31 +10,6 @@ servers:
 security:
   - SubscriptionKey: []
 paths:
-  /info:
-    get:
-      operationId: getInfo
-      tags:
-        - Health Check
-      summary: Health check endpoint
-      security: []
-      responses:
-        "200":
-          description: Used to check if the function is active
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - message
-                  - version
-                properties:
-                  message:
-                    type: string
-                    example: "It's working!"
-                  version:
-                    type: string
-                    example: "1.4.2"
-
   /api-keys/{id}:
     get:
       operationId: getApiKey

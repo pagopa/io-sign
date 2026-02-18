@@ -7,5 +7,5 @@ import healthcheck from "@/lib/healthcheck";
 export async function GET() {
   const health = await healthcheck([getCosmosHealth(), getApimHealth()]);
   const status = health.status === "ok" ? 200 : 500;
-  return NextResponse.json(health, { status });
+  return NextResponse.json({ message: "It's working!", version: process.env.APP_VERSION }, { status });
 }
