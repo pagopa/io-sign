@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   cosmos-db:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator@sha256:53724d515b65a93238113a8f981df62ce238a93685fd2061cfb60444f881e2cf
     mem_limit: 3G
     cpu_count: 2
     tty: true
@@ -18,7 +18,7 @@ services:
       - cosmos-db-volume:/data/db
       
   storage:
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite@sha256:647c63a91102a9d8e8000aab803436e1fc85fbb285e7ce830a82ee5d6661cf37
     command: "azurite -l /data --blobHost 0.0.0.0 --queueHost 0.0.0.0 --skipApiVersionCheck"
     ports:
       - 10000:10000
