@@ -16,7 +16,9 @@
     "docker:generate:env:user": "dotenv -e docker/.env.common envsub docker/io-func-sign-user/env-dev docker/generated/.env.io-func-sign-user",
     "docker:generate:env:backoffice-func": "dotenv -e docker/.env.common envsub docker/io-sign-backoffice-func/env-dev docker/generated/.env.io-sign-backoffice-func",
     "docker:build": "docker compose --env-file docker/.env.common build",
-    "docker:start": "docker compose --env-file docker/.env.common up -d"
+    "docker:start": "docker compose --env-file docker/.env.common up -d",
+    "docker:stop": "docker compose --env-file docker/.env.common down",
+    "docker:clean": "docker system prune"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
