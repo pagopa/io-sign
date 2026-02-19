@@ -177,7 +177,7 @@ app.http("getSignatureRequests", {
   methods: ["GET"],
   authLevel: "function",
   route: "signature-requests",
-  handler: v3ToV4Adapter(getSignatureRequests)
+  handler: getSignatureRequests
 });
 
 const getSignatureRequest = GetSignatureRequestFunction({
@@ -190,7 +190,7 @@ app.http("getSignatureRequest", {
   methods: ["GET"],
   authLevel: "function",
   route: "signature-requests/{signatureRequestId}",
-  handler: v3ToV4Adapter(getSignatureRequest)
+  handler: getSignatureRequest
 });
 
 const updateSignatureRequest = UpdateSignatureRequestFunction({
