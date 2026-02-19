@@ -12,7 +12,7 @@ import {
 } from "@io-sign/io-sign/signature-request";
 
 import { QueueClient } from "@azure/storage-queue";
-import { makeInsertSignatureRequest } from "../cosmos/signature-request";
+import { makeUpsertSignatureRequest } from "../cosmos/signature-request";
 import { makeCreateSignatureRequest } from "../../../app/use-cases/create-signature-request";
 import { makeNotifySignatureRequestWaitForSignatureEvent } from "../storage/signature-request";
 
@@ -26,7 +26,7 @@ const makeCreateSignatureRequestHandler = (
     TE.fromEither
   );
   const createSignatureRequest = makeCreateSignatureRequest(
-    makeInsertSignatureRequest(db),
+    makeUpsertSignatureRequest(db),
     makeNotifySignatureRequestWaitForSignatureEvent(
       onWaitForSignatureQueueClient
     ),
