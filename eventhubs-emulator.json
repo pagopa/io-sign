@@ -1,0 +1,43 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/azure-event-hubs-emulator-installer/refs/heads/main/EventHub-Emulator/Schema/Config-schema.json",
+    "UserConfig": {
+      "NamespaceConfig": [
+        {
+          "Type": "EventHub",
+          "Name": "emulatorNs1",
+          "Entities": [
+            {
+              "Name": "sc-contracts",
+              "PartitionCount": 2,
+              "ConsumerGroups": [
+                {
+                  "Name": "Default"
+                }
+              ]
+            },
+            {
+              "Name": "billing",
+              "PartitionCount": 2,
+              "ConsumerGroups": [
+                {
+                  "Name": "Default"
+                }
+              ]
+            },
+            {
+              "Name": "analytics",
+              "PartitionCount": 2,
+              "ConsumerGroups": [
+                {
+                  "Name": "Default"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "LoggingConfig": {
+        "Type": "Console"
+      }
+    }
+  }
