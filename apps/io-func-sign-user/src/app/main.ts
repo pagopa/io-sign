@@ -58,7 +58,14 @@ const v3ToV4Adapter =
         res: undefined,
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         done: () => {},
-        log: context.log
+        log: context.log,
+        // handler-kit-legacy's isHttpTriggeredFunctionContext reads this array
+        // to verify the context belongs to an HTTP trigger; v4 InvocationContext
+        // doesn't carry it, so we inject a minimal valid definition.
+        bindingDefinitions: [
+          { name: "req", type: "httpTrigger", direction: "in" },
+          { name: "$return", type: "http", direction: "out" }
+        ]
       };
 
       await v3Handler(v3Context, request);
