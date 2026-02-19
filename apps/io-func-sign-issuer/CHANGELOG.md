@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.21.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
 ## 0.20.2
 
 ### Patch Changes

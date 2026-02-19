@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.5.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
 ## 1.4.2
 
 ### Patch Changes
