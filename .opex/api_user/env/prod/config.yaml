@@ -14,6 +14,9 @@ action_groups:
   - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Insights/actiongroups/EmailFirmaConIoTech
 overrides:
   endpoints:
+    /api/v1/sign/metadata:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1 
     /api/v1/sign/qtsp/clauses:
       availability_threshold: 0.90 # default 0.99
       response_time_threshold: 3 # default 1 
