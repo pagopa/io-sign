@@ -1,18 +1,18 @@
-name: Opex Dashboard api_support
+name: Opex Dashboard api_backoffice
 
 on:
   push:
     branches:
       - main
     paths:
-      - "apps/io-func-sign-support/openapi.yaml"
-      - ".github/workflows/opex_api_support.yaml"
-      - ".opex/api_support/**"
+      - "apps/io-sign-backoffice-func/openapi.yaml"
+      - ".github/workflows/opex_api_backoffice.yaml"
+      - ".opex/api_backoffice/**"
 
   workflow_dispatch:
 
 env:
-  API_NAME: api_support
+  API_NAME: api_backoffice
 
 permissions:
   id-token: write

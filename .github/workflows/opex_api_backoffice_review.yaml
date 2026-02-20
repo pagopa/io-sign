@@ -1,15 +1,15 @@
-name: Opex Dashboard api_user review
+name: Opex Dashboard api_backoffice review
 
 on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - 'apps/io-func-sign-user/openapi.yaml'
-      - '.github/workflows/opex_api_user.yaml'
-      - '.opex/api_user/**'
+      - 'apps/io-sign-backoffice-func/openapi.yaml'
+      - '.github/workflows/opex_api_backoffice.yaml'
+      - '.opex/api_backoffice/**'
 
 env:
-  API_NAME: api_user
+  API_NAME: api_backoffice
 
 permissions:
   id-token: write
