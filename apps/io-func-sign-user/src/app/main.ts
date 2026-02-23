@@ -22,7 +22,7 @@ import { InfoHandler } from "../infra/http/handlers/info";
 import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
-import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
+import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
@@ -253,15 +253,13 @@ app.http("getSignerByFiscalCode", {
   handler: v3ToV4Adapter(getSignerByFiscalCode)
 });
 
-const getQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
-  config.namirial
-);
+const getQtspClausesMetadata = GetQtspClausesMetadataFunction(config.namirial);
 
 app.http("getQtspClausesMetadata", {
   methods: ["GET"],
   authLevel: "function",
   route: "qtsp/clauses",
-  handler: v3ToV4Adapter(getQtspClausesMetadata)
+  handler: getQtspClausesMetadata
 });
 
 const createFilledDocument = makeCreateFilledDocumentFunction(
