@@ -6,6 +6,6 @@ tags = {
   CreatedBy      = "Terraform"
   Environment    = "Prod"
   Owner          = "IO"
-  Source         = "https://github.com/pagopa/io-sign",
+  Source         = "https://github.com/pagopa/io-sign"
   ManagementTeam = "IO Ecosystem - Links"
 }

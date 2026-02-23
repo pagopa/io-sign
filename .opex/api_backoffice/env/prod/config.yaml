@@ -1,0 +1,21 @@
+oa3_spec: apps/io-sign-backoffice-func/openapi.yaml
+name: opex_api_backoffice_io_sign
+location: West Europe
+timespan: 10m
+evaluation_frequency: 40 # default 20
+evaluation_time_window: 40 # default 20
+event_occurrences: 3 # default 1
+data_source: /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-common-rg-01/providers/Microsoft.Network/applicationGateways/io-p-itn-agw-01
+resource_type: app-gateway
+action_groups:
+  - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-rg-common/providers/microsoft.insights/actionGroups/SlackPagoPA
+  - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-rg-common/providers/microsoft.insights/actionGroups/EmailPagoPA
+  - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Insights/actiongroups/SlackFirmaConIoTech
+  - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Insights/actiongroups/EmailFirmaConIoTech
+overrides:
+  hosts:
+    - api.io.pagopa.it
+  endpoints:
+    /api/v1/sign/backoffice/api-keys/{id}:
+      availability_threshold: 0.90 # default 0.99
+      response_time_threshold: 3 # default 1
