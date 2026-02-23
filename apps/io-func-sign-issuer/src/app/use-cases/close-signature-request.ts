@@ -41,7 +41,7 @@ const buildNotificationMessage = (
   }
   return {
     subject: `${prefix} - C'è un problema con la firma`,
-    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a ${supportEmail}.`
+    markdown: `Per un problema tecnico, non è stato possibile completare la firma dei documenti.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
   };
 };
 
