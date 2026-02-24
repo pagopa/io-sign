@@ -19,7 +19,7 @@ import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-li
 import { EventHubProducerClient } from "@azure/event-hubs";
 import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 import { InfoHandler } from "../infra/http/handlers/info";
-import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
+import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
@@ -262,17 +262,17 @@ app.http("getQtspClausesMetadata", {
   handler: getQtspClausesMetadata
 });
 
-const createFilledDocument = makeCreateFilledDocumentFunction(
+const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
   documentsToFillQueue,
   pdvTokenizerClient
-);
+});
 
 app.http("createFilledDocument", {
   methods: ["POST"],
   authLevel: "function",
   route: "qtsp/clauses/filled_document",
-  handler: v3ToV4Adapter(createFilledDocument)
+  handler: createFilledDocument
 });
 
 const getThirdPartyMessageDetails = makeGetThirdPartyMessageDetailsFunction(
