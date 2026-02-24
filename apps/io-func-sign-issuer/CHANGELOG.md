@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 0.21.1
+
+### Patch Changes
+
+- 28df5f5: update copy message in case of rejected signature
+
 ## 0.21.0
 
 ### Minor Changes
