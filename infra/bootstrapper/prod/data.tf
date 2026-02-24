@@ -53,23 +53,3 @@ data "azurerm_resource_group" "sign_itn_integration_rg" {
 data "azurerm_resource_group" "sign_itn_backend_rg" {
   name = local.functions.itn_io_sign_backend_rg_name
 }
-
-data "azurerm_resource_group" "sign_sec_rg" {
-  name = local.functions.io_sign_sec_rg_name
-}
-
-data "azurerm_resource_group" "sign_infra_rg" {
-  name = local.functions.io_sign_infra_rg_name
-}
-
-data "azurerm_resource_group" "sign_data_rg" {
-  name = local.functions.io_sign_data_rg_name
-}
-
-data "azurerm_resource_group" "sign_integration_rg" {
-  name = local.functions.io_sign_integration_rg_name
-}
-
-data "azurerm_resource_group" "sign_backend_rg" {
-  name = local.functions.io_sign_backend_rg_name
-}
