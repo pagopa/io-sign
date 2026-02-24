@@ -21,7 +21,7 @@ import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 import { InfoHandler } from "../infra/http/handlers/info";
 import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
-import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
+import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
@@ -241,16 +241,16 @@ app.storageQueue("createSignatureRequest", {
   handler: createSignatureRequest
 });
 
-const getSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
+const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
   pdvTokenizerClient,
   ioApiClient
-);
+});
 
 app.http("getSignerByFiscalCode", {
   methods: ["POST"],
   authLevel: "function",
   route: "signers",
-  handler: v3ToV4Adapter(getSignerByFiscalCode)
+  handler: getSignerByFiscalCode
 });
 
 const getQtspClausesMetadata = GetQtspClausesMetadataFunction(config.namirial);
