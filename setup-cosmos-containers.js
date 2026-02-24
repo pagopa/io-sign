@@ -1,6 +1,3 @@
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 const { CosmosClient } = require("@azure/cosmos");
 
 const endpoint = process.env.COSMOS_ENDPOINT || "https://cosmos-db:8081";
