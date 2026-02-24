@@ -26,7 +26,7 @@ import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qts
 import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
-import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
+import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
@@ -275,16 +275,16 @@ app.http("createFilledDocument", {
   handler: createFilledDocument
 });
 
-const getThirdPartyMessageDetails = makeGetThirdPartyMessageDetailsFunction(
+const getThirdPartyMessageDetails = GetThirdPartyMessageDetailsFunction({
   pdvTokenizerClient,
-  database
-);
+  db: database
+});
 
 app.http("getThirdPartyMessageDetails", {
   methods: ["GET"],
   authLevel: "function",
   route: "messages/{signatureRequestId}",
-  handler: v3ToV4Adapter(getThirdPartyMessageDetails)
+  handler: getThirdPartyMessageDetails
 });
 
 const getThirdPartyMessageAttachmentContent =
