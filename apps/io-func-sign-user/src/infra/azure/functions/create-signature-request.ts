@@ -1,46 +1,7 @@
-import { Database } from "@azure/cosmos";
+import { azureFunction } from "@pagopa/handler-kit-azure-func";
 
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
+import { CreateSignatureRequestHandler } from "../../handlers/create-signature-request";
 
-import * as TE from "fp-ts/lib/TaskEither";
-import { flow, identity } from "fp-ts/lib/function";
-
-import {
-  GenerateSignatureRequestQrCode,
-  SignatureRequestReady
-} from "@io-sign/io-sign/signature-request";
-
-import { QueueClient } from "@azure/storage-queue";
-import { makeUpsertSignatureRequest } from "../cosmos/signature-request";
-import { makeCreateSignatureRequest } from "../../../app/use-cases/create-signature-request";
-import { makeNotifySignatureRequestWaitForSignatureEvent } from "../storage/signature-request";
-
-const makeCreateSignatureRequestHandler = (
-  db: Database,
-  onWaitForSignatureQueueClient: QueueClient,
-  generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
-) => {
-  const getSignatureRequestFromQueue = flow(
-    azure.fromQueueMessage(SignatureRequestReady),
-    TE.fromEither
-  );
-  const createSignatureRequest = makeCreateSignatureRequest(
-    makeUpsertSignatureRequest(db),
-    makeNotifySignatureRequestWaitForSignatureEvent(
-      onWaitForSignatureQueueClient
-    ),
-    generateSignatureRequestQrCode
-  );
-  return createHandler(
-    getSignatureRequestFromQueue,
-    createSignatureRequest,
-    identity,
-    () => undefined
-  );
-};
-
-export const makeCreateSignatureRequestFunction = flow(
-  makeCreateSignatureRequestHandler,
-  azure.unsafeRun
+export const CreateSignatureRequestFunction = azureFunction(
+  CreateSignatureRequestHandler
 );

@@ -17,15 +17,20 @@ import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
-import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
+import {
+  SignatureRequestCancelled,
+  SignatureRequestReady
+} from "@io-sign/io-sign/signature-request";
 import { InfoHandler } from "../infra/http/handlers/info";
 import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
-import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
+import { FillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { CreateSignatureFunction } from "../infra/azure/functions/create-signature";
-import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
+import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { ValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
+import { FillDocumentPayload } from "../filled-document";
+import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
@@ -229,11 +234,12 @@ app.http("createSignature", {
   handler: createSignature
 });
 
-const createSignatureRequest = makeCreateSignatureRequestFunction(
-  database,
+const createSignatureRequest = CreateSignatureRequestFunction({
+  db: database,
   onWaitForSignatureQueueClient,
-  generateSignatureRequestQrCode
-);
+  generateSignatureRequestQrCode,
+  inputDecoder: SignatureRequestReady
+});
 
 app.storageQueue("createSignatureRequest", {
   queueName: "on-signature-request-ready",
@@ -301,10 +307,11 @@ app.http("getThirdPartyMessageAttachmentContent", {
   handler: v3ToV4Adapter(getThirdPartyMessageAttachmentContent)
 });
 
-const fillDocument = makeFillDocumentFunction(
+const fillDocument = FillDocumentFunction({
   pdvTokenizerClient,
-  filledContainerClient
-);
+  filledContainerClient,
+  inputDecoder: FillDocumentPayload
+});
 
 app.storageQueue("fillDocument", {
   queueName: "waiting-for-documents-to-fill",
@@ -312,14 +319,15 @@ app.storageQueue("fillDocument", {
   handler: fillDocument
 });
 
-const validateSignature = makeValidateSignatureFunction(
-  database,
+const validateSignature = ValidateSignatureFunction({
+  db: database,
   signedContainerClient,
-  config.namirial,
+  qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
-  eventHubAnalyticsClient
-);
+  eventHubAnalyticsClient,
+  inputDecoder: ValidateSignaturePayload
+});
 
 app.storageQueue("validateSignature", {
   queueName: "waiting-for-qtsp",
