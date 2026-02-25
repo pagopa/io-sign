@@ -23,7 +23,7 @@ import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-fi
 import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
-import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
+import { CreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
@@ -212,21 +212,21 @@ app.storageQueue("updateSignatureRequest", {
   handler: updateSignatureRequest
 });
 
-const createSignature = makeCreateSignatureFunction(
+const createSignature = CreateSignatureFunction({
   pdvTokenizerClient,
   lollipopApiClient,
-  database,
+  db: database,
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
-  config.namirial
-);
+  qtspConfig: config.namirial
+});
 
 app.http("createSignature", {
   methods: ["POST"],
   authLevel: "function",
   route: "signatures",
-  handler: v3ToV4Adapter(createSignature)
+  handler: createSignature
 });
 
 const createSignatureRequest = makeCreateSignatureRequestFunction(
