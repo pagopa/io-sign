@@ -67,7 +67,7 @@ module "io_sign_backoffice_func_itn" {
 }
 
 resource "azurerm_key_vault_access_policy" "backoffice_func_key_vault_access_policy_itn" {
-  key_vault_id = module.key_vault.id
+  key_vault_id = module.key_vault_itn.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = module.io_sign_backoffice_func_itn.system_identity_principal
 

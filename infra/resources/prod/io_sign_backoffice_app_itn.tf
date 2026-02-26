@@ -66,7 +66,7 @@ module "io_sign_backoffice_app_itn" {
 }
 
 resource "azurerm_key_vault_access_policy" "backoffice_key_vault_access_policy_itn" {
-  key_vault_id = module.key_vault.id
+  key_vault_id = module.key_vault_itn.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = module.io_sign_backoffice_app_itn.principal_id
 
@@ -82,7 +82,7 @@ resource "azurerm_role_assignment" "firmaconio_selfcare_apim_contributor_role_it
 }
 
 resource "azurerm_role_assignment" "backoffice_app_api_keys_queue_sender_role_itn" {
-  scope                = azurerm_storage_queue.api_keys.resource_manager_id
+  scope                = azurerm_storage_queue.itn_api_keys.resource_manager_id
   role_definition_name = "Storage Queue Data Message Sender"
   principal_id         = module.io_sign_backoffice_app_itn.principal_id
 }
@@ -137,7 +137,7 @@ module "io_sign_backoffice_app_staging_slot_itn" {
 }
 
 resource "azurerm_key_vault_access_policy" "backoffice_staging_key_vault_access_policy_itn" {
-  key_vault_id = module.key_vault.id
+  key_vault_id = module.key_vault_itn.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = module.io_sign_backoffice_app_staging_slot_itn.principal_id
 
@@ -153,7 +153,7 @@ resource "azurerm_role_assignment" "firmaconio_selfcare_staging_apim_contributor
 }
 
 resource "azurerm_role_assignment" "backoffice_app_staging_api_keys_queue_sender_role_itn" {
-  scope                = azurerm_storage_queue.api_keys.resource_manager_id
+  scope                = azurerm_storage_queue.itn_api_keys.resource_manager_id
   role_definition_name = "Storage Queue Data Message Sender"
   principal_id         = module.io_sign_backoffice_app_staging_slot_itn.principal_id
 }
