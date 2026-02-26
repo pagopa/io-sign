@@ -145,6 +145,9 @@ module "federated_identities_opex" {
         io-p-sign-integration-rg = [
           "Reader"
         ]
+        io-p-itn-common-rg-01 = [
+          "Reader"
+        ]
         terraform-state-rg = [
           "Storage Blob Data Reader",
           "Reader and Data Access"
@@ -167,6 +170,9 @@ module "federated_identities_opex" {
         ]
         io-p-sign-integration-rg = [
           "Contributor"
+        ]
+        io-p-itn-common-rg-01 = [
+          "Reader"
         ]
         terraform-state-rg = [
           "Storage Blob Data Contributor",
