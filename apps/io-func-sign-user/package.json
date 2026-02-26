@@ -37,7 +37,6 @@
     "@pagopa/ts-commons": "catalog:",
     "date-fns": "catalog:",
     "fp-ts": "catalog:",
-    "handler-kit-legacy": "catalog:",
     "io-ts": "catalog:",
     "io-ts-types": "catalog:",
     "monocle-ts": "catalog:",

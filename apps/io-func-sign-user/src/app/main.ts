@@ -1,9 +1,4 @@
-import {
-  HttpRequest,
-  HttpResponseInit,
-  InvocationContext,
-  app
-} from "@azure/functions";
+import { app } from "@azure/functions";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -32,51 +27,13 @@ import { ValidateSignatureFunction } from "../infra/azure/functions/validate-sig
 import { FillDocumentPayload } from "../filled-document";
 import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
-import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
+import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { getConfigFromEnvironment } from "./config";
-
-interface V3Context {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-  req: HttpRequest;
-  res?: HttpResponseInit;
-  done: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  log: (...args: any[]) => void;
-}
-
-const v3ToV4Adapter =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (v3Handler: any) =>
-    async (
-      request: HttpRequest,
-      context: InvocationContext
-    ): Promise<HttpResponseInit> => {
-      const v3Context: V3Context = {
-        ...context,
-        req: request,
-        res: undefined,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        done: () => {},
-        log: context.log,
-        // handler-kit-legacy's isHttpTriggeredFunctionContext reads this array
-        // to verify the context belongs to an HTTP trigger; v4 InvocationContext
-        // doesn't carry it, so we inject a minimal valid definition.
-        bindingDefinitions: [
-          { name: "req", type: "httpTrigger", direction: "in" },
-          { name: "$return", type: "http", direction: "out" }
-        ]
-      };
-
-      await v3Handler(v3Context, request);
-
-      return v3Context.res || { status: 500, body: "Internal Server Error" };
-    };
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -294,17 +251,17 @@ app.http("getThirdPartyMessageDetails", {
 });
 
 const getThirdPartyMessageAttachmentContent =
-  makeGetThirdPartyMessageAttachmentContentFunction(
+  GetThirdPartyMessageAttachmentContentFunction({
     pdvTokenizerClient,
-    database,
+    db: database,
     signedContainerClient
-  );
+  });
 
 app.http("getThirdPartyMessageAttachmentContent", {
   methods: ["GET"],
   authLevel: "function",
   route: "messages/{signatureRequestId}/{documentId}",
-  handler: v3ToV4Adapter(getThirdPartyMessageAttachmentContent)
+  handler: getThirdPartyMessageAttachmentContent
 });
 
 const fillDocument = FillDocumentFunction({

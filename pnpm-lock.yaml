@@ -334,9 +334,6 @@ importers:
       fp-ts:
         specifier: 'catalog:'
         version: 2.16.10
-      handler-kit-legacy:
-        specifier: 'catalog:'
-        version: '@pagopa/handler-kit@0.5.1'
       io-ts:
         specifier: 'catalog:'
         version: 2.2.22(fp-ts@2.16.10)
