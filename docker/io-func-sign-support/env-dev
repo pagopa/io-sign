@@ -1,0 +1,9 @@
+NODE_TLS_REJECT_UNAUTHORIZED=0
+AzureWebJobsStorage=UseDevelopmentStorage=true
+FUNCTIONS_WORKER_RUNTIME=node
+CosmosDbConnectionString=${COSMOS_DB_CONNECTION_STRING}
+CosmosDbIssuerDatabaseName=${COSMOS_DB_ISSUER_DATABASE_NAME}
+CosmosDbUserDatabaseName=${COSMOS_DB_USER_DATABASE_NAME}
+PdvTokenizerApiBasePath=${PDV_TOKENIZER_SERVICES_API_URL}
+PdvTokenizerApiKey=${PDV_TOKENIZER_SERVICES_API_KEY}
+AzureFunctionsJobHost__logging__logLevel__Function=Trace

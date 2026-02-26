@@ -8,17 +8,36 @@
     "build": "turbo run build --no-daemon",
     "code-review": "turbo run typecheck lint test",
     "version": "changeset version",
-    "release": "changeset tag"
+    "release": "changeset tag",
+    "docker:pregenerate:env": "shx rm -rf docker/generated && shx mkdir docker/generated && ./docker/env-sync.sh",
+    "docker:generate:env": "pnpm run docker:pregenerate:env && pnpm run docker:generate:env:issuer && pnpm run docker:generate:env:support && pnpm run docker:generate:env:user && pnpm run docker:generate:env:backoffice-func",
+    "docker:generate:env:issuer": "dotenv -e docker/.env.common envsub docker/io-func-sign-issuer/env-dev docker/generated/.env.io-func-sign-issuer",
+    "docker:generate:env:support": "dotenv -e docker/.env.common envsub docker/io-func-sign-support/env-dev docker/generated/.env.io-func-sign-support",
+    "docker:generate:env:user": "dotenv -e docker/.env.common envsub docker/io-func-sign-user/env-dev docker/generated/.env.io-func-sign-user",
+    "docker:generate:env:backoffice-func": "dotenv -e docker/.env.common envsub docker/io-sign-backoffice-func/env-dev docker/generated/.env.io-sign-backoffice-func",
+    "docker:build": "docker compose --env-file docker/.env.common build",
+    "docker:start": "docker compose --env-file docker/.env.common up -d",
+    "docker:stop": "docker compose --env-file docker/.env.common down",
+    "docker:clean": "docker system prune"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "azure-functions-core-tools": "catalog:",
+	"dotenv-cli": "^3.2.0",
+    "envsub": "^4.1.0",
+    "shx": "^0.3.4",
     "turbo": "^2.8.6"
   },
   "pnpm": {
     "overrides": {
       "@types/node": "catalog:"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "azure-functions-core-tools"
+    ]
   },
   "packageManager": "pnpm@10.28.1+sha512.7d7dbbca9e99447b7c3bf7a73286afaaf6be99251eb9498baefa7d406892f67b879adb3a1d7e687fc4ccc1a388c7175fbaae567a26ab44d1067b54fcb0d6a316"
 }
