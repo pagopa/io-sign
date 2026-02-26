@@ -33,7 +33,10 @@ describe("cidrSchema Test", () => {
       { cidr: "/24", description: "missing IP" },
       { cidr: "", description: "empty string" },
       { cidr: 123, description: "non-string value" },
-      { cidr: "255.255.255.255/32a", description: "subnet with non-numeric characters" }
+      {
+        cidr: "255.255.255.255/32a",
+        description: "subnet with non-numeric characters"
+      }
     ])("should reject $cidr ($description)", ({ cidr }) => {
       expect(cidrSchema.safeParse(cidr).success).toBe(false);
     });
