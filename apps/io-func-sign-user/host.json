@@ -31,7 +31,7 @@
     },
     "queues": {
       "maxPollingInterval": "00:00:05.000",
-      "maxDequeueCount": 2,
+      "maxDequeueCount": 3,
       "visibilityTimeout": "00:00:30"
     }
   }
