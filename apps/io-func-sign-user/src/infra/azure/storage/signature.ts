@@ -7,4 +7,4 @@ import { NotifySignatureReadyEvent } from "../../../signature";
 export const makeNotifySignatureReadyEvent =
   (queueClient: QueueClient): NotifySignatureReadyEvent =>
   (request) =>
-    pipe(queueClient, enqueue(request));
+    pipe(queueClient, enqueue(request, 60));

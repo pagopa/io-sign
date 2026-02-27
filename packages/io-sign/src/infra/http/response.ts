@@ -11,6 +11,8 @@ import {
   withStatusCode
 } from "handler-kit-legacy/lib/http";
 
+import * as H from "@pagopa/handler-kit";
+
 import { flow, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
@@ -43,20 +45,20 @@ const jsonResponse =
       E.getOrElse(() => serializationProblem)
     );
 
-const bufferResponse =
-  (statusCode: number) => (contentType: string) => (buffer: Buffer) =>
-    pipe(
-      // body of the response must be of type string, but buffer.toString appends some extra characters which corrupt the final file even with byte-encoding.
-      buffer as unknown as string,
-      response,
-      withStatusCode(statusCode),
-      withHeader("Content-Type", contentType),
-      withHeader("Content-Length", Buffer.byteLength(buffer).toString())
-    );
-
 export const success = jsonResponse(200);
 export const created = jsonResponse(201);
-export const successBuffer = bufferResponse(200);
+
+export const bufferResponse = (contentType: string) => (buffer: Buffer) => {
+  L.info("bufferResponse invoked", {
+    contentType,
+    length: buffer.length
+  })({ logger: ConsoleLogger })();
+  return pipe(
+    H.success(buffer as unknown as string),
+    H.withHeader("Content-Type", contentType),
+    H.withHeader("Content-Length", buffer.length.toString())
+  );
+};
 
 export const error = (e: Error) => {
   // TODO: [SFEQS-1587] Here a side effect is introduced on a pure function to use logs on the legacy version of handler-kit

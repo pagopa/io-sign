@@ -1,90 +1,72 @@
-import { flow, pipe } from "fp-ts/lib/function";
+import { HttpRequest, HttpResponse } from "@azure/functions";
 
-import { sequenceS } from "fp-ts/lib/Apply";
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
-import * as TE from "fp-ts/lib/TaskEither";
+import * as H from "@pagopa/handler-kit";
 import * as E from "fp-ts/lib/Either";
+import * as T from "fp-ts/lib/Task";
+import { pipe } from "fp-ts/lib/function";
 
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
-import { HttpRequest, path } from "handler-kit-legacy/lib/http";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 
-import { Database } from "@azure/cosmos";
-import { ContainerClient } from "@azure/storage-blob";
+import {
+  GetThirdPartyMessageAttachmentContentDependencies,
+  GetThirdPartyMessageAttachmentContentHandler
+} from "../../http/handlers/get-third-party-message-attachments-content";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
-import { error, successBuffer } from "@io-sign/io-sign/infra/http/response";
-import { validate } from "@io-sign/io-sign/validation";
-import { Document, DocumentReady } from "@io-sign/io-sign/document";
-import { DocumentId } from "@io-sign/io-sign/document";
-import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
-
-import { makeGetSignatureRequest } from "../cosmos/signature-request";
-import { makeRequireSignatureRequestByFiscalCode } from "../../http/decoders/signature-request";
-
-import { SignatureRequest } from "../../../signature-request";
-import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";
-
-export type GetAttachmentPayload = {
-  signatureRequest: SignatureRequest;
-  documentId: Document["id"];
-};
-
-const makeGetThirdPartyMessageAttachmentContentHandler = (
-  pdvTokenizerClientWithApiKey: PdvTokenizerClientWithApiKey,
-  db: Database,
-  signedContainerClient: ContainerClient
-) => {
-  const getSignerByFiscalCode = makeGetSignerByFiscalCode(
-    pdvTokenizerClientWithApiKey
-  );
-
-  const getSignatureRequest = makeGetSignatureRequest(db);
-
-  const requireDocumentIdFromPath = flow(
-    path("documentId"),
-    E.fromOption(() => new Error(`missing "documentId" in path`)),
-    E.chainW(validate(DocumentId, `invalid "documentId" supplied`))
-  );
-
-  const getDocumenContent: GetDocumentContent = (document: DocumentReady) =>
-    pipe(document, getDocumentContent)(signedContainerClient);
-
-  const getSignedDocumentContent =
-    makeGetSignedDocumentContent(getDocumenContent);
-
-  const requireGetAttachmentPayload: RTE.ReaderTaskEither<
-    HttpRequest,
-    Error,
-    GetAttachmentPayload
-  > = sequenceS(RTE.ApplyPar)({
-    signatureRequest: flow(
-      makeRequireSignatureRequestByFiscalCode(
-        getSignatureRequest,
-        getSignerByFiscalCode
-      )
-    ),
-    documentId: RTE.fromReaderEither(requireDocumentIdFromPath)
+const toAzureRequest = (request: HttpRequest): H.HttpRequest => {
+  const headers: Record<string, string> = {};
+  request.headers.forEach((value, name) => {
+    headers[name] = value;
   });
-
-  const decodeHttpRequest = flow(
-    azure.fromHttpRequest,
-    TE.fromEither,
-    TE.chain(requireGetAttachmentPayload)
-  );
-
-  return createHandler(
-    decodeHttpRequest,
-    ({ signatureRequest, documentId }) =>
-      getSignedDocumentContent(signatureRequest, documentId),
-    error,
-    successBuffer("application/pdf")
-  );
+  return {
+    method: request.method as H.HttpRequest["method"],
+    url: request.url,
+    // Azure Functions v4 uses "params" for path parameters; handler-kit uses "path"
+    path: request.params,
+    headers,
+    query: Object.fromEntries(request.query),
+    body: undefined
+  };
 };
 
-export const makeGetThirdPartyMessageAttachmentContentFunction = flow(
-  makeGetThirdPartyMessageAttachmentContentHandler,
-  azure.unsafeRun
-);
+const toAzureResponse = (
+  response: H.HttpResponse<unknown, H.HttpStatusCode>
+): HttpResponse => {
+  const { statusCode, body, headers } = response;
+  if (Buffer.isBuffer(body)) {
+    return new HttpResponse({
+      status: statusCode,
+      // Buffer extends Uint8Array (ArrayBufferView) which is a valid HttpResponseBodyInit
+      body: body as Uint8Array,
+      headers
+    });
+  }
+  if (
+    headers["Content-Type"] === "application/json" ||
+    headers["Content-Type"] === "application/problem+json"
+  ) {
+    return new HttpResponse({ status: statusCode, jsonBody: body, headers });
+  }
+  return new HttpResponse({
+    status: statusCode,
+    body: typeof body === "string" ? body : null,
+    headers
+  });
+};
+
+export const GetThirdPartyMessageAttachmentContentFunction =
+  (deps: GetThirdPartyMessageAttachmentContentDependencies) =>
+  async (request: HttpRequest): Promise<HttpResponse> =>
+    pipe(
+      GetThirdPartyMessageAttachmentContentHandler({
+        ...deps,
+        logger: ConsoleLogger,
+        input: toAzureRequest(request),
+        inputDecoder: H.HttpRequest
+      }),
+      T.map(
+        E.fold(
+          (e) => toAzureResponse(pipe(e, H.toProblemJson, H.problemJson)),
+          toAzureResponse
+        )
+      )
+    )();

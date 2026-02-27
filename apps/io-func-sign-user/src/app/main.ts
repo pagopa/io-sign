@@ -1,3 +1,4 @@
+import { app } from "@azure/functions";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -7,20 +8,26 @@ import { identity, pipe } from "fp-ts/lib/function";
 
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
-import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
-import { makeInfoFunction } from "../infra/azure/functions/info";
-import { makeCreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
-import { makeFillDocumentFunction } from "../infra/azure/functions/fill-document";
-import { makeGetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
-import { makeGetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
-import { makeCreateSignatureFunction } from "../infra/azure/functions/create-signature";
-import { makeCreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
-import { makeValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
-import { makeGetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
-import { makeGetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
+import {
+  SignatureRequestCancelled,
+  SignatureRequestReady
+} from "@io-sign/io-sign/signature-request";
+import { InfoHandler } from "../infra/http/handlers/info";
+import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
+import { FillDocumentFunction } from "../infra/azure/functions/fill-document";
+import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
+import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
+import { CreateSignatureFunction } from "../infra/azure/functions/create-signature";
+import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
+import { ValidateSignatureFunction } from "../infra/azure/functions/validate-signature";
+import { FillDocumentPayload } from "../filled-document";
+import { ValidateSignaturePayload } from "./use-cases/validate-signature";
+import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
+import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
 import { createLollipopApiClient } from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
@@ -106,91 +113,181 @@ const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
   config.pagopa.ioLink
 );
 
-export const Info = makeInfoFunction(
-  config.namirial,
+const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
+  database
+);
+
+const info = httpAzureFunction(InfoHandler)({
+  namirialConfig: config.namirial,
   pdvTokenizerClient,
   ioApiClient,
   lollipopApiClient,
-  database,
+  db: database,
   filledContainerClient,
   validatedContainerClient,
   signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
-);
+});
 
-export const CreateFilledDocument = makeCreateFilledDocumentFunction(
-  filledContainerClient,
-  documentsToFillQueue,
-  pdvTokenizerClient
-);
+app.http("info", {
+  methods: ["GET"],
+  authLevel: "anonymous",
+  route: "info",
+  handler: info
+});
 
-export const FillDocument = makeFillDocumentFunction(
-  pdvTokenizerClient,
-  filledContainerClient
-);
-
-export const GetSignerByFiscalCode = makeGetSignerByFiscalCodeFunction(
-  pdvTokenizerClient,
-  ioApiClient
-);
-
-export const GetQtspClausesMetadata = makeGetQtspClausesMetadataFunction(
-  config.namirial
-);
-
-export const CreateSignature = makeCreateSignatureFunction(
-  pdvTokenizerClient,
-  lollipopApiClient,
-  database,
-  qtspQueue,
-  validatedContainerClient,
-  signedContainerClient,
-  config.namirial
-);
-
-export const CreateSignatureRequest = makeCreateSignatureRequestFunction(
-  database,
-  onWaitForSignatureQueueClient,
-  generateSignatureRequestQrCode
-);
-
-export const ValidateSignature = makeValidateSignatureFunction(
-  database,
-  signedContainerClient,
-  config.namirial,
-  onSignedQueueClient,
-  onRejectedQueueClient,
-  eventHubAnalyticsClient
-);
-
-export const GetThirdPartyMessageDetails =
-  makeGetThirdPartyMessageDetailsFunction(pdvTokenizerClient, database);
-
-export const GetThirdPartyMessageAttachmentContent =
-  makeGetThirdPartyMessageAttachmentContentFunction(
-    pdvTokenizerClient,
-    database,
-    signedContainerClient
-  );
-
-const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
-  database
-);
-
-export const GetSignatureRequests = GetSignatureRequestsFunction({
+const getSignatureRequests = GetSignatureRequestsFunction({
   signatureRequestRepository
 });
 
-export const GetSignatureRequest = GetSignatureRequestFunction({
+app.http("getSignatureRequests", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "signature-requests",
+  handler: getSignatureRequests
+});
+
+const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient,
   signedContainerClient
 });
 
-export const UpdateSignatureRequest = UpdateSignatureRequestFunction({
+app.http("getSignatureRequest", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}",
+  handler: getSignatureRequest
+});
+
+const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
   eventAnalyticsClient: eventHubAnalyticsClient
+});
+
+app.storageQueue("updateSignatureRequest", {
+  queueName: "waiting-for-signature-request-updates",
+  connection: "StorageAccountConnectionString",
+  handler: updateSignatureRequest
+});
+
+const createSignature = CreateSignatureFunction({
+  pdvTokenizerClient,
+  lollipopApiClient,
+  db: database,
+  qtspQueue,
+  validatedContainerClient,
+  signedContainerClient,
+  qtspConfig: config.namirial
+});
+
+app.http("createSignature", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signatures",
+  handler: createSignature
+});
+
+const createSignatureRequest = CreateSignatureRequestFunction({
+  db: database,
+  onWaitForSignatureQueueClient,
+  generateSignatureRequestQrCode,
+  inputDecoder: SignatureRequestReady
+});
+
+app.storageQueue("createSignatureRequest", {
+  queueName: "on-signature-request-ready",
+  connection: "StorageAccountConnectionString",
+  handler: createSignatureRequest
+});
+
+const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
+  pdvTokenizerClient,
+  ioApiClient
+});
+
+app.http("getSignerByFiscalCode", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signers",
+  handler: getSignerByFiscalCode
+});
+
+const getQtspClausesMetadata = GetQtspClausesMetadataFunction(config.namirial);
+
+app.http("getQtspClausesMetadata", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "qtsp/clauses",
+  handler: getQtspClausesMetadata
+});
+
+const createFilledDocument = CreateFilledDocumentFunction({
+  filledContainerClient,
+  documentsToFillQueue,
+  pdvTokenizerClient
+});
+
+app.http("createFilledDocument", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "qtsp/clauses/filled_document",
+  handler: createFilledDocument
+});
+
+const getThirdPartyMessageDetails = GetThirdPartyMessageDetailsFunction({
+  pdvTokenizerClient,
+  db: database
+});
+
+app.http("getThirdPartyMessageDetails", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "messages/{signatureRequestId}",
+  handler: getThirdPartyMessageDetails
+});
+
+const getThirdPartyMessageAttachmentContent =
+  GetThirdPartyMessageAttachmentContentFunction({
+    pdvTokenizerClient,
+    db: database,
+    signedContainerClient
+  });
+
+app.http("getThirdPartyMessageAttachmentContent", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "messages/{signatureRequestId}/{documentId}",
+  handler: getThirdPartyMessageAttachmentContent
+});
+
+const fillDocument = FillDocumentFunction({
+  pdvTokenizerClient,
+  filledContainerClient,
+  inputDecoder: FillDocumentPayload
+});
+
+app.storageQueue("fillDocument", {
+  queueName: "waiting-for-documents-to-fill",
+  connection: "StorageAccountConnectionString",
+  handler: fillDocument
+});
+
+const validateSignature = ValidateSignatureFunction({
+  db: database,
+  signedContainerClient,
+  qtspConfig: config.namirial,
+  onSignedQueueClient,
+  onRejectedQueueClient,
+  eventHubAnalyticsClient,
+  inputDecoder: ValidateSignaturePayload
+});
+
+app.storageQueue("validateSignature", {
+  queueName: "waiting-for-qtsp",
+  connection: "StorageAccountConnectionString",
+  handler: validateSignature
 });
