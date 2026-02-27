@@ -41,6 +41,8 @@ import {
   makeLollipopClientHealthCheck
 } from "../../lollipop/health-check";
 
+declare const APP_VERSION: string;
+
 type ProblemSource =
   | AzureCosmosProblemSource
   | AzureStorageProblemSource
@@ -102,7 +104,7 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
             makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient)
           ],
           RA.sequence(applicativeValidation),
-          TE.map(() => ({ message: "It's working!" }))
+          TE.map(() => ({ message: "It's working!", version: APP_VERSION }))
         )
     ),
     RTE.map(H.successJson),
