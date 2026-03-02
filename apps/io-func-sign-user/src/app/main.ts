@@ -8,7 +8,6 @@ import { identity, pipe } from "fp-ts/lib/function";
 
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
-import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -16,7 +15,6 @@ import {
   SignatureRequestCancelled,
   SignatureRequestReady
 } from "@io-sign/io-sign/signature-request";
-import { InfoHandler } from "../infra/http/handlers/info";
 import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { FillDocumentFunction } from "../infra/azure/functions/fill-document";
 import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
@@ -33,6 +31,7 @@ import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signa
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
+import { InfoFunction } from "../infra/azure/functions/info";
 import { getConfigFromEnvironment } from "./config";
 
 const configOrError = pipe(
@@ -117,7 +116,7 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
   database
 );
 
-const info = httpAzureFunction(InfoHandler)({
+const info = InfoFunction({
   namirialConfig: config.namirial,
   pdvTokenizerClient,
   ioApiClient,
