@@ -33,7 +33,7 @@ export default function IpAddressListInput({
     z
       .string()
       .ip()
-      .transform((ip) => `${ip}/32`)
+      .transform((ip) => (ip === "0.0.0.0" ? "0.0.0.0/0" : `${ip}/32`)),
   );
 
   const formatItem = (item: string) => item.replace("/32", "");
