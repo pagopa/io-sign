@@ -4,6 +4,11 @@ export const cidrSchema = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
+
+  if (val === "0.0.0.0/0") {
+    return true;
+  }
+
   const [ip, subnet] = val.split("/");
   const result = z
     .object({
