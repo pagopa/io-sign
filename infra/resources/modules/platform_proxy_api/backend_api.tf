@@ -11,8 +11,10 @@ resource "azurerm_api_management_named_value" "app_backend_key" {
   api_management_name = var.platform_apim_name
   resource_group_name = var.platform_apim_resource_group_name
   display_name        = "io-sign-app-backend-key"
-  value               = data.azurerm_key_vault_secret.app_backend_api_key_secret.value
   secret              = true
+  value_from_key_vault {
+    secret_id = "${var.key_vault_common_uri}secrets/appbackend-APP-BACKEND-PRIMARY-KEY"
+  }
 }
 
 resource "azurerm_api_management_api" "io_sign" {
