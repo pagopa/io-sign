@@ -1,11 +1,15 @@
 import { z } from "zod";
 
+export const PUBLIC_CIDR = "0.0.0.0/0";
+
+const isPublicCidr = (val: string) => val === PUBLIC_CIDR;
+
 export const cidrSchema = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
 
-  if (val === "0.0.0.0/0") {
+  if (isPublicCidr(val)) {
     return true;
   }
 
