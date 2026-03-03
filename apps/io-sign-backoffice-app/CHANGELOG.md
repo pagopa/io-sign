@@ -1,5 +1,16 @@
 # io-sign-backoffice-app
 
+## 1.7.0
+
+### Minor Changes
+
+- 922073a: add whitelist ip validation
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
 ## 1.6.0
 
 ### Minor Changes
