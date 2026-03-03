@@ -99,6 +99,19 @@ services:
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: "PLAIN"
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$$ConnectionString" password="Endpoint=sb://eventhubs;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";'
 
+  mock-io-services:
+    image: mock-io-services
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-io-services"
+        NODE_VERSION: "20.19.5"
+    ports:
+      - "3011:3011"
+    environment:
+      - NODE_ENV=development
+
   io-func-sign-issuer:
     image: io-func-sign-issuer
     build:
@@ -115,6 +128,7 @@ services:
       - azurite
       - cosmos-db
       - eventhubs
+      - mock-io-services
 
   io-func-sign-support:
     image: io-func-sign-support
@@ -149,6 +163,7 @@ services:
       - azurite
       - cosmos-db
       - eventhubs
+      - mock-io-services
   
   io-sign-backoffice-func:
     image: io-sign-backoffice-func
