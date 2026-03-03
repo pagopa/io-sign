@@ -14,7 +14,8 @@ describe("cidrSchema Test", () => {
       "192.168.0.0/22",
       "10.0.0.0/27",
       "0.0.0.0/8",
-      "255.255.255.255/32"
+      "255.255.255.255/32",
+      "0.0.0.0/0"
     ])("should accept %s", (cidr) => {
       expect(cidrSchema.safeParse(cidr).success).toBe(true);
     });
@@ -36,6 +37,10 @@ describe("cidrSchema Test", () => {
       {
         cidr: "255.255.255.255/32a",
         description: "subnet with non-numeric characters"
+      },
+      {
+        cidr: "0.0.0.0/2",
+        description: "subnet below 8 for whitelist ip (0.0.0.0)"
       }
     ])("should reject $cidr ($description)", ({ cidr }) => {
       expect(cidrSchema.safeParse(cidr).success).toBe(false);

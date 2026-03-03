@@ -17,6 +17,11 @@ variable "platform_apim_resource_group_name" {
   description = "APIM Resource group name"
 }
 
+variable "platform_apim_identity_principal_id" {
+  type        = string
+  description = "APIM Resource Identity Principal ID"
+}
+
 variable "key_vault_common_id" {
   type        = string
   description = "Key Vault Common ID"

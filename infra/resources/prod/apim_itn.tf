@@ -17,6 +17,13 @@ resource "azurerm_role_assignment" "staging_sign_backoffice_app_role" {
   scope                = data.azurerm_api_management.apim_itn_api.id
 }
 
+resource "azurerm_role_assignment" "apim_itn_key_vault_secrets_reader" {
+  description          = "Allow ${data.azurerm_api_management.apim_itn_api.name} to read secrets"
+  principal_id         = data.azurerm_api_management.apim_itn_api.identity[0].principal_id
+  role_definition_name = "Key Vault Secrets User"
+  scope                = module.key_vault.id
+}
+
 # Named values
 
 resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {

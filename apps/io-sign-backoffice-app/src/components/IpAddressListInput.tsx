@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import EditableList, { Props as EditableListProps } from "./EditableList";
 
-import { cidrSchema } from "@/lib/api-keys";
+import { cidrSchema, PUBLIC_CIDR } from "@/lib/api-keys";
 
 export type Props = Pick<
   EditableListProps,
@@ -13,6 +13,10 @@ export type Props = Pick<
 > & {
   editModal?: Partial<EditableListProps["editModal"]>;
 };
+
+const IP_WHITELIST = "0.0.0.0";
+
+const isIpWhitelist = (val: string) => val === IP_WHITELIST;
 
 export default function IpAddressListInput({
   items,
@@ -26,14 +30,14 @@ export default function IpAddressListInput({
     {
       title: t("modals.editIpAddress.title"),
     },
-    editModal
+    editModal,
   );
 
   const schema = cidrSchema.or(
     z
       .string()
       .ip()
-      .transform((ip) => `${ip}/32`)
+      .transform((ip) => (isIpWhitelist(ip) ? PUBLIC_CIDR : `${ip}/32`)),
   );
 
   const formatItem = (item: string) => item.replace("/32", "");
