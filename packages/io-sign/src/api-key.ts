@@ -1,9 +1,18 @@
 import { z } from "zod";
 
+export const PUBLIC_CIDR = "0.0.0.0/0";
+
+const isPublicCidr = (val: string) => val === PUBLIC_CIDR;
+
 export const cidrSchema = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
+
+  if (isPublicCidr(val)) {
+    return true;
+  }
+
   const [ip, subnet] = val.split("/");
   const result = z
     .object({
