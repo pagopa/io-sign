@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.5.0
+
+### Minor Changes
+
+- 922073a: add whitelist ip validation
+
 ## 1.4.1
 
 ### Patch Changes

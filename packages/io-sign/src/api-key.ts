@@ -1,14 +1,29 @@
 import { z } from "zod";
 
+export const PUBLIC_CIDR = "0.0.0.0/0";
+
+const isPublicCidr = (val: string) => val === PUBLIC_CIDR;
+
 export const cidrSchema = z.custom<string>((val) => {
   if (typeof val !== "string") {
     return false;
   }
+
+  if (isPublicCidr(val)) {
+    return true;
+  }
+
   const [ip, subnet] = val.split("/");
   const result = z
     .object({
       ip: z.string().ip({ version: "v4" }),
-      subnet: z.enum(["8", "16", "24", "32"])
+      subnet: z
+        .string()
+        .regex(/^\d+$/)
+        .refine((s) => {
+          const n = parseInt(s, 10);
+          return !isNaN(n) && n >= 8 && n <= 32;
+        })
     })
     .safeParse({ ip, subnet });
   return result.success;
