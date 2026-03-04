@@ -12,5 +12,8 @@ module "io_platform_apim_api" {
   platform_apim_id                    = data.azurerm_api_management.platform_apim.id
   platform_apim_identity_principal_id = data.azurerm_api_management.platform_apim.identity[0].principal_id
 
-  key_vault_common_id = module.key_vault_itn.id
+  key_vault_common_id           = module.key_vault_itn.id
+  key_vault_common_name         = module.key_vault_itn.name
+  key_vault_resource_group_name = module.key_vault_itn.resource_group_name
+  subscription_id               = data.azurerm_subscription.current.subscription_id
 }
