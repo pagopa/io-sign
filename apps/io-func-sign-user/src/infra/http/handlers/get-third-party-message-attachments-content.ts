@@ -15,7 +15,7 @@ import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Document, DocumentId, DocumentReady } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
+import { getDocumentContent as getDocumentContentFromStorage } from "@io-sign/io-sign/infra/azure/storage/document-content";
 import { bufferResponse } from "@io-sign/io-sign/infra/http/response";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
@@ -60,11 +60,15 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
             const getSignerByFiscalCode =
               makeGetSignerByFiscalCode(pdvTokenizerClient);
             const getSignatureRequest = makeGetSignatureRequest(db);
-            const getDocumenContent: GetDocumentContent = (
+            const getDocumentContent: GetDocumentContent = (
               document: DocumentReady
-            ) => pipe(document, getDocumentContent)(signedContainerClient);
+            ) =>
+              pipe(
+                document,
+                getDocumentContentFromStorage
+              )(signedContainerClient);
             const getSignedDocumentContent =
-              makeGetSignedDocumentContent(getDocumenContent);
+              makeGetSignedDocumentContent(getDocumentContent);
 
             return pipe(
               fiscalCode,

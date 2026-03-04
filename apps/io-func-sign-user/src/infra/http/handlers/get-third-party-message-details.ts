@@ -2,14 +2,11 @@ import * as H from "@pagopa/handler-kit";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as E from "fp-ts/lib/Either";
 
 import { flow, pipe } from "fp-ts/lib/function";
-import { lookup } from "fp-ts/Record";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { Database } from "@azure/cosmos";
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
@@ -20,16 +17,7 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { makeGetSignatureRequest } from "../../azure/cosmos/signature-request";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../encoders/signature-request";
-
-const requireFiscalCode = (req: H.HttpRequest): E.Either<Error, FiscalCode> =>
-  pipe(
-    req.headers,
-    lookup("fiscal_code"),
-    E.fromOption(
-      () => new H.HttpBadRequestError("Missing fiscal_code in header")
-    ),
-    E.chainW(H.parse(FiscalCode, "Invalid fiscal code"))
-  );
+import { requireFiscalCode } from "../decoders/fiscal-code";
 
 type GetThirdPartyMessageDetailsDependencies = {
   pdvTokenizerClient: PdvTokenizerClientWithApiKey;
