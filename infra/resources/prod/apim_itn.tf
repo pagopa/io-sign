@@ -28,6 +28,7 @@ module "apim_itn_roles" {
       name                = module.key_vault.name
       resource_group_name = module.key_vault.resource_group_name
       description         = "Allow ${data.azurerm_api_management.apim_itn_api.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
       roles = {
         secrets = "reader"
       }
