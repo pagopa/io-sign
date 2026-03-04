@@ -53,6 +53,7 @@ const toAzureResponse = (
   });
 };
 
+// httpAzureFunction from handler-kit does not support binary (Buffer) responses, so we use a custom adapter that handles Buffer as response
 export const GetThirdPartyMessageAttachmentContentFunction =
   (deps: GetThirdPartyMessageAttachmentContentDependencies) =>
   async (request: HttpRequest): Promise<HttpResponse> =>
