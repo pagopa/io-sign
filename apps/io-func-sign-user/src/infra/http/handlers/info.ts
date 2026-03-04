@@ -113,7 +113,11 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         H.problemJson({
           status: 503,
           title: "Service Unavailable",
-          detail: error instanceof Error ? error.message : String(error)
+          detail: Array.isArray(error)
+            ? error.join("\n\n")
+            : error instanceof Error
+              ? error.message
+              : String(error)
         })
       )
     )
