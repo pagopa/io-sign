@@ -112,6 +112,19 @@ services:
     environment:
       - NODE_ENV=development
 
+  mock-namirial:
+    image: mock-namirial
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-namirial"
+        NODE_VERSION: "20.19.5"
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=development
+
   io-func-sign-issuer:
     image: io-func-sign-issuer
     build:
@@ -164,6 +177,7 @@ services:
       - cosmos-db
       - eventhubs
       - mock-io-services
+      - mock-namirial
   
   io-sign-backoffice-func:
     image: io-sign-backoffice-func

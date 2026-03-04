@@ -703,6 +703,31 @@ importers:
         specifier: ^5.2.2
         version: 5.8.3
 
+  packages/mock-namirial:
+    dependencies:
+      body-parser:
+        specifier: ^1.20.2
+        version: 1.20.4
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+    devDependencies:
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.4
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.20
+      '@types/node':
+        specifier: ^20.17.6
+        version: 20.17.52
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@20.17.52)(typescript@5.8.3)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.8.3
+
   packages/web-sdk:
     dependencies:
       '@lit-labs/context':
@@ -14569,7 +14594,7 @@ snapshots:
   is-weakset@2.0.2:
     dependencies:
       call-bind: 1.0.5
-      get-intrinsic: 1.2.2
+      get-intrinsic: 1.3.0
 
   is-whitespace-character@1.0.4: {}
 
@@ -15726,7 +15751,7 @@ snapshots:
 
   qs@6.11.0:
     dependencies:
-      side-channel: 1.0.4
+      side-channel: 1.1.0
 
   qs@6.11.2:
     dependencies:
@@ -15895,7 +15920,7 @@ snapshots:
       call-bind: 1.0.5
       define-properties: 1.2.1
       es-abstract: 1.22.3
-      get-intrinsic: 1.2.2
+      get-intrinsic: 1.3.0
       globalthis: 1.0.3
       which-builtin-type: 1.1.3
 
