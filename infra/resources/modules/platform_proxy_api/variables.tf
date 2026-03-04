@@ -22,9 +22,9 @@ variable "platform_apim_identity_principal_id" {
   description = "APIM Resource Identity Principal ID"
 }
 
-variable "key_vault_common_id" {
+variable "key_vault_common_uri" {
   type        = string
-  description = "Key Vault Common ID"
+  description = "Key Vault Common URI"
 }
 
 variable "key_vault_common_name" {
