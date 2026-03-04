@@ -17,6 +17,24 @@ resource "azurerm_role_assignment" "staging_sign_backoffice_app_role" {
   scope                = data.azurerm_api_management.apim_itn_api.id
 }
 
+module "apim_itn_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_api_management.apim_itn_api.identity[0].principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${data.azurerm_api_management.apim_itn_api.name} to read secrets from ${module.key_vault.name}"
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 # Named values
 
 resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
