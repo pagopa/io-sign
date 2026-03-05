@@ -39,7 +39,7 @@ vi.mock("@/lib/institutions/use-cases", () => ({
     id: "8c68a47b-fdbd-46e9-91df-71aa0d45043b",
     name: "Comune di Genola",
     taxCode: "0010213",
-    supportEmail: "firmaconio-tech@pagopa.it",
+    supportEmail: "io-service-management@pagopa.it",
   }),
 }));
 
