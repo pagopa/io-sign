@@ -121,25 +121,6 @@ module "io_sign_issuer_func_itn" {
   tags = var.tags
 }
 
-module "io_sign_issuer_func_itn_roles" {
-  source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
-  principal_id    = module.io_sign_issuer_func_itn.system_identity_principal
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  key_vault = [
-    {
-      name                = module.key_vault.name
-      resource_group_name = module.key_vault.resource_group_name
-      description         = "Allow ${module.io_sign_issuer_func_itn.name} to read secrets from ${module.key_vault.name}"
-      has_rbac_support    = false
-      roles = {
-        secrets = "reader"
-      }
-    }
-  ]
-}
-
 resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role_itn" {
   scope                = azurerm_storage_queue.api_keys.resource_manager_id
   role_definition_name = "Storage Queue Data Message Processor"
