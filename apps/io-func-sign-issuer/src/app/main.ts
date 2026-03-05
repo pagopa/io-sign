@@ -1,3 +1,4 @@
+import { app } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
@@ -17,15 +18,18 @@ import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokeniz
 import { ApplicationInsights } from "@io-sign/io-sign/infra/azure/appinsights/index";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 import { IONotificationService } from "@io-sign/io-sign/infra/io-services/message";
-import { makeGetSignerFunction } from "../infra/azure/functions/get-signer";
-import { makeGetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
-import { makeInfoFunction } from "../infra/azure/functions/info";
-import { makeSendNotificationFunction } from "../infra/azure/functions/send-notification";
+import { SignatureRequestToBeSigned } from "@io-sign/io-sign/signature-request";
 
-import { makeRequestAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
-
-import { makeCreateIssuerFunction } from "../infra/azure/functions/create-issuer";
-export { run as CreateIssuerByVatNumberView } from "../infra/azure/functions/create-issuers-by-vat-number-view";
+import { InfoFunction } from "../infra/azure/functions/info";
+import { GetSignerFunction } from "../infra/azure/functions/get-signer";
+import { GetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
+import { SendNotificationFunction } from "../infra/azure/functions/send-notification";
+import { MarkAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
+import { makeCreateIssuerHandler } from "../infra/azure/functions/create-issuer";
+import {
+  createIssuersByVatNumberView,
+  issuersByVatNumberViewOutput
+} from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
@@ -146,22 +150,173 @@ const WaitingForSignatureRequestUpdatesQueueClient = new QueueClient(
   "waiting-for-signature-request-updates"
 );
 
-export const Info = makeInfoFunction(
-  pdvTokenizerClientWithApiKey,
+// ---- HTTP TRIGGERS ----
+
+const info = InfoFunction({
+  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
   ioApiClient,
-  database,
+  db: database,
   eventHubBillingClient,
-  eventAnalyticsClient,
+  eventHubAnalyticsClient: eventAnalyticsClient,
   eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
-);
+});
 
-export const MarkAsWaitForSignature =
-  makeRequestAsWaitForSignatureFunction(database);
+app.http("info", {
+  methods: ["GET"],
+  authLevel: "anonymous",
+  route: "info",
+  handler: info
+});
 
-export const CloseSignatureRequest = CloseSignatureRequestFunction({
+const getSignerByFiscalCode = GetSignerFunction({
+  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
+  ioApiClient
+});
+
+app.http("getSignerByFiscalCode", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signers",
+  handler: getSignerByFiscalCode
+});
+
+const getUploadUrl = GetUploadUrlFunction({
+  db: database,
+  uploadedContainerClient,
+  issuerRepository
+});
+
+app.http("getUploadUrl", {
+  methods: ["GET"],
+  authLevel: "function",
+  route:
+    "signature-requests/{signatureRequestId}/documents/{documentId}/upload_url",
+  handler: getUploadUrl
+});
+
+const sendNotification = SendNotificationFunction({
+  db: database,
+  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
+  ioApiClient,
+  configurationId: config.pagopa.ioServices.configurationId,
+  eventHubAnalyticsClient: eventAnalyticsClient,
+  issuerRepository
+});
+
+app.http("sendNotification", {
+  methods: ["PUT"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}/notification",
+  handler: sendNotification
+});
+
+const getDossier = GetDossierFunction({
+  issuerRepository,
+  dossierRepository
+});
+
+app.http("getDossier", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "dossiers/{dossierId}",
+  handler: getDossier
+});
+
+const createDossier = CreateDossierFunction({
+  issuerRepository,
+  dossierRepository
+});
+
+app.http("createDossier", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "dossiers",
+  handler: createDossier
+});
+
+const getRequestsByDossier = GetRequestsByDossierFunction({
+  signatureRequestRepository,
+  issuerRepository,
+  dossierRepository
+});
+
+app.http("getRequestsByDossier", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "dossiers/{dossierId}/signature-requests",
+  handler: getRequestsByDossier
+});
+
+const getSignatureRequest = GetSignatureRequestFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  signedContainerClient
+});
+
+app.http("getSignatureRequest", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}",
+  handler: getSignatureRequest
+});
+
+const createSignatureRequest = CreateSignatureRequestFunction({
+  issuerRepository,
+  dossierRepository,
+  signatureRequestRepository,
+  eventAnalyticsClient
+});
+
+app.http("createSignatureRequest", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signature-requests",
+  handler: createSignatureRequest
+});
+
+const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
+  issuerRepository,
+  signatureRequestRepository,
+  eventAnalyticsClient,
+  ready: onSignatureRequestReadyQueueClient,
+  updated: WaitingForSignatureRequestUpdatesQueueClient
+});
+
+app.http("setSignatureRequestStatus", {
+  methods: ["PUT"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}/status",
+  handler: setSignatureRequestStatus
+});
+
+const validateDocument = validateDocumentFunction({
+  issuerRepository
+});
+
+app.http("validateDocument", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "validate-document",
+  handler: validateDocument
+});
+
+// ---- QUEUE TRIGGERS ----
+
+const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
+  db: database,
+  inputDecoder: SignatureRequestToBeSigned
+});
+
+app.storageQueue("markAsWaitForSignature", {
+  queueName: "on-signature-request-wait-for-signature",
+  connection: "StorageAccountConnectionString",
+  handler: markAsWaitForSignature
+});
+
+const closeSignatureRequestSigned = CloseSignatureRequestFunction({
   signatureRequestRepository,
   signerRepository,
   telemetryService,
@@ -171,47 +326,33 @@ export const CloseSignatureRequest = CloseSignatureRequestFunction({
   inputDecoder: ClosedSignatureRequest
 });
 
-export const GetSignerByFiscalCode = makeGetSignerFunction(
-  pdvTokenizerClientWithApiKey,
-  ioApiClient
-);
-
-export const GetUploadUrl = makeGetUploadUrlFunction(
-  database,
-  uploadedContainerClient
-);
-
-export const SendNotification = makeSendNotificationFunction(
-  database,
-  pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  config.pagopa.ioServices.configurationId,
-  eventAnalyticsClient
-);
-
-export const CreateIssuer = makeCreateIssuerFunction(
-  database,
-  config.pagopa.selfCare,
-  config.slack
-);
-
-export const GetDossier = GetDossierFunction({
-  issuerRepository,
-  dossierRepository
+app.storageQueue("closeSignatureRequestSigned", {
+  queueName: "on-signature-request-signed",
+  connection: "StorageAccountConnectionString",
+  handler: closeSignatureRequestSigned
 });
 
-export const CreateDossier = CreateDossierFunction({
-  issuerRepository,
-  dossierRepository
-});
-
-export const GetRequestsByDossier = GetRequestsByDossierFunction({
+const closeSignatureRequestRejected = CloseSignatureRequestFunction({
   signatureRequestRepository,
-  issuerRepository,
-  dossierRepository
+  signerRepository,
+  telemetryService,
+  notificationService,
+  eventAnalyticsClient,
+  billingEventProducer: eventHubBillingClient,
+  inputDecoder: ClosedSignatureRequest
 });
 
-export const ValidateUpload = ValidateUploadFunction({
+app.storageQueue("closeSignatureRequestRejected", {
+  queueName: "on-signature-request-rejected",
+  connection: "StorageAccountConnectionString",
+  handler: closeSignatureRequestRejected
+});
+
+// ---- BLOB TRIGGER ----
+// Note: this function was originally disabled (disabled: true in function.json).
+// To keep it disabled at runtime set app setting: AzureWebJobs.validateUpload.Disabled = true
+
+const validateUpload = ValidateUploadFunction({
   signatureRequestRepository,
   uploadMetadataRepository,
   uploadedFileStorage,
@@ -220,27 +361,35 @@ export const ValidateUpload = ValidateUploadFunction({
   eventAnalyticsClient
 });
 
-export const ValidateDocument = validateDocumentFunction({
-  issuerRepository
+app.storageBlob("validateUpload", {
+  path: "uploaded-documents/{name}",
+  connection: "StorageAccountConnectionString",
+  handler: validateUpload
 });
 
-export const GetSignatureRequest = GetSignatureRequestFunction({
-  issuerRepository,
-  signatureRequestRepository,
-  signedContainerClient
+// ---- EVENT HUB TRIGGER ----
+
+app.eventHub("createIssuer", {
+  connection: "SelfCareEventHubConnectionString",
+  eventHubName: "sc-contracts",
+  cardinality: "many",
+  handler: makeCreateIssuerHandler(
+    database,
+    config.pagopa.selfCare,
+    config.slack
+  )
 });
 
-export const CreateSignatureRequest = CreateSignatureRequestFunction({
-  issuerRepository,
-  dossierRepository,
-  signatureRequestRepository,
-  eventAnalyticsClient
-});
+// ---- COSMOS DB TRIGGER ----
 
-export const SetSignatureRequestStatus = SetSignatureRequestStatusFunction({
-  issuerRepository,
-  signatureRequestRepository,
-  eventAnalyticsClient,
-  ready: onSignatureRequestReadyQueueClient,
-  updated: WaitingForSignatureRequestUpdatesQueueClient
+app.cosmosDB("createIssuerByVatNumberView", {
+  connection: "CosmosDbConnectionString",
+  databaseName: "%CosmosDbDatabaseName%",
+  containerName: "issuers",
+  leaseContainerName: "leases",
+  leaseContainerPrefix: "issuers-by-vat",
+  createLeaseContainerIfNotExists: true,
+  startFromBeginning: true,
+  extraOutputs: [issuersByVatNumberViewOutput],
+  handler: createIssuersByVatNumberView
 });
