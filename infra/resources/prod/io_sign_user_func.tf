@@ -145,6 +145,25 @@ module "io_sign_user_func_staging_slot" {
   tags = var.tags
 }
 
+module "io_sign_user_func_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_user_func_staging_slot.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_user_func_staging_slot.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 resource "azurerm_monitor_autoscale_setting" "io_sign_user_func" {
   count               = var.io_sign_user_func.sku_tier == "PremiumV3" ? 1 : 0
   name                = format("%s-autoscale", module.io_sign_user_func.name)
