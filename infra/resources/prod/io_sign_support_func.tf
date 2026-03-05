@@ -4,11 +4,11 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       CosmosDbIssuerDatabaseName        = module.cosmosdb_sql_database_issuer.name
       CosmosDbUserDatabaseName          = module.cosmosdb_sql_database_user.name
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=PdvTokenizerApiKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/support/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
