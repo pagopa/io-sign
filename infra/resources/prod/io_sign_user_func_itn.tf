@@ -123,6 +123,25 @@ module "io_sign_user_func_itn" {
   tags = var.tags
 }
 
+module "io_sign_user_func_itn_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_user_func_itn.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_user_func_itn.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 module "io_sign_user_func_staging_slot_itn" {
   count  = var.io_sign_user_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
