@@ -52,7 +52,6 @@ module "io_sign_support_func" {
 }
 
 module "io_sign_support_func_staging_slot" {
-  count  = var.io_sign_support_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
 
   name                = "staging"
