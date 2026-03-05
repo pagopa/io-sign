@@ -11,30 +11,30 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       NODE_TLS_REJECT_UNAUTHORIZED      = 0
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_user.name
-      StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
+      StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
       userUploadedBlobContainerName     = azurerm_storage_container.uploaded_documents.name
       userValidatedBlobContainerName    = azurerm_storage_container.validated_documents.name
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
-      IoServicesSubscriptionKey         = module.key_vault_secrets.values["IoServicesSubscriptionKey"].value
-      IoServicesConfigurationId         = module.key_vault_secrets.values["io-services-configuration-id"].value
+      IoServicesSubscriptionKey         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=IoServicesSubscriptionKey)"
+      IoServicesConfigurationId         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=io-services-configuration-id)"
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=PdvTokenizerApiKey)"
       NamirialApiBasePath               = "https://pagopa.namirial.com"
       NamirialUsername                  = "api"
-      NamirialPassword                  = module.key_vault_secrets.values["NamirialPassword"].value
+      NamirialPassword                  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=NamirialPassword)"
       NamirialTestApiBasePath           = "https://pagopa-test.namirial.com"
       NamirialTestUsername              = "api"
-      NamirialTestPassword              = module.key_vault_secrets.values["NamirialTestPassword"].value
-      AnalyticsEventHubConnectionString = module.event_hub.keys["analytics.io-sign-func-user"].primary_connection_string
-      BillingEventHubConnectionString   = module.event_hub.keys["billing.io-sign-func-issuer"].primary_connection_string
-      SelfCareEventHubConnectionString  = module.key_vault_secrets.values["SelfCareEventHubConnectionString"].value
+      NamirialTestPassword              = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=NamirialTestPassword)"
+      AnalyticsEventHubConnectionString = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=AnalyticsEventHubConnectionString)"
+      BillingEventHubConnectionString   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=BillingEventHubConnectionString)"
+      SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
-      SelfCareApiKey                    = module.key_vault_secrets.values["SelfCareApiKey"].value
+      SelfCareApiKey                    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareApiKey)"
       LollipopApiBasePath               = "https://api.io.pagopa.it"
-      LollipopApiKey                    = module.key_vault_secrets.values["LollipopPrimaryApiKey"].value
-      SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
+      LollipopApiKey                    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=LollipopPrimaryApiKey)"
+      SlackWebhookUrl                   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SlackWebhookUrl)"
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
