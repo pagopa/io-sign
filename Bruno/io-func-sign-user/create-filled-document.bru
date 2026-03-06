@@ -1,0 +1,29 @@
+meta {
+  name: create-filled-document
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{io-func-sign-user-base-url}}/sign/qtsp/clauses/filled_document
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-iosign-signer-id: {{signer_id}}
+}
+
+body:json {
+  {
+    "document_url": "{{document_url}}",
+    "email": "mario.rossi@test.com",
+    "family_name": "Rossi",
+    "name": "Mario"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
