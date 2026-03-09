@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.7.1
+
+### Patch Changes
+
+- 53dd029: update support email
+
 ## 1.7.0
 
 ### Minor Changes

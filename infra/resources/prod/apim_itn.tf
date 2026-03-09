@@ -91,8 +91,10 @@ resource "azurerm_api_management_named_value" "io_sign_cosmosdb_key_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-sign-cosmosdb-key"
-  value               = module.cosmosdb_account.primary_readonly_key
   secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/COSMOS-DB-PRIMARY-KEY"
+  }
 }
 
 # legacy, it can be removed once the backoffice is released
