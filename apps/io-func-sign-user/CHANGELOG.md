@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.0.1
+
+### Patch Changes
+
+- 4dcc232: Fix status code for create-signature
+
 ## 1.0.0
 
 ### Major Changes
