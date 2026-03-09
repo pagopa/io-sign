@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.6.0
+
+### Minor Changes
+
+- eb0f6b6: Changes to BufferResponse to support v4 programming model. Added visibilityTimeout on queue sendMessage
+
 ## 1.5.0
 
 ### Minor Changes

@@ -19,7 +19,7 @@
   },
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
-    "version": "[3.3.*, 4.0.0)"
+    "version": "[4.*, 5.0.0)"
   },
   "extensions": {
     "http": {
@@ -30,7 +30,9 @@
       "traceReplayEvents": false
     },
     "queues": {
-      "maxPollingInterval": "00:00:05.000"
+      "maxPollingInterval": "00:00:05.000",
+      "maxDequeueCount": 3,
+      "visibilityTimeout": "00:00:30"
     }
   }
 }
