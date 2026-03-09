@@ -310,6 +310,9 @@ importers:
       '@azure/event-hubs':
         specifier: 'catalog:'
         version: 5.11.2
+      '@azure/functions':
+        specifier: 'catalog:'
+        version: 4.11.1
       '@azure/storage-blob':
         specifier: 'catalog:'
         version: 12.16.0
@@ -320,11 +323,11 @@ importers:
         specifier: workspace:^
         version: link:../../packages/io-sign
       '@pagopa/handler-kit':
-        specifier: ^1.1.0
-        version: 1.1.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        specifier: 'catalog:'
+        version: 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit-azure-func':
-        specifier: ^1.2.0
-        version: 1.2.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        specifier: 'catalog:'
+        version: 2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: 'catalog:'
         version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
@@ -340,9 +343,6 @@ importers:
       fp-ts:
         specifier: 'catalog:'
         version: 2.16.10
-      handler-kit-legacy:
-        specifier: 'catalog:'
-        version: '@pagopa/handler-kit@0.5.1'
       io-ts:
         specifier: 'catalog:'
         version: 2.2.22(fp-ts@2.16.10)
@@ -14594,7 +14594,7 @@ snapshots:
   is-weakset@2.0.2:
     dependencies:
       call-bind: 1.0.5
-      get-intrinsic: 1.3.0
+      get-intrinsic: 1.2.2
 
   is-whitespace-character@1.0.4: {}
 
@@ -15751,7 +15751,7 @@ snapshots:
 
   qs@6.11.0:
     dependencies:
-      side-channel: 1.1.0
+      side-channel: 1.0.4
 
   qs@6.11.2:
     dependencies:
@@ -15920,7 +15920,7 @@ snapshots:
       call-bind: 1.0.5
       define-properties: 1.2.1
       es-abstract: 1.22.3
-      get-intrinsic: 1.3.0
+      get-intrinsic: 1.2.2
       globalthis: 1.0.3
       which-builtin-type: 1.1.3
 

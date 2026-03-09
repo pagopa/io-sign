@@ -10,12 +10,12 @@ import {
 import { validate } from "@io-sign/io-sign/validation";
 
 import {
-  InsertSignatureRequest,
-  NotifySignatureRequestWaitForSignatureEvent
+  NotifySignatureRequestWaitForSignatureEvent,
+  UpsertSignatureRequest
 } from "../../signature-request";
 
 export const makeCreateSignatureRequest = (
-  insertSignatureRequest: InsertSignatureRequest,
+  upsertSignatureRequest: UpsertSignatureRequest,
   notifyWaitForSignatureEvent: NotifySignatureRequestWaitForSignatureEvent,
   generateSignatureRequestQrCode: GenerateSignatureRequestQrCode
 ) =>
@@ -25,7 +25,7 @@ export const makeCreateSignatureRequest = (
       status: "WAIT_FOR_SIGNATURE",
       qrCodeUrl: generateSignatureRequestQrCode(request.id)
     }),
-    insertSignatureRequest,
+    upsertSignatureRequest,
     TE.chainEitherKW(
       validate(
         SignatureRequestToBeSigned,

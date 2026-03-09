@@ -1,6 +1,6 @@
 import { ValidationError, validate } from "@io-sign/io-sign/validation";
 
-import { HttpRequest } from "handler-kit-legacy/lib/http";
+import * as H from "@pagopa/handler-kit";
 
 import { flow, identity, pipe } from "fp-ts/lib/function";
 
@@ -94,7 +94,7 @@ export const DocumentToSignFromApiModel = new t.Type<
 );
 
 export const requireDocumentsSignature = flow(
-  (res: HttpRequest) => res.body,
+  (res: H.HttpRequest) => res.body,
   validate(CreateSignatureBody),
   E.map((body) => body.documents_to_sign),
   E.chain(
@@ -115,3 +115,13 @@ export const requireDocumentsSignature = flow(
     )
   )
 );
+
+export const requireCreateSignatureBody = (req: H.HttpRequest) =>
+  pipe(
+    req.body,
+    validate(CreateSignatureBody),
+    E.map((body) => ({
+      email: body.email,
+      signatureRequestId: body.signature_request_id
+    }))
+  );
