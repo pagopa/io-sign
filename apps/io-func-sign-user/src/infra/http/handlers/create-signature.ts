@@ -193,7 +193,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
       pipe(
         SignatureToApiModel.encode(signature),
         H.successJson,
-        H.withStatusCode(201)
+        H.withStatusCode(200)
       )
     ),
     RTE.orElseW(logErrorAndReturnResponse)
