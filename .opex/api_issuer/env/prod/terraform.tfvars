@@ -7,5 +7,6 @@ tags = {
   Environment    = "Prod"
   Owner          = "IO"
   Source         = "https://github.com/pagopa/io-sign",
-  ManagementTeam = "IO Ecosystem - Links"
+  ManagementTeam = "IO Ecosystem - Links",
+  CostCenter     = "TS000"
 }
