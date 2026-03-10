@@ -8,5 +8,5 @@ tags = {
   Owner          = "IO"
   Source         = "https://github.com/pagopa/io-sign"
   ManagementTeam = "IO Ecosystem - Links",
-  CostCenter     = "TS000"
+  CostCenter     = "TS000 - Tecnologia e Servizi"
 }
