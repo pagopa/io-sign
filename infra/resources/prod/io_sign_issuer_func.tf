@@ -112,7 +112,6 @@ resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role" {
 }
 
 module "io_sign_issuer_func_staging_slot" {
-  count  = var.io_sign_issuer_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
 
   name                = "staging"
