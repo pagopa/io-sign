@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.5.3
+
+### Patch Changes
+
+- 579ea79: Fix cosmosDb triggher for createApiKeysById
+
 ## 1.5.2
 
 ### Patch Changes
