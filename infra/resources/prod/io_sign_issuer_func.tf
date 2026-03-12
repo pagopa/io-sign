@@ -15,25 +15,25 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_issuer.name
-      StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
+      StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
       IssuerUploadedBlobContainerName   = azurerm_storage_container.uploaded_documents.name
       IssuerValidatedBlobContainerName  = azurerm_storage_container.validated_documents.name
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
-      IoServicesSubscriptionKey         = module.key_vault_secrets.values["IoServicesSubscriptionKey"].value
-      IoServicesConfigurationId         = module.key_vault_secrets.values["io-services-configuration-id"].value
+      IoServicesSubscriptionKey         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=IoServicesSubscriptionKey)"
+      IoServicesConfigurationId         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=io-services-configuration-id)"
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
-      AnalyticsEventHubConnectionString = module.event_hub.keys["analytics.io-sign-func-issuer"].primary_connection_string
-      BillingEventHubConnectionString   = module.event_hub.keys["billing.io-sign-func-issuer"].primary_connection_string
-      SelfCareEventHubConnectionString  = module.key_vault_secrets.values["SelfCareEventHubConnectionString"].value
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=PdvTokenizerApiKey)"
+      AnalyticsEventHubConnectionString = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=AnalyticsEventHubConnectionString)"
+      BillingEventHubConnectionString   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=BillingEventHubConnectionString)"
+      SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
-      SelfCareApiKey                    = module.key_vault_secrets.values["SelfCareApiKey"].value
-      SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
+      SelfCareApiKey                    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareApiKey)"
+      SlackWebhookUrl                   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SlackWebhookUrl)"
       BackOfficeApiBasePath             = "https://api.io.pagopa.it/api/v1/sign/backoffice"
-      BackOfficeApiKey                  = module.key_vault_secrets.values["BackOfficeApiKey"].value
+      BackOfficeApiKey                  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=BackOfficeApiKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
