@@ -144,6 +144,8 @@ module "io_sign_issuer_func_staging_slot" {
   ip_restriction_default_action = "Deny"
   allowed_subnets               = []
 
+  system_identity_enabled = true
+
   tags = var.tags
 }
 
