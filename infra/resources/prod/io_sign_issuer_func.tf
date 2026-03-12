@@ -16,6 +16,7 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_issuer.name
       StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
       IssuerUploadedBlobContainerName   = azurerm_storage_container.uploaded_documents.name

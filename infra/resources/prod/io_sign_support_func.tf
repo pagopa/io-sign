@@ -5,6 +5,7 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbIssuerDatabaseName        = module.cosmosdb_sql_database_issuer.name
       CosmosDbUserDatabaseName          = module.cosmosdb_sql_database_user.name
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
