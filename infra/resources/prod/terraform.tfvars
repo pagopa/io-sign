@@ -160,6 +160,10 @@ io_sign_backoffice_app = {
     {
       name                  = "SLACK_WEB_HOOK_URL",
       key_vault_secret_name = "slack-webhook-url"
+    },
+    {
+      name                  = "COSMOS_DB_CONNECTION_STRING",
+      key_vault_secret_name = "COSMOS-DB-CONNECTION-STRING"
     }
   ]
 }
@@ -211,6 +215,10 @@ io_sign_backoffice_func = {
       name                  = "SELFCARE_API_KEY",
       key_vault_secret_name = "selfcare-prod-api-key"
     },
+    {
+      name                  = "COSMOS_DB_CONNECTION_STRING",
+      key_vault_secret_name = "COSMOS-DB-CONNECTION-STRING"
+    }
   ]
 }
 

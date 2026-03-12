@@ -16,6 +16,7 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_issuer.name
       StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
       IssuerUploadedBlobContainerName   = azurerm_storage_container.uploaded_documents.name
@@ -112,7 +113,6 @@ resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role" {
 }
 
 module "io_sign_issuer_func_staging_slot" {
-  count  = var.io_sign_issuer_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
 
   name                = "staging"
@@ -145,7 +145,28 @@ module "io_sign_issuer_func_staging_slot" {
   ip_restriction_default_action = "Deny"
   allowed_subnets               = []
 
+  system_identity_enabled = true
+
   tags = var.tags
+}
+
+module "io_sign_issuer_func_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_issuer_func_staging_slot.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_issuer_func_staging_slot.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
 }
 
 resource "azurerm_monitor_autoscale_setting" "io_sign_issuer_func" {

@@ -1,5 +1,22 @@
 # io-func-sign-user
 
+## 1.0.1
+
+### Patch Changes
+
+- 4dcc232: Fix status code for create-signature
+
+## 1.0.0
+
+### Major Changes
+
+- eb0f6b6: Migrating azure function programming model from v3 to v4
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
 ## 0.9.1
 
 ### Patch Changes
