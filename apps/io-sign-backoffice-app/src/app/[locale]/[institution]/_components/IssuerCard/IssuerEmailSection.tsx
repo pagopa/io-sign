@@ -54,8 +54,7 @@ export default function IssuerEmailSection({ issuer }: Props) {
         }
         submit.end(true);
         setCurrentEmail(email);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (cause) {
+      } catch (_cause) {
         submit.end(false);
       }
     },

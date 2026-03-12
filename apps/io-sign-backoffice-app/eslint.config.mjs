@@ -7,12 +7,12 @@ import globals from "globals";
 export default [
   {
     ignores: [
-        ".next/**",
-        "node_modules/**",
-        "dist/**",
-        "build/**"
+      ".next/**",
+      "node_modules/**",
+      "dist/**",
+      "build/**"
     ]
-  }, 
+  },
   {
     languageOptions: {
       globals: {
@@ -20,7 +20,7 @@ export default [
         ...globals.browser
       }
     }
-  }, 
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -31,6 +31,18 @@ export default [
       ...nextPlugin.configs["core-web-vitals"].rules
     }
   },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          caughtErrorsIgnorePattern: "^_"
+        }
+      ]
+    }
+  },
+  // override per file config
   {
     files: [
       "next.config.js",

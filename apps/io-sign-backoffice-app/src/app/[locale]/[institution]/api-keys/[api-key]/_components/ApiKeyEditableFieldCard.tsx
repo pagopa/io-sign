@@ -45,8 +45,7 @@ export default function ApiKeyEditableFieldCard({
     setItems(updated);
     try {
       await upsertApiKeyField(apiKey, field, updated);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (_e) {
       setShowError(true);
       setItems(items);
     }

@@ -57,8 +57,7 @@ export async function createApiKey(payload: CreateApiKeyPayload) {
     await createApiKeySubscription(apiKey);
     try {
       await insertApiKey(apiKey);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (_e) {
       await deleteApiKeySubscription(apiKey);
     }
     const issuer = await getIssuerByInstitution(institution);

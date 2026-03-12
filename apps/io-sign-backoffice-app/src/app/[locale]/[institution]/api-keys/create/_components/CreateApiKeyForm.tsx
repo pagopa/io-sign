@@ -56,8 +56,7 @@ export default function CreateApiKeyClientForm({
     try {
       const { id } = await createApiKey(data);
       router.push(`/${institution.id}/api-keys/${id}?created=true`);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (_e) {
       setShowError(true);
     }
   };
