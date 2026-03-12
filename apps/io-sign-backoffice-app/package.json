@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "build:pre-package": "cp -r .next/static .next/standalone/apps/io-sign-backoffice-app/.next && cp -r .next/standalone/node_modules .next/standalone/apps/io-sign-backoffice-app/",
@@ -43,6 +44,8 @@
   },
   "devDependencies": {
     "@babel/types": "^7.8.3",
+    "@eslint/js": "^10.0.1",
+    "@next/eslint-plugin-next": "^16.1.6",
     "@types/node": "catalog:",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
@@ -52,7 +55,9 @@
     "eslint": "catalog:",
     "eslint-config-next": "^13.5.5",
     "eslint-config-prettier": "^9.0.0",
+    "globals": "^17.4.0",
     "typescript": "^5.1.6",
+    "typescript-eslint": "^8.57.0",
     "vitest": "catalog:"
   }
 }
