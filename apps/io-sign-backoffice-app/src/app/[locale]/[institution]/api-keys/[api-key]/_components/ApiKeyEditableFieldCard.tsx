@@ -45,6 +45,7 @@ export default function ApiKeyEditableFieldCard({
     setItems(updated);
     try {
       await upsertApiKeyField(apiKey, field, updated);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       setShowError(true);
       setItems(items);
@@ -52,7 +53,7 @@ export default function ApiKeyEditableFieldCard({
   };
   const ListInput = useMemo(
     () => (field === "cidrs" ? IpAddressListInput : FiscalCodeListInput),
-    [field]
+    [field],
   );
   const onSnackbarClose = () => {
     setShowError(false);

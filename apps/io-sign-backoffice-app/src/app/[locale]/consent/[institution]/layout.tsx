@@ -12,6 +12,7 @@ export default async function Layout({
 }) {
   try {
     await checkTOSAcceptance(params.institution);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return (
       <SelfcareLayout institutionId={params.institution}>

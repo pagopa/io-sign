@@ -28,6 +28,7 @@ export async function sendMessage(text: string) {
         text,
       }),
     });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (cause) {
     // fail silently
   }
