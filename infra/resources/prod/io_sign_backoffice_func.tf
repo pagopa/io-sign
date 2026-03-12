@@ -1,6 +1,5 @@
 locals {
   backoffice_func_settings = merge({
-    COSMOS_DB_CONNECTION_STRING       = module.cosmosdb_account.connection_strings[0],
     COSMOS_DB_NAME                    = module.cosmosdb_sql_database_backoffice.name,
     WEBSITE_SWAP_WARMUP_PING_PATH     = "/info"
     WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
