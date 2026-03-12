@@ -12,6 +12,7 @@ locals {
       NODE_ENV                          = "production"
       NODE_TLS_REJECT_UNAUTHORIZED      = 0
       CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_user.name
       StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
       userUploadedBlobContainerName     = azurerm_storage_container.uploaded_documents.name
