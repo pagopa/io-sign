@@ -181,10 +181,6 @@ export const updatePdfDocumentMetadata =
     }
   });
 
-type Action_START_VALIDATION = {
-  name: "START_VALIDATION";
-};
-
 type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
   payload: {
@@ -200,6 +196,10 @@ type Action_MARK_AS_REJECTED = {
   };
 };
 
+type Action_START_VALIDATION = {
+  name: "START_VALIDATION";
+};
+
 type DocumentAction =
   | Action_START_VALIDATION
   | Action_MARK_AS_READY
@@ -209,13 +209,13 @@ const dispatch =
   (action: DocumentAction) =>
   (document: Document): E.Either<Error, Document> => {
     switch (document.status) {
-      case "WAIT_FOR_UPLOAD":
       case "READY":
+      case "WAIT_FOR_UPLOAD":
         return pipe(document, onWaitForUploadOrReadyStatus(action));
-      case "WAIT_FOR_VALIDATION":
-        return pipe(document, onWaitForValidationStatus(action));
       case "REJECTED":
         return pipe(document, onRejectedStatus(action));
+      case "WAIT_FOR_VALIDATION":
+        return pipe(document, onWaitForValidationStatus(action));
       default:
         return E.left(new ActionNotAllowedError("Invalid status"));
     }

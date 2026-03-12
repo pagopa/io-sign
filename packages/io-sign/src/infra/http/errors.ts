@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { identity } from "fp-ts/lib/function";
 
 import * as t from "io-ts";
@@ -15,14 +14,14 @@ const isHttpError = (u: unknown): u is HttpError =>
   typeof u.status === "number" &&
   Number.isInteger(u.status);
 
-export class HttpNotFoundError extends HttpError {
-  status = 404;
-  title = "Not Found";
-}
-
 export class HttpBadRequestError extends HttpError {
   status = 400;
   title = "Bad Request";
+}
+
+export class HttpNotFoundError extends HttpError {
+  status = 404;
+  title = "Not Found";
 }
 
 export class HttpTooManyRequestsError extends HttpError {
@@ -44,10 +43,10 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
       return t.success(e);
     }
     switch (e.name) {
-      case "EntityNotFoundError":
-        return t.success(new HttpNotFoundError(e.message));
       case "ActionNotAllowedError":
         return t.success(new HttpBadRequestError(e.message));
+      case "EntityNotFoundError":
+        return t.success(new HttpNotFoundError(e.message));
       case "InvalidExpireDateError":
         return t.success(new HttpBadRequestError(e.message));
       case "TooManyRequestsError":

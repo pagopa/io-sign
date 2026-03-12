@@ -9,14 +9,14 @@ class CosmosDatabaseError extends Error {
 
 export const toCosmosDatabaseError = (e: CosmosErrors) => {
   switch (e.kind) {
-    case "COSMOS_ERROR_RESPONSE":
-      return new CosmosDatabaseError(e.error.message);
     case "COSMOS_CONFLICT_RESPONSE":
       return new CosmosDatabaseError("Conflict.");
-    case "COSMOS_EMPTY_RESPONSE":
-      return new CosmosDatabaseError("Empty response.");
     case "COSMOS_DECODING_ERROR":
       // TODO: show details about validation
       return new CosmosDatabaseError("Decoding error.");
+    case "COSMOS_EMPTY_RESPONSE":
+      return new CosmosDatabaseError("Empty response.");
+    case "COSMOS_ERROR_RESPONSE":
+      return new CosmosDatabaseError(e.error.message);
   }
 };
