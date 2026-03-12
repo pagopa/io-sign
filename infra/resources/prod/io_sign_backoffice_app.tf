@@ -95,6 +95,38 @@ resource "azurerm_role_assignment" "backoffice_app_api_keys_queue_sender_role" {
   principal_id         = module.io_sign_backoffice_app.principal_id
 }
 
+module "io_sign_backoffice_app_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_backoffice_app.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_backoffice_app.name} to read/write CosmosDB via RBAC"
+    }
+  ]
+}
+
+module "io_sign_backoffice_app_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_backoffice_app_staging_slot.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_backoffice_app_staging_slot.name} to read/write CosmosDB via RBAC"
+    }
+  ]
+}
+
 resource "azurerm_private_endpoint" "io_sign_backoffice_app" {
   name                = format("%s-backoffice-endpoint", local.project)
   location            = azurerm_resource_group.data_rg.location
