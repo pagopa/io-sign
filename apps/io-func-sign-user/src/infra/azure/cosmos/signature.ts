@@ -4,8 +4,8 @@ import * as cosmos from "@azure/cosmos";
 
 import {
   BaseModel,
-  CosmosResource,
-  CosmosdbModel
+  CosmosdbModel,
+  CosmosResource
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as TE from "fp-ts/lib/TaskEither";

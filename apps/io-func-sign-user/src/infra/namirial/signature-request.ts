@@ -15,8 +15,8 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 import { QtspCreateSignaturePayload } from "../../qtsp";
 import {
-  NamirialConfig,
-  getNamirialCredentialsFromIssuerEnvironment
+  getNamirialCredentialsFromIssuerEnvironment,
+  NamirialConfig
 } from "./config";
 
 import {
@@ -91,13 +91,13 @@ export const SignatureRequest = t.type({
   ])
 });
 
-export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
-
 export type CreateSignatureRequest = (
   issuerEnvironment: IssuerEnvironment
 ) => (
   payload: QtspCreateSignaturePayload
 ) => TE.TaskEither<Error, SignatureRequest>;
+
+export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export const makeCreateSignatureRequestWithToken =
   (fetchWithTimeout = makeFetchWithTimeout()) =>
