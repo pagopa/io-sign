@@ -23,11 +23,11 @@ export const SelfCareInstitution = t.type({
   supportEmail: EmailString
 });
 
-export type SelfCareInstitution = t.TypeOf<typeof SelfCareInstitution>;
-
 export type GetInstitutionById = (
   internalInstitutionId: GenericContract["internalIstitutionID"]
 ) => TE.TaskEither<Error, SelfCareInstitution>;
+
+export type SelfCareInstitution = t.TypeOf<typeof SelfCareInstitution>;
 
 export const makeGetInstitutionById =
   (fetchWithTimeout = makeFetchWithTimeout()) =>

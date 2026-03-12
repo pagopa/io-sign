@@ -5,7 +5,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as E from "fp-ts/lib/Either";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
+import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { getDossierById } from "../../../dossier";

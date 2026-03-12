@@ -1,9 +1,9 @@
 import {
   BaseModel,
+  CosmosdbModel,
   CosmosDecodingError,
   CosmosErrorResponse,
   CosmosResource,
-  CosmosdbModel,
   toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 import { Document } from "@io-sign/io-sign/document";
@@ -68,9 +68,7 @@ export const makeUpsertSignatureRequest =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export class CosmosDbSignatureRequestRepository
-  implements SignatureRequestRepository
-{
+export class CosmosDbSignatureRequestRepository implements SignatureRequestRepository {
   #container: cosmos.Container;
   #model: SignatureRequestModel;
 

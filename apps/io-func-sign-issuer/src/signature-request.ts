@@ -31,13 +31,13 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { findIndex, updateAt } from "fp-ts/lib/Array";
 
 import {
+  getDocument,
   SignatureRequestCancelled,
   SignatureRequestDraft,
   SignatureRequestReady,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestToBeSigned,
-  getDocument
+  SignatureRequestToBeSigned
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";
@@ -145,6 +145,11 @@ export const canBeMarkedAsReady = (
   request.status === "DRAFT" &&
   request.documents.every((document) => document.status === "READY");
 
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
+};
+
 type Action_MARK_AS_READY = {
   name: "MARK_AS_READY";
 };
@@ -155,20 +160,13 @@ type Action_MARK_AS_REJECTED = {
   rejectReason: string;
 };
 
-type Action_MARK_AS_WAIT_FOR_SIGNATURE = {
-  name: "MARK_AS_WAIT_FOR_SIGNATURE";
-  qrCodeUrl: string;
-};
-
 type Action_MARK_AS_SIGNED = {
   name: "MARK_AS_SIGNED";
 };
 
-type Action_START_DOCUMENT_VALIDATION = {
-  name: "START_DOCUMENT_VALIDATION";
-  payload: {
-    documentId: Document["id"];
-  };
+type Action_MARK_AS_WAIT_FOR_SIGNATURE = {
+  name: "MARK_AS_WAIT_FOR_SIGNATURE";
+  qrCodeUrl: string;
 };
 
 type Action_MARK_DOCUMENT_AS_READY = {
@@ -188,9 +186,11 @@ type Action_MARK_DOCUMENT_AS_REJECTED = {
   };
 };
 
-type Action_MARK_AS_CANCELLED = {
-  name: "MARK_AS_CANCELLED";
-  cancelledAt: Date;
+type Action_START_DOCUMENT_VALIDATION = {
+  name: "START_DOCUMENT_VALIDATION";
+  payload: {
+    documentId: Document["id"];
+  };
 };
 
 type SignatureRequestAction =
@@ -211,14 +211,14 @@ const dispatch =
         return pipe(request, onDraftStatus(action));
       case "READY":
         return pipe(request, onReadyStatus(action));
-      case "WAIT_FOR_SIGNATURE":
-        return pipe(request, onWaitForSignatureStatus(action));
       case "SIGNED":
         return E.left(
           new ActionNotAllowedError(
             `${action.name} is prohibited because the signature request has already been signed`
           )
         );
+      case "WAIT_FOR_SIGNATURE":
+        return pipe(request, onWaitForSignatureStatus(action));
       default:
         // TODO: maybe we can use a different error type
         return E.left(new ActionNotAllowedError("Invalid status"));
@@ -243,19 +243,6 @@ const onDraftStatus =
         return E.left(
           new ActionNotAllowedError(
             `${action.name} is not possible unless all documents are READY`
-          )
-        );
-      case "START_DOCUMENT_VALIDATION":
-        return pipe(
-          request,
-          getDocument(action.payload.documentId),
-          E.fromOption(() => documentNotFoundError),
-          E.chain(startValidation),
-          E.map((updated) =>
-            replaceDocument(action.payload.documentId, updated)(request)
-          ),
-          E.chain(
-            E.fromOption(() => new Error("Unable to start the validation"))
           )
         );
       case "MARK_DOCUMENT_AS_READY":
@@ -291,6 +278,19 @@ const onDraftStatus =
             E.fromOption(
               () => new Error("Unable to mark the document as REJECTED")
             )
+          )
+        );
+      case "START_DOCUMENT_VALIDATION":
+        return pipe(
+          request,
+          getDocument(action.payload.documentId),
+          E.fromOption(() => documentNotFoundError),
+          E.chain(startValidation),
+          E.map((updated) =>
+            replaceDocument(action.payload.documentId, updated)(request)
+          ),
+          E.chain(
+            E.fromOption(() => new Error("Unable to start the validation"))
           )
         );
       default:
@@ -430,13 +430,13 @@ export type InsertSignatureRequest = (
   request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
-export type UpsertSignatureRequest = (
-  request: SignatureRequest
-) => TE.TaskEither<Error, SignatureRequest>;
-
 export type NotifySignatureRequestReadyEvent = (
   requestReady: SignatureRequestReady
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequestEnvironment = {
+  signatureRequestRepository: SignatureRequestRepository;
+};
 
 export type SignatureRequestRepository = {
   get: (
@@ -458,9 +458,9 @@ export type SignatureRequestRepository = {
   insert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
 };
 
-export type SignatureRequestEnvironment = {
-  signatureRequestRepository: SignatureRequestRepository;
-};
+export type UpsertSignatureRequest = (
+  request: SignatureRequest
+) => TE.TaskEither<Error, SignatureRequest>;
 
 export const getSignatureRequest =
   (

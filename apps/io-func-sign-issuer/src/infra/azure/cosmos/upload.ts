@@ -1,7 +1,7 @@
 import {
   BaseModel,
-  CosmosResource,
-  CosmosdbModel
+  CosmosdbModel,
+  CosmosResource
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as t from "io-ts";
@@ -45,9 +45,7 @@ export const makeInsertUploadMetadata =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export class CosmosDbUploadMetadataRepository
-  implements UploadMetadataRepository
-{
+export class CosmosDbUploadMetadataRepository implements UploadMetadataRepository {
   #model: UploadMetadataModel;
 
   constructor(db: cosmos.Database) {
