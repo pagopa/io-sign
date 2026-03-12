@@ -61,7 +61,9 @@ class SignatureRequestFromSignerModel extends CosmosdbModel<
   }
 }
 
-export class CosmosDbSignatureRequestRepository implements SignatureRequestRepository {
+export class CosmosDbSignatureRequestRepository
+  implements SignatureRequestRepository
+{
   #signer: SignatureRequestFromSignerModel;
   #issuer: SignatureRequestFromIssuerModel;
 

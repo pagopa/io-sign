@@ -87,7 +87,9 @@ export const makeUpsertSignatureRequest =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export class CosmosDbSignatureRequestRepository implements SignatureRequestRepository {
+export class CosmosDbSignatureRequestRepository
+  implements SignatureRequestRepository
+{
   #model: SignatureRequestModel;
 
   constructor(db: cosmos.Database) {

@@ -45,7 +45,9 @@ export const makeInsertUploadMetadata =
       TE.mapLeft(toCosmosDatabaseError)
     );
 
-export class CosmosDbUploadMetadataRepository implements UploadMetadataRepository {
+export class CosmosDbUploadMetadataRepository
+  implements UploadMetadataRepository
+{
   #model: UploadMetadataModel;
 
   constructor(db: cosmos.Database) {
