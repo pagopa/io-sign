@@ -29,15 +29,15 @@ import { requireSigner } from "../decoders/signer";
 import { CreateFilledDocumentBody } from "../models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../encoders/filled-document";
 
-type GetFilledDocumentUrl = (
-  filledDocumentBlobName: string
-) => TE.TaskEither<Error, string>;
-
 type CreateFilledDocumentsDependencies = {
   filledContainerClient: ContainerClient;
   documentsToFillQueue: QueueClient;
   pdvTokenizerClient: PdvTokenizerClientWithApiKey;
 };
+
+type GetFilledDocumentUrl = (
+  filledDocumentBlobName: string
+) => TE.TaskEither<Error, string>;
 
 const requirePayload = (req: H.HttpRequest) =>
   pipe(
