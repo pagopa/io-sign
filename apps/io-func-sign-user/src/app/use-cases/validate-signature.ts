@@ -16,11 +16,11 @@ import {
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
+  markAsRejected,
+  markAsSigned,
   NotifySignatureRequestRejectedEvent,
   NotifySignatureRequestSignedEvent,
-  SignatureRequest,
-  markAsRejected,
-  markAsSigned
+  SignatureRequest
 } from "../../signature-request";
 import { GetSignature, Signature, UpsertSignature } from "../../signature";
 import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";
@@ -145,47 +145,6 @@ export const makeValidateSignature =
           ),
           TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
             switch (qtspSignatureRequest.status) {
-              case "CREATED":
-                return pipe(
-                  TE.left(
-                    new Error(
-                      "Signature request created by the QTSP but not ready yet. Retry!"
-                    )
-                  ),
-                  TE.chainFirstIOK(() =>
-                    L.debug("Signature request created by the QTSP", {
-                      signatureRequest,
-                      qtspSignatureRequest
-                    })({
-                      logger: ConsoleLogger
-                    })
-                  )
-                );
-              case "WAITING":
-                return TE.left(
-                  new Error("Signature request not ready yet. Retry!")
-                );
-              case "READY":
-                return pipe(
-                  signatureRequest,
-                  createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
-                  TE.chainFirstIOK(() =>
-                    L.debug("Certificate created", {
-                      signatureRequest,
-                      qtspSignatureRequest
-                    })({
-                      logger: ConsoleLogger
-                    })
-                  ),
-                  TE.chain(() =>
-                    TE.left(
-                      new Error(
-                        "Certificate created. Signature request not ready yet. Retry. Retry!"
-                      )
-                    )
-                  )
-                );
-
               case "COMPLETED":
                 return pipe(
                   // Upsert signatureRequest documents url with signed url
@@ -241,6 +200,22 @@ export const makeValidateSignature =
                     )
                   )
                 );
+              case "CREATED":
+                return pipe(
+                  TE.left(
+                    new Error(
+                      "Signature request created by the QTSP but not ready yet. Retry!"
+                    )
+                  ),
+                  TE.chainFirstIOK(() =>
+                    L.debug("Signature request created by the QTSP", {
+                      signatureRequest,
+                      qtspSignatureRequest
+                    })({
+                      logger: ConsoleLogger
+                    })
+                  )
+                );
               case "FAILED":
                 // eslint-disable-next-line no-case-declarations
                 const errorDetail =
@@ -253,6 +228,31 @@ export const makeValidateSignature =
                     signature,
                     signatureRequest
                   )
+                );
+
+              case "READY":
+                return pipe(
+                  signatureRequest,
+                  createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
+                  TE.chainFirstIOK(() =>
+                    L.debug("Certificate created", {
+                      signatureRequest,
+                      qtspSignatureRequest
+                    })({
+                      logger: ConsoleLogger
+                    })
+                  ),
+                  TE.chain(() =>
+                    TE.left(
+                      new Error(
+                        "Certificate created. Signature request not ready yet. Retry. Retry!"
+                      )
+                    )
+                  )
+                );
+              case "WAITING":
+                return TE.left(
+                  new Error("Signature request not ready yet. Retry!")
                 );
 
               default:

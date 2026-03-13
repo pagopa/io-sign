@@ -1,4 +1,4 @@
-import { ValidationError, validate } from "@io-sign/io-sign/validation";
+import { validate, ValidationError } from "@io-sign/io-sign/validation";
 
 import * as H from "@pagopa/handler-kit";
 
@@ -27,10 +27,10 @@ const toClauseType = (
   switch (type) {
     case ClauseTypeEnum.OPTIONAL:
       return "OPTIONAL";
-    case ClauseTypeEnum.UNFAIR:
-      return "UNFAIR";
     case ClauseTypeEnum.REQUIRED:
       return "REQUIRED";
+    case ClauseTypeEnum.UNFAIR:
+      return "UNFAIR";
   }
 };
 

@@ -60,18 +60,11 @@ export const SignatureRequestToApiModel: E.Encoder<
       }
     };
     switch (extra.status) {
-      case "WAIT_FOR_SIGNATURE": {
+      case "CANCELLED": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-          qr_code_url: extra.qrCodeUrl
-        };
-      }
-      case "WAIT_FOR_QTSP": {
-        return {
-          ...commonFields,
-          status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
-          qr_code_url: extra.qrCodeUrl
+          status: SignatureRequestStatusEnum.CANCELLED,
+          cancelled_at: extra.cancelledAt
         };
       }
       case "REJECTED": {
@@ -89,11 +82,18 @@ export const SignatureRequestToApiModel: E.Encoder<
           signed_at: extra.signedAt
         };
       }
-      case "CANCELLED": {
+      case "WAIT_FOR_QTSP": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.CANCELLED,
-          cancelled_at: extra.cancelledAt
+          status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
+          qr_code_url: extra.qrCodeUrl
+        };
+      }
+      case "WAIT_FOR_SIGNATURE": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+          qr_code_url: extra.qrCodeUrl
         };
       }
     }
@@ -104,6 +104,8 @@ const toSignatureRequestStatusEnum = (
   status: SignatureRequest["status"]
 ): SignatureRequestStatusEnum => {
   switch (status) {
+    case "CANCELLED":
+      return SignatureRequestStatusEnum.CANCELLED;
     case "REJECTED":
       return SignatureRequestStatusEnum.REJECTED;
     case "SIGNED":
@@ -112,8 +114,6 @@ const toSignatureRequestStatusEnum = (
       return SignatureRequestStatusEnum.WAIT_FOR_QTSP;
     case "WAIT_FOR_SIGNATURE":
       return SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE;
-    case "CANCELLED":
-      return SignatureRequestStatusEnum.CANCELLED;
   }
 };
 
