@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@babel/types": "^7.8.3",
+    "@faker-js/faker": "^10.3.0",
     "@types/node": "catalog:",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
@@ -52,7 +53,13 @@
     "eslint": "catalog:",
     "eslint-config-next": "^13.5.5",
     "eslint-config-prettier": "^9.0.0",
+    "msw": "^2.12.10",
     "typescript": "^5.1.6",
     "vitest": "catalog:"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
