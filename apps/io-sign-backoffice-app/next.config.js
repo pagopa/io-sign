@@ -1,5 +1,6 @@
 const { version } = require("./package.json");
-const withNextIntl = require("next-intl/plugin")("./src/i18n/index.ts");
+const createNextIntlPlugin = require("next-intl/plugin");
+const withNextIntl = createNextIntlPlugin("./src/i18n/index.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,10 +8,8 @@ const nextConfig = {
   poweredByHeader: false,
   output: "standalone",
   images: { unoptimized: true },
-  experimental: {
-    // Ensure that server modules are resolved correctly
-    serverComponentsExternalPackages: ["msw"],
-  },
+  // Ensure that server modules are resolved correctly
+  serverExternalPackages: ["msw"],
   env: {
     APP_VERSION: version,
   },
