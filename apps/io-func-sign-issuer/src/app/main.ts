@@ -13,7 +13,6 @@ import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/c
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
-import * as t from "io-ts";
 import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 import { ApplicationInsights } from "@io-sign/io-sign/infra/azure/appinsights/index";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
@@ -35,7 +34,7 @@ import { CreateDossierFunction } from "../infra/azure/functions/create-dossier";
 import { GetRequestsByDossierFunction } from "../infra/azure/functions/get-requests-by-dossier";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
-import { ValidateUploadFunction } from "../infra/azure/functions/validate-upload";
+import { makeValidateUploadBlobHandler } from "../infra/azure/functions/validate-upload";
 import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
@@ -349,12 +348,11 @@ app.storageQueue("closeSignatureRequestRejected", {
 // Note: this function was originally disabled (disabled: true in function.json).
 // To keep it disabled at runtime set app setting: AzureWebJobs.validateUpload.Disabled = true
 
-const validateUpload = ValidateUploadFunction({
+const validateUpload = makeValidateUploadBlobHandler({
   signatureRequestRepository,
   uploadMetadataRepository,
   uploadedFileStorage,
   validatedFileStorage,
-  inputDecoder: t.type({ uri: t.string }),
   eventAnalyticsClient
 });
 
