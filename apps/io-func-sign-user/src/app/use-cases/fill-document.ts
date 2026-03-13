@@ -10,16 +10,9 @@ import { Field, populatePdf } from "@io-sign/io-sign/infra/pdf";
 import { UploadBlob } from "../../infra/azure/storage/blob";
 import { FillDocumentPayload } from "../../filled-document";
 
-// these types define the fields inside the PDF file to be enhanced
-// TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]
-type NameFieldB = Field & { fieldName: "QUADROB_name" };
-type FamilyNameFieldB = Field & { fieldName: "QUADROB_lastname" };
 type EmailFieldB = Field & { fieldName: "QUADROB_email" };
-type FiscalCodeFieldB = Field & { fieldName: "QUADROB_fiscalcode" };
-
-type NameFieldE = Field & { fieldName: "QUADROE_name" };
+type FamilyNameFieldB = Field & { fieldName: "QUADROB_lastname" };
 type FamilyNameFieldE = Field & { fieldName: "QUADROE_lastname" };
-
 type Fields = [
   NameFieldB,
   FamilyNameFieldB,
@@ -28,6 +21,13 @@ type Fields = [
   NameFieldE,
   FamilyNameFieldE
 ];
+
+type FiscalCodeFieldB = Field & { fieldName: "QUADROB_fiscalcode" };
+// these types define the fields inside the PDF file to be enhanced
+// TODO: These are not yet the real parameters. Pending communication from the QTSP [SFEQS-1164]
+type NameFieldB = Field & { fieldName: "QUADROB_name" };
+
+type NameFieldE = Field & { fieldName: "QUADROE_name" };
 
 /** Downloads the ToS pdf form, compiles and stores the filled document. */
 export const makeFillDocument =

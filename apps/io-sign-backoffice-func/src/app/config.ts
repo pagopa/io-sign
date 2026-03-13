@@ -1,22 +1,22 @@
 import {
-  SlackConfig,
-  getSlackConfigFromEnvironment
+  getSlackConfigFromEnvironment,
+  SlackConfig
 } from "@/infra/slack/config";
 import {
-  SelfcareConfig,
-  getSelfcareConfigFromEnvironment
+  getSelfcareConfigFromEnvironment,
+  SelfcareConfig
 } from "@/infra/selfcare/config";
 import {
-  GoogleConfig,
-  getGoogleConfigFromEnvironment
+  getGoogleConfigFromEnvironment,
+  GoogleConfig
 } from "@/infra/google/config";
 import {
   CosmosDBConfig,
   getCosmosDBConfigFromEnvironment
 } from "@/infra/azure/cosmos";
 import {
-  SelfcareApiClientConfig,
-  getSelfcareApiClientConfigFromEnvironment
+  getSelfcareApiClientConfigFromEnvironment,
+  SelfcareApiClientConfig
 } from "@/infra/selfcare/api-client";
 
 type Config = {

@@ -15,8 +15,8 @@ import { UrlFromString } from "@pagopa/ts-commons/lib/url";
 import { Issuer } from "@io-sign/io-sign/issuer";
 
 import {
-  SignatureRequestId,
-  getDocument
+  getDocument,
+  SignatureRequestId
 } from "@io-sign/io-sign/signature-request";
 
 import { SignatureRequest } from "./signature-request";
@@ -72,11 +72,11 @@ export type InsertUploadMetadata = (
 ) => TE.TaskEither<Error, UploadMetadata>;
 
 export const UploadUrl = UrlFromString;
-export type UploadUrl = t.TypeOf<typeof UploadUrl>;
-
 export type GetUploadUrl = (
   uploadMetadata: UploadMetadata
 ) => TE.TaskEither<Error, UploadUrl>;
+
+export type UploadUrl = t.TypeOf<typeof UploadUrl>;
 
 export const uploadMetadataNotFoundError = new EntityNotFoundError(
   "UploadMetadata"

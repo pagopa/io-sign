@@ -11,10 +11,10 @@ const toHttpError = (e: Error): Error => {
     return e;
   }
   switch (e.name) {
-    case "EntityNotFoundError":
-      return new H.HttpNotFoundError(e.message);
     case "ActionNotAllowedError":
       return new H.HttpBadRequestError(e.message);
+    case "EntityNotFoundError":
+      return new H.HttpNotFoundError(e.message);
     case "InvalidExpireDateError":
       return new H.HttpBadRequestError(e.message);
     case "TooManyRequestsError":
