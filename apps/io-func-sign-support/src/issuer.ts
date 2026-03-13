@@ -15,16 +15,16 @@ export const Issuer = t.type({
   vatNumber: IssuerFull.props.vatNumber
 });
 
+export type GetIssuerByVatNumberEnvironment = {
+  issuerRepository: IssuerRepository;
+};
+
 export type Issuer = t.TypeOf<typeof Issuer>;
 
 export type IssuerRepository = {
   getByVatNumber: (
     vatNumber: NonEmptyString
   ) => TE.TaskEither<Error, O.Option<Issuer>>;
-};
-
-export type GetIssuerByVatNumberEnvironment = {
-  issuerRepository: IssuerRepository;
 };
 
 export const getIssuerByVatNumber =
