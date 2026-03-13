@@ -9,29 +9,33 @@ import { validate } from "@io-sign/io-sign/validation";
 import * as t from "io-ts";
 import { RetrievedIssuer } from "../cosmos/issuer";
 
-export const issuersByVatNumberViewOutput = output.cosmosDB({
-  connection: "CosmosDbConnectionString",
-  databaseName: "%CosmosDbDatabaseName%",
-  containerName: "issuers-by-vat-number",
-  createIfNotExists: false
-});
+export const makeCreateIssuersByVatNumberViewHandler = () => {
+  const issuersByVatNumberViewOutput = output.cosmosDB({
+    connection: "CosmosDbConnectionString",
+    databaseName: "%CosmosDbDatabaseName%",
+    containerName: "issuers-by-vat-number",
+    createIfNotExists: false
+  });
 
-export const createIssuersByVatNumberView = async (
-  documents: unknown[],
-  context: InvocationContext
-): Promise<void> => {
-  const result = pipe(
-    documents,
-    validate(t.array(RetrievedIssuer)),
-    E.map(
-      A.map((issuer) => ({
-        id: issuer.vatNumber,
-        issuerId: issuer.id,
-        subscriptionId: issuer.subscriptionId
-      }))
-    )
-  );
-  if (E.isRight(result)) {
-    context.extraOutputs.set(issuersByVatNumberViewOutput, result.right);
-  }
+  const handler = async (
+    documents: unknown[],
+    context: InvocationContext
+  ): Promise<void> => {
+    const result = pipe(
+      documents,
+      validate(t.array(RetrievedIssuer)),
+      E.map(
+        A.map((issuer) => ({
+          id: issuer.vatNumber,
+          issuerId: issuer.id,
+          subscriptionId: issuer.subscriptionId
+        }))
+      )
+    );
+    if (E.isRight(result)) {
+      context.extraOutputs.set(issuersByVatNumberViewOutput, result.right);
+    }
+  };
+
+  return { issuersByVatNumberViewOutput, handler };
 };

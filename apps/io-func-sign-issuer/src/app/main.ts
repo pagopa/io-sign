@@ -26,10 +26,7 @@ import { GetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { SendNotificationFunction } from "../infra/azure/functions/send-notification";
 import { MarkAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
 import { makeCreateIssuerHandler } from "../infra/azure/functions/create-issuer";
-import {
-  createIssuersByVatNumberView,
-  issuersByVatNumberViewOutput
-} from "../infra/azure/functions/create-issuers-by-vat-number-view";
+import { makeCreateIssuersByVatNumberViewHandler } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
 import { BackOfficeIssuerRepository } from "../infra/back-office/issuer";
@@ -381,6 +378,9 @@ app.eventHub("createIssuer", {
 });
 
 // ---- COSMOS DB TRIGGER ----
+
+const { issuersByVatNumberViewOutput, handler: createIssuersByVatNumberView } =
+  makeCreateIssuersByVatNumberViewHandler();
 
 app.cosmosDB("createIssuerByVatNumberView", {
   connection: "CosmosDbConnectionString",
