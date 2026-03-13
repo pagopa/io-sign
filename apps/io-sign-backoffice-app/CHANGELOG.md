@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.7.3
+
+### Patch Changes
+
+- 36f14df: chore: add MSW for local development
+
 ## 1.7.2
 
 ### Patch Changes
