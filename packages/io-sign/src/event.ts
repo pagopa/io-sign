@@ -29,8 +29,6 @@ export const PricingPlan = t.keyof({
   INTERNAL: null
 });
 
-export type PricingPlan = t.TypeOf<typeof PricingPlan>;
-
 /*
  * This mapping was decided together with the datalake team and is documented here:
  * https://pagopa.atlassian.net/wiki/spaces/SFEQS/pages/552108033/Fatturazione
@@ -49,6 +47,8 @@ export enum EventName {
   CERTIFICATE_REJECTED = "io.sign.qtsp.certificate.rejected",
   QTSP_API_ERROR = "io.sign.qtsp.api.error"
 }
+
+export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 // This is the structure of an event that is used for billing and analytics
 const BaseEvent = t.type({
@@ -124,25 +124,11 @@ export const createAnalyticsEvent =
     department: signatureRequest.issuerDepartment
   });
 
-export type GenericEvent = BillingEvent | AnalyticsEvent;
-
-export type SendEvent = (
-  event: GenericEvent
-) => TE.TaskEither<Error, GenericEvent>;
-
 export type CreateAndSendAnalyticsEvent = (
   eventName: EventName
 ) => (
   signatureRequest: SignatureRequest
 ) => TE.TaskEither<Error, typeof signatureRequest>;
-
-type EventData = {
-  body: GenericEvent;
-};
-
-type EventDataBatch = {
-  tryAdd(eventData: EventData): boolean;
-};
 
 export type EventProducerClient = {
   createBatch(): Promise<EventDataBatch>;
@@ -150,8 +136,22 @@ export type EventProducerClient = {
   sendBatch(batch: EventDataBatch): Promise<void>;
 };
 
+export type GenericEvent = BillingEvent | AnalyticsEvent;
+
+export type SendEvent = (
+  event: GenericEvent
+) => TE.TaskEither<Error, GenericEvent>;
+
 type EventAnalyticsClient = {
   eventAnalyticsClient: EventProducerClient;
+};
+
+type EventData = {
+  body: GenericEvent;
+};
+
+type EventDataBatch = {
+  tryAdd(eventData: EventData): boolean;
 };
 
 export const sendEvent =
