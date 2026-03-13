@@ -7,6 +7,10 @@ const nextConfig = {
   poweredByHeader: false,
   output: "standalone",
   images: { unoptimized: true },
+  experimental: {
+    // Ensure that server modules are resolved correctly
+    serverComponentsExternalPackages: ["msw"],
+  },
   env: {
     APP_VERSION: version,
   },

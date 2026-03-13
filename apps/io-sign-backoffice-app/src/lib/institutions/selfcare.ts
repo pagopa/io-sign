@@ -2,15 +2,32 @@ import { z } from "zod";
 
 import {
   Institution,
-  institutionSchema,
-  productSchema,
+  InstitutionDetail,
   Product,
   institutionDetailSchema,
-  InstitutionDetail,
+  institutionSchema,
+  productSchema,
 } from "./index";
 
 import { cache } from "react";
 import { SUPPORT_L3_EMAIL_DEFAULT } from "../support";
+
+// Ensure MSW interceptors are active in this module's scope to prevent race conditions during SSR
+if (
+  process.env.NEXT_PUBLIC_MOCK_MSW_ENABLED === "true" &&
+  typeof window === "undefined" &&
+  process.env.NODE_ENV === "development"
+) {
+  /**
+   * Use dynamic require to prevent MSW from being bundled in the client-side
+   * and to avoid side-effects during the Next.js build process.
+   * This ensures MSW only patches Node.js primitives at runtime when
+   * server-side mocking is explicitly required.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { startMSWServer } = require("../../../mocks/msw-node");
+  startMSWServer();
+}
 
 const selfcareApiClientOptions = z.object({
   baseURL: z.string().url().default("https://api.selfcare.pagopa.it"),
@@ -43,7 +60,7 @@ class SelfcareApiClient {
   async getInstitutions(userId: string): Promise<Institution[]> {
     const resource = new URL(
       `external/v2/institutions?userIdForAuth=${userId}`,
-      this.#baseURL
+      this.#baseURL,
     );
     try {
       const response = await fetch(resource, this.#options);
@@ -82,7 +99,7 @@ class SelfcareApiClient {
   async getProducts(userId: string, institutionId: string): Promise<Product[]> {
     const resource = new URL(
       `external/v2/institutions/${institutionId}/products?userId=${userId}`,
-      this.#baseURL
+      this.#baseURL,
     );
     try {
       const response = await fetch(resource, this.#options);
