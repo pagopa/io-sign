@@ -79,10 +79,10 @@ export const getDossierById =
       )
     );
 
-// LEGACY TYPES
-// This block can be removed when the entire app has been ported to handler-kit@1
-export type InsertDossier = (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
 export type GetDossier = (
   dossierId: Dossier["id"]
 ) => (issuerId: Issuer["id"]) => TE.TaskEither<Error, O.Option<Dossier>>;
+// LEGACY TYPES
+// This block can be removed when the entire app has been ported to handler-kit@1
+export type InsertDossier = (dossier: Dossier) => TE.TaskEither<Error, Dossier>;
 // END

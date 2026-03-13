@@ -25,8 +25,8 @@ import { Dossier, GetDossier } from "../../dossier";
 
 import {
   MakeMessageContent,
-  SendNotificationPayload,
-  makeSendSignatureRequestNotification
+  makeSendSignatureRequestNotification,
+  SendNotificationPayload
 } from "../../signature-request-notification";
 
 const requestToSignMessage: MakeMessageContent =

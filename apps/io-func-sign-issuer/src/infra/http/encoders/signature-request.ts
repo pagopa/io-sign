@@ -33,21 +33,17 @@ export const SignatureRequestToApiModel: E.Encoder<
       documents: documents.map(DocumentToApiModel.encode)
     };
     switch (extra.status) {
+      case "CANCELLED": {
+        return {
+          ...commonFields,
+          status: SignatureRequestStatusEnum.CANCELLED,
+          cancelled_at: extra.cancelledAt
+        };
+      }
       case "DRAFT": {
         return {
           ...commonFields,
           status: SignatureRequestStatusEnum.DRAFT
-        };
-      }
-      case "WAIT_FOR_SIGNATURE": {
-        return {
-          ...commonFields,
-          status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-          notification:
-            extra.notification !== undefined
-              ? NotificationToApiModel.encode(extra.notification)
-              : undefined,
-          qr_code_url: extra.qrCodeUrl
         };
       }
       case "READY": {
@@ -79,11 +75,15 @@ export const SignatureRequestToApiModel: E.Encoder<
           signed_at: extra.signedAt
         };
       }
-      case "CANCELLED": {
+      case "WAIT_FOR_SIGNATURE": {
         return {
           ...commonFields,
-          status: SignatureRequestStatusEnum.CANCELLED,
-          cancelled_at: extra.cancelledAt
+          status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+          notification:
+            extra.notification !== undefined
+              ? NotificationToApiModel.encode(extra.notification)
+              : undefined,
+          qr_code_url: extra.qrCodeUrl
         };
       }
     }
