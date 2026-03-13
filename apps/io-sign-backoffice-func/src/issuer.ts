@@ -8,14 +8,14 @@ import { issuerSchema } from "@io-sign/io-sign/issuer";
 
 export type Issuer = z.TypeOf<typeof issuerSchema>;
 
+export type IssuerEnvironment = {
+  issuerRepository: IssuerRepository;
+};
+
 export type IssuerKey = Pick<Issuer, "id" | "institutionId">;
 
 export type IssuerRepository = {
   getIssuerByKey(k: IssuerKey): Promise<Issuer | undefined>;
-};
-
-export type IssuerEnvironment = {
-  issuerRepository: IssuerRepository;
 };
 
 export const getIssuerTE = (repo: IssuerRepository, k: IssuerKey) =>

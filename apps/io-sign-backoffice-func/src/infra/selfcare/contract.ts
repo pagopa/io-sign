@@ -36,9 +36,9 @@ export type ActiveIoSignContract = z.infer<typeof activeIoSignContract>;
 
 export type ClosedIoSignContract = z.infer<typeof closedIoSignContract>;
 
-type IoSignContract = z.infer<typeof ioSignContract>;
-
 export type IoSignContracts = z.infer<typeof ioSignContracts>;
+
+type IoSignContract = z.infer<typeof ioSignContract>;
 
 export const isActive = (
   contract: IoSignContract
