@@ -1,4 +1,4 @@
-import { HttpRequest, header } from "handler-kit-legacy/lib/http";
+import { header, HttpRequest } from "handler-kit-legacy/lib/http";
 
 import * as H from "@pagopa/handler-kit";
 import { lookup } from "fp-ts/lib/Record";

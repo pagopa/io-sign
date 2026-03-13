@@ -96,12 +96,12 @@ export const getIssuerEnvironment = (
       ? "INTERNAL"
       : "DEFAULT";
 
+export type GetIssuerBySubscriptionId = (
+  subscriptionId: Issuer["subscriptionId"]
+) => TE.TaskEither<Error, O.Option<Issuer>>;
 // LEGACY TYPES
 // This block can be removed when the entire app has been ported to handler-kit@1
 export type GetIssuerByVatNumber = (
   vatNumber: Issuer["vatNumber"]
-) => TE.TaskEither<Error, O.Option<Issuer>>;
-export type GetIssuerBySubscriptionId = (
-  subscriptionId: Issuer["subscriptionId"]
 ) => TE.TaskEither<Error, O.Option<Issuer>>;
 // END

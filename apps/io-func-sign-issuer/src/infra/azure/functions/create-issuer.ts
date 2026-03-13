@@ -12,10 +12,10 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 
 import { Issuer } from "@io-sign/io-sign/issuer";
 import {
+  addSupportMailToIoSignContract,
   GenericContract,
   GenericContracts,
   IoSignContract,
-  addSupportMailToIoSignContract,
   validateActiveContract
 } from "../../self-care/contract";
 import { ioSignContractToIssuer } from "../../self-care/encoder";
