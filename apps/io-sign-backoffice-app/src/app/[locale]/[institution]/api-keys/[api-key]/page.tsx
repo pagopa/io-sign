@@ -17,15 +17,17 @@ import { Alert } from "@mui/material";
 export default function ApiKeyDetailPage({
   params,
 }: {
-  params: { institution: string; ["api-key"]: string };
+  params: Promise<{ institution: string; ["api-key"]: string }>;
 }) {
   const t = useTranslations("firmaconio");
 
+  const { institution, "api-key": apiKeyId } = use(params);
+
   const apiKey = use(
-    getApiKeyWithSecret(params["api-key"], params["institution"])
+    getApiKeyWithSecret(apiKeyId, institution)
   );
 
-  const apiKeysHref = `/${params.institution}/api-keys`;
+  const apiKeysHref = `/${institution}/api-keys`;
 
   const header: PageProps["header"] = {
     title: apiKey.displayName,

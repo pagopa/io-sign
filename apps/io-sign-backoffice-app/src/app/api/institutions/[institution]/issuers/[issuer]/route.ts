@@ -26,9 +26,10 @@ const bodySchema = z
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Params }
+  { params: paramsPromise }: { params: Promise<Params> }
 ) {
   try {
+    const params = await paramsPromise;
     const loggedUser = await getLoggedUser();
     const parsedParams = pathSchema.safeParse(params);
     if (!parsedParams.success) {
