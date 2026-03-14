@@ -4,3 +4,18 @@ locals {
   project_itn      = "${local.product}-itn"
   project_itn_sign = format("%s-%s-itn-%s", var.prefix, var.env_short, var.domain)
 }
+
+# ###Italy North
+# locals {
+#   prefix = "io"
+#   env_short = "p"
+#   domain = ""
+#   instance_number = "01"
+#   itn_environment = {
+#     prefix          = local.prefix
+#     env_short       = local.env_short
+#     location        = var.location
+#     domain          = local.domain
+#     instance_number = local.instance_number
+#     }
+# }
