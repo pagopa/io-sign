@@ -1,0 +1,13 @@
+meta {
+  name: io-func-sign-user
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: x-functions-key
+  value: {{io-func-sign-user-api-key}}
+  placement: header
+}

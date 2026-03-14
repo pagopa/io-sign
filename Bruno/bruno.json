@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "name": "io-sign",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+    "scripts": {
+    "filesystemAccess": {
+      "allow": true
+    }
+  }
+}
