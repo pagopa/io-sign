@@ -42,22 +42,22 @@ locals {
       NODE_ENV                          = "production"
       CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_issuer.name
-      StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
-      IssuerUploadedBlobContainerName   = azurerm_storage_container.uploaded_documents.name
-      IssuerValidatedBlobContainerName  = azurerm_storage_container.validated_documents.name
+      StorageAccountConnectionString    = module.io_sign_storage_itn.primary_connection_string
+      IssuerUploadedBlobContainerName   = azurerm_storage_container.itn_uploaded_documents.name
+      IssuerValidatedBlobContainerName  = azurerm_storage_container.itn_validated_documents.name
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
-      IoServicesSubscriptionKey         = module.key_vault_secrets.values["IoServicesSubscriptionKey"].value
-      IoServicesConfigurationId         = module.key_vault_secrets.values["io-services-configuration-id"].value
+      IoServicesSubscriptionKey         = module.key_vault_secrets_itn.values["IoServicesSubscriptionKey"].value
+      IoServicesConfigurationId         = module.key_vault_secrets_itn.values["io-services-configuration-id"].value
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      PdvTokenizerApiKey                = module.key_vault_secrets_itn.values["PdvTokenizerApiKey"].value
       AnalyticsEventHubConnectionString = module.event_hub.keys["analytics.io-sign-func-issuer"].primary_connection_string
       BillingEventHubConnectionString   = module.event_hub.keys["billing.io-sign-func-issuer"].primary_connection_string
-      SelfCareEventHubConnectionString  = module.key_vault_secrets.values["SelfCareEventHubConnectionString"].value
+      SelfCareEventHubConnectionString  = module.key_vault_secrets_itn.values["SelfCareEventHubConnectionString"].value
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
-      SelfCareApiKey                    = module.key_vault_secrets.values["SelfCareApiKey"].value
-      SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
+      SelfCareApiKey                    = module.key_vault_secrets_itn.values["SelfCareApiKey"].value
+      SlackWebhookUrl                   = module.key_vault_secrets_itn.values["SlackWebhookUrl"].value
       BackOfficeApiBasePath             = "https://api.io.pagopa.it/api/v1/sign/backoffice"
-      BackOfficeApiKey                  = module.key_vault_secrets.values["BackOfficeApiKey"].value
+      BackOfficeApiKey                  = module.key_vault_secrets_itn.values["BackOfficeApiKey"].value
     }
   }
 }
@@ -122,7 +122,7 @@ module "io_sign_issuer_func_itn" {
 }
 
 resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role_itn" {
-  scope                = azurerm_storage_queue.api_keys.resource_manager_id
+  scope                = azurerm_storage_queue.itn_api_keys.resource_manager_id
   role_definition_name = "Storage Queue Data Message Processor"
   principal_id         = module.io_sign_issuer_func_itn.system_identity_principal
 }
