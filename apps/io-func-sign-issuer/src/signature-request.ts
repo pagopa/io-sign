@@ -31,13 +31,13 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { findIndex, updateAt } from "fp-ts/lib/Array";
 
 import {
-  getDocument,
   SignatureRequestCancelled,
   SignatureRequestDraft,
   SignatureRequestReady,
   SignatureRequestRejected,
   SignatureRequestSigned,
-  SignatureRequestToBeSigned
+  SignatureRequestToBeSigned,
+  getDocument
 } from "@io-sign/io-sign/signature-request";
 
 import { Issuer } from "@io-sign/io-sign/issuer";

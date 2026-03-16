@@ -1,7 +1,7 @@
 import * as H from "@pagopa/handler-kit";
 
 import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
-import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
@@ -18,10 +18,10 @@ import {
   SetSignatureRequestStatusBodyEnum
 } from "../../http/models/SetSignatureRequestStatusBody";
 import {
+  SignatureRequest,
   getSignatureRequest,
   markAsCancelled,
   markAsReady,
-  SignatureRequest,
   upsertSignatureRequest
 } from "../../../signature-request";
 import { requireIssuer } from "../../http/decoders/issuer";

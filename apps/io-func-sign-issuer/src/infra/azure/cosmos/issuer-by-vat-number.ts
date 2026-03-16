@@ -4,8 +4,8 @@ import * as cosmos from "@azure/cosmos";
 
 import {
   BaseModel,
-  CosmosdbModel,
-  CosmosResource
+  CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import { Issuer } from "@io-sign/io-sign/issuer";

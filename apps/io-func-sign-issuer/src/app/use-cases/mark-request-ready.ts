@@ -5,9 +5,9 @@ import { SignatureRequestReady } from "@io-sign/io-sign/signature-request";
 import { validate } from "@io-sign/io-sign/validation";
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import {
-  markAsReady,
   NotifySignatureRequestReadyEvent,
-  UpsertSignatureRequest
+  UpsertSignatureRequest,
+  markAsReady
 } from "../../signature-request";
 
 // TODO: [SFEQS-1213] refactor the signature request state machine in order to ensure type safety

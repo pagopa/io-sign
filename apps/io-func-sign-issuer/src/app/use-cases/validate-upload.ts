@@ -9,7 +9,7 @@ import * as A from "fp-ts/lib/Array";
 import * as L from "@pagopa/logger";
 
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
 
 import {
   DocumentMetadata,
@@ -21,13 +21,13 @@ import { getDocument } from "@io-sign/io-sign/signature-request";
 
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import {
+  UploadMetadata,
   createDocumentFromUrl,
+  getUploadMetadata,
   getUploadedDocument,
   getUploadedDocumentUrl,
-  getUploadMetadata,
   markUploadMetadataAsValid,
   removeDocumentFromStorage,
-  UploadMetadata,
   upsertUploadMetadata
 } from "../../upload";
 

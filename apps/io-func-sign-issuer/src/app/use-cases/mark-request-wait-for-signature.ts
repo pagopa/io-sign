@@ -6,8 +6,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import {
   GetSignatureRequest,
-  markAsWaitForSignature,
-  UpsertSignatureRequest
+  UpsertSignatureRequest,
+  markAsWaitForSignature
 } from "../../signature-request";
 
 export const makeMarkRequestAsWaitForSignature =
