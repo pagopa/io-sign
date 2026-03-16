@@ -1,3 +1,4 @@
+import { InvocationContext } from "@azure/functions";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -33,9 +34,13 @@ export const makeCreateIssuerHandler =
     selfCareConfig: SelfCareConfig,
     slackConfig: SlackConfig
   ) =>
-  async (messages: unknown[]): Promise<void> => {
+  async (messages: unknown[], context: InvocationContext): Promise<void> => {
     const contractsResult = pipe(messages, validate(GenericContracts));
     if (E.isLeft(contractsResult)) {
+      context.warn(
+        "Invalid issuer contracts received from Event Hub",
+        contractsResult.left
+      );
       return;
     }
     const contracts = contractsResult.right;

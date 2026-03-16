@@ -141,7 +141,7 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
-const WaitingForSignatureRequestUpdatesQueueClient = new QueueClient(
+const waitingForSignatureRequestUpdatesQueueClient = new QueueClient(
   config.azure.storage.connectionString,
   "waiting-for-signature-request-updates"
 );
@@ -278,7 +278,7 @@ const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   signatureRequestRepository,
   eventAnalyticsClient,
   ready: onSignatureRequestReadyQueueClient,
-  updated: WaitingForSignatureRequestUpdatesQueueClient
+  updated: waitingForSignatureRequestUpdatesQueueClient
 });
 
 app.http("setSignatureRequestStatus", {
@@ -312,7 +312,7 @@ app.storageQueue("markAsWaitForSignature", {
   handler: markAsWaitForSignature
 });
 
-const closeSignatureRequestSigned = CloseSignatureRequestFunction({
+const closeSignatureRequest = CloseSignatureRequestFunction({
   signatureRequestRepository,
   signerRepository,
   telemetryService,
@@ -325,23 +325,13 @@ const closeSignatureRequestSigned = CloseSignatureRequestFunction({
 app.storageQueue("closeSignatureRequestSigned", {
   queueName: "on-signature-request-signed",
   connection: "StorageAccountConnectionString",
-  handler: closeSignatureRequestSigned
-});
-
-const closeSignatureRequestRejected = CloseSignatureRequestFunction({
-  signatureRequestRepository,
-  signerRepository,
-  telemetryService,
-  notificationService,
-  eventAnalyticsClient,
-  billingEventProducer: eventHubBillingClient,
-  inputDecoder: ClosedSignatureRequest
+  handler: closeSignatureRequest
 });
 
 app.storageQueue("closeSignatureRequestRejected", {
   queueName: "on-signature-request-rejected",
   connection: "StorageAccountConnectionString",
-  handler: closeSignatureRequestRejected
+  handler: closeSignatureRequest
 });
 
 // ---- BLOB TRIGGER ----
