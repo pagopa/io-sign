@@ -1,7 +1,7 @@
 import {
   BaseModel,
-  CosmosdbModel,
-  CosmosResource
+  CosmosResource,
+  CosmosdbModel
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as TE from "fp-ts/TaskEither";

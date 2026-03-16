@@ -8,13 +8,13 @@ import { SignatureRequestId } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 import {
-  getSignatureRequestById,
-  GetSignatureRequestByIdPayload
+  GetSignatureRequestByIdPayload,
+  getSignatureRequestById
 } from "../../../signature-request";
 
 import {
-  getIssuerByVatNumber,
-  GetIssuerByVatNumberEnvironment
+  GetIssuerByVatNumberEnvironment,
+  getIssuerByVatNumber
 } from "../../../issuer";
 
 import { getSignerByFiscalCode } from "../../../signer";
