@@ -14,7 +14,7 @@ import {
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { NamirialCredentialsConfig } from "./config";
-import { makeGetClauses, makeGetToken, NamirialToken } from "./client";
+import { NamirialToken, makeGetClauses, makeGetToken } from "./client";
 
 export type NamirialProblemSource =
   | "NamirialLogin"

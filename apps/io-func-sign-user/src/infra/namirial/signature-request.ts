@@ -15,8 +15,8 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 import { IssuerEnvironment } from "@io-sign/io-sign/issuer";
 import { QtspCreateSignaturePayload } from "../../qtsp";
 import {
-  getNamirialCredentialsFromIssuerEnvironment,
-  NamirialConfig
+  NamirialConfig,
+  getNamirialCredentialsFromIssuerEnvironment
 } from "./config";
 
 import {

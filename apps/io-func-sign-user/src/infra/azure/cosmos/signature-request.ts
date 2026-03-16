@@ -1,7 +1,7 @@
 import {
   BaseModel,
-  CosmosdbModel,
   CosmosResource,
+  CosmosdbModel,
   toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 

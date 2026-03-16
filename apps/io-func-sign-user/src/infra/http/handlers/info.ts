@@ -11,8 +11,8 @@ import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healt
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import {
-  makePdvTokenizerHealthCheck,
-  TokenizerProblemSource
+  TokenizerProblemSource,
+  makePdvTokenizerHealthCheck
 } from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";
@@ -23,8 +23,8 @@ import {
 import { NamirialConfig } from "../../namirial/config";
 
 import {
-  makeNamirialHealthCheck,
-  NamirialProblemSource
+  NamirialProblemSource,
+  makeNamirialHealthCheck
 } from "../../namirial/health-check";
 import {
   AzureCosmosProblemSource,

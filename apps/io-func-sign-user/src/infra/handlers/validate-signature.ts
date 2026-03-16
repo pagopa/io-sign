@@ -8,8 +8,8 @@ import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 
 import {
-  makeValidateSignature,
-  ValidateSignaturePayload
+  ValidateSignaturePayload,
+  makeValidateSignature
 } from "../../app/use-cases/validate-signature";
 import {
   makeGetSignature,

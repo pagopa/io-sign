@@ -31,17 +31,17 @@ import { CreateSignatureRequest as CreateQtspSignatureRequest } from "../../infr
 
 import {
   InsertSignature,
-  newSignature,
   NotifySignatureReadyEvent,
-  SignatureValidationParams
+  SignatureValidationParams,
+  newSignature
 } from "../../signature";
 
 import { DocumentToSign } from "../../signature-field";
 import {
-  canBeWaitForQtsp,
   GetSignatureRequest,
-  markAsWaitForQtsp,
-  UpsertSignatureRequest
+  UpsertSignatureRequest,
+  canBeWaitForQtsp,
+  markAsWaitForQtsp
 } from "../../signature-request";
 
 export const CreateSignaturePayload = t.type({
