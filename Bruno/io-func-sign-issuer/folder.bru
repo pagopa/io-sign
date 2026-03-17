@@ -1,0 +1,17 @@
+meta {
+  name: io-func-sign-issuer
+}
+
+headers {
+  x-subscription-id: {{issuer_subscription_id}}
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: x-functions-key
+  value: {{io-func-sign-issuer-api-key}}
+  placement: header
+}

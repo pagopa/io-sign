@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - Bruno
   - apps/*
 
 linkWorkspacePackages: true

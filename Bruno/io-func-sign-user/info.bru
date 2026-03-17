@@ -1,0 +1,16 @@
+meta {
+  name: info
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{io-func-sign-user-base-url}}/sign/info
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

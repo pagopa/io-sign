@@ -1,0 +1,14 @@
+meta {
+  name: io-sign-backoffice-func
+  seq: 6
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: x-functions-key
+  value: {{io-sign-backoffice-func-api-key}}
+  placement: header
+}

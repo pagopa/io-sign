@@ -1,0 +1,39 @@
+meta {
+  name: get-requests-by-dossiers
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{io-func-sign-issuer-base-url}}/sign/dossiers/:dossier_id/signature-requests
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~continuationToken: {{continuationToken}}
+  ~limit: 25
+}
+
+params:path {
+  dossier_id: {{dossier_id}}
+}
+
+vars:pre-request {
+  continuationToken: SET_IN_POSTREQUEST_SCRIPT
+}
+
+script:post-response {
+  let continuationToken = res.body?.continuation_token;
+  
+  if (continuationToken) {
+    bru.setVar("continuationToken", continuationToken);
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}
