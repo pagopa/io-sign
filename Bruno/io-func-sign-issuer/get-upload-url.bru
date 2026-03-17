@@ -1,0 +1,31 @@
+meta {
+  name: get-upload-url
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{io-func-sign-issuer-base-url}}/sign/signature-requests/:signature_request_id/documents/:document_id/upload_url
+  body: none
+  auth: inherit
+}
+
+params:path {
+  document_id: {{signature_request_document_id}}
+  signature_request_id: {{signature_request_id}}
+}
+
+script:post-response {
+  let uploadUrl = res.body;
+  
+  if (uploadUrl) {
+    bru.setVar("upload_url_from_get_upload_url", uploadUrl);
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}
