@@ -1,0 +1,24 @@
+meta {
+  name: get-signer-by-fiscal-code
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{io-func-sign-issuer-base-url}}/sign/signers
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fiscal_code": "{{fiscal_code}}"
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}
