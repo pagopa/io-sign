@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.0.0
+
+### Major Changes
+
+- bef709c: Migrating azure programming model from v3 to v4
+
 ## 0.21.4
 
 ### Patch Changes
