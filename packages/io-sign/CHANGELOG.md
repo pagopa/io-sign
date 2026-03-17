@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.6.1
+
+### Patch Changes
+
+- 4001e1f: mapping cosmos db to many error to custom error
+
 ## 1.6.0
 
 ### Minor Changes
