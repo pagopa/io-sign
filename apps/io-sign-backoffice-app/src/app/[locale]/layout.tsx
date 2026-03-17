@@ -1,10 +1,27 @@
-import { notFound } from "next/navigation";
 import { useLocale, useMessages } from "next-intl";
+import { notFound } from "next/navigation";
 
 import IntlClientProvider from "@/i18n/IntlClientProvider";
 
-import { pick } from "lodash";
+import { MSWProvider } from "@/components/MSWProvider";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import { pick } from "lodash";
+
+if (
+  process.env.NEXT_PUBLIC_MOCK_MSW_ENABLED === "true" &&
+  typeof window === "undefined" &&
+  process.env.NODE_ENV === "development"
+) {
+  /**
+   * Use dynamic require to prevent MSW from being bundled in the client-side 
+   * and to avoid side-effects during the Next.js build process. 
+   * This ensures MSW only patches Node.js primitives at runtime when 
+   * server-side mocking is explicitly required.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { startMSWServer } = require("../../../mocks/msw-node");
+  startMSWServer();
+}
 
 export default function RootLayout({
   children,
@@ -38,9 +55,11 @@ export default function RootLayout({
   return (
     <html lang={locale}>
       <body>
-        <IntlClientProvider intl={{ locale, messages: clientMessages }}>
-          <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
-        </IntlClientProvider>
+        <MSWProvider>
+          <IntlClientProvider intl={{ locale, messages: clientMessages }}>
+            <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
+          </IntlClientProvider>
+        </MSWProvider>
       </body>
     </html>
   );

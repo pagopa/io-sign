@@ -4,6 +4,7 @@ import {
   getInstitutionsByUserId,
 } from "@/lib/institutions/use-cases";
 import { createIssuerIfNotExists } from "@/lib/issuers/use-cases";
+import { SUPPORT_L3_EMAIL_DEFAULT } from "@/lib/support";
 import { userSchema } from "./index";
 import { verify } from "./selfcare";
 import { getPayloadFromSessionCookie, createSessionCookie } from "./session";
@@ -63,7 +64,7 @@ if (process.env.NODE_ENV === "development") {
       id: "8c68a47b-fdbd-46e9-91df-71aa0d45043b",
       name: "Comune di Genola",
       taxCode: "0010213",
-      supportEmail: "firmaconio-tech@pagopa.it",
+      supportEmail: SUPPORT_L3_EMAIL_DEFAULT,
       vatNumber: "0010213",
     };
     await createIssuerIfNotExists({

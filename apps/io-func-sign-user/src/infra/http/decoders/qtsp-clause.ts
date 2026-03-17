@@ -1,5 +1,5 @@
 import { validate } from "@io-sign/io-sign/validation";
-import { HttpRequest } from "handler-kit-legacy/lib/http";
+import * as H from "@pagopa/handler-kit";
 
 import { flow, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -25,7 +25,7 @@ export const QtspClauseFromApiModel = new t.Type<
 );
 
 export const requireQtspClauses = flow(
-  (res: HttpRequest) => res.body,
+  (res: H.HttpRequest) => res.body,
   validate(CreateSignatureBody),
   E.map((body) => body.qtsp_clauses),
   (qtspClauses) =>
