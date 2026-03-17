@@ -30,7 +30,6 @@ catalog:
   eslint-plugin-prettier: ^5.0.0
   fp-ts: ^2.16.5
   googleapis: ^133.0.0
-  handler-kit-legacy: npm:@pagopa/handler-kit@0.5.1
   io-ts: ^2.2.21
   io-ts-types: ^0.5.19
   monocle-ts: ^2.3.13
