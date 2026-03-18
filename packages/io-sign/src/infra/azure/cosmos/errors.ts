@@ -11,8 +11,6 @@ class CosmosDatabaseError extends Error {
 
 export const toCosmosDatabaseError = (e: CosmosErrors) => {
   switch (e.kind) {
-<<<<<<< chores/upgrade-linter-azure-functions
-=======
     case "COSMOS_ERROR_RESPONSE":
       // eslint-disable-next-line no-console
       console.error(
@@ -22,22 +20,16 @@ export const toCosmosDatabaseError = (e: CosmosErrors) => {
         return new TooManyRequestsError("Too many requests.");
       }
       return new CosmosDatabaseError("A database error has occurred.");
->>>>>>> main
     case "COSMOS_CONFLICT_RESPONSE":
       return new CosmosDatabaseError("Conflict.");
     case "COSMOS_DECODING_ERROR":
       // TODO: show details about validation
       return new CosmosDatabaseError("Decoding error.");
-<<<<<<< chores/upgrade-linter-azure-functions
     case "COSMOS_EMPTY_RESPONSE":
       return new CosmosDatabaseError("Empty response.");
-    case "COSMOS_ERROR_RESPONSE":
-      return new CosmosDatabaseError(e.error.message);
-=======
     default:
       // eslint-disable-next-line no-console
       console.error("Cosmos DB unexpected error", JSON.stringify(e));
       return new CosmosDatabaseError("Generic error.");
->>>>>>> main
   }
 };
