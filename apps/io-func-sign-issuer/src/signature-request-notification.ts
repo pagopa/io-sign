@@ -9,8 +9,8 @@ import {
 
 import {
   NotificationMessage,
-  SubmitNotificationForUser,
-  submitNotification
+  submitNotification,
+  SubmitNotificationForUser
 } from "@io-sign/io-sign/notification";
 
 import { sequenceS } from "fp-ts/lib/Apply";

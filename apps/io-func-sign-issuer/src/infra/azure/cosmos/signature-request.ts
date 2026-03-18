@@ -1,9 +1,9 @@
 import {
   BaseModel,
+  CosmosdbModel,
   CosmosDecodingError,
   CosmosErrorResponse,
   CosmosResource,
-  CosmosdbModel,
   toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 import { Document } from "@io-sign/io-sign/document";
