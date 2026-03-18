@@ -24,7 +24,6 @@ import { GetSignerFunction } from "../infra/azure/functions/get-signer";
 import { GetUploadUrlFunction } from "../infra/azure/functions/get-upload-url";
 import { SendNotificationFunction } from "../infra/azure/functions/send-notification";
 import { MarkAsWaitForSignatureFunction } from "../infra/azure/functions/mark-as-wait-for-signature";
-import { makeCreateIssuerHandler } from "../infra/azure/functions/create-issuer";
 import { makeCreateIssuersByVatNumberViewHandler } from "../infra/azure/functions/create-issuers-by-vat-number-view";
 
 import { GetDossierFunction } from "../infra/azure/functions/get-dossier";
@@ -350,19 +349,6 @@ app.storageBlob("validateUpload", {
   path: "uploaded-documents/{name}",
   connection: "StorageAccountConnectionString",
   handler: validateUpload
-});
-
-// ---- EVENT HUB TRIGGER ----
-
-app.eventHub("createIssuer", {
-  connection: "SelfCareEventHubConnectionString",
-  eventHubName: "sc-contracts",
-  cardinality: "many",
-  handler: makeCreateIssuerHandler(
-    database,
-    config.pagopa.selfCare,
-    config.slack
-  )
 });
 
 // ---- COSMOS DB TRIGGER ----
