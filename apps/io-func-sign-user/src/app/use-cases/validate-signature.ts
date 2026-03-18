@@ -16,11 +16,11 @@ import {
 import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
+  markAsRejected,
+  markAsSigned,
   NotifySignatureRequestRejectedEvent,
   NotifySignatureRequestSignedEvent,
-  SignatureRequest,
-  markAsRejected,
-  markAsSigned
+  SignatureRequest
 } from "../../signature-request";
 import { GetSignature, Signature, UpsertSignature } from "../../signature";
 import { GetSignatureRequest as GetQtspSignatureRequest } from "../../infra/namirial/signature-request";

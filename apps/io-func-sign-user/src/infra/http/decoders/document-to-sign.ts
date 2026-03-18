@@ -1,4 +1,4 @@
-import { ValidationError, validate } from "@io-sign/io-sign/validation";
+import { validate, ValidationError } from "@io-sign/io-sign/validation";
 
 import * as H from "@pagopa/handler-kit";
 
