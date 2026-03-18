@@ -241,3 +241,15 @@ variable "landing_cdn_url" {
   type        = string
   description = "The URL of the landing CDN hosted by PAWSBuilder"
 }
+
+variable "environment" {
+  type = object({
+    prefix          = string
+    env_short       = string
+    location        = string
+    domain          = optional(string)
+    instance_number = string
+  })
+
+  description = "Values which are used to generate resource names and location short names. They are all mandatory except for domain, which should not be used only in the case of a resource used by multiple domains."
+}
