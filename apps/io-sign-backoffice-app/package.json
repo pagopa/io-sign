@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
@@ -30,8 +30,8 @@
     "@types/lodash": "^4.14.197",
     "jose": "^4.14.4",
     "lodash": "^4.17.21",
-    "next": "^13.5.5",
-    "next-intl": "3.0.0-beta.11",
+    "next": "^15.5.12",
+    "next-intl": "^3.26.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -50,8 +50,13 @@
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "@vitest/coverage-c8": "catalog:",
+<<<<<<< chores/upgrade-linter-azure-functions
     "eslint": "^8.57.0",
     "eslint-config-next": "^13.5.5",
+=======
+    "eslint": "catalog:",
+    "eslint-config-next": "^15.5.12",
+>>>>>>> main
     "eslint-config-prettier": "^9.0.0",
     "msw": "^2.12.10",
     "typescript": "^5.1.6",

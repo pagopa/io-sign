@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.7.5
+
+### Patch Changes
+
+- 396abb7: Upgrade Next.js to v15
+
 ## 1.7.4
 
 ### Patch Changes

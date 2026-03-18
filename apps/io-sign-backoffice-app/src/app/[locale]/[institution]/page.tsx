@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 import { Stack } from "@mui/material";
 
@@ -9,12 +9,13 @@ import Page from "@/components/Page";
 import IssuerCard from "./_components/IssuerCard";
 import SupportCard from "./_components/SupportCard";
 
-export default function Overview({
+export default async function Overview({
   params,
 }: {
-  params: { institution: string };
+  params: Promise<{ institution: string }>;
 }) {
-  const t = useTranslations("firmaconio.overview");
+  const { institution } = await params;
+  const t = await getTranslations("firmaconio.overview");
   const header = {
     title: t("title"),
     description: t("description"),
@@ -28,7 +29,7 @@ export default function Overview({
         spacing={2}
       >
         <Suspense>
-          <IssuerCard institutionId={params.institution} />
+          <IssuerCard institutionId={institution} />
           <SupportCard />
         </Suspense>
       </Stack>
