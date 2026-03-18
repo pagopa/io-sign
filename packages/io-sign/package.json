@@ -1,6 +1,6 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "repository": "https://github.com/pagopa/io-sign",
   "license": "MPL-2.0",
   "exports": {
@@ -28,7 +28,6 @@
     "applicationinsights": "catalog:",
     "date-fns": "catalog:",
     "fp-ts": "catalog:",
-    "handler-kit-legacy": "catalog:",
     "io-ts": "catalog:",
     "io-ts-types": "catalog:",
     "monocle-ts": "catalog:",

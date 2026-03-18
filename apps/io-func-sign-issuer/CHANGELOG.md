@@ -1,5 +1,18 @@
 # io-func-sign-issuer
 
+## 1.0.0
+
+### Major Changes
+
+- bef709c: Migrating azure programming model from v3 to v4
+
+## 0.21.4
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
 ## 0.21.3
 
 ### Patch Changes

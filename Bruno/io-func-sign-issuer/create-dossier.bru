@@ -1,0 +1,50 @@
+meta {
+  name: create-dossier
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{io-func-sign-issuer-base-url}}/sign/dossiers
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Contratti utenza - Marzo 2026",
+    "documents_metadata": [
+      {
+        "title": "Contratto_servizio.pdf",
+        "signature_fields": [
+          {
+            "attrs": {
+              "unique_name": "firma_cliente_1"
+            },
+            "clause": {
+              "title": "Accettazione condizioni generali",
+              "type": "REQUIRED"
+            }
+          },
+          {
+            "attrs": {
+              "coordinates": { "x": 100, "y": 700 },
+              "page": 1,
+              "size": { "w": 200, "h": 50 }
+            },
+            "clause": {
+              "title": "Firma digitale cliente",
+              "type": "REQUIRED"
+            }
+          }
+        ]
+      }
+    ],
+    "support_email": "support@example.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

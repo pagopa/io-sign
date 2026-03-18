@@ -1,0 +1,26 @@
+meta {
+  name: get-signature-request
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{io-func-sign-support-base-url}}/sign/support/signature-requests/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: {{signature_request_id}}
+}
+
+body:json {
+  {
+    "vat_number": "{{issuer_vat_number}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
