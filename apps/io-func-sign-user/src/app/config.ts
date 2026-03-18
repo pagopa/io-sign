@@ -5,36 +5,36 @@ import * as RE from "fp-ts/lib/ReaderEither";
 
 import { sequenceS } from "fp-ts/lib/Apply";
 import {
-  PdvTokenizerConfig,
-  getPdvTokenizerConfigFromEnvironment
+  getPdvTokenizerConfigFromEnvironment,
+  PdvTokenizerConfig
 } from "@io-sign/io-sign/infra/pdv-tokenizer/config";
 import {
-  IOServicesConfig,
-  getIoServicesConfigFromEnvironment
+  getIoServicesConfigFromEnvironment,
+  IOServicesConfig
 } from "@io-sign/io-sign/infra/io-services/config";
 import {
   EventHubConfig,
   getEventHubsConfigFromEnvironment
 } from "@io-sign/io-sign/infra/azure/event-hubs/config";
 import {
-  IoLinkConfig,
-  getIoLinkConfigFromEnvironment
+  getIoLinkConfigFromEnvironment,
+  IoLinkConfig
 } from "@io-sign/io-sign/infra/io-link/config";
 import {
-  StorageConfig,
-  getStorageConfigFromEnvironment
+  getStorageConfigFromEnvironment,
+  StorageConfig
 } from "../infra/azure/storage/config";
 import {
   CosmosConfig,
   getCosmosConfigFromEnvironment
 } from "../infra/azure/cosmos/config";
 import {
-  NamirialConfig,
-  getNamirialConfigFromEnvironment
+  getNamirialConfigFromEnvironment,
+  NamirialConfig
 } from "../infra/namirial/config";
 import {
-  LollipopConfig,
-  getLollipopConfigFromEnvironment
+  getLollipopConfigFromEnvironment,
+  LollipopConfig
 } from "../infra/lollipop/config";
 
 export const Config = t.type({
