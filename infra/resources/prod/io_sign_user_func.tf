@@ -107,6 +107,15 @@ module "io_sign_user_func_roles" {
       }
     }
   ]
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_user_func.name} to read/write CosmosDB via RBAC"
+    }
+  ]
 }
 
 module "io_sign_user_func_staging_slot" {
@@ -162,6 +171,15 @@ module "io_sign_user_func_staging_slot_roles" {
       roles = {
         secrets = "reader"
       }
+    }
+  ]
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_user_func_staging_slot.name} to read/write CosmosDB via RBAC"
     }
   ]
 }

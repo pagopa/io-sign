@@ -1,0 +1,81 @@
+meta {
+  name: create-signature
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{io-func-sign-user-base-url}}/sign/signatures
+  body: json
+  auth: inherit
+}
+
+headers {
+  signature-input: sig1=("x-pagopa-lollipop-custom-tos-challenge");created=1678291148;nonce="nonce1";alg="ecdsa-p256-sha256";keyid="key1",sig2=("x-pagopa-lollipop-custom-sign-challenge");created=1678291148;nonce="nonce2";alg="ecdsa-p256-sha256";keyid="key1"
+  signature: sig1=:YmFzZTY0dG9zMQ==:,sig2=:YmFzZTY0c2lnMQ==:
+  x-pagopa-lollipop-auth-jwt: jwt
+  x-pagopa-lollipop-assertion-ref: sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  x-pagopa-lollipop-assertion-type: SAML
+  x-pagopa-lollipop-public-key: SET_IN_PREREQUEST_SCRIPT
+  x-pagopa-lollipop-custom-tos-challenge: tos-challenge-mock
+  x-pagopa-lollipop-custom-sign-challenge: sign-challenge-mock
+  x-iosign-signer-id: {{signer_id}}
+}
+
+body:json {
+  {
+    "signature_request_id": "{{signature_request_id}}",
+    "email": "mario.rossi@test.com",
+    "documents_to_sign": [
+      {
+        "document_id": "{{signature_request_document_id}}",
+        "signature_fields": [
+          {
+            "attrs": {
+              "unique_name": "signature-field-1"
+            },
+            "clause": {
+              "title": "Firma richiesta",
+              "type": "REQUIRED"
+            }
+          }
+        ]
+      }
+    ],
+    "qtsp_clauses": {
+      "accepted_clauses": [
+        {
+          "text": "I accept the privacy and terms."
+        }
+      ],
+      "filled_document_url": "https://example.com/filled.pdf",
+      "nonce": "nonce-123"
+    }
+  }
+}
+
+script:pre-request {
+  const crypto = require("node:crypto");
+  
+  const { publicKey, privateKey } = crypto.generateKeyPairSync("ec", {
+    namedCurve: "P-256",
+    publicKeyEncoding: {
+      type: "spki",
+      format: "jwk",
+    },
+    privateKeyEncoding: {
+      type: "pkcs8",
+      format: "jwk"
+    }
+  });
+  
+  const encodedPublicKey = Buffer.from(JSON.stringify(publicKey)).toString("base64url");
+  
+  req.setHeader("x-pagopa-lollipop-public-key", encodedPublicKey);
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -128,3 +128,35 @@ resource "azurerm_key_vault_access_policy" "backoffice_func_staging_slot_key_vau
   storage_permissions     = []
   certificate_permissions = []
 }
+
+module "io_sign_backoffice_func_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_backoffice_func.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_backoffice_func.name} to read/write CosmosDB via RBAC"
+    }
+  ]
+}
+
+module "io_sign_backoffice_func_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_backoffice_func_staging_slot.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  cosmos = [
+    {
+      account_name        = module.cosmosdb_account.name
+      resource_group_name = azurerm_resource_group.data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.io_sign_backoffice_func_staging_slot.name} to read/write CosmosDB via RBAC"
+    }
+  ]
+}

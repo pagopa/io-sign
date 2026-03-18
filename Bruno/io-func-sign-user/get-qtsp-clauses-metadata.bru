@@ -1,0 +1,16 @@
+meta {
+  name: get-qtsp-clauses-metadata
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{io-func-sign-user-base-url}}/sign/qtsp/clauses
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

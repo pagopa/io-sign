@@ -1,0 +1,24 @@
+meta {
+  name: get-signature-request
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{io-func-sign-user-base-url}}/sign/signature-requests/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: {{signature_request_id}}
+}
+
+headers {
+  x-iosign-signer-id: {{signer_id}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

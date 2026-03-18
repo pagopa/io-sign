@@ -1,0 +1,20 @@
+meta {
+  name: get-dossiers
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{io-func-sign-issuer-base-url}}/sign/dossiers/:dossier_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  dossier_id: {{dossier_id}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,11 +1,10 @@
-import * as azure from "handler-kit-legacy/lib/azure";
-import { createHandler } from "handler-kit-legacy";
+import { InvocationContext } from "@azure/functions";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import * as RA from "fp-ts/lib/ReadonlyArray";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
-import { flow, identity, pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
 import { validate } from "@io-sign/io-sign/validation";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
@@ -29,60 +28,60 @@ import { SlackConfig } from "../../slack/config";
 import { makePostSlackMessage } from "../../slack/client";
 import { createNewIssuerMessage } from "../../slack/issuer-message";
 
-const makeCreateIssuerHandler = (
-  db: CosmosDatabase,
-  selfCareConfig: SelfCareConfig,
-  slackConfig: SlackConfig
-) => {
-  const getContractsFromEventHub = flow(
-    azure.fromEventHubMessage(GenericContracts, "contracts"),
-    TE.fromEither
-  );
+export const makeCreateIssuerHandler =
+  (
+    db: CosmosDatabase,
+    selfCareConfig: SelfCareConfig,
+    slackConfig: SlackConfig
+  ) =>
+  async (messages: unknown[], context: InvocationContext): Promise<void> => {
+    const contractsResult = pipe(messages, validate(GenericContracts));
+    if (E.isLeft(contractsResult)) {
+      context.warn(
+        "Invalid issuer contracts received from Event Hub",
+        contractsResult.left
+      );
+      return;
+    }
+    const contracts = contractsResult.right;
 
-  const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
-    selfCareConfig
-  );
-
-  const postSlackMessage = makePostSlackMessage(makeFetchWithTimeout())(
-    slackConfig
-  );
-
-  const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
-  const insertIssuer = makeInsertIssuer(db);
-
-  const sendNewIssuerSlackMessage = (newIssuer: Issuer) =>
-    pipe(
-      newIssuer,
-      createNewIssuerMessage,
-      postSlackMessage,
-      TE.map(() => newIssuer)
+    const getInstitutionById = makeGetInstitutionById(makeFetchWithTimeout())(
+      selfCareConfig
     );
-
-  const createIssuerFromContract = (contract: GenericContract) =>
-    pipe(
-      contract,
-      validateActiveContract,
-      E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
-      TE.fromEither,
-      TE.chain(addSupportMailToIoSignContract(getInstitutionById)),
-      TE.map(ioSignContractToIssuer.encode),
-      TE.chain(checkIssuerWithSameVatNumber),
-      // If the contract is not validated because it belongs to another product or has already been entered, I will disregard it.
-      TE.foldW(
-        () => TE.of(undefined),
-        flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage))
-      )
+    const postSlackMessage = makePostSlackMessage(makeFetchWithTimeout())(
+      slackConfig
     );
+    const checkIssuerWithSameVatNumber = makeCheckIssuerWithSameVatNumber(db);
+    const insertIssuer = makeInsertIssuer(db);
 
-  return createHandler(
-    getContractsFromEventHub,
-    flow(RA.map(createIssuerFromContract), RA.sequence(TE.ApplicativePar)),
-    identity,
-    () => undefined
-  );
-};
+    const sendNewIssuerSlackMessage = (newIssuer: Issuer) =>
+      pipe(
+        newIssuer,
+        createNewIssuerMessage,
+        postSlackMessage,
+        TE.map(() => newIssuer)
+      );
 
-export const makeCreateIssuerFunction = flow(
-  makeCreateIssuerHandler,
-  azure.unsafeRun
-);
+    const createIssuerFromContract = (contract: GenericContract) =>
+      pipe(
+        contract,
+        validateActiveContract,
+        E.chainW(validate(IoSignContract, "This is not an `io-sign` contract")),
+        TE.fromEither,
+        TE.chain(addSupportMailToIoSignContract(getInstitutionById)),
+        TE.map(ioSignContractToIssuer.encode),
+        TE.chain(checkIssuerWithSameVatNumber),
+        // If the contract is not validated because it belongs to another product
+        // or has already been entered, I will disregard it.
+        TE.foldW(
+          () => TE.of(undefined),
+          flow(insertIssuer, TE.chain(sendNewIssuerSlackMessage))
+        )
+      );
+
+    await pipe(
+      contracts,
+      RA.map(createIssuerFromContract),
+      RA.sequence(TE.ApplicativePar)
+    )();
+  };

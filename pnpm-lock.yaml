@@ -69,9 +69,6 @@ catalogs:
     googleapis:
       specifier: ^133.0.0
       version: 133.0.0
-    handler-kit-legacy:
-      specifier: npm:@pagopa/handler-kit@0.5.1
-      version: 0.5.1
     io-ts:
       specifier: ^2.2.21
       version: 2.2.22
@@ -141,6 +138,12 @@ importers:
         specifier: ^2.8.6
         version: 2.8.6
 
+  Bruno:
+    dependencies:
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
+
   apps/io-func-sign-issuer:
     dependencies:
       '@azure/cosmos':
@@ -149,6 +152,9 @@ importers:
       '@azure/event-hubs':
         specifier: 'catalog:'
         version: 5.11.2
+      '@azure/functions':
+        specifier: 'catalog:'
+        version: 4.11.1
       '@azure/storage-blob':
         specifier: 'catalog:'
         version: 12.16.0
@@ -159,14 +165,14 @@ importers:
         specifier: workspace:^
         version: link:../../packages/io-sign
       '@pagopa/handler-kit':
-        specifier: ^1.1.0
-        version: 1.1.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        specifier: 'catalog:'
+        version: 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit-azure-func':
-        specifier: ^1.2.0
-        version: 1.2.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        specifier: 'catalog:'
+        version: 2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: 'catalog:'
-        version: 29.1.2(@azure/functions@3.5.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
+        version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@pagopa/logger':
         specifier: 'catalog:'
         version: 1.0.1
@@ -179,9 +185,6 @@ importers:
       fp-ts:
         specifier: 'catalog:'
         version: 2.16.10
-      handler-kit-legacy:
-        specifier: 'catalog:'
-        version: '@pagopa/handler-kit@0.5.1'
       io-ts:
         specifier: 'catalog:'
         version: 2.2.22(fp-ts@2.16.10)
@@ -195,9 +198,6 @@ importers:
         specifier: 'catalog:'
         version: 0.3.5(fp-ts@2.16.10)(monocle-ts@2.3.13(fp-ts@2.16.10))
     devDependencies:
-      '@azure/functions':
-        specifier: ^3.5.0
-        version: 3.5.1
       '@io-sign/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
@@ -631,9 +631,6 @@ importers:
       fp-ts:
         specifier: 'catalog:'
         version: 2.16.10
-      handler-kit-legacy:
-        specifier: 'catalog:'
-        version: '@pagopa/handler-kit@0.5.1'
       io-ts:
         specifier: 'catalog:'
         version: 2.2.22(fp-ts@2.16.10)
@@ -911,9 +908,6 @@ packages:
   '@azure/functions-extensions-base@0.2.0':
     resolution: {integrity: sha512-ncCkHBNQYJa93dBIh+toH0v1iSgCzSo9tr94s6SMBe7DPWREkaWh8cq33A5P4rPSFX1g5W+3SPvIzDr/6/VOWQ==}
     engines: {node: '>=18.0'}
-
-  '@azure/functions@3.5.1':
-    resolution: {integrity: sha512-6UltvJiuVpvHSwLcK/Zc6NfUwlkDLOFFx97BHCJzlWNsfiWwzwmTsxJXg4kE/LemKTHxPpfoPE+kOJ8hAdiKFQ==}
 
   '@azure/functions@4.11.1':
     resolution: {integrity: sha512-9cxn8H7jnNRUhvKW9dVz2EldfUR2GGwo1mKTjBNRx7HrFbrc8w1Mtk7DQ9OmziMt3gVgsRvC7Vs8haja2lPr3A==}
@@ -2592,17 +2586,11 @@ packages:
     peerDependencies:
       eslint: ^8.57.0
 
-  '@pagopa/handler-kit-azure-func@1.2.0':
-    resolution: {integrity: sha512-9Hesil2IzDkVr1BmRAP6z/vk2P8hu2GCHZgLf5mDiUw5rxgfolOmCUWNYSjlOMURAUNCjn72+XvZt8wOWF9qVg==}
-
   '@pagopa/handler-kit-azure-func@2.0.8':
     resolution: {integrity: sha512-Y5iwgWt+dXg/uts8+zd7gnnj3lzL+kzU0jGSS4XeJkuqBPDFjvz3lG7QkqKNxdgSIp4S5pGx50qOya/g4BCHhA==}
     peerDependencies:
       fp-ts: ^2.13.1
       io-ts: ^2.2.20
-
-  '@pagopa/handler-kit@0.5.1':
-    resolution: {integrity: sha512-bQxKLIoEUCdnjDcAjiIY0wMFGhjV476cRBqCfAMEg+txZx6fKZejdkd7IQTstPpxCwdrzVfq7T+n4z2z/yXiSA==}
 
   '@pagopa/handler-kit@1.1.0':
     resolution: {integrity: sha512-siLQ96LZ77gXxdiYXYdWiNhS7lao/M6Hj9aO6zxALnVR6BxBjvQm4k1Y3MT71oS9s4gUTFyPoFf672FVMI7UaQ==}
@@ -4432,6 +4420,9 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+
   crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
     engines: {node: '>=8'}
@@ -6156,9 +6147,6 @@ packages:
   logform@2.6.0:
     resolution: {integrity: sha512-1ulHeNPp6k/LD8H91o7VYFBng5i1BDE7HoKxVbZiGFidS1Rj65qcywLxX+pVfAPoQJEjRdvKcusKwOupHCVOVQ==}
     engines: {node: '>= 12.0.0'}
-
-  long@4.0.0:
-    resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
 
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -8817,12 +8805,6 @@ snapshots:
 
   '@azure/functions-extensions-base@0.2.0': {}
 
-  '@azure/functions@3.5.1':
-    dependencies:
-      iconv-lite: 0.6.3
-      long: 4.0.0
-      uuid: 8.3.2
-
   '@azure/functions@4.11.1':
     dependencies:
       '@azure/functions-extensions-base': 0.2.0
@@ -10642,19 +10624,6 @@ snapshots:
       - vitest
       - vue-eslint-parser
 
-  '@pagopa/handler-kit-azure-func@1.2.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
-    dependencies:
-      '@pagopa/handler-kit': 1.1.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
-      '@pagopa/logger': 1.0.1
-      fp-ts: 2.16.10
-      io-ts: 2.2.22(fp-ts@2.16.10)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - postcss
-      - supports-color
-      - ts-node
-      - typescript
-
   '@pagopa/handler-kit-azure-func@2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
     dependencies:
       '@azure/functions': 4.11.1
@@ -10668,11 +10637,6 @@ snapshots:
       - supports-color
       - ts-node
       - typescript
-
-  '@pagopa/handler-kit@0.5.1':
-    dependencies:
-      fp-ts: 2.16.10
-      io-ts: 2.2.22(fp-ts@2.16.10)
 
   '@pagopa/handler-kit@1.1.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
     dependencies:
@@ -10703,37 +10667,6 @@ snapshots:
       - supports-color
       - ts-node
       - typescript
-
-  '@pagopa/io-functions-commons@29.1.2(@azure/functions@3.5.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))':
-    dependencies:
-      '@azure/cosmos': 4.0.0
-      '@azure/data-tables': 13.2.2
-      '@azure/functions': 3.5.1
-      '@pagopa/ts-commons': 13.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
-      applicationinsights: 2.9.5
-      azure-storage: 2.10.7
-      cidr-matcher: 2.1.1
-      express: 4.18.2
-      fp-ts: 2.16.10
-      helmet: 4.6.0
-      helmet-csp: 2.10.0
-      io-ts: 2.2.22(fp-ts@2.16.10)
-      node-fetch: 2.7.0
-      nodemailer: 6.9.13
-      nodemailer-sendgrid: 1.0.3
-      referrer-policy: 1.2.0
-      rehype-stringify: 3.0.0
-      remark-frontmatter: 2.0.0
-      remark-parse: 5.0.0
-      remark-rehype: 3.0.2
-      request-ip: 3.3.0
-      ulid: 2.3.0
-      unified: 9.2.2
-      winston: 3.11.0
-    transitivePeerDependencies:
-      - applicationinsights-native-metrics
-      - encoding
-      - supports-color
 
   '@pagopa/io-functions-commons@29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))':
     dependencies:
@@ -13210,6 +13143,8 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  crypto-js@4.2.0: {}
+
   crypto-random-string@2.0.0: {}
 
   css.escape@1.5.1: {}
@@ -15265,8 +15200,6 @@ snapshots:
       ms: 2.1.3
       safe-stable-stringify: 2.4.3
       triple-beam: 1.4.1
-
-  long@4.0.0: {}
 
   loose-envify@1.4.0:
     dependencies:
