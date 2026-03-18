@@ -5,10 +5,10 @@ import { EventHubProducerClient } from "@azure/event-hubs";
 
 import {
   CreateAndSendAnalyticsEvent,
+  createAndSendAnalyticsEvent,
   EventName,
   GenericEvent,
   SendEvent,
-  createAndSendAnalyticsEvent,
   sendEvent
 } from "../../../event";
 import {
