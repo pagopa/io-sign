@@ -5,8 +5,9 @@ import { authenticate } from "@/lib/auth/use-cases";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
-  const { institutionId } = await authenticate(params.id);
+  const { id } = await paramsPromise;
+  const { institutionId } = await authenticate(id);
   redirect(`/${institutionId}`);
 }

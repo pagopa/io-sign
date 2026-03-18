@@ -38,21 +38,24 @@ export async function createSessionCookie(
     .setExpirationTime(Date.now() + maxAge * 1000);
   const secret = getSecret();
   const value = await jwt.sign(secret);
-  cookies().set(cookieName, value, {
+  const cookieStore = await cookies();
+  cookieStore.set(cookieName, value, {
     maxAge,
     ...defaultCookieOptions,
   });
 }
 
-export function destroySessionCookie() {
-  cookies().set(cookieName, "", {
+export async function destroySessionCookie() {
+  const cookieStore = await cookies();
+  cookieStore.set(cookieName, "", {
     maxAge: 0,
     ...defaultCookieOptions,
   });
 }
 
-function getSessionCookie(): { name: string; value: string } {
-  const cookie = cookies().get(cookieName);
+async function getSessionCookie(): Promise<{ name: string; value: string }> {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get(cookieName);
   if (typeof cookie === "undefined") {
     throw new Error("unable to get the session cookie");
   }
@@ -62,7 +65,7 @@ function getSessionCookie(): { name: string; value: string } {
 export async function getPayloadFromSessionCookie(): Promise<object> {
   let payload: object;
   try {
-    const cookie = getSessionCookie();
+    const cookie = await getSessionCookie();
     const secret = getSecret();
     const result = await jwtVerify(cookie.value, secret);
     payload = result.payload;

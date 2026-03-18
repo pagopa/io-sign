@@ -1,4 +1,4 @@
-import { useLocale, useMessages } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import IntlClientProvider from "@/i18n/IntlClientProvider";
@@ -7,34 +7,19 @@ import { MSWProvider } from "@/components/MSWProvider";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import { pick } from "lodash";
 
-if (
-  process.env.NEXT_PUBLIC_MOCK_MSW_ENABLED === "true" &&
-  typeof window === "undefined" &&
-  process.env.NODE_ENV === "development"
-) {
-  /**
-   * Use dynamic require to prevent MSW from being bundled in the client-side 
-   * and to avoid side-effects during the Next.js build process. 
-   * This ensures MSW only patches Node.js primitives at runtime when 
-   * server-side mocking is explicitly required.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { startMSWServer } = require("../../../mocks/msw-node");
-  startMSWServer();
-}
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const locale = useLocale();
-  if (params.locale !== locale) {
+  const { locale } = await params;
+  const serverLocale = await getLocale();
+  if (locale !== serverLocale) {
     notFound();
   }
-  const messages = useMessages();
+  const messages = await getMessages();
   if (!messages) {
     notFound();
   }

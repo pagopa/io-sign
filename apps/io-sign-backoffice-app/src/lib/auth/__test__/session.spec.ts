@@ -1,7 +1,5 @@
 import { vi, it, expect, describe, beforeEach, afterEach } from "vitest";
 
-import { cookies } from "next/headers";
-
 import {
   createSessionCookie,
   destroySessionCookie,
@@ -18,7 +16,7 @@ const { setCookie, getCookie } = vi.hoisted(() => ({
 }));
 
 vi.mock("next/headers", () => ({
-  cookies: vi.fn(() => ({ set: setCookie, get: getCookie })),
+  cookies: vi.fn(() => Promise.resolve({ set: setCookie, get: getCookie })),
 }));
 
 type TestContext = {
@@ -47,9 +45,9 @@ describe("createSessionCookie", () => {
 });
 
 describe("destroySessionCookie", () => {
-  it("replaces the session cookie value with an empty string", () => {
-    destroySessionCookie();
-    expect(cookies().set).toBeCalledWith(
+  it("replaces the session cookie value with an empty string", async () => {
+    await destroySessionCookie();
+    expect(setCookie).toBeCalledWith(
       "_iosign_session",
       "",
       expect.objectContaining({
