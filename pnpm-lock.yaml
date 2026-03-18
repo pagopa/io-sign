@@ -166,10 +166,10 @@ importers:
         version: link:../../packages/io-sign
       '@pagopa/handler-kit':
         specifier: 'catalog:'
-        version: 1.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit-azure-func':
         specifier: 'catalog:'
-        version: 2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        version: 2.0.8(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: 'catalog:'
         version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
@@ -609,7 +609,7 @@ importers:
         version: 12.15.0
       '@pagopa/handler-kit':
         specifier: ^1.1.0
-        version: 1.1.0(@swc/core@1.15.18)(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
+        version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/io-functions-commons':
         specifier: 'catalog:'
         version: 29.1.2(@azure/functions@4.11.1)(express@4.18.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
@@ -2709,9 +2709,6 @@ packages:
     peerDependencies:
       fp-ts: ^2.13.1
       io-ts: ^2.2.20
-
-  '@pagopa/handler-kit@1.1.0':
-    resolution: {integrity: sha512-siLQ96LZ77gXxdiYXYdWiNhS7lao/M6Hj9aO6zxALnVR6BxBjvQm4k1Y3MT71oS9s4gUTFyPoFf672FVMI7UaQ==}
 
   '@pagopa/handler-kit@1.1.1':
     resolution: {integrity: sha512-dc1zD+1eEJhSdmAv2HTu7xyruPZ8YD4TvBEcM8xCdpP6LlWFq+v5hs1y6TJ710Tgs0u+01+N2GJPJRvxPItSmw==}
@@ -11131,28 +11128,13 @@ snapshots:
       - vitest
       - vue-eslint-parser
 
-  '@pagopa/handler-kit-azure-func@2.0.8(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
+  '@pagopa/handler-kit-azure-func@2.0.8(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
     dependencies:
       '@azure/functions': 4.11.1
       '@pagopa/handler-kit': 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/logger': 1.0.1
       fp-ts: 2.16.10
       io-ts: 2.2.22(fp-ts@2.16.10)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - postcss
-      - supports-color
-      - ts-node
-      - typescript
-
-  '@pagopa/handler-kit@1.1.0(postcss@8.4.35)(ts-node@10.9.2(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)':
-    dependencies:
-      '@pagopa/logger': 1.0.1
-      '@types/parse-multipart': 1.0.1
-      fp-ts: 2.16.10
-      io-ts: 2.2.22(fp-ts@2.16.10)
-      parse-multipart: 1.0.4
-      tsup: 6.7.0(@swc/core@1.15.18)(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@20.17.52)(typescript@4.9.5))(typescript@4.9.5)
     transitivePeerDependencies:
       - '@swc/core'
       - postcss
