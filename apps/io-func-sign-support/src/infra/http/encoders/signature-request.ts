@@ -29,6 +29,13 @@ export const signatureRequestToApiModel = ({
     documents: documents.map(documentToApiModel)
   };
   switch (extra.status) {
+    case "CANCELLED": {
+      return {
+        ...commonFields,
+        status: SignatureRequestStatusEnum.CANCELLED,
+        cancelled_at: extra.cancelledAt
+      };
+    }
     case "DRAFT": {
       return {
         ...commonFields,
@@ -39,20 +46,6 @@ export const signatureRequestToApiModel = ({
       return {
         ...commonFields,
         status: SignatureRequestStatusEnum.READY
-      };
-    }
-    case "WAIT_FOR_SIGNATURE": {
-      return {
-        ...commonFields,
-        status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
-        notification: notificationToApiModel(extra.notification)
-      };
-    }
-    case "WAIT_FOR_QTSP": {
-      return {
-        ...commonFields,
-        status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
-        notification: notificationToApiModel(extra.notification)
       };
     }
     case "REJECTED": {
@@ -72,11 +65,18 @@ export const signatureRequestToApiModel = ({
         signed_at: extra.signedAt
       };
     }
-    case "CANCELLED": {
+    case "WAIT_FOR_QTSP": {
       return {
         ...commonFields,
-        status: SignatureRequestStatusEnum.CANCELLED,
-        cancelled_at: extra.cancelledAt
+        status: SignatureRequestStatusEnum.WAIT_FOR_QTSP,
+        notification: notificationToApiModel(extra.notification)
+      };
+    }
+    case "WAIT_FOR_SIGNATURE": {
+      return {
+        ...commonFields,
+        status: SignatureRequestStatusEnum.WAIT_FOR_SIGNATURE,
+        notification: notificationToApiModel(extra.notification)
       };
     }
   }

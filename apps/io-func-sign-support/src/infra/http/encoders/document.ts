@@ -30,13 +30,6 @@ export const documentToApiModel = ({
     updated_at
   };
   switch (extra.status) {
-    case "WAIT_FOR_VALIDATION": {
-      return {
-        ...commonFields,
-        status: DocumentStatusEnum.WAIT_FOR_VALIDATION,
-        uploaded_at: extra.uploadedAt
-      };
-    }
     case "READY": {
       return {
         ...commonFields,
@@ -52,6 +45,13 @@ export const documentToApiModel = ({
         uploaded_at: extra.uploadedAt,
         rejected_at: extra.rejectedAt,
         reject_reason: extra.rejectReason
+      };
+    }
+    case "WAIT_FOR_VALIDATION": {
+      return {
+        ...commonFields,
+        status: DocumentStatusEnum.WAIT_FOR_VALIDATION,
+        uploaded_at: extra.uploadedAt
       };
     }
     default: {
