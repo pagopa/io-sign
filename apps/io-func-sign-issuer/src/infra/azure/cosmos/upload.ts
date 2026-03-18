@@ -1,7 +1,7 @@
 import {
   BaseModel,
-  CosmosResource,
-  CosmosdbModel
+  CosmosdbModel,
+  CosmosResource
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 
 import * as t from "io-ts";

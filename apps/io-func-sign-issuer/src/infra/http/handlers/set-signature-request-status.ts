@@ -1,7 +1,7 @@
 import * as H from "@pagopa/handler-kit";
 
 import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
+import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
@@ -18,10 +18,10 @@ import {
   SetSignatureRequestStatusBodyEnum
 } from "../../http/models/SetSignatureRequestStatusBody";
 import {
-  SignatureRequest,
   getSignatureRequest,
   markAsCancelled,
   markAsReady,
+  SignatureRequest,
   upsertSignatureRequest
 } from "../../../signature-request";
 import { requireIssuer } from "../../http/decoders/issuer";
@@ -71,6 +71,13 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
     ),
     RTE.chainW(({ signatureRequest, body }) => {
       switch (body) {
+        case SetSignatureRequestStatusBodyEnum.CANCELLED:
+          return pipe(
+            signatureRequest,
+            markAsCancelled(new Date()),
+            RTE.fromEither,
+            RTE.chainW(upsertSignatureRequest)
+          );
         case SetSignatureRequestStatusBodyEnum.READY:
           return pipe(
             signatureRequest,
@@ -80,13 +87,6 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
             RTE.chainFirstW((req) =>
               pipe(req, createAndSendAnalyticsEvent(EventName.SIGNATURE_READY))
             )
-          );
-        case SetSignatureRequestStatusBodyEnum.CANCELLED:
-          return pipe(
-            signatureRequest,
-            markAsCancelled(new Date()),
-            RTE.fromEither,
-            RTE.chainW(upsertSignatureRequest)
           );
       }
     }),

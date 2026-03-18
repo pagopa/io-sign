@@ -26,10 +26,10 @@ const toClauseType = (
   switch (type) {
     case ClauseTypeEnum.OPTIONAL:
       return "OPTIONAL";
-    case ClauseTypeEnum.UNFAIR:
-      return "UNFAIR";
     case ClauseTypeEnum.REQUIRED:
       return "REQUIRED";
+    case ClauseTypeEnum.UNFAIR:
+      return "UNFAIR";
   }
 };
 
