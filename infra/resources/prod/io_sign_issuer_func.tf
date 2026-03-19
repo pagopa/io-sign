@@ -5,12 +5,9 @@ locals {
       "MarkAsSigned",
       "MarkAsWaitForSignature",
       "ValidateUpload",
-      "CreateIssuer",
       "CreateIssuerByVatNumberView"
     ]
-    disabled = [
-      "CreateIssuer"
-    ]
+    disabled = []
     app_settings = {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
