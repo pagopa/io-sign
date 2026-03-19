@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 1.0.1
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
 ## 1.0.0
 
 ### Major Changes
