@@ -17,13 +17,13 @@ locals {
 }
 
 module "io_sign_backoffice_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-backoffice-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
   address_prefixes     = var.subnets_cidrs.backoffice
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   service_endpoints = [
     "Microsoft.Web",
@@ -46,7 +46,7 @@ data "azurerm_subnet" "appgateway_snet" {
 }
 
 module "io_sign_backoffice_app" {
-  source = "github.com/pagopa/terraform-azurerm-v3//app_service?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service?ref=v7.16.0"
 
   name                = format("%s-backoffice-app", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -117,7 +117,7 @@ resource "azurerm_private_endpoint" "io_sign_backoffice_app" {
 }
 
 module "io_sign_backoffice_app_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//app_service_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location

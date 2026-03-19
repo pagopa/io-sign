@@ -17,7 +17,7 @@ locals {
 }
 
 module "io_sign_support_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-support-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -33,7 +33,6 @@ module "io_sign_support_func" {
 
   app_service_plan_info = {
     kind                         = "Linux"
-    sku_tier                     = var.io_sign_support_func.sku_tier
     sku_size                     = var.io_sign_support_func.sku_size
     maximum_elastic_worker_count = 0
     worker_count                 = 1
@@ -72,7 +71,7 @@ module "io_sign_support_func_roles" {
 }
 
 module "io_sign_support_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location

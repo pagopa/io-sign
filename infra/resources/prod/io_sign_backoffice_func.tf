@@ -14,7 +14,7 @@ locals {
 }
 
 module "io_sign_backoffice_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-backoffice-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -80,7 +80,7 @@ resource "azurerm_key_vault_access_policy" "backoffice_func_key_vault_access_pol
 }
 
 module "io_sign_backoffice_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location

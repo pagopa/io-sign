@@ -1,17 +1,17 @@
 module "cosmosdb_sql_database_issuer" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_database?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_database?ref=v7.16.0"
   name                = "issuer"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
 }
 
 module "cosmosdb_sql_container_issuer-dossiers" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "dossiers"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/issuerId"
+  partition_key_paths = ["/issuerId"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.dossiers.max_throughput
@@ -21,12 +21,12 @@ module "cosmosdb_sql_container_issuer-dossiers" {
 }
 
 module "cosmosdb_sql_container_issuer-signature-requests" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "signature-requests"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/issuerId"
+  partition_key_paths = ["/issuerId"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.signature_requests.max_throughput
@@ -36,12 +36,12 @@ module "cosmosdb_sql_container_issuer-signature-requests" {
 }
 
 module "cosmosdb_sql_container_issuer-uploads" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "uploads"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/id"
+  partition_key_paths = ["/id"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.uploads.max_throughput
@@ -51,12 +51,12 @@ module "cosmosdb_sql_container_issuer-uploads" {
 }
 
 module "cosmosdb_sql_container_issuer-issuers" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "issuers"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/subscriptionId"
+  partition_key_paths = ["/subscriptionId"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.uploads.max_throughput
@@ -66,12 +66,12 @@ module "cosmosdb_sql_container_issuer-issuers" {
 }
 
 module "cosmosdb_sql_container_issuer-issuers-by-vat-number" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "issuers-by-vat-number"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/id"
+  partition_key_paths = ["/id"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.uploads.max_throughput
@@ -81,12 +81,12 @@ module "cosmosdb_sql_container_issuer-issuers-by-vat-number" {
 }
 
 module "cosmosdb_sql_container_issuer-issuers-by-subscription-id" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "issuers-by-subscription-id"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/id"
+  partition_key_paths = ["/id"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.uploads.max_throughput
@@ -96,12 +96,12 @@ module "cosmosdb_sql_container_issuer-issuers-by-subscription-id" {
 }
 
 module "cosmosdb_sql_container_issuer-issuers-whitelist" {
-  source              = "github.com/pagopa/terraform-azurerm-v3//cosmosdb_sql_container?ref=v8.35.0"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "issuers-whitelist"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
   database_name       = module.cosmosdb_sql_database_issuer.name
-  partition_key_path  = "/id"
+  partition_key_paths = ["/id"]
 
   autoscale_settings = {
     max_throughput = var.io_sign_database_issuer.uploads.max_throughput

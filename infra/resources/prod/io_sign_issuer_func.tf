@@ -41,7 +41,7 @@ locals {
 }
 
 module "io_sign_issuer_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-issuer-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -113,7 +113,7 @@ resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role" {
 }
 
 module "io_sign_issuer_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location

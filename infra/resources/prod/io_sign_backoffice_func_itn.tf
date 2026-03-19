@@ -1,6 +1,6 @@
 locals {
   backoffice_func_settings_itn = merge({
-    COSMOS_DB_CONNECTION_STRING = module.cosmosdb_account.connection_strings[0],
+    COSMOS_DB_CONNECTION_STRING = module.cosmosdb_account.primary_connection_strings,
     COSMOS_DB_NAME              = module.cosmosdb_sql_database_backoffice.name
     }, {
     for s in var.io_sign_backoffice_func.app_settings :
@@ -13,7 +13,7 @@ locals {
 }
 
 module "io_sign_backoffice_func_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-backoffice-func-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -77,7 +77,7 @@ resource "azurerm_key_vault_access_policy" "backoffice_func_key_vault_access_pol
 }
 
 module "io_sign_backoffice_func_staging_slot_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
