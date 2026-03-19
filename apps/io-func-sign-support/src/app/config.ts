@@ -4,8 +4,8 @@ import { pipe } from "fp-ts/lib/function";
 import * as RE from "fp-ts/lib/ReaderEither";
 
 import {
-  PdvTokenizerConfig,
-  getPdvTokenizerConfigFromEnvironment
+  getPdvTokenizerConfigFromEnvironment,
+  PdvTokenizerConfig
 } from "@io-sign/io-sign/infra/pdv-tokenizer/config";
 import {
   CosmosConfig,

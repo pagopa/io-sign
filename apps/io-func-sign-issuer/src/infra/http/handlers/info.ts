@@ -16,8 +16,8 @@ import {
 } from "@azure/event-hubs";
 
 import {
-  TokenizerProblemSource,
-  makePdvTokenizerHealthCheck
+  makePdvTokenizerHealthCheck,
+  TokenizerProblemSource
 } from "@io-sign/io-sign/infra/pdv-tokenizer/health-check";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { IOApiClient } from "@io-sign/io-sign/infra/io-services/client";

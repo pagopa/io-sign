@@ -30,8 +30,6 @@ export const SignatureRequest = t.union([
   SignatureRequestCancelled
 ]);
 
-export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
-
 export type GetSignatureRequest = (
   id: Id
 ) => (signerId: Id) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
@@ -40,21 +38,19 @@ export type InsertSignatureRequest = (
   request: SignatureRequest
 ) => TE.TaskEither<Error, SignatureRequest>;
 
-export type UpsertSignatureRequest = (
-  request: SignatureRequest
-) => TE.TaskEither<Error, SignatureRequest>;
-
-export type NotifySignatureRequestWaitForSignatureEvent = (
-  requestToBeSigned: SignatureRequestToBeSigned
+export type NotifySignatureRequestRejectedEvent = (
+  requestRejected: SignatureRequestRejected
 ) => TE.TaskEither<Error, string>;
 
 export type NotifySignatureRequestSignedEvent = (
   requestSigned: SignatureRequestSigned
 ) => TE.TaskEither<Error, string>;
 
-export type NotifySignatureRequestRejectedEvent = (
-  requestRejected: SignatureRequestRejected
+export type NotifySignatureRequestWaitForSignatureEvent = (
+  requestToBeSigned: SignatureRequestToBeSigned
 ) => TE.TaskEither<Error, string>;
+
+export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export type SignatureRequestRepository = {
   findBySignerId: (
@@ -66,6 +62,10 @@ export type SignatureRequestRepository = {
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
 };
+
+export type UpsertSignatureRequest = (
+  request: SignatureRequest
+) => TE.TaskEither<Error, SignatureRequest>;
 
 type SignatureRequestEnvironment = {
   signatureRequestRepository: SignatureRequestRepository;
@@ -114,8 +114,9 @@ export const upsertSignatureRequest =
   ({ signatureRequestRepository: repo }) =>
     repo.upsert(request);
 
-type Action_MARK_AS_SIGNED = {
-  name: "MARK_AS_SIGNED";
+type Action_MARK_AS_CANCELLED = {
+  name: "MARK_AS_CANCELLED";
+  cancelledAt: Date;
 };
 
 type Action_MARK_AS_REJECTED = {
@@ -125,13 +126,12 @@ type Action_MARK_AS_REJECTED = {
   };
 };
 
-type Action_MARK_AS_WAIT_FOR_QTSP = {
-  name: "MARK_AS_WAIT_FOR_QTSP";
+type Action_MARK_AS_SIGNED = {
+  name: "MARK_AS_SIGNED";
 };
 
-type Action_MARK_AS_CANCELLED = {
-  name: "MARK_AS_CANCELLED";
-  cancelledAt: Date;
+type Action_MARK_AS_WAIT_FOR_QTSP = {
+  name: "MARK_AS_WAIT_FOR_QTSP";
 };
 
 type SignatureRequestAction =
@@ -144,12 +144,12 @@ const dispatch =
   (action: SignatureRequestAction) =>
   (request: SignatureRequest): E.Either<Error, SignatureRequest> => {
     switch (request.status) {
-      case "WAIT_FOR_SIGNATURE":
-        return pipe(request, onWaitForSignatureStatus(action));
-      case "WAIT_FOR_QTSP":
-        return pipe(request, onWaitForQtspStatus(action));
       case "REJECTED":
         return pipe(request, onRejectedStatus(action));
+      case "WAIT_FOR_QTSP":
+        return pipe(request, onWaitForQtspStatus(action));
+      case "WAIT_FOR_SIGNATURE":
+        return pipe(request, onWaitForSignatureStatus(action));
       default:
         return E.left(
           new ActionNotAllowedError(
@@ -170,11 +170,12 @@ const onWaitForSignatureStatus =
     | SignatureRequestCancelled
   > => {
     switch (action.name) {
-      case "MARK_AS_WAIT_FOR_QTSP":
+      case "MARK_AS_CANCELLED":
         return E.right({
           ...request,
-          updatedAt: new Date(),
-          status: "WAIT_FOR_QTSP"
+          status: "CANCELLED",
+          cancelledAt: action.cancelledAt,
+          updatedAt: new Date()
         });
       case "MARK_AS_REJECTED":
         return E.right({
@@ -184,12 +185,11 @@ const onWaitForSignatureStatus =
           rejectedAt: new Date(),
           rejectReason: action.payload.reason
         });
-      case "MARK_AS_CANCELLED":
+      case "MARK_AS_WAIT_FOR_QTSP":
         return E.right({
           ...request,
-          status: "CANCELLED",
-          cancelledAt: action.cancelledAt,
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          status: "WAIT_FOR_QTSP"
         });
       default:
         return E.left(
@@ -227,13 +227,6 @@ const onWaitForQtspStatus =
     request: SignatureRequestWaitForQtsp
   ): E.Either<Error, SignatureRequestSigned | SignatureRequestRejected> => {
     switch (action.name) {
-      case "MARK_AS_SIGNED":
-        return E.right({
-          ...request,
-          updatedAt: new Date(),
-          status: "SIGNED",
-          signedAt: new Date()
-        });
       case "MARK_AS_REJECTED":
         return E.right({
           ...request,
@@ -241,6 +234,13 @@ const onWaitForQtspStatus =
           updatedAt: new Date(),
           rejectedAt: new Date(),
           rejectReason: action.payload.reason
+        });
+      case "MARK_AS_SIGNED":
+        return E.right({
+          ...request,
+          updatedAt: new Date(),
+          status: "SIGNED",
+          signedAt: new Date()
         });
       default:
         return E.left(

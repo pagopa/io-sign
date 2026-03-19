@@ -12,9 +12,9 @@ import * as A from "fp-ts/lib/Array";
 import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
-  SignatureRequest,
   getEnvironment,
-  getSignatureRequest
+  getSignatureRequest,
+  SignatureRequest
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
 import { requireSigner } from "../decoders/signer";

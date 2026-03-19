@@ -28,7 +28,7 @@ export async function sendMessage(text: string) {
         text,
       }),
     });
-  } catch (cause) {
+  } catch (_cause) {
     // fail silently
   }
 }

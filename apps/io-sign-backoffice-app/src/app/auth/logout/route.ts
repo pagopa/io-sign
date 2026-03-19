@@ -6,6 +6,6 @@ import { getConfig } from "@/config";
 
 export async function GET() {
   const config = getConfig();
-  destroySessionCookie();
+  await destroySessionCookie();
   redirect(config.selfCare.portal.logoutUrl);
 }

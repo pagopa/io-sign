@@ -58,21 +58,21 @@ export const newSignature = (
   updatedAt: new Date()
 });
 
-export type InsertSignature = (
-  signature: Signature
-) => TE.TaskEither<Error, Signature>;
-
 export type GetSignature = (
   signatureId: Signature["id"]
 ) => (signerId: Signer["id"]) => TE.TaskEither<Error, O.Option<Signature>>;
 
-export type UpsertSignature = (
+export type InsertSignature = (
   signature: Signature
 ) => TE.TaskEither<Error, Signature>;
 
 export type NotifySignatureReadyEvent = (
   signatureNotification: SignatureNotification
 ) => TE.TaskEither<Error, string>;
+
+export type UpsertSignature = (
+  signature: Signature
+) => TE.TaskEither<Error, Signature>;
 
 export const SignatureValidationParams = t.type({
   /* signatureInput contain the metadata for one or more message signatures generated from components within the HTTP message

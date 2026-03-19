@@ -17,13 +17,14 @@ import { notFound } from "next/navigation";
 export default function CreateApiKeyPage({
   params,
 }: {
-  params: { institution: string };
+  params: Promise<{ institution: string }>;
 }) {
   const t = useTranslations("firmaconio");
+  const { institution } = use(params);
   const parent = {
     icon: VpnKey,
     label: t("apiKeys.title"),
-    href: `/${params.institution}/api-keys`,
+    href: `/${institution}/api-keys`,
   };
   const header: PageProps["header"] = {
     title: t("createApiKey.title"),
@@ -33,8 +34,8 @@ export default function CreateApiKeyPage({
       startButton: { label: "Esci", href: parent.href },
     },
   };
-  const institution = use(getInstitution(params.institution));
-  if (!institution) {
+  const institutionData = use(getInstitution(institution));
+  if (!institutionData) {
     notFound();
   }
   return (
@@ -43,7 +44,7 @@ export default function CreateApiKeyPage({
         <Alert severity="warning" variant="outlined">
           {t.rich("createApiKey.alert")}
         </Alert>
-        <CreateApiKeyForm institution={institution}>
+        <CreateApiKeyForm institution={institutionData}>
           <ApiKeyMetadataCard />
           <ApiKeyEditableFieldCard
             field="cidrs"
