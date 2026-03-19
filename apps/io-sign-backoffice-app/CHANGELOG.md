@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.7.7
+
+### Patch Changes
+
+- 0afb70f: upgrade linter to the latest version for backoffice app
+
 ## 1.7.6
 
 ### Patch Changes
