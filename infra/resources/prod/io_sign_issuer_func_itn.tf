@@ -40,7 +40,7 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = module.cosmosdb_account.primary_sql_connection_strings
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_issuer.name
       StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
       IssuerUploadedBlobContainerName   = azurerm_storage_container.uploaded_documents.name
@@ -63,7 +63,9 @@ locals {
 }
 
 module "io_sign_issuer_func_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v9.4.2"
+
+  app_service_plan_type = "internal"
 
   name                = format("%s-issuer-func-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -129,13 +131,12 @@ resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role_it
 
 module "io_sign_issuer_func_staging_slot_itn" {
   count  = var.io_sign_issuer_func.sku_tier == "PremiumV3" ? 1 : 0
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v9.4.2"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
   resource_group_name = azurerm_resource_group.backend_rg_itn.name
   function_app_id     = module.io_sign_issuer_func_itn.id
-  app_service_plan_id = module.io_sign_issuer_func_itn.app_service_plan_id
 
   health_check_path            = "/api/v1/sign/info"
   health_check_maxpingfailures = 2

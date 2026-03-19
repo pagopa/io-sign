@@ -6,7 +6,7 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT = 4
       AzureWebJobsDisableHomepage    = "true"
       NODE_ENV                       = "production"
-      CosmosDbConnectionString       = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString       = module.cosmosdb_account.primary_sql_connection_strings
       CosmosDbIssuerDatabaseName     = module.cosmosdb_sql_database_issuer.name
       CosmosDbUserDatabaseName       = module.cosmosdb_sql_database_user.name
       PdvTokenizerApiBasePath        = "https://api.tokenizer.pdv.pagopa.it"
@@ -16,7 +16,10 @@ locals {
 }
 
 module "io_sign_support_func_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v9.4.2"
+
+  app_service_plan_type        = "internal"
+  app_service_plan_name        = format("%s-support-func-asp-01", local.project_itn_sign)
 
   name                = format("%s-support-func-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -31,9 +34,7 @@ module "io_sign_support_func_itn" {
   node_version    = "20"
 
   app_service_plan_info = {
-    name                         = format("%s-support-func-asp-01", local.project_itn_sign)
     kind                         = "Linux"
-    sku_tier                     = var.io_sign_support_func.sku_tier
     sku_size                     = var.io_sign_support_func.sku_size
     maximum_elastic_worker_count = 0
     worker_count                 = 1
@@ -78,13 +79,12 @@ module "io_sign_support_func_itn" {
 
 module "io_sign_support_func_staging_slot_itn" {
   count  = var.io_sign_support_func.sku_tier == "PremiumV3" ? 1 : 0
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v9.4.2"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
   resource_group_name = azurerm_resource_group.backend_rg_itn.name
   function_app_id     = module.io_sign_support_func_itn.id
-  app_service_plan_id = module.io_sign_support_func_itn.app_service_plan_id
 
   health_check_path            = "/api/v1/sign/support/info"
   health_check_maxpingfailures = 2

@@ -1,6 +1,6 @@
 
 module "key_vault_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//key_vault?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//key_vault?ref=v9.4.2"
 
   name                       = format("%s-kv", local.project_itn_sign)
   location                   = azurerm_resource_group.sec_rg_itn.location
@@ -12,7 +12,7 @@ module "key_vault_itn" {
 }
 
 # module "key_vault_secrets_itn" {
-#   source = "github.com/pagopa/terraform-azurerm-v3//key_vault_secrets_query?ref=v8.35.0"
+#   source = "github.com/pagopa/terraform-azurerm-v4//key_vault_secrets_query?ref=v9.4.2"
 
 #   resource_group = azurerm_resource_group.sec_rg_itn.name
 #   key_vault_name = module.key_vault_itn.name

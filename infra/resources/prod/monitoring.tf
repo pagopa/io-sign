@@ -82,74 +82,84 @@ resource "azurerm_monitor_metric_alert" "io_sign_user_helathcheck" {
   }
 }
 
-resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_requests" {
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "rejected_requests" {
   name                = format("%s-rejected-requests", local.project)
   resource_group_name = azurerm_resource_group.backend_rg.name
   location            = azurerm_resource_group.backend_rg.location
 
-  data_source_id          = data.azurerm_application_insights.application_insights.id
+  scopes                  = [data.azurerm_application_insights.application_insights.id]
   description             = "[IO-SIGN] There are REJECTED signature requests. Runbook: https://pagopa.atlassian.net/wiki/spaces/SFEQS/pages/935592503/Richieste+di+firma+in+stato+REJECTED"
   enabled                 = true
   auto_mitigation_enabled = false
 
-  query = <<-QUERY
+  evaluation_frequency = "PT30M"
+  window_duration      = "PT30M"
+  severity             = 3
+
+  criteria {
+    query = <<-QUERY
 customEvents
 | where name == "io.sign.signature_request.rejected"
 | where customDimensions.environment == "DEFAULT"
 | summarize AggregatedValue = count() by bin(timestamp, 30m)
 | where AggregatedValue > 1
-  QUERY
+    QUERY
+    time_aggregation_method = "Count"
+    operator                = "GreaterThanOrEqual"
+    threshold               = 1
 
-  severity    = 3
-  frequency   = 30
-  time_window = 30
-
-  trigger {
-    operator  = "GreaterThanOrEqual"
-    threshold = 1
+    failing_periods {
+      minimum_failing_periods_to_trigger_alert = 1
+      number_of_evaluation_periods             = 1
+    }
   }
 
   action {
-    action_group = [
+    action_groups = [
       azurerm_monitor_action_group.email_fci_tech.id,
       azurerm_monitor_action_group.slack_fci_tech.id,
-      data.azurerm_monitor_action_group.error_action_group.id
+      data.azurerm_monitor_action_group.error_action_group.id,
     ]
   }
 
   tags = var.tags
 }
 
-resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_test_requests" {
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "rejected_test_requests" {
   name                = format("%s-rejected-test-requests", local.project)
   resource_group_name = azurerm_resource_group.backend_rg.name
   location            = azurerm_resource_group.backend_rg.location
 
-  data_source_id          = data.azurerm_application_insights.application_insights.id
+  scopes                  = [data.azurerm_application_insights.application_insights.id]
   description             = "[IO-SIGN] There are REJECTED signature requests in TEST environment. No action required"
   enabled                 = true
   auto_mitigation_enabled = false
 
-  query = <<-QUERY
+  evaluation_frequency = "PT30M"
+  window_duration      = "PT30M"
+  severity             = 3
+
+  criteria {
+    query = <<-QUERY
 customEvents
 | where name == "io.sign.signature_request.rejected"
 | where customDimensions.environment == "TEST"
 | summarize AggregatedValue = count() by bin(timestamp, 30m)
 | where AggregatedValue > 1
-  QUERY
+    QUERY
+    time_aggregation_method = "Count"
+    operator                = "GreaterThanOrEqual"
+    threshold               = 1
 
-  severity    = 3
-  frequency   = 30
-  time_window = 30
-
-  trigger {
-    operator  = "GreaterThanOrEqual"
-    threshold = 1
+    failing_periods {
+      minimum_failing_periods_to_trigger_alert = 1
+      number_of_evaluation_periods             = 1
+    }
   }
 
   action {
-    action_group = [
-      azurerm_monitor_action_group.slack_fci_tech.id
+    action_groups = [
+      azurerm_monitor_action_group.slack_fci_tech.id,
     ]
   }
 

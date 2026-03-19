@@ -32,13 +32,13 @@ data "azurerm_nat_gateway" "nat_gateway" {
 }
 
 module "io_sign_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
   name                 = format("%s-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
   address_prefixes     = var.subnets_cidrs.issuer
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_issuer_nsg.id
 
@@ -71,13 +71,13 @@ resource "azurerm_network_security_group" "io_sign_issuer_nsg" {
 }
 
 module "io_sign_user_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
   name                 = format("%s-user-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
   address_prefixes     = var.subnets_cidrs.user
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_user_nsg.id
 
@@ -110,13 +110,13 @@ resource "azurerm_network_security_group" "io_sign_user_nsg" {
 }
 
 module "io_sign_support_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
   name                 = format("%s-support-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
   address_prefixes     = var.subnets_cidrs.support
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_user_nsg.id
 
@@ -148,13 +148,13 @@ resource "azurerm_network_security_group" "io_sign_support_nsg" {
 }
 
 module "io_sign_eventhub_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
   name                 = format("%s-eventhub-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
   address_prefixes     = var.subnets_cidrs.eventhub
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   service_endpoints = ["Microsoft.EventHub"]
 }

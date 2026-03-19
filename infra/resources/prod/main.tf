@@ -2,11 +2,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.114.0"
+      version = "~> 4.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "<= 2.33.0"
+      version = "~> 3.0"
     }
   }
 
@@ -24,6 +24,9 @@ terraform {
 
 provider "azurerm" {
   features {}
+  # azurerm v4 requires subscription_id; set ARM_SUBSCRIPTION_ID env var in CI/CD
+  # or uncomment and set explicitly:
+  # subscription_id = var.subscription_id
 }
 
 data "azurerm_subscription" "current" {}
