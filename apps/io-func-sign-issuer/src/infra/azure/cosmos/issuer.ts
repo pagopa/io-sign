@@ -4,10 +4,10 @@ import * as cosmos from "@azure/cosmos";
 
 import {
   BaseModel,
+  CosmosdbModel,
   CosmosDecodingError,
   CosmosErrors,
   CosmosResource,
-  CosmosdbModel,
   toCosmosErrorResponse
 } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
 

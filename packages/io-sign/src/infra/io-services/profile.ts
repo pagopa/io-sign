@@ -33,15 +33,15 @@ export const makeRetriveUserProfileSenderAllowed =
             switch (response.status) {
               case 200:
                 return E.right(response.value);
-              case 404:
-                return E.left(
-                  new EntityNotFoundError(`User profile not found!`)
-                );
               case 403:
                 return E.left(
                   new ActionNotAllowedError(
                     `You are not allowed to issue requests for this user!`
                   )
+                );
+              case 404:
+                return E.left(
+                  new EntityNotFoundError(`User profile not found!`)
                 );
               case 429:
                 return E.left(new TooManyRequestsError(`Too many requests!`));

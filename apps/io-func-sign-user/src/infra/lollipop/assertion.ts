@@ -20,16 +20,16 @@ import { AssertionType, AssertionTypeEnum } from "./models/AssertionType";
 import { LCUserInfo } from "./models/LCUserInfo";
 import { SamlUserInfo } from "./models/SamlUserInfo";
 
-type LollipopParamsForSaml = {
-  assertionRef: LollipopAssertionRef;
-  jwtAuthorization: LollipopJWTAuthorization;
-  assertionType: AssertionType;
-};
 export type GetSamlAssertion = ({
   assertionRef,
   jwtAuthorization,
   assertionType
 }: LollipopParamsForSaml) => TE.TaskEither<Error, NonEmptyString>;
+type LollipopParamsForSaml = {
+  assertionRef: LollipopAssertionRef;
+  jwtAuthorization: LollipopJWTAuthorization;
+  assertionType: AssertionType;
+};
 
 export const isAssertionSaml =
   (type: AssertionType) =>

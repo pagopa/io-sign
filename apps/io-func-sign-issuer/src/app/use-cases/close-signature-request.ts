@@ -3,9 +3,9 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import {
-  EventName,
   createAndSendAnalyticsEvent,
   createBillingEvent,
+  EventName,
   sendBillingEvent
 } from "@io-sign/io-sign/event";
 
@@ -14,10 +14,10 @@ import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
 import {
   ClosedSignatureRequest,
-  SignatureRequest,
   getSignatureRequest,
   markAsRejected,
   markAsSigned,
+  SignatureRequest,
   upsertSignatureRequest
 } from "../../signature-request";
 
@@ -48,10 +48,10 @@ const buildNotificationMessage = (
 const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   // eslint-ignore-next-line sonarjs/no-small-switch
   switch (closed.status) {
-    case "SIGNED":
-      return markAsSigned;
     case "REJECTED":
       return markAsRejected(closed.rejectedAt, closed.rejectReason);
+    case "SIGNED":
+      return markAsSigned;
   }
 };
 
