@@ -13,7 +13,7 @@ export default async function Layout({
   const { institution } = await params;
   try {
     await checkTOSAcceptance(institution);
-  } catch (e) {
+  } catch (_e) {
     return (
       <SelfcareLayout institutionId={institution}>
         {children}
