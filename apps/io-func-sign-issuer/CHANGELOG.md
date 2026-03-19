@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.0.2
+
+### Patch Changes
+
+- 228aacc: remove createIssuer eh trigger
+
 ## 1.0.1
 
 ### Patch Changes
