@@ -1,5 +1,72 @@
 # io-func-sign-issuer
 
+## 1.0.2
+
+### Patch Changes
+
+- 228aacc: remove createIssuer eh trigger
+
+## 1.0.1
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
+## 1.0.0
+
+### Major Changes
+
+- bef709c: Migrating azure programming model from v3 to v4
+
+## 0.21.4
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
+## 0.21.3
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
+## 0.21.2
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
+## 0.21.1
+
+### Patch Changes
+
+- 28df5f5: update copy message in case of rejected signature
+
+## 0.21.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
+## 0.20.2
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
+## 0.20.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 0.20.0
 
 ### Minor Changes

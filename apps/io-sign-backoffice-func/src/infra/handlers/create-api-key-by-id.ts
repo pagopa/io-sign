@@ -1,13 +1,13 @@
+import { InvocationContext, output } from "@azure/functions";
+
 import { z } from "zod";
 
-import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
-import * as H from "@pagopa/handler-kit";
-
-import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import { apiKeySchema } from "@io-sign/io-sign/api-key";
+import * as E from "fp-ts/lib/Either";
 
 import { IoTsType } from "./validation";
 
-export const inputDecoder = IoTsType(
+const inputDecoder = IoTsType(
   z.array(
     apiKeySchema.pick({
       id: true,
@@ -16,6 +16,30 @@ export const inputDecoder = IoTsType(
   )
 );
 
-export const handler = H.of((apiKeys: Pick<ApiKey, "id" | "institutionId">[]) =>
-  RTE.right(apiKeys.map((k) => ({ id: k.id, institutionId: k.institutionId })))
-);
+export const makeCreateApiKeyByIdHandler = (cosmosDbName: string) => {
+  const apiKeysByIdOutput = output.cosmosDB({
+    databaseName: cosmosDbName,
+    containerName: "api-keys-by-id",
+    createIfNotExists: false,
+    connection: "COSMOS_DB_CONNECTION_STRING"
+  });
+
+  const handler = async (
+    documents: unknown[],
+    context: InvocationContext
+  ): Promise<void> => {
+    const result = inputDecoder.decode(documents);
+    if (E.isLeft(result)) {
+      context.warn(
+        `createApiKeyById: invalid documents: ${JSON.stringify(result.left)}`
+      );
+      return;
+    }
+    context.extraOutputs.set(
+      apiKeysByIdOutput,
+      result.right.map((k) => ({ id: k.id, institutionId: k.institutionId }))
+    );
+  };
+
+  return { apiKeysByIdOutput, handler };
+};

@@ -3,8 +3,9 @@ import createIntlMiddleware from "next-intl/middleware";
 export default createIntlMiddleware({
   locales: ["it"],
   defaultLocale: "it",
+  localePrefix: "as-needed",
 });
 
 export const config = {
-  matcher: ["/((?!health|auth|api|_next|.*\\..*).*)"],
+  matcher: ["/((?!info|auth|api|_next|.*\\..*).*)"],
 };

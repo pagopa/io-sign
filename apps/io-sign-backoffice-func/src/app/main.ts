@@ -1,22 +1,21 @@
-import { app, output } from "@azure/functions";
+import { app } from "@azure/functions";
 import {
   azureFunction,
   httpAzureFunction
 } from "@pagopa/handler-kit-azure-func";
+import { makeCreateApiKeyByIdHandler } from "@/infra/handlers/create-api-key-by-id";
 
 import { google } from "googleapis";
 
 import { CosmosClient } from "@azure/cosmos";
 import { getConfigFromEnvironment } from "./config";
-import { healthHandler } from "@/infra/handlers/health";
+import { infoHandler } from "@/infra/handlers/info";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
 import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
-
-import * as CreateApiKeyById from "@/infra/handlers/create-api-key-by-id";
 
 const config = getConfigFromEnvironment();
 
@@ -65,28 +64,24 @@ app.http("getApiKey", {
   handler: getApiKey
 });
 
-const createApiKeyById = azureFunction(CreateApiKeyById.handler)({
-  inputDecoder: CreateApiKeyById.inputDecoder
-});
+const { apiKeysByIdOutput, handler: createApiKeyById } =
+  makeCreateApiKeyByIdHandler(config.cosmos.cosmosDbName);
 
 app.cosmosDB("createApiKeyById", {
-  collectionName: "api-keys",
+  containerName: "api-keys",
   databaseName: config.cosmos.cosmosDbName,
-  connectionStringSetting: "COSMOS_DB_CONNECTION_STRING",
-  createLeaseCollectionIfNotExists: true,
-  leaseCollectionName: "leases",
-  leaseCollectionPrefix: "api-keys",
+  connection: "COSMOS_DB_CONNECTION_STRING",
+  createLeaseContainerIfNotExists: true,
+  leaseContainerName: "leases",
+  leaseContainerPrefix: "api-keys",
   startFromBeginning: true,
-  return: output.cosmosDB({
-    databaseName: config.cosmos.cosmosDbName,
-    collectionName: "api-keys-by-id",
-    createIfNotExists: false,
-    connectionStringSetting: "COSMOS_DB_CONNECTION_STRING"
-  }),
+  extraOutputs: [apiKeysByIdOutput],
   handler: createApiKeyById
 });
 
-app.http("health", {
+const info = httpAzureFunction(infoHandler)({});
+
+app.http("info", {
   methods: ["GET"],
-  handler: healthHandler
+  handler: info
 });

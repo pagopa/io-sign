@@ -1,5 +1,35 @@
 # @io-sign/io-sign
 
+## 1.6.2
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+
+## 1.6.1
+
+### Patch Changes
+
+- 4001e1f: mapping cosmos db to many error to custom error
+
+## 1.6.0
+
+### Minor Changes
+
+- eb0f6b6: Changes to BufferResponse to support v4 programming model. Added visibilityTimeout on queue sendMessage
+
+## 1.5.0
+
+### Minor Changes
+
+- 922073a: add whitelist ip validation
+
+## 1.4.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+
 ## 1.4.0
 
 ### Minor Changes

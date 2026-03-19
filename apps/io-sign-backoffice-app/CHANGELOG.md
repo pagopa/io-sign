@@ -1,5 +1,75 @@
 # io-sign-backoffice-app
 
+## 1.7.7
+
+### Patch Changes
+
+- 0afb70f: upgrade linter to the latest version for backoffice app
+
+## 1.7.6
+
+### Patch Changes
+
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
+## 1.7.5
+
+### Patch Changes
+
+- 396abb7: Upgrade Next.js to v15
+
+## 1.7.4
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
+## 1.7.3
+
+### Patch Changes
+
+- 36f14df: chore: add MSW for local development
+
+## 1.7.2
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
+## 1.7.1
+
+### Patch Changes
+
+- 53dd029: update support email
+
+## 1.7.0
+
+### Minor Changes
+
+- 922073a: add whitelist ip validation
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
+## 1.5.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 1.5.0
 
 ### Minor Changes

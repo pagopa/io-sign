@@ -20,8 +20,8 @@ import {
 import {
   ApiKey,
   GetIssuerBySubscriptionId,
-  IssuerRepository,
-  getIssuerEnvironment
+  getIssuerEnvironment,
+  IssuerRepository
 } from "../../issuer";
 import { getConfigFromEnvironment } from "../../app/config";
 

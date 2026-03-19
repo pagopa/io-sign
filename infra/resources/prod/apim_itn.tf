@@ -17,6 +17,25 @@ resource "azurerm_role_assignment" "staging_sign_backoffice_app_role" {
   scope                = data.azurerm_api_management.apim_itn_api.id
 }
 
+module "apim_itn_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_api_management.apim_itn_api.identity[0].principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${data.azurerm_api_management.apim_itn_api.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 # Named values
 
 resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
@@ -32,8 +51,10 @@ resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-fn-sign-issuer-key"
-  value               = module.key_vault_secrets.values["io-fn-sign-issuer-key"].value
   secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-issuer-key"
+  }
 }
 
 resource "azurerm_api_management_named_value" "io_fn_sign_support_url_itn" {
@@ -49,8 +70,10 @@ resource "azurerm_api_management_named_value" "io_fn_sign_support_key_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-fn-sign-support-key"
-  value               = module.key_vault_secrets.values["io-fn-sign-support-key"].value
   secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-support-key"
+  }
 }
 
 
@@ -68,8 +91,10 @@ resource "azurerm_api_management_named_value" "io_sign_cosmosdb_key_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-sign-cosmosdb-key"
-  value               = module.cosmosdb_account.primary_readonly_key
   secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/COSMOS-DB-PRIMARY-KEY"
+  }
 }
 
 # legacy, it can be removed once the backoffice is released
@@ -219,8 +244,10 @@ resource "azurerm_api_management_named_value" "io_fn_sign_backoffice_key_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-fn-sign-backoffice-key"
-  value               = module.key_vault_secrets.values["io-sign-backoffice-func-key"].value
   secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/io-sign-backoffice-func-key"
+  }
 }
 
 module "apim_itn_io_sign_backoffice_product" {
@@ -257,7 +284,7 @@ module "apim_itn_io_sign_backoffice_api_v1" {
   protocols = ["https"]
 
   content_format = "openapi"
-  content_value  = file("../../../apps/io-sign-backoffice-func/openapi.yaml")
+  content_value  = file("./api/backoffice/v1/openapi.yaml")
 
   xml_content = file("./api/backoffice/v1/base_policy.xml")
 }

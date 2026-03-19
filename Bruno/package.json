@@ -1,0 +1,8 @@
+{
+  "name": "io-sign-bruno-collections",
+  "version": "1.0.0",
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  },
+  "packageManager": "pnpm@10.28.1"
+}

@@ -3,9 +3,9 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import {
-  EventName,
   createAndSendAnalyticsEvent,
   createBillingEvent,
+  EventName,
   sendBillingEvent
 } from "@io-sign/io-sign/event";
 
@@ -14,10 +14,10 @@ import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
 import {
   ClosedSignatureRequest,
-  SignatureRequest,
   getSignatureRequest,
   markAsRejected,
   markAsSigned,
+  SignatureRequest,
   upsertSignatureRequest
 } from "../../signature-request";
 
@@ -41,17 +41,17 @@ const buildNotificationMessage = (
   }
   return {
     subject: `${prefix} - C'è un problema con la firma`,
-    markdown: `A causa di un problema tecnico, la firma non è andata a buon fine.\n\n\nL’ente mittente ti contatterà nei prossimi giorni per farti firmare di nuovo. Se ciò non dovesse succedere, scrivi a ${supportEmail}.`
+    markdown: `Per un problema tecnico, non è stato possibile completare la firma dei documenti.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
   };
 };
 
 const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   // eslint-ignore-next-line sonarjs/no-small-switch
   switch (closed.status) {
-    case "SIGNED":
-      return markAsSigned;
     case "REJECTED":
       return markAsRejected(closed.rejectedAt, closed.rejectReason);
+    case "SIGNED":
+      return markAsSigned;
   }
 };
 

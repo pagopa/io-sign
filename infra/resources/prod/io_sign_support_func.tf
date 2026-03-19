@@ -1,14 +1,17 @@
 locals {
   io_sign_support_func = {
     app_settings = {
-      FUNCTIONS_WORKER_PROCESS_COUNT = 4
-      AzureWebJobsDisableHomepage    = "true"
-      NODE_ENV                       = "production"
-      CosmosDbConnectionString       = module.cosmosdb_account.connection_strings[0]
-      CosmosDbIssuerDatabaseName     = module.cosmosdb_sql_database_issuer.name
-      CosmosDbUserDatabaseName       = module.cosmosdb_sql_database_user.name
-      PdvTokenizerApiBasePath        = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey             = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      FUNCTIONS_WORKER_PROCESS_COUNT    = 4
+      AzureWebJobsDisableHomepage       = "true"
+      NODE_ENV                          = "production"
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
+      CosmosDbIssuerDatabaseName        = module.cosmosdb_sql_database_issuer.name
+      CosmosDbUserDatabaseName          = module.cosmosdb_sql_database_user.name
+      PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=PdvTokenizerApiKey)"
+      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/support/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
   }
 }
@@ -20,8 +23,8 @@ module "io_sign_support_func" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
 
-  # TODO Activate when in production
-  # health_check_path = "/api/v1/sign/support/info"
+  health_check_path            = "/api/v1/sign/support/info"
+  health_check_maxpingfailures = 2
 
   always_on = true
 
@@ -49,8 +52,26 @@ module "io_sign_support_func" {
   tags = var.tags
 }
 
+module "io_sign_support_func_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_support_func.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_support_func.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 module "io_sign_support_func_staging_slot" {
-  count  = var.io_sign_support_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
 
   name                = "staging"
@@ -59,8 +80,8 @@ module "io_sign_support_func_staging_slot" {
   function_app_id     = module.io_sign_support_func.id
   app_service_plan_id = module.io_sign_support_func.app_service_plan_id
 
-  # TODO Activate when in production
-  # health_check_path = "/api/v1/sign/support/info"
+  health_check_path            = "/api/v1/sign/support/info"
+  health_check_maxpingfailures = 2
 
   storage_account_name       = module.io_sign_support_func.storage_account.name
   storage_account_access_key = module.io_sign_support_func.storage_account.primary_access_key
@@ -76,7 +97,28 @@ module "io_sign_support_func_staging_slot" {
   ip_restriction_default_action = "Deny"
   allowed_subnets               = []
 
+  system_identity_enabled = true
+
   tags = var.tags
+}
+
+module "io_sign_support_func_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_support_func_staging_slot.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_support_func_staging_slot.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
 }
 
 resource "azurerm_monitor_autoscale_setting" "io_sign_support_func" {

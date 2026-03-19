@@ -1,5 +1,66 @@
 # io-sign-backoffice-func
 
+## 1.5.5
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
+## 1.5.4
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
+## 1.5.3
+
+### Patch Changes
+
+- 579ea79: Fix cosmosDb triggher for createApiKeysById
+
+## 1.5.2
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
+## 1.5.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
+## 1.4.3
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
+## 1.4.2
+
+### Patch Changes
+
+- a2f83d8: Migrating from azure function programming model v3 to v4
+
+## 1.4.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 1.4.0
 
 ### Minor Changes

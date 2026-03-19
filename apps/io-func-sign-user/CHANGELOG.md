@@ -1,5 +1,64 @@
 # io-func-sign-user
 
+## 1.0.3
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
+## 1.0.1
+
+### Patch Changes
+
+- 4dcc232: Fix status code for create-signature
+
+## 1.0.0
+
+### Major Changes
+
+- eb0f6b6: Migrating azure function programming model from v3 to v4
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
+## 0.8.2
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
+## 0.8.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
 ## 0.8.0
 
 ### Minor Changes

@@ -16,9 +16,10 @@ type Params = z.infer<typeof pathSchema>;
 
 export async function POST(
   _request: NextRequest,
-  { params }: { params: Params }
+  { params: paramsPromise }: { params: Promise<Params> }
 ) {
   try {
+    const params = await paramsPromise;
     const loggedUser = await getLoggedUser();
     pathSchema.parse(params);
     const isAllowedInstitutionId = await isAllowedInstitution(

@@ -43,18 +43,26 @@ paths:
   /info:
     get:
       operationId: Info
+      tags:
+        - Health Check
+      summary: Health check endpoint
       responses:
         200:
-          description: it works
+          description: Used to check if the function is active
           content:
             application/json:
               schema:
                 type: object
+                required:
+                  - message
+                  - version
                 properties:
                   message:
                     type: string
-                required:
-                  - message
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "1.4.2"
 
 components:
   securitySchemes:

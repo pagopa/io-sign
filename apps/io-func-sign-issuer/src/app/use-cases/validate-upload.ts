@@ -1,4 +1,4 @@
-import { constVoid, flow, pipe } from "fp-ts/lib/function";
+import { constVoid, pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 
 import * as RE from "fp-ts/lib/ReaderEither";
@@ -9,7 +9,7 @@ import * as A from "fp-ts/lib/Array";
 import * as L from "@pagopa/logger";
 
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-import { EventName, createAndSendAnalyticsEvent } from "@io-sign/io-sign/event";
+import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
 
 import {
   DocumentMetadata,
@@ -21,13 +21,12 @@ import { getDocument } from "@io-sign/io-sign/signature-request";
 
 import { getPdfMetadata } from "@io-sign/io-sign/infra/pdf";
 import {
-  UploadMetadata,
   createDocumentFromUrl,
-  getUploadMetadata,
-  getUploadedDocument,
   getUploadedDocumentUrl,
+  getUploadMetadata,
   markUploadMetadataAsValid,
   removeDocumentFromStorage,
+  UploadMetadata,
   upsertUploadMetadata
 } from "../../upload";
 
@@ -129,138 +128,143 @@ export const validateDocument = (
     )
   ]);
 
-// from a blob uri get the "upload metadata" (entity that tracks the upload)
+// from a blob name (upload metadata id) and the already-downloaded blob content:
 // does the signature request exists?
-// is a PDF document? (download + open)
+// is a PDF document?
 // the metadata declared in the dossier can be applied to this document?
 
 // YES -------> mark the document as ready
 // NO --------> mark the document as rejected
-export const validateUpload = flow(
-  getUploadMetadata,
-  RTE.bindTo("meta"),
-  RTE.bindW("signatureRequest", ({ meta }) =>
-    getSignatureRequest(meta.signatureRequestId, meta.issuerId)
-  ),
-  RTE.bindW("document", ({ signatureRequest, meta }) =>
-    pipe(
-      signatureRequest,
-      getDocument(meta.documentId),
-      E.fromOption(
-        () => new Error("no document was found with the specified document id")
-      ),
-      RTE.fromEither
-    )
-  ),
-  // Mark document as "WAIT_FOR_VALIDATION"
-  RTE.chainW(({ signatureRequest, document, ...ctx }) =>
-    pipe(
-      signatureRequest,
-      startValidationOnDocument(document.id),
-      RTE.fromEither,
-      RTE.map((signatureRequest) => ({
-        signatureRequest,
-        document,
-        ...ctx
-      }))
-    )
-  ),
-  RTE.chainW(
-    ({
-      signatureRequest,
-      document: {
-        metadata: { signatureFields }
-      },
-      meta
-    }) =>
+export const validateUpload = (
+  id: UploadMetadata["id"],
+  documentContent: Buffer
+) =>
+  pipe(
+    getUploadMetadata(id),
+    RTE.bindTo("meta"),
+    RTE.bindW("signatureRequest", ({ meta }) =>
+      getSignatureRequest(meta.signatureRequestId, meta.issuerId)
+    ),
+    RTE.bindW("document", ({ signatureRequest, meta }) =>
       pipe(
-        // Download the PDF document and save its content
-        getUploadedDocument(meta.id),
-        RTE.bindTo("documentContent"),
+        signatureRequest,
+        getDocument(meta.documentId),
+        E.fromOption(
+          () =>
+            new Error("no document was found with the specified document id")
+        ),
+        RTE.fromEither
+      )
+    ),
+    // Mark document as "WAIT_FOR_VALIDATION"
+    RTE.chainW(({ signatureRequest, document, ...ctx }) =>
+      pipe(
+        signatureRequest,
+        startValidationOnDocument(document.id),
+        RTE.fromEither,
+        RTE.map((signatureRequest) => ({
+          signatureRequest,
+          document,
+          ...ctx
+        }))
+      )
+    ),
+    RTE.chainW(
+      ({
+        signatureRequest,
+        document: {
+          metadata: { signatureFields }
+        },
+        meta
+      }) =>
+        pipe(
+          // Use the blob content already delivered by the blob trigger
+          RTE.right(documentContent),
+          RTE.bindTo("documentContent"),
 
-        // Open the PDF document and check its metadata
-        RTE.bindW(
-          "documentMetadata",
-          ({ documentContent }) =>
-            () =>
-              getPdfMetadata(documentContent)
-        ),
+          // Open the PDF document and check its metadata
+          RTE.bindW(
+            "documentMetadata",
+            ({ documentContent }) =>
+              () =>
+                getPdfMetadata(documentContent)
+          ),
 
-        RTE.chainFirstW(({ documentMetadata }) =>
-          L.debugRTE("obtained pdf metadata", {
-            documentMetadata,
-            ...loggingContext(meta)
-          })
-        ),
-        // Validate document
-        RTE.chainFirstW(({ documentContent, documentMetadata }) =>
-          validateDocument(
-            documentContent,
-            documentMetadata,
-            signatureFields,
-            loggingContext(meta)
-          )
-        ),
-        // The uploaded PDF it's a valid Document for
-        // the specified Signature Request. (mark as READY)
-        RTE.chainW(({ documentMetadata }) =>
-          pipe(
-            getUploadedDocumentUrl(meta.id),
-            RTE.fromReader,
-            RTE.chainW(createDocumentFromUrl(meta.documentId)),
-            RTE.chainEitherKW((url) =>
-              pipe(
-                signatureRequest,
-                markDocumentAsReady(meta.documentId, url, documentMetadata)
-              )
-            ),
-            RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
-            // Update upload metadata and remove document
-            // fromt temp storage
-            RTE.chainW(() =>
-              pipe(
-                meta,
-                markUploadMetadataAsValid,
-                upsertUploadMetadata,
-                RTE.chainFirstW(() =>
-                  L.infoRTE("validation done", {
-                    isDocumentValid: true,
-                    ...loggingContext(meta)
-                  })
-                ),
-                RTE.map((meta) => meta.id),
-                RTE.chainW(removeDocumentFromStorage)
-              )
-            ),
-            RTE.chainFirstW(() =>
-              createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
-                signatureRequest
+          RTE.chainFirstW(({ documentMetadata }) =>
+            L.debugRTE("obtained pdf metadata", {
+              documentMetadata,
+              ...loggingContext(meta)
+            })
+          ),
+          // Validate document
+          RTE.chainFirstW(({ documentContent, documentMetadata }) =>
+            validateDocument(
+              documentContent,
+              documentMetadata,
+              signatureFields,
+              loggingContext(meta)
+            )
+          ),
+          // The uploaded PDF it's a valid Document for
+          // the specified Signature Request. (mark as READY)
+          RTE.chainW(({ documentMetadata }) =>
+            pipe(
+              getUploadedDocumentUrl(meta.id),
+              RTE.fromReader,
+              RTE.chainW(createDocumentFromUrl(meta.documentId)),
+              RTE.chainEitherKW((url) =>
+                pipe(
+                  signatureRequest,
+                  markDocumentAsReady(meta.documentId, url, documentMetadata)
+                )
+              ),
+              RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
+              // Update upload metadata and remove document
+              // fromt temp storage
+              RTE.chainW(() =>
+                pipe(
+                  meta,
+                  markUploadMetadataAsValid,
+                  upsertUploadMetadata,
+                  RTE.chainFirstW(() =>
+                    L.infoRTE("validation done", {
+                      isDocumentValid: true,
+                      ...loggingContext(meta)
+                    })
+                  ),
+                  RTE.map((meta) => meta.id),
+                  RTE.chainW(removeDocumentFromStorage)
+                )
+              ),
+              RTE.chainFirstW(() =>
+                createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
+                  signatureRequest
+                )
               )
             )
-          )
-        ),
-        // Mark the document as REJECTED on error
-        RTE.orElseW((e) =>
-          pipe(
-            signatureRequest,
-            markDocumentAsRejected(meta.documentId, e.message),
-            RTE.fromEither,
-            RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
-            RTE.chainFirstW(() =>
-              L.infoRTE("validation done", {
-                isDocumentValid: false,
-                ...loggingContext(meta)
-              })
-            ),
-            // Remove REJECTED file from temp storage
-            RTE.chainW(() => removeDocumentFromStorage(meta.id)),
-            RTE.chainFirstW(() =>
-              createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
-                signatureRequest
+          ),
+          // Mark the document as REJECTED on error
+          RTE.orElseW((e) =>
+            pipe(
+              signatureRequest,
+              markDocumentAsRejected(meta.documentId, e.message),
+              RTE.fromEither,
+              RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
+              RTE.chainFirstW(() =>
+                L.infoRTE("validation done", {
+                  isDocumentValid: false,
+                  ...loggingContext(meta)
+                })
+              ),
+              // Remove REJECTED file from temp storage
+              RTE.chainW(() => removeDocumentFromStorage(meta.id)),
+              RTE.chainFirstW(() =>
+                createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
+                  signatureRequest
+                )
               )
             )
           )
         )
-      )
-  )
-);
+    )
+  );

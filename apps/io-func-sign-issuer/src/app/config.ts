@@ -6,13 +6,13 @@ import * as RE from "fp-ts/lib/ReaderEither";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import {
-  PdvTokenizerConfig,
-  getPdvTokenizerConfigFromEnvironment
+  getPdvTokenizerConfigFromEnvironment,
+  PdvTokenizerConfig
 } from "@io-sign/io-sign/infra/pdv-tokenizer/config";
 
 import {
-  IOServicesConfig,
-  getIoServicesConfigFromEnvironment
+  getIoServicesConfigFromEnvironment,
+  IOServicesConfig
 } from "@io-sign/io-sign/infra/io-services/config";
 
 import {
@@ -26,8 +26,8 @@ import {
 } from "@io-sign/io-sign/infra/azure/appinsights/config";
 
 import {
-  StorageConfig,
-  getStorageConfigFromEnvironment
+  getStorageConfigFromEnvironment,
+  StorageConfig
 } from "../infra/azure/storage/config";
 
 import {
@@ -36,13 +36,13 @@ import {
 } from "../infra/azure/cosmos/config";
 
 import {
-  SelfCareConfig,
-  getSelfCareConfigFromEnvironment
+  getSelfCareConfigFromEnvironment,
+  SelfCareConfig
 } from "../infra/self-care/config";
 
 import {
-  SlackConfig,
-  getSlackConfigFromEnvironment
+  getSlackConfigFromEnvironment,
+  SlackConfig
 } from "../infra/slack/config";
 
 import {

@@ -9,15 +9,16 @@ export default async function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { institution: string };
+  params: Promise<{ institution: string }>;
 }) {
+  const { institution } = await params;
   try {
-    await checkTOSAcceptance(params.institution);
+    await checkTOSAcceptance(institution);
   } catch {
-    redirect(`/consent/${params.institution}`);
+    redirect(`/consent/${institution}`);
   }
   return (
-    <SelfcareLayout institutionId={params.institution}>
+    <SelfcareLayout institutionId={institution}>
       {children}
     </SelfcareLayout>
   );

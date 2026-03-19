@@ -5,9 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'apps/io-func-sign-support/openapi.yaml'
-      - '.github/workflows/opex_api_support.yaml'
-      - '.opex/api_support/**'
+      - "apps/io-func-sign-support/openapi.yaml"
+      - ".github/workflows/opex_api_support.yaml"
+      - ".opex/api_support/**"
+
+  workflow_dispatch:
 
 env:
   API_NAME: api_support
@@ -33,7 +35,7 @@ jobs:
           fetch-depth: 0
 
       # from https://github.com/pagopa/opex-dashboard-azure-action/
-      - uses: pagopa/opex-dashboard-azure-action@v1.1.0
+      - uses: pagopa/opex-dashboard-azure-action@3ad80a5e4a2d5a8f342615637072f21b687320ce # action v1.2.1
         with:
           environment: prod
           api-name: ${{ env.API_NAME }}
@@ -47,4 +49,3 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  

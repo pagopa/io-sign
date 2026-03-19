@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Validate opex dashbaord
+      - name: Validate opex dashboard
         uses: ./.github/workflows/opex-review
         with:
           environment: prod

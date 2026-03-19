@@ -11,31 +11,34 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       NODE_TLS_REJECT_UNAUTHORIZED      = 0
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                  = module.cosmosdb_account.endpoint
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_user.name
-      StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
+      StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
       userUploadedBlobContainerName     = azurerm_storage_container.uploaded_documents.name
       userValidatedBlobContainerName    = azurerm_storage_container.validated_documents.name
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
-      IoServicesSubscriptionKey         = module.key_vault_secrets.values["IoServicesSubscriptionKey"].value
-      IoServicesConfigurationId         = module.key_vault_secrets.values["io-services-configuration-id"].value
+      IoServicesSubscriptionKey         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=IoServicesSubscriptionKey)"
+      IoServicesConfigurationId         = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=io-services-configuration-id)"
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = module.key_vault_secrets.values["PdvTokenizerApiKey"].value
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=PdvTokenizerApiKey)"
       NamirialApiBasePath               = "https://pagopa.namirial.com"
       NamirialUsername                  = "api"
-      NamirialPassword                  = module.key_vault_secrets.values["NamirialPassword"].value
+      NamirialPassword                  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=NamirialPassword)"
       NamirialTestApiBasePath           = "https://pagopa-test.namirial.com"
       NamirialTestUsername              = "api"
-      NamirialTestPassword              = module.key_vault_secrets.values["NamirialTestPassword"].value
-      AnalyticsEventHubConnectionString = module.event_hub.keys["analytics.io-sign-func-user"].primary_connection_string
-      BillingEventHubConnectionString   = module.event_hub.keys["billing.io-sign-func-issuer"].primary_connection_string
-      SelfCareEventHubConnectionString  = module.key_vault_secrets.values["SelfCareEventHubConnectionString"].value
+      NamirialTestPassword              = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=NamirialTestPassword)"
+      AnalyticsEventHubConnectionString = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=AnalyticsEventHubConnectionString)"
+      BillingEventHubConnectionString   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=BillingEventHubConnectionString)"
+      SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
-      SelfCareApiKey                    = module.key_vault_secrets.values["SelfCareApiKey"].value
+      SelfCareApiKey                    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SelfCareApiKey)"
       LollipopApiBasePath               = "https://api.io.pagopa.it"
-      LollipopApiKey                    = module.key_vault_secrets.values["LollipopPrimaryApiKey"].value
-      SlackWebhookUrl                   = module.key_vault_secrets.values["SlackWebhookUrl"].value
+      LollipopApiKey                    = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=LollipopPrimaryApiKey)"
+      SlackWebhookUrl                   = "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=SlackWebhookUrl)"
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
+      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }
   }
 }
@@ -47,7 +50,8 @@ module "io_sign_user_func" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
 
-  health_check_path = "/api/v1/sign/info"
+  health_check_path            = "/api/v1/sign/info"
+  health_check_maxpingfailures = 2
 
   node_version    = "22"
   runtime_version = "~4"
@@ -86,8 +90,26 @@ module "io_sign_user_func" {
   tags = var.tags
 }
 
+module "io_sign_user_func_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_user_func.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_user_func.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
+
 module "io_sign_user_func_staging_slot" {
-  count  = var.io_sign_user_func.sku_tier == "PremiumV3" ? 1 : 0
   source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
 
   name                = "staging"
@@ -120,7 +142,28 @@ module "io_sign_user_func_staging_slot" {
   ip_restriction_default_action = "Deny"
   allowed_subnets               = []
 
+  system_identity_enabled = true
+
   tags = var.tags
+}
+
+module "io_sign_user_func_staging_slot_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.io_sign_user_func_staging_slot.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = module.key_vault.name
+      resource_group_name = module.key_vault.resource_group_name
+      description         = "Allow ${module.io_sign_user_func_staging_slot.name} to read secrets from ${module.key_vault.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
 }
 
 resource "azurerm_monitor_autoscale_setting" "io_sign_user_func" {

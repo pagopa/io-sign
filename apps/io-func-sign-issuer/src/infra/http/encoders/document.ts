@@ -36,13 +36,6 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
       updated_at
     };
     switch (additionals.status) {
-      case "WAIT_FOR_VALIDATION": {
-        return {
-          ...commonFields,
-          status: ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION,
-          uploaded_at: additionals.uploadedAt
-        };
-      }
       case "READY": {
         return {
           ...commonFields,
@@ -58,6 +51,13 @@ export const DocumentToApiModel: E.Encoder<DocumentApiModel, Document> = {
           uploaded_at: additionals.uploadedAt,
           rejected_at: additionals.rejectedAt,
           reject_reason: additionals.rejectReason
+        };
+      }
+      case "WAIT_FOR_VALIDATION": {
+        return {
+          ...commonFields,
+          status: ToBeValidatedStatusEnum.WAIT_FOR_VALIDATION,
+          uploaded_at: additionals.uploadedAt
         };
       }
       default: {

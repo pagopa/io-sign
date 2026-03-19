@@ -1,0 +1,22 @@
+meta {
+  name: validate-document
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{io-func-sign-issuer-base-url}}/sign/validate-document
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  document: @file(resources/sample-pdf.pdf)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}

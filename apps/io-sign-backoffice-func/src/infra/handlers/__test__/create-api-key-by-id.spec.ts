@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
-import * as CreateApiKeyById from "../create-api-key-by-id";
+import { makeCreateApiKeyByIdHandler } from "../create-api-key-by-id";
 
 import * as crypto from "node:crypto";
 
@@ -18,23 +18,28 @@ const apiKey: ApiKey = {
 };
 
 describe("createApiKeyByIdHandler", () => {
-  it("returns ApiKeyById from ApiKey", () => {
-    const result = CreateApiKeyById.handler({
-      input: [apiKey],
-      inputDecoder: CreateApiKeyById.inputDecoder,
-      logger: {
-        log: () => () => {},
+  it("returns ApiKeyById from ApiKey", async () => {
+    const { apiKeysByIdOutput, handler } =
+      makeCreateApiKeyByIdHandler("test-db");
+
+    const extraOutputsData = new Map();
+    const mockContext = {
+      extraOutputs: {
+        set: (binding: unknown, value: unknown) =>
+          extraOutputsData.set(binding, value),
       },
-    })();
-    expect(result).resolves.toEqual(
-      expect.objectContaining({
-        right: expect.arrayContaining([
-          {
-            id: apiKey.id,
-            institutionId: apiKey.institutionId,
-          },
-        ]),
-      })
+      warn: vi.fn(),
+    } as never;
+
+    await handler([apiKey], mockContext);
+
+    expect(extraOutputsData.get(apiKeysByIdOutput)).toEqual(
+      expect.arrayContaining([
+        {
+          id: apiKey.id,
+          institutionId: apiKey.institutionId,
+        },
+      ])
     );
   });
 });

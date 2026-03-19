@@ -2,6 +2,11 @@ openapi: 3.0.3
 info:
   title: IO Sign - User API
   version: 0.0.1
+servers:
+  - url: https://api.io.pagopa.it/api/v1/sign
+    description: production
+  - url: http://localhost:7071/api/v1/sign
+    description: local
 security:
   - FunctionsKey: []
 paths:
@@ -75,14 +80,26 @@ paths:
   /info:
     get:
       operationId: getInfo
+      tags:
+        - Health Check
+      summary: Health check endpoint
       responses:
         "200":
           description: Used to check if the function is active
           content:
             application/json:
               schema:
-                type: string
-                example: "It works"
+                type: object
+                required:
+                  - message
+                  - version
+                properties:
+                  message:
+                    type: string
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "0.8.1"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -223,7 +240,7 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
-  /signature-requests/{id}:
+  /signature-requests/{signatureRequestId}:
     get:
       operationId: getSignatureRequestById
       summary: Get a Signature Request By Id
@@ -231,7 +248,7 @@ paths:
         - Signature Request
       parameters:
         - in: path
-          name: id
+          name: signatureRequestId
           schema:
             type: string
             description: Entity Id
@@ -288,7 +305,7 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
 
-  /messages/{signature_request_id}:
+  /messages/{signatureRequestId}:
     get:
       operationId: getThirdPartyMessageDetails
       summary: Retrieve a Third Party message with signature request documents
@@ -296,7 +313,7 @@ paths:
         - Third Party Message
       parameters:
         - in: path
-          name: signature_request_id
+          name: signatureRequestId
           schema:
             type: string
             description: Entity Id
@@ -324,7 +341,7 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
-  /messages/{signature_request_id}/{document_id}:
+  /messages/{signatureRequestId}/{documentId}:
     get:
       operationId: getThirdPartyMessageAttachmentContent
       summary: Retrieve a Third Party message attachment content (document)
@@ -332,7 +349,7 @@ paths:
         - Third Party Message
       parameters:
         - in: path
-          name: signature_request_id
+          name: signatureRequestId
           schema:
             type: string
             description: Signature request Id
@@ -340,7 +357,7 @@ paths:
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
         - in: path
-          name: document_id
+          name: documentId
           schema:
             type: string
             description: Document Id

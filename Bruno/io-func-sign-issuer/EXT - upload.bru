@@ -1,0 +1,26 @@
+meta {
+  name: EXT - upload
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{upload_url_from_get_upload_url}}
+  body: file
+  auth: none
+}
+
+headers {
+  x-ms-blob-type: BlockBlob
+}
+
+body:file {
+  file: @file(resources/sample-pdf.pdf) @contentType(application/pdf)
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}

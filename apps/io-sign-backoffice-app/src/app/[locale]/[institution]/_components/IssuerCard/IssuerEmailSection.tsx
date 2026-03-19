@@ -47,18 +47,18 @@ export default function IssuerEmailSection({ issuer }: Props) {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
         if (!response.ok) {
           throw new Error(response.statusText);
         }
         submit.end(true);
         setCurrentEmail(email);
-      } catch (cause) {
+      } catch (_cause) {
         submit.end(false);
       }
     },
-    [issuer, submit]
+    [issuer, submit],
   );
 
   return (

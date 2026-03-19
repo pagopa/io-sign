@@ -2,7 +2,6 @@ locals {
   io_sign_issuer_func_itn = {
     staging_disabled = [
       "CreateDossier",
-      "CreateIssuer",
       "CreateIssuerByVatNumberView",
       "CreateSignatureRequest",
       "GetDossier",
@@ -20,7 +19,6 @@ locals {
     ]
     disabled = [
       "CreateDossier",
-      "CreateIssuer",
       "CreateIssuerByVatNumberView",
       "CreateSignatureRequest",
       "GetDossier",

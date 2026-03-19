@@ -1,23 +1,25 @@
+import { getLocale, getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { useLocale, useMessages } from "next-intl";
 
 import IntlClientProvider from "@/i18n/IntlClientProvider";
 
-import { pick } from "lodash";
+import { MSWProvider } from "@/components/MSWProvider";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import { pick } from "lodash";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const locale = useLocale();
-  if (params.locale !== locale) {
+  const { locale } = await params;
+  const serverLocale = await getLocale();
+  if (locale !== serverLocale) {
     notFound();
   }
-  const messages = useMessages();
+  const messages = await getMessages();
   if (!messages) {
     notFound();
   }
@@ -38,9 +40,11 @@ export default function RootLayout({
   return (
     <html lang={locale}>
       <body>
-        <IntlClientProvider intl={{ locale, messages: clientMessages }}>
-          <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
-        </IntlClientProvider>
+        <MSWProvider>
+          <IntlClientProvider intl={{ locale, messages: clientMessages }}>
+            <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
+          </IntlClientProvider>
+        </MSWProvider>
       </body>
     </html>
   );

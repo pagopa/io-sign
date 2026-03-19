@@ -1,0 +1,26 @@
+meta {
+  name: set-signature-requests-status
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{io-func-sign-issuer-base-url}}/sign/signature-requests/:signature_request_id/status
+  body: json
+  auth: inherit
+}
+
+params:path {
+  signature_request_id: {{signature_request_id}}
+}
+
+body:json {
+  "READY"
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}

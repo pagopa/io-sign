@@ -9,18 +9,20 @@ import { LoadingButton } from "@mui/lab";
 
 import Page from "@/components/Page";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, use } from "react";
 
 import { useRouter } from "next/navigation";
 
 export default function Consent({
   params,
 }: {
-  params: { institution: string };
+  params: Promise<{ institution: string }>;
 }) {
   const t = useTranslations("firmaconio.tos");
 
   const router = useRouter();
+
+  const { institution } = use(params);
 
   const [state, setState] = useState({
     loading: false,
@@ -31,7 +33,7 @@ export default function Consent({
     setState({ loading: true, error: false });
     try {
       const response = await fetch(
-        `/api/institutions/${params.institution}/consents`,
+        `/api/institutions/${institution}/consents`,
         {
           method: "POST",
         }
@@ -39,11 +41,11 @@ export default function Consent({
       if (!response.ok) {
         throw new Error(response.statusText);
       }
-      router.push(`/${params.institution}`);
+      router.push(`/${institution}`);
     } catch {
       setState({ loading: false, error: true });
     }
-  }, [router, params.institution]);
+  }, [router, institution]);
 
   return (
     <Page hideSidenav>

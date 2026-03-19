@@ -45,7 +45,7 @@ export default function ApiKeyEditableFieldCard({
     setItems(updated);
     try {
       await upsertApiKeyField(apiKey, field, updated);
-    } catch (e) {
+    } catch (_e) {
       setShowError(true);
       setItems(items);
     }

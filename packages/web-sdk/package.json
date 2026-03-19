@@ -1,7 +1,7 @@
 {
   "name": "@io-sign/web-sdk",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "main": "dist/io-sign.es.js",
   "license": "MPL-2.0",
@@ -35,7 +35,7 @@
     "@storybook/blocks": "^7.0.6",
     "@storybook/web-components": "^7.0.6",
     "@storybook/web-components-vite": "^7.0.6",
-    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/coverage-c8": "catalog:",
     "happy-dom": "^9.8.4",
     "lit-html": "^2.6.1",
     "prettier": "2.7.1",
@@ -45,6 +45,6 @@
     "storybook": "^7.4.3",
     "typescript": "^4.9.3",
     "vite": "^5.1.1",
-    "vitest": "^1.2.2"
+    "vitest": "catalog:"
   }
 }

@@ -5,9 +5,36 @@ info:
 servers:
   - url: https://api.io.pagopa.it/api/v1/sign/backoffice
     description: production
+  - url: http://localhost:7071/api/v1/sign/backoffice
+    description: local
 security:
   - SubscriptionKey: []
 paths:
+  /info:
+    get:
+      operationId: getInfo
+      tags:
+        - Health Check
+      summary: Health check endpoint
+      security: []
+      responses:
+        "200":
+          description: Used to check if the function is active
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                  - version
+                properties:
+                  message:
+                    type: string
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "1.4.2"
+
   /api-keys/{id}:
     get:
       operationId: getApiKey
@@ -20,11 +47,6 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/Id"
-        - in: query
-          name: include
-          required: false
-          schema:
-            type: string
       responses:
         "200":
           description: "Api Key detail"
