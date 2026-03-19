@@ -1,7 +1,7 @@
 locals {
   backoffice_app_settings_itn = merge({
     AZURE_SUBSCRIPTION_ID          = data.azurerm_subscription.current.subscription_id
-    COSMOS_DB_CONNECTION_STRING    = module.cosmosdb_account.primary_sql_connection_strings,
+    COSMOS_DB_CONNECTION_STRING    = module.cosmosdb_account.primary_connection_strings,
     COSMOS_DB_NAME                 = module.cosmosdb_sql_database_backoffice.name
     APIM_RESOURCE_GROUP_NAME       = data.azurerm_api_management.apim_itn_api.resource_group_name,
     APIM_SERVICE_NAME              = data.azurerm_api_management.apim_itn_api.name,

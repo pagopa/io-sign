@@ -6,7 +6,7 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT = 4
       AzureWebJobsDisableHomepage    = "true"
       NODE_ENV                       = "production"
-      CosmosDbConnectionString       = module.cosmosdb_account.primary_sql_connection_strings
+      CosmosDbConnectionString       = module.cosmosdb_account.primary_connection_strings
       CosmosDbIssuerDatabaseName     = module.cosmosdb_sql_database_issuer.name
       CosmosDbUserDatabaseName       = module.cosmosdb_sql_database_user.name
       PdvTokenizerApiBasePath        = "https://api.tokenizer.pdv.pagopa.it"
@@ -18,8 +18,7 @@ locals {
 module "io_sign_support_func_itn" {
   source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
-  app_service_plan_type        = "internal"
-  app_service_plan_name        = format("%s-support-func-asp-01", local.project_itn_sign)
+  app_service_plan_name = format("%s-support-func-asp-01", local.project_itn_sign)
 
   name                = format("%s-support-func-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -85,6 +84,7 @@ module "io_sign_support_func_staging_slot_itn" {
   location            = azurerm_resource_group.backend_rg_itn.location
   resource_group_name = azurerm_resource_group.backend_rg_itn.name
   function_app_id     = module.io_sign_support_func_itn.id
+  app_service_plan_id = module.io_sign_support_func_itn.app_service_plan_id
 
   health_check_path            = "/api/v1/sign/support/info"
   health_check_maxpingfailures = 2

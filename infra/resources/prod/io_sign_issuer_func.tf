@@ -43,8 +43,6 @@ locals {
 module "io_sign_issuer_func" {
   source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
-  app_service_plan_type = "internal"
-
   name                = format("%s-issuer-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
@@ -121,6 +119,7 @@ module "io_sign_issuer_func_staging_slot" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
   function_app_id     = module.io_sign_issuer_func.id
+  app_service_plan_id = module.io_sign_issuer_func.app_service_plan_id
 
   health_check_path            = "/api/v1/sign/info"
   health_check_maxpingfailures = 2

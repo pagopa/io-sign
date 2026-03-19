@@ -19,8 +19,6 @@ locals {
 module "io_sign_support_func" {
   source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
-  app_service_plan_type = "internal"
-
   name                = format("%s-support-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
@@ -79,6 +77,7 @@ module "io_sign_support_func_staging_slot" {
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
   function_app_id     = module.io_sign_support_func.id
+  app_service_plan_id = module.io_sign_support_func.app_service_plan_id
 
   health_check_path            = "/api/v1/sign/support/info"
   health_check_maxpingfailures = 2

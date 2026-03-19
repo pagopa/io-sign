@@ -16,8 +16,6 @@ locals {
 module "io_sign_backoffice_func" {
   source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
-  app_service_plan_type = "external"
-
   name                = format("%s-backoffice-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
   resource_group_name = azurerm_resource_group.backend_rg.name
@@ -89,6 +87,7 @@ module "io_sign_backoffice_func_staging_slot" {
   resource_group_name = azurerm_resource_group.backend_rg.name
 
   function_app_id     = module.io_sign_backoffice_func.id
+  app_service_plan_id = module.io_sign_backoffice_func.app_service_plan_id
 
   health_check_path            = "/info"
   health_check_maxpingfailures = 2
