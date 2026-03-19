@@ -17,9 +17,7 @@ terraform {
     key                  = "io-sign.resources.prod.tfstate"
   }
 
-  # tflint-ignore: terraform_required_version
-  # Due to precommit check update required
-  # required_version = ">= 1.3.7"
+  required_version = ">= 1.9.0"
 }
 
 provider "azurerm" {
