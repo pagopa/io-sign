@@ -1,6 +1,6 @@
 # Needed to integrate Firma con IO with external domains, products or platforms (ie. eventhub for billing, ...)
 module "event_hub" {
-  source                   = "github.com/pagopa/terraform-azurerm-v4//eventhub_legacy?ref=v9.4.2"
+  source                   = "github.com/pagopa/terraform-azurerm-v4//eventhub_legacy?ref=v7.16.0"
   name                     = format("%s-eventhub-ns", local.project)
   location                 = azurerm_resource_group.integration_rg.location
   resource_group_name      = azurerm_resource_group.integration_rg.name

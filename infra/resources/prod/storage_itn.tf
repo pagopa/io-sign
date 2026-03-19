@@ -1,5 +1,5 @@
 module "io_sign_storage_itn" {
-  source                          = "github.com/pagopa/terraform-azurerm-v4//storage_account?ref=v9.4.2"
+  source                          = "github.com/pagopa/terraform-azurerm-v4//storage_account?ref=v7.16.0"
   name                            = replace(format("%s-itn-sign-st-01", local.product), "-", "")
   account_kind                    = "StorageV2"
   account_tier                    = "Standard"

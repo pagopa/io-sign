@@ -1,12 +1,12 @@
 module "cosmosdb_sql_database_user" {
-  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_database?ref=v9.4.2"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_database?ref=v7.16.0"
   name                = "user"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
 }
 
 module "cosmosdb_sql_container_user-signature-requests" {
-  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v9.4.2"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "signature-requests"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name
@@ -21,7 +21,7 @@ module "cosmosdb_sql_container_user-signature-requests" {
 }
 
 module "cosmosdb_sql_container_user-signatures" {
-  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v9.4.2"
+  source              = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_sql_container?ref=v7.16.0"
   name                = "signatures"
   resource_group_name = azurerm_resource_group.data_rg.name
   account_name        = module.cosmosdb_account.name

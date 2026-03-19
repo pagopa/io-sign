@@ -32,7 +32,7 @@ data "azurerm_nat_gateway" "nat_gateway" {
 }
 
 module "io_sign_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
@@ -71,7 +71,7 @@ resource "azurerm_network_security_group" "io_sign_issuer_nsg" {
 }
 
 module "io_sign_user_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-user-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
@@ -110,7 +110,7 @@ resource "azurerm_network_security_group" "io_sign_user_nsg" {
 }
 
 module "io_sign_support_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-support-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name
@@ -148,7 +148,7 @@ resource "azurerm_network_security_group" "io_sign_support_nsg" {
 }
 
 module "io_sign_eventhub_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-eventhub-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.vnet_common.name

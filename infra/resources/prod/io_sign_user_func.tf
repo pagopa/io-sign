@@ -44,7 +44,7 @@ locals {
 }
 
 module "io_sign_user_func" {
-  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   app_service_plan_type = "internal"
 
@@ -112,7 +112,7 @@ module "io_sign_user_func_roles" {
 }
 
 module "io_sign_user_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location

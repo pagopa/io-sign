@@ -16,7 +16,7 @@ locals {
 }
 
 module "io_sign_support_func_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   app_service_plan_type        = "internal"
   app_service_plan_name        = format("%s-support-func-asp-01", local.project_itn_sign)
@@ -79,7 +79,7 @@ module "io_sign_support_func_itn" {
 
 module "io_sign_support_func_staging_slot_itn" {
   count  = var.io_sign_support_func.sku_tier == "PremiumV3" ? 1 : 0
-  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location

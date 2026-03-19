@@ -1,5 +1,5 @@
 module "cosmosdb_account" {
-  source                           = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_account?ref=v9.4.2"
+  source                           = "github.com/pagopa/terraform-azurerm-v4//cosmosdb_account?ref=v7.16.0"
   name                             = format("%s-cosmos", local.project)
   domain                           = var.domain
   location                         = azurerm_resource_group.data_rg.location

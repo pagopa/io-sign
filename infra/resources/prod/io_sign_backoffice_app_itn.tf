@@ -15,7 +15,7 @@ locals {
 }
 
 module "io_sign_backoffice_snet_itn" {
-  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v9.4.2"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-backoffice-snet-01", local.project_itn_sign)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
@@ -38,7 +38,7 @@ module "io_sign_backoffice_snet_itn" {
 }
 
 module "io_sign_backoffice_app_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v4//app_service?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service?ref=v7.16.0"
 
   name                = format("%s-backoffice-app-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -109,7 +109,7 @@ resource "azurerm_private_endpoint" "io_sign_backoffice_app_itn" {
 }
 
 module "io_sign_backoffice_app_staging_slot_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v4//app_service_slot?ref=v9.4.2"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
