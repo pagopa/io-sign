@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "itn_sign_backend_rg" {
 
 module "function_sign_support" {
   source  = "pagopa-dx/azure-function-app/azurerm"
-  version = "~> 5.0"
+  version = "4.3.0"
 
   environment = {
     prefix          = local.prefix
@@ -18,6 +18,7 @@ module "function_sign_support" {
 
   resource_group_name = azurerm_resource_group.itn_sign_backend_rg.name
   size                = "P0v3"
+  node_version        = "20"
 
   virtual_network = {
     name                = var.vnet_common_name_itn
