@@ -17,7 +17,7 @@ locals {
 }
 
 module "io_sign_support_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-support-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -29,7 +29,7 @@ module "io_sign_support_func" {
   always_on = true
 
   runtime_version = "~4"
-  node_version    = "20"
+  node_version    = "22"
 
   app_service_plan_info = {
     kind                         = "Linux"
@@ -72,7 +72,7 @@ module "io_sign_support_func_roles" {
 }
 
 module "io_sign_support_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location
@@ -88,7 +88,7 @@ module "io_sign_support_func_staging_slot" {
 
   runtime_version                          = "~4"
   always_on                                = true
-  node_version                             = "20"
+  node_version                             = "22"
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
 
   app_settings = local.io_sign_support_func.app_settings

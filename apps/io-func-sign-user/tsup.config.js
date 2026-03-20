@@ -9,7 +9,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   minify: false,
-  target: "node20",
+  target: "node22",
   define: {
     APP_VERSION: JSON.stringify(packageJson.version)
   }

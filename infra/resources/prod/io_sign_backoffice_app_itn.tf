@@ -1,7 +1,7 @@
 locals {
   backoffice_app_settings_itn = merge({
     AZURE_SUBSCRIPTION_ID          = data.azurerm_subscription.current.subscription_id
-    COSMOS_DB_CONNECTION_STRING    = module.cosmosdb_account.connection_strings[0],
+    COSMOS_DB_CONNECTION_STRING    = module.cosmosdb_account.primary_connection_strings,
     COSMOS_DB_NAME                 = module.cosmosdb_sql_database_backoffice.name
     APIM_RESOURCE_GROUP_NAME       = data.azurerm_api_management.apim_itn_api.resource_group_name,
     APIM_SERVICE_NAME              = data.azurerm_api_management.apim_itn_api.name,
@@ -15,13 +15,14 @@ locals {
 }
 
 module "io_sign_backoffice_snet_itn" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-backoffice-snet-01", local.project_itn_sign)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
   address_prefixes     = var.subnets_cidrs_itn.backoffice
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
+
 
   service_endpoints = [
     "Microsoft.Web",
@@ -38,7 +39,7 @@ module "io_sign_backoffice_snet_itn" {
 }
 
 module "io_sign_backoffice_app_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//app_service?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service?ref=v7.16.0"
 
   name                = format("%s-backoffice-app-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -47,7 +48,7 @@ module "io_sign_backoffice_app_itn" {
   plan_name = format("%s-backoffice-app-asp-01", local.project_itn_sign)
   sku_name  = var.io_sign_backoffice_app.sku_name
 
-  node_version      = "20-lts"
+  node_version      = "22-lts"
   health_check_path = "/info"
   app_command_line  = "node server.js"
 
@@ -109,7 +110,7 @@ resource "azurerm_private_endpoint" "io_sign_backoffice_app_itn" {
 }
 
 module "io_sign_backoffice_app_staging_slot_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//app_service_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//app_service_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -118,7 +119,7 @@ module "io_sign_backoffice_app_staging_slot_itn" {
   app_service_id   = module.io_sign_backoffice_app_itn.id
   app_service_name = module.io_sign_backoffice_app_itn.name
 
-  node_version      = "20-lts"
+  node_version      = "22-lts"
   health_check_path = "/info"
   app_command_line  = "node server.js"
 
