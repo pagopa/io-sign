@@ -19,7 +19,6 @@ export const QtspClauseFromApiModel = new t.Type<
 >(
   "QtspClauseFromApiModel",
   QtspClause.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ text }, _ctx) => E.right({ text }),
   QtspClauseToApiModel.encode
 );
