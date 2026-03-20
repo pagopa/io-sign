@@ -38,7 +38,7 @@ locals {
 }
 
 module "io_sign_issuer_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-issuer-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -47,7 +47,7 @@ module "io_sign_issuer_func" {
   health_check_path            = "/api/v1/sign/info"
   health_check_maxpingfailures = 2
 
-  node_version    = "20"
+  node_version    = "22"
   runtime_version = "~4"
   always_on       = true
 
@@ -110,7 +110,7 @@ resource "azurerm_role_assignment" "issuer_func_api_keys_queue_processor_role" {
 }
 
 module "io_sign_issuer_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location
@@ -124,7 +124,7 @@ module "io_sign_issuer_func_staging_slot" {
   storage_account_name       = module.io_sign_issuer_func.storage_account.name
   storage_account_access_key = module.io_sign_issuer_func.storage_account.primary_access_key
 
-  node_version                             = "20"
+  node_version                             = "22"
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key

@@ -33,7 +33,7 @@ locals {
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
       NODE_TLS_REJECT_UNAUTHORIZED      = 0
-      CosmosDbConnectionString          = module.cosmosdb_account.connection_strings[0]
+      CosmosDbConnectionString          = module.cosmosdb_account.primary_connection_strings
       CosmosDbDatabaseName              = module.cosmosdb_sql_database_user.name
       StorageAccountConnectionString    = module.io_sign_storage.primary_connection_string
       userUploadedBlobContainerName     = azurerm_storage_container.uploaded_documents.name
@@ -63,7 +63,7 @@ locals {
 }
 
 module "io_sign_user_func_itn" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-user-func-01", local.project_itn_sign)
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -72,7 +72,7 @@ module "io_sign_user_func_itn" {
   health_check_path            = "/api/v1/sign/info"
   health_check_maxpingfailures = 2
 
-  node_version    = "20"
+  node_version    = "22"
   runtime_version = "~4"
   always_on       = true
 
@@ -125,7 +125,7 @@ module "io_sign_user_func_itn" {
 
 module "io_sign_user_func_staging_slot_itn" {
   count  = var.io_sign_user_func.sku_tier == "PremiumV3" ? 1 : 0
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg_itn.location
@@ -139,7 +139,7 @@ module "io_sign_user_func_staging_slot_itn" {
   storage_account_name       = module.io_sign_user_func_itn.storage_account.name
   storage_account_access_key = module.io_sign_user_func_itn.storage_account.primary_access_key
 
-  node_version                             = "20"
+  node_version                             = "22"
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key

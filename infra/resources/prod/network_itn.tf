@@ -4,13 +4,13 @@ data "azurerm_nat_gateway" "nat_gateway_itn" {
 }
 
 module "io_sign_snet_itn" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-snet", local.project_itn_sign)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
   address_prefixes     = var.subnets_cidrs_itn.issuer
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_issuer_nsg.id
 
@@ -74,14 +74,14 @@ resource "azurerm_private_endpoint" "io_sign_issuer_func_staging_itn" {
 }
 
 module "io_sign_user_snet_itn" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-user-snet", local.project)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
   address_prefixes     = var.subnets_cidrs_itn.user
 
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_user_nsg.id
 
@@ -151,13 +151,13 @@ resource "azurerm_private_endpoint" "io_sign_user_func_staging_itn" {
 }
 
 module "io_sign_support_snet_itn" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
+  source               = "github.com/pagopa/terraform-azurerm-v4//subnet?ref=v7.16.0"
   name                 = format("%s-support-snet-01", local.project_itn_sign)
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
   virtual_network_name = data.azurerm_virtual_network.itn_vnet_common.name
   address_prefixes     = var.subnets_cidrs_itn.support
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 
   # network_security_group_id = azurerm_network_security_group.io_sign_user_nsg.id
 

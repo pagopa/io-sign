@@ -14,7 +14,7 @@ locals {
 }
 
 module "io_sign_backoffice_func" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app?ref=v7.16.0"
 
   name                = format("%s-backoffice-func", local.project)
   location            = azurerm_resource_group.backend_rg.location
@@ -23,7 +23,7 @@ module "io_sign_backoffice_func" {
   health_check_path            = "/info"
   health_check_maxpingfailures = 2
 
-  node_version    = "20"
+  node_version    = "22"
   runtime_version = "~4"
   always_on       = true
 
@@ -80,7 +80,7 @@ resource "azurerm_key_vault_access_policy" "backoffice_func_key_vault_access_pol
 }
 
 module "io_sign_backoffice_func_staging_slot" {
-  source = "github.com/pagopa/terraform-azurerm-v3//function_app_slot?ref=v8.35.0"
+  source = "github.com/pagopa/terraform-azurerm-v4//function_app_slot?ref=v7.16.0"
 
   name                = "staging"
   location            = azurerm_resource_group.backend_rg.location
@@ -95,7 +95,7 @@ module "io_sign_backoffice_func_staging_slot" {
   storage_account_name       = module.io_sign_backoffice_func.storage_account.name
   storage_account_access_key = module.io_sign_backoffice_func.storage_account.primary_access_key
 
-  node_version                             = "20"
+  node_version                             = "22"
   runtime_version                          = "~4"
   always_on                                = true
   application_insights_instrumentation_key = data.azurerm_application_insights.application_insights.instrumentation_key
