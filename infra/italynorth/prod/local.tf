@@ -17,7 +17,7 @@ locals {
   }
   vnet_common_name_itn               = "${local.project_itn}-common-vnet-01"
   common_resource_group_name_itn     = "${local.project_itn}-common-rg-01"
-  sign_support_snet_cidr             = ""
+  sign_support_snet_cidr             = "10.20.40.64/26"
   function_support_autoscale_minimum = 1
   function_support_autoscale_maximum = 5
   function_support_autoscale_default = 1
