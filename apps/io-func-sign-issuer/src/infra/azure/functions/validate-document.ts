@@ -14,40 +14,18 @@ import {
 
 import * as E from "fp-ts/lib/Either";
 import * as H from "@pagopa/handler-kit";
-import { pipe } from "fp-ts/lib/function";
 
 import { IssuerRepository } from "../../../issuer";
 import { validateDocumentHandler } from "../../http/handlers/validate-document";
 import { makeLogger } from "./logger";
+import {
+  errorResponse,
+  toAzureHttpResponse,
+  toHandlerKitRequest
+} from "./http-helpers";
 
 type ValidateDocumentDeps = {
   issuerRepository: IssuerRepository;
-};
-
-const toAzureHttpResponse = (res: {
-  statusCode: number;
-  body: unknown;
-  headers: Record<string, string>;
-}): AzureHttpResponse => {
-  const { statusCode, body, headers } = res;
-  if (
-    headers["Content-Type"] === "application/json" ||
-    headers["Content-Type"] === "application/problem+json"
-  ) {
-    return new AzureHttpResponse({
-      status: statusCode,
-      jsonBody: body,
-      headers
-    });
-  }
-  if (typeof body === "string" || body === null) {
-    return new AzureHttpResponse({ status: statusCode, body, headers });
-  }
-  return new AzureHttpResponse({
-    status: 500,
-    body: "Internal server error",
-    headers: { "Content-Type": "application/problem+json" }
-  });
 };
 
 export const validateDocumentFunction =
@@ -57,23 +35,7 @@ export const validateDocumentFunction =
     ctx: InvocationContext
   ): Promise<AzureHttpResponse> => {
     const rawBody = Buffer.from(await request.arrayBuffer());
-    const headers: Record<string, string> = {};
-    request.headers.forEach((value, key) => {
-      headers[key] = value;
-    });
-    const query: Record<string, string> = {};
-    request.query.forEach((value, key) => {
-      query[key] = value;
-    });
-
-    const httpRequest: H.HttpRequest = {
-      body: rawBody,
-      url: request.url,
-      path: request.params,
-      headers,
-      query,
-      method: request.method as H.HttpRequest["method"]
-    };
+    const httpRequest = toHandlerKitRequest(request, rawBody);
 
     const result = await validateDocumentHandler({
       input: httpRequest,
@@ -83,12 +45,7 @@ export const validateDocumentFunction =
     })();
 
     if (E.isLeft(result)) {
-      return pipe(
-        new H.HttpError("Something went wrong."),
-        H.toProblemJson,
-        H.problemJson,
-        toAzureHttpResponse
-      );
+      return errorResponse(result.left);
     }
 
     return toAzureHttpResponse(result.right);

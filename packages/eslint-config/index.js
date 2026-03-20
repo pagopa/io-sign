@@ -14,7 +14,15 @@ export default [
       "perfectionist/sort-object-types": "off",
       "perfectionist/sort-union-types": "off",
       "@typescript-eslint/consistent-type-definitions": "off",
-      "@typescript-eslint/no-inferrable-types": "off"
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_"
+        }
+      ]
     }
   },
   {

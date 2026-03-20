@@ -66,7 +66,6 @@ type InfoDependencies = {
   onSignatureRequestReadyQueueClient: QueueClient;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const InfoHandler = H.of((_req: H.HttpRequest) =>
   pipe(
     RTE.ask<InfoDependencies>(),
