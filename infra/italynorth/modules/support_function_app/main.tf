@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "itn_sign_backend_rg" {
 
 module "function_sign_support" {
   source  = "pagopa-dx/azure-function-app/azurerm"
-  version = "4.3.0"
+  version = "~> 4.0"
 
   environment = {
     prefix          = local.prefix
