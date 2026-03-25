@@ -57,3 +57,7 @@ data "azurerm_resource_group" "sign_itn_backend_rg" {
 data "azurerm_resource_group" "sign_itn_data_rg" {
   name = local.functions.itn_io_sign_data_rg_name
 }
+
+data "azurerm_resource_group" "io_p_sign_backend_rg" {
+  name = local.functions.io_p_sign_backend_rg_name
+}

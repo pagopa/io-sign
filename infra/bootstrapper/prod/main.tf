@@ -1,4 +1,4 @@
-module "repo" {
+module "bootstrap" {
   source  = "pagopa-dx/azure-github-environment-bootstrap/azurerm"
   version = "~> 3.0"
 
@@ -14,7 +14,8 @@ module "repo" {
     data.azurerm_resource_group.sign_itn_rg.id,
     data.azurerm_resource_group.sign_itn_integration_rg.id,
     data.azurerm_resource_group.sign_itn_backend_rg.id,
-    data.azurerm_resource_group.sign_itn_data_rg.id
+    data.azurerm_resource_group.sign_itn_data_rg.id,
+    data.azurerm_resource_group.io_p_sign_backend_rg.id
   ]
 
   subscription_id = data.azurerm_subscription.current.id
@@ -55,4 +56,24 @@ module "repo" {
   nat_gateway_resource_group_id = data.azurerm_resource_group.common_itn.id
 
   tags = local.tags
+}
+
+module "roles_ci" {
+  source  = "pagopa-dx/azure-role-assignments/azurerm"
+  version = "~> 1.0"
+
+  principal_id    = module.bootstrap.identities.infra.ci.principal_id
+  subscription_id = data.azurerm_subscription.current.id
+
+  key_vault = [
+    {
+      name                = "io-p-sign-kv"
+      resource_group_name = "io-p-sign-sec-rg"
+      description         = "Key Vault access for IO Sign"
+
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
 }
