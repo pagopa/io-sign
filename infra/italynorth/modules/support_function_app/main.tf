@@ -12,7 +12,7 @@ module "function_sign_support" {
     prefix          = local.prefix
     env_short       = local.env_short
     location        = local.location_itn
-    app_name        = local.domain
+    app_name        = "${local.domain}-support"
     instance_number = local.instance_number
   }
 
