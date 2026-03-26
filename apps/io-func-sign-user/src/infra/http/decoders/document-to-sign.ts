@@ -41,7 +41,6 @@ export const SignatureFieldFromApiModel = new t.Type<
 >(
   "SignatureFieldFromApiModel",
   SignatureField.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ clause: { title, type }, attrs }, _ctx) =>
     sequenceS(E.Apply)({
       clause: pipe(
@@ -78,7 +77,6 @@ export const DocumentToSignFromApiModel = new t.Type<
 >(
   "DocumentToSignFromApiModel",
   DocumentToSign.is,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ document_id, signature_fields }, _ctx) =>
     pipe(
       signature_fields,
