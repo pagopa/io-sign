@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.1.0
+
+### Minor Changes
+
+- 224131f: fixed rawBody parsing in newer programming model v4
+
 ## 1.0.2
 
 ### Patch Changes
