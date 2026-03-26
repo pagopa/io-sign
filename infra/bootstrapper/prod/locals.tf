@@ -16,8 +16,8 @@ locals {
     cae_name                = "${local.itn_prefix}-github-runner-cae-01"
     cae_resource_group_name = "${local.itn_prefix}-github-runner-rg-01"
     secret = {
-      kv_name                = "${local.itn_prefix}-kv-common"
-      kv_resource_group_name = "${local.itn_prefix}-rg-common"
+      kv_name                = "${local.itn_prefix}-common-kv-01"
+      kv_resource_group_name = "${local.itn_prefix}-common-rg-01"
     }
   }
 
