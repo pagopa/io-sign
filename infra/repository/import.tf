@@ -37,3 +37,8 @@ import {
   to = module.github_repository.github_repository_environment.opex_ci["prod"]
   id = "io-sign:opex-prod-ci"
 }
+
+import {
+    to = module.github_repository.github_repository_autolink_reference.jira_board["IEL"]
+    id = "io-sign/13252934"
+}
