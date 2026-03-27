@@ -75,7 +75,7 @@ resource "azurerm_key_vault_access_policy" "adgroup_sign_itn" {
 }
 
 resource "azurerm_key_vault_access_policy" "adgroup_ecosystem_n_links_itn" {
-  key_vault_id = module.key_vault.id
+  key_vault_id = module.key_vault_itn.id
 
   tenant_id = data.azurerm_client_config.current.tenant_id
   object_id = data.azuread_group.adgroup_ecosystem_n_links.object_id
