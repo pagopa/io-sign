@@ -80,3 +80,9 @@ module "roles_ci" {
     }
   ]
 }
+
+resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
+  scope                = data.azurerm_key_vault.sign.id
+  role_definition_name = "Key Vault Contributor"
+  principal_id         = module.bootstrap.identities.infra.cd.principal_id
+}

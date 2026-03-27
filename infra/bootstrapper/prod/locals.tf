@@ -57,6 +57,11 @@ locals {
     resource_group_name = "io-p-rg-common"
   }
 
+  sign_key_vault = {
+    name                = "io-p-sign-kv"
+    resource_group_name = "io-p-sign-sec-rg"
+  }
+
   tags = {
     CreatedBy      = "Terraform"
     Environment    = "Prod"
