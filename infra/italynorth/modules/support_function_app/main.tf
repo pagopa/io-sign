@@ -38,3 +38,22 @@ module "function_sign_support" {
 
   tags = var.tags
 }
+
+module "itn_sign_support_func_roles" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.function_sign_support.system_identity_principal
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [
+    {
+      name                = data.azurerm_key_vault.sign_weu_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
+      description         = "Allow ${module.function_sign_support.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
+      has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    }
+  ]
+}
