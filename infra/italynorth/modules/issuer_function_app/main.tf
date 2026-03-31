@@ -29,9 +29,9 @@ module "function_sign_issuer" {
     {
       "AzureWebJobs.closeSignatureRequestRejected.Disabled" = "1"
       "AzureWebJobs.closeSignatureRequestSigned.Disabled"   = "1"
-      "AzureWebJobs.CreateIssuerByVatNumberView.Disabled"   = "1"
-      "AzureWebJobs.MarkAsWaitForSignature.Disabled"        = "1"
-      "AzureWebJobs.ValidateUpload.Disabled"                = "1"
+      "AzureWebJobs.createIssuerByVatNumberView.Disabled"   = "1"
+      "AzureWebJobs.markAsWaitForSignature.Disabled"        = "1"
+      "AzureWebJobs.validateUpload.Disabled"                = "1"
     }
   )
 
@@ -40,9 +40,9 @@ module "function_sign_issuer" {
     {
       "AzureWebJobs.closeSignatureRequestRejected.Disabled" = "1"
       "AzureWebJobs.closeSignatureRequestSigned.Disabled"   = "1"
-      "AzureWebJobs.CreateIssuerByVatNumberView.Disabled"   = "1"
-      "AzureWebJobs.MarkAsWaitForSignature.Disabled"        = "1"
-      "AzureWebJobs.ValidateUpload.Disabled"                = "1"
+      "AzureWebJobs.createIssuerByVatNumberView.Disabled"   = "1"
+      "AzureWebJobs.markAsWaitForSignature.Disabled"        = "1"
+      "AzureWebJobs.validateUpload.Disabled"                = "1"
     }
   )
 
