@@ -35,6 +35,8 @@ locals {
       BackOfficeApiKey                  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=BackOfficeApiKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
+      APPINSIGHTS_INSTRUMENTATIONKEY    = sensitive(data.azurerm_application_insights.application_insights.instrumentation_key)
+      APPINSIGHTS_SAMPLING_PERCENTAGE   = 5
     }
   }
 }
