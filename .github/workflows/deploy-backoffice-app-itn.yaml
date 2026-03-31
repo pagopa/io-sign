@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     name: Deploy
-    uses: pagopa/dx/.github/workflows/release-azure-appsvc-v1.yaml@c83fca9e58de618f3a80820d075faba16a2c1a0b
+    uses: pagopa/dx/.github/workflows/release-azure-appsvc-v1.yaml@7e6e88cf29984e3a54589e1ed51a335e016b3f47
     secrets: inherit
     with:
       workspace_name: io-sign-backoffice-app
