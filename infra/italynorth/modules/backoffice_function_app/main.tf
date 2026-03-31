@@ -6,7 +6,7 @@ module "function_sign_backoffice" {
     prefix          = local.prefix
     env_short       = local.env_short
     location        = local.location_itn
-    app_name        = "${local.domain}-backoffice"
+    app_name        = "${local.domain}-bo"
     instance_number = local.instance_number
   }
 
