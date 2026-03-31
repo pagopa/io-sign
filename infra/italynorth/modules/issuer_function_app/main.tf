@@ -101,7 +101,7 @@ module "itn_sign_issuer_queue_role" {
       resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
       queue_name           = "api-keys"
       role                 = "reader"
-      description          = "Allow web app to write documents"
+      description          = "Allow web app to read from the API keys queue"
     }
   ]
 }
