@@ -29,20 +29,20 @@ module "function_sign_user" {
   app_settings = merge(
     local.io_sign_user_func.app_settings,
     {
-      "AzureWebJobs.CreateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.FillDocument.Disabled"           = "1"
-      "AzureWebJobs.UpdateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.ValidateQtspSignature.Disabled"  = "1"
+      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.fillDocument.Disabled"           = "1"
+      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.validateQtspSignature.Disabled"  = "1"
     }
   )
 
   slot_app_settings = merge(
     local.io_sign_user_func.app_settings,
     {
-      "AzureWebJobs.CreateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.FillDocument.Disabled"           = "1"
-      "AzureWebJobs.UpdateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.ValidateQtspSignature.Disabled"  = "1"
+      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.fillDocument.Disabled"           = "1"
+      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.validateQtspSignature.Disabled"  = "1"
     }
   )
 
