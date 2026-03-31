@@ -21,13 +21,13 @@ locals {
 
   #support function app
   sign_support_snet_cidr             = "10.20.40.64/26"
-  function_support_autoscale_minimum = 1
+  function_support_autoscale_minimum = 2
   function_support_autoscale_maximum = 5
-  function_support_autoscale_default = 1
+  function_support_autoscale_default = 2
 
   #issuer function app
   sign_issuer_snet_cidr             = "10.20.41.0/26"
-  function_issuer_autoscale_minimum = 1
+  function_issuer_autoscale_minimum = 2
   function_issuer_autoscale_maximum = 5
-  function_issuer_autoscale_default = 1
+  function_issuer_autoscale_default = 2
 }
