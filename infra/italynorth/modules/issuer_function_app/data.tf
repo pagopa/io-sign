@@ -4,6 +4,10 @@ data "azurerm_key_vault" "sign_weu_kv" {
   resource_group_name = "${local.project_weu_sign}-sec-rg"
 }
 
+data "azurerm_resource_group" "sign_itn_backend_rg" {
+  name = "${local.project_itn_sign}-backend-rg-01"
+}
+
 data "azurerm_resource_group" "sign_weu_integration_rg" {
   name = "${local.project_weu_sign}-integration-rg"
 }
@@ -38,6 +42,11 @@ data "azurerm_monitor_action_group" "common_error_action_group" {
 data "azurerm_monitor_action_group" "sign_error_action_group" {
   name                = "EmailFirmaConIoTech"
   resource_group_name = "${local.project_weu_sign}-integration-rg"
+}
+
+data "azurerm_application_insights" "application_insights" {
+  name                = "io-p-ai-common"
+  resource_group_name = "io-p-rg-common"
 }
 
 ########################
