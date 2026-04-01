@@ -42,7 +42,11 @@ module "function_sign_backoffice" {
   tags                                  = local.tags
 }
 
-import {
-  to = module.function_sign_support.azurerm_resource_group.itn_sign_backend_rg
-  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-sign-backend-rg-01"
+module "itn_sign_backoffice_app" {
+  source = "../modules/backoffice_app_service"
+
+  vnet_common_name_itn           = local.vnet_common_name_itn
+  common_resource_group_name_itn = local.common_resource_group_name_itn
+  sign_backoffice_app_snet_cidr  = local.sign_backoffice_app_snet_cidr
 }
+
