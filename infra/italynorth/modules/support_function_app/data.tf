@@ -52,3 +52,8 @@ data "azurerm_storage_account" "storage_sign_weu" {
   name                = "iopsignst"
   resource_group_name = "${local.project_weu_sign}-data-rg"
 }
+
+data "azurerm_nat_gateway" "nat_gateway_itn" {
+  name                = format("%s-ng-01", local.project_itn)
+  resource_group_name = format("%s-common-rg-01", local.project_itn)
+}
