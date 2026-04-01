@@ -41,8 +41,8 @@ module "itn_sign_bo_app_queue_role" {
       storage_account_name = data.azurerm_storage_account.storage_sign_weu.name
       resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
       queue_name           = "api-keys"
-      role                 = "reader"
-      description          = "Allow web app to read from the API keys queue"
+      role                 = "writer"
+      description          = "Allow web app to write to the API keys queue"
     }
   ]
 }
@@ -58,8 +58,8 @@ module "itn_sign_bo_app_queue_staging_role" {
       storage_account_name = data.azurerm_storage_account.storage_sign_weu.name
       resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
       queue_name           = "api-keys"
-      role                 = "reader"
-      description          = "Allow web app to read from the API keys queue"
+      role                 = "writer"
+      description          = "Allow web app to write to the API keys queue"
     }
   ]
 }
@@ -74,8 +74,8 @@ module "itn_sign_bo_app_apim_role" {
     {
       name                = data.azurerm_api_management.apim.name
       resource_group_name = data.azurerm_api_management.apim.resource_group_name
-      role                = "writer"
-      description         = "Allow app to write API keys"
+      role                = "owner"
+      description         = "API Management Service Contributor"
     }
   ]
 }
@@ -90,8 +90,8 @@ module "itn_sign_bo_app_apim_staging_role" {
     {
       name                = data.azurerm_api_management.apim.name
       resource_group_name = data.azurerm_api_management.apim.resource_group_name
-      role                = "writer"
-      description         = "Allow app to write API keys"
+      role                = "owner"
+      description         = "API Management Service Contributor"
     }
   ]
 }

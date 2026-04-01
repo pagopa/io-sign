@@ -12,7 +12,7 @@ jobs:
       workspace_name: io-sign-backoffice-app
       environment: app-prod
       resource_group_name: io-p-itn-sign-backend-rg-01
-      web_app_name: io-p-itn-sign-backoffice-app-01
+      web_app_name: io-p-itn-sign-bo-app-01
       disable_auto_staging_deploy: true
     permissions:
       attestations: write
