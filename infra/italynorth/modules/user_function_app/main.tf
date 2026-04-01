@@ -32,7 +32,7 @@ module "function_sign_user" {
       "AzureWebJobs.createSignatureRequest.Disabled" = "1"
       "AzureWebJobs.fillDocument.Disabled"           = "1"
       "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.validateQtspSignature.Disabled"  = "1"
+      "AzureWebJobs.validateSignature.Disabled"      = "1"
     }
   )
 
@@ -42,7 +42,7 @@ module "function_sign_user" {
       "AzureWebJobs.createSignatureRequest.Disabled" = "1"
       "AzureWebJobs.fillDocument.Disabled"           = "1"
       "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.validateQtspSignature.Disabled"  = "1"
+      "AzureWebJobs.validateSignature.Disabled"      = "1"
     }
   )
 
