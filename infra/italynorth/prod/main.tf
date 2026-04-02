@@ -1,9 +1,3 @@
-resource "azurerm_resource_group" "itn_sign_rg" {
-  name     = "${local.project_itn_sign}-rg-01"
-  location = local.location
-  tags     = local.tags
-}
-
 module "function_sign_support" {
   source                             = "../modules/support_function_app"
   vnet_common_name_itn               = local.vnet_common_name_itn
