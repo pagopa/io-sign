@@ -57,7 +57,7 @@ resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
   }
 }
 
-resource "azurerm_api_management_named_value" "io_fn_sign_support_url_itn" {
+resource "azurerm_api_management_named_value" "io_fn_sign_support_url" {
   name                = "io-fn-sign-support-url"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
@@ -65,7 +65,15 @@ resource "azurerm_api_management_named_value" "io_fn_sign_support_url_itn" {
   value               = format("https://%s-sign-support-func.azurewebsites.net", local.product)
 }
 
-resource "azurerm_api_management_named_value" "io_fn_sign_support_key_itn" {
+resource "azurerm_api_management_named_value" "io_fn_sign_support_url_itn" {
+  name                = "io-fn-sign-support-url_itn"
+  api_management_name = data.azurerm_api_management.apim_itn_api.name
+  resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
+  display_name        = "io-fn-sign-support-url_itn"
+  value               = format("https://%s-sign-support-func-01.azurewebsites.net", local.project_itn)
+}
+
+resource "azurerm_api_management_named_value" "io_fn_sign_support_key" {
   name                = "io-fn-sign-support-key"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
@@ -73,6 +81,17 @@ resource "azurerm_api_management_named_value" "io_fn_sign_support_key_itn" {
   secret              = true
   value_from_key_vault {
     secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-support-key"
+  }
+}
+
+resource "azurerm_api_management_named_value" "io_fn_sign_support_key_itn" {
+  name                = "io-fn-sign-support-key-itn"
+  api_management_name = data.azurerm_api_management.apim_itn_api.name
+  resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
+  display_name        = "io-fn-sign-support-key-itn"
+  secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-support-key-itn"
   }
 }
 

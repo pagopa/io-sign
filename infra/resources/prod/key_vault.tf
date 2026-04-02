@@ -18,6 +18,7 @@ module "key_vault_secrets" {
     "IoServicesSubscriptionKey",
     "io-fn-sign-issuer-key",
     "io-fn-sign-support-key",
+    "io-fn-sign-support-key-itn",
     "NamirialPassword",
     "NamirialTestPassword",
     "SelfCareEventHubConnectionString",
