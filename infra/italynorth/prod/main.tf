@@ -41,8 +41,3 @@ module "function_sign_backoffice" {
   function_backoffice_autoscale_default = local.function_backoffice_autoscale_default
   tags                                  = local.tags
 }
-
-import {
-  to = module.function_sign_support.azurerm_resource_group.itn_sign_backend_rg
-  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-sign-backend-rg-01"
-}

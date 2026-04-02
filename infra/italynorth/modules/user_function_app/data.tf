@@ -4,6 +4,10 @@ data "azurerm_key_vault" "sign_weu_kv" {
   resource_group_name = "${local.project_weu_sign}-sec-rg"
 }
 
+data "azurerm_resource_group" "sign_itn_rg" {
+  name = "${local.project_itn_sign}-rg-01"
+}
+
 data "azurerm_resource_group" "sign_itn_backend_rg" {
   name = "${local.project_itn_sign}-backend-rg-01"
 }
