@@ -28,8 +28,7 @@ module "key_vault_secrets" {
     "PdvTokenizerApiKey",
     "BackOfficeApiKey",
     "io-services-configuration-id",
-    "io-sign-backoffice-func-key",
-    "io-sign-backoffice-func-key-itn"
+    "io-sign-backoffice-func-key"
   ]
 }
 
