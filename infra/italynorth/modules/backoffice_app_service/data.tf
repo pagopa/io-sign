@@ -19,6 +19,10 @@ data "azurerm_resource_group" "sign_itn_backend_rg" {
   name = "${local.project_itn_sign}-backend-rg-01"
 }
 
+data "azurerm_resource_group" "sign_itn_rg" {
+  name = "${local.project_itn_sign}-rg-01"
+}
+
 data "azurerm_subnet" "private_endpoints_subnet_itn" {
   name                 = "io-p-itn-pep-snet-01"
   virtual_network_name = var.vnet_common_name_itn
