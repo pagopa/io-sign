@@ -4,6 +4,10 @@ data "azurerm_key_vault" "sign_weu_kv" {
   resource_group_name = "${local.project_weu_sign}-sec-rg"
 }
 
+data "azurerm_resource_group" "sign_itn_rg" {
+  name = "${local.project_itn_sign}-rg-01"
+}
+
 data "azurerm_resource_group" "sign_weu_integration_rg" {
   name = "${local.project_weu_sign}-integration-rg"
 }
@@ -51,4 +55,9 @@ data "azurerm_cosmosdb_account" "cosmos_sign_weu" {
 data "azurerm_storage_account" "storage_sign_weu" {
   name                = "iopsignst"
   resource_group_name = "${local.project_weu_sign}-data-rg"
+}
+
+data "azurerm_nat_gateway" "nat_gateway_itn" {
+  name                = format("%s-ng-01", local.project_itn)
+  resource_group_name = format("%s-common-rg-01", local.project_itn)
 }

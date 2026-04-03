@@ -16,7 +16,7 @@ module "function_sign_support" {
     instance_number = local.instance_number
   }
 
-  resource_group_name = azurerm_resource_group.itn_sign_backend_rg.name
+  resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
   size                = "P0v3"
   node_version        = "20"
 
