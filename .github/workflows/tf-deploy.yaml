@@ -17,3 +17,5 @@ jobs:
     with:
       environment: prod
       base_path: infra/resources
+      override_github_environment: infra-prod
+      use_private_agent: true
