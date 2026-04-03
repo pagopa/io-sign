@@ -1,9 +1,3 @@
-resource "azurerm_resource_group" "itn_sign_backend_rg" {
-  name     = "${local.project_itn_sign}-backend-rg-01"
-  location = local.location_itn
-  tags     = var.tags
-}
-
 module "function_sign_support" {
   source  = "pagopa-dx/azure-function-app/azurerm"
   version = "~> 4.0"
