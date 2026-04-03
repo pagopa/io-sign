@@ -1,9 +1,9 @@
 <policies>
     <inbound>
         <base />
-        <set-backend-service id="apim-generated-policy" base-url="{{io-fn-sign-issuer-url-itn}}/api/v1/sign" />
+        <set-backend-service id="apim-generated-policy" base-url="{{io-fn-sign-issuer-url}}/api/v1/sign" />
         <set-header name="x-functions-key" exists-action="override">
-            <value>{{io-fn-sign-issuer-key-itn}}</value>
+            <value>{{io-fn-sign-issuer-key}}</value>
         </set-header>
         <set-header name="x-subscription-id" exists-action="override">
             <value>@(context.Subscription.Id)</value>
