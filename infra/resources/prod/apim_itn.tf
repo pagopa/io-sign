@@ -244,7 +244,7 @@ resource "azurerm_api_management_named_value" "io_fn_sign_backoffice_url_itn" {
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
   display_name        = "io-fn-sign-backoffice-url-itn"
-  value               = format("https://%s-sign-backoffice-func-01.azurewebsites.net", local.project_itn)
+  value               = format("https://%s-sign-bo-func-01.azurewebsites.net", local.project_itn)
 }
 
 resource "azurerm_api_management_named_value" "io_fn_sign_backoffice_key" {
