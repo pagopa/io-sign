@@ -37,7 +37,6 @@ locals {
 
   functions = {
     itn_io_sign_rg_name             = "${local.itn_prefix}-sign-rg-01"
-    itn_io_sign_backend_rg_name     = "${local.itn_prefix}-sign-backend-rg-01"
     itn_io_sign_integration_rg_name = "${local.itn_prefix}-sign-integration-rg-01"
     itn_io_sign_data_rg_name        = "${local.itn_prefix}-sign-data-rg-01"
     itn_io_sign_sec_rg_name         = "${local.itn_prefix}-sign-sec-rg-01"
