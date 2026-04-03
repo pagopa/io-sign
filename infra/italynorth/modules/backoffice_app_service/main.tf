@@ -6,7 +6,7 @@ module "itn_sign_backoffice_app" {
     prefix          = local.prefix
     env_short       = local.env_short
     location        = local.location_itn
-    app_name        = "${local.domain}-bo"
+    app_name        = "${local.domain}-backoffice"
     instance_number = local.instance_number
   }
 
