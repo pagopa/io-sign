@@ -66,10 +66,10 @@ resource "azurerm_api_management_named_value" "io_fn_sign_support_url" {
 }
 
 resource "azurerm_api_management_named_value" "io_fn_sign_support_url_itn" {
-  name                = "io-fn-sign-support-url_itn"
+  name                = "io-fn-sign-support-url-itn"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
-  display_name        = "io-fn-sign-support-url_itn"
+  display_name        = "io-fn-sign-support-url-itn"
   value               = format("https://%s-sign-support-func-01.azurewebsites.net", local.project_itn)
 }
 
