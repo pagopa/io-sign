@@ -38,7 +38,7 @@ module "apim_itn_roles" {
 
 # Named values
 
-resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
+resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url" {
   name                = "io-fn-sign-issuer-url"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
@@ -46,7 +46,15 @@ resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
   value               = format("https://%s-sign-issuer-func.azurewebsites.net", local.product)
 }
 
-resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
+resource "azurerm_api_management_named_value" "io_fn_sign_issuer_url_itn" {
+  name                = "io-fn-sign-issuer-url-itn"
+  api_management_name = data.azurerm_api_management.apim_itn_api.name
+  resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
+  display_name        = "io-fn-sign-issuer-url-itn"
+  value               = format("https://%s-sign-issuer-func-01.azurewebsites.net", local.project_itn)
+}
+
+resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key" {
   name                = "io-fn-sign-issuer-key"
   api_management_name = data.azurerm_api_management.apim_itn_api.name
   resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
@@ -54,6 +62,17 @@ resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
   secret              = true
   value_from_key_vault {
     secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-issuer-key"
+  }
+}
+
+resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
+  name                = "io-fn-sign-issuer-key-itn"
+  api_management_name = data.azurerm_api_management.apim_itn_api.name
+  resource_group_name = data.azurerm_api_management.apim_itn_api.resource_group_name
+  display_name        = "io-fn-sign-issuer-key-itn"
+  secret              = true
+  value_from_key_vault {
+    secret_id = "${module.key_vault.vault_uri}secrets/io-fn-sign-issuer-key-itn"
   }
 }
 
