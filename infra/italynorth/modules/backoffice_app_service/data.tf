@@ -1,0 +1,48 @@
+data "azurerm_subscription" "current" {}
+
+data "azurerm_api_management" "apim" {
+  name                = "${local.project_itn}-apim-01"
+  resource_group_name = "${local.project_itn}-common-rg-01"
+}
+
+data "azurerm_cosmosdb_account" "cosmos_sign_weu" {
+  name                = "${local.project_weu_sign}-cosmos"
+  resource_group_name = "${local.project_weu_sign}-data-rg"
+}
+
+data "azurerm_application_insights" "application_insights" {
+  name                = "io-p-ai-common"
+  resource_group_name = "io-p-rg-common"
+}
+
+data "azurerm_resource_group" "sign_itn_backend_rg" {
+  name = "${local.project_itn_sign}-backend-rg-01"
+}
+
+data "azurerm_resource_group" "sign_itn_rg" {
+  name = "${local.project_itn_sign}-rg-01"
+}
+
+data "azurerm_subnet" "private_endpoints_subnet_itn" {
+  name                 = "io-p-itn-pep-snet-01"
+  virtual_network_name = var.vnet_common_name_itn
+  resource_group_name  = var.common_resource_group_name_itn
+}
+
+data "azurerm_resource_group" "weu-common" {
+  name = "${local.prefix}-${local.env_short}-rg-common"
+}
+
+data "azurerm_storage_account" "storage_sign_weu" {
+  name                = "iopsignst"
+  resource_group_name = "${local.project_weu_sign}-data-rg"
+}
+
+data "azurerm_resource_group" "sign_weu_data_rg" {
+  name = "${local.project_weu_sign}-data-rg"
+}
+
+data "azurerm_key_vault" "sign_weu_kv" {
+  name                = "${local.project_weu_sign}-kv"
+  resource_group_name = "${local.project_weu_sign}-sec-rg"
+}
