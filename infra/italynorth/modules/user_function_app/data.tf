@@ -8,10 +8,6 @@ data "azurerm_resource_group" "sign_itn_rg" {
   name = "${local.project_itn_sign}-rg-01"
 }
 
-data "azurerm_resource_group" "sign_itn_backend_rg" {
-  name = "${local.project_itn_sign}-backend-rg-01"
-}
-
 data "azurerm_resource_group" "sign_weu_integration_rg" {
   name = "${local.project_weu_sign}-integration-rg"
 }
