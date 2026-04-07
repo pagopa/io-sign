@@ -2,9 +2,9 @@ import { flow, pipe } from "fp-ts/lib/function";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
 import {
-  EventName,
   createAndSendAnalyticsEvent,
   createBillingEvent,
+  EventName,
   sendBillingEvent
 } from "@io-sign/io-sign/event";
 import { NotificationMessage } from "@io-sign/io-sign/notification";
@@ -13,10 +13,10 @@ import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
 import {
   ClosedSignatureRequest,
-  SignatureRequest,
   getSignatureRequest,
   markAsRejected,
   markAsSigned,
+  SignatureRequest,
   upsertSignatureRequest
 } from "../../signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
