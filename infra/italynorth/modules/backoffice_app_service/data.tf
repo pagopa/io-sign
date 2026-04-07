@@ -15,10 +15,6 @@ data "azurerm_application_insights" "application_insights" {
   resource_group_name = "io-p-rg-common"
 }
 
-data "azurerm_resource_group" "sign_itn_backend_rg" {
-  name = "${local.project_itn_sign}-backend-rg-01"
-}
-
 data "azurerm_resource_group" "sign_itn_rg" {
   name = "${local.project_itn_sign}-rg-01"
 }
