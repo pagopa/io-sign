@@ -13,10 +13,6 @@ data "azurerm_resource_group" "sign_weu_integration_rg" {
   name = "${local.project_weu_sign}-integration-rg"
 }
 
-data "azurerm_resource_group" "sign_weu_backend_rg" {
-  name = "${local.project_weu_sign}-backend-rg"
-}
-
 data "azurerm_resource_group" "sign_weu_data_rg" {
   name = "${local.project_weu_sign}-data-rg"
 }
