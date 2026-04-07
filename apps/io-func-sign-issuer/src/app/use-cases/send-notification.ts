@@ -31,10 +31,10 @@ import {
 
 const requestToSignMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    subject: `${signatureRequest.issuerDescription} - Hai un documento da firmare`,
+    subject: `Hai un documento da firmare - ${signatureRequest.issuerDescription}`,
     markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
-    }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+    }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
     }"\n---\nHai ricevuto una richiesta per **firmare alcuni documenti** relativi a **${
       dossier.title
