@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "rm -f .next/standalone/apps/io-sign-backoffice-app/package.json",
     "start": "next start",
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
