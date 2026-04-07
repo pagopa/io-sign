@@ -9,7 +9,8 @@ locals {
     s.name => s.key_vault_secret_name != null ? "@Microsoft.KeyVault(VaultName=${module.key_vault.name};SecretName=${s.key_vault_secret_name})" : s.value
   })
   io_sign_backoffice_func = {
-    staging_disabled = ["onSelfcareContractsMessage"]
+    staging_disabled = ["onSelfcareContractsMessage", "createApiKeyById"]
+    disabled = ["onSelfcareContractsMessage", "createApiKeyById"]
   }
 }
 
