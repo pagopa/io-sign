@@ -26,16 +26,7 @@ module "function_sign_issuer" {
   application_insights_key                 = data.azurerm_application_insights.application_insights.instrumentation_key
   application_insights_sampling_percentage = 5
 
-  app_settings = merge(
-    local.io_sign_issuer_func.app_settings,
-    {
-      "AzureWebJobs.closeSignatureRequestRejected.Disabled" = "1"
-      "AzureWebJobs.closeSignatureRequestSigned.Disabled"   = "1"
-      "AzureWebJobs.createIssuerByVatNumberView.Disabled"   = "1"
-      "AzureWebJobs.markAsWaitForSignature.Disabled"        = "1"
-      "AzureWebJobs.validateUpload.Disabled"                = "1"
-    }
-  )
+  app_settings = local.io_sign_issuer_func.app_settings
 
   slot_app_settings = merge(
     local.io_sign_issuer_func.app_settings,
