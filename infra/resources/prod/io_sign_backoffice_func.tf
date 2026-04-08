@@ -28,7 +28,13 @@ module "io_sign_backoffice_func" {
   runtime_version = "~4"
   always_on       = true
 
-  app_settings = local.backoffice_func_settings
+  app_settings = merge(
+    local.backoffice_func_settings,
+    {
+      for to_disable in local.io_sign_backoffice_func.disabled :
+      format("AzureWebJobs.%s.Disabled", to_disable) => "true"
+    }
+  )
 
   subnet_id = module.io_sign_backoffice_snet.id
 
