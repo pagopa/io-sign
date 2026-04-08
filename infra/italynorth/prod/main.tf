@@ -41,3 +41,12 @@ module "function_sign_backoffice" {
   function_backoffice_autoscale_default = local.function_backoffice_autoscale_default
   tags                                  = local.tags
 }
+
+module "itn_sign_backoffice_app" {
+  source = "../modules/backoffice_app_service"
+
+  vnet_common_name_itn           = local.vnet_common_name_itn
+  common_resource_group_name_itn = local.common_resource_group_name_itn
+  sign_backoffice_app_snet_cidr  = local.sign_backoffice_app_snet_cidr
+}
+
