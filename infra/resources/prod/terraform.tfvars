@@ -47,12 +47,12 @@ storage_account = {
 }
 
 cosmos = {
-  zone_redundant = false
+  zone_redundant = true
   additional_geo_locations = [
     {
-      location          = "italynorth"
+      location          = "westeurope"
       failover_priority = 1
-      zone_redundant    = true
+      zone_redundant    = false
     }
   ]
 }
