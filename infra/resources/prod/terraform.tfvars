@@ -106,14 +106,6 @@ io_sign_database_backoffice = {
   }
 }
 
-io_sign_issuer_func = {
-  sku_tier          = "PremiumV3"
-  sku_size          = "P1v3"
-  autoscale_default = 1
-  autoscale_minimum = 1
-  autoscale_maximum = 5
-}
-
 io_sign_support_func = {
   sku_tier          = "PremiumV3"
   sku_size          = "P1v3"
