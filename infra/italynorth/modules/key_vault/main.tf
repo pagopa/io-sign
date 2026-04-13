@@ -1,7 +1,7 @@
 module "key_vault" {
   source = "github.com/pagopa/terraform-azurerm-v4.git//key_vault?ref=v7.20.0"
 
-  name                       = "${local.prefix}-${local.env_short}-${local.location_short}-${local.domain}-kv"
+  name                       = "${local.prefix}-${local.env_short}-${local.location_short}-${local.domain}-kv-${local.instance_number}"
   location                   = local.location
   resource_group_name        = local.resource_group_name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
