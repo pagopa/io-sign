@@ -50,3 +50,23 @@ module "itn_sign_backoffice_app" {
   sign_backoffice_app_snet_cidr  = local.sign_backoffice_app_snet_cidr
 }
 
+module "cosmos_io_sign" {
+  source = "../modules/cosmos"
+
+  environment = {
+    prefix          = local.prefix
+    env_short       = local.env_short
+    location        = local.location
+    domain          = local.domain
+    app_name        = "sign"
+    instance_number = local.instance_number
+  }
+
+  resource_group_name = local.cosmos_resource_group_name
+
+  io_sign_database_issuer     = local.cosmos_io_sign_database_issuer
+  io_sign_database_user       = local.cosmos_io_sign_database_user
+  io_sign_database_backoffice = local.cosmos_io_sign_database_backoffice
+
+  tags = local.tags
+}
