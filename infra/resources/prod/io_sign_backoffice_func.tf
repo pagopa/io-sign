@@ -10,7 +10,7 @@ locals {
   })
   io_sign_backoffice_func = {
     staging_disabled = ["onSelfcareContractsMessage", "createApiKeyById"]
-    disabled = ["onSelfcareContractsMessage", "createApiKeyById"]
+    disabled         = ["onSelfcareContractsMessage", "createApiKeyById"]
   }
 }
 
