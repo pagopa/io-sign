@@ -150,17 +150,6 @@ variable "io_sign_issuer_func" {
   })
 }
 
-
-variable "io_sign_user_func" {
-  type = object({
-    sku_tier          = string
-    sku_size          = string
-    autoscale_default = number
-    autoscale_minimum = number
-    autoscale_maximum = number
-  })
-}
-
 variable "integration_hub" {
   type = object({
     auto_inflate_enabled     = bool

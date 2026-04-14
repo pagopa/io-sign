@@ -56,32 +56,6 @@ data "azurerm_monitor_action_group" "error_action_group" {
   name                = "${var.prefix}${var.env_short}error"
 }
 
-resource "azurerm_monitor_metric_alert" "io_sign_user_helathcheck" {
-  name                = format("%s-helathcheck", module.io_sign_user_func.name)
-  resource_group_name = azurerm_resource_group.backend_rg.name
-  scopes              = [module.io_sign_user_func.id]
-  description         = format("%s health check status is less than 100", module.io_sign_user_func.name)
-  severity            = 1
-  frequency           = "PT5M"
-  auto_mitigate       = false
-
-  criteria {
-    metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "HealthCheckStatus"
-    aggregation      = "Maximum"
-    operator         = "LessThan"
-    threshold        = 1
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.email_fci_tech.id
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.slack_fci_tech.id
-  }
-}
-
 resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_requests" {
   name                = format("%s-rejected-requests", local.project)
   resource_group_name = azurerm_resource_group.backend_rg.name
