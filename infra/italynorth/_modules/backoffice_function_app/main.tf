@@ -36,6 +36,11 @@ module "function_sign_backoffice" {
     }
   )
 
+  sticky_app_setting_names = [
+    "AzureWebJobs.onSelfcareContractsMessage.Disabled",
+    "AzureWebJobs.createApiKeyById.Disabled",
+  ]
+
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
 
   tags = var.tags

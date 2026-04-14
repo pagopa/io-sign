@@ -39,6 +39,14 @@ module "function_sign_issuer" {
     }
   )
 
+  sticky_app_setting_names = [
+    "AzureWebJobs.closeSignatureRequestRejected.Disabled",
+    "AzureWebJobs.closeSignatureRequestSigned.Disabled",
+    "AzureWebJobs.createIssuerByVatNumberView.Disabled",
+    "AzureWebJobs.markAsWaitForSignature.Disabled",
+    "AzureWebJobs.validateUpload.Disabled",
+  ]
+
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
 
   tags = var.tags
