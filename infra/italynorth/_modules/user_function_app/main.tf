@@ -38,6 +38,13 @@ module "function_sign_user" {
     }
   )
 
+  sticky_app_setting_names = [
+    "AzureWebJobs.createSignatureRequest.Disabled",
+    "AzureWebJobs.fillDocument.Disabled",
+    "AzureWebJobs.updateSignatureRequest.Disabled",
+    "AzureWebJobs.validateSignature.Disabled",
+  ]
+
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
 
   tags = var.tags
