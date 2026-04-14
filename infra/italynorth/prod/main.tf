@@ -53,11 +53,5 @@ module "itn_sign_backoffice_app" {
 module "sign_key_vault" {
   source = "../modules/key_vault"
   tags   = local.tags
-
-  adgroup_admin_object_id             = data.azuread_group.adgroup_admin.object_id
-  adgroup_developers_object_id        = data.azuread_group.adgroup_developers.object_id
-  adgroup_sign_object_id              = data.azuread_group.adgroup_sign.object_id
-  adgroup_ecosystem_n_links_object_id = data.azuread_group.adgroup_ecosystem_n_links.object_id
-  platform_iac_sp_object_id           = data.azuread_service_principal.platform_iac_sp.object_id
 }
 
