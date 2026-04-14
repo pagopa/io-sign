@@ -1,5 +1,5 @@
 module "function_sign_support" {
-  source                             = "../modules/support_function_app"
+  source                             = "../_modules/support_function_app"
   vnet_common_name_itn               = local.vnet_common_name_itn
   common_resource_group_name_itn     = local.common_resource_group_name_itn
   sign_support_snet_cidr             = local.sign_support_snet_cidr
@@ -10,7 +10,7 @@ module "function_sign_support" {
 }
 
 module "function_sign_issuer" {
-  source                            = "../modules/issuer_function_app"
+  source                            = "../_modules/issuer_function_app"
   vnet_common_name_itn              = local.vnet_common_name_itn
   common_resource_group_name_itn    = local.common_resource_group_name_itn
   sign_issuer_snet_cidr             = local.sign_issuer_snet_cidr
@@ -21,7 +21,7 @@ module "function_sign_issuer" {
 }
 
 module "function_sign_user" {
-  source                          = "../modules/user_function_app"
+  source                          = "../_modules/user_function_app"
   vnet_common_name_itn            = local.vnet_common_name_itn
   common_resource_group_name_itn  = local.common_resource_group_name_itn
   sign_user_snet_cidr             = local.sign_user_snet_cidr
@@ -32,7 +32,7 @@ module "function_sign_user" {
 }
 
 module "function_sign_backoffice" {
-  source                                = "../modules/backoffice_function_app"
+  source                                = "../_modules/backoffice_function_app"
   vnet_common_name_itn                  = local.vnet_common_name_itn
   common_resource_group_name_itn        = local.common_resource_group_name_itn
   sign_backoffice_snet_cidr             = local.sign_backoffice_snet_cidr
@@ -43,7 +43,7 @@ module "function_sign_backoffice" {
 }
 
 module "itn_sign_backoffice_app" {
-  source = "../modules/backoffice_app_service"
+  source = "../_modules/backoffice_app_service"
 
   vnet_common_name_itn           = local.vnet_common_name_itn
   common_resource_group_name_itn = local.common_resource_group_name_itn
