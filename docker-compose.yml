@@ -28,7 +28,7 @@ services:
              socat OPENSSL-LISTEN:8081,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:cosmos-db-internal:8081"
   
   cosmos-db-setup:
-    image: node:20-alpine
+    image: node:22-alpine
     working_dir: /app
     depends_on:
       - cosmos-db
@@ -49,7 +49,7 @@ services:
     command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
   
   azurite-setup:
-    image: node:20-alpine
+    image: node:22-alpine
     working_dir: /app
     depends_on:
       - azurite
@@ -106,7 +106,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-io-services"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     ports:
       - "3011:3011"
     environment:
@@ -119,7 +119,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-namirial"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     ports:
       - "3010:3010"
     environment:
@@ -132,7 +132,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-issuer"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     env_file:
       - ./docker/generated/.env.io-func-sign-issuer
     ports:
@@ -150,7 +150,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-support"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     env_file:
       - ./docker/generated/.env.io-func-sign-support
     ports:
@@ -167,7 +167,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-user"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     env_file:
       - ./docker/generated/.env.io-func-sign-user
     ports:
@@ -186,7 +186,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-sign-backoffice-func"
-        NODE_VERSION: "20.19.5"
+        NODE_VERSION: "22.16.0"
     env_file:
       - ./docker/generated/.env.io-sign-backoffice-func
     ports:
