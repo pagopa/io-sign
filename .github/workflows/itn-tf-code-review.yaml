@@ -10,7 +10,7 @@ on:
       - ready_for_review
     paths:
       - "infra/italynorth/prod/**"
-      - "infra/italynorth/modules/**"
+      - "infra/italynorth/_modules/**"
       - ".github/workflows/itn-tf-code-review.yaml"
 
 jobs:
