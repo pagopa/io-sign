@@ -1,5 +1,5 @@
 module "key_vault" {
-  source = "github.com/pagopa/terraform-azurerm-v4.git//key_vault?ref=v7.20.0"
+  source = "github.com/pagopa/terraform-azurerm-v4.git//key_vault?ref=v10.1.0"
 
   name                       = "${local.prefix}-${local.env_short}-${local.location_short}-${local.domain}-kv-${local.instance_number}"
   location                   = local.location
@@ -8,106 +8,163 @@ module "key_vault" {
   soft_delete_retention_days = 90
   sku_name                   = "premium"
 
+  enable_rbac_authorization = true
+
   lock_enable = true
 
   tags = var.tags
 }
 
-## adgroup_admin group policy ##
-resource "azurerm_key_vault_access_policy" "adgroup_admin" {
-  key_vault_id = module.key_vault.id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azuread_group.adgroup_admin.object_id
+module "kv_roles_adgroup_admin" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_admin.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Restore", "Recover", ]
-  storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Recover", ]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow adgroup-admin full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
 }
 
-## adgroup_developers group policy ##
-resource "azurerm_key_vault_access_policy" "adgroup_developers" {
-  key_vault_id = module.key_vault.id
+module "kv_roles_adgroup_developers" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_developers.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azuread_group.adgroup_developers.object_id
-
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Restore", "Recover", ]
-  storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Recover", ]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow adgroup-developers full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
 }
 
-## adgroup_sign group policy ##
-resource "azurerm_key_vault_access_policy" "adgroup_sign" {
-  key_vault_id = module.key_vault.id
+module "kv_roles_adgroup_sign" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_sign.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azuread_group.adgroup_sign.object_id
-
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Restore", "Recover", ]
-  storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Recover", ]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow adgroup-sign full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
 }
 
-resource "azurerm_key_vault_access_policy" "adgroup_ecosystem_n_links" {
-  key_vault_id = module.key_vault.id
+module "kv_roles_adgroup_ecosystem_n_links" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_ecosystem_n_links.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azuread_group.adgroup_ecosystem_n_links.object_id
-
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Restore", "Recover", ]
-  storage_permissions     = []
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Restore", "Recover", ]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow adgroup-ecosystem-n-links full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
 }
 
-resource "azurerm_key_vault_access_policy" "infra_ci" {
-  key_vault_id = module.key_vault.id
+module "kv_roles_infra_ci" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_user_assigned_identity.infra_ci.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azurerm_user_assigned_identity.infra_ci.principal_id
-
-  secret_permissions = ["Get", "List"]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow infra CI identity to read secrets from Key Vault"
+    roles = {
+      secrets = "reader"
+    }
+  }]
 }
 
-resource "azurerm_key_vault_access_policy" "infra_cd" {
-  key_vault_id = module.key_vault.id
+module "kv_roles_infra_cd" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_user_assigned_identity.infra_cd.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azurerm_user_assigned_identity.infra_cd.principal_id
-
-  secret_permissions = ["Get", "List", "Set"]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow infra CD identity to read and write secrets to Key Vault"
+    roles = {
+      secrets = "writer"
+    }
+  }]
 }
 
-#
-# azure devops policy
-#
+module "kv_roles_azdevops_platform_iac" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_service_principal.platform_iac_sp.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-resource "azurerm_key_vault_access_policy" "azdevops_platform_iac_policy" {
-  key_vault_id = module.key_vault.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azuread_service_principal.platform_iac_sp.object_id
-
-  secret_permissions      = ["Get", "List", "Set", ]
-  storage_permissions     = []
-  certificate_permissions = ["SetIssuers", "DeleteIssuers", "Purge", "List", "Get", "ManageContacts", ]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow Azure DevOps platform IAC service principal to manage secrets and certificates"
+    roles = {
+      secrets      = "writer"
+      certificates = "owner"
+    }
+  }]
 }
 
-resource "azurerm_key_vault_access_policy" "github_ci_identity" {
-  key_vault_id = module.key_vault.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_user_assigned_identity.github_federated_ci.principal_id
+module "kv_roles_github_ci" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_user_assigned_identity.github_federated_ci.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  secret_permissions = ["Get", "List"]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow GitHub CI federated identity to read secrets from Key Vault"
+    roles = {
+      secrets = "reader"
+    }
+  }]
 }
 
-resource "azurerm_key_vault_access_policy" "github_cd_identity" {
-  key_vault_id = module.key_vault.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_user_assigned_identity.github_federated_cd.principal_id
+module "kv_roles_github_cd" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azurerm_user_assigned_identity.github_federated_cd.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
 
-  secret_permissions = ["Get", "List"]
+  key_vault = [{
+    name                = module.key_vault.name
+    resource_group_name = local.resource_group_name
+    description         = "Allow GitHub CD federated identity to read secrets from Key Vault"
+    roles = {
+      secrets = "reader"
+    }
+  }]
 }
