@@ -19,7 +19,7 @@ module "key_vault" {
 module "kv_roles_adgroup_admin" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"
-  principal_id    = data.azuread_group.adgroup_admin.object_id
+  principal_id    = var.adgroup_admin_object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
@@ -37,7 +37,7 @@ module "kv_roles_adgroup_admin" {
 module "kv_roles_adgroup_developers" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"
-  principal_id    = data.azuread_group.adgroup_developers.object_id
+  principal_id    = var.adgroup_developers_object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
@@ -55,7 +55,7 @@ module "kv_roles_adgroup_developers" {
 module "kv_roles_adgroup_sign" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"
-  principal_id    = data.azuread_group.adgroup_sign.object_id
+  principal_id    = var.adgroup_sign_object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
@@ -73,7 +73,7 @@ module "kv_roles_adgroup_sign" {
 module "kv_roles_adgroup_ecosystem_n_links" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"
-  principal_id    = data.azuread_group.adgroup_ecosystem_n_links.object_id
+  principal_id    = var.adgroup_ecosystem_n_links_object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
@@ -123,7 +123,7 @@ module "kv_roles_infra_cd" {
 module "kv_roles_azdevops_platform_iac" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"
-  principal_id    = data.azuread_service_principal.platform_iac_sp.object_id
+  principal_id    = var.platform_iac_sp_object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
