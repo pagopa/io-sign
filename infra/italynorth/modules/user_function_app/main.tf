@@ -26,15 +26,7 @@ module "function_sign_user" {
   application_insights_key                 = data.azurerm_application_insights.application_insights.instrumentation_key
   application_insights_sampling_percentage = 5
 
-  app_settings = merge(
-    local.io_sign_user_func.app_settings,
-    {
-      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.fillDocument.Disabled"           = "1"
-      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.validateSignature.Disabled"      = "1"
-    }
-  )
+  app_settings = local.io_sign_user_func.app_settings
 
   slot_app_settings = merge(
     local.io_sign_user_func.app_settings,

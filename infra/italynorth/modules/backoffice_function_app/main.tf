@@ -31,7 +31,8 @@ module "function_sign_backoffice" {
   slot_app_settings = merge(
     local.io_sign_backoffice_func.app_settings,
     {
-      "AzureWebJobs.onSelfcareContractsMessage.Disabled" = "1"
+      "AzureWebJobs.onSelfcareContractsMessage.Disabled" = "1",
+      "AzureWebJobs.createApiKeyById.Disabled" = "1"
     }
   )
 
