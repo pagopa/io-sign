@@ -4,13 +4,13 @@ locals {
       "CreateSignatureRequest",
       "FillDocument",
       "UpdateSignatureRequest",
-      "ValidateQtspSignature",
+      "ValidateSignature",
     ]
     disabled = [
       "CreateSignatureRequest",
       "FillDocument",
       "UpdateSignatureRequest",
-      "ValidateQtspSignature",
+      "ValidateSignature",
     ]
     app_settings = {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
