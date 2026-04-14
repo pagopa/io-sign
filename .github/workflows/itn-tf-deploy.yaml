@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - "infra/italynorth/prod/**"
-      - "infra/italynorth/modules/**"
+      - "infra/italynorth/_modules/**"
       - ".github/workflows/itn-tf-deploy.yaml"
 
 jobs:
