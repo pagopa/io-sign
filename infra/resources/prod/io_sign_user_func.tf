@@ -6,6 +6,12 @@ locals {
       "UpdateSignatureRequest",
       "ValidateQtspSignature",
     ]
+    disabled = [
+      "CreateSignatureRequest",
+      "FillDocument",
+      "UpdateSignatureRequest",
+      "ValidateQtspSignature",
+    ]
     app_settings = {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
@@ -68,9 +74,9 @@ module "io_sign_user_func" {
   app_settings = merge(
     local.io_sign_user_func.app_settings,
     {
-      # Enable functions on production triggered by queue and timer
+      # Disable functions on production triggered by queue and timer (moved to ITN)
       for to_disable in local.io_sign_user_func.staging_disabled :
-      format("AzureWebJobs.%s.Disabled", to_disable) => "false"
+      format("AzureWebJobs.%s.Disabled", to_disable) => contains(local.io_sign_user_func.disabled, to_disable) ? "true" : "false"
     }
   )
 
