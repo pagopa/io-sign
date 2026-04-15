@@ -8,6 +8,7 @@ resource "azurerm_key_vault" "this" {
   enabled_for_disk_encryption   = true
   purge_protection_enabled      = true
   public_network_access_enabled = true
+  rbac_authorization_enabled    = true
 
   network_acls {
     bypass         = "AzureServices"
