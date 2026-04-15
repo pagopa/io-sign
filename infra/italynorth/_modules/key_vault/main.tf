@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "this" {
-  name                          = provider::dx::resource_name(var.naming_config)
+  name                          = "${local.prefix}-${local.env_short}-${local.location_short}-${local.domain}-kv-${local.instance_number}"
   location                      = local.location
   resource_group_name           = local.resource_group_name
   tenant_id                     = data.azurerm_client_config.current.tenant_id
