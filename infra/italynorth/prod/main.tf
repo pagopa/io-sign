@@ -55,7 +55,7 @@ module "sign_key_vault" {
   tags   = local.tags
   naming_config = {
     prefix          = local.prefix
-    env_short       = local.env_short
+    environment     = local.env_short
     location        = local.location
     domain          = local.domain
     name            = "kv"
