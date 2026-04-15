@@ -32,7 +32,7 @@ module "kv_roles_adgroup_admin" {
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
-    name                = module.key_vault.name
+    name                = azurerm_key_vault.this.name
     resource_group_name = local.resource_group_name
     description         = "Allow adgroup-admin full access to Key Vault"
     roles = {
@@ -50,7 +50,7 @@ module "kv_roles_adgroup_developers" {
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
-    name                = module.key_vault.name
+    name                = azurerm_key_vault.this.name
     resource_group_name = local.resource_group_name
     description         = "Allow adgroup-developers full access to Key Vault"
     roles = {
@@ -68,7 +68,7 @@ module "kv_roles_adgroup_sign" {
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
-    name                = module.key_vault.name
+    name                = azurerm_key_vault.this.name
     resource_group_name = local.resource_group_name
     description         = "Allow adgroup-sign full access to Key Vault"
     roles = {
@@ -86,7 +86,7 @@ module "kv_roles_adgroup_ecosystem_n_links" {
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [{
-    name                = module.key_vault.name
+    name                = azurerm_key_vault.this.name
     resource_group_name = local.resource_group_name
     description         = "Allow adgroup-ecosystem-n-links full access to Key Vault"
     roles = {
