@@ -51,7 +51,10 @@ module "itn_sign_backoffice_app" {
 }
 
 module "sign_key_vault" {
-  source = "../_modules/key_vault"
-  tags   = local.tags
+  source                         = "../_modules/key_vault"
+  tags                           = local.tags
+  vnet_common_name_itn           = local.vnet_common_name_itn
+  common_resource_group_name_itn = local.common_resource_group_name_itn
+  vault_private_dns_zone_id      = data.azurerm_private_dns_zone.key_vault.id
 }
 
