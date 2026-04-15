@@ -53,5 +53,13 @@ module "itn_sign_backoffice_app" {
 module "sign_key_vault" {
   source = "../_modules/key_vault"
   tags   = local.tags
+  naming_config = {
+    prefix          = local.prefix
+    env_short       = local.env_short
+    location        = local.location
+    domain          = local.domain
+    name            = "kv"
+    instance_number = local.instance_number
+  }
 }
 
