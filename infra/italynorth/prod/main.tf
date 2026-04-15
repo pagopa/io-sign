@@ -51,7 +51,7 @@ module "itn_sign_backoffice_app" {
 }
 
 module "sign_key_vault" {
-  source = "../modules/key_vault"
+  source = "../_modules/key_vault"
   tags   = local.tags
 }
 
