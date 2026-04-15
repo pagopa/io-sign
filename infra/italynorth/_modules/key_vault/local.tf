@@ -9,5 +9,4 @@ locals {
   project_itn_sign = format("%s-%s-itn-%s", local.prefix, local.env_short, local.domain)
 
   resource_group_name = format("%s-rg-%s", local.project_itn_sign, local.instance_number)
-
 }
