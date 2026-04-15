@@ -50,3 +50,8 @@ module "itn_sign_backoffice_app" {
   sign_backoffice_app_snet_cidr  = local.sign_backoffice_app_snet_cidr
 }
 
+module "sign_key_vault" {
+  source = "../_modules/key_vault"
+  tags   = local.tags
+}
+
