@@ -14,12 +14,12 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
       AzureWebJobsDisableHomepage       = "true"
       NODE_ENV                          = "production"
-      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       CosmosDbEndpoint                  = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbIssuerDatabaseName        = "issuer"
       CosmosDbUserDatabaseName          = "user"
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=PdvTokenizerApiKey)"
+      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=PdvTokenizerApiKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/support/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     }

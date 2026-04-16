@@ -89,3 +89,75 @@ resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
   role_definition_name = "Key Vault Contributor"
   principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
+
+module "kv_roles_adgroup_admin" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_admin.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [{
+    name                = data.azurerm_key_vault.sign_itn.name
+    resource_group_name = local.sign_itn_key_vault.resource_group_name
+    description         = "Allow adgroup-admin full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
+}
+
+module "kv_roles_adgroup_developers" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_developers.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [{
+    name                = data.azurerm_key_vault.sign_itn.name
+    resource_group_name = local.sign_itn_key_vault.resource_group_name
+    description         = "Allow adgroup-developers full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
+}
+
+module "kv_roles_adgroup_sign" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_sign.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [{
+    name                = data.azurerm_key_vault.sign_itn.name
+    resource_group_name = local.sign_itn_key_vault.resource_group_name
+    description         = "Allow adgroup-sign full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
+}
+
+module "kv_roles_adgroup_ecosystem_n_links" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = data.azuread_group.adgroup_ecosystem_n_links.object_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  key_vault = [{
+    name                = data.azurerm_key_vault.sign_itn.name
+    resource_group_name = local.sign_itn_key_vault.resource_group_name
+    description         = "Allow adgroup-ecosystem-n-links full access to Key Vault"
+    roles = {
+      secrets      = "owner"
+      certificates = "owner"
+      keys         = "owner"
+    }
+  }]
+}

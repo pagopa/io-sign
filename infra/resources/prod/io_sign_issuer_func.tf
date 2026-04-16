@@ -5,14 +5,18 @@ locals {
       "MarkAsSigned",
       "MarkAsWaitForSignature",
       "ValidateUpload",
-      "CreateIssuerByVatNumberView"
+      "CreateIssuerByVatNumberView",
+      "closeSignatureRequestRejected",
+      "closeSignatureRequestSigned"
     ]
     disabled = [
       "MarkAsRejected",
       "MarkAsSigned",
       "MarkAsWaitForSignature",
       "ValidateUpload",
-      "CreateIssuerByVatNumberView"
+      "CreateIssuerByVatNumberView",
+      "closeSignatureRequestRejected",
+      "closeSignatureRequestSigned"
     ]
     app_settings = {
       FUNCTIONS_WORKER_PROCESS_COUNT    = 4
