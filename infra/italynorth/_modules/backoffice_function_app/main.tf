@@ -32,7 +32,7 @@ module "function_sign_backoffice" {
     local.io_sign_backoffice_func.app_settings,
     {
       "AzureWebJobs.onSelfcareContractsMessage.Disabled" = "1",
-      "AzureWebJobs.createApiKeyById.Disabled" = "1"
+      "AzureWebJobs.createApiKeyById.Disabled"           = "1"
     }
   )
 
@@ -61,6 +61,15 @@ module "itn_sign_backoffice_func_roles" {
       roles = {
         secrets = "reader"
       }
+    },
+    {
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.function_sign_backoffice.function_app.function_app.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
+      roles = {
+        secrets = "reader"
+      }
     }
   ]
 }
@@ -77,6 +86,15 @@ module "itn_sign_backoffice_func_staging_roles" {
       resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
       description         = "Allow ${module.function_sign_backoffice.function_app.function_app.slot.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
       has_rbac_support    = false
+      roles = {
+        secrets = "reader"
+      }
+    },
+    {
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.function_sign_backoffice.function_app.function_app.slot.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
       roles = {
         secrets = "reader"
       }
