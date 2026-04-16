@@ -1,10 +1,5 @@
 data "azurerm_subscription" "current" {}
 
-data "azurerm_key_vault" "sign_weu_kv" {
-  name                = "${local.project_weu_sign}-kv"
-  resource_group_name = "${local.project_weu_sign}-sec-rg"
-}
-
 data "azurerm_key_vault" "sign_kv" {
   name                = "${local.project_itn_sign}-kv-${local.instance_number}"
   resource_group_name = "${local.project_itn_sign}-rg-${local.instance_number}"
