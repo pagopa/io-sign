@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 1.1.2
+
+### Patch Changes
+
+- 0f28a30: fix app insight init
+- Updated dependencies [0f28a30]
+  - @io-sign/io-sign@1.6.3
+
 ## 1.1.1
 
 ### Patch Changes
