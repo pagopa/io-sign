@@ -3,4 +3,4 @@
 "@io-sign/io-sign": patch
 ---
 
-fix issuer app insight init
+fix app insight init
