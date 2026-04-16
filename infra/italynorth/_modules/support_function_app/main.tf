@@ -19,10 +19,12 @@ module "function_sign_support" {
     resource_group_name = var.common_resource_group_name_itn
   }
 
-  subnet_cidr                          = var.sign_support_snet_cidr
-  health_check_path                    = "/api/v1/sign/support/info"
-  subnet_pep_id                        = data.azurerm_subnet.private_endpoints_subnet_itn.id
-  private_dns_zone_resource_group_name = data.azurerm_resource_group.weu-common.name
+  subnet_cidr                              = var.sign_support_snet_cidr
+  health_check_path                        = "/api/v1/sign/support/info"
+  subnet_pep_id                            = data.azurerm_subnet.private_endpoints_subnet_itn.id
+  private_dns_zone_resource_group_name     = data.azurerm_resource_group.weu-common.name
+  application_insights_key                 = data.azurerm_application_insights.application_insights.instrumentation_key
+  application_insights_sampling_percentage = 100
 
   app_settings = local.io_sign_support_func.app_settings
 
