@@ -58,15 +58,6 @@ module "itn_sign_user_func_roles" {
 
   key_vault = [
     {
-      name                = data.azurerm_key_vault.sign_weu_kv.name
-      resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-      description         = "Allow ${module.function_sign_user.function_app.function_app.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
-      has_rbac_support    = false
-      roles = {
-        secrets = "reader"
-      }
-    },
-    {
       name                = data.azurerm_key_vault.sign_kv.name
       resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
       description         = "Allow ${module.function_sign_user.function_app.function_app.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
@@ -85,15 +76,6 @@ module "itn_sign_user_func_staging_roles" {
   subscription_id = data.azurerm_subscription.current.subscription_id
 
   key_vault = [
-    {
-      name                = data.azurerm_key_vault.sign_weu_kv.name
-      resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-      description         = "Allow ${module.function_sign_user.function_app.function_app.slot.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
-      has_rbac_support    = false
-      roles = {
-        secrets = "reader"
-      }
-    },
     {
       name                = data.azurerm_key_vault.sign_kv.name
       resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
