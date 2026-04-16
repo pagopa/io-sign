@@ -60,6 +60,6 @@ data "azurerm_nat_gateway" "nat_gateway_itn" {
 }
 
 data "azurerm_application_insights" "application_insights" {
-  name                = "io-p-ai-common"
-  resource_group_name = "io-p-rg-common"
+  name                = format("%s-ai-common", local.product)
+  resource_group_name = format("%s-rg-common", local.product)
 }
