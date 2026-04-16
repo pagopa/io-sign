@@ -23,8 +23,8 @@ module "function_sign_user" {
   health_check_path                        = "/api/v1/sign/info"
   subnet_pep_id                            = data.azurerm_subnet.private_endpoints_subnet_itn.id
   private_dns_zone_resource_group_name     = data.azurerm_resource_group.weu-common.name
-  application_insights_key                 = data.azurerm_application_insights.application_insights.instrumentation_key
-  application_insights_sampling_percentage = 5
+  application_insights_connection_string   = data.azurerm_application_insights.application_insights.connection_string
+  application_insights_sampling_percentage = 100
 
   app_settings = local.io_sign_user_func.app_settings
 
@@ -37,6 +37,13 @@ module "function_sign_user" {
       "AzureWebJobs.validateSignature.Disabled"      = "1"
     }
   )
+
+  sticky_app_setting_names = [
+    "AzureWebJobs.createSignatureRequest.Disabled",
+    "AzureWebJobs.fillDocument.Disabled",
+    "AzureWebJobs.updateSignatureRequest.Disabled",
+    "AzureWebJobs.validateSignature.Disabled",
+  ]
 
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
 

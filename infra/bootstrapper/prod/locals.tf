@@ -8,8 +8,11 @@ locals {
   itn_prefix      = "${local.prefix}-${local.env_short}-itn"
 
   adgroups = {
-    admins_name = "io-p-adgroup-ecosystem-n-links-admins"
-    devs_name   = "io-p-adgroup-ecosystem-n-links-developers"
+    admins_name     = "io-p-adgroup-ecosystem-n-links-admins"
+    devs_name       = "io-p-adgroup-ecosystem-n-links-developers"
+    admin_name      = "io-p-adgroup-admin"
+    developers_name = "io-p-adgroup-developers"
+    sign_name       = "io-p-adgroup-sign"
   }
 
   runner = {
@@ -63,6 +66,11 @@ locals {
   sign_key_vault = {
     name                = "io-p-sign-kv"
     resource_group_name = "io-p-sign-sec-rg"
+  }
+
+  sign_itn_key_vault = {
+    name                = "${local.itn_prefix}-sign-kv-01"
+    resource_group_name = "${local.itn_prefix}-sign-rg-01"
   }
 
   tags = {
