@@ -1,6 +1,6 @@
 import { pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as T from "fp-ts/lib/Task";
+import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
 import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
@@ -31,19 +31,17 @@ import {
 
 const requestToSignMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    subject: `${signatureRequest.issuerDescription} - ${dossier.title} - Richiesta di firma`,
-    markdown: `---\nit:\n    cta_1: \n        text: "Vedi documenti"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+    subject: `Hai un documento da firmare - ${signatureRequest.issuerDescription}`,
+    markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
-    }"\nen:\n    cta_1: \n        text: "See documents"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+    }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
-    }"\n---\nL'ente ${
-      signatureRequest.issuerDescription
-    } ha **richiesto la tua firma** su alcuni documenti relativi a ${
+    }"\n---\nHai ricevuto una richiesta per **firmare alcuni documenti** relativi a **${
       dossier.title
-    }.\n\n\nHai tempo fino al ${format(
+    }** da **${signatureRequest.issuerDescription}**.\n\n\nHai tempo fino al **${format(
       signatureRequest.expiresAt,
       "dd/MM/yyyy HH:mm"
-    )} per firmare: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
+    )}** per farlo: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
     }](mailto:${signatureRequest.issuerEmail}).`
   });

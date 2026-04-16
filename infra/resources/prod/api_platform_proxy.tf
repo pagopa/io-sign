@@ -1,3 +1,8 @@
+#data "azurerm_key_vault" "sign_itn" {
+#  name                = format("%s-kv-01", local.project_itn_sign)
+#  resource_group_name = format("%s-rg-01", local.project_itn_sign)
+#}
+
 data "azurerm_api_management" "platform_apim" {
   resource_group_name = "${local.project_itn}-common-rg-01"
   name                = "${local.project_itn}-platform-api-gateway-apim-01"
@@ -12,8 +17,11 @@ module "io_platform_apim_api" {
   platform_apim_id                    = data.azurerm_api_management.platform_apim.id
   platform_apim_identity_principal_id = data.azurerm_api_management.platform_apim.identity[0].principal_id
 
-  key_vault_common_name         = module.key_vault_itn.name
+  #key_vault_common_name         = data.azurerm_key_vault.sign_itn.name
+  key_vault_common_name = module.key_vault_itn.name
+  #key_vault_resource_group_name = data.azurerm_key_vault.sign_itn.resource_group_name
   key_vault_resource_group_name = module.key_vault_itn.resource_group_name
-  subscription_id               = data.azurerm_subscription.current.subscription_id
-  key_vault_common_uri          = module.key_vault_itn.vault_uri
+  #key_vault_common_uri          = data.azurerm_key_vault.sign_itn.vault_uri
+  key_vault_common_uri = module.key_vault_itn.vault_uri
+  subscription_id      = data.azurerm_subscription.current.subscription_id
 }

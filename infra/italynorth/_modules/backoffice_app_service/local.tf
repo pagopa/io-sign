@@ -22,10 +22,10 @@ locals {
     WEBSITE_SWAP_WARMUP_PING_PATH     = "/info"
     WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
     APPINSIGHTS_INSTRUMENTATIONKEY    = sensitive(data.azurerm_application_insights.application_insights.instrumentation_key)
-    COSMOS_DB_CONNECTION_STRING       = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
-    AUTH_SESSION_SECRET               = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=bo-auth-session-secret)"
-    SELFCARE_API_KEY                  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=selfcare-prod-api-key)"
-    PDV_TOKENIZER_API_KEY             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=pdv-tokenizer-api-key)"
-    SLACK_WEB_HOOK_URL                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_weu_kv.name};SecretName=slack-webhook-url)"
+    COSMOS_DB_CONNECTION_STRING       = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+    AUTH_SESSION_SECRET               = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=bo-auth-session-secret)"
+    SELFCARE_API_KEY                  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=selfcare-prod-api-key)"
+    PDV_TOKENIZER_API_KEY             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=pdv-tokenizer-api-key)"
+    SLACK_WEB_HOOK_URL                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=slack-webhook-url)"
   }
 }

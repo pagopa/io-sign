@@ -40,6 +40,11 @@ data "azurerm_monitor_action_group" "sign_error_action_group" {
   resource_group_name = "${local.project_weu_sign}-integration-rg"
 }
 
+data "azurerm_application_insights" "application_insights" {
+  name                = format("%s-ai-common", local.product)
+  resource_group_name = format("%s-rg-common", local.product)
+}
+
 ########################
 # STORAGE
 ########################

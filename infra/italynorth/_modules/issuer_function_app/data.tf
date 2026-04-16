@@ -4,9 +4,15 @@ data "azurerm_key_vault" "sign_weu_kv" {
   resource_group_name = "${local.project_weu_sign}-sec-rg"
 }
 
+data "azurerm_key_vault" "sign_kv" {
+  name                = "${local.project_itn_sign}-kv-${local.instance_number}"
+  resource_group_name = "${local.project_itn_sign}-rg-${local.instance_number}"
+}
+
 data "azurerm_resource_group" "sign_itn_rg" {
   name = "${local.project_itn_sign}-rg-01"
 }
+
 
 data "azurerm_resource_group" "sign_weu_integration_rg" {
   name = "${local.project_weu_sign}-integration-rg"
@@ -41,8 +47,8 @@ data "azurerm_monitor_action_group" "sign_error_action_group" {
 }
 
 data "azurerm_application_insights" "application_insights" {
-  name                = "io-p-ai-common"
-  resource_group_name = "io-p-rg-common"
+  name                = format("%s-ai-common", local.product)
+  resource_group_name = format("%s-rg-common", local.product)
 }
 
 ########################

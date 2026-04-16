@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.1.1
+
+### Patch Changes
+
+- ffb44c4: Update user notifications copy
+
 ## 1.1.0
 
 ### Minor Changes
