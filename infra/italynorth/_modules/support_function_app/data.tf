@@ -58,3 +58,8 @@ data "azurerm_nat_gateway" "nat_gateway_itn" {
   name                = format("%s-ng-01", local.project_itn)
   resource_group_name = format("%s-common-rg-01", local.project_itn)
 }
+
+data "azurerm_application_insights" "application_insights" {
+  name                = format("%s-ai-common", local.product)
+  resource_group_name = format("%s-rg-common", local.product)
+}
