@@ -9,7 +9,7 @@ module "apim_platform_roles" {
       name                = var.key_vault_common_name
       resource_group_name = var.key_vault_resource_group_name
       description         = "Allow ${var.platform_apim_name} to read secrets from ${var.key_vault_common_name}"
-      has_rbac_support    = true
+      has_rbac_support    = false
       roles = {
         secrets = "reader"
       }
