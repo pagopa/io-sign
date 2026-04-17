@@ -13,7 +13,7 @@ resource "azurerm_api_management_named_value" "app_backend_key" {
   display_name        = "io-sign-app-backend-key"
   secret              = true
   value_from_key_vault {
-    secret_id = "${var.key_vault_common_uri}secrets/appbackend-APP-BACKEND-PRIMARY-KEY"
+    secret_id = "${var.key_vault_common_uri_itn}secrets/appbackend-APP-BACKEND-PRIMARY-KEY"
   }
 }
 
