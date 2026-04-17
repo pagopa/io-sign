@@ -23,8 +23,8 @@ module "function_sign_issuer" {
   health_check_path                        = "/api/v1/sign/info"
   subnet_pep_id                            = data.azurerm_subnet.private_endpoints_subnet_itn.id
   private_dns_zone_resource_group_name     = data.azurerm_resource_group.weu-common.name
-  application_insights_key                 = data.azurerm_application_insights.application_insights.instrumentation_key
-  application_insights_sampling_percentage = 5
+  application_insights_connection_string   = data.azurerm_application_insights.application_insights.connection_string
+  application_insights_sampling_percentage = 100
 
   app_settings = local.io_sign_issuer_func.app_settings
 
@@ -39,6 +39,14 @@ module "function_sign_issuer" {
     }
   )
 
+  sticky_app_setting_names = [
+    "AzureWebJobs.closeSignatureRequestRejected.Disabled",
+    "AzureWebJobs.closeSignatureRequestSigned.Disabled",
+    "AzureWebJobs.createIssuerByVatNumberView.Disabled",
+    "AzureWebJobs.markAsWaitForSignature.Disabled",
+    "AzureWebJobs.validateUpload.Disabled",
+  ]
+
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
 
   tags = var.tags
@@ -52,10 +60,10 @@ module "itn_sign_issuer_func_roles" {
 
   key_vault = [
     {
-      name                = data.azurerm_key_vault.sign_weu_kv.name
-      resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-      description         = "Allow ${module.function_sign_issuer.function_app.function_app.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
-      has_rbac_support    = false
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.function_sign_issuer.function_app.function_app.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
       roles = {
         secrets = "reader"
       }
@@ -71,10 +79,10 @@ module "itn_sign_issuer_func_staging_roles" {
 
   key_vault = [
     {
-      name                = data.azurerm_key_vault.sign_weu_kv.name
-      resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-      description         = "Allow ${module.function_sign_issuer.function_app.function_app.slot.name} to read secrets from ${data.azurerm_key_vault.sign_weu_kv.name}"
-      has_rbac_support    = false
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.function_sign_issuer.function_app.function_app.slot.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
       roles = {
         secrets = "reader"
       }
