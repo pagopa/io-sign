@@ -41,18 +41,3 @@ variable "subscription_id" {
   type        = string
   description = "Subscription ID"
 }
-
-variable "key_vault_common_uri_itn" {
-  type        = string
-  description = "Key Vault Common URI on ITN"
-}
-
-variable "key_vault_common_name_itn" {
-  type        = string
-  description = "Key Vault Common Name on ITN"
-}
-
-variable "key_vault_resource_group_name_itn" {
-  type        = string
-  description = "Key Vault Resource Group Name on ITN"
-}
