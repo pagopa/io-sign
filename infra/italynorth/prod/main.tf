@@ -71,3 +71,23 @@ module "platform_proxy_api" {
   key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
   subscription_id                   = data.azurerm_subscription.current.subscription_id
 }
+
+module "cosmos_io_sign" {
+  source = "../_modules/cosmos"
+
+  environment = {
+    prefix          = local.prefix
+    env_short       = local.env_short
+    location        = local.location
+    app_name        = local.domain
+    instance_number = local.instance_number
+  }
+
+  resource_group_name = local.cosmos_resource_group_name
+
+  io_sign_database_issuer     = local.cosmos_io_sign_database_issuer
+  io_sign_database_user       = local.cosmos_io_sign_database_user
+  io_sign_database_backoffice = local.cosmos_io_sign_database_backoffice
+
+  tags = local.tags
+}
