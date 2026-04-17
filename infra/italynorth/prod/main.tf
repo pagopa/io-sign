@@ -66,13 +66,13 @@ module "platform_proxy_api" {
   platform_apim_id                    = data.azurerm_api_management.platform_apim.id
   platform_apim_identity_principal_id = data.azurerm_api_management.platform_apim.identity[0].principal_id
 
-  # key_vault_common_name         = module.sign_key_vault.name
-  # key_vault_resource_group_name = module.sign_key_vault.resource_group_name
-  # key_vault_common_uri          = module.sign_key_vault.vault_uri
-  key_vault_common_name         = data.azurerm_key_vault.sign_weu_kv.name
-  key_vault_resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-  key_vault_common_uri          = data.azurerm_key_vault.sign_weu_kv.vault_uri
-  subscription_id               = data.azurerm_subscription.current.subscription_id
+  key_vault_common_name_itn         = module.sign_key_vault.name
+  key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
+  key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
+  key_vault_common_name             = data.azurerm_key_vault.sign_weu_kv.name
+  key_vault_resource_group_name     = data.azurerm_key_vault.sign_weu_kv.resource_group_name
+  key_vault_common_uri              = data.azurerm_key_vault.sign_weu_kv.vault_uri
+  subscription_id                   = data.azurerm_subscription.current.subscription_id
 }
 
 import {
