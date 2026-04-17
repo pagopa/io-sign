@@ -23,11 +23,6 @@ terraform {
       source  = "integrations/github"
       version = "~>6.0"
     }
-
-    dx = {
-      source  = "pagopa-dx/azure"
-      version = "~>1.0"
-    }
   }
 }
 
