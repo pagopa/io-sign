@@ -79,8 +79,7 @@ module "cosmos_io_sign" {
     prefix          = local.prefix
     env_short       = local.env_short
     location        = local.location
-    domain          = local.domain
-    app_name        = "sign"
+    app_name        = local.domain
     instance_number = local.instance_number
   }
 
