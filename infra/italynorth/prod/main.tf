@@ -73,7 +73,7 @@ module "platform_proxy_api" {
 }
 
 module "cosmos_io_sign" {
-  source = "../modules/cosmos"
+  source = "../_modules/cosmos"
 
   environment = {
     prefix          = local.prefix
