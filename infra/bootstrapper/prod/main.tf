@@ -14,11 +14,9 @@ module "bootstrap" {
     data.azurerm_resource_group.sign_itn_rg.id,
     data.azurerm_resource_group.sign_itn_integration_rg.id,
     data.azurerm_resource_group.sign_itn_data_rg.id,
-    data.azurerm_resource_group.sign_itn_sec_rg.id,
     data.azurerm_resource_group.io_p_sign_backend_rg.id,
     data.azurerm_resource_group.io_p_sign_data_rg.id,
-    data.azurerm_resource_group.io_p_sign_integration_rg.id,
-    data.azurerm_resource_group.io_p_sign_sec_rg.id
+    data.azurerm_resource_group.io_p_sign_integration_rg.id
   ]
 
   subscription_id = data.azurerm_subscription.current.id
@@ -62,32 +60,6 @@ module "bootstrap" {
   nat_gateway_resource_group_id = data.azurerm_resource_group.common_itn.id
 
   tags = local.tags
-}
-
-module "roles_ci" {
-  source  = "pagopa-dx/azure-role-assignments/azurerm"
-  version = "~> 1.0"
-
-  principal_id    = module.bootstrap.identities.infra.ci.principal_id
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  key_vault = [
-    {
-      name                = "io-p-sign-kv"
-      resource_group_name = "io-p-sign-sec-rg"
-      description         = "Key Vault access for IO Sign"
-
-      roles = {
-        secrets = "reader"
-      }
-    }
-  ]
-}
-
-resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
-  scope                = data.azurerm_key_vault.sign.id
-  role_definition_name = "Key Vault Contributor"
-  principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
 
 module "kv_roles_adgroup_admin" {

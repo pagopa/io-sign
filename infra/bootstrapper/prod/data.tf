@@ -17,11 +17,6 @@ data "azurerm_key_vault" "common" {
   resource_group_name = local.key_vault.resource_group_name
 }
 
-data "azurerm_key_vault" "sign" {
-  name                = local.sign_key_vault.name
-  resource_group_name = local.sign_key_vault.resource_group_name
-}
-
 data "azurerm_virtual_network" "common" {
   name                = local.vnet.name
   resource_group_name = local.vnet.resource_group_name
@@ -80,10 +75,6 @@ data "azurerm_resource_group" "sign_itn_data_rg" {
   name = local.functions.itn_io_sign_data_rg_name
 }
 
-data "azurerm_resource_group" "sign_itn_sec_rg" {
-  name = local.functions.itn_io_sign_sec_rg_name
-}
-
 data "azurerm_resource_group" "io_p_sign_backend_rg" {
   name = local.functions.io_p_sign_backend_rg_name
 }
@@ -94,8 +85,4 @@ data "azurerm_resource_group" "io_p_sign_integration_rg" {
 
 data "azurerm_resource_group" "io_p_sign_data_rg" {
   name = local.functions.io_p_sign_data_rg_name
-}
-
-data "azurerm_resource_group" "io_p_sign_sec_rg" {
-  name = local.functions.io_p_sign_sec_rg_name
 }
