@@ -140,15 +140,7 @@ variable "io_sign_database_backoffice" {
   )
 }
 
-variable "io_sign_issuer_func" {
-  type = object({
-    sku_tier          = string
-    sku_size          = string
-    autoscale_default = number
-    autoscale_minimum = number
-    autoscale_maximum = number
-  })
-}
+
 
 variable "integration_hub" {
   type = object({
@@ -186,34 +178,6 @@ variable "io_common" {
     vnet_common_name             = string
   })
   description = "Name of common resources of IO platform"
-}
-
-variable "io_sign_backoffice_app" {
-  type = object({
-    sku_name = string
-    app_settings = list(object({
-      name                  = string
-      value                 = optional(string, "")
-      key_vault_secret_name = optional(string)
-    }))
-  })
-  description = "Configuration of the io-sign-backoffice app service"
-}
-
-variable "io_sign_backoffice_func" {
-  type = object({
-    sku_size          = string
-    sku_tier          = string
-    autoscale_default = number
-    autoscale_minimum = number
-    autoscale_maximum = number
-    app_settings = list(object({
-      name                  = string
-      value                 = optional(string, "")
-      key_vault_secret_name = optional(string)
-    }))
-  })
-  description = "Configuration of the io-sign-backoffice func app"
 }
 
 variable "landing_cdn_url" {
