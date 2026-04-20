@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.6.3
+
+### Patch Changes
+
+- 0f28a30: fix app insight init
+
 ## 1.6.2
 
 ### Patch Changes

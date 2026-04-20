@@ -58,3 +58,16 @@ module "sign_key_vault" {
   vault_private_dns_zone_id      = data.azurerm_private_dns_zone.key_vault.id
 }
 
+module "platform_proxy_api" {
+  source = "../_modules/platform_proxy_api"
+
+  platform_apim_name                  = data.azurerm_api_management.platform_apim.name
+  platform_apim_resource_group_name   = data.azurerm_api_management.platform_apim.resource_group_name
+  platform_apim_id                    = data.azurerm_api_management.platform_apim.id
+  platform_apim_identity_principal_id = data.azurerm_api_management.platform_apim.identity[0].principal_id
+
+  key_vault_common_name_itn         = module.sign_key_vault.name
+  key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
+  key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
+  subscription_id                   = data.azurerm_subscription.current.subscription_id
+}
