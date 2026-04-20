@@ -90,7 +90,7 @@ const notificationService = new IONotificationService(
 );
 
 const telemetryClient = initAppInsights(
-  config.azure.appinsights.instrumentationKey,
+  config.azure.appinsights.connectionString,
   {
     samplingPercentage: config.azure.appinsights.samplingPercentage
   }

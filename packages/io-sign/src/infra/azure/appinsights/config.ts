@@ -10,7 +10,7 @@ import { NumberFromString } from "@pagopa/ts-commons/lib/numbers";
 import { readFromEnvironment } from "../../env";
 
 export const ApplicationInsightsConfig = t.type({
-  instrumentationKey: t.string,
+  connectionString: t.string,
   samplingPercentage: NumberFromString
 });
 
@@ -21,7 +21,10 @@ export const getApplicationInsightsConfigFromEnvironment: RE.ReaderEither<
   Error,
   ApplicationInsightsConfig
 > = sequenceS(RE.Apply)({
-  instrumentationKey: readFromEnvironment("APPINSIGHTS_INSTRUMENTATIONKEY"),
+  connectionString: pipe(
+    readFromEnvironment("APPLICATIONINSIGHTS_CONNECTION_STRING"),
+    RE.altW(() => readFromEnvironment("APPINSIGHTS_INSTRUMENTATIONKEY"))
+  ),
   samplingPercentage: pipe(
     readFromEnvironment("APPINSIGHTS_SAMPLING_PERCENTAGE"),
     RE.chainEitherKW(NumberFromString.decode),
