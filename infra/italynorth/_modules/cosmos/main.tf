@@ -1,37 +1,49 @@
-module "cosmos_io_sign" {
-  source  = "pagopa-dx/azure-cosmos-account/azurerm"
-  version = "~> 0.4"
-
-  environment         = var.environment
+resource "azurerm_cosmosdb_account" "cosmos_io_sign" {
+  name                = "${local.prefix}-${local.env_short}-${local.domain}-cosmos"
+  location            = "westeurope"
   resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+  offer_type          = "Standard"
+  kind                = "GlobalDocumentDB"
 
-  subnet_pep_id                        = data.azurerm_subnet.private_endpoints_subnet_itn.id
-  private_dns_zone_resource_group_name = data.azurerm_resource_group.weu_common.name
-
-  primary_geo_location = {
-    location       = "westeurope"
-    zone_redundant = false
+  geo_location {
+    location          = "westeurope"
+    failover_priority = 0
+    zone_redundant    = false
   }
 
-  secondary_geo_locations = [
-    {
-      location          = "italynorth"
-      failover_priority = 1
-      zone_redundant    = true
-    }
-  ]
+  geo_location {
+    location          = "italynorth"
+    failover_priority = 1
+    zone_redundant    = true
+  }
 
-  force_public_network_access_enabled = false
+  public_network_access_enabled = false
 
-  consistency_policy = {
-    consistency_preset      = "Custom"
+  consistency_policy {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
     max_staleness_prefix    = 100000
   }
 
-  alerts = {
-    enabled = false
+  tags = var.tags
+}
+
+resource "azurerm_private_endpoint" "cosmos_io_sign" {
+  name                = "${local.prefix}-${local.env_short}-itn-${local.domain}-cosno-pep-${local.instance_number}"
+  location            = local.location_itn
+  resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+  subnet_id           = data.azurerm_subnet.private_endpoints_subnet_itn.id
+
+  private_service_connection {
+    name                           = "${local.prefix}-${local.env_short}-itn-${local.domain}-cosno-pep-${local.instance_number}"
+    private_connection_resource_id = azurerm_cosmosdb_account.cosmos_io_sign.id
+    is_manual_connection           = false
+    subresource_names              = ["Sql"]
+  }
+
+  private_dns_zone_group {
+    name                 = "private-dns-zone-group"
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.privatelink_documents_azure_com.id]
   }
 
   tags = var.tags
