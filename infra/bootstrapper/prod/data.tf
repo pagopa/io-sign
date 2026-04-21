@@ -47,6 +47,27 @@ data "azuread_group" "developers" {
   display_name = local.adgroups.devs_name
 }
 
+data "azuread_group" "adgroup_admin" {
+  display_name = local.adgroups.admin_name
+}
+
+data "azuread_group" "adgroup_developers" {
+  display_name = local.adgroups.developers_name
+}
+
+data "azuread_group" "adgroup_sign" {
+  display_name = local.adgroups.sign_name
+}
+
+data "azuread_group" "adgroup_ecosystem_n_links" {
+  display_name = local.adgroups.admins_name
+}
+
+data "azurerm_key_vault" "sign_itn" {
+  name                = local.sign_itn_key_vault.name
+  resource_group_name = local.sign_itn_key_vault.resource_group_name
+}
+
 data "azurerm_resource_group" "sign_itn_rg" {
   name = local.functions.itn_io_sign_rg_name
 }
