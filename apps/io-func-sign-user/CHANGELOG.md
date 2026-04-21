@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.2.0
+
+### Minor Changes
+
+- ef68cc4: Reverto to node 20
+
 ## 1.1.0
 
 ### Minor Changes
