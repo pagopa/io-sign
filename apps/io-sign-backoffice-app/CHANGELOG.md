@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.0
+
+### Minor Changes
+
+- 576e2b0: Upgrade to Node.js v22
+
 ## 1.7.8
 
 ### Patch Changes

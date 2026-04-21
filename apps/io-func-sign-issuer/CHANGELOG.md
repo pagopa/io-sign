@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.2.0
+
+### Minor Changes
+
+- 576e2b0: Upgrade to Node.js v22
+
 ## 1.1.2
 
 ### Patch Changes

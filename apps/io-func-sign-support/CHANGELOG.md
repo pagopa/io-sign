@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.6.0
+
+### Minor Changes
+
+- 576e2b0: Upgrade to Node.js v22
+
 ## 1.5.5
 
 ### Patch Changes
