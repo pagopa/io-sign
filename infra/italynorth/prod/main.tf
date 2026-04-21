@@ -92,3 +92,105 @@ module "cosmos_io_sign" {
 
   tags = local.tags
 }
+
+# =====================
+# IMPORT: cosmos_io_sign
+# =====================
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_account.cosmos_io_sign
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_private_endpoint.cosmos_io_sign
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.Network/privateEndpoints/io-p-itn-sign-cosno-pep-01"
+}
+
+# databases
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_database.issuer_database
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_database.user_database
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/user"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_database.backoffice_database
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/backoffice"
+}
+
+# containers: issuer
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_dossiers_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/dossiers"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_signature_requests_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/signature-requests"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_uploads_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/uploads"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_issuers_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/issuers"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_issuers_by_vat_number_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/issuers-by-vat-number"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_issuers_by_subscription_id_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/issuers-by-subscription-id"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.issuer_issuers_whitelist_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/issuer/containers/issuers-whitelist"
+}
+
+# containers: user
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.user_signature_requests_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/user/containers/signature-requests"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.user_signatures_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/user/containers/signatures"
+}
+
+# containers: backoffice
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.backoffice_api_keys_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/backoffice/containers/api-keys"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.backoffice_api_keys_by_id_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/backoffice/containers/api-keys-by-id"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.backoffice_issuers_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/backoffice/containers/issuers"
+}
+
+import {
+  to = module.cosmos_io_sign.azurerm_cosmosdb_sql_container.backoffice_consents_container
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.DocumentDB/databaseAccounts/io-p-sign-cosmos/sqlDatabases/backoffice/containers/consents"
+}

@@ -5,6 +5,10 @@ resource "azurerm_cosmosdb_account" "cosmos_io_sign" {
   offer_type          = "Standard"
   kind                = "GlobalDocumentDB"
 
+  free_tier_enabled                 = true
+  automatic_failover_enabled        = true
+  is_virtual_network_filter_enabled = true
+
   geo_location {
     location          = "westeurope"
     failover_priority = 0
@@ -23,6 +27,19 @@ resource "azurerm_cosmosdb_account" "cosmos_io_sign" {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
     max_staleness_prefix    = 100000
+  }
+
+  analytical_storage {
+    schema_type = "WellDefined"
+  }
+
+  backup {
+    type = "Continuous"
+    tier = "Continuous30Days"
+  }
+
+  identity {
+    type = "SystemAssigned"
   }
 
   tags = var.tags
