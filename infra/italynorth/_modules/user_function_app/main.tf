@@ -12,7 +12,7 @@ module "function_sign_user" {
 
   resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
   size                = "P0v3"
-  node_version        = "22"
+  node_version        = "20"
 
   virtual_network = {
     name                = var.vnet_common_name_itn
