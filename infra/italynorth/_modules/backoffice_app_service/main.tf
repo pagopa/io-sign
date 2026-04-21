@@ -12,7 +12,7 @@ module "itn_sign_backoffice_app" {
 
   resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
   size                = "P0v3"
-  node_version        = "20"
+  node_version        = "22"
   health_check_path   = "/info"
 
   subnet_cidr                          = var.sign_backoffice_app_snet_cidr
