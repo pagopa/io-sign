@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.1.0
+
+### Minor Changes
+
+- 576e2b0: Upgrade to Node.js v22
+
 ## 1.0.4
 
 ### Patch Changes
