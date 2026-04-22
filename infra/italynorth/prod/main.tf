@@ -175,7 +175,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_product_policy.io_sign
-  id = "${local.apim_itn_id}/products/io-sign-api/policies/policy"
+  id = "${local.apim_itn_id}/products/io-sign-api"
 }
 
 import {
@@ -185,7 +185,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_product_policy.io_sign_support
-  id = "${local.apim_itn_id}/products/io-sign-support-api/policies/policy"
+  id = "${local.apim_itn_id}/products/io-sign-support-api"
 }
 
 import {
@@ -195,7 +195,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_product_policy.io_sign_backoffice
-  id = "${local.apim_itn_id}/products/io-p-sign-backoffice-apim-product/policies/policy"
+  id = "${local.apim_itn_id}/products/io-p-sign-backoffice-apim-product"
 }
 
 # apis
@@ -207,7 +207,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_api_policy.io_sign_issuer_v1
-  id = "${local.apim_itn_id}/apis/io-p-sign-issuer-api/policies/policy"
+  id = "${local.apim_itn_id}/apis/io-p-sign-issuer-api"
 }
 
 import {
@@ -217,7 +217,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_api_operation_policy.get_signer_by_fiscal_code_policy_itn
-  id = "${local.apim_itn_id}/apis/io-p-sign-issuer-api/operations/getSignerByFiscalCode/policies/policy"
+  id = "${local.apim_itn_id}/apis/io-p-sign-issuer-api/operations/getSignerByFiscalCode"
 }
 
 import {
@@ -227,7 +227,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_api_policy.io_sign_support_v1
-  id = "${local.apim_itn_id}/apis/io-p-sign-support-api/policies/policy"
+  id = "${local.apim_itn_id}/apis/io-p-sign-support-api"
 }
 
 import {
@@ -242,7 +242,7 @@ import {
 
 import {
   to = module.apim_itn.azurerm_api_management_api_policy.io_sign_backoffice_v1
-  id = "${local.apim_itn_id}/apis/io-p-sign-backoffice-apim-api/policies/policy"
+  id = "${local.apim_itn_id}/apis/io-p-sign-backoffice-apim-api"
 }
 
 import {
