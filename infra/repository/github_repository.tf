@@ -7,7 +7,7 @@ module "github_repository" {
     name            = "io-sign"
     description     = "IO platform feature that allows the signing of PDF documents"
     topics          = ["io-sign", "io"]
-    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "engineering-team-cloud-eng", "io-platform-contributors", "io-ecosystem-n-links"]
+    reviewers_teams = ["io-sign-admins", "io-sign-maintainers", "io-platform-contributors", "io-ecosystem-n-links"]
     pages_enabled   = false
     has_downloads   = true
     has_projects    = false
