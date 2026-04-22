@@ -248,21 +248,3 @@ resource "azurerm_private_endpoint" "queue" {
 
   tags = var.tags
 }
-
-
-
-resource "azurerm_private_endpoint" "cosno_itn" {
-  name                = "${local.project_itn}-sign-cosno-pep-01"
-  location            = "italynorth"
-  resource_group_name = azurerm_resource_group.data_rg.name
-  subnet_id           = data.azurerm_subnet.itn_private_endpoints_subnet.id
-
-  private_service_connection {
-    name                           = "${local.project_itn}-sign-cosno-pep-01"
-    private_connection_resource_id = module.cosmosdb_account.id
-    is_manual_connection           = false
-    subresource_names              = ["Sql"]
-  }
-
-  tags = var.tags
-}
