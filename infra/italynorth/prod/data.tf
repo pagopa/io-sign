@@ -27,9 +27,4 @@ data "azurerm_cosmosdb_account" "sign_cosmos" {
   resource_group_name = "${local.project_weu_sign}-data-rg"
 }
 
-data "azurerm_key_vault" "sign_kv" {
-  name                = "${local.project_itn_sign}-kv-${local.instance_number}"
-  resource_group_name = "${local.project_itn_sign}-rg-${local.instance_number}"
-}
-
 data "azurerm_subscription" "current" {}

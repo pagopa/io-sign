@@ -85,9 +85,9 @@ module "apim_itn" {
   key_vault_resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
   key_vault_vault_uri           = data.azurerm_key_vault.sign_weu_kv.vault_uri
 
-  key_vault_name_itn                = data.azurerm_key_vault.sign_kv.name
-  key_vault_resource_group_name_itn = data.azurerm_key_vault.sign_kv.resource_group_name
-  key_vault_vault_uri_itn           = data.azurerm_key_vault.sign_kv.vault_uri
+  key_vault_name_itn                = module.sign_key_vault.name
+  key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
+  key_vault_vault_uri_itn           = module.sign_key_vault.vault_uri
 
   project_itn = local.project_itn
   product     = local.product
