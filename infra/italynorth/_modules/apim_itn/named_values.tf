@@ -15,7 +15,7 @@ resource "azurerm_api_management_named_value" "io_fn_sign_issuer_key_itn" {
   display_name        = "io-fn-sign-issuer-key"
   secret              = true
   value_from_key_vault {
-    secret_id = "${var.key_vault_vault_uri}secrets/io-fn-sign-issuer-key"
+    secret_id = "${var.key_vault_vault_uri_itn}secrets/io-fn-sign-issuer-key"
   }
 }
 
@@ -34,7 +34,7 @@ resource "azurerm_api_management_named_value" "io_fn_sign_support_key_itn" {
   display_name        = "io-fn-sign-support-key"
   secret              = true
   value_from_key_vault {
-    secret_id = "${var.key_vault_vault_uri}secrets/io-fn-sign-support-key"
+    secret_id = "${var.key_vault_vault_uri_itn}secrets/io-fn-sign-support-key"
   }
 }
 
@@ -54,7 +54,7 @@ resource "azurerm_api_management_named_value" "io_sign_cosmosdb_key_itn" {
   display_name        = "io-sign-cosmosdb-key"
   secret              = true
   value_from_key_vault {
-    secret_id = "${var.key_vault_vault_uri}secrets/COSMOS-DB-PRIMARY-KEY"
+    secret_id = "${var.key_vault_vault_uri_itn}secrets/COSMOS-DB-PRIMARY-KEY"
   }
 }
 
@@ -122,6 +122,6 @@ resource "azurerm_api_management_named_value" "io_fn_sign_backoffice_key_itn" {
   display_name        = "io-fn-sign-backoffice-key"
   secret              = true
   value_from_key_vault {
-    secret_id = "${var.key_vault_vault_uri}secrets/io-sign-backoffice-func-key"
+    secret_id = "${var.key_vault_vault_uri_itn}secrets/io-sign-backoffice-func-key"
   }
 }
