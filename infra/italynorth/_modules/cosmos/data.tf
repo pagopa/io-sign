@@ -8,6 +8,12 @@ data "azurerm_subnet" "private_endpoints_subnet_itn" {
   resource_group_name  = "${local.project_itn}-common-rg-01"
 }
 
+data "azurerm_subnet" "private_endpoints_subnet_weu" {
+  name                 = "pendpoints"
+  virtual_network_name = "${local.project_weu}-vnet-common"
+  resource_group_name  = "${local.project_weu}-rg-common"
+}
+
 data "azurerm_resource_group" "weu_common" {
   name = "${local.prefix}-${local.env_short}-rg-common"
 }

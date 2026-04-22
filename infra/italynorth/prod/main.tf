@@ -107,6 +107,11 @@ import {
   id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.Network/privateEndpoints/io-p-itn-sign-cosno-pep-01"
 }
 
+import {
+  to = module.cosmos_io_sign.azurerm_private_endpoint.cosmos_io_sign_weu
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-sign-data-rg/providers/Microsoft.Network/privateEndpoints/io-p-sign-cosmos"
+}
+
 # databases
 
 import {
