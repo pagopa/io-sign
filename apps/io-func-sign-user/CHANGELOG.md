@@ -1,5 +1,17 @@
 # io-func-sign-user
 
+## 1.3.0
+
+### Minor Changes
+
+- e1e9a5a: Upgrade to Node v22
+
+## 1.2.0
+
+### Minor Changes
+
+- ef68cc4: Reverto to node 20
+
 ## 1.1.0
 
 ### Minor Changes
