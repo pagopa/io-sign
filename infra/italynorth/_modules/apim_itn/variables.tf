@@ -41,6 +41,21 @@ variable "key_vault_vault_uri" {
   description = "Key Vault URI (e.g. https://kv-name.vault.azure.net/)"
 }
 
+variable "key_vault_name_itn" {
+  type        = string
+  description = "Key Vault name for ITN"
+}
+
+variable "key_vault_resource_group_name_itn" {
+  type        = string
+  description = "Key Vault resource group name for ITN"
+}
+
+variable "key_vault_vault_uri_itn" {
+  type        = string
+  description = "Key Vault URI for ITN (e.g. https://kv-name.vault.azure.net/)"
+}
+
 ##########
 # Locals #
 ##########
