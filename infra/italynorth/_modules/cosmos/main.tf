@@ -87,3 +87,43 @@ resource "azurerm_private_endpoint" "cosmos_io_sign_weu" {
 
   tags = var.tags
 }
+
+resource "azurerm_monitor_metric_alert" "cosmos_provisioned_throughput_exceeded" {
+  name                = "[${local.domain} | ${azurerm_cosmosdb_account.cosmos_io_sign.name}] Provisioned Throughput Exceeded"
+  resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+  scopes              = [azurerm_cosmosdb_account.cosmos_io_sign.id]
+  description         = "A collection throughput (RU/s) exceed provisioned throughput, and it's raising 429 errors. Please, consider to increase RU. Runbook: not needed."
+  severity            = 0
+  window_size         = "PT5M"
+  frequency           = "PT5M"
+  auto_mitigate       = false
+
+  criteria {
+    metric_namespace       = "Microsoft.DocumentDB/databaseAccounts"
+    metric_name            = "TotalRequestUnits"
+    aggregation            = "Total"
+    operator               = "GreaterThan"
+    threshold              = 0
+    skip_metric_validation = false
+
+    dimension {
+      name     = "Region"
+      operator = "Include"
+      values   = [local.location_weu]
+    }
+
+    dimension {
+      name     = "StatusCode"
+      operator = "Include"
+      values   = ["429"]
+    }
+
+    dimension {
+      name     = "CollectionName"
+      operator = "Include"
+      values   = ["*"]
+    }
+  }
+
+  tags = var.tags
+}
