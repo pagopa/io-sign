@@ -29,6 +29,11 @@ resource "azurerm_api_management_api" "io_sign_issuer_v1" {
   display_name = "IO Sign - Issuer API"
   path         = "api/v1/sign"
   protocols    = ["https"]
+
+  import {
+    content_format = "openapi"
+    content_value  = file("${path.module}/api/issuer/v1/openapi.yaml")
+  }
 }
 
 resource "azurerm_api_management_api_policy" "io_sign_issuer_v1" {
@@ -84,6 +89,11 @@ resource "azurerm_api_management_api" "io_sign_support_v1" {
   display_name = "IO Sign - Support API"
   path         = "api/v1/sign/support"
   protocols    = ["https"]
+
+  import {
+    content_format = "openapi"
+    content_value  = file("${path.module}/api/support/v1/openapi.yaml")
+  }
 }
 
 resource "azurerm_api_management_api_policy" "io_sign_support_v1" {
@@ -131,6 +141,11 @@ resource "azurerm_api_management_api" "io_sign_backoffice_v1" {
   description  = "io-sign-backoffice REST APIs"
   path         = "api/v1/sign/backoffice"
   protocols    = ["https"]
+
+  import {
+    content_format = "openapi"
+    content_value  = file("${path.module}/api/backoffice/v1/openapi.yaml")
+  }
 }
 
 resource "azurerm_api_management_api_policy" "io_sign_backoffice_v1" {

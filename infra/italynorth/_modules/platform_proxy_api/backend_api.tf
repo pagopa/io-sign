@@ -31,6 +31,11 @@ resource "azurerm_api_management_api" "io_sign" {
   display_name = "IO Sign Backend"
   path         = "api/sign"
   protocols    = ["https"]
+
+  import {
+    content_format = "openapi-link"
+    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/066b5aa08e40a270164fe6dccd9ed4d08705c05a/openapi/generated/api_io_sign.yaml"
+  }
 }
 
 resource "azurerm_api_management_product_api" "io_sign" {
