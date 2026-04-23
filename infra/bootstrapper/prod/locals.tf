@@ -47,7 +47,6 @@ locals {
     itn_io_sign_rg_name             = "${local.itn_prefix}-sign-rg-01"
     itn_io_sign_integration_rg_name = "${local.itn_prefix}-sign-integration-rg-01"
     itn_io_sign_data_rg_name        = "${local.itn_prefix}-sign-data-rg-01"
-    io_p_sign_backend_rg_name       = "${local.weu_prefix}-sign-backend-rg"
     io_p_sign_integration_rg_name   = "${local.weu_prefix}-sign-integration-rg"
     io_p_sign_data_rg_name          = "${local.weu_prefix}-sign-data-rg"
     io_p_sign_sec_rg_name           = "${local.weu_prefix}-sign-sec-rg"
