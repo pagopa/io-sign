@@ -5,12 +5,12 @@ data "azurerm_application_insights" "application_insights" {
 
 data "azurerm_key_vault_secret" "monitor_fci_tech_email" {
   name         = "monitor-fci-tech-email"
-  key_vault_id = module.key_vault.id
+  key_vault_id = var.key_vault_id
 }
 
 data "azurerm_key_vault_secret" "monitor_fci_tech_slack_email" {
   name         = "monitor-fci-tech-slack"
-  key_vault_id = module.key_vault.id
+  key_vault_id = var.key_vault_id
 }
 
 data "azurerm_monitor_action_group" "slack" {
@@ -25,7 +25,7 @@ data "azurerm_monitor_action_group" "email" {
 
 resource "azurerm_monitor_action_group" "email_fci_tech" {
   name                = "EmailFirmaConIoTech"
-  resource_group_name = azurerm_resource_group.integration_rg.name
+  resource_group_name = local.resource_group_name
   short_name          = "EmailFCITech"
 
   email_receiver {
@@ -39,7 +39,7 @@ resource "azurerm_monitor_action_group" "email_fci_tech" {
 
 resource "azurerm_monitor_action_group" "slack_fci_tech" {
   name                = "SlackFirmaConIoTech"
-  resource_group_name = azurerm_resource_group.integration_rg.name
+  resource_group_name = local.resource_group_name
   short_name          = "SlackFCITech"
 
   email_receiver {
@@ -53,13 +53,13 @@ resource "azurerm_monitor_action_group" "slack_fci_tech" {
 
 data "azurerm_monitor_action_group" "error_action_group" {
   resource_group_name = "io-p-rg-common"
-  name                = "${var.prefix}${var.env_short}error"
+  name                = "${local.prefix}${local.env_short}error"
 }
 
 resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_requests" {
-  name                = format("%s-rejected-requests", local.project)
-  resource_group_name = azurerm_resource_group.backend_rg.name
-  location            = azurerm_resource_group.backend_rg.location
+  name                = format("%s-rejected-requests", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
 
   data_source_id          = data.azurerm_application_insights.application_insights.id
   description             = "[IO-SIGN] There are REJECTED signature requests. Runbook: https://pagopa.atlassian.net/wiki/spaces/SFEQS/pages/935592503/Richieste+di+firma+in+stato+REJECTED"
@@ -95,9 +95,9 @@ customEvents
 }
 
 resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_test_requests" {
-  name                = format("%s-rejected-test-requests", local.project)
-  resource_group_name = azurerm_resource_group.backend_rg.name
-  location            = azurerm_resource_group.backend_rg.location
+  name                = format("%s-rejected-test-requests", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
 
   data_source_id          = data.azurerm_application_insights.application_insights.id
   description             = "[IO-SIGN] There are REJECTED signature requests in TEST environment. No action required"
@@ -129,5 +129,3 @@ customEvents
 
   tags = var.tags
 }
-
-

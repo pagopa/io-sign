@@ -29,3 +29,8 @@ provider "azurerm" {
 data "azurerm_subscription" "current" {}
 
 data "azurerm_client_config" "current" {}
+
+data "azurerm_monitor_action_group" "error_action_group" {
+  resource_group_name = "io-p-rg-common"
+  name                = "${var.prefix}${var.env_short}error"
+}
