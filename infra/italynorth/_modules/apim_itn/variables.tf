@@ -26,21 +26,6 @@ variable "subscription_id" {
 #  Key Vault #
 ##############
 
-variable "key_vault_name" {
-  type        = string
-  description = "Key Vault name"
-}
-
-variable "key_vault_resource_group_name" {
-  type        = string
-  description = "Key Vault resource group name"
-}
-
-variable "key_vault_vault_uri" {
-  type        = string
-  description = "Key Vault URI (e.g. https://kv-name.vault.azure.net/)"
-}
-
 variable "key_vault_name_itn" {
   type        = string
   description = "Key Vault name for ITN"
