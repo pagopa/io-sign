@@ -1,6 +1,6 @@
 oa3_spec: apps/io-func-sign-issuer/openapi.yaml
-name: opex_api_issuer
-location: West Europe
+name: itn_opex_sign_api_issuer
+location: Italy North
 timespan: 10m
 evaluation_frequency: 40 # default 20
 evaluation_time_window: 40 # default 20

@@ -1,6 +1,6 @@
 oa3_spec: https://raw.githubusercontent.com/pagopa/io-backend/master/api_io_sign.yaml
-name: opex_api_user
-location: West Europe
+name: itn_opex_sign_api_user
+location: Italy North
 timespan: 10m
 data_source: /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-common-rg-01/providers/Microsoft.Network/applicationGateways/io-p-itn-agw-01
 resource_type: app-gateway
