@@ -1,0 +1,131 @@
+data "azurerm_application_insights" "application_insights" {
+  name                = "io-p-ai-common"
+  resource_group_name = "io-p-rg-common"
+}
+
+data "azurerm_key_vault_secret" "monitor_fci_tech_email" {
+  name         = "monitor-fci-tech-email"
+  key_vault_id = var.key_vault_id
+}
+
+data "azurerm_key_vault_secret" "monitor_fci_tech_slack_email" {
+  name         = "monitor-fci-tech-slack"
+  key_vault_id = var.key_vault_id
+}
+
+data "azurerm_monitor_action_group" "slack" {
+  resource_group_name = "io-p-rg-common"
+  name                = "SlackPagoPA"
+}
+
+data "azurerm_monitor_action_group" "email" {
+  resource_group_name = "io-p-rg-common"
+  name                = "EmailPagoPA"
+}
+
+resource "azurerm_monitor_action_group" "email_fci_tech" {
+  name                = "EmailFirmaConIoTech"
+  resource_group_name = local.resource_group_name
+  short_name          = "EmailFCITech"
+
+  email_receiver {
+    name                    = "sendtooperations"
+    email_address           = data.azurerm_key_vault_secret.monitor_fci_tech_email.value
+    use_common_alert_schema = true
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_monitor_action_group" "slack_fci_tech" {
+  name                = "SlackFirmaConIoTech"
+  resource_group_name = local.resource_group_name
+  short_name          = "SlackFCITech"
+
+  email_receiver {
+    name                    = "sendtoslack"
+    email_address           = data.azurerm_key_vault_secret.monitor_fci_tech_slack_email.value
+    use_common_alert_schema = true
+  }
+
+  tags = var.tags
+}
+
+data "azurerm_monitor_action_group" "error_action_group" {
+  resource_group_name = "io-p-rg-common"
+  name                = "${local.prefix}${local.env_short}error"
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_requests" {
+  name                = format("%s-rejected-requests", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
+
+  data_source_id          = data.azurerm_application_insights.application_insights.id
+  description             = "[IO-SIGN] There are REJECTED signature requests. Runbook: https://pagopa.atlassian.net/wiki/spaces/SFEQS/pages/935592503/Richieste+di+firma+in+stato+REJECTED"
+  enabled                 = true
+  auto_mitigation_enabled = false
+
+  query = <<-QUERY
+customEvents
+| where name == "io.sign.signature_request.rejected"
+| where customDimensions.environment == "DEFAULT"
+| summarize AggregatedValue = count() by bin(timestamp, 30m)
+| where AggregatedValue > 1
+  QUERY
+
+  severity    = 3
+  frequency   = 30
+  time_window = 30
+
+  trigger {
+    operator  = "GreaterThanOrEqual"
+    threshold = 1
+  }
+
+  action {
+    action_group = [
+      azurerm_monitor_action_group.email_fci_tech.id,
+      azurerm_monitor_action_group.slack_fci_tech.id,
+      data.azurerm_monitor_action_group.error_action_group.id
+    ]
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "rejected_test_requests" {
+  name                = format("%s-rejected-test-requests", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
+
+  data_source_id          = data.azurerm_application_insights.application_insights.id
+  description             = "[IO-SIGN] There are REJECTED signature requests in TEST environment. No action required"
+  enabled                 = true
+  auto_mitigation_enabled = false
+
+  query = <<-QUERY
+customEvents
+| where name == "io.sign.signature_request.rejected"
+| where customDimensions.environment == "TEST"
+| summarize AggregatedValue = count() by bin(timestamp, 30m)
+| where AggregatedValue > 1
+  QUERY
+
+  severity    = 3
+  frequency   = 30
+  time_window = 30
+
+  trigger {
+    operator  = "GreaterThanOrEqual"
+    threshold = 1
+  }
+
+  action {
+    action_group = [
+      azurerm_monitor_action_group.slack_fci_tech.id
+    ]
+  }
+
+  tags = var.tags
+}
