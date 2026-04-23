@@ -90,6 +90,12 @@ module "apim_itn" {
 
   cosmosdb_account_name = data.azurerm_cosmosdb_account.sign_cosmos.name
 }
+module "monitoring" {
+  source       = "../_modules/monitoring"
+  key_vault_id = module.sign_key_vault.id
+  tags         = local.tags
+}
+
 module "cosmos_io_sign" {
   source = "../_modules/cosmos"
 
