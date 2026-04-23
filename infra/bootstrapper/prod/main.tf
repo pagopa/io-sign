@@ -100,7 +100,7 @@ module "roles_cd_platform_apim" {
     {
       name                = local.platform_apim.name
       resource_group_name = local.platform_apim.resource_group_name
-      role                = "writer"
+      role                = "owner"
       description         = "Allow io-sign Infra CD identity to manage APIs on the platform APIM"
     }
   ]
