@@ -14,7 +14,6 @@ module "bootstrap" {
     data.azurerm_resource_group.sign_itn_rg.id,
     data.azurerm_resource_group.sign_itn_integration_rg.id,
     data.azurerm_resource_group.sign_itn_data_rg.id,
-    data.azurerm_resource_group.sign_itn_sec_rg.id,
     data.azurerm_resource_group.io_p_sign_backend_rg.id,
     data.azurerm_resource_group.io_p_sign_data_rg.id,
     data.azurerm_resource_group.io_p_sign_integration_rg.id,
@@ -90,9 +89,25 @@ resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
   principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
 
+module "roles_cd_platform_apim" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2"
+  principal_id    = module.bootstrap.identities.infra.cd.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  apim = [
+    {
+      name                = local.platform_apim.name
+      resource_group_name = local.platform_apim.resource_group_name
+      role                = "owner"
+      description         = "Allow io-sign Infra CD identity to manage APIs on the platform APIM"
+    }
+  ]
+}
+
 module "kv_roles_adgroup_admin" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.2"
   principal_id    = data.azuread_group.adgroup_admin.object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -110,7 +125,7 @@ module "kv_roles_adgroup_admin" {
 
 module "kv_roles_adgroup_developers" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.2"
   principal_id    = data.azuread_group.adgroup_developers.object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -128,7 +143,7 @@ module "kv_roles_adgroup_developers" {
 
 module "kv_roles_adgroup_sign" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.2"
   principal_id    = data.azuread_group.adgroup_sign.object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -146,7 +161,7 @@ module "kv_roles_adgroup_sign" {
 
 module "kv_roles_adgroup_ecosystem_n_links" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.2"
   principal_id    = data.azuread_group.adgroup_ecosystem_n_links.object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
