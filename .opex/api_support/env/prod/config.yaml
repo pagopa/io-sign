@@ -1,6 +1,6 @@
 oa3_spec: apps/io-func-sign-support/openapi.yaml
 name: opex_api_support
-location: West Europe
+location: Italy North
 timespan: 10m
 evaluation_frequency: 40 # default 20
 evaluation_time_window: 40 # default 20
