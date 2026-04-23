@@ -17,10 +17,6 @@ data "azurerm_resource_group" "sign_weu_data_rg" {
   name = "${local.project_weu_sign}-data-rg"
 }
 
-data "azurerm_resource_group" "sign_weu_sec_rg" {
-  name = "${local.project_weu_sign}-sec-rg"
-}
-
 data "azurerm_resource_group" "weu-common" {
   name = "${local.prefix}-${local.env_short}-rg-common"
 }

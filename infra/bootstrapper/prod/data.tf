@@ -17,11 +17,6 @@ data "azurerm_key_vault" "common" {
   resource_group_name = local.key_vault.resource_group_name
 }
 
-data "azurerm_key_vault" "sign" {
-  name                = local.sign_key_vault.name
-  resource_group_name = local.sign_key_vault.resource_group_name
-}
-
 data "azurerm_virtual_network" "common" {
   name                = local.vnet.name
   resource_group_name = local.vnet.resource_group_name

@@ -49,7 +49,6 @@ locals {
     itn_io_sign_data_rg_name        = "${local.itn_prefix}-sign-data-rg-01"
     io_p_sign_integration_rg_name   = "${local.weu_prefix}-sign-integration-rg"
     io_p_sign_data_rg_name          = "${local.weu_prefix}-sign-data-rg"
-    io_p_sign_sec_rg_name           = "${local.weu_prefix}-sign-sec-rg"
   }
 
   tf_storage_account = {
@@ -64,11 +63,6 @@ locals {
   key_vault = {
     name                = "io-p-kv-common"
     resource_group_name = "io-p-rg-common"
-  }
-
-  sign_key_vault = {
-    name                = "io-p-sign-kv"
-    resource_group_name = "io-p-sign-sec-rg"
   }
 
   sign_itn_key_vault = {
