@@ -6,15 +6,6 @@ module "apim_itn_roles" {
 
   key_vault = [
     {
-      name                = var.key_vault_name
-      resource_group_name = var.key_vault_resource_group_name
-      description         = "Allow ${var.apim_name} to read secrets from ${var.key_vault_name}"
-      has_rbac_support    = false
-      roles = {
-        secrets = "reader"
-      }
-    },
-    {
       name                = var.key_vault_name_itn
       resource_group_name = var.key_vault_resource_group_name_itn
       description         = "Allow ${var.apim_name} to read secrets from ${var.key_vault_name_itn}"

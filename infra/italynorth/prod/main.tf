@@ -81,10 +81,6 @@ module "apim_itn" {
   apim_identity_principal_id = data.azurerm_api_management.apim_itn.identity[0].principal_id
   subscription_id            = data.azurerm_subscription.current.subscription_id
 
-  key_vault_name                = data.azurerm_key_vault.sign_weu_kv.name
-  key_vault_resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
-  key_vault_vault_uri           = data.azurerm_key_vault.sign_weu_kv.vault_uri
-
   key_vault_name_itn                = module.sign_key_vault.name
   key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
   key_vault_vault_uri_itn           = module.sign_key_vault.vault_uri
