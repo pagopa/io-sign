@@ -1,5 +1,5 @@
 oa3_spec: apps/io-sign-backoffice-func/openapi.yaml
-name: opex_api_backoffice_io_sign
+name: itn_opex_sign_api_backoffice
 location: Italy North
 timespan: 10m
 evaluation_frequency: 40 # default 20
