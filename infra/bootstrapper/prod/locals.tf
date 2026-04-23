@@ -29,6 +29,11 @@ locals {
     resource_group_name = "${local.itn_prefix}-common-rg-01"
   }
 
+  platform_apim = {
+    name                = "${local.itn_prefix}-platform-api-gateway-apim-01"
+    resource_group_name = "${local.itn_prefix}-common-rg-01"
+  }
+
   vnet = {
     name                = "${local.itn_prefix}-common-vnet-01"
     resource_group_name = "${local.itn_prefix}-common-rg-01"

@@ -90,6 +90,22 @@ resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
   principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
 
+module "roles_cd_platform_apim" {
+  source          = "pagopa-dx/azure-role-assignments/azurerm"
+  version         = "~> 1.2.0"
+  principal_id    = module.bootstrap.identities.infra.cd.principal_id
+  subscription_id = data.azurerm_subscription.current.subscription_id
+
+  apim = [
+    {
+      name                = data.azurerm_api_management.platform_apim.name
+      resource_group_name = data.azurerm_api_management.platform_apim.resource_group_name
+      role                = "contributor"
+      description         = "Allow io-sign Infra CD identity to manage APIs on the platform APIM"
+    }
+  ]
+}
+
 module "kv_roles_adgroup_admin" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"

@@ -12,6 +12,11 @@ data "azurerm_api_management" "apim" {
   resource_group_name = local.apim.resource_group_name
 }
 
+data "azurerm_api_management" "platform_apim" {
+  name                = local.platform_apim.name
+  resource_group_name = local.platform_apim.resource_group_name
+}
+
 data "azurerm_key_vault" "common" {
   name                = local.key_vault.name
   resource_group_name = local.key_vault.resource_group_name
