@@ -12,13 +12,6 @@ resource "azurerm_resource_group" "sign" {
   tags = var.tags
 }
 
-resource "azurerm_resource_group" "backend_rg" {
-  name     = format("%s-backend-rg", local.project)
-  location = var.location
-
-  tags = var.tags
-}
-
 resource "azurerm_resource_group" "sec_rg" {
   name     = format("%s-sec-rg", local.project)
   location = var.location
