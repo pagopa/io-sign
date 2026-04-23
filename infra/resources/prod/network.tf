@@ -20,12 +20,6 @@ data "azurerm_subnet" "itn_private_endpoints_subnet" {
   resource_group_name  = data.azurerm_virtual_network.itn_vnet_common.resource_group_name
 }
 
-data "azurerm_subnet" "apim_itn" {
-  name                 = "${local.project_itn}-apim-snet-01"
-  virtual_network_name = "${local.project_itn}-common-vnet-01"
-  resource_group_name  = "${local.project_itn}-common-rg-01"
-}
-
 data "azurerm_nat_gateway" "nat_gateway" {
   name                = format("%s-natgw", local.product)
   resource_group_name = format("%s-rg-common", local.product)
@@ -244,24 +238,6 @@ resource "azurerm_private_endpoint" "queue" {
   private_dns_zone_group {
     name                 = "private-dns-zone-group"
     private_dns_zone_ids = [data.azurerm_private_dns_zone.privatelink_queue_core_windows_net.id]
-  }
-
-  tags = var.tags
-}
-
-
-
-resource "azurerm_private_endpoint" "cosno_itn" {
-  name                = "${local.project_itn}-sign-cosno-pep-01"
-  location            = "italynorth"
-  resource_group_name = azurerm_resource_group.data_rg.name
-  subnet_id           = data.azurerm_subnet.itn_private_endpoints_subnet.id
-
-  private_service_connection {
-    name                           = "${local.project_itn}-sign-cosno-pep-01"
-    private_connection_resource_id = module.cosmosdb_account.id
-    is_manual_connection           = false
-    subresource_names              = ["Sql"]
   }
 
   tags = var.tags

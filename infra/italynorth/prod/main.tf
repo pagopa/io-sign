@@ -71,3 +71,46 @@ module "platform_proxy_api" {
   key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
   subscription_id                   = data.azurerm_subscription.current.subscription_id
 }
+
+
+module "apim_itn" {
+  source = "../_modules/apim_itn"
+
+  apim_name                  = data.azurerm_api_management.apim_itn.name
+  apim_resource_group_name   = data.azurerm_api_management.apim_itn.resource_group_name
+  apim_identity_principal_id = data.azurerm_api_management.apim_itn.identity[0].principal_id
+  subscription_id            = data.azurerm_subscription.current.subscription_id
+
+  key_vault_name                = data.azurerm_key_vault.sign_weu_kv.name
+  key_vault_resource_group_name = data.azurerm_key_vault.sign_weu_kv.resource_group_name
+  key_vault_vault_uri           = data.azurerm_key_vault.sign_weu_kv.vault_uri
+
+  key_vault_name_itn                = module.sign_key_vault.name
+  key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
+  key_vault_vault_uri_itn           = module.sign_key_vault.vault_uri
+
+  project_itn = local.project_itn
+  product     = local.product
+
+  cosmosdb_account_name = data.azurerm_cosmosdb_account.sign_cosmos.name
+}
+module "cosmos_io_sign" {
+  source = "../_modules/cosmos"
+
+  environment = {
+    prefix          = local.prefix
+    env_short       = local.env_short
+    location        = local.location
+    domain          = local.domain
+    app_name        = local.domain
+    instance_number = local.instance_number
+  }
+
+  resource_group_name = local.cosmos_resource_group_name
+
+  io_sign_database_issuer     = local.cosmos_io_sign_database_issuer
+  io_sign_database_user       = local.cosmos_io_sign_database_user
+  io_sign_database_backoffice = local.cosmos_io_sign_database_backoffice
+
+  tags = local.tags
+}
