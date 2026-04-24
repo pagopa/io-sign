@@ -38,7 +38,7 @@ data "azurerm_monitor_action_group" "common_error_action_group" {
 
 data "azurerm_monitor_action_group" "sign_error_action_group" {
   name                = "EmailFirmaConIoTech"
-  resource_group_name = "${local.project_weu_sign}-integration-rg"
+  resource_group_name = "${local.project_itn_sign}-rg-01"
 }
 
 data "azurerm_application_insights" "application_insights" {
