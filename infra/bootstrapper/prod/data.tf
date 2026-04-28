@@ -72,14 +72,6 @@ data "azurerm_resource_group" "sign_itn_rg" {
   name = local.functions.itn_io_sign_rg_name
 }
 
-data "azurerm_resource_group" "sign_itn_integration_rg" {
-  name = local.functions.itn_io_sign_integration_rg_name
-}
-
-data "azurerm_resource_group" "sign_itn_data_rg" {
-  name = local.functions.itn_io_sign_data_rg_name
-}
-
 data "azurerm_resource_group" "io_p_sign_integration_rg" {
   name = local.functions.io_p_sign_integration_rg_name
 }
