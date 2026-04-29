@@ -24,6 +24,7 @@ type SetSignatureRequestStatusDeps = {
   signatureRequestRepository: SignatureRequestRepository;
   eventAnalyticsClient: EventProducerClient;
   ready: QueueClient;
+  itnReady: QueueClient;
   updated: QueueClient;
 };
 
