@@ -4,7 +4,6 @@ locals {
   location_itn     = "italynorth"
   domain           = "sign"
   instance_number  = "01"
-  project_weu_sign = format("%s-%s-%s", local.prefix, local.env_short, local.domain)
   product          = format("%s-%s", local.prefix, local.env_short)
   project_itn      = "${local.product}-itn"
   project_itn_sign = format("%s-%s-itn-%s", local.prefix, local.env_short, local.domain)
