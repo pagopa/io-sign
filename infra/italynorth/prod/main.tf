@@ -116,3 +116,12 @@ module "cosmos_io_sign" {
 
   tags = local.tags
 }
+
+module "storage_io_sign" {
+  source = "../_modules/storage"
+
+  vnet_common_name_itn           = local.vnet_common_name_itn
+  common_resource_group_name_itn = local.common_resource_group_name_itn
+
+  tags = local.tags
+}
