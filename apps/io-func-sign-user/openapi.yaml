@@ -154,6 +154,14 @@ paths:
             minLength: 1
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
+        - in: header
+          name: x-iosign-spid-level
+          schema:
+            type: string
+            description: The SPID level of the authenticated user.
+            minLength: 1
+            example: https://www.spid.gov.it/SpidL2
+          required: false
         - name: x-pagopa-lollipop-original-method
           in: header
           description: The method of the endpoint called by IO app
