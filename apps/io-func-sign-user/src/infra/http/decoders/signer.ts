@@ -19,10 +19,7 @@ export const requireSpidLevel = (req: H.HttpRequest) =>
     req.headers,
     lookup("x-iosign-spid-level"),
     E.fromOption(
-      () =>
-        new H.HttpForbiddenError(
-          "Missing x-iosign-spid-level header"
-        )
+      () => new H.HttpForbiddenError("Missing x-iosign-spid-level header")
     ),
     E.chainW(
       H.parse(
