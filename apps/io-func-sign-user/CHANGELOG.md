@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.4.0
+
+### Minor Changes
+
+- 271427d: Add optional x-iosign-spid-level header to the POST /signatures endpoint
+
 ## 1.3.0
 
 ### Minor Changes
