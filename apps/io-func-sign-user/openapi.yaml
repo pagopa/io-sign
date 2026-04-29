@@ -159,7 +159,10 @@ paths:
           schema:
             type: string
             description: The SPID level of the authenticated user.
-            minLength: 1
+            enum:
+              - https://www.spid.gov.it/SpidL1
+              - https://www.spid.gov.it/SpidL2
+              - https://www.spid.gov.it/SpidL3
             example: https://www.spid.gov.it/SpidL2
           required: false
         - name: x-pagopa-lollipop-original-method
