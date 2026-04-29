@@ -20,8 +20,8 @@ module "sign_storage_account" {
 
   blob_features = {
     versioning = true
-    "change_feed" = {
-        "enabled" = true
+    change_feed = {
+        enabled = true
     }
   }
 
