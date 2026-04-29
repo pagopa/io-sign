@@ -140,11 +140,6 @@ const onSignatureRequestReadyQueueClient = new QueueClient(
   "on-signature-request-ready"
 );
 
-const itnOnSignatureRequestReadyQueueClient = new QueueClient(
-  config.azure.storage.itnConnectionString,
-  "on-signature-request-ready"
-);
-
 const waitingForSignatureRequestUpdatesQueueClient = new QueueClient(
   config.azure.storage.connectionString,
   "waiting-for-signature-request-updates"
@@ -282,7 +277,6 @@ const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   signatureRequestRepository,
   eventAnalyticsClient,
   ready: onSignatureRequestReadyQueueClient,
-  itnReady: itnOnSignatureRequestReadyQueueClient,
   updated: waitingForSignatureRequestUpdatesQueueClient
 });
 
