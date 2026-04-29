@@ -39,11 +39,7 @@ const requireSetSignatureRequestStatusBody = (req: H.HttpRequest) =>
 
 const getQueue =
   (signatureRequest: SignatureRequest) =>
-  (queueClient: {
-    ready: QueueClient;
-    itnReady: QueueClient;
-    updated: QueueClient;
-  }) => {
+  (queueClient: { ready: QueueClient; updated: QueueClient }) => {
     if (signatureRequest.status === "READY") {
       return E.right(queueClient.ready);
     } else if (signatureRequest.status === "CANCELLED") {
@@ -55,19 +51,12 @@ const getQueue =
 
 const enqueueSignatureRequest =
   (signatureRequest: SignatureRequest) =>
-  (queueClient: {
-    ready: QueueClient;
-    itnReady: QueueClient;
-    updated: QueueClient;
-  }) =>
+  (queueClient: { ready: QueueClient; updated: QueueClient }) =>
     pipe(
       queueClient,
       getQueue(signatureRequest),
       TE.fromEither,
-      TE.chain(enqueue(signatureRequest)),
-      signatureRequest.status === "READY"
-        ? TE.chainFirst(() => enqueue(signatureRequest)(queueClient.itnReady))
-        : (x) => x
+      TE.chain(enqueue(signatureRequest))
     );
 
 export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>

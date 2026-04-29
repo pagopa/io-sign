@@ -125,7 +125,6 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
-      itnReady: {} as QueueClient,
       updated: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
@@ -159,7 +158,6 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
-      itnReady: {} as QueueClient,
       updated: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
@@ -193,7 +191,6 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
-      itnReady: {} as QueueClient,
       updated: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
@@ -232,9 +229,6 @@ describe("SetSignatureRequestHandler", () => {
       ready: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
-      itnReady: {
-        sendMessage: (_: string) => Promise.resolve({}),
-      } as QueueClient,
       updated: {} as QueueClient,
     });
     expect(run()).resolves.toEqual(
@@ -267,7 +261,6 @@ describe("SetSignatureRequestHandler", () => {
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
-      itnReady: {} as QueueClient,
       updated: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
