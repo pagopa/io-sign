@@ -24,7 +24,7 @@ import { validate } from "@io-sign/io-sign/validation";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import * as L from "@pagopa/logger";
 
-import { requireSigner } from "../decoders/signer";
+import { requireSigner, requireSpidLevel } from "../decoders/signer";
 import { requireCreateSignatureLollipopParams } from "../decoders/lollipop";
 import {
   requireCreateSignatureBody,
@@ -64,6 +64,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
     RTE.fromEither(
       sequenceS(E.Apply)({
         signer: requireSigner(req),
+        spidLevel: requireSpidLevel(req),
         body: requireCreateSignatureBody(req),
         documentsSignature: requireDocumentsSignature(req),
         qtspClauses: requireQtspClauses(req),
