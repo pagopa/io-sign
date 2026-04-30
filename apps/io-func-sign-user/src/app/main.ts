@@ -59,27 +59,27 @@ const filledContainerClient = new ContainerClient(
 );
 
 const documentsToFillQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-documents-to-fill"
 );
 
 const qtspQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-qtsp"
 );
 
 const onWaitForSignatureQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-wait-for-signature"
 );
 
 const onSignedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-signed"
 );
 
 const onRejectedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-rejected"
 );
 
