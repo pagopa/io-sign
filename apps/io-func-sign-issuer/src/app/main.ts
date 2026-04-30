@@ -307,7 +307,7 @@ const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
 
 app.storageQueue("markAsWaitForSignature", {
   queueName: "on-signature-request-wait-for-signature",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: markAsWaitForSignature
 });
 
@@ -323,13 +323,13 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
 
 app.storageQueue("closeSignatureRequestSigned", {
   queueName: "on-signature-request-signed",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: closeSignatureRequest
 });
 
 app.storageQueue("closeSignatureRequestRejected", {
   queueName: "on-signature-request-rejected",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: closeSignatureRequest
 });
 
