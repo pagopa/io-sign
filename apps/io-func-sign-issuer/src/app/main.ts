@@ -136,12 +136,12 @@ const signedContainerClient = new ContainerClient(
 );
 
 const onSignatureRequestReadyQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-ready"
 );
 
 const waitingForSignatureRequestUpdatesQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-signature-request-updates"
 );
 
