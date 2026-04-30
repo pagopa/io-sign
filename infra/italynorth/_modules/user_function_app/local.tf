@@ -19,6 +19,7 @@ locals {
       CosmosDbEndpoint                  = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbDatabaseName              = "user"
       StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
+      StorageAccountItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
       userUploadedBlobContainerName     = "uploaded-documents"
       userValidatedBlobContainerName    = "validated-documents"
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
