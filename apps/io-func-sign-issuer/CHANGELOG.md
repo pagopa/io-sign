@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.2.1
+
+### Patch Changes
+
+- 328517a: switch write/read on queue in itn
+
 ## 1.2.0
 
 ### Minor Changes

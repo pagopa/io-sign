@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.4.1
+
+### Patch Changes
+
+- 328517a: switch write/read on queue in itn
+
 ## 1.4.0
 
 ### Minor Changes
