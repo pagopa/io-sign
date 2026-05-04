@@ -59,27 +59,27 @@ const filledContainerClient = new ContainerClient(
 );
 
 const documentsToFillQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-documents-to-fill"
 );
 
 const qtspQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-qtsp"
 );
 
 const onWaitForSignatureQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-wait-for-signature"
 );
 
 const onSignedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-signed"
 );
 
 const onRejectedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-rejected"
 );
 
@@ -169,7 +169,7 @@ const updateSignatureRequest = UpdateSignatureRequestFunction({
 
 app.storageQueue("updateSignatureRequest", {
   queueName: "waiting-for-signature-request-updates",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: updateSignatureRequest
 });
 
@@ -199,7 +199,7 @@ const createSignatureRequest = CreateSignatureRequestFunction({
 
 app.storageQueue("createSignatureRequest", {
   queueName: "on-signature-request-ready",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: createSignatureRequest
 });
 
@@ -271,7 +271,7 @@ const fillDocument = FillDocumentFunction({
 
 app.storageQueue("fillDocument", {
   queueName: "waiting-for-documents-to-fill",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: fillDocument
 });
 
@@ -287,6 +287,6 @@ const validateSignature = ValidateSignatureFunction({
 
 app.storageQueue("validateSignature", {
   queueName: "waiting-for-qtsp",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: validateSignature
 });
