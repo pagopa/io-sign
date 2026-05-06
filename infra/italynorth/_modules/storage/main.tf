@@ -9,9 +9,10 @@ module "sign_storage_account" {
     app_name        = local.domain
     instance_number = local.instance_number
   }
-  resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
-  use_case            = "default"
-  subnet_pep_id       = data.azurerm_subnet.private_endpoints_subnet_itn.id
+  resource_group_name                 = data.azurerm_resource_group.sign_itn_rg.name
+  use_case                            = "default"
+  subnet_pep_id                       = data.azurerm_subnet.private_endpoints_subnet_itn.id
+  force_public_network_access_enabled = true
 
   subservices_enabled = {
     blob  = true
@@ -21,7 +22,7 @@ module "sign_storage_account" {
   blob_features = {
     versioning = true
     change_feed = {
-        enabled = true
+      enabled = true
     }
   }
 
