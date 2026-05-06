@@ -76,6 +76,20 @@ resource "azurerm_storage_management_policy" "io_sign_storage_management_policy"
       }
     }
   }
+
+  rule {
+    name    = "delete-filled-modules"
+    enabled = true
+    filters {
+      prefix_match = ["filled-modules"]
+      blob_types   = ["blockBlob"]
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = 1
+      }
+    }
+  }
 }
 
 module "sign_storage_infra_ci_role" {
