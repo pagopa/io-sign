@@ -16,3 +16,13 @@ data "azurerm_monitor_action_group" "common_error_action_group" {
   name                = "${local.prefix}${local.env_short}error"
   resource_group_name = "${local.prefix}-${local.env_short}-rg-common"
 }
+
+data "azurerm_private_dns_zone" "storage_blob" {
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = "${local.prefix}-${local.env_short}-rg-common"
+}
+
+data "azurerm_private_dns_zone" "storage_queue" {
+  name                = "privatelink.queue.core.windows.net"
+  resource_group_name = "${local.prefix}-${local.env_short}-rg-common"
+}

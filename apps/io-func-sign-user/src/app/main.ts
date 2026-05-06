@@ -54,7 +54,7 @@ const eventHubAnalyticsClient = new EventHubProducerClient(
 );
 
 const filledContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "filled-modules"
 );
 
