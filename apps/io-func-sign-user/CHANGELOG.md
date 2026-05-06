@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 1.4.2
+
+### Patch Changes
+
+- fa9f21d: start to write on itn for container filled-modules (user function)
+
 ## 1.4.1
 
 ### Patch Changes
