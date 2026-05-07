@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.1
+
+### Patch Changes
+
+- f625285: Remove postbuild command
+
 ## 1.8.0
 
 ### Minor Changes
