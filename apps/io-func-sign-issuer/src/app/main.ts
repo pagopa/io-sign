@@ -115,11 +115,6 @@ const signerRepository = new PdvTokenizerSignerRepository(
 );
 
 const uploadedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  "uploaded-documents"
-);
-
-const uploadedContainerClientItn = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "uploaded-documents"
 );
@@ -130,10 +125,6 @@ const validatedContainerClient = new ContainerClient(
 );
 
 const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
-
-const uploadedFileStorageItn = new BlobStorageFileStorage(
-  uploadedContainerClientItn
-);
 
 const validatedFileStorage = new BlobStorageFileStorage(
   validatedContainerClient
@@ -189,7 +180,7 @@ app.http("getSignerByFiscalCode", {
 
 const getUploadUrl = GetUploadUrlFunction({
   db: database,
-  uploadedContainerClient: uploadedContainerClientItn,
+  uploadedContainerClient,
   issuerRepository
 });
 
@@ -356,22 +347,8 @@ const validateUpload = makeValidateUploadBlobHandler({
 
 app.storageBlob("validateUpload", {
   path: "uploaded-documents/{name}",
-  connection: "StorageAccountConnectionString",
-  handler: validateUpload
-});
-
-const validateUploadItn = makeValidateUploadBlobHandler({
-  signatureRequestRepository,
-  uploadMetadataRepository,
-  uploadedFileStorage: uploadedFileStorageItn,
-  validatedFileStorage: validatedFileStorage,
-  eventAnalyticsClient
-});
-
-app.storageBlob("validateUploadItn", {
-  path: "uploaded-documents/{name}",
   connection: "StorageAccountItnConnectionString",
-  handler: validateUploadItn
+  handler: validateUpload
 });
 
 // ---- COSMOS DB TRIGGER ----
