@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.2.3
+
+### Patch Changes
+
+- 82c8a1b: Removing uploaded-document WEU trigger
+
 ## 1.2.2
 
 ### Patch Changes
