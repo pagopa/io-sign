@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.2.2
+
+### Patch Changes
+
+- c81b660: Init switch to ITN for uploaded-documents with double trigger (WEU - ITN)
+
 ## 1.2.1
 
 ### Patch Changes
