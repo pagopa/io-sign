@@ -119,12 +119,21 @@ const uploadedContainerClient = new ContainerClient(
   "uploaded-documents"
 );
 
+const uploadedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "uploaded-documents"
+);
+
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
 );
 
 const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
+
+const uploadedFileStorageItn = new BlobStorageFileStorage(
+  uploadedContainerClientItn
+);
 
 const validatedFileStorage = new BlobStorageFileStorage(
   validatedContainerClient
@@ -180,7 +189,7 @@ app.http("getSignerByFiscalCode", {
 
 const getUploadUrl = GetUploadUrlFunction({
   db: database,
-  uploadedContainerClient,
+  uploadedContainerClient: uploadedContainerClientItn,
   issuerRepository
 });
 
@@ -349,6 +358,20 @@ app.storageBlob("validateUpload", {
   path: "uploaded-documents/{name}",
   connection: "StorageAccountConnectionString",
   handler: validateUpload
+});
+
+const validateUploadItn = makeValidateUploadBlobHandler({
+  signatureRequestRepository,
+  uploadMetadataRepository,
+  uploadedFileStorage: uploadedFileStorageItn,
+  validatedFileStorage: validatedFileStorage,
+  eventAnalyticsClient
+});
+
+app.storageBlob("validateUploadItn", {
+  path: "uploaded-documents/{name}",
+  connection: "StorageAccountItnConnectionString",
+  handler: validateUploadItn
 });
 
 // ---- COSMOS DB TRIGGER ----
