@@ -38,10 +38,8 @@ import { makeValidateUploadBlobHandler } from "../infra/azure/functions/validate
 import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
-import {
-  BlobStorageFileStorage,
-  BlobStorageFileStorageWithFallback
-} from "../infra/azure/storage/upload";
+import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
+import { BlobStorageFileStorageWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
