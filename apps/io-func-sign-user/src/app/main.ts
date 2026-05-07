@@ -33,6 +33,7 @@ import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signat
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { InfoFunction } from "../infra/azure/functions/info";
 import { getConfigFromEnvironment } from "./config";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -83,10 +84,24 @@ const onRejectedQueueClient = new QueueClient(
   "on-signature-request-rejected"
 );
 
+// ITN is the new primary for validated-documents (all new writes go here).
+const validatedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "validated-documents"
+);
+
+// WEU is kept as the fallback: blobs validated before the migration still live here.
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
 );
+
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const validatedContainerClientWithFallback =
+  new BaseContainerClientWithFallback(
+    validatedContainerClientItn,
+    validatedContainerClient
+  );
 
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
@@ -150,7 +165,7 @@ app.http("getSignatureRequests", {
 
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
-  validatedContainerClient,
+  validatedContainerClient: validatedContainerClientWithFallback,
   signedContainerClient
 });
 
@@ -178,7 +193,7 @@ const createSignature = CreateSignatureFunction({
   lollipopApiClient,
   db: database,
   qtspQueue,
-  validatedContainerClient,
+  validatedContainerClient: validatedContainerClientWithFallback,
   signedContainerClient,
   qtspConfig: config.namirial
 });
