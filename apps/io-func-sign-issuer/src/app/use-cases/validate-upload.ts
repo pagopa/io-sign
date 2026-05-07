@@ -210,6 +210,7 @@ export const validateUpload = (
           RTE.chainW(({ documentMetadata }) =>
             pipe(
               getUploadedDocumentUrl(meta.id),
+              RTE.fromReader,
               RTE.chainW(createDocumentFromUrl(meta.documentId)),
               RTE.chainEitherKW((url) =>
                 pipe(

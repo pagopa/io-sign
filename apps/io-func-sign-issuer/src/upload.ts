@@ -5,6 +5,7 @@ import * as t from "io-ts";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as R from "fp-ts/lib/Reader";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 
@@ -122,7 +123,7 @@ export type FileStorage = {
     filename: string
   ) => TE.TaskEither<Error, string>;
   remove: (filename: string) => TE.TaskEither<Error, void>;
-  getUrl: (filename: string) => TE.TaskEither<Error, string>;
+  getUrl: (filename: string) => string;
 };
 
 export const getUploadedDocument =
@@ -171,12 +172,6 @@ export const createDocumentFromUrl =
     storage.createFromUrl(url, filename);
 
 export const getUploadedDocumentUrl =
-  (
-    uploadId: string
-  ): RTE.ReaderTaskEither<
-    { uploadedFileStorage: FileStorage },
-    Error,
-    string
-  > =>
+  (uploadId: string): R.Reader<{ uploadedFileStorage: FileStorage }, string> =>
   ({ uploadedFileStorage: storage }) =>
     storage.getUrl(uploadId);

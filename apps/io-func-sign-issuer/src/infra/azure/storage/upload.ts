@@ -71,16 +71,7 @@ export class BlobStorageFileStorage implements FileStorage {
 
   getUrl(filename: string) {
     const blobClient = this.#containerClient.getBlobClient(filename);
-    return pipe(
-      blobClient,
-      generateSasUrlFromBlob(
-        pipe(
-          defaultBlobGenerateSasUrlOptions(),
-          withPermissions("r"),
-          withExpireInMinutes(5)
-        )
-      )
-    );
+    return blobClient.url;
   }
 }
 
