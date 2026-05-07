@@ -6,6 +6,7 @@ import {
   EventHubConsumerClient,
   EventHubProducerClient
 } from "@azure/event-hubs";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -37,7 +38,10 @@ import { makeValidateUploadBlobHandler } from "../infra/azure/functions/validate
 import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
-import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
+import {
+  BlobStorageFileStorage,
+  BlobStorageFileStorageWithFallback
+} from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
@@ -119,15 +123,29 @@ const uploadedContainerClient = new ContainerClient(
   "uploaded-documents"
 );
 
+// ITN is the new primary for validated-documents (all new writes go here).
+const validatedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "validated-documents"
+);
+
+// WEU is kept as the fallback: blobs validated before the migration still live here.
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
 );
 
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const validatedContainerClientWithFallback =
+  new BaseContainerClientWithFallback(
+    validatedContainerClientItn,
+    validatedContainerClient
+  );
+
 const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
 
-const validatedFileStorage = new BlobStorageFileStorage(
-  validatedContainerClient
+const validatedFileStorage = new BlobStorageFileStorageWithFallback(
+  validatedContainerClientWithFallback
 );
 
 const signedContainerClient = new ContainerClient(
