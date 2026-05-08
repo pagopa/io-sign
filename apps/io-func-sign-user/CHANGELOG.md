@@ -1,5 +1,16 @@
 # io-func-sign-user
 
+## 1.5.0
+
+### Minor Changes
+
+- 2593e4c: Switch validated-documents container to ITN with migration-kit
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
 ## 1.4.2
 
 ### Patch Changes
