@@ -120,7 +120,7 @@ const uploadedContainerClient = new ContainerClient(
 );
 
 const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "validated-documents"
 );
 

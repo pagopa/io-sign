@@ -322,6 +322,9 @@ importers:
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
+      '@pagopa/azure-storage-migration-kit':
+        specifier: 0.0.5
+        version: 0.0.5(@azure/storage-blob@12.16.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit':
         specifier: 'catalog:'
         version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)
@@ -607,6 +610,9 @@ importers:
       '@azure/storage-queue':
         specifier: 'catalog:'
         version: 12.15.0
+      '@pagopa/azure-storage-migration-kit':
+        specifier: 0.0.5
+        version: 0.0.5(@azure/storage-blob@12.16.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit':
         specifier: ^1.1.0
         version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)
@@ -840,6 +846,10 @@ packages:
     resolution: {integrity: sha512-RYIyC8PtGpMzZRiSokADw0ezFgNq1eUkCPV8rd7tJ85dn8CAhYDEYapzMYxAwIBLWidshu14m9UWjQS7hKYDpA==}
     engines: {node: '>=14.0.0'}
 
+  '@azure/core-auth@1.10.1':
+    resolution: {integrity: sha512-ykRMW8PjVAn+RS6ww5cmK9U2CyH9p4Q88YJwvUslfuMmN98w/2rdGRLPqJYObapBCdzBVeDgYWdJnFPFb7qzpg==}
+    engines: {node: '>=20.0.0'}
+
   '@azure/core-auth@1.5.0':
     resolution: {integrity: sha512-udzoBuYG1VBoHVohDTrvKjyzel34zt77Bhp7dQntVGGD0ehVq48owENbBG8fIgkHRNUBQH5k1r0hpoMu5L8+kw==}
     engines: {node: '>=14.0.0'}
@@ -876,6 +886,10 @@ packages:
   '@azure/core-tracing@1.0.1':
     resolution: {integrity: sha512-I5CGMoLtX+pI17ZdiFJZgxMJApsK6jjfm85hpgp3oazCdq5Wxgh4wMr7ge/TTWW1B5WBuvIOI1fMU/FrOAMKrw==}
     engines: {node: '>=12.0.0'}
+
+  '@azure/core-util@1.13.1':
+    resolution: {integrity: sha512-XPArKLzsvl0Hf0CaGyKHUyVgF7oDnhKoP85Xv6M4StF/1AhfORhZudHtOyf2s+FcbuQ9dPRAjB8J2KvRRMUK2A==}
+    engines: {node: '>=20.0.0'}
 
   '@azure/core-util@1.2.0':
     resolution: {integrity: sha512-ffGIw+Qs8bNKNLxz5UPkz4/VBM/EZY07mPve1ZYFqYUdPwFqRj0RPk0U7LZMOfT7GCck9YjuT1Rfp1PApNl1ng==}
@@ -2723,6 +2737,13 @@ packages:
     resolution: {integrity: sha512-VkliWlS4/+GHLLW7J/rVBA00uXus1SWvwFvcUDxDwmFxYfg/2VI6ekwdXS28cjI8Qz2ky2BzG8OUHo+WeYIWqw==}
     engines: {node: '>=14'}
 
+  '@pagopa/azure-storage-migration-kit@0.0.5':
+    resolution: {integrity: sha512-fla36WKSqhPn7Qr65377F77NohncVc5AVkk6zzJ+YHk0H+xcB12TpU/15H6cEECdfR/PGUJvY57PA7046yjGlQ==}
+    peerDependencies:
+      '@azure/storage-blob': ^12.24.0
+      fp-ts: ^2.13.1
+      io-ts: ^2.2.20
+
   '@pagopa/eslint-config@5.1.2':
     resolution: {integrity: sha512-7Byb+K51xcWKjk9oWDU0GeHPpdRm3Y1zgLSP0NZ0wnijxmD4GGe3DNLMhbu3q7MOCrHbbJXWR4jqR3BqE6P7dw==}
     peerDependencies:
@@ -3776,6 +3797,10 @@ packages:
   '@typescript-eslint/visitor-keys@8.57.1':
     resolution: {integrity: sha512-YWnmJkXbofiz9KbnbbwuA2rpGkFPLbAIetcCNO6mJ8gdhdZ/v7WDXsoGFAJuM6ikUFKTlSQnjWnVO4ux+UzS6A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typespec/ts-http-runtime@0.3.5':
+    resolution: {integrity: sha512-yURCknZhvywvQItHMMmFSo+fq5arCUIyz/CVk7jD89MSai7dkaX8ufjCWp3NttLojoTVbcE72ri+be/TnEbMHw==}
+    engines: {node: '>=20.0.0'}
 
   '@vitest/coverage-c8@0.33.0':
     resolution: {integrity: sha512-DaF1zJz4dcOZS4k/neiQJokmOWqsGXwhthfmUdPGorXIQHjdPvV6JQSYhQDI41MyI8c+IieQUdIDs5XAMHtDDw==}
@@ -5510,6 +5535,10 @@ packages:
   http-proxy-agent@5.0.0:
     resolution: {integrity: sha512-n2hY8YdoRE1i7r6M0w9DIw5GgZN0G25P8zLCRQ8rjXtTU3vsNFBI/vWK/UIeE6g5MUUz6avwAPXmL6Fy9D/90w==}
     engines: {node: '>= 6'}
+
+  http-proxy-agent@7.0.2:
+    resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
+    engines: {node: '>= 14'}
 
   http-signature@1.2.0:
     resolution: {integrity: sha512-CAbnr6Rz4CYQkLYUtSNXxQPUH2gK8f3iWexVlsnMeD+GjlsQ0Xsy1cOX+mN3dtxYomRy21CiOzU8Uhw6OwncEQ==}
@@ -8576,6 +8605,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@azure/core-auth@1.10.1':
+    dependencies:
+      '@azure/abort-controller': 2.1.2
+      '@azure/core-util': 1.13.1
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@azure/core-auth@1.5.0':
     dependencies:
       '@azure/abort-controller': 1.1.0
@@ -8661,6 +8698,14 @@ snapshots:
   '@azure/core-tracing@1.0.1':
     dependencies:
       tslib: 2.8.1
+
+  '@azure/core-util@1.13.1':
+    dependencies:
+      '@azure/abort-controller': 2.1.2
+      '@typespec/ts-http-runtime': 0.3.5
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@azure/core-util@1.2.0':
     dependencies:
@@ -10639,6 +10684,20 @@ snapshots:
 
   '@opentelemetry/semantic-conventions@1.24.1': {}
 
+  '@pagopa/azure-storage-migration-kit@0.0.5(@azure/storage-blob@12.16.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)':
+    dependencies:
+      '@azure/core-auth': 1.10.1
+      '@azure/storage-blob': 12.16.0
+      fp-ts: 2.16.10
+      io-ts: 2.2.22(fp-ts@2.16.10)
+      tsup: 6.7.0(@swc/core@1.15.18)(postcss@8.4.35)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.19.17)(typescript@4.9.5))(typescript@4.9.5)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - postcss
+      - supports-color
+      - ts-node
+      - typescript
+
   '@pagopa/eslint-config@5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@1.2.2(@types/node@22.19.17)(happy-dom@9.20.3))':
     dependencies:
       '@eslint/js': 9.39.4
@@ -12191,6 +12250,14 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.57.1
       eslint-visitor-keys: 5.0.1
+
+  '@typespec/ts-http-runtime@0.3.5':
+    dependencies:
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.2
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@vitest/coverage-c8@0.33.0(vitest@1.2.2(@types/node@22.19.17)(happy-dom@9.20.3))':
     dependencies:
@@ -14275,6 +14342,13 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+
+  http-proxy-agent@7.0.2:
+    dependencies:
+      agent-base: 7.1.0
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color

@@ -11,9 +11,11 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
+import { getDocumentUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
@@ -54,7 +56,7 @@ export type CreateSignatureDependencies = {
   lollipopApiClient: LollipopApiClient;
   db: CosmosDatabase;
   qtspQueue: QueueClient;
-  validatedContainerClient: ContainerClient;
+  validatedContainerClient: BaseContainerClientWithFallback;
   signedContainerClient: ContainerClient;
   qtspConfig: NamirialConfig;
 };
@@ -105,7 +107,9 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           const getDownloadDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
           ) =>
-            pipe(document, getDocumentUrl("r", 60))(validatedContainerClient);
+            getDocumentUrlWithFallback("r", 60)(document)(
+              validatedContainerClient
+            );
 
           const getUploadSignedDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
