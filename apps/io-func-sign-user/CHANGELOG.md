@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
 ## 1.5.0
 
 ### Minor Changes
