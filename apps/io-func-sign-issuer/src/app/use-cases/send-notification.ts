@@ -23,15 +23,21 @@ import {
 
 import { Dossier, GetDossier } from "../../dossier";
 
+import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
+
 import {
   MakeMessageContent,
   makeSendSignatureRequestNotification,
   SendNotificationPayload
 } from "../../signature-request-notification";
 
+const truncateTo121Chars = truncateWithEllipsis();
+
 const requestToSignMessage: MakeMessageContent =
   (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    subject: `Hai un documento da firmare - ${signatureRequest.issuerDescription}`,
+    subject: truncateTo121Chars(
+      `Hai un documento da firmare - ${signatureRequest.issuerDescription}`
+    ),
     markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
     }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${

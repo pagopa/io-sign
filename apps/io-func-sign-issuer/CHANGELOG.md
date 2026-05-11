@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.4.0
+
+### Minor Changes
+
+- fb57d04: add a method to truncate the message subject if it is longer than 121 characters
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
 ## 1.3.0
 
 ### Minor Changes

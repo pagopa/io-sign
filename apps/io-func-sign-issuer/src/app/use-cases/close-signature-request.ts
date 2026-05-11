@@ -8,6 +8,7 @@ import {
   sendBillingEvent
 } from "@io-sign/io-sign/event";
 import { NotificationMessage } from "@io-sign/io-sign/notification";
+import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
 
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
@@ -27,19 +28,25 @@ import { sendSignatureRequestNotification } from "../../signature-request-notifi
 // - the user should be notified by a Message
 // - we should send a "CANCELLED" event to analytics
 
+const truncateTo121Chars = truncateWithEllipsis();
+
 const buildNotificationMessage = (
   request: SignatureRequest
 ): NotificationMessage => {
   const supportEmail = `[${request.issuerEmail}](mailto:${request.issuerEmail})`;
   if (request.status === "SIGNED") {
     return {
-      subject: `Ecco i documenti firmati - ${request.issuerDescription}`,
+      subject: truncateTo121Chars(
+        `Ecco i documenti firmati - ${request.issuerDescription}`
+      ),
       markdown: `I documenti che hai firmato sono pronti!\n\n\nHai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a ${supportEmail}.`,
       signatureRequestId: request.id
     };
   }
   return {
-    subject: `C'è un problema con la firma dei documenti - ${request.issuerDescription}`,
+    subject: truncateTo121Chars(
+      `C'è un problema con la firma dei documenti - ${request.issuerDescription}`
+    ),
     markdown: `Per un problema tecnico, non è stato possibile completare la firma dei documenti.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
   };
 };
