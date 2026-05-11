@@ -6,8 +6,7 @@ module "eventhub" {
     prefix          = local.prefix
     env_short       = local.env_short
     location        = local.location_itn
-    domain          = local.domain
-    app_name        = "eventhub-ns"
+    app_name        = local.domain
     instance_number = local.instance_number
   }
 
