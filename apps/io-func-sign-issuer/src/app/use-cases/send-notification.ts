@@ -36,12 +36,15 @@ const requestToSignMessage: MakeMessageContent =
       signatureRequest.id
     }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
       signatureRequest.id
-    }"\n---\nHai ricevuto una richiesta per **firmare alcuni documenti** relativi a **${
+    }"\n---\nHai ricevuto una richiesta per **firmare ${signatureRequest.documents.length}** ${signatureRequest.documents.length === 1 ? "documento relativo" : "documenti relativi"} a **${
       dossier.title
-    }** da **${signatureRequest.issuerDescription}**.\n\n\nHai tempo fino al **${format(
+    }** da **${signatureRequest.issuerDescription}**.\n\n\nPuoi firmare fino alle ${format(
       signatureRequest.expiresAt,
-      "dd/MM/yyyy HH:mm"
-    )}** per farlo: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
+      "HH:mm"
+    )} del **${format(
+      signatureRequest.expiresAt,
+      "dd/MM/yyyy"
+    )}**.\n\n\n# Cosa serve\n\nPer firmare digitalmente è richiesto un livello di sicurezza massimo ([livello di sicurezza 3](https://assistenza.ioapp.it/hc/it/articles/30722976684049-Cosa-sono-i-livelli-di-sicurezza)).\nDovrai quindi usare la tua Carta di Identità Elettronica e il PIN per firmare.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
       signatureRequest.issuerEmail
     }](mailto:${signatureRequest.issuerEmail}).`
   });
