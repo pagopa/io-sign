@@ -8,8 +8,8 @@ data "azurerm_subnet" "private_endpoints_subnet_itn" {
   resource_group_name  = var.common_resource_group_name_itn
 }
 
-data "azurerm_resource_group" "weu-common" {
-  name = "${local.prefix}-${local.env_short}-rg-common"
+data "azurerm_resource_group" "evt_rg" {
+  name = "${local.prefix}-${local.env_short}-evt-rg"
 }
 
 data "azurerm_monitor_action_group" "common_error_action_group" {
