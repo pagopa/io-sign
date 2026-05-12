@@ -7,11 +7,6 @@ data "azurerm_container_app_environment" "runner" {
   resource_group_name = local.runner.cae_resource_group_name
 }
 
-data "azurerm_api_management" "apim" {
-  name                = local.apim.name
-  resource_group_name = local.apim.resource_group_name
-}
-
 data "azurerm_key_vault" "common" {
   name                = local.key_vault.name
   resource_group_name = local.key_vault.resource_group_name
@@ -20,11 +15,6 @@ data "azurerm_key_vault" "common" {
 data "azurerm_key_vault" "sign" {
   name                = local.sign_key_vault.name
   resource_group_name = local.sign_key_vault.resource_group_name
-}
-
-data "azurerm_virtual_network" "common" {
-  name                = local.vnet.name
-  resource_group_name = local.vnet.resource_group_name
 }
 
 data "azurerm_resource_group" "dns_zones" {
@@ -66,10 +56,6 @@ data "azuread_group" "adgroup_ecosystem_n_links" {
 data "azurerm_key_vault" "sign_itn" {
   name                = local.sign_itn_key_vault.name
   resource_group_name = local.sign_itn_key_vault.resource_group_name
-}
-
-data "azurerm_resource_group" "sign_itn_rg" {
-  name = local.functions.itn_io_sign_rg_name
 }
 
 data "azurerm_resource_group" "io_p_sign_integration_rg" {

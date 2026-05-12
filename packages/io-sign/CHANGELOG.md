@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.9.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
 ## 1.8.0
 
 ### Minor Changes

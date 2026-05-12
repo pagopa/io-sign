@@ -14,6 +14,22 @@ import {
   withPermissions
 } from "./blob";
 
+// Downloads the blob content using the fallback container client.
+// Reads try primary (ITN) first, falling back to secondary (WEU)
+// when the blob is not yet migrated.
+export const getDocumentContentWithFallback =
+  (document: DocumentReady) =>
+  (
+    containerClient: BaseContainerClientWithFallback
+  ): TE.TaskEither<Error, Buffer> => {
+    const blobName = pipe(document.url, split("/"), last);
+    const blobClient = containerClient.getBlobClient(blobName);
+    return TE.tryCatch(
+      () => blobClient.downloadToBuffer(),
+      () => new Error("Unable to download content for the specified Blob.")
+    );
+  };
+
 // Functional equivalents of toDocumentWithSasUrl / getDocumentUrl
 // for containers backed by BaseContainerClientWithFallback.
 // Reads try primary (ITN) first, falling back to secondary (WEU)
