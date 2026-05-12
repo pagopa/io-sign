@@ -1,7 +1,7 @@
 ---
-"io-func-sign-issuer": patch
-"io-func-sign-user": patch
-"@io-sign/io-sign": patch
+"io-func-sign-issuer": minor
+"io-func-sign-user": minor
+"@io-sign/io-sign": minor
 ---
 
 switch traffic to itn signed documents container with weu fallback
