@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.8.0
+
+### Minor Changes
+
+- fb57d04: add a method to truncate the message subject if it is longer than 121 characters
+
 ## 1.7.0
 
 ### Minor Changes
