@@ -240,12 +240,8 @@ export const sendBillingEvent =
     event: BillingEvent
   ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
   ({ billingEventProducer, legacyBillingEventProducer }) =>
-    pipe(
-      sendEvent(event)({ eventAnalyticsClient: billingEventProducer }),
-      TE.chainFirst(() =>
-        // WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
-        legacyBillingEventProducer
-          ? sendToLegacyClient(legacyBillingEventProducer, event)
-          : TE.right(undefined)
-      )
-    );
+    sendEvent(event)({
+      eventAnalyticsClient: billingEventProducer,
+      // WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
+      legacyEventAnalyticsClient: legacyBillingEventProducer
+    });
