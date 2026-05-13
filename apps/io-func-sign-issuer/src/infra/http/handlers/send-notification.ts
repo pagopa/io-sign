@@ -33,6 +33,7 @@ type SendNotificationDependencies = {
   ioApiClient: IOApiClient;
   configurationId: Ulid;
   eventHubAnalyticsClient: EventHubProducerClient;
+  legacyEventHubAnalyticsClient?: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository: IssuerRepository;
 };
 
@@ -64,14 +65,18 @@ export const SendNotificationHandler = H.of((req: H.HttpRequest) =>
           pdvTokenizerClient,
           ioApiClient,
           configurationId,
-          eventHubAnalyticsClient
+          eventHubAnalyticsClient,
+          legacyEventHubAnalyticsClient
         }: SendNotificationDependencies) => {
           const sendNotification = makeSendNotification(
             makeSubmitMessageForUser(ioApiClient, configurationId),
             makeGetFiscalCodeBySignerId(pdvTokenizerClient),
             makeUpsertSignatureRequest(db),
             makeGetDossier(db),
-            makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient)
+            makeCreateAndSendAnalyticsEvent(
+              eventHubAnalyticsClient,
+              legacyEventHubAnalyticsClient
+            )
           );
           return sendNotification({ signatureRequest });
         }
