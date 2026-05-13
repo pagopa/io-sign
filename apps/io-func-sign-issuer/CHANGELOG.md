@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.5.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
 ## 1.4.0
 
 ### Minor Changes

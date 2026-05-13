@@ -103,9 +103,22 @@ const validatedContainerClientWithFallback =
     validatedContainerClient
   );
 
+// ITN is the new primary for signed-documents (QTSP will write here after migration).
+const signedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "signed-documents"
+);
+
+// WEU is kept as the fallback: blobs signed before the migration still live here.
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "signed-documents"
+);
+
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
+  signedContainerClientItn,
+  signedContainerClient
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
@@ -139,7 +152,7 @@ const info = InfoFunction({
   db: database,
   filledContainerClient,
   validatedContainerClient,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
@@ -166,7 +179,7 @@ app.http("getSignatureRequests", {
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient: validatedContainerClientWithFallback,
-  signedContainerClient
+  signedContainerClient: signedContainerClientWithFallback
 });
 
 app.http("getSignatureRequest", {
@@ -194,7 +207,7 @@ const createSignature = CreateSignatureFunction({
   db: database,
   qtspQueue,
   validatedContainerClient: validatedContainerClientWithFallback,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial
 });
 
@@ -268,7 +281,7 @@ const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
     pdvTokenizerClient,
     db: database,
-    signedContainerClient
+    signedContainerClient: signedContainerClientWithFallback
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {
@@ -292,7 +305,7 @@ app.storageQueue("fillDocument", {
 
 const validateSignature = ValidateSignatureFunction({
   db: database,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
