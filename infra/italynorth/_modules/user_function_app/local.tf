@@ -35,6 +35,7 @@ locals {
       NamirialTestPassword              = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=NamirialTestPassword)"
       AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
       AnalyticsEventHubConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubConnectionString)"
+      BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       BillingEventHubConnectionString      = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubConnectionString)"
       SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
