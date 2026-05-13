@@ -57,19 +57,3 @@ module "eventhub" {
 
   tags = var.tags
 }
-
-resource "azurerm_key_vault_secret" "billing_itn_connection_string" {
-  name             = "BillingEventHubItnConnectionString"
-  key_vault_id     = data.azurerm_key_vault.sign_kv.id
-  value_wo         = data.azurerm_eventhub_authorization_rule.billing_func.primary_connection_string
-  value_wo_version = 1
-  content_type     = "text/plain"
-}
-
-resource "azurerm_key_vault_secret" "analytics_itn_connection_string_issuer" {
-  name             = "AnalyticsEventHubItnConnectionString"
-  key_vault_id     = data.azurerm_key_vault.sign_kv.id
-  value_wo         = data.azurerm_eventhub_authorization_rule.analytics_func.primary_connection_string
-  value_wo_version = 1
-  content_type     = "text/plain"
-}
