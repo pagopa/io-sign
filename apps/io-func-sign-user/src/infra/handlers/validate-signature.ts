@@ -35,6 +35,7 @@ export type ValidateSignatureEnvironment = {
   onSignedQueueClient: QueueClient;
   onRejectedQueueClient: QueueClient;
   eventHubAnalyticsClient: EventHubProducerClient;
+  legacyEventHubAnalyticsClient?: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 };
 
 export const ValidateSignatureHandler = H.of(
@@ -45,7 +46,8 @@ export const ValidateSignatureHandler = H.of(
       qtspConfig,
       onSignedQueueClient,
       onRejectedQueueClient,
-      eventHubAnalyticsClient
+      eventHubAnalyticsClient,
+      legacyEventHubAnalyticsClient
     }: ValidateSignatureEnvironment) => {
       const validateSignature = makeValidateSignature(
         makeGetSignature(db),
@@ -56,7 +58,10 @@ export const ValidateSignatureHandler = H.of(
         makeGetSignatureRequestWithToken()(makeGetToken())(qtspConfig),
         makeNotifySignatureRequestSignedEvent(onSignedQueueClient),
         makeNotifySignatureRequestRejectedEvent(onRejectedQueueClient),
-        makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient)
+        makeCreateAndSendAnalyticsEvent(
+          eventHubAnalyticsClient,
+          legacyEventHubAnalyticsClient
+        )
       );
       return validateSignature(payload);
     }

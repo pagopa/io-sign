@@ -49,7 +49,14 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
+// ITN — primary
 const eventHubAnalyticsClient = new EventHubProducerClient(
+  config.azure.eventHubs.analyticsItnConnectionString,
+  "analytics"
+);
+
+// WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
+const legacyEventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
 );
@@ -192,7 +199,8 @@ app.http("getSignatureRequest", {
 const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient
+  eventAnalyticsClient: eventHubAnalyticsClient,
+  legacyEventAnalyticsClient: legacyEventHubAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 });
 
 app.storageQueue("updateSignatureRequest", {
@@ -310,6 +318,7 @@ const validateSignature = ValidateSignatureFunction({
   onSignedQueueClient,
   onRejectedQueueClient,
   eventHubAnalyticsClient,
+  legacyEventHubAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   inputDecoder: ValidateSignaturePayload
 });
 
