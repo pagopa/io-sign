@@ -23,12 +23,21 @@ import {
 import { ConsoleLogger } from "../../console-logger";
 
 export const makeSendEvent =
-  (eventAnalyticsClient: EventHubProducerClient): SendEvent =>
+  (
+    eventAnalyticsClient: EventHubProducerClient,
+    legacyClient?: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  ): SendEvent =>
   (event: GenericEvent) =>
-    pipe({ eventAnalyticsClient }, sendEvent(event));
+    pipe(
+      { eventAnalyticsClient, legacyEventAnalyticsClient: legacyClient },
+      sendEvent(event)
+    );
 
 export const makeCreateAndSendAnalyticsEvent =
-  (eventAnalyticsClient: EventHubProducerClient): CreateAndSendAnalyticsEvent =>
+  (
+    eventAnalyticsClient: EventHubProducerClient,
+    legacyClient?: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  ): CreateAndSendAnalyticsEvent =>
   (eventName: EventName) =>
   (
     signatureRequest:
@@ -43,6 +52,7 @@ export const makeCreateAndSendAnalyticsEvent =
     pipe(
       {
         eventAnalyticsClient,
+        legacyEventAnalyticsClient: legacyClient,
         logger: ConsoleLogger
       },
       pipe(signatureRequest, createAndSendAnalyticsEvent(eventName))
