@@ -27,9 +27,9 @@ module "eventhub" {
     no_trx = {
       aggregation = "Total"
       metric_name = "IncomingMessages"
-      description = "No transactions received from acquirer in the last 24h"
+      description = "No events received on io-sign Event Hub (ITN) in the last 24h"
       operator    = "LessThanOrEqual"
-      threshold   = 1000
+      threshold   = 50
       frequency   = "PT1H"
       window_size = "P1D"
     },
