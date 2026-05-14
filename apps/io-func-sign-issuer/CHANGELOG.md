@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.6.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
 ## 1.5.0
 
 ### Minor Changes
