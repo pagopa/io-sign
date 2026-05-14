@@ -124,6 +124,7 @@ describe("CreateSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
+      legacyEventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -153,6 +154,7 @@ describe("CreateSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
+      legacyEventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -185,6 +187,7 @@ describe("CreateSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
+      legacyEventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -226,6 +229,7 @@ describe("CreateSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
+      legacyEventAnalyticsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -269,6 +273,7 @@ describe("CreateSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
+      legacyEventAnalyticsClient: {} as EventHubProducerClient,
     });
 
     const metadata = pipe(

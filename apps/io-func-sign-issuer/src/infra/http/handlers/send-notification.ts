@@ -33,7 +33,7 @@ type SendNotificationDependencies = {
   ioApiClient: IOApiClient;
   configurationId: Ulid;
   eventHubAnalyticsClient: EventHubProducerClient;
-  legacyEventHubAnalyticsClient?: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  legacyEventHubAnalyticsClient: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository: IssuerRepository;
 };
 

@@ -35,7 +35,7 @@ export type ValidateSignatureEnvironment = {
   onSignedQueueClient: QueueClient;
   onRejectedQueueClient: QueueClient;
   eventHubAnalyticsClient: EventHubProducerClient;
-  legacyEventHubAnalyticsClient?: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  legacyEventHubAnalyticsClient: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 };
 
 export const ValidateSignatureHandler = H.of(

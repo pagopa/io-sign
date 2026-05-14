@@ -27,7 +27,7 @@ type ValidateUploadDeps = {
   uploadedFileStorage: FileStorage;
   validatedFileStorage: FileStorage;
   eventAnalyticsClient: EventProducerClient;
-  legacyEventAnalyticsClient?: EventProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  legacyEventAnalyticsClient: EventProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 };
 
 export const makeValidateUploadBlobHandler =

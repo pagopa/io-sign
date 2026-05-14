@@ -25,7 +25,7 @@ import { ConsoleLogger } from "../../console-logger";
 export const makeSendEvent =
   (
     eventAnalyticsClient: EventHubProducerClient,
-    legacyClient?: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+    legacyClient: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   ): SendEvent =>
   (event: GenericEvent) =>
     pipe(
@@ -36,7 +36,7 @@ export const makeSendEvent =
 export const makeCreateAndSendAnalyticsEvent =
   (
     eventAnalyticsClient: EventHubProducerClient,
-    legacyClient?: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+    legacyClient: EventHubProducerClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   ): CreateAndSendAnalyticsEvent =>
   (eventName: EventName) =>
   (
