@@ -52,7 +52,7 @@ const database = cosmosClient.database(config.azure.cosmos.dbName);
 // ITN — primary
 const eventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsItnConnectionString,
-  "analytics"
+  "io-p-itn-sign-analytics-01"
 );
 
 // WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
