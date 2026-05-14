@@ -36,10 +36,6 @@ locals {
     {
       name      = "waiting-for-signature-request-updates"
       hasPoison = true
-    },
-    {
-      name      = "api-keys"
-      hasPoison = true
     }
   ]
 }
