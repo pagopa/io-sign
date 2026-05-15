@@ -1,0 +1,37 @@
+name: OpEx Dashboards
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/io-func-sign-issuer/openapi.yaml"
+      - "apps/io-func-sign-user/openapi.yaml"
+      - "apps/io-func-sign-support/openapi.yaml"
+      - "apps/io-sign-backoffice-func/openapi.yaml"
+      - ".opex/**"
+      - ".github/workflows/opex-dashboards.yaml"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - "apps/io-func-sign-issuer/openapi.yaml"
+      - "apps/io-func-sign-user/openapi.yaml"
+      - "apps/io-func-sign-support/openapi.yaml"
+      - "apps/io-sign-backoffice-func/openapi.yaml"
+      - ".opex/**"
+      - ".github/workflows/opex-dashboards.yaml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  opex_dashboards:
+    name: OpEx Dashboards
+    uses: pagopa/dx/.github/workflows/opex-dashboard-deploy.yaml@main
+    secrets: inherit
