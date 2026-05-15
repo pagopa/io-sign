@@ -33,6 +33,7 @@ import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signat
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { InfoFunction } from "../infra/azure/functions/info";
 import { getConfigFromEnvironment } from "./config";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -48,7 +49,14 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
+// ITN — primary
 const eventHubAnalyticsClient = new EventHubProducerClient(
+  config.azure.eventHubs.analyticsItnConnectionString,
+  "io-p-itn-sign-analytics-01"
+);
+
+// WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
+const legacyEventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
 );
@@ -83,14 +91,41 @@ const onRejectedQueueClient = new QueueClient(
   "on-signature-request-rejected"
 );
 
+// ITN is the new primary for validated-documents (all new writes go here).
+const validatedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "validated-documents"
+);
+
+// WEU is kept as the fallback: blobs validated before the migration still live here.
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
 );
 
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const validatedContainerClientWithFallback =
+  new BaseContainerClientWithFallback(
+    validatedContainerClientItn,
+    validatedContainerClient
+  );
+
+// ITN is the new primary for signed-documents (QTSP will write here after migration).
+const signedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "signed-documents"
+);
+
+// WEU is kept as the fallback: blobs signed before the migration still live here.
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "signed-documents"
+);
+
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
+  signedContainerClientItn,
+  signedContainerClient
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
@@ -124,7 +159,7 @@ const info = InfoFunction({
   db: database,
   filledContainerClient,
   validatedContainerClient,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
@@ -150,8 +185,8 @@ app.http("getSignatureRequests", {
 
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
-  validatedContainerClient,
-  signedContainerClient
+  validatedContainerClient: validatedContainerClientWithFallback,
+  signedContainerClient: signedContainerClientWithFallback
 });
 
 app.http("getSignatureRequest", {
@@ -164,7 +199,8 @@ app.http("getSignatureRequest", {
 const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient
+  eventAnalyticsClient: eventHubAnalyticsClient,
+  legacyEventAnalyticsClient: legacyEventHubAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 });
 
 app.storageQueue("updateSignatureRequest", {
@@ -178,8 +214,8 @@ const createSignature = CreateSignatureFunction({
   lollipopApiClient,
   db: database,
   qtspQueue,
-  validatedContainerClient,
-  signedContainerClient,
+  validatedContainerClient: validatedContainerClientWithFallback,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial
 });
 
@@ -253,7 +289,7 @@ const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
     pdvTokenizerClient,
     db: database,
-    signedContainerClient
+    signedContainerClient: signedContainerClientWithFallback
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {
@@ -277,11 +313,12 @@ app.storageQueue("fillDocument", {
 
 const validateSignature = ValidateSignatureFunction({
   db: database,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
   eventHubAnalyticsClient,
+  legacyEventHubAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   inputDecoder: ValidateSignaturePayload
 });
 

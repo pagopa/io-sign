@@ -1,5 +1,45 @@
 # io-func-sign-user
 
+## 1.7.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
+## 1.5.0
+
+### Minor Changes
+
+- 2593e4c: Switch validated-documents container to ITN with migration-kit
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
 ## 1.4.2
 
 ### Patch Changes

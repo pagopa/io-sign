@@ -12,7 +12,7 @@ import {
 } from "../../../../signature-request";
 
 import { GetSignatureRequestHandler } from "../get-signature-request";
-import { ContainerClient } from "@azure/storage-blob";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 describe("GetSignatureRequestHandler", () => {
   let signatureRequestRepository: SignatureRequestRepository;
@@ -72,8 +72,8 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as ContainerClient,
-      signedContainerClient: {} as ContainerClient,
+      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -102,8 +102,8 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as ContainerClient,
-      signedContainerClient: {} as ContainerClient,
+      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -132,8 +132,8 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as ContainerClient,
-      signedContainerClient: {} as ContainerClient,
+      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
