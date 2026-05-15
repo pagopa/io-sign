@@ -13,6 +13,8 @@ action_groups:
   - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-sign-rg-01/providers/Microsoft.Insights/actiongroups/SlackFirmaConIoTech
   - /subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-sign-rg-01/providers/Microsoft.Insights/actiongroups/EmailFirmaConIoTech
 overrides:
+  hosts:
+    - api-app.io.pagopa.it
   endpoints:
     /api/sign/v1/metadata:
       availability_threshold: 0.90 # default 0.99
