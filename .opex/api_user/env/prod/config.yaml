@@ -1,4 +1,4 @@
-oa3_spec: https://raw.githubusercontent.com/pagopa/io-backend/master/api_io_sign.yaml
+oa3_spec: https://raw.githubusercontent.com/pagopa/io-backend/master/openapi/generated/api_io_sign.yaml
 name: itn_opex_sign_api_user
 location: Italy North
 timespan: 10m
