@@ -1,8 +1,31 @@
-io-func-sign-issuer: apps/io-func-sign-issuer/**/*
-io-func-sign-user: apps/io-func-sign-user/**/*
-io-func-sign-support: apps/io-func-sign-support/**/*
-io-sign-selfcare-frontend: apps/io-sign-selfcare-frontend/**/*
-internal: packages/**/*
-docs: docs/**/*
-ci: .github/workflows/**/*
-changeset: .changeset/**/*
+io-func-sign-issuer:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-func-sign-issuer/**/*"
+
+io-func-sign-user:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-func-sign-user/**/*"
+
+io-func-sign-support:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-func-sign-support/**/*"
+
+io-sign-selfcare-frontend:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-sign-selfcare-frontend/**/*"
+
+internal:
+  - changed-files:
+    - any-glob-to-any-file: "packages/**/*"
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file: "docs/**/*"
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file: ".github/workflows/**/*"
+
+changeset:
+  - changed-files:
+    - any-glob-to-any-file: ".changeset/**/*"

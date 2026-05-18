@@ -23,12 +23,12 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 2
 
       - name: Setup Node.js environment
-        uses: pagopa/dx/.github/actions/node-setup@0fd2b15f5b61751fa433be93682e4a48779b600b
+        uses: pagopa/dx/.github/actions/node-setup@7df458f8cbef8c62cf5ebffd0cfe738a98740ece
         env:
           TURBO_CACHE_DIR: .turbo
 

@@ -30,40 +30,6 @@ module "itn_sign_backoffice_app" {
   tags = var.tags
 }
 
-module "itn_sign_bo_app_queue_role" {
-  source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
-  principal_id    = module.itn_sign_backoffice_app.app_service.app_service.principal_id
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  storage_queue = [
-    {
-      storage_account_name = data.azurerm_storage_account.storage_sign_weu.name
-      resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
-      queue_name           = "api-keys"
-      role                 = "writer"
-      description          = "Allow web app to write to the API keys queue"
-    }
-  ]
-}
-
-module "itn_sign_bo_app_queue_staging_role" {
-  source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
-  principal_id    = module.itn_sign_backoffice_app.app_service.app_service.slot.principal_id
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  storage_queue = [
-    {
-      storage_account_name = data.azurerm_storage_account.storage_sign_weu.name
-      resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
-      queue_name           = "api-keys"
-      role                 = "writer"
-      description          = "Allow web app to write to the API keys queue"
-    }
-  ]
-}
-
 module "itn_sign_bo_app_apim_role" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2.0"

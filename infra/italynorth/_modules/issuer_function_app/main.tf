@@ -89,20 +89,3 @@ module "itn_sign_issuer_func_staging_roles" {
     }
   ]
 }
-
-module "itn_sign_issuer_queue_role" {
-  source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
-  principal_id    = module.function_sign_issuer.function_app.function_app.slot.principal_id
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  storage_queue = [
-    {
-      storage_account_name = data.azurerm_storage_account.storage_sign_weu.name
-      resource_group_name  = data.azurerm_resource_group.sign_weu_data_rg.name
-      queue_name           = "api-keys"
-      role                 = "reader"
-      description          = "Allow web app to read from the API keys queue"
-    }
-  ]
-}

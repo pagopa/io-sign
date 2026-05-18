@@ -1,6 +1,6 @@
 module "bootstrap" {
   source  = "pagopa-dx/azure-github-environment-bootstrap/azurerm"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   environment = {
     prefix          = local.prefix
@@ -11,14 +11,10 @@ module "bootstrap" {
   }
 
   additional_resource_group_ids = [
-    data.azurerm_resource_group.sign_itn_rg.id,
     data.azurerm_resource_group.io_p_sign_data_rg.id,
     data.azurerm_resource_group.io_p_sign_integration_rg.id,
     data.azurerm_resource_group.io_p_sign_sec_rg.id
   ]
-
-  subscription_id = data.azurerm_subscription.current.id
-  tenant_id       = data.azurerm_client_config.current.tenant_id
 
   entraid_groups = {
     admins_object_id = data.azuread_group.admins.object_id
@@ -36,9 +32,8 @@ module "bootstrap" {
   }
 
   github_private_runner = {
-    container_app_environment_id       = data.azurerm_container_app_environment.runner.id
-    container_app_environment_location = data.azurerm_container_app_environment.runner.location
-    use_github_app                     = true
+    container_app_environment_id = data.azurerm_container_app_environment.runner.id
+    use_github_app               = true
 
     key_vault = {
       name                = local.runner.secret.kv_name
@@ -47,18 +42,32 @@ module "bootstrap" {
     }
   }
 
-  apim_id                            = data.azurerm_api_management.apim.id
-  pep_vnet_id                        = data.azurerm_virtual_network.common.id
   private_dns_zone_resource_group_id = data.azurerm_resource_group.dns_zones.id
   opex_resource_group_id             = data.azurerm_resource_group.dashboards.id
-  keyvault_common_ids = [
-    data.azurerm_key_vault.common.id
-  ]
-
-  nat_gateway_resource_group_id = data.azurerm_resource_group.common_itn.id
 
   tags = local.tags
 }
+
+resource "azurerm_key_vault_access_policy" "infra_cd_kv_common" {
+  for_each = toset(local.keyvault_common_ids)
+
+  key_vault_id = each.key
+  tenant_id    = data.azurerm_subscription.current.tenant_id
+  object_id    = module.bootstrap.identities.infra.cd.principal_id
+
+  secret_permissions = ["Get", "List", "Set"]
+}
+
+resource "azurerm_key_vault_access_policy" "infra_ci_kv_common" {
+  for_each = toset(local.keyvault_common_ids)
+
+  key_vault_id = each.key
+  tenant_id    = data.azurerm_subscription.current.tenant_id
+  object_id    = module.bootstrap.identities.infra.ci.principal_id
+
+  secret_permissions = ["Get", "List"]
+}
+
 
 module "roles_ci" {
   source  = "pagopa-dx/azure-role-assignments/azurerm"
@@ -85,6 +94,12 @@ resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
   role_definition_name = "Key Vault Contributor"
   principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
+
+ resource "azurerm_role_assignment" "infra_cd_evt_dns_zone_contributor" {
+   scope                = data.azurerm_private_dns_zone.servicebus.id
+   role_definition_name = "Private DNS Zone Contributor"
+   principal_id         = module.bootstrap.identities.infra.cd.principal_id
+ }
 
 module "roles_cd_platform_apim" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"

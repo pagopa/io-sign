@@ -1,12 +1,11 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "1.8.0",
+  "version": "1.8.5",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "rm -f .next/standalone/apps/io-sign-backoffice-app/package.json",
     "start": "next start",
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
