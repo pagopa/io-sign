@@ -27,7 +27,7 @@ module "function_sign_user_autoscale" {
       statistic_increase   = "Max"
       time_window_increase = 1
       time_aggregation     = "Maximum"
-      upper_threshold      = 2500
+      upper_threshold      = 1500
       increase_by          = 2
       cooldown_increase    = 3
       #################
