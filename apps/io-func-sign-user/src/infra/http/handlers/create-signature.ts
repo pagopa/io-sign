@@ -73,6 +73,13 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
       })
     ),
     RTE.chainFirstIOK(() =>
+      L.info("x-iosign-spid-level header", {
+        spidLevel: req.headers["x-iosign-spid-level"] ?? "missing"
+      })({
+        logger: ConsoleLogger
+      })
+    ),
+    RTE.chainFirstIOK(() =>
       L.info("creating signature")({
         logger: ConsoleLogger
       })
