@@ -27,14 +27,14 @@ export const requireSpidLevel = (req: H.HttpRequest) =>
         "The content of x-iosign-spid-level is not a valid SPID level"
       )
     ),
-    E.chainW((spidLevel) =>
-      spidLevel === "https://www.spid.gov.it/SpidL3"
-        ? E.right(spidLevel)
-        : E.left(
-            new H.HttpForbiddenError(
-              "A minimum SPID level of L3 is required to create a signature"
-            )
+    E.chainW(
+      E.fromPredicate(
+        (spidLevel) => spidLevel === "https://www.spid.gov.it/SpidL3",
+        () =>
+          new H.HttpForbiddenError(
+            "A minimum SPID level of L3 is required to create a signature"
           )
+      )
     )
   );
 

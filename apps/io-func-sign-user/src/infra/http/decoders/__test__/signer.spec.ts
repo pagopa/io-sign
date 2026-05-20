@@ -46,42 +46,21 @@ describe("requireSpidLevel", () => {
     );
   });
 
-  it("fails with a 403 error when the SPID level is L1", () => {
+  it.each([
+    {
+      label: "SPID level is L1",
+      headers: { "x-iosign-spid-level": "https://www.spid.gov.it/SpidL1" },
+    },
+    {
+      label: "SPID level is L2",
+      headers: { "x-iosign-spid-level": "https://www.spid.gov.it/SpidL2" },
+    },
+    { label: "header is missing", headers: {} as Record<string, string> },
+  ])("fails with a 403 error when $label", ({ headers }) => {
     const req: H.HttpRequest = {
       ...H.request("my-url"),
-      headers: {
-        "x-iosign-spid-level": "https://www.spid.gov.it/SpidL1",
-      },
+      headers,
     };
-    expect(requireSpidLevel(req)).toEqual(
-      expect.objectContaining({
-        left: expect.objectContaining({
-          name: "HttpError",
-          status: 403,
-        }),
-      })
-    );
-  });
-
-  it("fails with a 403 error when the SPID level is L2", () => {
-    const req: H.HttpRequest = {
-      ...H.request("my-url"),
-      headers: {
-        "x-iosign-spid-level": "https://www.spid.gov.it/SpidL2",
-      },
-    };
-    expect(requireSpidLevel(req)).toEqual(
-      expect.objectContaining({
-        left: expect.objectContaining({
-          name: "HttpError",
-          status: 403,
-        }),
-      })
-    );
-  });
-
-  it("fails with a 403 error when the header is missing", () => {
-    const req = H.request("my-url");
     expect(requireSpidLevel(req)).toEqual(
       expect.objectContaining({
         left: expect.objectContaining({
