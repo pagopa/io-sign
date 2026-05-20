@@ -27,9 +27,9 @@ module "eventhub" {
     no_trx = {
       aggregation = "Total"
       metric_name = "IncomingMessages"
-      description = "No transactions received from acquirer in the last 24h"
+      description = "No events received on io-sign Event Hub (ITN) in the last 24h"
       operator    = "LessThanOrEqual"
-      threshold   = 1000
+      threshold   = 50
       frequency   = "PT1H"
       window_size = "P1D"
     },
@@ -44,12 +44,12 @@ module "eventhub" {
     },
     error_trx = {
       aggregation = "Total"
-      metric_name = "IncomingMessages"
-      description = "Transactions rejected from one acquirer file received. trx write on eventhub. check immediately"
+      metric_name = "ServerErrors"
+      description = "Server errors on io-sign Event Hub (ITN). Check immediately."
       operator    = "GreaterThan"
       threshold   = 0
       frequency   = "PT5M"
-      window_size = "PT30M"
+      window_size = "PT15M"
     },
   }
 

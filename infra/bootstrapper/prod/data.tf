@@ -69,3 +69,8 @@ data "azurerm_resource_group" "io_p_sign_data_rg" {
 data "azurerm_resource_group" "io_p_sign_sec_rg" {
   name = local.functions.io_p_sign_sec_rg_name
 }
+
+data "azurerm_private_dns_zone" "servicebus" {
+   name                = "privatelink.servicebus.windows.net"
+   resource_group_name = "${local.prefix}-${local.env_short}-evt-rg"
+ }

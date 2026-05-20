@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.10.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
 ## 1.9.0
 
 ### Minor Changes

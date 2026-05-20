@@ -95,6 +95,12 @@ resource "azurerm_role_assignment" "infra_cd_weu_kv_contributor" {
   principal_id         = module.bootstrap.identities.infra.cd.principal_id
 }
 
+ resource "azurerm_role_assignment" "infra_cd_evt_dns_zone_contributor" {
+   scope                = data.azurerm_private_dns_zone.servicebus.id
+   role_definition_name = "Private DNS Zone Contributor"
+   principal_id         = module.bootstrap.identities.infra.cd.principal_id
+ }
+
 module "roles_cd_platform_apim" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
   version         = "~> 1.2"

@@ -23,7 +23,7 @@ locals {
       consumers              = []
       keys = [
         {
-          name   = "io-sign-func-issuer"
+          name   = "io-sign-func-sender"
           listen = false
           send   = true
           manage = false
@@ -43,13 +43,7 @@ locals {
       consumers              = []
       keys = [
         {
-          name   = "io-sign-func-user"
-          listen = false
-          send   = true
-          manage = false
-        },
-        {
-          name   = "io-sign-func-issuer"
+          name   = "io-sign-func-sender"
           listen = false
           send   = true
           manage = false

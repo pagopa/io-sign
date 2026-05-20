@@ -144,6 +144,7 @@ export type SendEvent = (
 
 type EventAnalyticsClient = {
   eventAnalyticsClient: EventProducerClient;
+  legacyEventAnalyticsClient: EventProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 };
 
 type EventData = {
@@ -154,13 +155,31 @@ type EventDataBatch = {
   tryAdd(eventData: EventData): boolean;
 };
 
+// Sends the event and ignore any error
+// WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+const sendAndForget = (
+  client: EventProducerClient,
+  event: GenericEvent
+): TE.TaskEither<never, undefined> =>
+  pipe(
+    TE.tryCatch(() => client.createBatch(), E.toError),
+    TE.chain((batch) =>
+      batch.tryAdd({ body: event })
+        ? TE.tryCatch(() => client.sendBatch(batch), E.toError)
+        : TE.left(new Error("Unable to add event to legacy batch"))
+    ),
+    TE.map(() => undefined),
+    TE.orElse(() => TE.right(undefined))
+  );
+
 export const sendEvent =
   (
     event: GenericEvent
   ): RTE.ReaderTaskEither<EventAnalyticsClient, Error, GenericEvent> =>
-  ({ eventAnalyticsClient }) =>
+  ({ eventAnalyticsClient, legacyEventAnalyticsClient }) =>
     pipe(
-      TE.tryCatch(() => eventAnalyticsClient.createBatch(), E.toError),
+      // WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
+      TE.tryCatch(() => legacyEventAnalyticsClient.createBatch(), E.toError),
       TE.chain((eventDataBatch) =>
         eventDataBatch.tryAdd({ body: event })
           ? TE.right(eventDataBatch)
@@ -168,11 +187,17 @@ export const sendEvent =
       ),
       TE.chain((eventDataBatch) =>
         TE.tryCatch(
-          () => eventAnalyticsClient.sendBatch(eventDataBatch),
+          () => legacyEventAnalyticsClient.sendBatch(eventDataBatch),
           E.toError
         )
       ),
-      TE.map(() => event)
+      TE.map(() => event),
+      TE.chainFirst(() =>
+        // ITN event hub
+        eventAnalyticsClient
+          ? sendAndForget(eventAnalyticsClient, event)
+          : TE.right(undefined)
+      )
     );
 
 export const createAndSendAnalyticsEvent =
@@ -208,13 +233,16 @@ export const createAndSendAnalyticsEvent =
 
 type BillingEventEnvironment = {
   billingEventProducer: EventProducerClient;
+  legacyBillingEventProducer: EventProducerClient; // WEU — rimuovere post-migrazione
 };
 
 export const sendBillingEvent =
   (
     event: BillingEvent
   ): RTE.ReaderTaskEither<BillingEventEnvironment, Error, GenericEvent> =>
-  ({ billingEventProducer }) =>
+  ({ billingEventProducer, legacyBillingEventProducer }) =>
     sendEvent(event)({
-      eventAnalyticsClient: billingEventProducer
+      eventAnalyticsClient: billingEventProducer,
+      // WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
+      legacyEventAnalyticsClient: legacyBillingEventProducer
     });
