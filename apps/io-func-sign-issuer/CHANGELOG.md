@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.6.1
+
+### Patch Changes
+
+- 21f0dee: Update user's request to sign message copy
+
 ## 1.6.0
 
 ### Minor Changes

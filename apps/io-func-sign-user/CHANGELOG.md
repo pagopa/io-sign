@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.0.0
+
+### Major Changes
+
+- 5b98c2b: Reject POST /signatures requests with SPID level lower than L3
+
 ## 1.7.0
 
 ### Minor Changes
