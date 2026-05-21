@@ -6,6 +6,7 @@ resource "azurerm_cosmosdb_sql_database" "issuer_database" {
   name                = "issuer"
   resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
   account_name        = azurerm_cosmosdb_account.cosmos_io_sign.name
+  throughput          = 400
 }
 
 resource "azurerm_cosmosdb_sql_container" "issuer_dossiers_container" {
