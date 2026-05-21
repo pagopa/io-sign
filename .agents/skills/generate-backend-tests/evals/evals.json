@@ -1,0 +1,175 @@
+{
+  "skill_name": "generate-backend-tests",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need backend tests for a Fastify endpoint that calls a partner REST API and stores rows in Postgres, but I have not decided whether I want long-lived integration coverage or a freeze-before-refactor workflow yet. Inspect the repo first and guide me toward the right testing path.",
+      "expected_output": "The agent inspects the repo, proposes a short scenario list, asks the user to choose integration, record-replay, or both, and keeps container orchestration on Testcontainers instead of assuming a broad matrix or a shell-driven harness.",
+      "files": [],
+      "expectations": [
+        "Inspects current tests, startup path, runtime boundary, fixture layout, and any existing live-test harness before recommending a workflow.",
+        "Proposes a compact scenario menu before implementation.",
+        "Asks the user to choose integration, record-replay, or both.",
+        "Keeps container orchestration on Testcontainers rather than shell-driven Docker commands."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "These Redis and Postgres tests are all mocked. I want live backend tests that stay useful after the first refactor, and I only need a few honest scenarios rather than every unit branch. Start from the current tests and recommend the right path.",
+      "expected_output": "The agent recommends the integration path, proposes a compact scenario shortlist after repo inspection, mines nearby unit tests for good payloads, and plans a Testcontainers-backed harness without drifting into record-replay unless the user chooses it.",
+      "files": [],
+      "expectations": [
+        "Recommends integration as the likely path while still allowing the user to choose.",
+        "Clusters mocked unit tests into a few contract-level scenarios instead of porting every branch.",
+        "Replaces Redis and Postgres mocks with Testcontainers-backed live dependencies.",
+        "Keeps assertions focused on read-back state or observable behavior rather than mock call counts."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Freeze the current behavior of this Express endpoint before I port it to Hono. I want cassettes, explicit record and verify flows, and black-box checks that survive framework refactors. Inspect the repo and then let me choose the exact scenarios.",
+      "expected_output": "The agent recommends the record-replay path, proposes a small scenario menu after inspection, keeps the characterization harness source-level black-box, and describes cassette-based record and verify workflows on top of a Testcontainers-backed local topology.",
+      "files": [],
+      "expectations": [
+        "Recommends record-replay as the likely path for freeze-before-refactor work.",
+        "Keeps characterization source-level black-box except for the minimal runtime boot wrapper.",
+        "Plans explicit record and verify flows that do not silently rewrite cassettes.",
+        "Uses deterministic cassette layers for request, response, side effects, topology, and normalization."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "For this Azure Function, I want one ongoing integration happy path and also a freeze-before-refactor workflow for the risky branch. Inspect the repo, tell me what scenarios make sense, and then let me choose what to keep in integration, record-replay, or both.",
+      "expected_output": "The agent recommends the both path, proposes scenario classes after repo inspection, assigns them intentionally to integration, record-replay, or both, and builds one shared harness for the Functions host and Testcontainers-managed dependencies.",
+      "files": [],
+      "expectations": [
+        "Recommends both paths when one ongoing integration happy path and one freeze-before-refactor branch are both requested.",
+        "Assigns scenarios intentionally to integration, record-replay, or both.",
+        "Uses one shared Functions host and dependency harness instead of duplicated startup code.",
+        "Reads Azure Functions-specific references before designing the harness."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Create backend tests for a worker that consumes broker messages, calls an outbound HTTP service, and writes to Blob Storage. I do not want a huge matrix. Inspect the codebase, suggest the best scenarios, and have me choose the workflow first.",
+      "expected_output": "The agent inspects the repo, suggests a small set of worker scenarios, asks the user to choose integration, record-replay, or both before implementation, and keeps the topology honest with a local worker boundary, local HTTP stub, and Testcontainers-managed dependencies.",
+      "files": [],
+      "expectations": [
+        "Treats the worker/message boundary as the honest contract to inspect.",
+        "Uses deterministic local stubs for outbound HTTP services unless that service is the contract under test.",
+        "Uses Testcontainers or credible emulators for broker and Blob Storage dependencies.",
+        "Avoids proposing a broad test matrix."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "I want approval-style backend tests for a Node.js service that already has a Vitest live harness. Please keep the existing shared setup, add cassettes only where they belong, and let me choose the scenarios after you inspect the current suite.",
+      "expected_output": "The agent recommends the record-replay path, reuses the existing shared harness instead of cloning it, proposes scenario options after inspection, and layers cassette helpers and record/verify commands on top of the existing Testcontainers lifecycle.",
+      "files": [],
+      "expectations": [
+        "Finds and reuses the existing Vitest live harness before adding new setup layers.",
+        "Keeps shared Testcontainers lifecycle singular across integration and record-replay work.",
+        "Adds only cassette helpers and record/verify commands that are unique to record-replay.",
+        "Keeps scenario selection explicit before implementation."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "I need to decide between integration tests and behavior-freezing tests for a legacy Azure Function with Azurite and a Cosmos emulator. Inspect the repo first, propose the small set of scenarios worth paying for, and then let me pick the path.",
+      "expected_output": "The agent inspects the repo, recommends a path but still asks the user to choose integration, record-replay, or both, proposes a compact scenario list, and keeps Azurite and Cosmos orchestration on Testcontainers through the shared harness guidance.",
+      "files": [],
+      "expectations": [
+        "Reads Azure and Azure Functions harness references for Azure-local topology decisions.",
+        "Keeps Azurite and Cosmos orchestration in Testcontainers when using local dependencies.",
+        "Probes Cosmos readiness through SDK-level write/read behavior rather than port-open checks only.",
+        "Still asks the user to choose integration, record-replay, or both."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "I want record-replay characterization for this Azure Function, but this workspace may not have docker or func installed. Inspect the repo, keep the harness black-box, and do not cheat just to make progress.",
+      "expected_output": "The agent still treats Testcontainers as the default orchestration path, proves whether a tiny real Testcontainers bootstrap is actually blocked before rejecting it, and if the Functions host cannot boot honestly it reports record-replay blocked or asks to switch workflows instead of importing exported handlers, wrappers, models, or runtime-coupled packages from the target code.",
+      "files": [],
+      "expectations": [
+        "Does not reject Testcontainers solely because the docker CLI is missing.",
+        "Runs or delegates a tiny real bootstrap before declaring Testcontainers blocked.",
+        "Reports record-replay blocked when the real Functions host cannot boot honestly.",
+        "Does not import exported handlers, wrappers, models, decoders, generated types, or runtime-coupled packages as a fallback."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I want live backend tests for this Node service with Redis and Postgres, but previous attempts wasted a lot of context on noisy Testcontainers and reachability probes. Inspect the repo, keep the workflow disciplined, and avoid turning the whole task into a parallel mess.",
+      "expected_output": "The agent keeps boundary choice, workflow routing, scenario selection, and shared harness design in the main thread, but when probe work becomes context-heavy it delegates only bounded Testcontainers or readiness probes and asks for compressed findings instead of long transcripts.",
+      "files": [],
+      "expectations": [
+        "Keeps boundary choice, routing, scenario selection, and harness design in the main thread.",
+        "Delegates only bounded independent probe work when it becomes noisy.",
+        "Asks subagents for compressed findings rather than long transcripts.",
+        "Does not split ownership of one shared harness design across multiple agents."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I have a .env.test with Cosmos DB and Azure Storage connection strings pointing at a real dev environment. I want integration tests for this Azure Function that uses both. Prefer the real cloud services when reachable but fall back to local containers if the network is down. Make sure tests don't mess with existing data.",
+      "expected_output": "The agent detects .env.test, probes each cloud service for reachability, builds a hybrid harness that uses cloud services when probes pass and Testcontainers when they fail, uses run-scoped unpredictable IDs for all test fixtures, registers surgical cleanup for every resource created, and reports which services ran in cloud vs local mode.",
+      "files": [],
+      "expectations": [
+        "Finds .env.test through the documented lookup path before reading cloud-specific guidance.",
+        "Uses official SDK-based probes for Cosmos DB and Azure Storage with a 5 second timeout.",
+        "Builds a hybrid topology that uses cloud services only for successful probes and Testcontainers for failed or missing services.",
+        "Uses run-scoped unpredictable IDs for fixtures and registers scoped cleanup for every created resource.",
+        "Reports which services ran in cloud mode and which fell back to local mode."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "I want backend tests for this service that writes to Cosmos and Blob Storage. There is no .env.test file in the repo. Just use local containers.",
+      "expected_output": "The agent does NOT mention .env.test or cloud services at all. It proceeds with the standard Testcontainers-backed local topology without suggesting or asking about cloud connection strings.",
+      "files": [],
+      "expectations": [
+        "Does not mention .env.test or cloud services when no .env.test exists in the lookup path.",
+        "Does not ask the user to create or provide cloud connection strings.",
+        "Uses the standard Testcontainers-backed local topology.",
+        "Keeps progressive disclosure intact by skipping cloud-services-harness.md entirely."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "I have a .env.test with Cosmos DB and Azure Storage connection strings, but the network is partitioned and probes time out. I still want the integration suite to run if local containers are available.",
+      "expected_output": "The agent probes each cloud service with a 5 second timeout, does not retry, reports the timeout per service, falls back to Testcontainers for timed-out services, and continues in hybrid mode for any service whose probe succeeds.",
+      "files": [],
+      "expectations": [
+        "Applies a hard 5 second timeout per cloud probe.",
+        "Does not retry timed-out cloud probes.",
+        "Falls back to Testcontainers only for services whose probes fail or time out.",
+        "Keeps successfully probed services in cloud mode when other services fail.",
+        "Logs the cloud/local classification clearly."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "I chose record-replay for an Azure Function, but the Functions host cannot boot honestly in this workspace. The easiest path would be importing the exported handler and its generated types directly. What should the agent do?",
+      "expected_output": "The agent refuses to turn record-replay into an in-process handler import, reports the record-replay path blocked, and asks the user to switch to integration or both rather than silently narrowing the boundary.",
+      "files": [],
+      "expectations": [
+        "Does not import the exported handler, wrapper return value, generated types, models, decoders, or runtime-coupled packages.",
+        "Reports record-replay blocked when the real runtime cannot boot honestly.",
+        "Asks the user to switch to integration or both instead of silently downgrading the boundary.",
+        "Keeps the characterization harness source-level black-box."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "The cloud-backed integration suite creates Cosmos documents and Blob prefixes with a run token. After cleanup, one document matching the current run token is still present. How should the harness behave?",
+      "expected_output": "The harness fails the run with a clear cleanup verification error that includes the leftover service, resource type, and exact run-scoped identifier. It does not broaden deletion beyond the current run token.",
+      "files": [],
+      "expectations": [
+        "Queries cloud services for resources matching the current run token after cleanup.",
+        "Fails the suite when current-run resources remain after cleanup.",
+        "Includes service, resource type, and exact resource identifiers in the failure message.",
+        "Does not delete resources outside the current run token scope."
+      ]
+    }
+  ]
+}
