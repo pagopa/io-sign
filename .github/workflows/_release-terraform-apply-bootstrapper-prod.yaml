@@ -1,0 +1,20 @@
+name: Release Bootstrapper Infrastructure - prod
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/bootstrapper/prod/**"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release:
+    uses: pagopa/dx/.github/workflows/release-terraform-bootstrapper-v1.yaml@main
+    name: Release Bootstrapper (prod)
+    secrets: inherit
+    with:
+      environment: 'prod'
