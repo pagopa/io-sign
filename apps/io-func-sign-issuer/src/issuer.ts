@@ -95,4 +95,3 @@ export const getIssuerEnvironment = (
     : institutionId === "4a4149af-172e-4950-9cc8-63ccc9a6d865"
       ? "INTERNAL"
       : "DEFAULT";
-

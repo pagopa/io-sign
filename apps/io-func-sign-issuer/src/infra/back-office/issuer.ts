@@ -12,11 +12,7 @@ import {
   isSuccessful,
   responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
-import {
-  ApiKey,
-  getIssuerEnvironment,
-  IssuerRepository
-} from "../../issuer";
+import { ApiKey, getIssuerEnvironment, IssuerRepository } from "../../issuer";
 
 class IssuerModel {
   #basePath: string;
@@ -92,4 +88,3 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
     return pipe(this.#issuerModel.findBySubscriptionId(subscriptionId));
   }
 }
-
