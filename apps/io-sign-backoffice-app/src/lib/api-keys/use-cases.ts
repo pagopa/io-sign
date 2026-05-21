@@ -110,4 +110,4 @@ export async function revokeApiKey(id: string, institutionId: string) {
   }
 }
 
-export { upsertApiKeyField, getApiKeyById } from "./cosmos";
+export { upsertApiKeyField } from "./cosmos";

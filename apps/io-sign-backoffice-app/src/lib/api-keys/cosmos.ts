@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import { getCosmosContainerClient } from "@/lib/cosmos";
 import { FeedResponse } from "@azure/cosmos";
 
@@ -86,22 +84,3 @@ export async function upsertApiKeyField<
   }
 }
 
-export async function getApiKeyById(id: string): Promise<ApiKey | undefined> {
-  try {
-    const cosmos = getCosmosContainerClient(cosmosContainerName);
-    const q = cosmos.items.query({
-      query: "SELECT * FROM c WHERE c.id = @id",
-      parameters: [
-        {
-          name: "@id",
-          value: id,
-        },
-      ],
-    });
-    const response = await q.fetchAll();
-    const apiKey = response.resources.at(0);
-    return apiKeySchema.or(z.undefined()).parse(apiKey);
-  } catch (e) {
-    throw new Error("unable to get the API key", { cause: e });
-  }
-}
