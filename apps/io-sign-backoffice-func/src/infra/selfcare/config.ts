@@ -6,6 +6,7 @@ const ConfigFromEnvironment = z
     SELFCARE_EVENT_HUB_CONTRACTS_NAME: z.string()
   })
   .transform((e) => ({
+    connectionString: e.SelfCareEventHubConnectionString,
     eventHubContractsName: e.SELFCARE_EVENT_HUB_CONTRACTS_NAME
   }));
 

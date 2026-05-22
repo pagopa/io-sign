@@ -3,6 +3,7 @@ import {
   azureFunction,
   httpAzureFunction
 } from "@pagopa/handler-kit-azure-func";
+import { EventHubConsumerClient } from "@azure/event-hubs";
 import { makeCreateApiKeyByIdHandler } from "@/infra/handlers/create-api-key-by-id";
 
 import { google } from "googleapis";
@@ -30,6 +31,12 @@ const database = cosmos.database(config.cosmos.cosmosDbName);
 const backofficeRepository = new BackofficeEntitiesRepository(database);
 
 const selfcareApiClient = new SelfcareApiClient(config.selfcare.api);
+
+const selfcareContractsConsumer = new EventHubConsumerClient(
+  EventHubConsumerClient.defaultConsumerGroupName,
+  config.selfcare.contracts.connectionString,
+  config.selfcare.contracts.eventHubContractsName
+);
 
 const onSelfcareContractsMessage = azureFunction(
   onSelfcareContractsMessageHandler
@@ -79,7 +86,7 @@ app.cosmosDB("createApiKeyById", {
   handler: createApiKeyById
 });
 
-const info = httpAzureFunction(infoHandler)({});
+const info = httpAzureFunction(infoHandler)({ selfcareContractsConsumer });
 
 app.http("info", {
   methods: ["GET"],
