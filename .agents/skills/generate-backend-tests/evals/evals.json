@@ -32,6 +32,7 @@
       "files": [],
       "expectations": [
         "Recommends record-replay as the likely path for freeze-before-refactor work.",
+        "Treats record-replay as already selected and asks only about scenario scope, not path choice.",
         "Keeps characterization source-level black-box except for the minimal runtime boot wrapper.",
         "Plans explicit record and verify flows that do not silently rewrite cassettes.",
         "Uses deterministic cassette layers for request, response, side effects, topology, and normalization."
@@ -116,6 +117,7 @@
       "files": [],
       "expectations": [
         "Finds .env.test through the documented lookup path before reading cloud-specific guidance.",
+        "Treats integration as already selected instead of reopening path choice.",
         "Uses official SDK-based probes for Cosmos DB and Azure Storage with a 5 second timeout.",
         "Builds a hybrid topology that uses cloud services only for successful probes and Testcontainers for failed or missing services.",
         "Uses run-scoped unpredictable IDs for fixtures and registers scoped cleanup for every created resource.",
@@ -128,6 +130,7 @@
       "expected_output": "The agent does NOT mention .env.test or cloud services at all. It proceeds with the standard Testcontainers-backed local topology without suggesting or asking about cloud connection strings.",
       "files": [],
       "expectations": [
+        "Treats integration as already selected instead of reopening path choice.",
         "Does not mention .env.test or cloud services when no .env.test exists in the lookup path.",
         "Does not ask the user to create or provide cloud connection strings.",
         "Uses the standard Testcontainers-backed local topology.",
@@ -140,6 +143,7 @@
       "expected_output": "The agent probes each cloud service with a 5 second timeout, does not retry, reports the timeout per service, falls back to Testcontainers for timed-out services, and continues in hybrid mode for any service whose probe succeeds.",
       "files": [],
       "expectations": [
+        "Treats integration as already selected instead of reopening path choice.",
         "Applies a hard 5 second timeout per cloud probe.",
         "Does not retry timed-out cloud probes.",
         "Falls back to Testcontainers only for services whose probes fail or time out.",

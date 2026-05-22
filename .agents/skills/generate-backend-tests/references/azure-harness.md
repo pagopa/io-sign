@@ -65,26 +65,43 @@ const client = new CosmosClient({
   connectionPolicy: { enableEndpointDiscovery: false },
 });
 
-for (let attempt = 0; attempt < 12; attempt++) {
+const probeDbPrefix = `probe-${Date.now()}`;
+let lastError: unknown;
+let warmed = false;
+
+for (let attempt = 1; attempt <= 10; attempt++) {
   try {
     const { database } = await client.databases.createIfNotExists({
-      id: "probe-db",
+      id: `${probeDbPrefix}-${attempt}`,
     });
-    const { container } = await database.containers.createIfNotExists({
-      id: "probe",
-      partitionKey: { paths: ["/pk"] },
-    });
-    await container.items.upsert({
+    const { container: probeContainer } =
+      await database.containers.createIfNotExists({
+        id: "probe",
+        partitionKey: { paths: ["/pk"] },
+      });
+    await probeContainer.items.upsert({
       id: "probe-item",
       pk: "probe",
       ready: true,
     });
-    await container.items.query("SELECT * FROM c").fetchAll();
+    await probeContainer.item("probe-item", "probe").read();
+    await probeContainer.items.query("SELECT * FROM c").fetchAll();
     await database.delete();
+    warmed = true;
     break;
-  } catch {
+  } catch (error) {
+    lastError = error;
+    if (attempt === 10) {
+      throw new Error("Cosmos emulator warm-up failed after 10 attempts", {
+        cause: error,
+      });
+    }
     await new Promise((resolve) => setTimeout(resolve, 5000));
   }
+}
+
+if (!warmed) {
+  throw lastError ?? new Error("Cosmos emulator warm-up never succeeded");
 }
 ```
 

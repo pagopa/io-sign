@@ -35,10 +35,10 @@ Produce or update:
 8. Read optional references only when their trigger is present:
    - `references/cloud-services-harness.md` when a `.env.test` file exists at the repository root, the current package/app directory, or a parent directory up to the repository root. This enables a hybrid topology where pre-deployed cloud services are used when reachable and local containers serve as fallback. If no `.env.test` file exists in those locations, skip this entirely — do not mention it or ask the user about it.
    - `references/promoting-unit-tests.md` when the starting point is a dense mock-heavy unit suite
-   - `references/azure-harness.md` when the target depends on Azure-local services or emulators
-   - `references/azure-functions-harness.md` when the target is an Azure Functions app
-   - `references/azure-functions-integration.md` for integration work on Azure Functions
-   - `references/azure-functions-record-replay.md` for record-replay work on Azure Functions
+   - `references/azure-harness.md` when the target depends on Azure-local services or emulators, or when the target is an Azure Functions app
+   - `references/azure-functions-harness.md` when the target is an Azure Functions app; read it after `references/azure-harness.md`
+   - `references/azure-functions-integration.md` for integration work on Azure Functions; read it after `references/azure-functions-harness.md`
+   - `references/azure-functions-record-replay.md` for record-replay work on Azure Functions; read it after `references/azure-functions-harness.md`
 9. After implementing the selected path, read `references/final-reporting.md` and decide whether to add or update a concise Markdown report. Default to yes when the user asked for documentation or when the resulting topology, shared harness, or scenario coverage would be hard to reconstruct from the tests alone.
 
 ## Path selection rules

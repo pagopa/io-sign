@@ -89,9 +89,11 @@ Azure Storage queue triggers are easy to mis-shape in local tests. Before simpli
 Use this only when there is no existing app container or stronger repository convention. This is the smallest useful wrapper around the real local Functions host:
 
 ```ts
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 
 export class FunctionHost {
+  private child?: ChildProcessWithoutNullStreams;
+
   constructor(
     private readonly cwd: string,
     private readonly env: NodeJS.ProcessEnv,
