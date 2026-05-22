@@ -37,6 +37,14 @@ Examples:
 - Cosmos connection settings
 - queue, blob, or table connection settings
 
+## Lazy outbound Azure clients
+
+Some Azure SDK clients do not prove their configuration during startup. They construct successfully and fail only on the first real send, publish, or read.
+
+- Treat a clean host boot with fake or placeholder connection strings as insufficient proof for scenarios that must emit or publish.
+- If the selected scenario needs a real broker or Event Hubs side effect, include one real operation in your readiness thinking for that scenario rather than assuming startup is enough.
+- If no credible local path exists for that dependency, do not keep the scenario in full-host record-replay just because the runtime starts. Route it to integration with an explicit stub or no-op only when that narrower seam is still honest, or choose a different record-replay scenario that stays on a reachable local contract.
+
 ## Cosmos emulator quirks worth proving
 
 Use the generic readiness rules from `references/shared-harness.md`, then add these Cosmos-specific checks.

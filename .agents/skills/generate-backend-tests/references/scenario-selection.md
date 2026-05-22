@@ -77,3 +77,12 @@ Usually that means:
 - record-replay owns the freeze-before-refactor scenarios or black-box characterization set
 
 Keep the overlap small and intentional.
+
+## When one scenario is blocked but the harness is still useful
+
+Sometimes the most interesting candidate for `record-replay` or `both` turns out to depend on one local boundary that cannot be exercised honestly, even though most of the topology is still usable.
+
+- Do not force the blocked scenario through a dishonest fallback just to preserve the original idea.
+- First check whether a nearby scenario can reuse the same harness while avoiding only the blocked dependency.
+- Prefer an adjacent scenario that still protects the same runtime shape, request flow, or persistence side effects over abandoning the whole path.
+- State the swap plainly so the user can see which scenario stayed in integration only and which one became the record-replay candidate.
