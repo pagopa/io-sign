@@ -47,6 +47,7 @@
         "Recommends both paths when one ongoing integration happy path and one freeze-before-refactor branch are both requested.",
         "Assigns scenarios intentionally to integration, record-replay, or both.",
         "Uses one shared Functions host and dependency harness instead of duplicated startup code.",
+        "When the shared support layer owns multiple stateful dependencies, keeps the top-level global setup or harness thin and moves Cosmos/Azurite-style bootstrap and readiness logic into per-dependency modules.",
         "Reads Azure Functions-specific references before designing the harness."
       ]
     },

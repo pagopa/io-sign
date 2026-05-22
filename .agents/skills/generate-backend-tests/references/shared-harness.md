@@ -159,6 +159,16 @@ These rules apply to every path (integration, record-replay, or both). Other ref
 
 If the workspace already has a live-test harness, shared container setup, or stronger local convention for the same boundary, reuse it. Do not create a parallel harness.
 
+### Selective support-layer modularity
+
+Optimize for reviewability, not file count.
+
+- If one support file would otherwise own startup, readiness, connection metadata, and fixture helpers for **two or more** stateful dependencies or emulators, split that logic into one module per dependency family and keep the top-level `global-setup.ts`, `harness.ts`, or equivalent as a thin orchestrator.
+- Good candidates are modules such as `cosmos.ts`, `azurite.ts`, `redis.ts`, or `postgres.ts` that each own one dependency's Testcontainers bootstrap, readiness proof, and dependency-specific helpers.
+- Keep the orchestrator focused on composition: start modules, wire connection info together, expose shared metadata, and tear modules down in reverse order.
+- Do **not** force the same split on cohesive files whose job is already single-purpose, such as `function-host.ts`, cassette helpers, or small outbound HTTP stubs.
+- Do **not** explode one dependency into many tiny files unless the repository already has that convention or the dependency logic is independently large.
+
 ### Both-paths coexistence
 
 When the user chooses `both`:

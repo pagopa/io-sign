@@ -32,6 +32,8 @@ tests/
   with-test-fixtures.ts
   support/
     shared-testcontainers.ts
+    cosmos.ts
+    azurite.ts
     cleanup.ts
     ids.ts
   <suite-name>/
@@ -39,8 +41,9 @@ tests/
 ```
 
 - `global-setup.ts` starts and stops the shared dependencies
+- when the suite owns multiple stateful dependencies, `global-setup.ts` composes per-dependency support modules instead of owning every emulator detail inline
 - `with-test-fixtures.ts` exposes builder-pattern fixtures for disposable resources
-- `support/shared-testcontainers.ts` owns the Testcontainers startup helpers
+- `support/shared-testcontainers.ts` or the per-dependency modules own the Testcontainers startup helpers
 - `support/cleanup.ts` owns resource-specific deletion helpers
 
 If the repository already has a better test layout, reuse it. The lifecycle split matters more than the exact folders.
@@ -62,6 +65,12 @@ Typical responsibilities:
 - print stable connection info once for debugging
 - provide the values to tests through Vitest's supported `provide` or `inject` path
 - stop resources in reverse order during teardown
+
+If `global-setup.ts` needs to manage two or more stateful dependencies, keep it as a composition root:
+
+- each dependency module owns its own startup, readiness proof, and dependency-specific helpers
+- `global-setup.ts` imports those modules, combines their provided values, and coordinates teardown
+- keep single-purpose files such as cassette helpers, runtime host wrappers, or tiny HTTP stubs separate by responsibility rather than forcing them into per-dependency modules
 
 If the app itself is stable enough to run once for the whole session, you may start it here too. If it needs frequent restarts, keep it outside the shared dependency lifecycle.
 
