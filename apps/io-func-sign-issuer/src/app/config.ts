@@ -36,16 +36,6 @@ import {
 } from "../infra/azure/cosmos/config";
 
 import {
-  getSelfCareConfigFromEnvironment,
-  SelfCareConfig
-} from "../infra/self-care/config";
-
-import {
-  getSlackConfigFromEnvironment,
-  SlackConfig
-} from "../infra/slack/config";
-
-import {
   BackOfficeConfig,
   getBackOfficeConfigFromEnvironment
 } from "../infra/back-office/config";
@@ -59,10 +49,8 @@ export const Config = t.type({
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
-    ioServices: IOServicesConfig,
-    selfCare: SelfCareConfig
+    ioServices: IOServicesConfig
   }),
-  slack: SlackConfig,
   backOffice: BackOfficeConfig
 });
 
@@ -78,9 +66,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     cosmos: getCosmosConfigFromEnvironment,
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
-    selfCare: getSelfCareConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
-    slack: getSlackConfigFromEnvironment,
     backOffice: getBackOfficeConfigFromEnvironment,
     appinsights: getApplicationInsightsConfigFromEnvironment
   }),
@@ -93,10 +79,8 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     },
     pagopa: {
       tokenizer: config.tokenizer,
-      ioServices: config.ioServices,
-      selfCare: config.selfCare
+      ioServices: config.ioServices
     },
-    slack: config.slack,
     backOffice: config.backOffice
   }))
 );
