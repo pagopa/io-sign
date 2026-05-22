@@ -3,10 +3,7 @@ import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 import { QueueClient } from "@azure/storage-queue";
-import {
-  EventHubConsumerClient,
-  EventHubProducerClient
-} from "@azure/event-hubs";
+import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -79,12 +76,6 @@ const legacyEventHubBillingClient = new EventHubProducerClient(
 const legacyEventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
-);
-
-const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
-  EventHubConsumerClient.defaultConsumerGroupName,
-  config.pagopa.selfCare.eventHub.connectionString,
-  config.pagopa.selfCare.eventHub.contractsName
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -179,7 +170,6 @@ const info = InfoFunction({
   db: database,
   eventHubBillingClient,
   eventHubAnalyticsClient: eventAnalyticsClient,
-  eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
