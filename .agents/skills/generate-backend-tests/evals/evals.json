@@ -175,6 +175,32 @@
         "Includes service, resource type, and exact resource identifiers in the failure message.",
         "Does not delete resources outside the current run token scope."
       ]
+    },
+    {
+      "id": 15,
+      "prompt": "You already set up integration tests for this Fastify service in a previous pass, and the repo now has a shared harness plus a billing-integration-report.md. Add coverage for the 409 duplicate request case and the upstream timeout case without rediscovering the whole topology unless the existing setup is actually wrong.",
+      "expected_output": "The agent treats this as an incremental extension. It reads the existing report and harness entrypoints first, keeps the integration path and current topology unless a real mismatch appears, adds only the new scenarios, and updates the report so the next pass can start there again.",
+      "files": [],
+      "expectations": [
+        "Uses the existing report as the first re-entry surface for the incremental pass.",
+        "Reads the shared harness entrypoints before broadening repository discovery.",
+        "Keeps integration selected instead of reopening path choice.",
+        "Adds only the requested additive scenarios unless the prompt leaves scope unclear.",
+        "Updates the report with the new scenario inventory and rerun details."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "The billing API integration tests look solid but I think we can widen coverage to catch more edge cases. The repo has a billing-integration-report.md and a shared harness already. Suggest what else is worth testing.",
+      "expected_output": "The agent treats this as an incremental extension with a vague additive prompt. It reads the existing report first, identifies coverage gaps from the scenario table, and proposes 2 to 4 gap-filling scenarios drawn from the report and boundary — without restarting broad repository discovery or reopening path selection.",
+      "files": [],
+      "expectations": [
+        "Uses the existing report as the primary source for gap identification.",
+        "Proposes 2 to 4 gap-filling scenarios, not a fresh 3-to-6 broad menu.",
+        "Draws scenario ideas from the existing boundary and report gaps, not from repository-wide discovery.",
+        "Keeps integration selected instead of reopening path choice.",
+        "Does not reread the full repository when the report already explains the current coverage shape."
+      ]
     }
   ]
 }

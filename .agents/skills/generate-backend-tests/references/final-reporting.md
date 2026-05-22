@@ -4,7 +4,7 @@ Use this reference after implementing the selected test workflow and before you 
 
 ## Goal
 
-Leave behind a short report that helps the user and future contributors understand what the new test coverage actually protects without reopening every test, harness, or cassette file.
+Leave behind a short report that helps the user and future contributors understand what the new test coverage actually protects without reopening every test, harness, or cassette file. The same report should also work as the re-entry snapshot for later prompts that add more scenarios.
 
 ## When to produce a report
 
@@ -15,6 +15,7 @@ Default to adding or updating a Markdown report when at least one of these is tr
 - the work introduces or changes a shared harness, Testcontainers topology, local stubs, or emulator usage
 - integration and record-replay suites now coexist for the same boundary
 - the chosen boundary is intentionally narrower than the full runtime and that choice should be documented
+- future incremental additions are likely, or the repository already has a shared backend-test harness that will probably be extended again
 
 You can skip the report when the change is tiny, obvious from one test file, and the user did not ask for documentation.
 
@@ -34,7 +35,7 @@ Keep the file name explicit, such as:
 
 ## What the report should contain
 
-Keep it concise, but include enough detail that someone can answer "what is covered, through which boundary, on which local dependencies, and how do I rerun it?" without reading the whole suite.
+Keep it concise, but include enough detail that someone can answer "what is covered, through which boundary, on which local dependencies, and how do I rerun it?" without reading the whole suite. A later run should be able to read this report plus a few listed entrypoint files instead of re-deriving the whole topology.
 
 Typical sections:
 
@@ -44,6 +45,19 @@ Typical sections:
 - scenario table
 - rerun commands
 - current intentional gaps when they matter
+
+## Re-entry snapshot requirements
+
+Make sure the report captures the specific facts a later incremental pass would need quickly:
+
+- selected workflow path (`integration`, `record-replay`, or `both`)
+- honest boundary under test
+- primary shared harness entrypoints and setup files
+- which dependencies run as cloud services, local emulators, Testcontainers, or stubs
+- current scenario inventory and file locations
+- rerun commands, including `record` / `verify` commands when relevant
+
+Prefer explicit file paths and short tables over long narrative prose.
 
 ## Scenario table guidance
 
@@ -82,4 +96,5 @@ Highlight the facts that are hard to infer quickly from the code:
 - Do not restate every assertion line by line.
 - Do not invent coverage that is not present.
 - If you chose a narrower slice instead of the full host, explain why plainly.
+- Keep it compact enough that a later run can reread it cheaply.
 - If the user asked for the report, mention its path in the final response.
