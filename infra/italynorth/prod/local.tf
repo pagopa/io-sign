@@ -51,11 +51,11 @@ locals {
 
   cosmos_io_sign_database_issuer = {
     dossiers = {
-      max_throughput = 1000
+      max_throughput = 2000
       ttl            = null
     }
     signature_requests = {
-      max_throughput = 1000
+      max_throughput = 2000
       ttl            = null
     }
     uploads = {
@@ -93,7 +93,7 @@ locals {
 
   cosmos_io_sign_database_backoffice = {
     api_keys = {
-      max_throughput = 1000
+      max_throughput = 2000
       ttl            = null
     }
     api_keys_by_id = {
