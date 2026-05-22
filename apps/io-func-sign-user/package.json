@@ -15,6 +15,9 @@
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:record": "TEST_MODE=record vitest run --config vitest.characterization.config.ts",
+    "test:verify": "vitest run --config vitest.characterization.config.ts",
     "coverage": "vitest run --coverage",
     "typecheck": "tsc",
     "start": "func start  --port 7072",
@@ -25,8 +28,8 @@
   },
   "dependencies": {
     "@azure/cosmos": "catalog:",
-    "@azure/functions": "catalog:",
     "@azure/event-hubs": "catalog:",
+    "@azure/functions": "catalog:",
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",
     "@io-sign/io-sign": "workspace:^",
@@ -53,6 +56,7 @@
     "npm-pack-zip": "catalog:",
     "prettier": "catalog:",
     "rimraf": "catalog:",
+    "testcontainers": "^12.0.0",
     "tsup": "catalog:",
     "typescript": "^4.8.4",
     "vitest": "catalog:"
