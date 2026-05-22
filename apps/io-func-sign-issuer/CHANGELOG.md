@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.6.2
+
+### Patch Changes
+
+- 7a1dc41: remove unused code and cosmos db query
+
 ## 1.6.1
 
 ### Patch Changes

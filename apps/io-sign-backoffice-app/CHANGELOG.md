@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.6
+
+### Patch Changes
+
+- 7a1dc41: remove unused code and cosmos db query
+
 ## 1.8.5
 
 ### Patch Changes
