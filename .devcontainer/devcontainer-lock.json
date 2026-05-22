@@ -15,6 +15,11 @@
       "resolved": "ghcr.io/devcontainers/features/docker-outside-of-docker@sha256:c2c2cf829505ead8e4892c88c31b6594ae94a2bbb209e16e1fac456c1a3a624e",
       "integrity": "sha256:c2c2cf829505ead8e4892c88c31b6594ae94a2bbb209e16e1fac456c1a3a624e"
     },
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "2.5.0",
+      "resolved": "ghcr.io/devcontainers/features/dotnet@sha256:0fc16547ed4db6d7ff2a9f5981d2b93eb314e568affb9958029ad794f1f9a093",
+      "integrity": "sha256:0fc16547ed4db6d7ff2a9f5981d2b93eb314e568affb9958029ad794f1f9a093"
+    },
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "1.1.0",
       "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:d22f50b70ed75339b4eed1ba9ecde3a1791f90e88d37936517e3bace0bbad671",
@@ -29,6 +34,14 @@
       "version": "1.4.3",
       "resolved": "ghcr.io/devcontainers/features/terraform@sha256:503d0888b3a43a32335e08cd4477f8c4629404ad83f6a36f0e0fee7f567c06c7",
       "integrity": "sha256:503d0888b3a43a32335e08cd4477f8c4629404ad83f6a36f0e0fee7f567c06c7"
+    },
+    "ghcr.io/pagopa/devcontainer-features/azure-functions-core-tools:1": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/pagopa/devcontainer-features/azure-functions-core-tools@sha256:7922012ae0c01a4aa7308df099d905f32e38a24ce454623b6821946f6ebe7575",
+      "integrity": "sha256:7922012ae0c01a4aa7308df099d905f32e38a24ce454623b6821946f6ebe7575",
+      "dependsOn": [
+        "ghcr.io/devcontainers/features/dotnet:2"
+      ]
     },
     "ghcr.io/pagopa/devcontainer-features/plantuml:1": {
       "version": "1.0.0",
