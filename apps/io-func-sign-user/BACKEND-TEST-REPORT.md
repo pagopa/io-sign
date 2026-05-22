@@ -42,7 +42,11 @@ The full Azure Functions runtime host is intentionally avoided in integration te
 
 | # | Scenario | File | Boundary | Observable Outcome | Infra Used |
 |---|----------|------|----------|-------------------|------------|
-| 1 | GET signature request (characterization) | `tests/characterization/get-signature-request.test.ts` | Full HTTP endpoint (when containerized host available) | Response matches stored cassette | Cosmos, Azurite, Functions container |
+| 1a | GET signature request (characterization) | `tests/characterization/get-signature-request.test.ts` | Full HTTP endpoint (when containerized host available) | Response matches stored cassette | Cosmos, Azurite, Functions container |
+| 1b | GET signature requests list (characterization) | `tests/characterization/get-signature-requests.test.ts` | Full HTTP endpoint | List response matches stored cassette | Cosmos, Azurite, Functions container |
+| 1c | GET QTSP clauses metadata (characterization) | `tests/characterization/get-qtsp-clauses-metadata.test.ts` | Full HTTP endpoint | Clauses response matches stored cassette | Namirial stub, Functions container |
+| 1d | POST create filled document (characterization) | `tests/characterization/create-filled-document.test.ts` | Full HTTP endpoint | 201 response with SAS URL matches stored cassette | Azurite (blob + queue), PDV stub, Functions container |
+| 1e | GET third-party message details (characterization) | `tests/characterization/get-third-party-message-details.test.ts` | Full HTTP endpoint | Message details for SIGNED request match stored cassette | Cosmos, PDV stub, Functions container |
 | 3a | Create signature — happy path | `tests/integration/create-signature.test.ts` | Use-case + real adapters | Signature inserted, request → WAIT_FOR_QTSP, queue notified | Cosmos, Azurite, stubbed QTSP |
 | 3b | Create signature — already SIGNED | `tests/integration/create-signature.test.ts` | Use-case + real adapters | Returns ActionNotAllowedError | Cosmos |
 | 4a | Validate signature — COMPLETED | `tests/integration/validate-signature.test.ts` | `azureFunction` wrapper | Request → SIGNED, signature → COMPLETED, queue notified | Cosmos, Azurite, stub Namirial |
@@ -73,6 +77,8 @@ pnpm test
 ## Notes for Future Extension
 
 - To add new integration scenarios, follow the pattern in `validate-signature.test.ts`: seed Cosmos, call the handler wrapper, assert Cosmos state + queue messages.
+- To add new characterization scenarios, follow the pattern in `get-signature-requests.test.ts`: seed Cosmos if needed, call the endpoint via `functionBaseUrl`, record/verify against cassettes.
 - The `makeTestDocumentReady()` and `makeTestSignatureRequest()` factories in `fixtures.ts` produce valid io-ts-decodable documents.
 - The shared harness starts once per vitest run via `globalSetup` — individual tests get Cosmos/Azurite/stubs URLs from `process.env.__TEST_*__` variables.
+- The PDV tokenizer stub maps any fiscal code to signer ID `"pdv-signer-token-id"` — use that as `signerId` when seeding data for third-party message tests.
 - The Namirial stub at `/namirial/api/token/` must return `{ access: "...", refresh: "..." }` (not `access_token`).
