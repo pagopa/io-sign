@@ -10,10 +10,7 @@ import { Database } from "@azure/cosmos";
 import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import {
-  EventHubConsumerClient,
-  EventHubProducerClient
-} from "@azure/event-hubs";
+import { EventHubProducerClient } from "@azure/event-hubs";
 
 import {
   makePdvTokenizerHealthCheck,
@@ -60,7 +57,6 @@ type InfoDependencies = {
   db: Database;
   eventHubBillingClient: EventHubProducerClient;
   eventHubAnalyticsClient: EventHubProducerClient;
-  eventHubSelfCareContractsConsumer: EventHubConsumerClient;
   uploadedContainerClient: ContainerClient;
   validatedContainerClient: ContainerClient;
   onSignatureRequestReadyQueueClient: QueueClient;
@@ -76,7 +72,6 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         db,
         eventHubBillingClient,
         eventHubAnalyticsClient,
-        eventHubSelfCareContractsConsumer,
         uploadedContainerClient,
         validatedContainerClient,
         onSignatureRequestReadyQueueClient
@@ -88,7 +83,6 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
             makeAzureCosmosDbHealthCheck(db),
             makeAzureEventHubHealthCheck(eventHubBillingClient),
             makeAzureEventHubHealthCheck(eventHubAnalyticsClient),
-            makeAzureEventHubHealthCheck(eventHubSelfCareContractsConsumer),
             makeAzureStorageContainerHealthCheck(uploadedContainerClient),
             makeAzureStorageContainerHealthCheck(validatedContainerClient),
             makeAzureStorageQueueHealthCheck(onSignatureRequestReadyQueueClient)

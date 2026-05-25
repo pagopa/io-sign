@@ -14,10 +14,12 @@
   },
   "dependencies": {
     "@azure/cosmos": "^3.17.3",
+    "@azure/event-hubs": "catalog:",
     "@azure/functions": "catalog:",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "catalog:",
     "@pagopa/handler-kit-azure-func": "catalog:",
+    "@pagopa/io-functions-commons": "catalog:",
     "@pagopa/logger": "catalog:",
     "fp-ts": "catalog:",
     "googleapis": "catalog:",
