@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.6.5
+
+### Patch Changes
+
+- e396bf2: remove health check QTSP test and move Selfcare health check event hub from issuer to backoffice
+
 ## 1.6.4
 
 ### Patch Changes
