@@ -16,7 +16,7 @@ requests
 | summarize AggregatedValue = count() by bin(timestamp, 30m)
   QUERY
 
-  severity    = 3
+  severity    = 2
   frequency   = 30
   time_window = 30
 
