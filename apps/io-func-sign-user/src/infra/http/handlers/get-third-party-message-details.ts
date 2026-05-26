@@ -34,8 +34,7 @@ export const GetThirdPartyMessageDetailsHandler = H.of((req: H.HttpRequest) =>
         ({ signerRepository, db }: GetThirdPartyMessageDetailsDependencies) => {
           const getSignatureRequest = makeGetSignatureRequest(db);
           return pipe(
-            fiscalCode,
-            signerRepository.getSignerByFiscalCode,
+            signerRepository.getSignerByFiscalCode(fiscalCode),
             TE.map((signer) => signer.id),
             TE.chain(getSignatureRequest(signatureRequestId)),
             TE.chain(

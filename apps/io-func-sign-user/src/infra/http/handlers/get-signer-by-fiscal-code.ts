@@ -43,12 +43,11 @@ export const GetSignerByFiscalCodeHandler = H.of((req: H.HttpRequest) =>
         }: GetSignerByFiscalCodeDependencies) => {
           const retriveUserProfile =
             makeRetriveUserProfileSenderAllowed(ioApiClient);
-          const getSignerByFiscalCode = signerRepository.getSignerByFiscalCode;
 
           return pipe(
             fiscalCode,
             retriveUserProfile,
-            TE.chain(() => getSignerByFiscalCode(fiscalCode))
+            TE.chain(() => signerRepository.getSignerByFiscalCode(fiscalCode))
           );
         }
     ),

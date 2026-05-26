@@ -81,11 +81,11 @@ describe("SignatureRequestNotification", () => {
         signerRepository: mockSignerRepository,
         notificationService: mockNotificationService,
       })().then((result) => {
-        expect(result).toBe(true);
+        expect(E.isRight(result)).toBe(true);
       });
     });
 
-    it("should return false when notification submission fails", () => {
+    it("should return Left when notification submission fails", () => {
       const failingNotificationService: NotificationService = {
         submit: () =>
           pipe(
@@ -100,11 +100,11 @@ describe("SignatureRequestNotification", () => {
         signerRepository: mockSignerRepository,
         notificationService: failingNotificationService,
       })().then((result) => {
-        expect(result).toBe(false);
+        expect(E.isLeft(result)).toBe(true);
       });
     });
 
-    it("should return false when fiscal code retrieval fails", () => {
+    it("should return Left when fiscal code retrieval fails", () => {
       const failingSignerRepository: SignerRepository = {
         getSignerByFiscalCode: () => TE.right({ id: newId() }),
         getFiscalCodeBySignerId: () =>
@@ -116,7 +116,7 @@ describe("SignatureRequestNotification", () => {
         signerRepository: failingSignerRepository,
         notificationService: mockNotificationService,
       })().then((result) => {
-        expect(result).toBe(false);
+        expect(E.isLeft(result)).toBe(true);
       });
     });
   });

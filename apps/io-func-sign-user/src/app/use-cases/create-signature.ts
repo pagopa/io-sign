@@ -155,7 +155,7 @@ export const makeCreateSignature =
 
     const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
-        fiscalCode: pipe(signerRepository.getFiscalCodeBySignerId(signer.id)),
+        fiscalCode: signerRepository.getFiscalCodeBySignerId(signer.id),
         documentsToSign: pipe(
           documentsSignature,
           A.map((documentSignature) =>

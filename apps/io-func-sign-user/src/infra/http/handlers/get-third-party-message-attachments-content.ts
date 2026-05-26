@@ -65,8 +65,7 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
               makeGetSignedDocumentContent(getDocumentContent);
 
             return pipe(
-              fiscalCode,
-              signerRepository.getSignerByFiscalCode,
+              signerRepository.getSignerByFiscalCode(fiscalCode),
               TE.map((signer) => signer.id),
               TE.chain(getSignatureRequest(signatureRequestId)),
               TE.chain(

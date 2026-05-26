@@ -3,6 +3,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import * as TE from "fp-ts/TaskEither";
 import * as O from "fp-ts/Option";
 import { newId } from "@io-sign/io-sign/id";
+import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { EmailString } from "@pagopa/ts-commons/lib/strings";
@@ -64,10 +65,11 @@ describe("GetSignatureRequestHandler", () => {
 
   beforeAll(() => {
     signerRepository = {
-      getByFiscalCode: (fiscalCode) =>
+      getSignerByFiscalCode: (fiscalCode) =>
         fiscalCode === mocks.user.fiscalCode
-          ? TE.right(O.some(mocks.signer))
-          : TE.right(O.none),
+          ? TE.right(mocks.signer)
+          : TE.left(new EntityNotFoundError("The specified Signer was not found")),
+      getFiscalCodeBySignerId: () => TE.left(new Error("Not implemented")),
     };
 
     signatureRequestRepository = {

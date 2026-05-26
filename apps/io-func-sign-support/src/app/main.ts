@@ -11,7 +11,7 @@ import { getConfigFromEnvironment } from "./config";
 
 import { CosmosDbIssuerRepository } from "../infra/azure/cosmos/issuer";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
-import { makePdvTokenizerSignerRepository } from "../infra/pagopa/pdv-tokenizer/signer";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import { InfoHandler } from "../infra/http/handlers/info";
 import { GetSignatureRequestHandler } from "../infra/http/handlers/get-signature-request";
@@ -44,7 +44,7 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
   issuerDb
 );
 
-const signerRepository = makePdvTokenizerSignerRepository(tokenizerClient);
+const signerRepository = new PdvTokenizerSignerRepository(tokenizerClient);
 
 // Info endpoint - health check
 const info = httpAzureFunction(InfoHandler)({});

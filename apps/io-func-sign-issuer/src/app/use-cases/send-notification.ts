@@ -25,7 +25,7 @@ import {
 } from "../../signature-request";
 
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
-import { makeSendRequestToSignNotification } from "../../signature-request-notification";
+import { sendSignatureRequestNotification } from "../../signature-request-notification";
 
 const truncateTo121Chars = truncateWithEllipsis();
 
@@ -73,12 +73,11 @@ export const makeSendNotification =
     createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
   ({ signatureRequest }: { signatureRequest: SignatureRequest }) => {
-    const sendRequestToSignNotification = makeSendRequestToSignNotification(
-      signerRepository,
-      notificationService,
-      requestToSignMessage
-    );
-
+    const sendRequestToSignNotification = (req: SignatureRequest) =>
+      sendSignatureRequestNotification(requestToSignMessage)(req)({
+        signerRepository,
+        notificationService
+      });
     return pipe(
       sequenceS(TE.ApplySeq)({
         signatureRequest: pipe(
