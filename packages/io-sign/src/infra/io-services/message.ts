@@ -60,10 +60,8 @@ export class IONotificationService implements NotificationService {
   }
 
   submit(fiscalCode: FiscalCode, notification: NotificationMessage) {
-    const { ioApiClient, configurationId } = {
-      ioApiClient: this.#ioApiClient,
-      configurationId: this.#configurationId
-    };
+    const ioApiClient = this.#ioApiClient;
+    const configurationId = this.#configurationId;
     return pipe(
       fiscalCode,
       makeRetriveUserProfileSenderAllowed(ioApiClient),
