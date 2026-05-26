@@ -41,11 +41,6 @@ export type NotificationService = {
   ) => TE.TaskEither<Error, Notification>;
 };
 
-/** @deprecated use "submitNotification" instead */
-export type SubmitNotificationForUser = (
-  fiscalCode: FiscalCode
-) => (message: NotificationMessage) => TE.TaskEither<Error, Notification>;
-
 export const submitNotification =
   (fiscalCode: FiscalCode, message: NotificationMessage) =>
   (r: { notificationService: NotificationService }) =>

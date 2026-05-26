@@ -8,8 +8,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import { Database } from "@azure/cosmos";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
@@ -20,7 +19,7 @@ import { SignatureRequestToThirdPartyMessage } from "../encoders/signature-reque
 import { requireFiscalCode } from "../decoders/fiscal-code";
 
 type GetThirdPartyMessageDetailsDependencies = {
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
   db: Database;
 };
 
@@ -32,24 +31,11 @@ export const GetThirdPartyMessageDetailsHandler = H.of((req: H.HttpRequest) =>
     }),
     RTE.chainW(
       ({ fiscalCode, signatureRequestId }) =>
-        ({
-          pdvTokenizerClient,
-          db
-        }: GetThirdPartyMessageDetailsDependencies) => {
-          const getSignerByFiscalCode =
-            makeGetSignerByFiscalCode(pdvTokenizerClient);
+        ({ signerRepository, db }: GetThirdPartyMessageDetailsDependencies) => {
           const getSignatureRequest = makeGetSignatureRequest(db);
           return pipe(
             fiscalCode,
-            getSignerByFiscalCode,
-            TE.chain(
-              TE.fromOption(
-                () =>
-                  new EntityNotFoundError(
-                    "The specified signer does not exist."
-                  )
-              )
-            ),
+            signerRepository.getSignerByFiscalCode,
             TE.map((signer) => signer.id),
             TE.chain(getSignatureRequest(signatureRequestId)),
             TE.chain(

@@ -1,74 +1,32 @@
 import { constFalse, constTrue, pipe } from "fp-ts/lib/function";
-import * as TE from "fp-ts/lib/TaskEither";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
 
 import {
-  GetFiscalCodeBySignerId,
-  getFiscalCodeBySignerId
+  getFiscalCodeBySignerId,
+  SignerRepository
 } from "@io-sign/io-sign/signer";
 
 import {
+  Notification,
   NotificationMessage,
-  submitNotification,
-  SubmitNotificationForUser
+  NotificationService,
+  submitNotification
 } from "@io-sign/io-sign/notification";
 
-import { sequenceS } from "fp-ts/lib/Apply";
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { SignatureRequest } from "./signature-request";
-import { Dossier, GetDossier } from "./dossier";
 
-/** @deprecated */
-export type MakeMessageContent = (
-  dossier: Dossier
-) => (signatureRequest: SignatureRequest) => NotificationMessage;
-
-/** @deprecated */
-export type SendNotificationPayload = {
-  signatureRequest: SignatureRequest;
-};
-
-/**
- * @deprecated use "sendSignatureRequestNotification" instead
- * Sends a signature request notification by constructing the message with makeMessageContent.
- */
-export const makeSendSignatureRequestNotification =
+export const makeSendRequestToSignNotification =
   (
-    submitNotification: SubmitNotificationForUser,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
-    getDossier: GetDossier,
-    makeMessageContent: MakeMessageContent
+    signerRepository: SignerRepository,
+    notificationService: NotificationService,
+    buildNotificationMessage: (req: SignatureRequest) => NotificationMessage
   ) =>
-  (signatureRequest: SignatureRequest) =>
+  (req: SignatureRequest): TE.TaskEither<Error, Notification> =>
     pipe(
-      sequenceS(TE.ApplicativeSeq)({
-        fiscalCode: pipe(
-          getFiscalCodeBySignerId(signatureRequest.signerId),
-          TE.chain(
-            TE.fromOption(
-              () =>
-                new EntityNotFoundError(
-                  "The fiscal code associated with this signer is not valid."
-                )
-            )
-          )
-        ),
-        dossier: pipe(
-          signatureRequest.issuerId,
-          getDossier(signatureRequest.dossierId),
-          TE.chain(
-            TE.fromOption(() => new EntityNotFoundError("Dossier not found!"))
-          )
-        )
-      }),
-
-      TE.chainW(({ fiscalCode, dossier }) =>
-        pipe(
-          signatureRequest,
-          makeMessageContent(dossier),
-          TE.fromNullable(new Error("Invalid message content")),
-          TE.chain(submitNotification(fiscalCode))
-        )
+      signerRepository.getFiscalCodeBySignerId(req.signerId),
+      TE.chain((fiscalCode) =>
+        notificationService.submit(fiscalCode, buildNotificationMessage(req))
       )
     );
 

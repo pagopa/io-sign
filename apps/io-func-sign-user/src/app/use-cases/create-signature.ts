@@ -1,4 +1,4 @@
-import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
+import { Signer, SignerRepository } from "@io-sign/io-sign/signer";
 
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import * as L from "@pagopa/logger";
@@ -114,7 +114,7 @@ const makeGetDocumentUrlForSignature =
  */
 export const makeCreateSignature =
   (
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    signerRepository: SignerRepository,
     creatQtspSignatureRequest: CreateQtspSignatureRequest,
     insertSignature: InsertSignature,
     notifySignatureReadyEvent: NotifySignatureReadyEvent,
@@ -155,18 +155,7 @@ export const makeCreateSignature =
 
     const createSignatureRequest = pipe(
       sequenceS(TE.ApplicativeSeq)({
-        fiscalCode: pipe(
-          signer.id,
-          getFiscalCodeBySignerId,
-          TE.chain(
-            TE.fromOption(
-              () =>
-                new EntityNotFoundError(
-                  "Fiscal code not found for this signer!"
-                )
-            )
-          )
-        ),
+        fiscalCode: pipe(signerRepository.getFiscalCodeBySignerId(signer.id)),
         documentsToSign: pipe(
           documentsSignature,
           A.map((documentSignature) =>
