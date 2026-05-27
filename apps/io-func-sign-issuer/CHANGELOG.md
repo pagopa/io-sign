@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.7.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
 ## 1.6.3
 
 ### Patch Changes

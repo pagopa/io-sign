@@ -1,5 +1,16 @@
 # io-func-sign-user
 
+## 2.1.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
 ## 2.0.1
 
 ### Patch Changes
