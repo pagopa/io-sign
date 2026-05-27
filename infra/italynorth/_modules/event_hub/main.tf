@@ -43,9 +43,9 @@ module "eventhub" {
       window_size = "PT15M"
     },
     error_trx = {
-      aggregation = "Total"
-      metric_name = "ServerErrors"
-      description = "Server errors on io-sign Event Hub (ITN). Check immediately."
+      aggregation = "Count"
+      metric_name = "UserErrors"
+      description = "Too many user errors on io-sign Event Hub (ITN). Check immediately."
       operator    = "GreaterThan"
       threshold   = 0
       frequency   = "PT5M"
