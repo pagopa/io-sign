@@ -42,7 +42,7 @@ module "eventhub" {
       frequency   = "PT5M"
       window_size = "PT15M"
     },
-    error_trx = {
+    user_error_trx = {
       aggregation = "Count"
       metric_name = "UserErrors"
       description = "Too many user errors on io-sign Event Hub (ITN). Check immediately."
