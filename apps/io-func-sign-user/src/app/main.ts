@@ -2,6 +2,7 @@ import { app } from "@azure/functions";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
@@ -133,6 +134,8 @@ const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.apiKey
 );
 
+const signerRepository = new PdvTokenizerSignerRepository(pdvTokenizerClient);
+
 const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.basePath,
   config.pagopa.ioServices.subscriptionKey
@@ -210,7 +213,7 @@ app.storageQueue("updateSignatureRequest", {
 });
 
 const createSignature = CreateSignatureFunction({
-  pdvTokenizerClient,
+  signerRepository,
   lollipopApiClient,
   db: database,
   qtspQueue,
@@ -240,7 +243,7 @@ app.storageQueue("createSignatureRequest", {
 });
 
 const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
-  pdvTokenizerClient,
+  signerRepository,
   ioApiClient
 });
 
@@ -263,7 +266,7 @@ app.http("getQtspClausesMetadata", {
 const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
   documentsToFillQueue,
-  pdvTokenizerClient
+  signerRepository
 });
 
 app.http("createFilledDocument", {
@@ -274,7 +277,7 @@ app.http("createFilledDocument", {
 });
 
 const getThirdPartyMessageDetails = GetThirdPartyMessageDetailsFunction({
-  pdvTokenizerClient,
+  signerRepository,
   db: database
 });
 
@@ -287,7 +290,7 @@ app.http("getThirdPartyMessageDetails", {
 
 const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
-    pdvTokenizerClient,
+    signerRepository,
     db: database,
     signedContainerClient: signedContainerClientWithFallback
   });
@@ -300,7 +303,7 @@ app.http("getThirdPartyMessageAttachmentContent", {
 });
 
 const fillDocument = FillDocumentFunction({
-  pdvTokenizerClient,
+  signerRepository,
   filledContainerClient,
   inputDecoder: FillDocumentPayload
 });

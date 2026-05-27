@@ -11,8 +11,7 @@ import { QueueClient } from "@azure/storage-queue";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
   defaultBlobGenerateSasUrlOptions,
@@ -32,7 +31,7 @@ import { FilledDocumentToApiModel } from "../encoders/filled-document";
 type CreateFilledDocumentsDependencies = {
   filledContainerClient: ContainerClient;
   documentsToFillQueue: QueueClient;
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
 };
 
 type GetFilledDocumentUrl = (
@@ -103,7 +102,7 @@ export const CreateFilledDocumentHandler = H.of((req: H.HttpRequest) =>
         ({
           filledContainerClient,
           documentsToFillQueue,
-          pdvTokenizerClient
+          signerRepository
         }: CreateFilledDocumentsDependencies) => {
           const getFilledDocumentUrl = makeGetFilledDocumentUrl(
             filledContainerClient
@@ -111,13 +110,11 @@ export const CreateFilledDocumentHandler = H.of((req: H.HttpRequest) =>
 
           const notifyDocumentToFill =
             makeNotifyDocumentToFill(documentsToFillQueue);
-          const getFiscalCodeBySignerId =
-            makeGetFiscalCodeBySignerId(pdvTokenizerClient);
 
           return makeCreateFilledDocumentUrl(
             getFilledDocumentUrl,
             notifyDocumentToFill,
-            getFiscalCodeBySignerId
+            signerRepository
           )(payload);
         }
     ),

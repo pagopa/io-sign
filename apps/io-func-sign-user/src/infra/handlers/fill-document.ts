@@ -1,7 +1,6 @@
 import * as H from "@pagopa/handler-kit";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { ContainerClient } from "@azure/storage-blob";
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 
@@ -10,18 +9,15 @@ import { makeFillDocument } from "../../app/use-cases/fill-document";
 import { FillDocumentPayload } from "../../filled-document";
 
 export type FillDocumentDependencies = {
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
   filledContainerClient: ContainerClient;
 };
 
 export const FillDocumentHandler = H.of(
   (payload: FillDocumentPayload) =>
-    ({
-      pdvTokenizerClient,
-      filledContainerClient
-    }: FillDocumentDependencies) => {
+    ({ signerRepository, filledContainerClient }: FillDocumentDependencies) => {
       const fillDocument = makeFillDocument(
-        makeGetFiscalCodeBySignerId(pdvTokenizerClient),
+        signerRepository,
         makeUploadBlob(filledContainerClient),
         makeFetchWithTimeout()
       );

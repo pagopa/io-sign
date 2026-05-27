@@ -17,8 +17,7 @@ import { DocumentReady } from "@io-sign/io-sign/document";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { getDocumentUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetFiscalCodeBySignerId } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { stringFromBase64Encode } from "@io-sign/io-sign/utility";
 import { validate } from "@io-sign/io-sign/validation";
@@ -52,7 +51,7 @@ import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 export type CreateSignatureDependencies = {
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
   lollipopApiClient: LollipopApiClient;
   db: CosmosDatabase;
   qtspQueue: QueueClient;
@@ -86,7 +85,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
     RTE.chainW(
       (sequence) =>
         ({
-          pdvTokenizerClient,
+          signerRepository,
           lollipopApiClient,
           db,
           qtspQueue,
@@ -94,8 +93,6 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           signedContainerClient,
           qtspConfig
         }: CreateSignatureDependencies) => {
-          const getFiscalCodeBySignerId =
-            makeGetFiscalCodeBySignerId(pdvTokenizerClient);
           const getBase64SamlAssertion =
             makeGetBase64SamlAssertion(lollipopApiClient);
           const getSignatureRequest = makeGetSignatureRequest(db);
@@ -118,7 +115,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
             pipe(document, getDocumentUrl("racw", 60))(signedContainerClient);
 
           const createSignature = makeCreateSignature(
-            getFiscalCodeBySignerId,
+            signerRepository,
             creatQtspSignatureRequest,
             insertSignature,
             notifySignature,

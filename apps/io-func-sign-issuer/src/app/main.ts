@@ -183,7 +183,7 @@ app.http("info", {
 });
 
 const getSignerByFiscalCode = GetSignerFunction({
-  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
+  signerRepository,
   ioApiClient
 });
 
@@ -210,9 +210,8 @@ app.http("getUploadUrl", {
 
 const sendNotification = SendNotificationFunction({
   db: database,
-  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  configurationId: config.pagopa.ioServices.configurationId,
+  signerRepository,
+  notificationService,
   eventHubAnalyticsClient: eventAnalyticsClient,
   legacyEventHubAnalyticsClient: legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository

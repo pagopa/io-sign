@@ -10,8 +10,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { Database } from "@azure/cosmos";
 import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Document, DocumentId, DocumentReady } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
@@ -37,7 +36,7 @@ const requireDocumentId = (
   );
 
 export type GetThirdPartyMessageAttachmentContentDependencies = {
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
   db: Database;
   signedContainerClient: BaseContainerClientWithFallback;
 };
@@ -53,12 +52,10 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
       RTE.chainW(
         ({ fiscalCode, signatureRequestId, documentId }) =>
           ({
-            pdvTokenizerClient,
+            signerRepository,
             db,
             signedContainerClient
           }: GetThirdPartyMessageAttachmentContentDependencies) => {
-            const getSignerByFiscalCode =
-              makeGetSignerByFiscalCode(pdvTokenizerClient);
             const getSignatureRequest = makeGetSignatureRequest(db);
             const getDocumentContent: GetDocumentContent = (
               document: DocumentReady
@@ -68,16 +65,7 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
               makeGetSignedDocumentContent(getDocumentContent);
 
             return pipe(
-              fiscalCode,
-              getSignerByFiscalCode,
-              TE.chain(
-                TE.fromOption(
-                  () =>
-                    new EntityNotFoundError(
-                      "The specified signer does not exist."
-                    )
-                )
-              ),
+              signerRepository.getSignerByFiscalCode(fiscalCode),
               TE.map((signer) => signer.id),
               TE.chain(getSignatureRequest(signatureRequestId)),
               TE.chain(

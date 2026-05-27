@@ -13,8 +13,7 @@ import {
   NotificationContent,
   NotificationContentWithAttachments,
   NotificationMessage,
-  NotificationService,
-  SubmitNotificationForUser
+  NotificationService
 } from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
 
@@ -51,15 +50,19 @@ export const NotificationContentWithAttachmentsToApiModel: Enc.Encoder<
   })
 };
 
-/** @deprecated use "IONotificationService" */
-export const makeSubmitMessageForUser =
-  (
-    ioApiClient: IOApiClient,
-    configurationId: Ulid
-  ): SubmitNotificationForUser =>
-  (fiscalCode: FiscalCode) =>
-  (notification: NotificationMessage) =>
-    pipe(
+export class IONotificationService implements NotificationService {
+  #ioApiClient: IOApiClient;
+  #configurationId: Ulid;
+
+  constructor(ioApiClient: IOApiClient, configurationId: Ulid) {
+    this.#ioApiClient = ioApiClient;
+    this.#configurationId = configurationId;
+  }
+
+  submit(fiscalCode: FiscalCode, notification: NotificationMessage) {
+    const ioApiClient = this.#ioApiClient;
+    const configurationId = this.#configurationId;
+    return pipe(
       fiscalCode,
       makeRetriveUserProfileSenderAllowed(ioApiClient),
       TE.filterOrElse(
@@ -76,10 +79,13 @@ export const makeSubmitMessageForUser =
               message: {
                 ...("signatureRequestId" in notification
                   ? NotificationContentWithAttachmentsToApiModel.encode({
-                      notification,
+                      notification:
+                        notification as NotificationContentWithAttachments,
                       configurationId
                     })
-                  : NotificationContentToApiModel.encode(notification)),
+                  : NotificationContentToApiModel.encode(
+                      notification as NotificationContent
+                    )),
                 fiscal_code: fiscalCode,
                 /* feature_level_type field is used to identify the institutions that have subscribed to premium messages.
                  * In our case we have not adhered to any agreement therefore the field remains STANDARD but
@@ -120,20 +126,5 @@ export const makeSubmitMessageForUser =
         ioMessageId: createdMessage.id as NonEmptyString
       }))
     );
-
-export class IONotificationService implements NotificationService {
-  #ioApiClient: IOApiClient;
-  #configurationId: Ulid;
-
-  constructor(ioApiClient: IOApiClient, configurationId: Ulid) {
-    this.#ioApiClient = ioApiClient;
-    this.#configurationId = configurationId;
-  }
-
-  submit(fiscalCode: FiscalCode, notification: NotificationMessage) {
-    return makeSubmitMessageForUser(
-      this.#ioApiClient,
-      this.#configurationId
-    )(fiscalCode)(notification);
   }
 }
