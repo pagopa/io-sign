@@ -1,5 +1,12 @@
 # io-sign-backoffice-func
 
+## 1.6.6
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
 ## 1.6.5
 
 ### Patch Changes

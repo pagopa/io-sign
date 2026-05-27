@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
 ## 1.10.0
 
 ### Minor Changes
