@@ -5,6 +5,7 @@ import * as E from "fp-ts/Either";
 import { identity, pipe } from "fp-ts/function";
 
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { httpAzureFunction } from "@pagopa/handler-kit-azure-func";
 
 import { getConfigFromEnvironment } from "./config";
@@ -34,7 +35,8 @@ const userDb = cosmosClient.database(config.azure.cosmos.userDbName);
 
 const tokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
+  config.pagopa.tokenizer.apiKey,
+  3000 as Millisecond
 );
 
 const issuerRepository = new CosmosDbIssuerRepository(issuerDb);

@@ -7,6 +7,7 @@ import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
@@ -80,7 +81,8 @@ const legacyEventAnalyticsClient = new EventHubProducerClient(
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey
+  config.pagopa.tokenizer.apiKey,
+  3000 as Millisecond
 );
 
 const ioApiClient = createIOApiClient(
