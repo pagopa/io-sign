@@ -2,7 +2,6 @@ import { app } from "@azure/functions";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
 import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import * as E from "fp-ts/lib/Either";
@@ -132,8 +131,7 @@ const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
 
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
-  config.pagopa.tokenizer.apiKey,
-  3000 as Millisecond
+  config.pagopa.tokenizer.apiKey
 );
 
 const signerRepository = new PdvTokenizerSignerRepository(pdvTokenizerClient);
