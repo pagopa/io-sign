@@ -22,7 +22,7 @@ export type LollipopApiClient = {
 export const createLollipopApiClient = (
   baseUrl: string,
   apiKey: string,
-  timeout = 1000 as Millisecond
+  timeout = 3000 as Millisecond
 ): LollipopApiClient => ({
   client: createClient<"ApiKeyAuth">({
     baseUrl,
