@@ -22,7 +22,7 @@ export type IOApiClient = {
 export const createIOApiClient = (
   baseUrl: string,
   subscriptionKey: string,
-  timeout = 1000 as Millisecond
+  timeout = 3000 as Millisecond
 ): IOApiClient => ({
   client: createClient<"SubscriptionKey">({
     baseUrl,
