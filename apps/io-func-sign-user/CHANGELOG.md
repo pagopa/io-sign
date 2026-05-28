@@ -1,5 +1,14 @@
 # io-func-sign-user
 
+## 2.1.1
+
+### Patch Changes
+
+- 7d06e13: increase timeout external api
+- Updated dependencies [7d06e13]
+- Updated dependencies [949644b]
+  - @io-sign/io-sign@1.11.1
+
 ## 2.1.0
 
 ### Minor Changes
