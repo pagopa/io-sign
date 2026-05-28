@@ -1,5 +1,12 @@
 # @io-sign/io-sign
 
+## 1.11.1
+
+### Patch Changes
+
+- 7d06e13: increase timeout external api
+- 949644b: increase timeout when calling pdv api
+
 ## 1.11.0
 
 ### Minor Changes
