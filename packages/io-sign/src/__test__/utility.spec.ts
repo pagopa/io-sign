@@ -55,11 +55,11 @@ describe("Utility", () => {
       expect(truncateTo10Chars("12345678901")).toBe("1234567...");
     });
 
-    it("should truncate to 121 characters (default) including ellipsis", () => {
-      const truncateTo121Chars = truncateWithEllipsis();
+    it("should truncate to 120 characters (default) including ellipsis", () => {
+      const truncateTo120Chars = truncateWithEllipsis();
       const long = "Hai un documento da firmare - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec feugiat dapibus nisi gravida semper. Aenean ultrices semper eros non blandit. Pellentesque tincidunt varius metus. Ut pharetra neque ut augue vehicula lobortis. Ut sit amet eros leo. Phasellus quis elit vitae risus posuere sollicitudin eget sed metus.";
-      const result = truncateTo121Chars(long);
-      expect(result.length).toBe(121);
+      const result = truncateTo120Chars(long);
+      expect(result.length).toBe(120);
       expect(result.endsWith("...")).toBe(true);
     });
   });

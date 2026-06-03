@@ -31,6 +31,6 @@ export const stringFromBase64Encode = (arrayBuffer: unknown) =>
   );
 
 export const truncateWithEllipsis =
-  (maxLength = 121) =>
+  (maxLength = 120) =>
   (text: string): string =>
     text.length <= maxLength ? text : `${text.slice(0, maxLength - 3)}...`;
