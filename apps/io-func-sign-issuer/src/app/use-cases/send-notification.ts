@@ -27,12 +27,12 @@ import {
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
 
-const truncateTo121Chars = truncateWithEllipsis();
+const truncateTo120Chars = truncateWithEllipsis();
 
 const requestToSignMessage = (
   signatureRequest: SignatureRequest
 ): NotificationMessage => ({
-  subject: truncateTo121Chars(
+  subject: truncateTo120Chars(
     `Hai un documento da firmare - ${signatureRequest.issuerDescription}`
   ),
   markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${

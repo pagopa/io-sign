@@ -28,7 +28,7 @@ import { sendSignatureRequestNotification } from "../../signature-request-notifi
 // - the user should be notified by a Message
 // - we should send a "CANCELLED" event to analytics
 
-const truncateTo121Chars = truncateWithEllipsis();
+const truncateTo120Chars = truncateWithEllipsis();
 
 const buildNotificationMessage = (
   request: SignatureRequest
@@ -36,7 +36,7 @@ const buildNotificationMessage = (
   const supportEmail = `[${request.issuerEmail}](mailto:${request.issuerEmail})`;
   if (request.status === "SIGNED") {
     return {
-      subject: truncateTo121Chars(
+      subject: truncateTo120Chars(
         `Ecco i documenti firmati - ${request.issuerDescription}`
       ),
       markdown: `I documenti che hai firmato sono pronti!\n\n\nHai **90 giorni** dalla ricezione di questo messaggio per visualizzarli e salvarli sul tuo dispositivo.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a ${supportEmail}.`,
@@ -44,7 +44,7 @@ const buildNotificationMessage = (
     };
   }
   return {
-    subject: truncateTo121Chars(
+    subject: truncateTo120Chars(
       `C'è un problema con la firma - ${request.issuerDescription}`
     ),
     markdown: `Per un problema tecnico, non è stato possibile completare la firma per **${request.dossierTitle}**.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
