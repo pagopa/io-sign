@@ -45,9 +45,9 @@ const buildNotificationMessage = (
   }
   return {
     subject: truncateTo121Chars(
-      `C'è un problema con la firma dei documenti - ${request.issuerDescription}`
+      `C'è un problema con la firma - ${request.issuerDescription}`
     ),
-    markdown: `Per un problema tecnico, non è stato possibile completare la firma dei documenti.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
+    markdown: `Per un problema tecnico, non è stato possibile completare la firma per **${request.dossierTitle}**.\n\n\nAttendi un nuovo messaggio per firmare. Se non lo ricevi, puoi contattare l'ente all'indirizzo ${supportEmail}.`
   };
 };
 
