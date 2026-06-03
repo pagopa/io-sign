@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
 ## 2.1.1
 
 ### Patch Changes
