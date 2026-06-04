@@ -50,7 +50,6 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-// ITN — primary
 const eventHubAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsItnConnectionString,
   "io-p-itn-sign-analytics-01"

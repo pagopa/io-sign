@@ -56,7 +56,6 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-// ITN — primary
 const eventHubBillingClient = new EventHubProducerClient(
   config.azure.eventHubs.billingItnConnectionString,
   "io-p-itn-sign-billing-01"
