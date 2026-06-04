@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.2
+
+### Patch Changes
+
+- f94aed0: Fix default message subject trimming to 120 chars
+
 ## 1.11.1
 
 ### Patch Changes
