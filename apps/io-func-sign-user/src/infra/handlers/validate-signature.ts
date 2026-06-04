@@ -45,8 +45,7 @@ export const ValidateSignatureHandler = H.of(
       qtspConfig,
       onSignedQueueClient,
       onRejectedQueueClient,
-      eventHubAnalyticsClient,
-      legacyEventHubAnalyticsClient
+      eventHubAnalyticsClient
     }: ValidateSignatureEnvironment) => {
       const validateSignature = makeValidateSignature(
         makeGetSignature(db),
@@ -57,10 +56,7 @@ export const ValidateSignatureHandler = H.of(
         makeGetSignatureRequestWithToken()(makeGetToken())(qtspConfig),
         makeNotifySignatureRequestSignedEvent(onSignedQueueClient),
         makeNotifySignatureRequestRejectedEvent(onRejectedQueueClient),
-        makeCreateAndSendAnalyticsEvent(
-          eventHubAnalyticsClient,
-          legacyEventHubAnalyticsClient
-        )
+        makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient)
       );
       return validateSignature(payload);
     }

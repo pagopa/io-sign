@@ -196,7 +196,7 @@ app.http("getSignatureRequest", {
 const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient,
+  eventAnalyticsClient: eventHubAnalyticsClient
 });
 
 app.storageQueue("updateSignatureRequest", {
