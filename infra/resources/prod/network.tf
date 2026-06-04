@@ -141,26 +141,6 @@ resource "azurerm_network_security_group" "io_sign_support_nsg" {
   tags = var.tags
 }
 
-module "io_sign_eventhub_snet" {
-  source               = "github.com/pagopa/terraform-azurerm-v3//subnet?ref=v8.35.0"
-  name                 = format("%s-eventhub-snet", local.project)
-  resource_group_name  = data.azurerm_virtual_network.vnet_common.resource_group_name
-  virtual_network_name = data.azurerm_virtual_network.vnet_common.name
-  address_prefixes     = var.subnets_cidrs.eventhub
-
-  private_endpoint_network_policies_enabled = false
-
-  service_endpoints = ["Microsoft.EventHub"]
-}
-
-resource "azurerm_network_security_group" "io_sign_eventhub_nsg" {
-  name                = format("%s-eventhub-nsg", local.project)
-  location            = data.azurerm_virtual_network.vnet_common.location
-  resource_group_name = data.azurerm_virtual_network.vnet_common.resource_group_name
-
-  tags = var.tags
-}
-
 data "azurerm_private_dns_zone" "privatelink_documents_azure_com" {
   name                = "privatelink.documents.azure.com"
   resource_group_name = format("%s-rg-common", local.product)
