@@ -67,12 +67,6 @@ const eventAnalyticsClient = new EventHubProducerClient(
   "io-p-itn-sign-analytics-01"
 );
 
-// WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
-const legacyEventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHubs.billingConnectionString,
-  "billing"
-);
-
 const legacyEventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsConnectionString,
   "analytics"
@@ -213,7 +207,6 @@ const sendNotification = SendNotificationFunction({
   signerRepository,
   notificationService,
   eventHubAnalyticsClient: eventAnalyticsClient,
-  legacyEventHubAnalyticsClient: legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository
 });
 
@@ -279,7 +272,6 @@ const createSignatureRequest = CreateSignatureRequestFunction({
   dossierRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 });
 
 app.http("createSignatureRequest", {
@@ -293,7 +285,6 @@ const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   issuerRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   ready: onSignatureRequestReadyQueueClient,
   updated: waitingForSignatureRequestUpdatesQueueClient
 });
@@ -335,9 +326,7 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
   telemetryService,
   notificationService,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   billingEventProducer: eventHubBillingClient,
-  legacyBillingEventProducer: legacyEventHubBillingClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   inputDecoder: ClosedSignatureRequest
 });
 
@@ -363,7 +352,6 @@ const validateUpload = makeValidateUploadBlobHandler({
   uploadedFileStorage,
   validatedFileStorage,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 });
 
 app.storageBlob("validateUpload", {

@@ -28,7 +28,6 @@ type SendNotificationDependencies = {
   signerRepository: SignerRepository;
   notificationService: NotificationService;
   eventHubAnalyticsClient: EventHubProducerClient;
-  legacyEventHubAnalyticsClient: EventHubProducerClient; // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository: IssuerRepository;
 };
 
@@ -59,17 +58,13 @@ export const SendNotificationHandler = H.of((req: H.HttpRequest) =>
           db,
           signerRepository,
           notificationService,
-          eventHubAnalyticsClient,
-          legacyEventHubAnalyticsClient
+          eventHubAnalyticsClient
         }: SendNotificationDependencies) => {
           const sendNotification = makeSendNotification(
             signerRepository,
             notificationService,
             makeUpsertSignatureRequest(db),
-            makeCreateAndSendAnalyticsEvent(
-              eventHubAnalyticsClient,
-              legacyEventHubAnalyticsClient
-            )
+            makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient)
           );
           return sendNotification({ signatureRequest });
         }

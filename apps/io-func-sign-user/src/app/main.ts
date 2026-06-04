@@ -56,12 +56,6 @@ const eventHubAnalyticsClient = new EventHubProducerClient(
   "io-p-itn-sign-analytics-01"
 );
 
-// WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
-const legacyEventHubAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsConnectionString,
-  "analytics"
-);
-
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "filled-modules"
@@ -203,7 +197,6 @@ const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
   eventAnalyticsClient: eventHubAnalyticsClient,
-  legacyEventAnalyticsClient: legacyEventHubAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
 });
 
 app.storageQueue("updateSignatureRequest", {
@@ -321,7 +314,6 @@ const validateSignature = ValidateSignatureFunction({
   onSignedQueueClient,
   onRejectedQueueClient,
   eventHubAnalyticsClient,
-  legacyEventHubAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   inputDecoder: ValidateSignaturePayload
 });
 

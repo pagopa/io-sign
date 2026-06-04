@@ -164,9 +164,7 @@ const closeSignatureRequest = (input: ClosedSignatureRequest) =>
     telemetryService,
     notificationService,
     eventAnalyticsClient: eventProducerClient,
-    legacyBillingEventProducer: eventProducerClient,
     billingEventProducer: eventProducerClient,
-    legacyEventAnalyticsClient: eventProducerClient,
     inputDecoder: ClosedSignatureRequest,
     logger: {
       log: () => () => void 0,
@@ -214,7 +212,7 @@ describe("closeSignatureRequest", () => {
         mocks.signatureRequest.signed
       )();
       expect(E.isRight(result));
-      expect(analytics.sendBatch).toHaveBeenCalledTimes(4);
+      expect(analytics.sendBatch).toHaveBeenCalledTimes(2);
     });
 
     it("fails on error on billing event", async () => {
