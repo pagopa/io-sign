@@ -1,5 +1,13 @@
 # io-func-sign-user
 
+## 2.1.3
+
+### Patch Changes
+
+- a690703: remove eventhub weu write
+- Updated dependencies [a690703]
+  - @io-sign/io-sign@1.11.3
+
 ## 2.1.2
 
 ### Patch Changes
