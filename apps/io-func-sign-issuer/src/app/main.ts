@@ -56,7 +56,6 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-// ITN — primary
 const eventHubBillingClient = new EventHubProducerClient(
   config.azure.eventHubs.billingItnConnectionString,
   "io-p-itn-sign-billing-01"
@@ -65,17 +64,6 @@ const eventHubBillingClient = new EventHubProducerClient(
 const eventAnalyticsClient = new EventHubProducerClient(
   config.azure.eventHubs.analyticsItnConnectionString,
   "io-p-itn-sign-analytics-01"
-);
-
-// WEU legacy — rimuovere dopo che PDND ha fatto lo switch a ITN
-const legacyEventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHubs.billingConnectionString,
-  "billing"
-);
-
-const legacyEventAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsConnectionString,
-  "analytics"
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -213,7 +201,6 @@ const sendNotification = SendNotificationFunction({
   signerRepository,
   notificationService,
   eventHubAnalyticsClient: eventAnalyticsClient,
-  legacyEventHubAnalyticsClient: legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   issuerRepository
 });
 
@@ -278,8 +265,7 @@ const createSignatureRequest = CreateSignatureRequestFunction({
   issuerRepository,
   dossierRepository,
   signatureRequestRepository,
-  eventAnalyticsClient,
-  legacyEventAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  eventAnalyticsClient
 });
 
 app.http("createSignatureRequest", {
@@ -293,7 +279,6 @@ const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   issuerRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   ready: onSignatureRequestReadyQueueClient,
   updated: waitingForSignatureRequestUpdatesQueueClient
 });
@@ -335,9 +320,7 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
   telemetryService,
   notificationService,
   eventAnalyticsClient,
-  legacyEventAnalyticsClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   billingEventProducer: eventHubBillingClient,
-  legacyBillingEventProducer: legacyEventHubBillingClient, // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
   inputDecoder: ClosedSignatureRequest
 });
 
@@ -362,8 +345,7 @@ const validateUpload = makeValidateUploadBlobHandler({
   uploadMetadataRepository,
   uploadedFileStorage,
   validatedFileStorage,
-  eventAnalyticsClient,
-  legacyEventAnalyticsClient // WEU — rimuovere dopo che PDND ha fatto lo switch a ITN
+  eventAnalyticsClient
 });
 
 app.storageBlob("validateUpload", {

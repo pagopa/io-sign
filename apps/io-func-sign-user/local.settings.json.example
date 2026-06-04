@@ -24,8 +24,6 @@
     "NODE_ENV": "development",
     "AzureFunctionsJobHost__logging__logLevel__Function": "Trace",
     "AnalyticsEventHubItnConnectionString": "ANALYTICS_EVENT_HUB_ITN_CONNECTION_STRING",
-    "BillingEventHubConnectionString": "BILLING_EVENT_HUB_CONNECTION_STRING",
-    "AnalyticsEventHubConnectionString": "ANALYTICS_EVENT_HUB_CONNECTION_STRING",
     "IoLinkBaseUrl": "IO_LINK_BASE_URL",
   }
 }

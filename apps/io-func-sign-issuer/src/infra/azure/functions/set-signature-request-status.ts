@@ -23,7 +23,6 @@ type SetSignatureRequestStatusDeps = {
   issuerRepository: IssuerRepository;
   signatureRequestRepository: SignatureRequestRepository;
   eventAnalyticsClient: EventProducerClient;
-  legacyEventAnalyticsClient: EventProducerClient; // WEU — rimuovere post-migrazione
   ready: QueueClient;
   updated: QueueClient;
 };

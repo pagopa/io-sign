@@ -124,7 +124,6 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      legacyEventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -158,7 +157,6 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      legacyEventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -192,7 +190,6 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      legacyEventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -229,7 +226,6 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      legacyEventAnalyticsClient: {} as EventHubProducerClient,
       ready: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
@@ -264,7 +260,6 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       eventAnalyticsClient: {} as EventHubProducerClient,
-      legacyEventAnalyticsClient: {} as EventHubProducerClient,
       ready: {} as QueueClient,
       updated: {
         sendMessage: (_: string) => Promise.resolve({}),

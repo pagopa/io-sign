@@ -44,7 +44,6 @@ const signatureRequest: SignatureRequestSigned = {
 
 const createAndSendAnalyticsEvent = makeCreateAndSendAnalyticsEvent(
   undefined as unknown as EventHubProducerClient,
-  undefined as unknown as EventHubProducerClient
 );
 
 describe("EventHubs [infra]", () => {
