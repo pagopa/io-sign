@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.3
+
+### Patch Changes
+
+- a690703: remove eventhub weu write
+
 ## 1.11.2
 
 ### Patch Changes
