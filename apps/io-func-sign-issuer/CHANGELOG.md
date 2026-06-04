@@ -1,5 +1,14 @@
 # io-func-sign-issuer
 
+## 1.7.2
+
+### Patch Changes
+
+- 5bc7f29: Update ko notification copy
+- f94aed0: Fix default message subject trimming to 120 chars
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
 ## 1.7.1
 
 ### Patch Changes
