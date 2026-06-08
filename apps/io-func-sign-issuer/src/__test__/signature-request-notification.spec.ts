@@ -3,9 +3,7 @@ import { describe, it, expect } from "vitest";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
-import * as O from "fp-ts/lib/Option";
 
-import { GetFiscalCodeBySignerId, Signer } from "@io-sign/io-sign/signer";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { Notification } from "@io-sign/io-sign/notification";
@@ -14,18 +12,14 @@ import {
   FiscalCode,
   NonEmptyString,
 } from "@pagopa/ts-commons/lib/strings";
-import {
-  NotificationMessage,
-  SubmitNotificationForUser,
-} from "@io-sign/io-sign/notification";
+import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { validate } from "@io-sign/io-sign/validation";
 import { DocumentMetadata } from "@io-sign/io-sign/document";
-import { Dossier, GetDossier, newDossier } from "../dossier";
+import { SignerRepository } from "@io-sign/io-sign/signer";
+import { NotificationService } from "@io-sign/io-sign/notification";
+import { Dossier, newDossier } from "../dossier";
 import { newSignatureRequest, SignatureRequest } from "../signature-request";
-import {
-  MakeMessageContent,
-  makeSendSignatureRequestNotification,
-} from "../signature-request-notification";
+import { sendSignatureRequestNotification } from "../signature-request-notification";
 
 const newSigner = () => ({
   id: newId(),
@@ -49,120 +43,81 @@ const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
     signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
     pdfDocumentMetadata: { pages: [], formFields: [] },
   },
-  {
-    title: "document #2",
-    signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
-    pdfDocumentMetadata: { pages: [], formFields: [] },
-  },
 ]);
 
-const mockSubmitNotification: SubmitNotificationForUser =
-  (_fiscalCode: FiscalCode) => (_message: NotificationMessage) =>
+const mockFiscalCode = pipe(
+  "AAABBB00A00B000A",
+  validate(FiscalCode, "Fiscal code is not valid"),
+  E.getOrElseW(() => {
+    throw new Error("Invalid fiscal code in test setup");
+  })
+);
+
+const mockSignerRepository: SignerRepository = {
+  getSignerByFiscalCode: () => TE.right({ id: newId() }),
+  getFiscalCodeBySignerId: () => TE.right(mockFiscalCode),
+};
+
+const mockNotificationService: NotificationService = {
+  submit: () =>
     pipe(
       { ioMessageId: "0000" },
       validate(Notification, "Invalid notification message"),
       TE.fromEither
-    );
+    ),
+};
 
-const mockGetFiscalCodeBySignerId: GetFiscalCodeBySignerId = (
-  _id: Signer["id"]
-) =>
-  TE.right(
-    pipe(
-      "AAABBB00A00B000A",
-      validate(FiscalCode, "Fiscal code is not valid"),
-      O.fromEither
-    )
-  );
-
-const mockGetDossier: GetDossier =
-  (_dossierId: Dossier["id"]) => (_issuerId: Issuer["id"]) =>
-    TE.right(
-      pipe(dossier, validate(Dossier, "Dossier is not valid"), O.fromEither)
-    );
-
-const mockMakeMessageContent: MakeMessageContent =
-  (_dossier: Dossier) => (_signatureRequest: SignatureRequest) => ({
-    subject: `Richiesta di Firma`,
-    markdown: `Message content`,
-  });
+const buildMessage = (_req: SignatureRequest): NotificationMessage => ({
+  subject: "Richiesta di Firma",
+  markdown: "Message content",
+});
 
 describe("SignatureRequestNotification", () => {
-  describe("newSignatureRequestNotification", () => {
-    it("should create and send signature request notification", () => {
+  describe("sendSignatureRequestNotification", () => {
+    it("should send a signature request notification", () => {
       const request = newSignatureRequest(dossier, newSigner(), issuer);
-
-      const makeSendSignatureRequest = makeSendSignatureRequestNotification(
-        mockSubmitNotification,
-        mockGetFiscalCodeBySignerId,
-        mockGetDossier,
-        mockMakeMessageContent
-      );
-
-      const makeRequest = makeSendSignatureRequest(request)();
-      return makeRequest.then((data) => {
-        expect(pipe(data, E.isRight)).toBe(true);
-        expect(
-          pipe(
-            data,
-            E.fold(
-              (error) => error.message,
-              (message) => message.ioMessageId
-            )
-          )
-        ).toBe("0000");
+      const send = sendSignatureRequestNotification(buildMessage)(request);
+      return send({
+        signerRepository: mockSignerRepository,
+        notificationService: mockNotificationService,
+      })().then((result) => {
+        expect(E.isRight(result)).toBe(true);
       });
     });
 
-    it("should not send a signature request notification with invalid submission", () => {
-      const request = newSignatureRequest(dossier, newSigner(), issuer);
-
-      const mockInvalidSubmitNotification: SubmitNotificationForUser =
-        (_fiscalCode: FiscalCode) => (_message: NotificationMessage) =>
+    it("should return Left when notification submission fails", () => {
+      const failingNotificationService: NotificationService = {
+        submit: () =>
           pipe(
             {},
             validate(Notification, "Invalid notification message"),
             TE.fromEither
-          );
-
-      const makeSendSignatureRequest = makeSendSignatureRequestNotification(
-        mockInvalidSubmitNotification,
-        mockGetFiscalCodeBySignerId,
-        mockGetDossier,
-        mockMakeMessageContent
-      );
-
-      const makeRequest = makeSendSignatureRequest(request)();
-      return makeRequest.then((data) =>
-        expect(pipe(data, E.isRight)).toBe(false)
-      );
+          ),
+      };
+      const request = newSignatureRequest(dossier, newSigner(), issuer);
+      const send = sendSignatureRequestNotification(buildMessage)(request);
+      return send({
+        signerRepository: mockSignerRepository,
+        notificationService: failingNotificationService,
+      })().then((result) => {
+        expect(E.isLeft(result)).toBe(true);
+      });
     });
 
-    it("should not send a signature request notification with invalid fiscalCode", () => {
+    it("should return Left when fiscal code retrieval fails", () => {
+      const failingSignerRepository: SignerRepository = {
+        getSignerByFiscalCode: () => TE.right({ id: newId() }),
+        getFiscalCodeBySignerId: () =>
+          TE.left(new Error("Fiscal code not found")),
+      };
       const request = newSignatureRequest(dossier, newSigner(), issuer);
-
-      const mockGetInvalidFiscalCodeBySignerId: GetFiscalCodeBySignerId = (
-        _id: Signer["id"]
-      ) =>
-        TE.right(
-          pipe(
-            "AA",
-            validate(FiscalCode, "Fiscal code is not valid"),
-            O.fromEither
-          )
-        );
-
-      const makeSendSignatureRequest = makeSendSignatureRequestNotification(
-        mockSubmitNotification,
-        mockGetInvalidFiscalCodeBySignerId,
-        mockGetDossier,
-        mockMakeMessageContent
-      );
-
-      const makeRequest = makeSendSignatureRequest(request)();
-      return makeRequest.then((data) =>
-        expect(pipe(data, E.isRight)).toBe(false)
-      );
+      const send = sendSignatureRequestNotification(buildMessage)(request);
+      return send({
+        signerRepository: failingSignerRepository,
+        notificationService: mockNotificationService,
+      })().then((result) => {
+        expect(E.isLeft(result)).toBe(true);
+      });
     });
   });
 });

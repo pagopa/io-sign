@@ -1,6 +1,6 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "1.6.3",
+  "version": "1.11.3",
   "repository": "https://github.com/pagopa/io-sign",
   "license": "MPL-2.0",
   "exports": {
@@ -20,6 +20,7 @@
     "@azure/event-hubs": "catalog:",
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",
+    "@pagopa/azure-storage-migration-kit": "0.0.5",
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/io-functions-commons": "catalog:",
     "@pagopa/io-functions-services-sdk": "catalog:",

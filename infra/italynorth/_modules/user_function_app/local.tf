@@ -19,6 +19,7 @@ locals {
       CosmosDbEndpoint                  = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbDatabaseName              = "user"
       StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
+      StorageAccountItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
       userUploadedBlobContainerName     = "uploaded-documents"
       userValidatedBlobContainerName    = "validated-documents"
       IoServicesApiBasePath             = "https://api.io.pagopa.it"
@@ -32,8 +33,8 @@ locals {
       NamirialTestApiBasePath           = "https://pagopa-test.namirial.com"
       NamirialTestUsername              = "api"
       NamirialTestPassword              = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=NamirialTestPassword)"
-      AnalyticsEventHubConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubConnectionString)"
-      BillingEventHubConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubConnectionString)"
+      AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
+      BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
       SelfCareApiKey                    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SelfCareApiKey)"

@@ -5,7 +5,6 @@ import { z } from "zod";
 import {
   ApiKeyAlreadyExistsError,
   createApiKey,
-  getApiKeyById,
   getApiKeyWithSecret,
   listApiKeys,
   upsertApiKeyField,
@@ -210,27 +209,3 @@ describe("upsertApiKeyField", () => {
   });
 });
 
-describe("getApiKeyById", () => {
-  it("should return API key", async () => {
-    getCosmosContainerClient.mockReturnValue({
-      items: {
-        query: vi.fn().mockReturnValue({
-          fetchAll: vi.fn().mockResolvedValue({ resources: mocks.apiKeys }),
-        }),
-      },
-    });
-    const apiKey = apiKeySchema.parse(mocks.apiKeys[0]);
-    expect(getApiKeyById("id")).resolves.toEqual(apiKey);
-  });
-  it("should return undefined when API Key is not found", async () => {
-    getCosmosContainerClient.mockReturnValue({
-      items: {
-        query: vi.fn().mockReturnValue({
-          fetchAll: vi.fn().mockResolvedValue({ resources: [] }),
-        }),
-      },
-    });
-    const maybeApiKey = await getApiKeyById("does-not-exists");
-    expect(maybeApiKey).toBeUndefined();
-  });
-});

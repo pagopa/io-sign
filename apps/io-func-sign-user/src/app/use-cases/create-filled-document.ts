@@ -2,9 +2,7 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
-
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 
 import { validate } from "@io-sign/io-sign/validation";
 
@@ -24,7 +22,7 @@ export const makeCreateFilledDocumentUrl =
   (
     getFilledDocumentUrl: GetFilledDocumentUrl,
     notifyDocumentToFill: NotifyDocumentToFillEvent,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId
+    signerRepository: SignerRepository
   ) =>
   ({
     signer,
@@ -36,14 +34,7 @@ export const makeCreateFilledDocumentUrl =
     const filledDocumentFileName = `${signer.id}.pdf`;
 
     return pipe(
-      signer.id,
-      getFiscalCodeBySignerId,
-      TE.chain(
-        TE.fromOption(
-          () =>
-            new EntityNotFoundError("Fiscal code not found for this signer!")
-        )
-      ),
+      signerRepository.getFiscalCodeBySignerId(signer.id),
       TE.chain(() => getFilledDocumentUrl(filledDocumentFileName)),
       TE.chainFirst(() =>
         pipe(

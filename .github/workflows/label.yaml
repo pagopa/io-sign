@@ -17,13 +17,13 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/labeler@ba790c862c380240c6d5e7427be5ace9a05c754b #v4.0.3
+      - uses: actions/labeler@f27b608878404679385c85cfa523b85ccb86e213 # v6
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
       # Note that the following step
       # never removes labels
-      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975 # v6.4.0
+      - uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
         id: set-result
         with:
           script: |

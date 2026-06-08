@@ -2,6 +2,7 @@ import { app } from "@azure/functions";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
+import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
 import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
@@ -33,6 +34,7 @@ import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signat
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { InfoFunction } from "../infra/azure/functions/info";
 import { getConfigFromEnvironment } from "./config";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -49,54 +51,83 @@ const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsConnectionString,
-  "analytics"
+  config.azure.eventHubs.analyticsItnConnectionString,
+  "io-p-itn-sign-analytics-01"
 );
 
 const filledContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "filled-modules"
 );
 
 const documentsToFillQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-documents-to-fill"
 );
 
 const qtspQueue = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-qtsp"
 );
 
 const onWaitForSignatureQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-wait-for-signature"
 );
 
 const onSignedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-signed"
 );
 
 const onRejectedQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-rejected"
 );
 
+// ITN is the new primary for validated-documents (all new writes go here).
+const validatedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "validated-documents"
+);
+
+// WEU is kept as the fallback: blobs validated before the migration still live here.
 const validatedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "validated-documents"
 );
 
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const validatedContainerClientWithFallback =
+  new BaseContainerClientWithFallback(
+    validatedContainerClientItn,
+    validatedContainerClient
+  );
+
+// ITN is the new primary for signed-documents (QTSP will write here after migration).
+const signedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "signed-documents"
+);
+
+// WEU is kept as the fallback: blobs signed before the migration still live here.
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "signed-documents"
+);
+
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
+  signedContainerClientItn,
+  signedContainerClient
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
 );
+
+const signerRepository = new PdvTokenizerSignerRepository(pdvTokenizerClient);
 
 const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.basePath,
@@ -124,7 +155,7 @@ const info = InfoFunction({
   db: database,
   filledContainerClient,
   validatedContainerClient,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
@@ -150,8 +181,8 @@ app.http("getSignatureRequests", {
 
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
-  validatedContainerClient,
-  signedContainerClient
+  validatedContainerClient: validatedContainerClientWithFallback,
+  signedContainerClient: signedContainerClientWithFallback
 });
 
 app.http("getSignatureRequest", {
@@ -169,17 +200,17 @@ const updateSignatureRequest = UpdateSignatureRequestFunction({
 
 app.storageQueue("updateSignatureRequest", {
   queueName: "waiting-for-signature-request-updates",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: updateSignatureRequest
 });
 
 const createSignature = CreateSignatureFunction({
-  pdvTokenizerClient,
+  signerRepository,
   lollipopApiClient,
   db: database,
   qtspQueue,
-  validatedContainerClient,
-  signedContainerClient,
+  validatedContainerClient: validatedContainerClientWithFallback,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial
 });
 
@@ -199,12 +230,12 @@ const createSignatureRequest = CreateSignatureRequestFunction({
 
 app.storageQueue("createSignatureRequest", {
   queueName: "on-signature-request-ready",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: createSignatureRequest
 });
 
 const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
-  pdvTokenizerClient,
+  signerRepository,
   ioApiClient
 });
 
@@ -227,7 +258,7 @@ app.http("getQtspClausesMetadata", {
 const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
   documentsToFillQueue,
-  pdvTokenizerClient
+  signerRepository
 });
 
 app.http("createFilledDocument", {
@@ -238,7 +269,7 @@ app.http("createFilledDocument", {
 });
 
 const getThirdPartyMessageDetails = GetThirdPartyMessageDetailsFunction({
-  pdvTokenizerClient,
+  signerRepository,
   db: database
 });
 
@@ -251,9 +282,9 @@ app.http("getThirdPartyMessageDetails", {
 
 const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
-    pdvTokenizerClient,
+    signerRepository,
     db: database,
-    signedContainerClient
+    signedContainerClient: signedContainerClientWithFallback
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {
@@ -264,20 +295,20 @@ app.http("getThirdPartyMessageAttachmentContent", {
 });
 
 const fillDocument = FillDocumentFunction({
-  pdvTokenizerClient,
+  signerRepository,
   filledContainerClient,
   inputDecoder: FillDocumentPayload
 });
 
 app.storageQueue("fillDocument", {
   queueName: "waiting-for-documents-to-fill",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: fillDocument
 });
 
 const validateSignature = ValidateSignatureFunction({
   db: database,
-  signedContainerClient,
+  signedContainerClient: signedContainerClientItn,
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
@@ -287,6 +318,6 @@ const validateSignature = ValidateSignatureFunction({
 
 app.storageQueue("validateSignature", {
   queueName: "waiting-for-qtsp",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: validateSignature
 });

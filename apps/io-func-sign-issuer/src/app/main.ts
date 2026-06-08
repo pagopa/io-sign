@@ -1,11 +1,9 @@
 import { app } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 import { QueueClient } from "@azure/storage-queue";
-import {
-  EventHubConsumerClient,
-  EventHubProducerClient
-} from "@azure/event-hubs";
+import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -59,19 +57,13 @@ const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const eventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHubs.billingConnectionString,
-  "billing"
+  config.azure.eventHubs.billingItnConnectionString,
+  "io-p-itn-sign-billing-01"
 );
 
 const eventAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsConnectionString,
-  "analytics"
-);
-
-const eventHubSelfCareContractsConsumer = new EventHubConsumerClient(
-  EventHubConsumerClient.defaultConsumerGroupName,
-  config.pagopa.selfCare.eventHub.connectionString,
-  config.pagopa.selfCare.eventHub.contractsName
+  config.azure.eventHubs.analyticsItnConnectionString,
+  "io-p-itn-sign-analytics-01"
 );
 
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
@@ -115,12 +107,12 @@ const signerRepository = new PdvTokenizerSignerRepository(
 );
 
 const uploadedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "uploaded-documents"
 );
 
 const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "validated-documents"
 );
 
@@ -130,18 +122,31 @@ const validatedFileStorage = new BlobStorageFileStorage(
   validatedContainerClient
 );
 
+// ITN is the new primary for signed-documents (QTSP will write here after migration).
+const signedContainerClientItn = new ContainerClient(
+  config.azure.storage.connectionStringItn,
+  "signed-documents"
+);
+
+// WEU is kept as the fallback: blobs signed before the migration still live here.
 const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionString,
   "signed-documents"
 );
 
+// Reads try ITN first and fall back to WEU; writes always go to ITN.
+const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
+  signedContainerClientItn,
+  signedContainerClient
+);
+
 const onSignatureRequestReadyQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "on-signature-request-ready"
 );
 
 const waitingForSignatureRequestUpdatesQueueClient = new QueueClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "waiting-for-signature-request-updates"
 );
 
@@ -153,7 +158,6 @@ const info = InfoFunction({
   db: database,
   eventHubBillingClient,
   eventHubAnalyticsClient: eventAnalyticsClient,
-  eventHubSelfCareContractsConsumer,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
@@ -167,7 +171,7 @@ app.http("info", {
 });
 
 const getSignerByFiscalCode = GetSignerFunction({
-  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
+  signerRepository,
   ioApiClient
 });
 
@@ -194,9 +198,8 @@ app.http("getUploadUrl", {
 
 const sendNotification = SendNotificationFunction({
   db: database,
-  pdvTokenizerClient: pdvTokenizerClientWithApiKey,
-  ioApiClient,
-  configurationId: config.pagopa.ioServices.configurationId,
+  signerRepository,
+  notificationService,
   eventHubAnalyticsClient: eventAnalyticsClient,
   issuerRepository
 });
@@ -248,7 +251,7 @@ app.http("getRequestsByDossier", {
 const getSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signedContainerClient
+  signedContainerClient: signedContainerClientWithFallback
 });
 
 app.http("getSignatureRequest", {
@@ -307,7 +310,7 @@ const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
 
 app.storageQueue("markAsWaitForSignature", {
   queueName: "on-signature-request-wait-for-signature",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: markAsWaitForSignature
 });
 
@@ -323,13 +326,13 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
 
 app.storageQueue("closeSignatureRequestSigned", {
   queueName: "on-signature-request-signed",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: closeSignatureRequest
 });
 
 app.storageQueue("closeSignatureRequestRejected", {
   queueName: "on-signature-request-rejected",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: closeSignatureRequest
 });
 
@@ -347,7 +350,7 @@ const validateUpload = makeValidateUploadBlobHandler({
 
 app.storageBlob("validateUpload", {
   path: "uploaded-documents/{name}",
-  connection: "StorageAccountConnectionString",
+  connection: "StorageAccountItnConnectionString",
   handler: validateUpload
 });
 

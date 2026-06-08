@@ -1,5 +1,74 @@
 # io-sign-backoffice-app
 
+## 1.8.10
+
+### Patch Changes
+
+- Updated dependencies [a690703]
+  - @io-sign/io-sign@1.11.3
+
+## 1.8.9
+
+### Patch Changes
+
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
+## 1.8.8
+
+### Patch Changes
+
+- Updated dependencies [7d06e13]
+- Updated dependencies [949644b]
+  - @io-sign/io-sign@1.11.1
+
+## 1.8.7
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
+## 1.8.6
+
+### Patch Changes
+
+- 7a1dc41: remove unused code and cosmos db query
+
+## 1.8.5
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
+## 1.8.4
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
+## 1.8.3
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
+## 1.8.1
+
+### Patch Changes
+
+- f625285: Remove postbuild command
+
 ## 1.8.0
 
 ### Minor Changes

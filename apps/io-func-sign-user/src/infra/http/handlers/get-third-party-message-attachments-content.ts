@@ -8,14 +8,13 @@ import { lookup } from "fp-ts/lib/Record";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { Database } from "@azure/cosmos";
-import { ContainerClient } from "@azure/storage-blob";
+import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
-import { PdvTokenizerClientWithApiKey } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
-import { makeGetSignerByFiscalCode } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Document, DocumentId, DocumentReady } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { getDocumentContent as getDocumentContentFromStorage } from "@io-sign/io-sign/infra/azure/storage/document-content";
+import { getDocumentContentWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { bufferResponse } from "@io-sign/io-sign/infra/http/response";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
@@ -37,9 +36,9 @@ const requireDocumentId = (
   );
 
 export type GetThirdPartyMessageAttachmentContentDependencies = {
-  pdvTokenizerClient: PdvTokenizerClientWithApiKey;
+  signerRepository: SignerRepository;
   db: Database;
-  signedContainerClient: ContainerClient;
+  signedContainerClient: BaseContainerClientWithFallback;
 };
 
 export const GetThirdPartyMessageAttachmentContentHandler = H.of(
@@ -53,34 +52,20 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
       RTE.chainW(
         ({ fiscalCode, signatureRequestId, documentId }) =>
           ({
-            pdvTokenizerClient,
+            signerRepository,
             db,
             signedContainerClient
           }: GetThirdPartyMessageAttachmentContentDependencies) => {
-            const getSignerByFiscalCode =
-              makeGetSignerByFiscalCode(pdvTokenizerClient);
             const getSignatureRequest = makeGetSignatureRequest(db);
             const getDocumentContent: GetDocumentContent = (
               document: DocumentReady
             ) =>
-              pipe(
-                document,
-                getDocumentContentFromStorage
-              )(signedContainerClient);
+              getDocumentContentWithFallback(document)(signedContainerClient);
             const getSignedDocumentContent =
               makeGetSignedDocumentContent(getDocumentContent);
 
             return pipe(
-              fiscalCode,
-              getSignerByFiscalCode,
-              TE.chain(
-                TE.fromOption(
-                  () =>
-                    new EntityNotFoundError(
-                      "The specified signer does not exist."
-                    )
-                )
-              ),
+              signerRepository.getSignerByFiscalCode(fiscalCode),
               TE.map((signer) => signer.id),
               TE.chain(getSignatureRequest(signatureRequestId)),
               TE.chain(

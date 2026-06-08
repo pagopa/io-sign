@@ -1,5 +1,68 @@
 # io-sign-backoffice-func
 
+## 1.6.9
+
+### Patch Changes
+
+- Updated dependencies [a690703]
+  - @io-sign/io-sign@1.11.3
+
+## 1.6.8
+
+### Patch Changes
+
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
+## 1.6.7
+
+### Patch Changes
+
+- Updated dependencies [7d06e13]
+- Updated dependencies [949644b]
+  - @io-sign/io-sign@1.11.1
+
+## 1.6.6
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
+## 1.6.5
+
+### Patch Changes
+
+- e396bf2: remove health check QTSP test and move Selfcare health check event hub from issuer to backoffice
+
+## 1.6.4
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
+## 1.6.3
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
+## 1.6.2
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
 ## 1.6.0
 
 ### Minor Changes

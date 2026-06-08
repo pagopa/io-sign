@@ -29,3 +29,8 @@ export const stringFromBase64Encode = (arrayBuffer: unknown) =>
     E.chainW(E.fromNullable(identity)),
     E.mapLeft(() => new Error("Unable to convert base64 string to utf-8"))
   );
+
+export const truncateWithEllipsis =
+  (maxLength = 120) =>
+  (text: string): string =>
+    text.length <= maxLength ? text : `${text.slice(0, maxLength - 3)}...`;

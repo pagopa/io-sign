@@ -2,9 +2,8 @@ import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 
-import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Field, populatePdf } from "@io-sign/io-sign/infra/pdf";
 
 import { UploadBlob } from "../../infra/azure/storage/blob";
@@ -32,7 +31,7 @@ type NameFieldE = Field & { fieldName: "QUADROE_name" };
 /** Downloads the ToS pdf form, compiles and stores the filled document. */
 export const makeFillDocument =
   (
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    signerRepository: SignerRepository,
     uploadFilledDocument: UploadBlob,
     fetchWithTimeout: typeof fetch
   ) =>
@@ -45,14 +44,7 @@ export const makeFillDocument =
     filledDocumentFileName
   }: FillDocumentPayload) =>
     pipe(
-      signer.id,
-      getFiscalCodeBySignerId,
-      TE.chain(
-        TE.fromOption(
-          () =>
-            new EntityNotFoundError("Fiscal code not found for this signer!")
-        )
-      ),
+      signerRepository.getFiscalCodeBySignerId(signer.id),
       TE.chain((fiscalCode) => {
         const fields: Fields = [
           {

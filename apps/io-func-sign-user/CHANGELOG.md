@@ -1,5 +1,110 @@
 # io-func-sign-user
 
+## 2.1.3
+
+### Patch Changes
+
+- a690703: remove eventhub weu write
+- Updated dependencies [a690703]
+  - @io-sign/io-sign@1.11.3
+
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
+## 2.1.1
+
+### Patch Changes
+
+- 7d06e13: increase timeout external api
+- Updated dependencies [7d06e13]
+- Updated dependencies [949644b]
+  - @io-sign/io-sign@1.11.1
+
+## 2.1.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
+## 2.0.1
+
+### Patch Changes
+
+- e396bf2: remove health check QTSP test and move Selfcare health check event hub from issuer to backoffice
+
+## 2.0.0
+
+### Major Changes
+
+- 5b98c2b: Reject POST /signatures requests with SPID level lower than L3
+
+## 1.7.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
+## 1.5.0
+
+### Minor Changes
+
+- 2593e4c: Switch validated-documents container to ITN with migration-kit
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
+## 1.4.2
+
+### Patch Changes
+
+- fa9f21d: start to write on itn for container filled-modules (user function)
+
+## 1.4.1
+
+### Patch Changes
+
+- 328517a: switch write/read on queue in itn
+
+## 1.4.0
+
+### Minor Changes
+
+- 271427d: Add optional x-iosign-spid-level header to the POST /signatures endpoint
+
 ## 1.3.0
 
 ### Minor Changes

@@ -1,5 +1,54 @@
 # @io-sign/io-sign
 
+## 1.11.3
+
+### Patch Changes
+
+- a690703: remove eventhub weu write
+
+## 1.11.2
+
+### Patch Changes
+
+- f94aed0: Fix default message subject trimming to 120 chars
+
+## 1.11.1
+
+### Patch Changes
+
+- 7d06e13: increase timeout external api
+- 949644b: increase timeout when calling pdv api
+
+## 1.11.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
+## 1.10.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
+## 1.9.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
+## 1.8.0
+
+### Minor Changes
+
+- fb57d04: add a method to truncate the message subject if it is longer than 121 characters
+
+## 1.7.0
+
+### Minor Changes
+
+- 2593e4c: Switch validated-documents container to ITN with migration-kit
+
 ## 1.6.3
 
 ### Patch Changes

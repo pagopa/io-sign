@@ -3,10 +3,13 @@ import * as T from "fp-ts/lib/Task";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
-import { GetFiscalCodeBySignerId } from "@io-sign/io-sign/signer";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import { format } from "date-fns";
 
-import { SubmitNotificationForUser } from "@io-sign/io-sign/notification";
+import {
+  NotificationMessage,
+  NotificationService
+} from "@io-sign/io-sign/notification";
 
 import { validate } from "@io-sign/io-sign/validation";
 import { sequenceS } from "fp-ts/lib/Apply";
@@ -21,30 +24,33 @@ import {
   UpsertSignatureRequest
 } from "../../signature-request";
 
-import { Dossier, GetDossier } from "../../dossier";
+import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
+import { sendSignatureRequestNotification } from "../../signature-request-notification";
 
-import {
-  MakeMessageContent,
-  makeSendSignatureRequestNotification,
-  SendNotificationPayload
-} from "../../signature-request-notification";
+const truncateTo120Chars = truncateWithEllipsis();
 
-const requestToSignMessage: MakeMessageContent =
-  (dossier: Dossier) => (signatureRequest: SignatureRequest) => ({
-    subject: `Hai un documento da firmare - ${signatureRequest.issuerDescription}`,
-    markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
-      signatureRequest.id
-    }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
-      signatureRequest.id
-    }"\n---\nHai ricevuto una richiesta per **firmare alcuni documenti** relativi a **${
-      dossier.title
-    }** da **${signatureRequest.issuerDescription}**.\n\n\nHai tempo fino al **${format(
-      signatureRequest.expiresAt,
-      "dd/MM/yyyy HH:mm"
-    )}** per farlo: ti basta confermare l'operazione con il **codice di sblocco** dell'app o con il tuo **riconoscimento biometrico**.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
-      signatureRequest.issuerEmail
-    }](mailto:${signatureRequest.issuerEmail}).`
-  });
+const requestToSignMessage = (
+  signatureRequest: SignatureRequest
+): NotificationMessage => ({
+  subject: truncateTo120Chars(
+    `Hai un documento da firmare - ${signatureRequest.issuerDescription}`
+  ),
+  markdown: `---\nit:\n    cta_1: \n        text: "Inizia"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+    signatureRequest.id
+  }"\nen:\n    cta_1: \n        text: "Start"\n        action: "ioit://FCI_MAIN?signatureRequestId=${
+    signatureRequest.id
+  }"\n---\nHai ricevuto una richiesta per firmare **${signatureRequest.documents.length}** ${signatureRequest.documents.length === 1 ? "documento relativo" : "documenti relativi"} a **${
+    signatureRequest.dossierTitle
+  }** da **${signatureRequest.issuerDescription}**.\n\n\nPuoi firmare **fino alle ${format(
+    signatureRequest.expiresAt,
+    "HH:mm"
+  )} del ${format(
+    signatureRequest.expiresAt,
+    "dd/MM/yyyy"
+  )}**.\n\n\n# Cosa serve\n\nPer firmare digitalmente è richiesto un livello di sicurezza massimo ([livello di sicurezza 3](https://assistenza.ioapp.it/hc/it/articles/30722976684049-Cosa-sono-i-livelli-di-sicurezza)).\nDovrai quindi usare la tua Carta di Identità Elettronica e il PIN per firmare.\n\n\nSe hai dei problemi che riguardano il contenuto del documento, scrivi a [${
+    signatureRequest.issuerEmail
+  }](mailto:${signatureRequest.issuerEmail}).`
+});
 
 const SignatureRequestReadyToNotify = makeSignatureRequestVariant(
   "WAIT_FOR_SIGNATURE",
@@ -61,19 +67,17 @@ type SendNotificationResult =
 
 export const makeSendNotification =
   (
-    submitNotification: SubmitNotificationForUser,
-    getFiscalCodeBySignerId: GetFiscalCodeBySignerId,
+    signerRepository: SignerRepository,
+    notificationService: NotificationService,
     upsertSignatureRequest: UpsertSignatureRequest,
-    getDossier: GetDossier,
     createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
   ) =>
-  ({ signatureRequest }: SendNotificationPayload) => {
-    const sendRequestToSignNotification = makeSendSignatureRequestNotification(
-      submitNotification,
-      getFiscalCodeBySignerId,
-      getDossier,
-      requestToSignMessage
-    );
+  ({ signatureRequest }: { signatureRequest: SignatureRequest }) => {
+    const sendRequestToSignNotification = (req: SignatureRequest) =>
+      sendSignatureRequestNotification(requestToSignMessage)(req)({
+        signerRepository,
+        notificationService
+      });
     return pipe(
       sequenceS(TE.ApplySeq)({
         signatureRequest: pipe(
