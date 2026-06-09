@@ -67,27 +67,6 @@ resource "azurerm_key_vault_access_policy" "infra_ci_kv_common" {
   secret_permissions = ["Get", "List"]
 }
 
-
-module "roles_ci" {
-  source  = "pagopa-dx/azure-role-assignments/azurerm"
-  version = "~> 1.0"
-
-  principal_id    = module.bootstrap.identities.infra.ci.principal_id
-  subscription_id = data.azurerm_subscription.current.subscription_id
-
-  key_vault = [
-    {
-      name                = "io-p-sign-kv"
-      resource_group_name = "io-p-sign-sec-rg"
-      description         = "Key Vault access for IO Sign"
-
-      roles = {
-        secrets = "reader"
-      }
-    }
-  ]
-}
-
  resource "azurerm_role_assignment" "infra_cd_evt_dns_zone_contributor" {
    scope                = data.azurerm_private_dns_zone.servicebus.id
    role_definition_name = "Private DNS Zone Contributor"
