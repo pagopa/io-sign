@@ -46,7 +46,6 @@ locals {
   functions = {
     io_p_sign_integration_rg_name = "${local.weu_prefix}-sign-integration-rg"
     io_p_sign_data_rg_name        = "${local.weu_prefix}-sign-data-rg"
-    io_p_sign_sec_rg_name         = "${local.weu_prefix}-sign-sec-rg"
   }
 
   keyvault_common_ids = [
