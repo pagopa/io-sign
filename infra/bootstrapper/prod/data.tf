@@ -12,11 +12,6 @@ data "azurerm_key_vault" "common" {
   resource_group_name = local.key_vault.resource_group_name
 }
 
-data "azurerm_key_vault" "sign" {
-  name                = local.sign_key_vault.name
-  resource_group_name = local.sign_key_vault.resource_group_name
-}
-
 data "azurerm_resource_group" "dns_zones" {
   name = local.dns_zones.resource_group_name
 }

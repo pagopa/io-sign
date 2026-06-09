@@ -67,11 +67,6 @@ locals {
     resource_group_name = "io-p-rg-common"
   }
 
-  sign_key_vault = {
-    name                = "io-p-sign-kv"
-    resource_group_name = "io-p-sign-sec-rg"
-  }
-
   sign_itn_key_vault = {
     name                = "${local.itn_prefix}-sign-kv-01"
     resource_group_name = "${local.itn_prefix}-sign-rg-01"

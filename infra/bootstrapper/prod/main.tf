@@ -12,8 +12,7 @@ module "bootstrap" {
 
   additional_resource_group_ids = [
     data.azurerm_resource_group.io_p_sign_data_rg.id,
-    data.azurerm_resource_group.io_p_sign_integration_rg.id,
-    data.azurerm_resource_group.io_p_sign_sec_rg.id
+    data.azurerm_resource_group.io_p_sign_integration_rg.id
   ]
 
   entraid_groups = {
