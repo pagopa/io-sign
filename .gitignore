@@ -62,3 +62,7 @@ override.tf.json
 
 # PNPM
 .pnpm-store
+
+# Nx
+.nx/cache
+.nx/workspace-data
