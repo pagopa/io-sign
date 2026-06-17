@@ -1,5 +1,5 @@
 # This workflow will perform the code review on each code change.
-# It uses "actions/cache" and turborepo in order to perform tasks only on changed files.
+# It uses "actions/cache" and Nx in order to perform tasks only on changed files.
 
 name: "Code Review"
 
@@ -29,8 +29,15 @@ jobs:
 
       - name: Setup Node.js environment
         uses: pagopa/dx/.github/actions/node-setup@7df458f8cbef8c62cf5ebffd0cfe738a98740ece
-        env:
-          TURBO_CACHE_DIR: .turbo
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/nx
+          key: nx-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-${{ runner.os }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -39,4 +46,4 @@ jobs:
         run: pnpm -r run generate:api-models
 
       - name: "Code review"
-        run: pnpm run code-review --force
+        run: pnpm run code-review
