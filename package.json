@@ -25,8 +25,8 @@
     "azure-functions-core-tools": "catalog:",
     "dotenv-cli": "^3.2.0",
     "envsub": "^4.1.0",
-    "shx": "^0.3.4",
-    "nx": "22.7.5"
+    "nx": "23.0.0",
+    "shx": "^0.3.4"
   },
   "pnpm": {
     "overrides": {
