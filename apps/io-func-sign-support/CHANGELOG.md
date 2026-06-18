@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.7.4
+
+### Patch Changes
+
+- ea166f3: migrate monorepo task runner from turbo to nx
+
 ## 1.7.3
 
 ### Patch Changes
