@@ -46,4 +46,4 @@ jobs:
         run: pnpm -r run generate:api-models
 
       - name: "Code review"
-        run: pnpm run code-review
+        run: pnpm run code-review --skipNxCache
