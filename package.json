@@ -3,10 +3,10 @@
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
-    "test": "turbo run test --no-daemon",
-    "format": "turbo run format --no-daemon",
-    "build": "turbo run build --no-daemon",
-    "code-review": "turbo run typecheck lint test",
+    "test": "nx run-many -t test",
+    "format": "nx run-many -t format",
+    "build": "nx run-many -t build",
+    "code-review": "nx run-many -t typecheck lint test",
     "version": "changeset version",
     "release": "changeset tag",
     "docker:pregenerate:env": "shx rm -rf docker/generated && shx mkdir docker/generated && ./docker/env-sync.sh",
@@ -23,10 +23,10 @@
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "azure-functions-core-tools": "catalog:",
-	"dotenv-cli": "^3.2.0",
+    "dotenv-cli": "^3.2.0",
     "envsub": "^4.1.0",
-    "shx": "^0.3.4",
-    "turbo": "^2.8.6"
+    "nx": "23.0.0",
+    "shx": "^0.3.4"
   },
   "pnpm": {
     "overrides": {
