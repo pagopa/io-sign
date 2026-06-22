@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.1.4
+
+### Patch Changes
+
+- ea166f3: migrate monorepo task runner from turbo to nx
+
 ## 2.1.3
 
 ### Patch Changes
