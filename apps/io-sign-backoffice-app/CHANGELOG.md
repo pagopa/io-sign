@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.11
+
+### Patch Changes
+
+- ea166f3: migrate monorepo task runner from turbo to nx
+
 ## 1.8.10
 
 ### Patch Changes
