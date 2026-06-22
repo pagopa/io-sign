@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build",
+        "generate:api-models"
+      ],
+      "inputs": [
+        "{projectRoot}/src/**/*.ts"
+      ],
+      "outputs": [
+        "{projectRoot}/dist/**"
+      ],
+      "cache": true
+    },
+    "generate:api-models": {
+      "cache": true
+    },
+    "typecheck": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "{projectRoot}/src/**/*.ts"
+      ],
+      "cache": true
+    },
+    "format": {
+      "cache": true
+    },
+    "lint": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "{projectRoot}/src/**/*.ts"
+      ],
+      "cache": true
+    },
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "{projectRoot}/src/**/*.spec.ts",
+        "{projectRoot}/src/**/*.test.ts"
+      ],
+      "cache": true
+    }
+  },
+  "analytics": false
+}
