@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.12
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 1.8.11
 
 ### Patch Changes
