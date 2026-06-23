@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.7.5
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 1.7.4
 
 ### Patch Changes
