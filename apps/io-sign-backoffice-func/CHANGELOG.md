@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.6.11
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 1.6.10
 
 ### Patch Changes
