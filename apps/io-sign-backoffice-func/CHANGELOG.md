@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.6.12
+
+### Patch Changes
+
+- 3ba69fe: update undici
+
 ## 1.6.11
 
 ### Patch Changes

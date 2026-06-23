@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.13
+
+### Patch Changes
+
+- 3ba69fe: update undici
+
 ## 1.8.12
 
 ### Patch Changes
