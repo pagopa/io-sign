@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.1.5
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 2.1.4
 
 ### Patch Changes
