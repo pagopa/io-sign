@@ -77,195 +77,208 @@ type RetrievedQtspSignatureRequest =
   | { retrieved: false; error: Error };
 
 export const makeValidateSignature =
+  // eslint-disable-next-line max-lines-per-function
   (
-    getSignature: GetSignature,
-    getSignedDocumentUrl: GetBlobUrl,
-    upsertSignature: UpsertSignature,
-    getSignatureRequest: GetSignatureRequest,
-    upsertSignatureRequest: UpsertSignatureRequest,
-    getQtspSignatureRequest: GetQtspSignatureRequest,
-    notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
-    notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
-  ) =>
-  ({ signatureId, signerId }: ValidateSignaturePayload) => {
-    const markSignatureAndSignatureRequestAsRejected =
-      makeMarkSignatureAndSignatureRequestAsRejected(
-        upsertSignature,
-        upsertSignatureRequest,
-        notifySignatureRequestRejectedEvent
-      );
-    return pipe(
-      signerId,
-      getSignature(signatureId),
-      TE.chain(
-        TE.fromOption(
-          () => new EntityNotFoundError(`Signature ${signatureId} not found`)
-        )
-      ),
-      TE.chainW((signature) =>
-        pipe(
-          signature.signerId,
-          getSignatureRequest(signature.signatureRequestId),
-          TE.chainW(
-            TE.fromOption(
-              () => new EntityNotFoundError("Signature Request not found.")
-            )
-          ),
-          TE.chain((signatureRequest) =>
-            pipe(
-              getQtspSignatureRequest(signatureRequest.issuerEnvironment)(
-                signature.qtspSignatureRequestId
-              ),
-              TE.fold(
-                (error): T.Task<RetrievedQtspSignatureRequest> =>
-                  T.of({ retrieved: false, error }),
-                (qtspSignatureRequest): T.Task<RetrievedQtspSignatureRequest> =>
-                  T.of({ retrieved: true, qtspSignatureRequest })
-              ),
-              TE.fromTask,
-              TE.chainFirstW((result) =>
-                pipe(
-                  signatureRequest,
-                  !result.retrieved
-                    ? createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR)
-                    : TE.right
-                )
-              ),
-              TE.chain((result) =>
-                result.retrieved
-                  ? TE.right(result.qtspSignatureRequest)
-                  : TE.left(result.error)
-              ),
-              TE.map((qtspSignatureRequest) => ({
-                qtspSignatureRequest,
-                signatureRequest
-              }))
-            )
-          ),
-          TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
-            switch (qtspSignatureRequest.status) {
-              case "COMPLETED":
-                return pipe(
-                  // Upsert signatureRequest documents url with signed url
-                  signatureRequest.documents,
-                  A.map((document) =>
-                    pipe(
-                      getSignedDocumentUrl(document.id),
-                      TE.fromOption(
-                        () =>
-                          new Error(
-                            `Signed document with id: ${document.id} not found`
-                          )
-                      ),
-                      TE.map((documentUrl) => ({
-                        ...document,
-                        url: documentUrl
-                      }))
-                    )
-                  ),
-                  A.sequence(TE.ApplicativeSeq),
-                  TE.map((documents) => ({
-                    ...signatureRequest,
-                    documents
-                  })),
-                  TE.chainEitherK(markAsSigned),
-                  TE.chainFirst((r: SignatureRequest) =>
-                    notifySignatureRequestSignedEvent(
-                      r as SignatureRequestSigned
-                    )
-                  ),
-                  TE.chain(upsertSignatureRequest),
-                  // Upsert signature
-                  TE.map(() => ({
-                    ...signature,
-                    status: "COMPLETED" as const
-                  })),
-                  TE.chain(upsertSignature),
-                  TE.chainFirstIOK(() =>
-                    L.debug("Signed by the QTSP", {
-                      signatureRequest,
-                      qtspSignatureRequest
-                    })({
-                      logger: ConsoleLogger
-                    })
-                  ),
-                  TE.alt(() =>
-                    pipe(
-                      "Signed document not found!",
-                      markSignatureAndSignatureRequestAsRejected(
-                        signature,
-                        signatureRequest
+      getSignature: GetSignature,
+      getSignedDocumentUrl: GetBlobUrl,
+      upsertSignature: UpsertSignature,
+      getSignatureRequest: GetSignatureRequest,
+      upsertSignatureRequest: UpsertSignatureRequest,
+      getQtspSignatureRequest: GetQtspSignatureRequest,
+      notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
+      notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
+      createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    ) =>
+    ({ signatureId, signerId }: ValidateSignaturePayload) => {
+      const markSignatureAndSignatureRequestAsRejected =
+        makeMarkSignatureAndSignatureRequestAsRejected(
+          upsertSignature,
+          upsertSignatureRequest,
+          notifySignatureRequestRejectedEvent
+        );
+      return pipe(
+        signerId,
+        getSignature(signatureId),
+        TE.chain(
+          TE.fromOption(
+            () => new EntityNotFoundError(`Signature ${signatureId} not found`)
+          )
+        ),
+        TE.chainW((signature) =>
+          pipe(
+            signature.signerId,
+            getSignatureRequest(signature.signatureRequestId),
+            TE.chainW(
+              TE.fromOption(
+                () => new EntityNotFoundError("Signature Request not found.")
+              )
+            ),
+            TE.chain((signatureRequest) =>
+              pipe(
+                getQtspSignatureRequest(signatureRequest.issuerEnvironment)(
+                  signature.qtspSignatureRequestId
+                ),
+                TE.fold(
+                  (error): T.Task<RetrievedQtspSignatureRequest> =>
+                    T.of({ retrieved: false, error }),
+                  (
+                    qtspSignatureRequest
+                  ): T.Task<RetrievedQtspSignatureRequest> =>
+                    T.of({ retrieved: true, qtspSignatureRequest })
+                ),
+                TE.fromTask,
+                TE.chainFirstW((result) =>
+                  pipe(
+                    signatureRequest,
+                    !result.retrieved
+                      ? createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR)
+                      : TE.right
+                  )
+                ),
+                TE.chain((result) =>
+                  result.retrieved
+                    ? TE.right(result.qtspSignatureRequest)
+                    : TE.left(result.error)
+                ),
+                TE.map((qtspSignatureRequest) => ({
+                  qtspSignatureRequest,
+                  signatureRequest
+                }))
+              )
+            ),
+            TE.chainW(({ qtspSignatureRequest, signatureRequest }) => {
+              switch (qtspSignatureRequest.status) {
+                case "COMPLETED":
+                  return pipe(
+                    // Upsert signatureRequest documents url with signed url
+                    signatureRequest.documents,
+                    A.map((document) =>
+                      pipe(
+                        getSignedDocumentUrl(document.id),
+                        TE.fromOption(
+                          () =>
+                            new Error(
+                              `Signed document with id: ${document.id} not found`
+                            )
+                        ),
+                        TE.map((documentUrl) => ({
+                          ...document,
+                          url: documentUrl
+                        }))
+                      )
+                    ),
+                    A.sequence(TE.ApplicativeSeq),
+                    TE.map((documents) => ({
+                      ...signatureRequest,
+                      documents
+                    })),
+                    TE.chainEitherK(markAsSigned),
+                    TE.chainFirst((r: SignatureRequest) =>
+                      notifySignatureRequestSignedEvent(
+                        r as SignatureRequestSigned
+                      )
+                    ),
+                    TE.chain(upsertSignatureRequest),
+                    // Upsert signature
+                    TE.map(() => ({
+                      ...signature,
+                      status: "COMPLETED" as const
+                    })),
+                    TE.chain(upsertSignature),
+                    TE.chainFirstIOK(() =>
+                      L.debug("Signed by the QTSP", {
+                        signatureRequest,
+                        qtspSignatureRequest
+                      })({
+                        logger: ConsoleLogger
+                      })
+                    ),
+                    TE.alt(() =>
+                      pipe(
+                        "Signed document not found!",
+                        markSignatureAndSignatureRequestAsRejected(
+                          signature,
+                          signatureRequest
+                        )
                       )
                     )
-                  )
-                );
-              case "CREATED":
-                return pipe(
-                  TE.left(
-                    new Error(
-                      "Signature request created by the QTSP but not ready yet. Retry!"
-                    )
-                  ),
-                  TE.chainFirstIOK(() =>
-                    L.debug("Signature request created by the QTSP", {
-                      signatureRequest,
-                      qtspSignatureRequest
-                    })({
-                      logger: ConsoleLogger
-                    })
-                  )
-                );
-              case "FAILED":
-                // eslint-disable-next-line no-case-declarations
-                const errorDetail =
-                  qtspSignatureRequest.last_error !== null
-                    ? qtspSignatureRequest.last_error.detail
-                    : "Invalid response status from QTSP!";
-                return pipe(
-                  errorDetail,
-                  markSignatureAndSignatureRequestAsRejected(
-                    signature,
-                    signatureRequest
-                  )
-                );
-
-              case "READY":
-                return pipe(
-                  signatureRequest,
-                  createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
-                  TE.chainFirstIOK(() =>
-                    L.debug("Certificate created", {
-                      signatureRequest,
-                      qtspSignatureRequest
-                    })({
-                      logger: ConsoleLogger
-                    })
-                  ),
-                  TE.chain(() =>
+                  );
+                case "CREATED":
+                  return pipe(
                     TE.left(
                       new Error(
-                        "Certificate created. Signature request not ready yet. Retry. Retry!"
+                        "Signature request created by the QTSP but not ready yet. Retry!"
+                      )
+                    ),
+                    TE.chainFirstIOK(() =>
+                      L.debug("Signature request created by the QTSP", {
+                        signatureRequest,
+                        qtspSignatureRequest
+                      })({
+                        logger: ConsoleLogger
+                      })
+                    )
+                  );
+                case "FAILED":
+                  // eslint-disable-next-line no-case-declarations
+                  const errorDetail =
+                    qtspSignatureRequest.last_error !== null
+                      ? qtspSignatureRequest.last_error.detail
+                      : "Invalid response status from QTSP!";
+                  return pipe(
+                    errorDetail,
+                    markSignatureAndSignatureRequestAsRejected(
+                      signature,
+                      signatureRequest
+                    ),
+                    TE.chainFirstIOK(() =>
+                      L.error("QTSP signature request FAILED", {
+                        qtspSignatureRequestId: qtspSignatureRequest.id,
+                        lastError: qtspSignatureRequest.last_error,
+                        signatureId: signature.id,
+                        signatureRequestId: signatureRequest.id
+                      })({
+                        logger: ConsoleLogger
+                      })
+                    )
+                  );
+
+                case "READY":
+                  return pipe(
+                    signatureRequest,
+                    createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
+                    TE.chainFirstIOK(() =>
+                      L.debug("Certificate created", {
+                        signatureRequest,
+                        qtspSignatureRequest
+                      })({
+                        logger: ConsoleLogger
+                      })
+                    ),
+                    TE.chain(() =>
+                      TE.left(
+                        new Error(
+                          "Certificate created. Signature request not ready yet. Retry. Retry!"
+                        )
                       )
                     )
-                  )
-                );
-              case "WAITING":
-                return TE.left(
-                  new Error("Signature request not ready yet. Retry!")
-                );
+                  );
+                case "WAITING":
+                  return TE.left(
+                    new Error("Signature request not ready yet. Retry!")
+                  );
 
-              default:
-                return pipe(
-                  "Invalid response status from QTSP!",
-                  markSignatureAndSignatureRequestAsRejected(
-                    signature,
-                    signatureRequest
-                  )
-                );
-            }
-          })
+                default:
+                  return pipe(
+                    "Invalid response status from QTSP!",
+                    markSignatureAndSignatureRequestAsRejected(
+                      signature,
+                      signatureRequest
+                    )
+                  );
+              }
+            })
+          )
         )
-      )
-    );
-  };
+      );
+    };

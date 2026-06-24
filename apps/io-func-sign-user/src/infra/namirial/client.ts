@@ -12,6 +12,8 @@ import {
   isSuccessful,
   responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
+import * as L from "@pagopa/logger";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { NamirialCredentialsConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
@@ -85,6 +87,16 @@ export const makeCreateSignatureRequest =
   (body: CreateSignatureRequestBody) =>
     pipe(
       TE.of(token),
+      TE.chainFirstIOK(() =>
+        L.debug("Sending signature request to QTSP", {
+          documents: body.signatures.documents_to_sign.map((doc) => ({
+            signature_fields: doc.signature_fields,
+            signature_coordinates: doc.signature_coordinates
+          }))
+        })({
+          logger: ConsoleLogger
+        })
+      ),
       TE.chain((token) =>
         TE.tryCatch(
           () =>
