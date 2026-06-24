@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.8.14
+
+### Patch Changes
+
+- b117ed2: update az identity lodash and next
+
 ## 1.8.13
 
 ### Patch Changes
