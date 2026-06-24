@@ -209,7 +209,7 @@ importers:
         version: 14.0.0(chokidar@3.5.3)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
       azure-functions-core-tools:
         specifier: 'catalog:'
         version: 4.0.5455
@@ -233,7 +233,7 @@ importers:
         version: 4.9.5
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
   apps/io-func-sign-support:
     dependencies:
@@ -279,7 +279,7 @@ importers:
         version: 22.19.17
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
       azure-functions-core-tools:
         specifier: 'catalog:'
         version: 4.0.5455
@@ -303,7 +303,7 @@ importers:
         version: 4.9.5
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
   apps/io-func-sign-user:
     dependencies:
@@ -370,7 +370,7 @@ importers:
         version: 14.0.0(chokidar@3.5.3)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
       azure-functions-core-tools:
         specifier: 'catalog:'
         version: 4.0.5455
@@ -397,7 +397,7 @@ importers:
         version: 4.9.5
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
   apps/io-sign-backoffice-app:
     dependencies:
@@ -503,7 +503,7 @@ importers:
         version: 18.3.7(@types/react@18.2.33)
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0))
       eslint:
         specifier: 'catalog:'
         version: 10.0.3
@@ -521,7 +521,7 @@ importers:
         version: 8.57.1(eslint@10.0.3)(typescript@5.8.3)
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0)
 
   apps/io-sign-backoffice-func:
     dependencies:
@@ -591,13 +591,13 @@ importers:
         version: 4.9.5
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
   packages/eslint-config:
     devDependencies:
       '@pagopa/eslint-config':
         specifier: 'catalog:'
-        version: 5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))
+        version: 5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))
       eslint:
         specifier: 'catalog:'
         version: 10.0.3
@@ -676,7 +676,7 @@ importers:
         version: 14.0.0(chokidar@3.5.3)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
       eslint:
         specifier: 'catalog:'
         version: 10.0.3
@@ -694,7 +694,7 @@ importers:
         version: 4.9.5
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
   packages/mock-io-services:
     dependencies:
@@ -778,10 +778,10 @@ importers:
         version: 8.6.18(lit@2.8.0)(storybook@8.6.18(prettier@2.7.1))(vite@6.4.3(@types/node@22.19.17)(yaml@2.9.0))
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))
       happy-dom:
-        specifier: ^9.8.4
-        version: 9.20.3
+        specifier: ^20.0.0
+        version: 20.10.6
       lit-html:
         specifier: ^2.6.1
         version: 2.8.0
@@ -808,7 +808,7 @@ importers:
         version: 6.4.3(@types/node@22.19.17)(yaml@2.9.0)
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
 packages:
 
@@ -2996,6 +2996,12 @@ packages:
   '@types/uuid@9.0.8':
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
+  '@types/whatwg-mimetype@3.0.2':
+    resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
   '@types/yauzl@2.10.2':
     resolution: {integrity: sha512-Km7XAtUIduROw7QPgvcft0lIupeG8a8rdKL8RiSyKvlE7dYY31fEn41HVuQsRFDuROA8tA4K2UVL+WdfFmErBA==}
 
@@ -3113,6 +3119,7 @@ packages:
   '@xmldom/xmldom@0.8.10':
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@yarnpkg/lockfile@1.1.0':
     resolution: {integrity: sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==}
@@ -3431,6 +3438,10 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
+  buffer-image-size@0.6.4:
+    resolution: {integrity: sha512-nEh+kZOPY1w+gcCMobZ6ETUp9WfibndnosbpwB1iJk/8Gt5ZF2bhS6+B6bPYz424KtwsR6Rflc3tCz1/ghX2dQ==}
+    engines: {node: '>=4.0'}
+
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
@@ -3734,9 +3745,6 @@ packages:
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
 
-  css.escape@1.5.1:
-    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
-
   csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
 
@@ -3968,6 +3976,10 @@ packages:
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+    engines: {node: '>=0.12'}
+
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
     engines: {node: '>=0.12'}
 
   envsub@4.1.0:
@@ -4415,6 +4427,7 @@ packages:
   glob@10.3.10:
     resolution: {integrity: sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.1.6:
@@ -4468,8 +4481,9 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  happy-dom@9.20.3:
-    resolution: {integrity: sha512-eBsgauT435fXFvQDNcmm5QbGtYzxEzOaX35Ia+h6yP/wwa4xSWZh1CfP+mGby8Hk6Xu59mTkpyf72rUXHNxY7A==}
+  happy-dom@20.10.6:
+    resolution: {integrity: sha512-6QD0ilzDDt93tX44y8tbmZdAcdTRYDhUP+Asgi6pC8Pp5IA3cvaZGyoVN/EGtlq9ziT65iPuBBn3ASLr6hCgVw==}
+    engines: {node: '>=20.0.0'}
 
   har-schema@2.0.0:
     resolution: {integrity: sha512-Oqluz6zhGX8cyRaTQlFMPw80bSJVG2x/cFb8ZPhUILGgHka9SsokCCOQgpveePerqidZOrT14ipqfJb7ILcW5Q==}
@@ -4606,10 +4620,6 @@ packages:
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
-    engines: {node: '>=0.10.0'}
-
-  iconv-lite@0.6.3:
-    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
   ieee754@1.2.1:
@@ -6772,15 +6782,17 @@ packages:
 
   uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -6928,21 +6940,12 @@ packages:
   webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
 
-  webidl-conversions@7.0.0:
-    resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
-    engines: {node: '>=12'}
-
   webpack-sources@3.2.3:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
   webpack-virtual-modules@0.5.0:
     resolution: {integrity: sha512-kyDivFZ7ZM0BVOUteVbDFhlRt7Ah/CSPwJdi8hBpkK7QLumUqdLtVfm/PX/hkcnrvr0i77fO5+TjZ94Pe+C9iw==}
-
-  whatwg-encoding@2.0.0:
-    resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
-    engines: {node: '>=12'}
-    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -7026,6 +7029,18 @@ packages:
 
   ws@8.14.2:
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -8622,10 +8637,10 @@ snapshots:
       - ts-node
       - typescript
 
-  '@pagopa/eslint-config@5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))':
+  '@pagopa/eslint-config@5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))':
     dependencies:
       '@eslint/js': 9.39.4
-      '@vitest/eslint-plugin': 1.6.12(eslint@10.0.3)(typescript@5.8.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))
+      '@vitest/eslint-plugin': 1.6.12(eslint@10.0.3)(typescript@5.8.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))
       eslint: 10.0.3
       eslint-config-prettier: 10.1.8(eslint@10.0.3)
       eslint-plugin-perfectionist: 4.15.1(eslint@10.0.3)(typescript@5.8.3)
@@ -9333,6 +9348,12 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
+  '@types/whatwg-mimetype@3.0.2': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 22.19.17
+
   '@types/yauzl@2.10.2':
     dependencies:
       '@types/node': 22.19.17
@@ -9437,32 +9458,32 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))':
+  '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0))':
     dependencies:
       '@ampproject/remapping': 2.2.1
       c8: 7.14.0
       magic-string: 0.30.7
       picocolors: 1.0.0
       std-env: 3.7.0
-      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0)
 
-  '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0))':
+  '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0))':
     dependencies:
       '@ampproject/remapping': 2.2.1
       c8: 7.14.0
       magic-string: 0.30.7
       picocolors: 1.0.0
       std-env: 3.7.0
-      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0)
 
-  '@vitest/eslint-plugin@1.6.12(eslint@10.0.3)(typescript@5.8.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))':
+  '@vitest/eslint-plugin@1.6.12(eslint@10.0.3)(typescript@5.8.3)(vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.57.1
       '@typescript-eslint/utils': 8.57.1(eslint@10.0.3)(typescript@5.8.3)
       eslint: 10.0.3
     optionalDependencies:
       typescript: 5.8.3
-      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0)
+      vitest: 3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9899,6 +9920,10 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
+  buffer-image-size@0.6.4:
+    dependencies:
+      '@types/node': 22.19.17
+
   buffer@5.7.1:
     dependencies:
       base64-js: 1.5.1
@@ -10225,8 +10250,6 @@ snapshots:
 
   crypto-js@4.2.0: {}
 
-  css.escape@1.5.1: {}
-
   csstype@3.1.2: {}
 
   csstype@3.2.3: {}
@@ -10421,6 +10444,8 @@ snapshots:
       strip-ansi: 6.0.1
 
   entities@4.5.0: {}
+
+  entities@7.0.1: {}
 
   envsub@4.1.0:
     dependencies:
@@ -11176,14 +11201,18 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.17.4
 
-  happy-dom@9.20.3:
+  happy-dom@20.10.6:
     dependencies:
-      css.escape: 1.5.1
-      entities: 4.5.0
-      iconv-lite: 0.6.3
-      webidl-conversions: 7.0.0
-      whatwg-encoding: 2.0.0
+      '@types/node': 22.19.17
+      '@types/whatwg-mimetype': 3.0.2
+      '@types/ws': 8.18.1
+      buffer-image-size: 0.6.4
+      entities: 7.0.1
       whatwg-mimetype: 3.0.0
+      ws: 8.21.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   har-schema@2.0.0: {}
 
@@ -11338,10 +11367,6 @@ snapshots:
       ms: 2.1.3
 
   iconv-lite@0.4.24:
-    dependencies:
-      safer-buffer: 2.1.2
-
-  iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
 
@@ -13875,7 +13900,7 @@ snapshots:
       fsevents: 2.3.3
       yaml: 2.9.0
 
-  vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0):
+  vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@4.9.5))(yaml@2.9.0):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6
@@ -13902,7 +13927,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.17
-      happy-dom: 9.20.3
+      happy-dom: 20.10.6
     transitivePeerDependencies:
       - jiti
       - less
@@ -13917,7 +13942,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0):
+  vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.3.3))(yaml@2.9.0):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6
@@ -13944,7 +13969,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.17
-      happy-dom: 9.20.3
+      happy-dom: 20.10.6
     transitivePeerDependencies:
       - jiti
       - less
@@ -13960,7 +13985,7 @@ snapshots:
       - yaml
     optional: true
 
-  vitest@3.2.6(@types/node@22.19.17)(happy-dom@9.20.3)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0):
+  vitest@3.2.6(@types/node@22.19.17)(happy-dom@20.10.6)(msw@2.12.10(@types/node@22.19.17)(typescript@5.8.3))(yaml@2.9.0):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.6
@@ -13987,7 +14012,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.17
-      happy-dom: 9.20.3
+      happy-dom: 20.10.6
     transitivePeerDependencies:
       - jiti
       - less
@@ -14012,15 +14037,9 @@ snapshots:
 
   webidl-conversions@4.0.2: {}
 
-  webidl-conversions@7.0.0: {}
-
   webpack-sources@3.2.3: {}
 
   webpack-virtual-modules@0.5.0: {}
-
-  whatwg-encoding@2.0.0:
-    dependencies:
-      iconv-lite: 0.6.3
 
   whatwg-mimetype@3.0.0: {}
 
@@ -14135,6 +14154,8 @@ snapshots:
       write-file-atomic: 3.0.3
 
   ws@8.14.2: {}
+
+  ws@8.21.0: {}
 
   xml2js@0.2.8:
     dependencies:
