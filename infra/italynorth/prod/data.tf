@@ -12,11 +12,6 @@ data "azurerm_api_management" "platform_apim" {
   name                = "${local.project_itn}-platform-api-gateway-apim-01"
 }
 
-data "azurerm_key_vault" "sign_weu_kv" {
-  name                = "${local.project_weu_sign}-kv"
-  resource_group_name = "${local.project_weu_sign}-sec-rg"
-}
-
 data "azurerm_api_management" "apim_itn" {
   name                = "${local.project_itn}-apim-01"
   resource_group_name = "${local.project_itn}-common-rg-01"
