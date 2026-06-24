@@ -36,7 +36,7 @@
     "@storybook/web-components": "8.6.18",
     "@storybook/web-components-vite": "8.6.18",
     "@vitest/coverage-c8": "catalog:",
-    "happy-dom": "^9.8.4",
+    "happy-dom": "^20.9.0",
     "lit-html": "^2.6.1",
     "prettier": "2.7.1",
     "react": "^18.2.0",
