@@ -1,5 +1,11 @@
 # @io-sign/web-sdk
 
+## 1.0.4
+
+### Patch Changes
+
+- 098ac2a: update happy-dom
+
 ## 1.0.3
 
 ### Patch Changes
