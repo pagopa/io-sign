@@ -1,5 +1,17 @@
 # io-func-sign-issuer
 
+## 1.7.6
+
+### Patch Changes
+
+- 3ba69fe: update undici
+
+## 1.7.5
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 1.7.4
 
 ### Patch Changes

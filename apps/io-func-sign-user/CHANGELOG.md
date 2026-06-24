@@ -1,5 +1,17 @@
 # io-func-sign-user
 
+## 2.1.6
+
+### Patch Changes
+
+- 3ba69fe: update undici
+
+## 2.1.5
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
 ## 2.1.4
 
 ### Patch Changes
