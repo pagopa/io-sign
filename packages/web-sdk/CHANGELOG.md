@@ -1,5 +1,11 @@
 # @io-sign/web-sdk
 
+## 1.0.3
+
+### Patch Changes
+
+- ff51c00: update vite and storybook
+
 ## 1.0.2
 
 ### Patch Changes
