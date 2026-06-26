@@ -9,19 +9,11 @@ RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
 COPY . /usr/src/app
 
 
-FROM base AS builder
+FROM base AS installer
 ARG FUNCTION_NAME
 WORKDIR /usr/src/app
-RUN pnpm dlx turbo@^2.5.5 prune ${FUNCTION_NAME} --docker
-
-
-FROM node:${NODE_VERSION} AS installer
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
-WORKDIR /usr/src/app
-COPY --from=builder /usr/src/app/out/json/ .
 RUN pnpm install --frozen-lockfile
-COPY --from=builder /usr/src/app/out/full/ .
-RUN pnpm turbo run build
+RUN pnpm exec nx run ${FUNCTION_NAME}:build
 
 
 FROM node:${NODE_VERSION} AS functions-node
