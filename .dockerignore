@@ -2,7 +2,10 @@ node_modules
 .git
 .turbo
 .vscode
+.nx
 dist
+.next
+Bruno
 __blobstorage__
 __queuestorage__
 __azurite_db_blob__.json
