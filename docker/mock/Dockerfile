@@ -5,7 +5,7 @@ ARG MOCK_NAME
 ARG NODE_VERSION=__unset__
 
 FROM node:${NODE_VERSION} AS base
-RUN corepack enable && corepack prepare pnpm@10.28.1 --activate
+RUN npm install -g pnpm@10.28.1
 COPY . /usr/src/app
 
 

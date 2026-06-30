@@ -40,7 +40,6 @@ services:
     command: sh -c "npm install @azure/cosmos && node setup-cosmos-containers.js"
       
   azurite:
-    platform: linux/amd64
     image: mcr.microsoft.com/azure-storage/azurite:latest
     ports:
       - 10000:10000
