@@ -38,6 +38,12 @@ locals {
   function_user_autoscale_maximum = 5
   function_user_autoscale_default = 2
 
+  #user function app 02
+  sign_user_02_snet_cidr             = "10.20.43.0/26"
+  function_user_02_autoscale_minimum = 2
+  function_user_02_autoscale_maximum = 5
+  function_user_02_autoscale_default = 2
+
   #backoffice function app
   sign_backoffice_snet_cidr             = "10.20.41.64/26"
   function_backoffice_autoscale_minimum = 2
