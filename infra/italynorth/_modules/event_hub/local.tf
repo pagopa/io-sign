@@ -12,7 +12,10 @@ locals {
   ip_rules = [
     "18.192.147.151", # PDND-DATALAKE
     "18.159.227.69",  # PDND-DATALAKE
-    "3.126.198.129"   # PDND-DATALAKE
+    "3.126.198.129",  # PDND-DATALAKE
+    "52.29.215.8",    # PDND-DATALAKE
+    "63.181.230.22",  # PDND-DATALAKE
+    "52.29.74.207"    # PDND-DATALAKE
   ]
 
   hubs = [
