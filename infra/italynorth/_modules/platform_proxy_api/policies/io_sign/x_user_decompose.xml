@@ -9,25 +9,29 @@
           - name         -> x-iosign-name
           - spid_level   -> x-iosign-spid-level
     -->
-    <set-variable name="xUserDecoded" value="@{
+    <set-variable name="xUserJson" value="@{
         var xUser = context.Request.Headers.GetValueOrDefault("x-user", "");
-        if (string.IsNullOrEmpty(xUser)) return "";
+        if (string.IsNullOrEmpty(xUser)) return (JObject)null;
         try {
             // Handle both standard base64 and base64url encoding
-            xUser = xUser.Replace('-', '+').Replace('_', '/');
-            switch (xUser.Length % 4) {
-                case 2: xUser += "=="; break;
-                case 3: xUser += "="; break;
+            var padded = xUser.Replace('-', '+').Replace('_', '/');
+            switch (padded.Length % 4) {
+                case 2: padded += "=="; break;
+                case 3: padded += "="; break;
             }
-            return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(xUser));
+            var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+            return JObject.Parse(json);
         } catch {
-            // Header is already plain JSON, use as-is
-            return xUser;
+            try {
+                // Header may already be plain JSON
+                return JObject.Parse(xUser);
+            } catch {
+                return (JObject)null;
+            }
         }
     }" />
     <choose>
-        <when condition="@(!string.IsNullOrEmpty((string)context.Variables["xUserDecoded"]))">
-            <set-variable name="xUserJson" value="@(JObject.Parse((string)context.Variables["xUserDecoded"]))" />
+        <when condition="@(context.Variables["xUserJson"] != null)">
             <set-header name="x-iosign-fiscal-code" exists-action="override">
                 <value>@(((JObject)context.Variables["xUserJson"]).GetValue("fiscal_code")?.ToString() ?? "")</value>
             </set-header>
