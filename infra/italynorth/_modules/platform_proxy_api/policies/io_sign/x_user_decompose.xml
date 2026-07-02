@@ -11,7 +11,7 @@
     -->
     <set-variable name="xUserJson" value="@{
         var xUser = context.Request.Headers.GetValueOrDefault("x-user", "");
-        if (string.IsNullOrEmpty(xUser)) return (JObject)null;
+        if (string.IsNullOrEmpty(xUser)) { return (JObject)null; }
         string jsonStr;
         try {
             var padded = xUser.Replace('-', '+').Replace('_', '/');
