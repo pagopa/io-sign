@@ -30,7 +30,8 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/node": "catalog:"
+      "@types/node": "catalog:",
+      "node-fetch": "^3.3.2"
     },
     "ignoredBuiltDependencies": [
       "esbuild"
