@@ -11,11 +11,11 @@ resource "azurerm_storage_account" "sign" {
   account_replication_type = "ZRS"
   access_tier              = "Hot"
 
-  public_network_access_enabled   = true
-  allow_nested_items_to_be_public = false
-  shared_access_key_enabled       = true
-  https_traffic_only_enabled      = true
-  min_tls_version                 = "TLS1_2"
+  public_network_access_enabled    = true
+  allow_nested_items_to_be_public  = false
+  shared_access_key_enabled        = true
+  https_traffic_only_enabled       = true
+  min_tls_version                  = "TLS1_2"
   cross_tenant_replication_enabled = false
 
   blob_properties {
