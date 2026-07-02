@@ -45,4 +45,5 @@
             </set-header>
         </when>
     </choose>
+    <set-header name="x-user" exists-action="delete" />
 </fragment>
