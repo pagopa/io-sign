@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.1.7
+
+### Patch Changes
+
+- 59b0937: Test nonce duration with sas url
+
 ## 2.1.6
 
 ### Patch Changes
