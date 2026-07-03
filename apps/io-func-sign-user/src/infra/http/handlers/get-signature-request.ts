@@ -36,10 +36,15 @@ const grantReadAccessToDocuments =
         TE.map((documents) => ({ ...request, documents }))
       );
     }
+    const sasMinutes =
+      process.env["LONG_SAS_ISSUER_ID"] !== undefined &&
+      request.issuerId === process.env["LONG_SAS_ISSUER_ID"]
+        ? 55
+        : 5;
     return pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrlWithFallback("r", 5)(doc)(
+        toDocumentWithSasUrlWithFallback("r", sasMinutes)(doc)(
           r.validatedContainerClient
         )
       ),
