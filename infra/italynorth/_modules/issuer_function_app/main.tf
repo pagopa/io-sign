@@ -1,6 +1,6 @@
 module "function_sign_issuer" {
   source  = "pagopa-dx/azure-function-app/azurerm"
-  version = "~> 4.0"
+  version = "~> 6.0"
 
   environment = {
     prefix          = local.prefix
