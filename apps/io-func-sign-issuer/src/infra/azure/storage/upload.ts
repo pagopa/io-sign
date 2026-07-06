@@ -27,7 +27,7 @@ export const copyFromUrl = (source: string) => (blobClient: BlobClient) =>
         blobClient
           .beginCopyFromURL(source)
           .then((poller) => poller.pollUntilDone()),
-      () => new Error("Error on blob copy process")
+      (e) => new Error("Error on blob copy process", { cause: e })
     ),
     TE.filterOrElse(
       (response) => response.copyStatus === "success",

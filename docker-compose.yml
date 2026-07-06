@@ -124,6 +124,32 @@ services:
     environment:
       - NODE_ENV=development
 
+  mock-pdv-tokenizer:
+    image: mock-pdv-tokenizer
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-pdv-tokenizer"
+        NODE_VERSION: "24.17.0"
+    ports:
+      - "3013:3013"
+    environment:
+      - NODE_ENV=development
+
+  mock-lollipop:
+    image: mock-lollipop
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-lollipop"
+        NODE_VERSION: "24.17.0"
+    ports:
+      - "3012:3012"
+    environment:
+      - NODE_ENV=development
+
   io-func-sign-issuer:
     image: io-func-sign-issuer
     build:
@@ -141,6 +167,7 @@ services:
       - cosmos-db
       - eventhubs
       - mock-io-services
+      - mock-pdv-tokenizer
 
   io-func-sign-support:
     image: io-func-sign-support
@@ -158,7 +185,8 @@ services:
       - azurite
       - cosmos-db
       - eventhubs
-  
+      - mock-pdv-tokenizer
+
   io-func-sign-user:
     image: io-func-sign-user
     build:
@@ -177,6 +205,8 @@ services:
       - eventhubs
       - mock-io-services
       - mock-namirial
+      - mock-pdv-tokenizer
+      - mock-lollipop
   
   io-sign-backoffice-func:
     image: io-sign-backoffice-func
