@@ -28,15 +28,7 @@ module "function_sign_user_02" {
 
   app_settings = local.io_sign_user_func_02.app_settings
 
-  slot_app_settings = merge(
-    local.io_sign_user_func_02.app_settings,
-    {
-      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.fillDocument.Disabled"           = "1"
-      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.validateSignature.Disabled"      = "1"
-    }
-  )
+  slot_app_settings = local.io_sign_user_func_02.app_settings
 
   sticky_app_setting_names = [
     "AzureWebJobs.createSignatureRequest.Disabled",
