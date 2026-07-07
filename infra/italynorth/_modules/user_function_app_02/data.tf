@@ -9,14 +9,6 @@ data "azurerm_resource_group" "sign_itn_rg" {
   name = "${local.project_itn_sign}-rg-01"
 }
 
-data "azurerm_resource_group" "sign_weu_integration_rg" {
-  name = "${local.project_weu_sign}-integration-rg"
-}
-
-data "azurerm_resource_group" "sign_weu_data_rg" {
-  name = "${local.project_weu_sign}-data-rg"
-}
-
 data "azurerm_resource_group" "weu-common" {
   name = "${local.prefix}-${local.env_short}-rg-common"
 }
