@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.1.8
+
+### Patch Changes
+
+- 3d813aa: extend document sas url duration
+
 ## 2.1.7
 
 ### Patch Changes
