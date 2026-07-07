@@ -2,7 +2,7 @@ import * as t from "io-ts";
 import { z } from "zod";
 import * as E from "fp-ts/lib/Either";
 
-export const IoTsType = <T>(schema: z.ZodSchema<T>) =>
+export const IoTsType = <T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>) =>
   new t.Type<z.infer<typeof schema>>(
     "FromZodSchemaCodec",
     (u): u is z.infer<typeof schema> => schema.safeParse(u).success,
