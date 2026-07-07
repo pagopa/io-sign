@@ -31,6 +31,17 @@ module "function_sign_user" {
   tags                            = local.tags
 }
 
+module "function_sign_user_02" {
+  source                             = "../_modules/user_function_app_02"
+  vnet_common_name_itn               = local.vnet_common_name_itn
+  common_resource_group_name_itn     = local.common_resource_group_name_itn
+  sign_user_02_snet_cidr             = local.sign_user_02_snet_cidr
+  function_user_02_autoscale_minimum = local.function_user_02_autoscale_minimum
+  function_user_02_autoscale_maximum = local.function_user_02_autoscale_maximum
+  function_user_02_autoscale_default = local.function_user_02_autoscale_default
+  tags                               = local.tags
+}
+
 module "function_sign_backoffice" {
   source                                = "../_modules/backoffice_function_app"
   vnet_common_name_itn                  = local.vnet_common_name_itn
