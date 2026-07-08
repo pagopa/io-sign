@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.6.13
+
+### Patch Changes
+
+- b00068c: change iosigncontract validation to avoid exception
+
 ## 1.6.12
 
 ### Patch Changes
