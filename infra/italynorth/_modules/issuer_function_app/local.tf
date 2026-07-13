@@ -11,27 +11,27 @@ locals {
 
   io_sign_issuer_func = {
     app_settings = {
-      FUNCTIONS_WORKER_PROCESS_COUNT    = 4
-      AzureWebJobsDisableHomepage       = "true"
-      NODE_ENV                          = "production"
-      CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
-      CosmosDbEndpoint                  = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
-      CosmosDbDatabaseName              = "issuer"
-      StorageAccountConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
-      StorageAccountItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
-      IssuerUploadedBlobContainerName   = "uploaded-documents"
-      IssuerValidatedBlobContainerName  = "validated-documents"
-      IoServicesApiBasePath             = "https://api.io.pagopa.it"
-      IoServicesSubscriptionKey         = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=IoServicesSubscriptionKey)"
-      IoServicesConfigurationId         = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=io-services-configuration-id)"
-      PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
-      PdvTokenizerApiKey                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=PdvTokenizerApiKey)"
+      FUNCTIONS_WORKER_PROCESS_COUNT       = 4
+      AzureWebJobsDisableHomepage          = "true"
+      NODE_ENV                             = "production"
+      CosmosDbConnectionString             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                     = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+      CosmosDbDatabaseName                 = "issuer"
+      StorageAccountConnectionString       = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
+      StorageAccountItnConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
+      IssuerUploadedBlobContainerName      = "uploaded-documents"
+      IssuerValidatedBlobContainerName     = "validated-documents"
+      IoServicesApiBasePath                = "https://api.io.pagopa.it"
+      IoServicesSubscriptionKey            = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=IoServicesSubscriptionKey)"
+      IoServicesConfigurationId            = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=io-services-configuration-id)"
+      PdvTokenizerApiBasePath              = "https://api.tokenizer.pdv.pagopa.it"
+      PdvTokenizerApiKey                   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=PdvTokenizerApiKey)"
       AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
       BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
-      BackOfficeApiBasePath             = "https://api.io.pagopa.it/api/v1/sign/backoffice"
-      BackOfficeApiKey                  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackOfficeApiKey)"
-      WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
-      WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
+      BackOfficeApiBasePath                = "https://api.io.pagopa.it/api/v1/sign/backoffice"
+      BackOfficeApiKey                     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackOfficeApiKey)"
+      WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES    = "200,204"
     }
   }
 }
