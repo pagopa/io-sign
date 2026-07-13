@@ -50,7 +50,36 @@ resource "azurerm_api_management_api_policy" "io_sign" {
   api_management_name = var.platform_apim_name
   resource_group_name = var.platform_apim_resource_group_name
 
-  xml_content = file("${path.module}/policies/io_sign/_api_base_policy.xml")
+  xml_content = file("${path.module}/policies/io_sign/_api_base_policy_rev1.xml")
+}
+
+resource "azurerm_api_management_api" "io_sign_rev2" {
+  name                  = "io-p-sign-api"
+  api_management_name   = var.platform_apim_name
+  resource_group_name   = var.platform_apim_resource_group_name
+  subscription_required = false
+
+  version_set_id = azurerm_api_management_api_version_set.io_sign_v1.id
+  version        = "v1"
+  revision       = "2"
+
+  description  = "IO Sign Backend API"
+  display_name = "IO Sign Backend"
+  path         = "api/sign"
+  protocols    = ["https"]
+
+  import {
+    content_format = "openapi-link"
+    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/066b5aa08e40a270164fe6dccd9ed4d08705c05a/openapi/generated/api_io_sign.yaml"
+  }
+}
+
+resource "azurerm_api_management_api_policy" "io_sign_rev2" {
+  api_name            = "${azurerm_api_management_api.io_sign_rev2.name};rev=2"
+  api_management_name = var.platform_apim_name
+  resource_group_name = var.platform_apim_resource_group_name
+
+  xml_content = file("${path.module}/policies/io_sign/_api_base_policy_rev2.xml")
 }
 
 resource "azurerm_api_management_api_tag" "io_sign_api_tag" {
