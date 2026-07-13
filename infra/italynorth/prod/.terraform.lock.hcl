@@ -23,7 +23,7 @@ provider "registry.terraform.io/hashicorp/azuread" {
 
 provider "registry.terraform.io/hashicorp/azurerm" {
   version     = "4.80.0"
-  constraints = ">= 3.100.0, >= 3.111.0, >= 3.114.0, ~> 4.0, ~> 4.58, < 5.0.0"
+  constraints = ">= 3.100.0, >= 3.111.0, >= 3.114.0, ~> 4.0, >= 4.8.0, ~> 4.58, < 5.0.0"
   hashes = [
     "h1:R8n0T2WWUxa65nw64W/Q+M2X9My84/lebmKwAzixlu8=",
     "zh:1287b44676ced8f2d8131b1746a027f05edba2e5aa7e3ecdbaa6887aaad68431",
@@ -65,7 +65,7 @@ provider "registry.terraform.io/integrations/github" {
 
 provider "registry.terraform.io/pagopa-dx/azure" {
   version     = "0.12.3"
-  constraints = ">= 0.0.6, ~> 0.12, < 1.0.0"
+  constraints = ">= 0.0.6, >= 0.6.0, ~> 0.12, < 1.0.0"
   hashes = [
     "h1:Cq6BOcAEK4RDDkx6uTXAczoSM0nXGdtt3G9R2hbJtsg=",
     "zh:0b146a63ecaea9d913bbf8ae4e1c35b53261d4b885e54ee2960e8271583a4783",

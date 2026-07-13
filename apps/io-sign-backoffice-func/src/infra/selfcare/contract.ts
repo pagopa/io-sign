@@ -30,7 +30,15 @@ const closedIoSignContract = contractSchema.merge(
 
 const ioSignContract = z.union([activeIoSignContract, closedIoSignContract]);
 
-export const ioSignContracts = z.array(ioSignContract);
+// Accept any array and silently discard contracts that don't belong to
+// "prod-io-sign" (or are otherwise malformed), instead of throwing a
+// ValidationError for every unrelated Selfcare product contract.
+export const ioSignContracts = z.array(z.unknown()).transform((items) =>
+  items.flatMap((item) => {
+    const result = ioSignContract.safeParse(item);
+    return result.success ? [result.data] : [];
+  })
+);
 
 export type ActiveIoSignContract = z.infer<typeof activeIoSignContract>;
 

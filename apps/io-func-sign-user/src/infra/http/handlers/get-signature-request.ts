@@ -39,7 +39,7 @@ const grantReadAccessToDocuments =
     return pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrlWithFallback("r", 5)(doc)(
+        toDocumentWithSasUrlWithFallback("r", 55)(doc)(
           r.validatedContainerClient
         )
       ),
