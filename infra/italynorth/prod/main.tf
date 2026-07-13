@@ -150,3 +150,8 @@ import {
   to = module.platform_proxy_api.azurerm_api_management_api.io_sign_rev2
   id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-common-rg-01/providers/Microsoft.ApiManagement/service/io-p-itn-platform-api-gateway-apim-01/apis/io-p-sign-api;rev=2"
 }
+
+import {
+  to = module.platform_proxy_api.azurerm_api_management_api_policy.io_sign_rev2
+  id = "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-common-rg-01/providers/Microsoft.ApiManagement/service/io-p-itn-platform-api-gateway-apim-01/apis/io-p-sign-api;rev=2/policies/policy"
+}
