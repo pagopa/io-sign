@@ -2,7 +2,56 @@
     <inbound>
         <base />
         <include-fragment fragment-id="ioapp-authenticated-cache" />
-        <include-fragment fragment-id="io-sign-user-data" />
+        <!--
+            Decomposes the x-user header (base64-encoded JSON set by the App Backend after
+            authenticating the user) into individual headers required by io-func-sign-user.
+
+            Fields extracted:
+              - fiscal_code  -> x-iosign-fiscal-code
+              - family_name  -> x-iosign-family-name
+              - name         -> x-iosign-name
+              - spid_level   -> x-iosign-spid-level
+        -->
+        <set-variable name="xUserJson" value="@{
+            var xUser = context.Request.Headers.GetValueOrDefault("x-user", "");
+            if (string.IsNullOrEmpty(xUser)) { return (JObject)null; }
+            string jsonStr;
+            try {
+                var padded = xUser.Replace('-', '+').Replace('_', '/');
+                switch (padded.Length % 4) {
+                    case 2: padded += "=="; break;
+                    case 3: padded += "="; break;
+                }
+                jsonStr = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(padded));
+            } catch (FormatException) {
+                jsonStr = xUser;
+            }
+            try {
+                return JObject.Parse(jsonStr);
+            } catch {
+                return (JObject)null;
+            }
+        }" />
+        <choose>
+            <when condition="@(context.Variables["xUserJson"] == null)">
+                <return-response>
+                    <set-status code="401" reason="Unauthorized" />
+                </return-response>
+            </when>
+        </choose>
+        <set-header name="x-iosign-fiscal-code" exists-action="override">
+            <value>@(((JObject)context.Variables["xUserJson"]).GetValue("fiscal_code")?.ToString() ?? "")</value>
+        </set-header>
+        <set-header name="x-iosign-family-name" exists-action="override">
+            <value>@(((JObject)context.Variables["xUserJson"]).GetValue("family_name")?.ToString() ?? "")</value>
+        </set-header>
+        <set-header name="x-iosign-name" exists-action="override">
+            <value>@(((JObject)context.Variables["xUserJson"]).GetValue("name")?.ToString() ?? "")</value>
+        </set-header>
+        <set-header name="x-iosign-spid-level" exists-action="override">
+            <value>@(((JObject)context.Variables["xUserJson"]).GetValue("spid_level")?.ToString() ?? "")</value>
+        </set-header>
+        <set-header name="x-user" exists-action="delete" />
         <set-backend-service id="apim-pool-app-backend"
             backend-id="app-backend-pool" />
         <set-header name="x-appbackend-api-key" exists-action="override">
