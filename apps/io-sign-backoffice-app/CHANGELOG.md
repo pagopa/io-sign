@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 1.9.0
+
+### Minor Changes
+
+- 2253c82: upgrade backoffice app to Node v24
+
 ## 1.8.14
 
 ### Patch Changes

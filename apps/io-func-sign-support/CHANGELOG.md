@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.8.0
+
+### Minor Changes
+
+- 2253c82: upgrade support-func to Node v24
+
 ## 1.7.6
 
 ### Patch Changes
