@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.7.0
+
+### Minor Changes
+
+- 3fd4dae: upgrade backoffice-func to Node v24
+
 ## 1.6.13
 
 ### Patch Changes
