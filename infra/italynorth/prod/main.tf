@@ -145,8 +145,3 @@ module "event_hub" {
 
   tags = local.tags
 }
-
-import {
-  to = module.platform_proxy_api.azurerm_api_management_api_policy.io_sign_rev2
-  id = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/resourceGroups/io-p-itn-common-rg-01/providers/Microsoft.ApiManagement/service/io-p-itn-platform-api-gateway-apim-01/apis/io-p-sign-api;rev=2"
-}
