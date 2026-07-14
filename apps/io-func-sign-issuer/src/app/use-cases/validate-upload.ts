@@ -210,7 +210,19 @@ export const validateUpload = (
           RTE.chainW(({ documentMetadata }) =>
             pipe(
               getUploadedDocumentUrl(meta.id),
-              RTE.chainW(createDocumentFromUrl(meta.documentId)),
+              RTE.chainW((url) =>
+                pipe(
+                  url,
+                  createDocumentFromUrl(meta.documentId),
+                  RTE.orElseFirstW((e) =>
+                    L.errorRTE("error on blob copy process", {
+                      error: e.message,
+                      cause: e.cause,
+                      ...loggingContext(meta)
+                    })
+                  )
+                )
+              ),
               RTE.chainEitherKW((url) =>
                 pipe(
                   signatureRequest,
