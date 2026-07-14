@@ -722,6 +722,31 @@ importers:
         specifier: ^5.2.2
         version: 5.8.3
 
+  packages/mock-lollipop:
+    dependencies:
+      body-parser:
+        specifier: ^1.20.2
+        version: 1.20.5
+      express:
+        specifier: ^4.22.2
+        version: 4.22.2
+    devDependencies:
+      '@types/body-parser':
+        specifier: ^1.19.2
+        version: 1.19.4
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.20
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.3
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@5.8.3)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.8.3
+
   packages/mock-namirial:
     dependencies:
       body-parser:
@@ -9692,7 +9717,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.4
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -12800,7 +12825,7 @@ snapshots:
 
   qs@6.11.2:
     dependencies:
-      side-channel: 1.0.4
+      side-channel: 1.1.0
 
   qs@6.14.2:
     dependencies:

@@ -1,5 +1,4 @@
 ---
-"@io-sign/mock-pdv-tokenizer": minor
 "@io-sign/mock-io-services": minor
 "@io-sign/mock-lollipop": minor
 "@io-sign/mock-namirial": minor
