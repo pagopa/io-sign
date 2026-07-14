@@ -1,6 +1,6 @@
 {
-  "name": "@io-sign/mock-namirial",
-  "version": "0.1.1",
+  "name": "@io-sign/mock-lollipop",
+  "version": "1.0.0",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
