@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.2.0
+
+### Minor Changes
+
+- 64fc97c: upgrade user-func to Node v24
+
 ## 2.1.8
 
 ### Patch Changes
