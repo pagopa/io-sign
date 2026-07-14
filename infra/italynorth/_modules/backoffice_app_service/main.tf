@@ -1,6 +1,6 @@
 module "itn_sign_backoffice_app" {
   source  = "pagopa-dx/azure-app-service/azurerm"
-  version = "~> 2.0"
+  version = "~> 4.0"
 
   environment = {
     prefix          = local.prefix
@@ -12,7 +12,7 @@ module "itn_sign_backoffice_app" {
 
   resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
   size                = "P0v3"
-  node_version        = "22"
+  node_version        = "24"
   health_check_path   = "/info"
 
   subnet_cidr                          = var.sign_backoffice_app_snet_cidr
