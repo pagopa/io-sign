@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.8.0
+
+### Minor Changes
+
+- 7aaf2b5: upgrade issuer-func to Node v24
+
 ## 1.7.6
 
 ### Patch Changes
