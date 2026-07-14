@@ -16,7 +16,7 @@
               ]
             },
             {
-              "Name": "billing",
+              "Name": "io-p-itn-sign-billing-01",
               "PartitionCount": 2,
               "ConsumerGroups": [
                 {
@@ -25,7 +25,7 @@
               ]
             },
             {
-              "Name": "analytics",
+              "Name": "io-p-itn-sign-analytics-01",
               "PartitionCount": 2,
               "ConsumerGroups": [
                 {
