@@ -6,7 +6,7 @@
     "test": "nx run-many -t test",
     "format": "nx run-many -t format",
     "build": "nx run-many -t build",
-    "code-review": "nx run-many -t typecheck lint test",
+    "code-review": "nx run-many -t typecheck lint test --output-style=static",
     "version": "changeset version",
     "release": "changeset tag",
     "docker:pregenerate:env": "shx rm -rf docker/generated && shx mkdir docker/generated && ./docker/env-sync.sh",
