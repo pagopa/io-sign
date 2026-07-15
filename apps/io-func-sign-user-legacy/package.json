@@ -1,0 +1,61 @@
+{
+  "name": "io-func-sign-user-legacy",
+  "version": "2.2.0",
+  "private": true,
+  "license": "MPL-2.0",
+  "files": [
+    "dist",
+    "host.json",
+    "extensions.csproj"
+  ],
+  "bundledDependencies": true,
+  "scripts": {
+    "build": "tsup-node",
+    "format": "prettier --write .",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc",
+    "start": "func start  --port 7075",
+    "build:package": "npm-pack-zip --add-version",
+    "generate:lollipop-api-models": "rimraf ./src/infra/lollipop/models && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/io-functions-lollipop/f0a4485bf65f4f2d50ca1383a56a808c4f2ad4ea/openapi/external.yaml --no-strict --out-dir ./src/infra/lollipop/models --request-types --response-decoders --client",
+    "generate:user-api-models": "rimraf ./src/infra/http/models && gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models",
+    "generate:api-models": "pnpm generate:user-api-models & pnpm generate:lollipop-api-models"
+  },
+  "dependencies": {
+    "@azure/cosmos": "catalog:",
+    "@azure/functions": "catalog:",
+    "@azure/event-hubs": "catalog:",
+    "@azure/storage-blob": "catalog:",
+    "@azure/storage-queue": "catalog:",
+    "@io-sign/io-sign": "workspace:^",
+    "@pagopa/azure-storage-migration-kit": "0.0.5",
+    "@pagopa/handler-kit": "catalog:",
+    "@pagopa/handler-kit-azure-func": "catalog:",
+    "@pagopa/io-functions-commons": "catalog:",
+    "@pagopa/logger": "catalog:",
+    "@pagopa/ts-commons": "catalog:",
+    "date-fns": "catalog:",
+    "fp-ts": "catalog:",
+    "io-ts": "catalog:",
+    "io-ts-types": "catalog:",
+    "monocle-ts": "catalog:",
+    "newtype-ts": "catalog:"
+  },
+  "devDependencies": {
+    "@io-sign/eslint-config": "workspace:^",
+    "@pagopa/openapi-codegen-ts": "catalog:",
+    "@vitest/coverage-c8": "catalog:",
+    "azure-functions-core-tools": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "npm-pack-zip": "catalog:",
+    "prettier": "catalog:",
+    "rimraf": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "^4.8.4",
+    "vitest": "catalog:"
+  },
+  "main": "dist/main.js"
+}
