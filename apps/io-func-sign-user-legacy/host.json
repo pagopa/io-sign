@@ -1,0 +1,38 @@
+{
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "Function": "Error",
+      "Host.Aggregator": "Information",
+      "Host.Results": "Information",
+      "Microsoft": "Information",
+      "Worker": "Information"
+    },
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "maxTelemetryItemsPerSecond": 5,
+        "includedTypes": "PageView;Trace;Dependency;Request",
+        "excludedTypes": "Exception;Event;CustomEvent"
+      }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.*, 5.0.0)"
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": "api/v1/sign"
+    },
+    "tracing": {
+      "traceInputsAndOutputs": false,
+      "traceReplayEvents": false
+    },
+    "queues": {
+      "maxPollingInterval": "00:00:05.000",
+      "maxDequeueCount": 3,
+      "visibilityTimeout": "00:00:30"
+    }
+  }
+}

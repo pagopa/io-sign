@@ -1,0 +1,483 @@
+# io-func-sign-user
+
+## 2.2.0
+
+### Minor Changes
+
+- 64fc97c: upgrade user-func to Node v24
+
+## 2.1.8
+
+### Patch Changes
+
+- 3d813aa: extend document sas url duration
+
+## 2.1.7
+
+### Patch Changes
+
+- 59b0937: Test nonce duration with sas url
+
+## 2.1.6
+
+### Patch Changes
+
+- 3ba69fe: update undici
+
+## 2.1.5
+
+### Patch Changes
+
+- 4f93ddf: update vitest
+
+## 2.1.4
+
+### Patch Changes
+
+- ea166f3: migrate monorepo task runner from turbo to nx
+
+## 2.1.3
+
+### Patch Changes
+
+- a690703: remove eventhub weu write
+- Updated dependencies [a690703]
+  - @io-sign/io-sign@1.11.3
+
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [f94aed0]
+  - @io-sign/io-sign@1.11.2
+
+## 2.1.1
+
+### Patch Changes
+
+- 7d06e13: increase timeout external api
+- Updated dependencies [7d06e13]
+- Updated dependencies [949644b]
+  - @io-sign/io-sign@1.11.1
+
+## 2.1.0
+
+### Minor Changes
+
+- 1f70112: Removed and replaced deprecated symbols
+
+### Patch Changes
+
+- Updated dependencies [1f70112]
+  - @io-sign/io-sign@1.11.0
+
+## 2.0.1
+
+### Patch Changes
+
+- e396bf2: remove health check QTSP test and move Selfcare health check event hub from issuer to backoffice
+
+## 2.0.0
+
+### Major Changes
+
+- 5b98c2b: Reject POST /signatures requests with SPID level lower than L3
+
+## 1.7.0
+
+### Minor Changes
+
+- bcbd02c: send event to Event Hub in ITN and WEU
+
+### Patch Changes
+
+- Updated dependencies [bcbd02c]
+  - @io-sign/io-sign@1.10.0
+
+## 1.6.0
+
+### Minor Changes
+
+- 7b64d31: switch traffic to itn signed documents container with weu fallback
+
+### Patch Changes
+
+- Updated dependencies [7b64d31]
+  - @io-sign/io-sign@1.9.0
+
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [fb57d04]
+  - @io-sign/io-sign@1.8.0
+
+## 1.5.0
+
+### Minor Changes
+
+- 2593e4c: Switch validated-documents container to ITN with migration-kit
+
+### Patch Changes
+
+- Updated dependencies [2593e4c]
+  - @io-sign/io-sign@1.7.0
+
+## 1.4.2
+
+### Patch Changes
+
+- fa9f21d: start to write on itn for container filled-modules (user function)
+
+## 1.4.1
+
+### Patch Changes
+
+- 328517a: switch write/read on queue in itn
+
+## 1.4.0
+
+### Minor Changes
+
+- 271427d: Add optional x-iosign-spid-level header to the POST /signatures endpoint
+
+## 1.3.0
+
+### Minor Changes
+
+- e1e9a5a: Upgrade to Node v22
+
+## 1.2.0
+
+### Minor Changes
+
+- ef68cc4: Reverto to node 20
+
+## 1.1.0
+
+### Minor Changes
+
+- 576e2b0: Upgrade to Node.js v22
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [0f28a30]
+  - @io-sign/io-sign@1.6.3
+
+## 1.0.3
+
+### Patch Changes
+
+- c8ddeec: upgrade linter to latest version for azure functions and keep current version for backoffice app
+- Updated dependencies [c8ddeec]
+  - @io-sign/io-sign@1.6.2
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [4001e1f]
+  - @io-sign/io-sign@1.6.1
+
+## 1.0.1
+
+### Patch Changes
+
+- 4dcc232: Fix status code for create-signature
+
+## 1.0.0
+
+### Major Changes
+
+- eb0f6b6: Migrating azure function programming model from v3 to v4
+
+### Patch Changes
+
+- Updated dependencies [eb0f6b6]
+  - @io-sign/io-sign@1.6.0
+
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [922073a]
+  - @io-sign/io-sign@1.5.0
+
+## 0.9.0
+
+### Minor Changes
+
+- 491a615: add version info in health check API response
+
+## 0.8.2
+
+### Patch Changes
+
+- 4b06e7c: alignment openapi
+
+## 0.8.1
+
+### Patch Changes
+
+- bcacdc8: migrating the package manager to pnpm and updating GitHub actions
+- Updated dependencies [bcacdc8]
+  - @io-sign/io-sign@1.4.1
+
+## 0.8.0
+
+### Minor Changes
+
+- efd634a: Upgraded linter and various libraries
+  Fixed linting for the new configuration
+
+### Patch Changes
+
+- Updated dependencies [efd634a]
+  - @io-sign/io-sign@1.4.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 708c5d0: Upgraded Node to version 20
+
+## 0.6.8
+
+### Patch Changes
+
+- f878b38: Updated URL saas token validity to 60
+
+## 0.6.7
+
+### Patch Changes
+
+- 0519eea: Updated user package.json
+
+## 0.6.6
+
+### Patch Changes
+
+- 9c84a72: Updated document url validity
+
+## 0.6.5
+
+### Patch Changes
+
+- 7f33aac: Updated @pagopa/ts-commons and applicationinsights dependencies
+- Updated dependencies [7f33aac]
+  - @io-sign/io-sign@1.3.5
+
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [47a84f8]
+  - @io-sign/io-sign@1.3.4
+
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [a8465c4]
+  - @io-sign/io-sign@1.3.3
+
+## 0.6.2
+
+### Patch Changes
+
+- Updated dependencies [d9c3c17]
+  - @io-sign/io-sign@1.3.2
+
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [71ea999]
+  - @io-sign/io-sign@1.3.1
+
+## 0.6.0
+
+### Minor Changes
+
+- a42eca9: Updated GetThirdPartyMessageDetails function
+
+## 0.5.1
+
+### Patch Changes
+
+- cea4a45: Changed SignatureInput regex
+
+## 0.5.0
+
+### Minor Changes
+
+- 59caea4: Track REJECTED request, code refactor
+
+### Patch Changes
+
+- Updated dependencies [59caea4]
+  - @io-sign/io-sign@1.3.0
+
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [bdc1236]
+  - @io-sign/io-sign@1.2.0
+
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [a0cea83]
+  - @io-sign/io-sign@1.1.0
+
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [2bbef78]
+  - @io-sign/io-sign@1.0.6
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [45c91d2]
+  - @io-sign/io-sign@1.0.5
+
+## 0.4.0
+
+### Minor Changes
+
+- 0a888ab: add x-firmaconio-environment header to http responses related to signature requests
+
+## 0.3.6
+
+### Patch Changes
+
+- 29ee473: update to node 18
+
+## 0.3.5
+
+### Patch Changes
+
+- 60a5170: configure host logging properties to monitor execution on app insight
+
+## 0.3.4
+
+### Patch Changes
+
+- Updated dependencies [f154adc]
+  - @io-sign/io-sign@1.0.4
+
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [286e6c2]
+  - @io-sign/io-sign@1.0.3
+
+## 0.3.2
+
+### Patch Changes
+
+- 95d2a1e: Add analytics events
+- c83bdb2: Changed the type of signature from PADES-T to PADES-LT
+- Updated dependencies [95d2a1e]
+- Updated dependencies [95d2a1e]
+  - @io-sign/io-sign@1.0.2
+
+## 0.3.1
+
+### Patch Changes
+
+- aeef66f: Fix default QTSP environment
+
+## 0.3.0
+
+### Minor Changes
+
+- f6e7581: Add GetSignatureRequests function
+- e9c71c9: Added logging to the create-signature http handler
+- e456d1b: - Added headers required by lollipop to `createSignature`
+  - Added lollipop infrastructure for API access
+  - Added SPID assertion retrieval via lollipop API
+  - Implemented forwarding of parameters to QTSP
+- 76f46cc: Added health-check on the whole infra. [SFEQS-1273]
+  `makeFetchWithTimeout` has been moved to the `io-sign` package.
+- d660dec: Added a configuration parameter to switch to the QTSP test environment, in order to test signatures.
+- a562450: Add signature mock to create a valid signature for QTSP and fix some errors
+- 78ae07d: Added support for REJECTED status for signature request. [SFEQS-1277]
+  Added a preliminary status check before signature creation
+- a0a818d: expand signature request to include issuer e-mail and description
+- c5e932d: Add dossier title to Signature Request
+- 8afb588: Implement endpoints for third party message attachments
+- 1794895: Add functions to sync Signature Request statuses across the system
+
+### Patch Changes
+
+- 41a9f7e: Added lollipop parameters to openapi
+- 30923e9: Added department field to issuer and created INTERNAL pricing plan
+- 12100f7: Added custom SAML mock and implement getFieldValue in PDF infra
+- 769c7e3: Added support for console log in host.json
+- 3e00bff: Notification send refactor
+  [SFEQS-1323,1329] Fixed sent notification messages
+  [SFEQS-1325] Bug fix on updatedAt field
+  [SFEQS-1311] Bug fix multiple notifications
+- 1a2b4c6: Add filename extension to ThirdPartyMessageApiModel
+- a562450: Add base64 url encoded for createFilledDocument
+- 027b1d0: Fixed public key encoding
+- ec71e65: pre-authenticate urls on signed signature requests (issuer)
+- 9a80b6f: Added lollipop mock
+- 22fee87: Add WAIT_FOR_QTSP status to signature request
+- 072f30f: Change extensionBundle
+- d1f4f7e: Set maxPollingInterval for queues to 5 seconds
+- fc69f72: Changed notification message
+- a9e668e: [SFEQS-1238] round coordinates for QTSP
+- 8afb588: Moved `getDocument` and `SignatureRequestDraft` to @io-sign package
+- c3f6683: - Added deleteBlobIfExist in io-sign package
+  - Added deletion of previous filledDocument in createFilledDocument
+- Updated dependencies [045b0eb]
+- Updated dependencies [8bbb0d6]
+- Updated dependencies [c5e2774]
+- Updated dependencies [e456d1b]
+- Updated dependencies [30923e9]
+- Updated dependencies [12100f7]
+- Updated dependencies [76f46cc]
+- Updated dependencies [a1fb3ed]
+- Updated dependencies [7cc0178]
+- Updated dependencies [3e00bff]
+- Updated dependencies [e9c71c9]
+- Updated dependencies [e6a3334]
+- Updated dependencies [6a3d7b6]
+- Updated dependencies [5481a80]
+- Updated dependencies [ea5efd4]
+- Updated dependencies [78ae07d]
+- Updated dependencies [a0a818d]
+- Updated dependencies [ec71e65]
+- Updated dependencies [22fee87]
+- Updated dependencies [c5e932d]
+- Updated dependencies [62f8a61]
+- Updated dependencies [8afb588]
+- Updated dependencies [8afb588]
+- Updated dependencies [c3f6683]
+- Updated dependencies [2e646fd]
+  - @io-sign/io-sign@1.0.0
+
+## 0.2.0
+
+### Minor Changes
+
+- b6d4d87: [SFEQS-1208, SFEQS-1156] Implement CreateSignature and ValidateQtspSignature endpoint
+- deb99dd: [SFEQS-1204, SFEQS-1214] Implement `CreateSignatureRequest`, `GetSignatureRequest`, `MarkAsWaitForSignature` Azure Functions
+
+### Patch Changes
+
+- bd627ee: [SFEQS-1218] Added required fields to QtspClausesMetadataDetailView openapi
+- 324e2b5: [SFEQS-1217] Added location header to `createFilledDocument` endpoint
+- Updated dependencies [336cd7a]
+- Updated dependencies [deb99dd]
+  - @io-sign/io-sign@0.9.0

@@ -191,6 +191,26 @@ services:
       - mock-io-services
       - mock-namirial
       - mock-lollipop
+
+  io-func-sign-user-legacy:
+    image: io-func-sign-user-legacy
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-user-legacy"
+        NODE_VERSION: "24.17.0"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-user-legacy
+    ports:
+      - ${FUNCTION_USER_LEGACY_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+      - mock-io-services
+      - mock-namirial
+      - mock-lollipop
   
   io-sign-backoffice-func:
     image: io-sign-backoffice-func

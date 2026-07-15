@@ -44,10 +44,18 @@ locals {
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
-      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.fillDocument.Disabled"           = "1"
-      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
-      "AzureWebJobs.validateSignature.Disabled"      = "1"
+      "AzureWebJobs.createSignatureRequest.Disabled"           = "1"
+      "AzureWebJobs.fillDocument.Disabled"                     = "1"
+      "AzureWebJobs.updateSignatureRequest.Disabled"           = "1"
+      "AzureWebJobs.validateSignature.Disabled"                = "1"
+      "AzureWebJobs.getSignatureRequests.Disabled"             = "1"
+      "AzureWebJobs.getSignatureRequest.Disabled"              = "1"
+      "AzureWebJobs.createSignature.Disabled"                  = "1"
+      "AzureWebJobs.getSignerByFiscalCode.Disabled"            = "1"
+      "AzureWebJobs.getQtspClausesMetadata.Disabled"           = "1"
+      "AzureWebJobs.createFilledDocument.Disabled"             = "1"
+      "AzureWebJobs.getThirdPartyMessageDetails.Disabled"      = "1"
+      "AzureWebJobs.getThirdPartyMessageAttachmentContent.Disabled" = "1"
     }
   }
 }

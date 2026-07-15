@@ -6,6 +6,10 @@ io-func-sign-user:
   - changed-files:
     - any-glob-to-any-file: "apps/io-func-sign-user/**/*"
 
+io-func-sign-user-legacy:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-func-sign-user-legacy/**/*"
+
 io-func-sign-support:
   - changed-files:
     - any-glob-to-any-file: "apps/io-func-sign-support/**/*"

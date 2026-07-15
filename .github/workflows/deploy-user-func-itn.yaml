@@ -9,7 +9,7 @@ jobs:
     uses: pagopa/dx/.github/workflows/release-azure-appsvc-v1.yaml@e392d5787298e8ef0da3fd46a07a4fed65ec4423
     secrets: inherit
     with:
-      workspace_name: io-func-sign-user
+      workspace_name: io-func-sign-user-legacy
       environment: app-prod
       resource_group_name: io-p-itn-sign-rg-01
       web_app_name: io-p-itn-sign-user-func-01
