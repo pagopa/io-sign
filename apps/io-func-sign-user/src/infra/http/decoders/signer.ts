@@ -1,11 +1,14 @@
 import { flow, pipe } from "fp-ts/lib/function";
 import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as t from "io-ts";
 
 import * as H from "@pagopa/handler-kit";
 
-import { Signer } from "@io-sign/io-sign/signer";
+import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+
+import { Signer, SignerEnvironment } from "@io-sign/io-sign/signer";
 
 export const SpidLevel = t.keyof({
   "https://www.spid.gov.it/SpidL1": null,
@@ -58,3 +61,35 @@ export const requireSigner = flow(
   E.map((id) => ({ id })),
   E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer"))
 );
+
+export const requireFiscalCodeHeader = (
+  req: H.HttpRequest
+): E.Either<Error, FiscalCode> =>
+  pipe(
+    req.headers,
+    lookup("x-iosign-fiscal-code"),
+    E.fromOption(
+      () => new H.HttpBadRequestError("Missing x-iosign-fiscal-code header")
+    ),
+    E.chainW(
+      H.parse(
+        FiscalCode,
+        "The content of x-iosign-fiscal-code is not a valid fiscal code"
+      )
+    )
+  );
+
+/**
+ * Resolves the Signer from `x-iosign-fiscal-code`  * against the signer repository.
+ */
+export const requireSignerFromFiscalCode = (
+  req: H.HttpRequest
+): RTE.ReaderTaskEither<SignerEnvironment, Error, Signer> =>
+  pipe(
+    requireFiscalCodeHeader(req),
+    RTE.fromEither,
+    RTE.chainW(
+      (fiscalCode) => (r: SignerEnvironment) =>
+        r.signerRepository.getSignerByFiscalCode(fiscalCode)
+    )
+  );
