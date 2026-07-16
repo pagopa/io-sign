@@ -181,6 +181,7 @@ app.http("getSignatureRequests", {
 
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
+  signerRepository,
   validatedContainerClient: validatedContainerClientWithFallback,
   signedContainerClient: signedContainerClientWithFallback
 });
