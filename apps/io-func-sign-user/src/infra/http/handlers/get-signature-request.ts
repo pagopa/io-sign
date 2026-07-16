@@ -18,7 +18,7 @@ import {
   SignatureRequest
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
-import { requireSigner } from "../decoders/signer";
+import { requireSignerFromFiscalCode } from "../decoders/signer";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 
 const grantReadAccessToDocuments =
@@ -50,7 +50,7 @@ const grantReadAccessToDocuments =
 export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
-      signerId: pipe(requireSigner(req), RTE.fromEither),
+      signerId: requireSignerFromFiscalCode(req),
       signatureRequestId: requireSignatureRequestId(req)
     }),
     RTE.chainW(({ signerId, signatureRequestId }) =>
