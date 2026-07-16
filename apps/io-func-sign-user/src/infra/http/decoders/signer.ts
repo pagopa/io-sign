@@ -64,7 +64,11 @@ export const requireSigner = flow(
 
 export const requireSignerIdFromFiscalCode = (
   req: H.HttpRequest
-): RTE.ReaderTaskEither<{ signerRepository: SignerRepository }, Error, Signer["id"]> =>
+): RTE.ReaderTaskEither<
+  { signerRepository: SignerRepository },
+  Error,
+  Signer["id"]
+> =>
   pipe(
     RTE.fromEither(requireFiscalCode(req)),
     RTE.chainW(

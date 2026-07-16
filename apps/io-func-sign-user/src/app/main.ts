@@ -169,7 +169,8 @@ app.http("info", {
 });
 
 const getSignatureRequests = GetSignatureRequestsFunction({
-  signatureRequestRepository
+  signatureRequestRepository,
+  signerRepository
 });
 
 app.http("getSignatureRequests", {
