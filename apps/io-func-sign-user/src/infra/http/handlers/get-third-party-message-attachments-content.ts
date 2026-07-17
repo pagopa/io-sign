@@ -21,7 +21,7 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { makeGetSignatureRequest } from "../../azure/cosmos/signature-request";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";
-import { requireFiscalCode } from "../decoders/fiscal-code";
+import { requireFiscalCodeFromIoMessages } from "../decoders/fiscal-code";
 
 const requireDocumentId = (
   req: H.HttpRequest
@@ -45,7 +45,7 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
   (req: H.HttpRequest) =>
     pipe(
       sequenceS(RTE.ApplyPar)({
-        fiscalCode: RTE.fromEither(requireFiscalCode(req)),
+        fiscalCode: RTE.fromEither(requireFiscalCodeFromIoMessages(req)),
         signatureRequestId: requireSignatureRequestId(req),
         documentId: RTE.fromEither(requireDocumentId(req))
       }),

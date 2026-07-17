@@ -7,7 +7,7 @@ import * as E from "fp-ts/lib/Either";
 
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 
-export const requireFiscalCode = (
+export const requireFiscalCodeFromIoMessages = (
   req: H.HttpRequest
 ): E.Either<Error, FiscalCode> =>
   pipe(
@@ -15,6 +15,18 @@ export const requireFiscalCode = (
     lookup("fiscal_code"),
     E.fromOption(
       () => new H.HttpBadRequestError("Missing fiscal_code in header")
+    ),
+    E.chainW(H.parse(FiscalCode, "Invalid fiscal code"))
+  );
+
+export const requireFiscalCode = (
+  req: H.HttpRequest
+): E.Either<Error, FiscalCode> =>
+  pipe(
+    req.headers,
+    lookup("x-iosign-fiscal-code"),
+    E.fromOption(
+      () => new H.HttpBadRequestError("Missing x-iosign-fiscal-code in header")
     ),
     E.chainW(H.parse(FiscalCode, "Invalid fiscal code"))
   );
