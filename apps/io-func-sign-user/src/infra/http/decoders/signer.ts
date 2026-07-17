@@ -80,7 +80,7 @@ export const requireFiscalCodeHeader = (
   );
 
 /**
- * Resolves the Signer from `x-iosign-fiscal-code`  * against the signer repository.
+ * Resolves the Signer from `x-iosign-fiscal-code` against the signer repository.
  */
 export const requireSignerFromFiscalCode = (
   req: H.HttpRequest
