@@ -35,8 +35,6 @@ module "function_sign_user_02" {
     "AzureWebJobs.fillDocument.Disabled",
     "AzureWebJobs.updateSignatureRequest.Disabled",
     "AzureWebJobs.validateSignature.Disabled",
-    "AzureWebJobs.getSignatureRequests.Disabled",
-    "AzureWebJobs.getSignatureRequest.Disabled",
     "AzureWebJobs.createSignature.Disabled",
     "AzureWebJobs.getSignerByFiscalCode.Disabled",
     "AzureWebJobs.getQtspClausesMetadata.Disabled",
