@@ -52,12 +52,10 @@
             <value>@(((JObject)context.Variables["xUserJson"]).GetValue("spid_level")?.ToString() ?? "")</value>
         </set-header>
         <set-header name="x-user" exists-action="delete" />
-        <set-backend-service id="apim-pool-app-backend"
-            backend-id="app-backend-pool" />
-        <set-header name="x-appbackend-api-key" exists-action="override">
-            <value>{{io-sign-app-backend-key}}</value>
+        <set-backend-service base-url="{{io-sign-user-func-url}}/api/v1/sign" />
+        <set-header name="x-functions-key" exists-action="override">
+            <value>{{io-sign-user-func-key}}</value>
         </set-header>
-        <rewrite-uri template="@(context.Request.OriginalUrl.Path)" />
     </inbound>
     <backend>
         <base />
