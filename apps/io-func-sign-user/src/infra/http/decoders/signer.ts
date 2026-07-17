@@ -1,11 +1,14 @@
 import { flow, pipe } from "fp-ts/lib/function";
 import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
 import * as H from "@pagopa/handler-kit";
 
-import { Signer } from "@io-sign/io-sign/signer";
+import { Signer, SignerRepository } from "@io-sign/io-sign/signer";
+import { requireFiscalCode } from "./fiscal-code";
 
 export const SpidLevel = t.keyof({
   "https://www.spid.gov.it/SpidL1": null,
@@ -58,3 +61,22 @@ export const requireSigner = flow(
   E.map((id) => ({ id })),
   E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer"))
 );
+
+export const requireSignerIdFromFiscalCode = (
+  req: H.HttpRequest
+): RTE.ReaderTaskEither<
+  { signerRepository: SignerRepository },
+  Error,
+  Signer["id"]
+> =>
+  pipe(
+    RTE.fromEither(requireFiscalCode(req)),
+    RTE.chainW(
+      (fiscalCode) =>
+        ({ signerRepository }: { signerRepository: SignerRepository }) =>
+          pipe(
+            signerRepository.getSignerByFiscalCode(fiscalCode),
+            TE.map((signer) => signer.id)
+          )
+    )
+  );
