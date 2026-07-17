@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.3.0
+
+### Minor Changes
+
+- d8375f0: Decouple get-signature-requests
+
 ## 2.2.0
 
 ### Minor Changes
