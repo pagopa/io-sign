@@ -17,6 +17,26 @@ resource "azurerm_api_management_named_value" "app_backend_key" {
   }
 }
 
+resource "azurerm_api_management_named_value" "user_func_key" {
+  name                = "io-sign-user-func-key"
+  api_management_name = var.platform_apim_name
+  resource_group_name = var.platform_apim_resource_group_name
+  display_name        = "io-sign-user-func-key"
+  secret              = true
+  value_from_key_vault {
+    secret_id = "${var.key_vault_common_uri_itn}secrets/io-fn-sign-user-key"
+  }
+}
+
+resource "azurerm_api_management_named_value" "user_func_url" {
+  name                = "io-sign-user-func-url"
+  api_management_name = var.platform_apim_name
+  resource_group_name = var.platform_apim_resource_group_name
+  display_name        = "io-sign-user-func-url"
+
+  value               = format("https://%s-sign-user-func-02.azurewebsites.net", var.project_itn)
+}
+
 resource "azurerm_api_management_api" "io_sign" {
   name                  = "io-p-sign-api"
   api_management_name   = var.platform_apim_name
