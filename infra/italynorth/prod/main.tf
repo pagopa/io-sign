@@ -81,6 +81,7 @@ module "platform_proxy_api" {
   key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
   key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
   subscription_id                   = data.azurerm_subscription.current.subscription_id
+  project_itn                       = local.project_itn
 }
 
 
