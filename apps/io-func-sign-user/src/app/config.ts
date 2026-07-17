@@ -36,6 +36,7 @@ import {
   getLollipopConfigFromEnvironment,
   LollipopConfig
 } from "../infra/lollipop/config";
+import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const Config = t.type({
   azure: t.type({
@@ -47,6 +48,7 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
+    ioSignServiceId: t.string,
     ioLink: IoLinkConfig
   }),
   namirial: NamirialConfig
@@ -67,7 +69,8 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     namirial: getNamirialConfigFromEnvironment,
     lollipop: getLollipopConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
-    ioLink: getIoLinkConfigFromEnvironment
+    ioLink: getIoLinkConfigFromEnvironment,
+    ioSignServiceId: readFromEnvironment("IoSignServiceId")
   }),
   RE.map((config) => ({
     azure: {
@@ -79,6 +82,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
       lollipop: config.lollipop,
+      ioSignServiceId: config.ioSignServiceId,
       ioLink: config.ioLink
     },
     namirial: config.namirial
