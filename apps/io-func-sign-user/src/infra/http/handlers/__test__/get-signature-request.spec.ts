@@ -5,7 +5,12 @@ import * as H from "@pagopa/handler-kit";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/TaskEither";
 import { newId } from "@io-sign/io-sign/id";
-import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import {
+  EmailString,
+  FiscalCode,
+  NonEmptyString,
+} from "@pagopa/ts-commons/lib/strings";
+import { SignerRepository } from "@io-sign/io-sign/signer";
 import {
   SignatureRequest,
   SignatureRequestRepository,
@@ -16,8 +21,10 @@ import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration
 
 describe("GetSignatureRequestHandler", () => {
   let signatureRequestRepository: SignatureRequestRepository;
+  let signerRepository: SignerRepository;
 
   const signer = { id: newId() };
+  const fiscalCode = "RSSMRA85T10A562S" as FiscalCode;
 
   const signatureRequest: SignatureRequest = {
     id: newId(),
@@ -55,9 +62,16 @@ describe("GetSignatureRequestHandler", () => {
           : TE.right(O.none),
       upsert: () => TE.left(new Error("not implemented")),
     };
+    signerRepository = {
+      getSignerByFiscalCode: (fc) =>
+        fc === fiscalCode
+          ? TE.right(signer)
+          : TE.left(new Error("unknown fiscal code")),
+      getFiscalCodeBySignerId: () => TE.left(new Error("not implemented")),
+    };
   });
 
-  it("should return a 400 HTTP response when x-iosign-signer-id header is not present", () => {
+  it("should return a 400 HTTP response when x-iosign-fiscal-code header is not present", async () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       path: {
@@ -69,13 +83,14 @@ describe("GetSignatureRequestHandler", () => {
     };
     const run = GetSignatureRequestHandler({
       signatureRequestRepository,
+      signerRepository,
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
       validatedContainerClient: {} as BaseContainerClientWithFallback,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
-    expect(run()).resolves.toEqual(
+    await expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 400,
@@ -87,25 +102,26 @@ describe("GetSignatureRequestHandler", () => {
     );
   });
 
-  it("should return a 404 HTTP response when signature request is not found", () => {
+  it("should return a 404 HTTP response when signature request is not found", async () => {
     const req = {
       ...H.request("https://api.test.it/"),
       path: {
         signatureRequestId: newId(),
       },
       headers: {
-        "x-iosign-signer-id": mocks.signer.id,
+        "x-iosign-fiscal-code": fiscalCode,
       },
     };
     const run = GetSignatureRequestHandler({
       signatureRequestRepository,
+      signerRepository,
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
       validatedContainerClient: {} as BaseContainerClientWithFallback,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
-    expect(run()).resolves.toEqual(
+    await expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 404,
@@ -117,25 +133,26 @@ describe("GetSignatureRequestHandler", () => {
     );
   });
 
-  it("should return a 200 HTTP response when signature request is found", () => {
+  it("should return a 200 HTTP response when signature request is found", async () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       path: {
         signatureRequestId: mocks.signatureRequest.id,
       },
       headers: {
-        "x-iosign-signer-id": mocks.signer.id,
+        "x-iosign-fiscal-code": fiscalCode,
       },
     };
     const run = GetSignatureRequestHandler({
       signatureRequestRepository,
+      signerRepository,
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
       validatedContainerClient: {} as BaseContainerClientWithFallback,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
-    expect(run()).resolves.toEqual(
+    await expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 200,
