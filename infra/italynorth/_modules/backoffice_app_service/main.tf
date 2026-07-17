@@ -1,6 +1,6 @@
 module "itn_sign_backoffice_app" {
   source  = "pagopa-dx/azure-app-service/azurerm"
-  version = "~> 4.0"
+  version = "~> 4.0.2"
 
   environment = {
     prefix          = local.prefix
