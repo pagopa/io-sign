@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.5.0
+
+### Minor Changes
+
+- 0b63ef3: decouple get-qtsp-clauses-metadata
+
 ## 2.4.0
 
 ### Minor Changes
