@@ -4,6 +4,7 @@ import { pipe } from "fp-ts/function";
 import * as RE from "fp-ts/lib/ReaderEither";
 
 import { sequenceS } from "fp-ts/lib/Apply";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import {
   getPdvTokenizerConfigFromEnvironment,
   PdvTokenizerConfig
@@ -36,7 +37,7 @@ import {
   getLollipopConfigFromEnvironment,
   LollipopConfig
 } from "../infra/lollipop/config";
-import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
+import { getIoSignServiceIdFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const Config = t.type({
   azure: t.type({
@@ -48,7 +49,7 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
-    ioSignServiceId: t.string,
+    ioSignServiceId: NonEmptyString,
     ioLink: IoLinkConfig
   }),
   namirial: NamirialConfig
@@ -70,7 +71,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     lollipop: getLollipopConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
-    ioSignServiceId: readFromEnvironment("IoSignServiceId")
+    ioSignServiceId: getIoSignServiceIdFromEnvironment
   }),
   RE.map((config) => ({
     azure: {
