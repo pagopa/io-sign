@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.6.0
+
+### Minor Changes
+
+- dc6a3ee: add getMetadata api
+
 ## 2.5.0
 
 ### Minor Changes
