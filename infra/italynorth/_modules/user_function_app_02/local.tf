@@ -42,6 +42,7 @@ locals {
       LollipopApiKey                    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=LollipopPrimaryApiKey)"
       SlackWebhookUrl                   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SlackWebhookUrl)"
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
+      IoSignServiceId                   = "01GQQZ9HF5GAPRVKJM1VDAVFHM"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
       "AzureWebJobs.createSignatureRequest.Disabled"           = "1"

@@ -77,6 +77,38 @@ paths:
         "500":
           $ref: "#/components/responses/Unexpected"
 
+  /metadata:
+    get:
+      operationId: getMetadata
+      summary: Get IO Sign service metadata
+      tags:
+        - Metadata
+      parameters:
+        - in: header
+          name: x-iosign-fiscal-code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: IO Sign service metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - serviceId
+                properties:
+                  serviceId:
+                    type: string
+                    minLength: 1
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
   /info:
     get:
       operationId: getInfo

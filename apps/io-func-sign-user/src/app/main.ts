@@ -33,6 +33,7 @@ import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signat
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { InfoFunction } from "../infra/azure/functions/info";
+import { GetMetadataFunction } from "../infra/azure/functions/get-metadata";
 import { getConfigFromEnvironment } from "./config";
 import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
@@ -166,6 +167,17 @@ app.http("info", {
   authLevel: "anonymous",
   route: "info",
   handler: info
+});
+
+const getMetadata = GetMetadataFunction({
+  ioSignServiceId: config.pagopa.ioSignServiceId
+});
+
+app.http("getMetadata", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "metadata",
+  handler: getMetadata
 });
 
 const getSignatureRequests = GetSignatureRequestsFunction({
