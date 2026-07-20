@@ -37,7 +37,7 @@ import {
   getLollipopConfigFromEnvironment,
   LollipopConfig
 } from "../infra/lollipop/config";
-import { getIoSignServiceIdFromEnvironment } from "@io-sign/io-sign/infra/env";
+import { readNonEmptyFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const Config = t.type({
   azure: t.type({
@@ -71,7 +71,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     lollipop: getLollipopConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
-    ioSignServiceId: getIoSignServiceIdFromEnvironment
+    ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId")
   }),
   RE.map((config) => ({
     azure: {

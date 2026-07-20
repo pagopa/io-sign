@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
 
-import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
+import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import { GetMetadataHandler } from "../get-metadata";
 
@@ -12,7 +12,7 @@ const logger: L.Logger = {
   format: L.format.simple,
 };
 
-const ioSignServiceId = "01234567890abcdef";
+const ioSignServiceId = "01234567890abcdef" as NonEmptyString;
 
 const dependencies = {
   ioSignServiceId,

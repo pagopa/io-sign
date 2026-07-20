@@ -18,16 +18,15 @@ export const readFromEnvironment =
       )
     );
 
-export const getIoSignServiceIdFromEnvironment: RE.ReaderEither<
-  NodeJS.ProcessEnv,
-  Error,
-  NonEmptyString
-> = pipe(
-  readFromEnvironment("IoSignServiceId"),
-  RE.chainEitherK((value) =>
-    pipe(
-      NonEmptyString.decode(value),
-      E.mapLeft(() => new Error(`"IoSignServiceId" must be a non-empty string`))
+export const readNonEmptyFromEnvironment = (variableName: string) =>
+  pipe(
+    readFromEnvironment(variableName),
+    RE.chainEitherK((value) =>
+      pipe(
+        NonEmptyString.decode(value),
+        E.mapLeft(
+          () => new Error(`"${variableName}" must be a non-empty string`)
+        )
+      )
     )
-  )
-);
+  );
