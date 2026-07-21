@@ -11,7 +11,7 @@ module "function_sign_issuer" {
   }
 
   resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
-  size                = "P0v3"
+  size                = "P1v3"
   node_version        = "24"
 
   virtual_network = {
