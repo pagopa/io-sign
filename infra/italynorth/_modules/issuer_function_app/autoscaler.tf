@@ -60,26 +60,9 @@ module "function_sign_issuer_autoscale" {
       decrease_by               = 1
       cooldown_decrease         = 3
     }
-    memory = {
-      #################
-      # scale out
-      #################
-      upper_threshold           = 85
-      statistic_increase        = "Average"
-      time_aggregation_increase = "Average"
-      time_window_increase      = 1
-      increase_by               = 1
-      cooldown_increase         = 5
-      #################
-      # scale in
-      #################
-      lower_threshold           = 55
-      statistic_decrease        = "Average"
-      time_aggregation_decrease = "Average"
-      time_window_decrease      = 5
-      decrease_by               = 1
-      cooldown_decrease         = 5
-    }
+    # memory is intentionally excluded: this function app has structurally high
+    # memory usage (~70%), which would permanently block scale-in under AND logic.
+    # Scale-down is governed by CPU and requests only.
   }
 
   tags = var.tags
