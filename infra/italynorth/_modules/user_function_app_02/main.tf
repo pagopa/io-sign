@@ -37,9 +37,7 @@ module "function_sign_user_02" {
     "AzureWebJobs.validateSignature.Disabled",
     "AzureWebJobs.createSignature.Disabled",
     "AzureWebJobs.getSignerByFiscalCode.Disabled",
-    "AzureWebJobs.createFilledDocument.Disabled",
-    "AzureWebJobs.getThirdPartyMessageDetails.Disabled",
-    "AzureWebJobs.getThirdPartyMessageAttachmentContent.Disabled",
+    "AzureWebJobs.createFilledDocument.Disabled"
   ]
 
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
