@@ -60,9 +60,6 @@ module "function_sign_issuer_autoscale" {
       decrease_by               = 1
       cooldown_decrease         = 3
     }
-    # memory is intentionally excluded: this function app has structurally high
-    # memory usage (~70%), which would permanently block scale-in under AND logic.
-    # Scale-down is governed by CPU and requests only.
   }
 
   tags = var.tags
