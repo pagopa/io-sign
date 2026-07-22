@@ -43,6 +43,8 @@ locals {
       SlackWebhookUrl                   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SlackWebhookUrl)"
       IoLinkBaseUrl                     = "https://continua.io.pagopa.it"
       IoSignServiceId                   = "01GQQZ9HF5GAPRVKJM1VDAVFHM"
+      IoProfileApiBasePath              = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=IoProfileApiBasePath)"
+      IoProfileSubscriptionKey          = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=IoProfileSubscriptionKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
       "AzureWebJobs.createSignatureRequest.Disabled"           = "1"

@@ -137,6 +137,19 @@ services:
     environment:
       - NODE_ENV=development
 
+  mock-io-profile:
+    image: mock-io-profile
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-io-profile"
+        NODE_VERSION: "24.17.0"
+    ports:
+      - "3013:3013"
+    environment:
+      - NODE_ENV=development
+
   io-func-sign-issuer:
     image: io-func-sign-issuer
     build:
@@ -191,6 +204,7 @@ services:
       - mock-io-services
       - mock-namirial
       - mock-lollipop
+      - mock-io-profile
 
   io-func-sign-user-legacy:
     image: io-func-sign-user-legacy
