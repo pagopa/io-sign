@@ -1,0 +1,220 @@
+# Trimmed from:
+# https://raw.githubusercontent.com/pagopa/io-auth-n-identity-domain/6da6a1d6628778db9325c48e9bfdd9968a3369ee/apps/io-profile/api/index.yaml
+# Only the getProfile endpoint and its referenced definitions are included.
+swagger: "2.0"
+info:
+  version: 5.25.3
+  title: IO Profile API
+host: api.cd.italia.it
+basePath: /api/v1
+schemes:
+  - https
+security:
+  - SubscriptionKey: []
+paths:
+  /profiles/{fiscal_code}:
+    get:
+      operationId: getProfile
+      summary: GetProfile
+      description: Retrieve a user profile
+      parameters:
+        - $ref: "#/parameters/FiscalCode"
+      responses:
+        "200":
+          description: Profile found
+          schema:
+            $ref: "#/definitions/ExtendedProfile"
+        "400":
+          description: Invalid request.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Profile not found.
+          schema:
+            $ref: "#/definitions/ProblemJson"
+        "429":
+          description: Too many requests
+        "500":
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ProblemJson"
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  SubscriptionKey:
+    type: apiKey
+    name: X-Functions-Key
+    in: header
+    description: The API key obtained through the developer portal.
+parameters:
+  FiscalCode:
+    name: fiscal_code
+    in: path
+    type: string
+    maxLength: 16
+    minLength: 16
+    required: true
+    description: The fiscal code of the user, all upper case.
+    pattern: >-
+      [A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]
+    x-example: SPNDNL80R13C555X
+definitions:
+  ExtendedProfile:
+    description: >-
+      Describes the citizen's profile, mostly interesting for preferences
+      attributes.
+    type: object
+    properties:
+      email:
+        $ref: "#/definitions/EmailAddress"
+      service_preferences_settings:
+        $ref: "#/definitions/ServicePreferencesSettings"
+      blocked_inbox_or_channels:
+        $ref: "#/definitions/BlockedInboxOrChannels"
+      preferred_languages:
+        $ref: "#/definitions/PreferredLanguages"
+      is_inbox_enabled:
+        $ref: "#/definitions/IsInboxEnabled"
+      accepted_tos_version:
+        $ref: "#/definitions/AcceptedTosVersion"
+      is_webhook_enabled:
+        $ref: "#/definitions/IsWebhookEnabled"
+      is_email_enabled:
+        $ref: "#/definitions/IsEmailEnabled"
+      is_email_validated:
+        $ref: "#/definitions/IsEmailValidated"
+      is_email_already_taken:
+        type: boolean
+        default: false
+      reminder_status:
+        $ref: "#/definitions/ReminderStatus"
+      is_test_profile:
+        $ref: "#/definitions/IsTestProfile"
+      last_app_version:
+        $ref: "#/definitions/AppVersion"
+      push_notifications_content_type:
+        $ref: "#/definitions/PushNotificationsContentType"
+      version:
+        type: integer
+    required:
+      - is_email_enabled
+      - is_email_validated
+      - is_email_already_taken
+      - is_inbox_enabled
+      - is_webhook_enabled
+      - service_preferences_settings
+      - version
+  EmailAddress:
+    type: string
+    format: email
+    example: foobar@example.com
+  ServicePreferencesSettings:
+    description: >-
+      Describes the citizen's profile, mostly interesting for preferences
+      attributes.
+    type: object
+    properties:
+      mode:
+        $ref: "#/definitions/ServicesPreferencesMode"
+    required:
+      - mode
+  ServicesPreferencesMode:
+    type: string
+    enum:
+      - LEGACY
+      - AUTO
+      - MANUAL
+  BlockedInboxOrChannels:
+    type: object
+    additionalProperties:
+      type: array
+      items:
+        $ref: "#/definitions/BlockedInboxOrChannel"
+    description: All the notification channels blocked by the user.
+  BlockedInboxOrChannel:
+    type: string
+    x-extensible-enum:
+      - EMAIL
+      - INBOX
+      - WEBHOOK
+    example: INBOX
+  PreferredLanguages:
+    type: array
+    items:
+      $ref: "#/definitions/PreferredLanguage"
+  PreferredLanguage:
+    type: string
+    x-extensible-enum:
+      - it_IT
+      - en_GB
+      - es_ES
+      - de_DE
+      - fr_FR
+    example: it_IT
+  IsInboxEnabled:
+    type: boolean
+    description: True if the recipient of a message wants to store its content.
+  IsEmailEnabled:
+    type: boolean
+    description: True if the recipient of a message wants email notifications.
+  IsEmailValidated:
+    type: boolean
+    description: True if the user email has been validated.
+  IsWebhookEnabled:
+    type: boolean
+    description: True if the recipient wants webhook notifications.
+  AcceptedTosVersion:
+    type: number
+    minimum: 1
+    description: Version of latest terms of service accepted by the user.
+  ReminderStatus:
+    type: string
+    x-extensible-enum:
+      - ENABLED
+      - DISABLED
+    example: ENABLED
+  IsTestProfile:
+    type: boolean
+    description: True if the user's profile is only for test purpose.
+    default: false
+  AppVersion:
+    type: string
+    pattern: >-
+      ^((0|[1-9]\d*)\.){2}(0|[1-9]\d*)(\.(0|[1-9]\d*)){0,1}$
+    description: A string field in Semantic Versioning format
+    example: 1.10.11
+  PushNotificationsContentType:
+    type: string
+    x-extensible-enum:
+      - FULL
+      - ANONYMOUS
+    example: FULL
+  ProblemJson:
+    type: object
+    properties:
+      type:
+        type: string
+        format: uri
+      title:
+        type: string
+      status:
+        type: integer
+        format: int32
+        minimum: 100
+        maximum: 600
+        exclusiveMaximum: true
+      detail:
+        type: string
+      instance:
+        type: string
+        format: uri
+  FiscalCode:
+    type: string
+    description: User's fiscal code.
+    format: FiscalCode
+    x-import: "@pagopa/ts-commons/lib/strings"
+    example: SPNDNL80R13C555X
