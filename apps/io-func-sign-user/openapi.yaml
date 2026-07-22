@@ -20,10 +20,7 @@ paths:
         - in: header
           name: x-iosign-fiscal-code
           schema:
-            type: string
-            description: Fiscal Code
-            minLength: 1
-            example: RSSMRA85T10A562S
+            $ref: "#/components/schemas/FiscalCode"
           required: true
         - in: header
           name: x-iosign-name
