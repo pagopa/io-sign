@@ -9,6 +9,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { createIoProfileClient } from "@io-sign/io-sign/infra/io-profile/client";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -133,6 +134,11 @@ const signerRepository = new PdvTokenizerSignerRepository(pdvTokenizerClient);
 const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.basePath,
   config.pagopa.ioServices.subscriptionKey
+);
+
+const _ioProfileClient = createIoProfileClient(
+  config.pagopa.ioProfile.basePath,
+  config.pagopa.ioProfile.apiKey
 );
 
 const lollipopApiClient = createLollipopApiClient(

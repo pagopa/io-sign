@@ -38,6 +38,10 @@ import {
   LollipopConfig
 } from "../infra/lollipop/config";
 import { readNonEmptyFromEnvironment } from "@io-sign/io-sign/infra/env";
+import {
+  getIoProfileConfigFromEnvironment,
+  IoProfileConfig
+} from "@io-sign/io-sign/infra/io-profile/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -50,6 +54,7 @@ export const Config = t.type({
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
     ioSignServiceId: NonEmptyString,
+    ioProfile: IoProfileConfig,
     ioLink: IoLinkConfig
   }),
   namirial: NamirialConfig
@@ -71,7 +76,8 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     lollipop: getLollipopConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
-    ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId")
+    ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId"),
+    ioProfile: getIoProfileConfigFromEnvironment
   }),
   RE.map((config) => ({
     azure: {
@@ -84,6 +90,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       ioServices: config.ioServices,
       lollipop: config.lollipop,
       ioSignServiceId: config.ioSignServiceId,
+      ioProfile: config.ioProfile,
       ioLink: config.ioLink
     },
     namirial: config.namirial
