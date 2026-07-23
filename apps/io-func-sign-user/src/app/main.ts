@@ -28,7 +28,8 @@ import { FillDocumentPayload } from "../filled-document";
 import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
-import { createLollipopApiClient } from "../infra/lollipop/client";
+import { createLollipopApiClientExt } from "../infra/lollipop/client";
+import { createLollipopApiClientInt } from "../infra/lollipop/internal-client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
@@ -136,14 +137,19 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
-const _ioProfileClient = createIoProfileClient(
+const ioProfileClient = createIoProfileClient(
   config.pagopa.ioProfile.basePath,
   config.pagopa.ioProfile.apiKey
 );
 
-const lollipopApiClient = createLollipopApiClient(
+const lollipopApiClient = createLollipopApiClientExt(
   config.pagopa.lollipop.apiBasePath,
   config.pagopa.lollipop.apiKey
+);
+
+const lollipopApiClientInt = createLollipopApiClientInt(
+  config.pagopa.lollipopInternal.apiBasePath,
+  config.pagopa.lollipopInternal.apiKey
 );
 
 const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
@@ -227,6 +233,8 @@ app.storageQueue("updateSignatureRequest", {
 const createSignature = CreateSignatureFunction({
   signerRepository,
   lollipopApiClient,
+  lollipopApiClientInt,
+  ioProfileClient,
   db: database,
   qtspQueue,
   validatedContainerClient: validatedContainerClientWithFallback,

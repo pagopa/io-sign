@@ -16,8 +16,8 @@
     "NamirialApiBasePath": "NAMIRIAL_API_BASE_PATH",
     "NamirialUsername": "NAMIRIAL_USERNAME",
     "NamirialPassword": "NAMIRIAL_PASSWORD",
-    "LollipopApiBasePath": "LOLLIPOP_API_BASE_PATH",
-    "LollipopApiKey": "LOLLIPOP_API_KEY",
+    "LollipopExternalApiBasePath": "LOLLIPOP_EXTERNAL_API_BASE_PATH",
+    "LollipopExternalApiKey": "LOLLIPOP_EXTERNAL_API_KEY",
     "NamirialTestApiBasePath": "NAMIRIAL_TEST_API_BASE_PATH",
     "NamirialTestUsername": "NAMIRIAL_TEST_USERNAME",
     "NamirialTestPassword": "NAMIRIAL_TEST_PASSWORD"
@@ -28,5 +28,7 @@
     "IoSignServiceId": "IO_SIGN_SERVICE_ID",
     "IoProfileApiBasePath": "IO_PROFILE_API_BASE_PATH",
     "IoProfileSubscriptionKey": "IO_PROFILE_SUBSCRIPTION_KEY"
+    "LollipopInternalApiBasePath": "LOLLIPOP_INTERNAL_API_BASE_PATH",
+    "LollipopInternalApiKey": "LOLLIPOP_INTERNAL_API_KEY",
   }
 }

@@ -35,7 +35,9 @@ import {
 } from "../infra/namirial/config";
 import {
   getLollipopConfigFromEnvironment,
-  LollipopConfig
+  getLollipopIntConfigFromEnvironment,
+  LollipopConfig,
+  LollipopIntConfig
 } from "../infra/lollipop/config";
 import { readNonEmptyFromEnvironment } from "@io-sign/io-sign/infra/env";
 import {
@@ -53,6 +55,7 @@ export const Config = t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
     lollipop: LollipopConfig,
+    lollipopInternal: LollipopIntConfig,
     ioSignServiceId: NonEmptyString,
     ioProfile: IoProfileConfig,
     ioLink: IoLinkConfig
@@ -74,6 +77,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
     lollipop: getLollipopConfigFromEnvironment,
+    lollipopInternal: getLollipopIntConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
     ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId"),
@@ -89,6 +93,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
       lollipop: config.lollipop,
+      lollipopInternal: config.lollipopInternal,
       ioSignServiceId: config.ioSignServiceId,
       ioProfile: config.ioProfile,
       ioLink: config.ioLink
