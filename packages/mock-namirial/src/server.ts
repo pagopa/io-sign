@@ -28,7 +28,7 @@ app.use("/api/requests", requestsRouter);
 
 // Expose the document and policy endpoints referenced in the clauses metadata
 app.get("/documents/privacy.pdf", (_req, res) => {
-  // A real PDF with an AcroForm (QUADROB_*/QUADROE_* text fields), so fillDocument can populate it
+  // A real PDF with QUADROB_*/QUADROE_* text fields, so fillDocument can populate it
   res.type("application/pdf");
   res.send(privacyPdfBuffer());
 });
