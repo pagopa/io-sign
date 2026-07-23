@@ -29,8 +29,10 @@ import { FillDocumentPayload } from "../filled-document";
 import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
-import { createLollipopApiClientExt } from "../infra/lollipop/client";
-import { createLollipopApiClientInt } from "../infra/lollipop/internal-client";
+import {
+  createLollipopApiClientExt,
+  createLollipopApiClientInt
+} from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";

@@ -10,6 +10,7 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Client, createClient } from "./models/client";
+import type { LollipopApiClientInt } from "./internal-client";
 
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
@@ -36,4 +37,16 @@ export const createLollipopApiClientExt = (
       })
   }),
   baseUrl: baseUrl as NonEmptyString
+});
+
+export const createLollipopApiClientInt = (
+  baseUrl: string,
+  apiKey: string,
+  timeout = 3000 as Millisecond
+): LollipopApiClientInt => ({
+  baseUrl: baseUrl as NonEmptyString,
+  apiKey: apiKey as NonEmptyString,
+  fetchApi: toFetch(
+    setFetchTimeout(timeout, abortableFetch)
+  ) as unknown as typeof fetch
 });

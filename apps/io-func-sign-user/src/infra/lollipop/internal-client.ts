@@ -1,13 +1,3 @@
-import { agent } from "@pagopa/ts-commons";
-
-import {
-  AbortableFetch,
-  setFetchTimeout,
-  toFetch
-} from "@pagopa/ts-commons/lib/fetch";
-
-import { Millisecond } from "@pagopa/ts-commons/lib/units";
-
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
 import * as t from "io-ts";
@@ -18,9 +8,6 @@ import { flow, pipe } from "fp-ts/lib/function";
 
 import { AssertionRef } from "./models/AssertionRef";
 import { AssertionType } from "./models/AssertionType";
-
-const httpApiFetch = agent.getHttpFetch(process.env);
-const abortableFetch = AbortableFetch(httpApiFetch);
 
 // Regex to extract the nonce from the `signature-input` header value
 // e.g. sig1=("signature"); nonce="abc123"; created=1234567890
@@ -47,18 +34,6 @@ export type LollipopApiClientInt = {
   readonly apiKey: NonEmptyString;
   readonly fetchApi: typeof fetch;
 };
-
-export const createLollipopApiClientInt = (
-  baseUrl: string,
-  apiKey: string,
-  timeout = 3000 as Millisecond
-): LollipopApiClientInt => ({
-  baseUrl: baseUrl as NonEmptyString,
-  apiKey: apiKey as NonEmptyString,
-  fetchApi: toFetch(
-    setFetchTimeout(timeout, abortableFetch)
-  ) as unknown as typeof fetch
-});
 
 /**
  * Calls the Lollipop internal API (`POST /api/v1/pubKeys/{assertionRef}/generate`)
