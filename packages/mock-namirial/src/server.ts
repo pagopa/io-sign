@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import tokenRouter from "./routes/token";
 import clausesRouter from "./routes/clauses";
+import { privacyPdfBuffer } from "./assets/privacy-pdf";
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,9 +28,9 @@ app.use("/api/requests", requestsRouter);
 
 // Expose the document and policy endpoints referenced in the clauses metadata
 app.get("/documents/privacy.pdf", (_req, res) => {
-  // Return a small PDF-like payload; it's sufficient for tests that only need an HTTP response
+  // A real PDF with an AcroForm (QUADROB_*/QUADROE_* text fields), so fillDocument can populate it
   res.type("application/pdf");
-  res.send(Buffer.from("%PDF-1.4\n%Mock PDF content\n"));
+  res.send(privacyPdfBuffer());
 });
 
 app.get("/privacy", (_req, res) => {
