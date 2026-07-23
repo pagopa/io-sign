@@ -96,7 +96,8 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         pipe(
           [
             makeLollipopClientHealthCheck(lollipopApiClientExt)(),
-            makeLollipopIntClientHealthCheck(lollipopApiClientInt)(),            makeNamirialHealthCheck(namirialConfig.prod),
+            makeLollipopIntClientHealthCheck(lollipopApiClientInt)(),
+            makeNamirialHealthCheck(namirialConfig.prod),
             makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
             makeIOServicesHealthCheck(ioApiClient)(),
             makeAzureCosmosDbHealthCheck(db),
