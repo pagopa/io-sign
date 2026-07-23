@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.4
+
+### Patch Changes
+
+- 92fcb86: Fix OpenAPI decode regex AppVersion on io-profile
+
 ## 1.11.3
 
 ### Patch Changes
