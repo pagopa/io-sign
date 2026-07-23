@@ -183,8 +183,7 @@ definitions:
     default: false
   AppVersion:
     type: string
-    pattern: >-
-      ^((0|[1-9]\d*)\.){2}(0|[1-9]\d*)(\.(0|[1-9]\d*)){0,1}$
+    pattern: ^((0|[1-9]\\d*)\\.){2}(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){0,1}$
     description: A string field in Semantic Versioning format
     example: 1.10.11
   PushNotificationsContentType:
