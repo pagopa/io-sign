@@ -34,9 +34,9 @@ import {
   NamirialConfig
 } from "../infra/namirial/config";
 import {
-  getLollipopConfigFromEnvironment,
+  getLollipopExtConfigFromEnvironment,
   getLollipopIntConfigFromEnvironment,
-  LollipopConfig,
+  LollipopExtConfig,
   LollipopIntConfig
 } from "../infra/lollipop/config";
 import { readNonEmptyFromEnvironment } from "@io-sign/io-sign/infra/env";
@@ -54,7 +54,7 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
-    lollipop: LollipopConfig,
+    lollipop: LollipopExtConfig,
     lollipopInternal: LollipopIntConfig,
     ioSignServiceId: NonEmptyString,
     ioProfile: IoProfileConfig,
@@ -76,7 +76,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
-    lollipop: getLollipopConfigFromEnvironment,
+    lollipop: getLollipopExtConfigFromEnvironment,
     lollipopInternal: getLollipopIntConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
