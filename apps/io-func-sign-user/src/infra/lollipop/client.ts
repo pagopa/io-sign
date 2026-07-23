@@ -14,16 +14,16 @@ import { Client, createClient } from "./models/client";
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);
 
-export type LollipopApiClient = {
+export type LollipopApiClientExt = {
   client: Client<"ApiKeyAuth">;
   baseUrl: NonEmptyString;
 };
 
-export const createLollipopApiClient = (
+export const createLollipopApiClientExt = (
   baseUrl: string,
   apiKey: string,
   timeout = 3000 as Millisecond
-): LollipopApiClient => ({
+): LollipopApiClientExt => ({
   client: createClient<"ApiKeyAuth">({
     baseUrl,
     fetchApi: toFetch(

@@ -35,7 +35,7 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck
 } from "../../azure/storage/health-check";
-import { LollipopApiClient } from "../../lollipop/client";
+import { LollipopApiClientExt } from "../../lollipop/client";
 import {
   LollipopApiClientProblemSource,
   makeLollipopClientHealthCheck
@@ -60,7 +60,7 @@ type InfoDependencies = {
   namirialConfig: NamirialConfig;
   pdvTokenizerClient: PdvTokenizerClientWithApiKey;
   ioApiClient: IOApiClient;
-  lollipopApiClient: LollipopApiClient;
+  lollipopApiClient: LollipopApiClientExt;
   db: Database;
   filledContainerClient: ContainerClient;
   validatedContainerClient: ContainerClient;

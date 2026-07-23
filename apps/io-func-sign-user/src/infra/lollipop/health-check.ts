@@ -8,12 +8,12 @@ import {
 } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
-import { LollipopApiClient } from "./client";
+import { LollipopApiClientExt } from "./client";
 
 export type LollipopApiClientProblemSource = "LollipopApiClient";
 
 export const makeLollipopClientHealthCheck =
-  (client: LollipopApiClient) =>
+  (client: LollipopApiClientExt) =>
   (
     fetchWithTimeout = makeFetchWithTimeout()
   ): HealthCheck<LollipopApiClientProblemSource, true> =>

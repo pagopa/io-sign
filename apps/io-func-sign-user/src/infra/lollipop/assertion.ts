@@ -14,7 +14,7 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { validate } from "@io-sign/io-sign/validation";
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
 import { LollipopJWTAuthorization } from "../http/models/LollipopJWTAuthorization";
-import { LollipopApiClient } from "./client";
+import { LollipopApiClientExt } from "./client";
 import { LollipopAuthBearer } from "./models/LollipopAuthBearer";
 import { AssertionType, AssertionTypeEnum } from "./models/AssertionType";
 import { LCUserInfo } from "./models/LCUserInfo";
@@ -37,7 +37,7 @@ export const isAssertionSaml =
     type === AssertionTypeEnum.SAML && SamlUserInfo.is(assertion);
 
 export const makeGetBase64SamlAssertion =
-  (lollipopClient: LollipopApiClient): GetSamlAssertion =>
+  (lollipopClient: LollipopApiClientExt): GetSamlAssertion =>
   ({ assertionRef, jwtAuthorization, assertionType }) =>
     pipe(
       TE.tryCatch(
