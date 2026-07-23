@@ -149,8 +149,8 @@ const getValidatedEmailByFiscalCode =
   makeGetValidatedEmailByFiscalCode(ioProfileClient);
 
 const lollipopApiClient = createLollipopApiClientExt(
-  config.pagopa.lollipop.apiBasePath,
-  config.pagopa.lollipop.apiKey
+  config.pagopa.lollipopExternal.apiBasePath,
+  config.pagopa.lollipopExternal.apiKey
 );
 
 const lollipopApiClientInt = createLollipopApiClientInt(

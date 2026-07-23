@@ -54,7 +54,7 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
-    lollipop: LollipopExtConfig,
+    lollipopExternal: LollipopExtConfig,
     lollipopInternal: LollipopIntConfig,
     ioSignServiceId: NonEmptyString,
     ioProfile: IoProfileConfig,
@@ -76,7 +76,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
-    lollipop: getLollipopExtConfigFromEnvironment,
+    lollipopExternal: getLollipopExtConfigFromEnvironment,
     lollipopInternal: getLollipopIntConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
@@ -92,7 +92,7 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
-      lollipop: config.lollipop,
+      lollipopExternal: config.lollipopExternal,
       lollipopInternal: config.lollipopInternal,
       ioSignServiceId: config.ioSignServiceId,
       ioProfile: config.ioProfile,
