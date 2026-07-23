@@ -12,18 +12,18 @@ import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout"
 import { LollipopApiClientExt } from "./client";
 import type { LollipopApiClientInt } from "./lc-params";
 
-export type LollipopApiClientProblemSource = "LollipopApiClient";
+export type LollipopApiClientExtProblemSource = "LollipopApiClientExt";
 export type LollipopApiClientIntProblemSource = "LollipopApiClientInt";
 
-export const makeLollipopClientHealthCheck =
+export const makeLollipopExtClientHealthCheck =
   (client: LollipopApiClientExt) =>
   (
     fetchWithTimeout = makeFetchWithTimeout()
-  ): HealthCheck<LollipopApiClientProblemSource, true> =>
+  ): HealthCheck<LollipopApiClientExtProblemSource, true> =>
     pipe(
       TE.tryCatch(
         () => fetchWithTimeout(client.baseUrl, { method: "HEAD" }),
-        toHealthProblems("LollipopApiClient")
+        toHealthProblems("LollipopApiClientExt")
       ),
       TE.map(() => true)
     );

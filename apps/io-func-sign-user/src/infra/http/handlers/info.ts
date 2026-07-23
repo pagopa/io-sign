@@ -38,9 +38,9 @@ import {
 import { LollipopApiClientExt } from "../../lollipop/client";
 import type { LollipopApiClientInt } from "../../lollipop/lc-params";
 import {
+  LollipopApiClientExtProblemSource,
   LollipopApiClientIntProblemSource,
-  LollipopApiClientProblemSource,
-  makeLollipopClientHealthCheck,
+  makeLollipopExtClientHealthCheck,
   makeLollipopIntClientHealthCheck
 } from "../../lollipop/health-check";
 
@@ -52,7 +52,7 @@ type ProblemSource =
   | TokenizerProblemSource
   | IOServicesProblemSource
   | NamirialProblemSource
-  | LollipopApiClientProblemSource
+  | LollipopApiClientExtProblemSource
   | LollipopApiClientIntProblemSource;
 
 const applicativeValidation = TE.getApplicativeTaskValidation(
@@ -95,7 +95,7 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
       }) =>
         pipe(
           [
-            makeLollipopClientHealthCheck(lollipopApiClientExt)(),
+            makeLollipopExtClientHealthCheck(lollipopApiClientExt)(),
             makeLollipopIntClientHealthCheck(lollipopApiClientInt)(),
             makeNamirialHealthCheck(namirialConfig.prod),
             makePdvTokenizerHealthCheck(pdvTokenizerClient)(),

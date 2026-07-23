@@ -93,7 +93,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
       (sequence) =>
         ({
           signerRepository,
-          lollipopApiClientExt: lollipopApiClient,
+          lollipopApiClientExt,
           lollipopApiClientInt,
           ioProfileClient,
           db,
@@ -106,7 +106,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
             makeGetValidatedEmailByFiscalCode(ioProfileClient);
           const getLcParams = makeGetLcParams(lollipopApiClientInt);
           const getBase64SamlAssertion =
-            makeGetBase64SamlAssertion(lollipopApiClient);
+            makeGetBase64SamlAssertion(lollipopApiClientExt);
           const getSignatureRequest = makeGetSignatureRequest(db);
           const creatQtspSignatureRequest =
             makeCreateSignatureRequestWithToken()(makeGetToken())(qtspConfig);
