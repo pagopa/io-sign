@@ -9,8 +9,10 @@ import {
 
 import { makeFetchWithTimeout } from "@io-sign/io-sign/infra/http/fetch-timeout";
 import { LollipopApiClientExt } from "./client";
+import type { LollipopApiClientInt } from "./lc-params";
 
 export type LollipopApiClientProblemSource = "LollipopApiClient";
+export type LollipopApiClientIntProblemSource = "LollipopApiClientInt";
 
 export const makeLollipopClientHealthCheck =
   (client: LollipopApiClientExt) =>
@@ -21,6 +23,17 @@ export const makeLollipopClientHealthCheck =
       TE.tryCatch(
         () => fetchWithTimeout(client.baseUrl, { method: "HEAD" }),
         toHealthProblems("LollipopApiClient")
+      ),
+      TE.map(() => true)
+    );
+
+export const makeLollipopIntClientHealthCheck =
+  (client: LollipopApiClientInt) =>
+  (): HealthCheck<LollipopApiClientIntProblemSource, true> =>
+    pipe(
+      TE.tryCatch(
+        () => client.fetchApi(client.baseUrl, { method: "HEAD" }),
+        toHealthProblems("LollipopApiClientInt")
       ),
       TE.map(() => true)
     );

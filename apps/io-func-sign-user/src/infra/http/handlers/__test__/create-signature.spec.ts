@@ -17,14 +17,14 @@ import type { IoProfileClientWithApiKey } from "@io-sign/io-sign/infra/io-profil
 
 import { AssertionTypeEnum } from "../../../lollipop/models/AssertionType";
 import type { LollipopApiClientExt } from "../../../lollipop/client";
-import type { LollipopApiClientInt, LcParams } from "../../../lollipop/internal-client";
+import type { LollipopApiClientInt, LcParams } from "../../../lollipop/lc-params";
 
 // ---------------------------------------------------------------------------
 // Mock all modules that trigger module-level `agent.getHttpFetch(process.env)`
 // (which calls require('node-fetch') – ESM-only in v3 – and fails in vitest's
 // CommonJS environment) and modules that need controlled responses in tests.
 // ---------------------------------------------------------------------------
-vi.mock("../../../lollipop/internal-client", () => ({
+vi.mock("../../../lollipop/lc-params", () => ({
   makeGetLcParams: vi.fn()
 }));
 vi.mock("../../../lollipop/assertion", () => ({
@@ -44,7 +44,7 @@ vi.mock("@io-sign/io-sign/infra/io-profile/profile", () => ({
 }));
 
 import { CreateSignatureHandler } from "../create-signature";
-import { makeGetLcParams } from "../../../lollipop/internal-client";
+import { makeGetLcParams } from "../../../lollipop/lc-params";
 import { makeGetBase64SamlAssertion } from "../../../lollipop/assertion";
 import { makeGetToken } from "../../../namirial/client";
 import { makeCreateSignatureRequestWithToken } from "../../../namirial/signature-request";
@@ -123,7 +123,7 @@ const buildDependencies = (overrides: Partial<{
   logger,
   input: undefined as unknown,
   inputDecoder: H.HttpRequest,
-  lollipopApiClient: {} as LollipopApiClientExt,
+  lollipopApiClientExt: {} as LollipopApiClientExt,
   lollipopApiClientInt: {} as LollipopApiClientInt,
   ioProfileClient: {
     client: {

@@ -148,7 +148,7 @@ const ioProfileClient = createIoProfileClient(
 const getValidatedEmailByFiscalCode =
   makeGetValidatedEmailByFiscalCode(ioProfileClient);
 
-const lollipopApiClient = createLollipopApiClientExt(
+const lollipopApiClientExt = createLollipopApiClientExt(
   config.pagopa.lollipopExternal.apiBasePath,
   config.pagopa.lollipopExternal.apiKey
 );
@@ -170,7 +170,8 @@ const info = InfoFunction({
   namirialConfig: config.namirial,
   pdvTokenizerClient,
   ioApiClient,
-  lollipopApiClient,
+  lollipopApiClientExt,
+  lollipopApiClientInt,
   db: database,
   filledContainerClient,
   validatedContainerClient,
@@ -238,7 +239,7 @@ app.storageQueue("updateSignatureRequest", {
 
 const createSignature = CreateSignatureFunction({
   signerRepository,
-  lollipopApiClient,
+  lollipopApiClientExt: lollipopApiClientExt,
   lollipopApiClientInt,
   ioProfileClient,
   db: database,

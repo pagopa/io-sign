@@ -3,8 +3,8 @@ import * as E from "fp-ts/lib/Either";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
-import { makeGetLcParams } from "../internal-client";
-import type { LollipopApiClientInt, LcParams } from "../internal-client";
+import { makeGetLcParams } from "../lc-params";
+import type { LollipopApiClientInt, LcParams } from "../lc-params";
 import { AssertionTypeEnum } from "../models/AssertionType";
 
 // A valid AssertionRef (sha256 prefix + 44 base64url chars)

@@ -10,7 +10,7 @@ import { Millisecond } from "@pagopa/ts-commons/lib/units";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Client, createClient } from "./models/client";
-import type { LollipopApiClientInt } from "./internal-client";
+import type { LollipopApiClientInt } from "./lc-params";
 
 const httpApiFetch = agent.getHttpFetch(process.env);
 const abortableFetch = AbortableFetch(httpApiFetch);

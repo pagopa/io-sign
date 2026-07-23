@@ -48,8 +48,8 @@ import {
 import { makeNotifySignatureReadyEvent } from "../../azure/storage/signature";
 
 import type { LollipopApiClientExt } from "../../lollipop/client";
-import type { LollipopApiClientInt } from "../../lollipop/internal-client";
-import { makeGetLcParams } from "../../lollipop/internal-client";
+import type { LollipopApiClientInt } from "../../lollipop/lc-params";
+import { makeGetLcParams } from "../../lollipop/lc-params";
 import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
 import type { IoProfileClientWithApiKey } from "@io-sign/io-sign/infra/io-profile/client";
 import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
@@ -57,7 +57,7 @@ import { getSignatureFromHeaderName } from "../../lollipop/signature";
 
 export type CreateSignatureDependencies = {
   signerRepository: SignerRepository;
-  lollipopApiClient: LollipopApiClientExt;
+  lollipopApiClientExt: LollipopApiClientExt;
   lollipopApiClientInt: LollipopApiClientInt;
   ioProfileClient: IoProfileClientWithApiKey;
   db: CosmosDatabase;
@@ -93,7 +93,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
       (sequence) =>
         ({
           signerRepository,
-          lollipopApiClient,
+          lollipopApiClientExt: lollipopApiClient,
           lollipopApiClientInt,
           ioProfileClient,
           db,
