@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.7.0
+
+### Minor Changes
+
+- 4370e43: decouple post-create-filled-document
+
 ## 2.6.0
 
 ### Minor Changes
