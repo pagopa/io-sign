@@ -18,12 +18,25 @@ paths:
         - QTSP Clauses
       parameters:
         - in: header
-          name: x-iosign-signer-id
+          name: x-iosign-fiscal-code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+        - in: header
+          name: x-iosign-name
           schema:
             type: string
-            description: Signer Id
+            description: First name
             minLength: 1
-            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+            example: Mario
+          required: true
+        - in: header
+          name: x-iosign-family-name
+          schema:
+            type: string
+            description: Family name
+            minLength: 1
+            example: Rossi
           required: true
       requestBody:
         required: true
@@ -559,19 +572,8 @@ components:
           type: string
           minLength: 1
           format: byte
-        email:
-          $ref: "#/components/schemas/Email"
-        name:
-          type: string
-          minLength: 1
-        family_name:
-          type: string
-          minLength: 1
       required:
         - document_url
-        - email
-        - name
-        - family_name
 
     FilledDocumentDetailView:
       type: object

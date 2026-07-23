@@ -10,6 +10,7 @@ import { identity, pipe } from "fp-ts/lib/function";
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createIoProfileClient } from "@io-sign/io-sign/infra/io-profile/client";
+import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -141,6 +142,9 @@ const ioProfileClient = createIoProfileClient(
   config.pagopa.ioProfile.basePath,
   config.pagopa.ioProfile.apiKey
 );
+
+const getValidatedEmailByFiscalCode =
+  makeGetValidatedEmailByFiscalCode(ioProfileClient);
 
 const lollipopApiClient = createLollipopApiClientExt(
   config.pagopa.lollipop.apiBasePath,
@@ -286,7 +290,8 @@ app.http("getQtspClausesMetadata", {
 const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
   documentsToFillQueue,
-  signerRepository
+  signerRepository,
+  getValidatedEmailByFiscalCode
 });
 
 app.http("createFilledDocument", {
