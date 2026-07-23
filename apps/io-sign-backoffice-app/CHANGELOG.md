@@ -1,5 +1,12 @@
 # io-sign-backoffice-app
 
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [92fcb86]
+  - @io-sign/io-sign@1.11.4
+
 ## 1.9.0
 
 ### Minor Changes
