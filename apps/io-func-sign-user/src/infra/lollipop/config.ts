@@ -18,8 +18,24 @@ export const getLollipopConfigFromEnvironment: RE.ReaderEither<
   LollipopConfig
 > = sequenceS(RE.Apply)({
   apiBasePath: pipe(
-    readFromEnvironment("LollipopApiBasePath"),
+    readFromEnvironment("LollipopExternalApiBasePath"),
     RE.orElse(() => RE.right("https://api.io.pagopa.it"))
   ),
-  apiKey: readFromEnvironment("LollipopApiKey")
+  apiKey: readFromEnvironment("LollipopExternalApiKey")
+});
+
+export const LollipopIntConfig = t.type({
+  apiBasePath: t.string,
+  apiKey: t.string
+});
+
+export type LollipopIntConfig = t.TypeOf<typeof LollipopIntConfig>;
+
+export const getLollipopIntConfigFromEnvironment: RE.ReaderEither<
+  NodeJS.ProcessEnv,
+  Error,
+  LollipopIntConfig
+> = sequenceS(RE.Apply)({
+  apiBasePath: readFromEnvironment("LollipopInternalApiBasePath"),
+  apiKey: readFromEnvironment("LollipopInternalApiKey")
 });

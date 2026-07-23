@@ -760,8 +760,6 @@ components:
       properties:
         signature_request_id:
           $ref: "#/components/schemas/Id"
-        email:
-          $ref: "#/components/schemas/Email"
         documents_to_sign:
           type: array
           items:
@@ -772,7 +770,6 @@ components:
           $ref: "#/components/schemas/QtspClauses"
       required:
         - signature_request_id
-        - email
         - documents_to_sign
         - qtsp_clauses
 
