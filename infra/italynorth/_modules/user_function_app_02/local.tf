@@ -53,7 +53,6 @@ locals {
       "AzureWebJobs.fillDocument.Disabled"                     = "1"
       "AzureWebJobs.updateSignatureRequest.Disabled"           = "1"
       "AzureWebJobs.validateSignature.Disabled"                = "1"
-      "AzureWebJobs.createSignature.Disabled"                  = "1"
       "AzureWebJobs.getSignerByFiscalCode.Disabled"            = "1"
     }
   }
