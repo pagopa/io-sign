@@ -29,7 +29,10 @@ import { FillDocumentPayload } from "../filled-document";
 import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
-import { createLollipopApiClient } from "../infra/lollipop/client";
+import {
+  createLollipopApiClientExt,
+  createLollipopApiClientInt
+} from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
@@ -145,9 +148,14 @@ const ioProfileClient = createIoProfileClient(
 const getValidatedEmailByFiscalCode =
   makeGetValidatedEmailByFiscalCode(ioProfileClient);
 
-const lollipopApiClient = createLollipopApiClient(
-  config.pagopa.lollipop.apiBasePath,
-  config.pagopa.lollipop.apiKey
+const lollipopApiClientExt = createLollipopApiClientExt(
+  config.pagopa.lollipopExternal.apiBasePath,
+  config.pagopa.lollipopExternal.apiKey
+);
+
+const lollipopApiClientInt = createLollipopApiClientInt(
+  config.pagopa.lollipopInternal.apiBasePath,
+  config.pagopa.lollipopInternal.apiKey
 );
 
 const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
@@ -162,7 +170,8 @@ const info = InfoFunction({
   namirialConfig: config.namirial,
   pdvTokenizerClient,
   ioApiClient,
-  lollipopApiClient,
+  lollipopApiClientExt,
+  lollipopApiClientInt,
   db: database,
   filledContainerClient,
   validatedContainerClient,
@@ -230,7 +239,9 @@ app.storageQueue("updateSignatureRequest", {
 
 const createSignature = CreateSignatureFunction({
   signerRepository,
-  lollipopApiClient,
+  lollipopApiClientExt,
+  lollipopApiClientInt,
+  ioProfileClient,
   db: database,
   qtspQueue,
   validatedContainerClient: validatedContainerClientWithFallback,

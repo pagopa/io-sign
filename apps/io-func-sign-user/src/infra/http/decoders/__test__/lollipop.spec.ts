@@ -15,7 +15,9 @@ const mockedLollipopRequest = (aSignatureInput: string): H.HttpRequest => ({
   headers: {
     "signature-input": aSignatureInput,
     signature: "sig1=:asignature1:, sig2=:asignature2:",
-    "x-pagopa-lollipop-auth-jwt": "aJWT",
+    // NOTE: "x-pagopa-lollipop-auth-jwt" is intentionally absent — it is
+    // no longer required by requireBasicLollipopParams since the bearer JWT
+    // is now generated internally via the Lollipop internal API.
     "x-pagopa-lollipop-assertion-ref": "sha256-anAssertionRef",
     "x-pagopa-lollipop-assertion-type": AssertionTypeEnum.SAML,
     "x-pagopa-lollipop-public-key": "aPubkey"
@@ -48,5 +50,19 @@ describe("requireBasicLollipopParams", () => {
       mockedLollipopRequest(attackValue)
     );
     expect(E.isLeft(result)).toBeTruthy();
+  });
+
+  it("should succeed even when x-pagopa-lollipop-auth-jwt header is absent (JWT is now generated internally)", () => {
+    // The bearer JWT is no longer read from the request — it comes from
+    // the Lollipop internal API (generateLCParams). Requests without this
+    // header must be accepted at the decoding stage.
+    const result = requireBasicLollipopParams(
+      mockedLollipopRequest(aValidMultiSignatureInput)
+    );
+    expect(E.isRight(result)).toBeTruthy();
+    if (E.isRight(result)) {
+      // jwtAuthorization is no longer part of BasicLollipopParams
+      expect(Object.keys(result.right)).not.toContain("jwtAuthorization");
+    }
   });
 });
