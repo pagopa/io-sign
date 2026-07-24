@@ -138,7 +138,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           );
 
           return pipe(
-            sequenceS(TE.ApplySeq)({
+            sequenceS(TE.ApplyPar)({
               signer: signerRepository.getSignerByFiscalCode(
                 sequence.fiscalCode
               ),
@@ -150,7 +150,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
             }),
             TE.chainW(({ signer, email, lcParams }) =>
               pipe(
-                sequenceS(TE.ApplyPar)({
+                sequenceS(TE.ApplySeq)({
                   samlAssertionBase64: getBase64SamlAssertion({
                     assertionRef: lcParams.assertion_ref,
                     jwtAuthorization: lcParams.lc_authentication_bearer,
