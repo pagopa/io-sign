@@ -239,7 +239,7 @@ app.storageQueue("updateSignatureRequest", {
 
 const createSignature = CreateSignatureFunction({
   signerRepository,
-  lollipopApiClientExt: lollipopApiClientExt,
+  lollipopApiClientExt,
   lollipopApiClientInt,
   ioProfileClient,
   db: database,
