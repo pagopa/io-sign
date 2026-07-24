@@ -150,7 +150,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
             }),
             TE.chainW(({ signer, email, lcParams }) =>
               pipe(
-                sequenceS(TE.ApplySeq)({
+                sequenceS(TE.ApplyPar)({
                   samlAssertionBase64: getBase64SamlAssertion({
                     assertionRef: lcParams.assertion_ref,
                     jwtAuthorization: lcParams.lc_authentication_bearer,

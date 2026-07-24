@@ -27,7 +27,7 @@
     "IoLinkBaseUrl": "IO_LINK_BASE_URL",
     "IoSignServiceId": "IO_SIGN_SERVICE_ID",
     "IoProfileApiBasePath": "IO_PROFILE_API_BASE_PATH",
-    "IoProfileSubscriptionKey": "IO_PROFILE_SUBSCRIPTION_KEY"
+    "IoProfileSubscriptionKey": "IO_PROFILE_SUBSCRIPTION_KEY",
     "LollipopInternalApiBasePath": "LOLLIPOP_INTERNAL_API_BASE_PATH",
     "LollipopInternalApiKey": "LOLLIPOP_INTERNAL_API_KEY",
   }
