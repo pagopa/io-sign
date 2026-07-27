@@ -9,7 +9,6 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { LollipopSignatureInput } from "../models/LollipopSignatureInput";
 import { LollipopSignature } from "../models/LollipopSignature";
-import { LollipopJWTAuthorization } from "../models/LollipopJWTAuthorization";
 import { LollipopAssertionRef } from "../models/LollipopAssertionRef";
 import { AssertionType } from "../models/AssertionType";
 import { LollipopPublicKey } from "../models/LollipopPublicKey";
@@ -31,7 +30,6 @@ const requireParameterFromHeader =
 export const BasicLollipopParams = t.type({
   signatureInput: LollipopSignatureInput,
   signature: LollipopSignature,
-  jwtAuthorization: LollipopJWTAuthorization,
   assertionRef: LollipopAssertionRef,
   assertionType: AssertionType,
   publicKey: LollipopPublicKey
@@ -63,13 +61,6 @@ export const requireBasicLollipopParams = (
       signature: pipe(
         request,
         requireParameterFromHeader("signature", LollipopSignature)
-      ),
-      jwtAuthorization: pipe(
-        request,
-        requireParameterFromHeader(
-          "x-pagopa-lollipop-auth-jwt",
-          LollipopJWTAuthorization
-        )
       ),
       assertionRef: pipe(
         request,
