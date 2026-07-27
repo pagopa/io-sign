@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.8.0
+
+### Minor Changes
+
+- 3a462da: decouple create-signature
+
 ## 2.7.1
 
 ### Patch Changes
