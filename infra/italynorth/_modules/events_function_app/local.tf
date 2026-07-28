@@ -20,7 +20,7 @@ locals {
       CosmosDbIssuerDatabaseName           = "issuer"
       CosmosDbUserDatabaseName             = "user"
       CosmosDbBackofficeDatabaseName       = "backoffice"
-      #SignEventsHubItnConnectionString     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
+      SignEventsHubItnConnectionString     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
       AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
       BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/events/info"

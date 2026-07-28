@@ -58,6 +58,20 @@ locals {
           manage = false
         }
       ]
+    },
+    {
+      name                   = "sign-events"
+      partitions             = 3
+      message_retention_days = 7
+      consumers              = []
+      keys = [
+        {
+          name   = "io-sign-events-func-listener"
+          listen = true
+          send   = false
+          manage = false
+        }
+      ]
     }
   ]
 }
