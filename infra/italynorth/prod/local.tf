@@ -114,5 +114,9 @@ locals {
       max_throughput = 1000
       ttl            = null
     }
+    webhooks = {
+      max_throughput = 1000
+      ttl            = null
+    }
   }
 }
