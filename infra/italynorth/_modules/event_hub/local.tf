@@ -60,7 +60,7 @@ locals {
       ]
     },
     {
-      name                   = "sign-events"
+      name                   = "events"
       partitions             = 3
       message_retention_days = 7
       consumers              = []
