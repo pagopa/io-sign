@@ -1,4 +1,5 @@
 import { CosmosErrors } from "@pagopa/io-functions-commons/dist/src/utils/cosmosdb_model";
+import { failure } from "io-ts/PathReporter";
 
 import { TooManyRequestsError } from "../../../error";
 
@@ -14,7 +15,9 @@ export const toCosmosDatabaseError = (e: CosmosErrors) => {
     case "COSMOS_CONFLICT_RESPONSE":
       return new CosmosDatabaseError("Conflict.");
     case "COSMOS_DECODING_ERROR":
-      // TODO: show details about validation
+      console.error(
+        `Cosmos DB decoding error: ${failure(e.error).join(" | ")}`
+      );
       return new CosmosDatabaseError("Decoding error.");
     case "COSMOS_EMPTY_RESPONSE":
       return new CosmosDatabaseError("Empty response.");
