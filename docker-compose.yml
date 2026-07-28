@@ -226,6 +226,21 @@ services:
       - mock-namirial
       - mock-lollipop
   
+  io-func-sign-events:
+    image: io-func-sign-events
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-events"
+        NODE_VERSION: "24.17.0"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-events
+    ports:
+      - ${FUNCTION_EVENTS_PORT}:7076
+    depends_on:
+      - azurite
+
   io-sign-backoffice-func:
     image: io-sign-backoffice-func
     build:
