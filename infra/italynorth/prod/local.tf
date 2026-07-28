@@ -53,6 +53,12 @@ locals {
   #backoffice app service
   sign_backoffice_app_snet_cidr = "10.20.42.64/26"
 
+  #events function app
+  sign_events_snet_cidr             = "10.20.43.64/26"
+  function_events_autoscale_minimum = 2
+  function_events_autoscale_maximum = 5
+  function_events_autoscale_default = 2
+
   cosmos_resource_group_name = "${local.project_weu_sign}-data-rg"
 
   cosmos_io_sign_database_issuer = {
