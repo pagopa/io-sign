@@ -14,6 +14,10 @@ io-func-sign-support:
   - changed-files:
     - any-glob-to-any-file: "apps/io-func-sign-support/**/*"
 
+io-func-sign-events:
+  - changed-files:
+    - any-glob-to-any-file: "apps/io-func-sign-events/**/*"
+
 io-sign-selfcare-frontend:
   - changed-files:
     - any-glob-to-any-file: "apps/io-sign-selfcare-frontend/**/*"
