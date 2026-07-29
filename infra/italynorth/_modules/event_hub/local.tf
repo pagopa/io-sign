@@ -66,6 +66,12 @@ locals {
       consumers              = []
       keys = [
         {
+          name   = "io-sign-events-func-sender"
+          listen = false
+          send   = true
+          manage = false
+        },
+        {
           name   = "io-sign-events-func-listener"
           listen = true
           send   = false
