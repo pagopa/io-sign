@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import * as E from "fp-ts/Either";
 import * as H from "@pagopa/handler-kit";
-import { AssertionTypeEnum } from "../../models/AssertionType";
 import { requireBasicLollipopParams } from "../lollipop";
 
 // A LolliPoP valid SignatureInput with multiple signature
@@ -18,9 +17,7 @@ const mockedLollipopRequest = (aSignatureInput: string): H.HttpRequest => ({
     // NOTE: "x-pagopa-lollipop-auth-jwt" is intentionally absent — it is
     // no longer required by requireBasicLollipopParams since the bearer JWT
     // is now generated internally via the Lollipop internal API.
-    "x-pagopa-lollipop-assertion-ref": "sha256-anAssertionRef",
-    "x-pagopa-lollipop-assertion-type": AssertionTypeEnum.SAML,
-    "x-pagopa-lollipop-public-key": "aPubkey"
+    "x-iosign-assertion-ref": "sha256-anAssertionRef"
   },
   body: undefined
 });

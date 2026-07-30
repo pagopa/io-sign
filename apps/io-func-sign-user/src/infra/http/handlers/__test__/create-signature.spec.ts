@@ -27,9 +27,19 @@ import type { LollipopApiClientInt, LcParams } from "../../../lollipop/lc-params
 vi.mock("../../../lollipop/lc-params", () => ({
   makeGetLcParams: vi.fn()
 }));
-vi.mock("../../../lollipop/assertion", () => ({
-  makeGetBase64SamlAssertion: vi.fn()
-}));
+vi.mock("../../../lollipop/assertion", async () => {
+  const E = await import("fp-ts/lib/Either");
+  return {
+    makeGetBase64SamlAssertion: vi.fn(),
+    getAlgoFromAssertionRef: (assertionRef: string) => assertionRef.split("-")[0],
+    getKeyThumbprintFromSignature: (signatureInput: string) => {
+      const match = /;?keyid="([^"]+)";?/.exec(signatureInput);
+      return match?.[1]
+        ? E.right(match[1])
+        : E.left(new Error('Missing "keyid" in signature-input'));
+    }
+  };
+});
 // namirial/client.ts → fetch-timeout.ts → agent.getHttpFetch
 vi.mock("../../../namirial/client", () => ({
   makeGetToken: vi.fn()
@@ -55,7 +65,8 @@ import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-pro
 // ---------------------------------------------------------------------------
 
 const aFiscalCode = "RSSMRA85T10A562S" as FiscalCode;
-const anAssertionRef = "sha256-n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg" as NonEmptyString;
+const aThumbprint = "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg";
+const anAssertionRef = `sha256-${aThumbprint}` as NonEmptyString;
 const aSigner = { id: newId() };
 
 const aLcParams: LcParams = {
@@ -71,7 +82,7 @@ const aLcParams: LcParams = {
  * ^(?:sig\d+=[^,]*)(?:,\s*(?:sig\d+=[^,]*))*$
  */
 const aValidSignatureInput =
-  `sig1=("@method" "x-pagopa-lollipop-original-url");created=1618884475;nonce="test-nonce-123";keyid="${anAssertionRef}"`;
+  `sig1=("@method" "x-pagopa-lollipop-original-url");created=1618884475;nonce="test-nonce-123";keyid="${aThumbprint}"`;
 
 /** A valid signature value matching: ^((sig[0-9]+)=:[A-Za-z0-9+/=]*:(, ?)?)+$ */
 const aValidSignature = "sig1=:aGVsbG8=:";
@@ -79,7 +90,7 @@ const aValidSignature = "sig1=:aGVsbG8=:";
 const aValidLollipopHeaders = {
   "signature-input": aValidSignatureInput,
   signature: aValidSignature,
-  "x-pagopa-lollipop-assertion-ref": anAssertionRef,
+  "x-iosign-assertion-ref": anAssertionRef,
   "x-pagopa-lollipop-assertion-type": AssertionTypeEnum.SAML,
   "x-pagopa-lollipop-public-key": "a-public-key",
   "x-pagopa-lollipop-custom-tos-challenge": "tos-challenge-value",
@@ -235,7 +246,7 @@ describe("CreateSignatureHandler", () => {
       );
     });
 
-    it("should return 400 when x-pagopa-lollipop-assertion-ref header is missing", async () => {
+    it("should return 400 when x-iosign-assertion-ref header is missing", async () => {
       const req: H.HttpRequest = {
         ...aValidRequest(),
         headers: {
@@ -247,7 +258,7 @@ describe("CreateSignatureHandler", () => {
           "x-pagopa-lollipop-public-key": "a-public-key",
           "x-pagopa-lollipop-custom-tos-challenge": "tos-challenge-value",
           "x-pagopa-lollipop-custom-sign-challenge": "sign-challenge-value"
-          // "x-pagopa-lollipop-assertion-ref" intentionally missing
+          // "x-iosign-assertion-ref" intentionally missing
         }
       };
       const run = CreateSignatureHandler({ ...buildDependencies(), input: req });
