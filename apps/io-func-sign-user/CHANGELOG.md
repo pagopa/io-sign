@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.9.0
+
+### Minor Changes
+
+- 534d48b: Fix create-signature assertion-ref logic
+
 ## 2.8.0
 
 ### Minor Changes
