@@ -2,12 +2,14 @@ import { flow, pipe } from "fp-ts/lib/function";
 
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
+import * as L from "@pagopa/logger";
 
 import {
   HttpBadRequestError,
   HttpNotFoundError
 } from "@io-sign/io-sign/infra/http/errors";
 
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { stringToBase64Encode } from "@io-sign/io-sign/utility";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
@@ -64,6 +66,10 @@ export const makeGetBase64SamlAssertion =
                   new HttpNotFoundError(`Lollipop user assertion not found.`)
                 );
               default:
+                L.error("getAssertion unexpected response", {
+                  status: response.status,
+                  body: response.value
+                })({ logger: ConsoleLogger })();
                 return E.left(
                   new HttpBadRequestError(
                     `The attempt to get lollipop user assertion failed.`
