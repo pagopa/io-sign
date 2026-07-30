@@ -196,3 +196,16 @@ resource "azurerm_cosmosdb_sql_container" "backoffice_consents_container" {
     max_throughput = var.io_sign_database_backoffice.consents.max_throughput
   }
 }
+
+resource "azurerm_cosmosdb_sql_container" "backoffice_webhooks_container" {
+  name                = "webhooks"
+  resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+  account_name        = azurerm_cosmosdb_account.cosmos_io_sign.name
+  database_name       = azurerm_cosmosdb_sql_database.backoffice_database.name
+  partition_key_paths = ["/issuerId"]
+  default_ttl         = var.io_sign_database_backoffice.webhooks.ttl
+
+  autoscale_settings {
+    max_throughput = var.io_sign_database_backoffice.webhooks.max_throughput
+  }
+}
