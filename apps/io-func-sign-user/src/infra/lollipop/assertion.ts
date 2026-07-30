@@ -81,3 +81,30 @@ export const makeGetBase64SamlAssertion =
       TE.chainEitherK(stringToBase64Encode),
       TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid"))
     );
+
+// Matches the first `keyid` value in a `signature-input` header
+// e.g. sig1=(...);keyid="sha256-abc...";nonce="xyz"
+const KEY_ID_REGEX = /;?keyid="([^"]+)";?/;
+
+/**
+ * Returns the hash algorithm prefix of an AssertionRef.
+ * e.g. "sha256-abc..." → "sha256"
+ */
+export const getAlgoFromAssertionRef = (
+  assertionRef: LollipopAssertionRef
+): string => assertionRef.split("-")[0];
+
+/**
+ * Extracts the public-key thumbprint from the `keyid` field of a
+ * `signature-input` header value.
+ */
+export const getKeyThumbprintFromSignature = (
+  signatureInput: string
+): E.Either<Error, string> => {
+  const match = KEY_ID_REGEX.exec(signatureInput);
+  return match?.[1]
+    ? E.right(match[1])
+    : E.left(
+        new Error('Missing or invalid "keyid" in "signature-input" header')
+      );
+};

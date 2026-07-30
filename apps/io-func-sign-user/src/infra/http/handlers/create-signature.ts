@@ -52,8 +52,31 @@ import type { LollipopApiClientInt } from "../../lollipop/lc-params";
 import { makeGetLcParams } from "../../lollipop/lc-params";
 import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
 import type { IoProfileClientWithApiKey } from "@io-sign/io-sign/infra/io-profile/client";
-import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
+import {
+  getAlgoFromAssertionRef,
+  getKeyThumbprintFromSignature,
+  makeGetBase64SamlAssertion
+} from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";
+import { LollipopAssertionRef } from "../models/LollipopAssertionRef";
+
+const checkAssertionRefMatchesSignature = (
+  assertionRef: LollipopAssertionRef,
+  signatureInput: string
+): E.Either<Error, void> =>
+  pipe(
+    getKeyThumbprintFromSignature(signatureInput),
+    E.chain((keyThumbprint) =>
+      assertionRef ===
+      `${getAlgoFromAssertionRef(assertionRef)}-${keyThumbprint}`
+        ? E.right(undefined)
+        : E.left<Error>(
+            new H.HttpForbiddenError(
+              "AssertionRef does not match the keyid in signature-input"
+            )
+          )
+    )
+  );
 
 export type CreateSignatureDependencies = {
   signerRepository: SignerRepository;
@@ -138,16 +161,24 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           );
 
           return pipe(
-            sequenceS(TE.ApplyPar)({
-              signer: signerRepository.getSignerByFiscalCode(
-                sequence.fiscalCode
-              ),
-              email: getValidatedEmailByFiscalCode(sequence.fiscalCode),
-              lcParams: getLcParams({
-                assertionRef: sequence.lollipopParams.assertionRef,
-                signatureInput: sequence.lollipopParams.signatureInput
+            TE.fromEither(
+              checkAssertionRefMatchesSignature(
+                sequence.lollipopParams.assertionRef,
+                sequence.lollipopParams.signatureInput
+              )
+            ),
+            TE.chainW(() =>
+              sequenceS(TE.ApplyPar)({
+                signer: signerRepository.getSignerByFiscalCode(
+                  sequence.fiscalCode
+                ),
+                email: getValidatedEmailByFiscalCode(sequence.fiscalCode),
+                lcParams: getLcParams({
+                  assertionRef: sequence.lollipopParams.assertionRef,
+                  signatureInput: sequence.lollipopParams.signatureInput
+                })
               })
-            }),
+            ),
             TE.chainW(({ signer, email, lcParams }) =>
               pipe(
                 sequenceS(TE.ApplySeq)({
