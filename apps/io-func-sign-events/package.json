@@ -1,0 +1,45 @@
+{
+  "name": "io-func-sign-events",
+  "version": "1.0.0",
+  "main": "./dist/main.js",
+  "private": true,
+  "license": "ISC",
+  "files": [
+    "dist",
+    "host.json",
+    "extensions.csproj"
+  ],
+  "bundledDependencies": true,
+  "scripts": {
+    "build": "tsup-node",
+    "format": "prettier --write .",
+    "lint": "eslint \"src/**\"",
+    "lint:fix": "eslint --fix \"src/**\"",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc",
+    "start": "func start",
+    "build:package": "npm-pack-zip --add-version"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@azure/functions": "catalog:",
+    "@pagopa/handler-kit": "catalog:",
+    "@pagopa/handler-kit-azure-func": "catalog:",
+    "fp-ts": "catalog:"
+  },
+  "devDependencies": {
+    "@io-sign/eslint-config": "workspace:^",
+    "@pagopa/logger": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-c8": "catalog:",
+    "azure-functions-core-tools": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "npm-pack-zip": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "^4.8.4",
+    "vitest": "catalog:"
+  }
+}

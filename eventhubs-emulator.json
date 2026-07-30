@@ -32,6 +32,15 @@
                   "Name": "Default"
                 }
               ]
+            },
+            {
+              "Name": "io-p-itn-sign-events-01",
+              "PartitionCount": 2,
+              "ConsumerGroups": [
+                {
+                  "Name": "Default"
+                }
+              ]
             }
           ]
         }
