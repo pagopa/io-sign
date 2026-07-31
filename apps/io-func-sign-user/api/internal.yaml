@@ -166,12 +166,9 @@ paths:
               $ref: "#/components/schemas/CreateSignatureBody"
       parameters:
         - in: header
-          name: x-iosign-signer-id
+          name: x-iosign-fiscal-code
           schema:
-            type: string
-            description: Signer Id
-            minLength: 1
-            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+            $ref: "#/components/schemas/FiscalCode"
           required: true
         - in: header
           name: x-iosign-spid-level
@@ -183,49 +180,13 @@ paths:
               - https://www.spid.gov.it/SpidL2
               - https://www.spid.gov.it/SpidL3
             example: https://www.spid.gov.it/SpidL2
-          required: false
-        - name: x-pagopa-lollipop-original-method
-          in: header
-          description: The method of the endpoint called by IO app
           required: true
-          schema:
-            $ref: "#/components/schemas/LollipopMethod"
-        - name: x-pagopa-lollipop-original-url
-          in: header
-          description: The url of the endpoint called by IO app
-          required: true
-          schema:
-            $ref: "#/components/schemas/LollipopOriginalURL"
-        - name: x-pagopa-lollipop-auth-jwt
-          in: header
-          description: Auth token to retrieve the SPID/CIE User identity from IO
-          required: true
-          schema:
-            $ref: "#/components/schemas/LollipopJWTAuthorization"
-        - name: x-pagopa-lollipop-assertion-ref
+        - name: x-iosign-assertion-ref
           in: header
           description: The id of the assertion to retrieve
           required: true
           schema:
             $ref: "#/components/schemas/LollipopAssertionRef"
-        - name: x-pagopa-lollipop-assertion-type
-          in: header
-          description: The assertion type (SAML / OIDC)
-          required: true
-          schema:
-            $ref: "#/components/schemas/AssertionType"
-        - name: x-pagopa-lollipop-user-id
-          in: header
-          description: User's fiscal code.
-          required: true
-          schema:
-            $ref: "#/components/schemas/LollipopUserId"
-        - name: x-pagopa-lollipop-public-key
-          in: header
-          description: User's public key
-          required: true
-          schema:
-            $ref: "#/components/schemas/LollipopPublicKey"
         - name: signature-input
           in: header
           description: The signature input, needed to verify the `signature` header
@@ -286,12 +247,9 @@ paths:
             example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
           required: true
         - in: header
-          name: x-iosign-signer-id
+          name: x-iosign-fiscal-code
           schema:
-            type: string
-            description: Signer Id
-            minLength: 1
-            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+            $ref: "#/components/schemas/FiscalCode"
           required: true
       responses:
         "200":
@@ -318,12 +276,9 @@ paths:
         - Signature Request
       parameters:
         - in: header
-          name: x-iosign-signer-id
+          name: x-iosign-fiscal-code
           schema:
-            type: string
-            description: Signer Id
-            minLength: 1
-            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+            $ref: "#/components/schemas/FiscalCode"
           required: true
       responses:
         "200":
@@ -914,38 +869,11 @@ components:
       type: string
       format: binary
 
-    LollipopMethod:
-      type: string
-      enum:
-        - GET
-        - POST
-        - PUT
-        - PATCH
-        - DELETE
-    LollipopOriginalURL:
-      type: string
-      pattern: "^https:\/\/"
-    AssertionType:
-      type: string
-      enum:
-        - SAML
-        - OIDC
     LollipopAssertionRef:
       oneOf:
         - $ref: "#/components/schemas/AssertionRefSha256"
         - $ref: "#/components/schemas/AssertionRefSha384"
         - $ref: "#/components/schemas/AssertionRefSha512"
-    LollipopUserId:
-      type: string
-      maxLength: 16
-      minLength: 16
-      description: The user's fiscal code, all upper case.
-      pattern: >-
-        ^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$
-    LollipopPublicKey:
-      type: string
-      minLength: 1
-      description: represents a Base64url encode of a JWK Public Key
     LollipopJWTAuthorization:
       type: string
       minLength: 1
