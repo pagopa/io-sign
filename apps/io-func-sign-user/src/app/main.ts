@@ -20,7 +20,6 @@ import {
 } from "@io-sign/io-sign/signature-request";
 import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { FillDocumentFunction } from "../infra/azure/functions/fill-document";
-import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { CreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
@@ -267,18 +266,6 @@ app.storageQueue("createSignatureRequest", {
   queueName: "on-signature-request-ready",
   connection: "StorageAccountItnConnectionString",
   handler: createSignatureRequest
-});
-
-const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
-  signerRepository,
-  ioApiClient
-});
-
-app.http("getSignerByFiscalCode", {
-  methods: ["POST"],
-  authLevel: "function",
-  route: "signers",
-  handler: getSignerByFiscalCode
 });
 
 const getQtspClausesMetadata = GetQtspClausesMetadataFunction(config.namirial);
