@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.5
+
+### Patch Changes
+
+- 4fe50c8: fix range on DocumentMetadata title type definition
+
 ## 1.11.4
 
 ### Patch Changes
