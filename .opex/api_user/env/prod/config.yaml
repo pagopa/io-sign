@@ -1,4 +1,4 @@
-oa3_spec: https://raw.githubusercontent.com/pagopa/io-sign/refs/heads/main/apps/io-func-sign-user/api/external.yaml
+oa3_spec: apps/io-func-sign-user/api/external.yaml
 name: itn_opex_sign_api_user
 location: Italy North
 timespan: 10m
