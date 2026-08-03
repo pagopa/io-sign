@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.9.2
+
+### Patch Changes
+
+- 253295c: expose external openapi and fix internal openapi
+
 ## 2.9.1
 
 ### Patch Changes
