@@ -53,8 +53,8 @@ resource "azurerm_api_management_api" "io_sign" {
   protocols    = ["https"]
 
   import {
-    content_format = "openapi-link"
-    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/066b5aa08e40a270164fe6dccd9ed4d08705c05a/openapi/generated/api_io_sign.yaml"
+    content_format = "openapi"
+    content_value  = file("${path.module}/../../../../apps/io-func-sign-user/api/external.yaml")
   }
 }
 
