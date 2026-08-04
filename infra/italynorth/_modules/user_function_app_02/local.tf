@@ -50,11 +50,6 @@ locals {
       LollipopInternalApiKey            = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=LollipopInternalApiKey)"
       WEBSITE_SWAP_WARMUP_PING_PATH     = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES = "200,204"
-      "AzureWebJobs.createSignatureRequest.Disabled"           = "1"
-      "AzureWebJobs.fillDocument.Disabled"                     = "1"
-      "AzureWebJobs.updateSignatureRequest.Disabled"           = "1"
-      "AzureWebJobs.validateSignature.Disabled"                = "1"
-      "AzureWebJobs.getSignerByFiscalCode.Disabled"            = "1"
     }
   }
 }

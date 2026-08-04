@@ -42,7 +42,7 @@ module "function_sign_user" {
     "AzureWebJobs.createSignatureRequest.Disabled",
     "AzureWebJobs.fillDocument.Disabled",
     "AzureWebJobs.updateSignatureRequest.Disabled",
-    "AzureWebJobs.validateSignature.Disabled",
+    "AzureWebJobs.validateSignature.Disabled"
   ]
 
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]

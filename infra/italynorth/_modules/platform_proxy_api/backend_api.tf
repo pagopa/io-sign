@@ -70,7 +70,7 @@ resource "azurerm_api_management_api_policy" "io_sign" {
   api_management_name = var.platform_apim_name
   resource_group_name = var.platform_apim_resource_group_name
 
-  xml_content = file("${path.module}/policies/io_sign/_api_base_policy_rev1.xml")
+  xml_content = file("${path.module}/policies/io_sign/_api_base_policy.xml")
 }
 
 resource "azurerm_api_management_api_tag" "io_sign_api_tag" {
