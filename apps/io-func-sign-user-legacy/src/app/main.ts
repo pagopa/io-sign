@@ -110,18 +110,6 @@ const signedContainerClientItn = new ContainerClient(
   "signed-documents"
 );
 
-// WEU is kept as the fallback: blobs signed before the migration still live here.
-const signedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  "signed-documents"
-);
-
-// Reads try ITN first and fall back to WEU; writes always go to ITN.
-const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
-  signedContainerClientItn,
-  signedContainerClient
-);
-
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
@@ -182,7 +170,7 @@ app.http("getSignatureRequests", {
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient: validatedContainerClientWithFallback,
-  signedContainerClient: signedContainerClientWithFallback
+  signedContainerClient: signedContainerClientItn
 });
 
 app.http("getSignatureRequest", {
@@ -284,7 +272,7 @@ const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
     signerRepository,
     db: database,
-    signedContainerClient: signedContainerClientWithFallback
+    signedContainerClient: signedContainerClientItn
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {

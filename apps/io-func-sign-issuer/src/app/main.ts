@@ -1,7 +1,6 @@
 import { app } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 import { QueueClient } from "@azure/storage-queue";
 import { EventHubProducerClient } from "@azure/event-hubs";
 
@@ -122,22 +121,9 @@ const validatedFileStorage = new BlobStorageFileStorage(
   validatedContainerClient
 );
 
-// ITN is the new primary for signed-documents (QTSP will write here after migration).
 const signedContainerClientItn = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "signed-documents"
-);
-
-// WEU is kept as the fallback: blobs signed before the migration still live here.
-const signedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  "signed-documents"
-);
-
-// Reads try ITN first and fall back to WEU; writes always go to ITN.
-const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
-  signedContainerClientItn,
-  signedContainerClient
 );
 
 const onSignatureRequestReadyQueueClient = new QueueClient(
@@ -251,7 +237,7 @@ app.http("getRequestsByDossier", {
 const getSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signedContainerClient: signedContainerClientWithFallback
+  signedContainerClient: signedContainerClientItn
 });
 
 app.http("getSignatureRequest", {

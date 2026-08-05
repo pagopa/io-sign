@@ -15,7 +15,7 @@ import {
   SignatureRequest,
   SignatureRequestRepository,
 } from "../../../../signature-request";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
+import { ContainerClient } from "@azure/storage-blob";
 
 describe("GetSignatureRequestHandler", () => {
   let issuerRepository: IssuerRepository;
@@ -95,7 +95,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       issuerRepository,
       signatureRequestRepository,
-      signedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as ContainerClient,
       input: req,
       inputDecoder: H.HttpRequest,
     });
@@ -125,7 +125,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       issuerRepository,
       signatureRequestRepository,
-      signedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as ContainerClient,
       input: req,
       inputDecoder: H.HttpRequest,
     });
@@ -155,7 +155,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       issuerRepository,
       signatureRequestRepository,
-      signedContainerClient: {} as BaseContainerClientWithFallback,
+      signedContainerClient: {} as ContainerClient,
       input: req,
       inputDecoder: H.HttpRequest,
     });
