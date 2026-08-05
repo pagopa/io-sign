@@ -59,8 +59,7 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
             const getSignatureRequest = makeGetSignatureRequest(db);
             const getDocumentContent_: GetDocumentContent = (
               document: DocumentReady
-            ) =>
-              getDocumentContent(document)(signedContainerClient);
+            ) => getDocumentContent(document)(signedContainerClient);
             const getSignedDocumentContent =
               makeGetSignedDocumentContent(getDocumentContent_);
 
