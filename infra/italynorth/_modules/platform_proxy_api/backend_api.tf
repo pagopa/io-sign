@@ -62,7 +62,7 @@ resource "azurerm_api_management_product_api" "io_sign" {
   api_name            = azurerm_api_management_api.io_sign.name
   resource_group_name = var.platform_apim_resource_group_name
   api_management_name = var.platform_apim_name
-  product_id          = data.azurerm_api_management_product.apim_platform_domain_product.product_id
+  product_id          = azurerm_api_management_product.apim_platform_domain_product.product_id
 }
 
 resource "azurerm_api_management_api_policy" "io_sign" {
