@@ -39,7 +39,6 @@ import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-
 import { InfoFunction } from "../infra/azure/functions/info";
 import { GetMetadataFunction } from "../infra/azure/functions/get-metadata";
 import { getConfigFromEnvironment } from "./config";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -95,7 +94,6 @@ const validatedContainerClient = new ContainerClient(
   "validated-documents"
 );
 
-// ITN is the new primary for signed-documents (QTSP will write here after migration).
 const signedContainerClientItn = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "signed-documents"

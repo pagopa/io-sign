@@ -12,7 +12,6 @@ import {
 } from "../../../../signature-request";
 
 import { GetSignatureRequestHandler } from "../get-signature-request";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 import { ContainerClient } from "@azure/storage-blob";
 
 describe("GetSignatureRequestHandler", () => {
