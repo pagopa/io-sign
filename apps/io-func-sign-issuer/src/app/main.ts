@@ -121,7 +121,7 @@ const validatedFileStorage = new BlobStorageFileStorage(
   validatedContainerClient
 );
 
-const signedContainerClientItn = new ContainerClient(
+const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "signed-documents"
 );
@@ -237,7 +237,7 @@ app.http("getRequestsByDossier", {
 const getSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signedContainerClient: signedContainerClientItn
+  signedContainerClient
 });
 
 app.http("getSignatureRequest", {
