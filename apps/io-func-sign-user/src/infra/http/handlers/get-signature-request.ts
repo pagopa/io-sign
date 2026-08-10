@@ -26,7 +26,7 @@ import { requireSignatureRequestId } from "../decoders/signature-request";
 const grantReadAccessToDocuments =
   (request: SignatureRequest) =>
   (r: {
-    validatedContainerClient: BaseContainerClientWithFallback;
+    validatedContainerClient: ContainerClient;
     signedContainerClient: ContainerClient;
   }): TE.TaskEither<Error, SignatureRequest> => {
     if (request.status === "SIGNED") {
@@ -41,9 +41,7 @@ const grantReadAccessToDocuments =
     return pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrlWithFallback("r", 55)(doc)(
-          r.validatedContainerClient
-        )
+        toDocumentWithSasUrl("r", 55)(doc)(r.validatedContainerClient)
       ),
       TE.map((documents) => ({ ...request, documents }))
     );

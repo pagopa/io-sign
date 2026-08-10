@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.2.3
+
+### Patch Changes
+
+- ff35d85: remove migration kit for validated-documents
+
 ## 2.2.2
 
 ### Patch Changes

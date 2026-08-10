@@ -73,7 +73,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as ContainerClient,
     });
     expect(run()).resolves.toEqual(
@@ -103,7 +103,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as ContainerClient,
     });
     expect(run()).resolves.toEqual(
@@ -133,7 +133,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as ContainerClient,
     });
     expect(run()).resolves.toEqual(

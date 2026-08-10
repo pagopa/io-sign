@@ -8,7 +8,6 @@ import { FiscalCode, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 import { newId } from "@io-sign/io-sign/id";
 import { SignerRepository } from "@io-sign/io-sign/signer";
@@ -157,7 +156,7 @@ const buildDependencies = (overrides: Partial<{
   } as SignerRepository,
   db: {} as CosmosDatabase,
   qtspQueue: {} as QueueClient,
-  validatedContainerClient: {} as BaseContainerClientWithFallback,
+  validatedContainerClient: {} as ContainerClient,
   signedContainerClient: {} as ContainerClient,
   qtspConfig: {} as never,
   ...overrides
