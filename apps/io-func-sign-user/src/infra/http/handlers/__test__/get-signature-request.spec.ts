@@ -18,6 +18,7 @@ import {
 
 import { GetSignatureRequestHandler } from "../get-signature-request";
 import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
+import { ContainerClient } from "@azure/storage-blob";
 
 describe("GetSignatureRequestHandler", () => {
   let signatureRequestRepository: SignatureRequestRepository;
@@ -87,7 +88,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     await expect(run()).resolves.toEqual(
@@ -118,7 +119,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     await expect(run()).resolves.toEqual(
@@ -149,7 +150,7 @@ describe("GetSignatureRequestHandler", () => {
       logger,
       inputDecoder: H.HttpRequest,
       input: req,
-      validatedContainerClient: {} as BaseContainerClientWithFallback,
+      validatedContainerClient: {} as ContainerClient,
       signedContainerClient: {} as BaseContainerClientWithFallback,
     });
     await expect(run()).resolves.toEqual(
