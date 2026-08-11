@@ -6,7 +6,7 @@ import { pipe } from "fp-ts/lib/function";
 import * as RTE from "fp-ts/ReaderTaskEither";
 import { DocumentReady } from "../../../document";
 
-import { downloadContentFromBlob, getBlobClient } from "./blob";
+import { downloadContentFromBlob, getBlobClient, requireBlobExists } from "./blob";
 
 export const getDocumentContent = (document: DocumentReady) =>
   pipe(
@@ -14,5 +14,6 @@ export const getDocumentContent = (document: DocumentReady) =>
     split("/"),
     last,
     getBlobClient,
+    RTE.chainFirstTaskEitherK(requireBlobExists),
     RTE.chainTaskEitherK(downloadContentFromBlob)
   );

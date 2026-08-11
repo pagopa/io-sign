@@ -10,6 +10,7 @@ import {
   defaultBlobGenerateSasUrlOptions,
   generateSasUrlFromBlob,
   getBlobClient,
+  requireBlobExists,
   withExpireInMinutes,
   withPermissions
 } from "./blob";
@@ -22,6 +23,7 @@ export const toDocumentWithSasUrl =
       split("/"),
       last,
       getBlobClient,
+      RTE.chainFirstTaskEitherK(requireBlobExists),
       RTE.chainTaskEitherK(
         generateSasUrlFromBlob(
           pipe(
