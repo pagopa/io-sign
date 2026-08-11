@@ -3,7 +3,6 @@ AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;A
 FUNCTIONS_WORKER_RUNTIME=node
 CosmosDbConnectionString=${COSMOS_DB_CONNECTION_STRING}
 CosmosDbDatabaseName=${COSMOS_DB_ISSUER_DATABASE_NAME}
-StorageAccountConnectionString=${STORAGE_ACCOUNT_CONNECTION_STRING}
 StorageAccountItnConnectionString=${STORAGE_ACCOUNT_ITN_CONNECTION_STRING}
 BillingEventHubItnConnectionString=${BILLING_EVENT_HUB_ITN_CONNECTION_STRING}
 AnalyticsEventHubItnConnectionString=${ANALYTICS_EVENT_HUB_ITN_CONNECTION_STRING}
