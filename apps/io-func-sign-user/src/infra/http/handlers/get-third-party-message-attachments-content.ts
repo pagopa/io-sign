@@ -14,7 +14,7 @@ import { SignerRepository } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Document, DocumentId, DocumentReady } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { getDocumentContent } from "@io-sign/io-sign/infra/azure/storage/document-content";
+import { getDocumentContent as getDocumentContentFromStorage } from "@io-sign/io-sign/infra/azure/storage/document-content";
 import { bufferResponse } from "@io-sign/io-sign/infra/http/response";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
@@ -57,11 +57,11 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
             signedContainerClient
           }: GetThirdPartyMessageAttachmentContentDependencies) => {
             const getSignatureRequest = makeGetSignatureRequest(db);
-            const getDocumentContent_: GetDocumentContent = (
+            const getDocumentContent: GetDocumentContent = (
               document: DocumentReady
-            ) => getDocumentContent(document)(signedContainerClient);
+            ) => getDocumentContentFromStorage(document)(signedContainerClient);
             const getSignedDocumentContent =
-              makeGetSignedDocumentContent(getDocumentContent_);
+              makeGetSignedDocumentContent(getDocumentContent);
 
             return pipe(
               signerRepository.getSignerByFiscalCode(fiscalCode),

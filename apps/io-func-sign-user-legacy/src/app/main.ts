@@ -89,7 +89,7 @@ const validatedContainerClient = new ContainerClient(
   "validated-documents"
 );
 
-const signedContainerClientItn = new ContainerClient(
+const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "signed-documents"
 );
@@ -127,7 +127,7 @@ const info = InfoFunction({
   db: database,
   filledContainerClient,
   validatedContainerClient,
-  signedContainerClient: signedContainerClientItn,
+  signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
@@ -154,7 +154,7 @@ app.http("getSignatureRequests", {
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   validatedContainerClient,
-  signedContainerClient: signedContainerClientItn
+  signedContainerClient
 });
 
 app.http("getSignatureRequest", {
@@ -182,7 +182,7 @@ const createSignature = CreateSignatureFunction({
   db: database,
   qtspQueue,
   validatedContainerClient,
-  signedContainerClient: signedContainerClientItn,
+  signedContainerClient,
   qtspConfig: config.namirial
 });
 
@@ -256,7 +256,7 @@ const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
     signerRepository,
     db: database,
-    signedContainerClient: signedContainerClientItn
+    signedContainerClient
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {
@@ -280,7 +280,7 @@ app.storageQueue("fillDocument", {
 
 const validateSignature = ValidateSignatureFunction({
   db: database,
-  signedContainerClient: signedContainerClientItn,
+  signedContainerClient,
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
