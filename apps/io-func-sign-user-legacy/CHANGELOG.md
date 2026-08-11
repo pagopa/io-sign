@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.2.4
+
+### Patch Changes
+
+- 6f1df85: remove migration kit for signed documents
+
 ## 2.2.3
 
 ### Patch Changes
