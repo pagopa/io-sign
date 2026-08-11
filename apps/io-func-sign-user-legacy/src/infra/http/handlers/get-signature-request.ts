@@ -7,12 +7,10 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/function";
 
 import { ContainerClient } from "@azure/storage-blob";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 import * as A from "fp-ts/lib/Array";
 
 import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
-import { toDocumentWithSasUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
   getEnvironment,
@@ -27,13 +25,13 @@ const grantReadAccessToDocuments =
   (request: SignatureRequest) =>
   (r: {
     validatedContainerClient: ContainerClient;
-    signedContainerClient: BaseContainerClientWithFallback;
+    signedContainerClient: ContainerClient;
   }): TE.TaskEither<Error, SignatureRequest> => {
     if (request.status === "SIGNED") {
       return pipe(
         request.documents,
         A.traverse(TE.ApplicativePar)((doc) =>
-          toDocumentWithSasUrlWithFallback("r", 5)(doc)(r.signedContainerClient)
+          toDocumentWithSasUrl("r", 5)(doc)(r.signedContainerClient)
         ),
         TE.map((documents) => ({ ...request, documents }))
       );
