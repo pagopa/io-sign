@@ -15,9 +15,15 @@ import { pipe } from "fp-ts/lib/function";
 import { addMinutes } from "date-fns";
 
 export const blobExists = (blobClient: BlobClient) =>
-  TE.tryCatch(
-    () => blobClient.exists(),
-    () => new Error("The specified Blob does not exists.")
+  pipe(
+    TE.tryCatch(
+      () => blobClient.exists(),
+      () => new Error("The specified Blob does not exists.")
+    ),
+    TE.filterOrElse(
+      (exists) => exists,
+      () => new Error("The specified Blob does not exists.")
+    )
   );
 
 export const getBlobClient = (blobName: string) =>
