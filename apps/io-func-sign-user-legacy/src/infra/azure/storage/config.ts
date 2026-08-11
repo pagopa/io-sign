@@ -5,7 +5,6 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const StorageConfig = t.type({
-  connectionString: t.string,
   connectionStringItn: t.string
 });
 
@@ -16,6 +15,5 @@ export const getStorageConfigFromEnvironment: RE.ReaderEither<
   Error,
   StorageConfig
 > = sequenceS(RE.Apply)({
-  connectionString: readFromEnvironment("StorageAccountConnectionString"),
   connectionStringItn: readFromEnvironment("StorageAccountItnConnectionString")
 });

@@ -3,7 +3,6 @@ AzureWebJobsStorage=UseDevelopmentStorage=true
 FUNCTIONS_WORKER_RUNTIME=node
 CosmosDbConnectionString=${COSMOS_DB_CONNECTION_STRING}
 CosmosDbDatabaseName=${COSMOS_DB_USER_DATABASE_NAME}
-StorageAccountConnectionString=${STORAGE_ACCOUNT_CONNECTION_STRING}
 StorageAccountItnConnectionString=${STORAGE_ACCOUNT_ITN_CONNECTION_STRING}
 IoServicesApiBasePath=${IO_SERVICES_API_URL}
 IoServicesSubscriptionKey=${IO_SERVICES_API_SUBSCRIPTION_KEY}
