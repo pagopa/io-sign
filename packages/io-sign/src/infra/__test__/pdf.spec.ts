@@ -40,6 +40,9 @@ describe("getPdfMetadata", () => {
   it("returns Left when the buffer is not a valid pdf", async () => {
     const result = await getPdfMetadata(invalidPdfBuffer)();
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toContain("No PDF header found");
+    }
   });
 
   it("defaults to an empty formFields array when reading the form fields throws", async () => {
@@ -69,6 +72,9 @@ describe("getPdfMetadata", () => {
     const result = await getPdfMetadata(buffer)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe("cannot read pages");
+    }
   });
 
   it("returns Left when the extracted metadata fails schema validation", async () => {
@@ -124,6 +130,11 @@ describe("populatePdf", () => {
     ])(buffer)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        'PDFDocument has no form field with the name "missing"'
+      );
+    }
   });
 
   it("returns Left when a field is not a text field", async () => {
@@ -137,6 +148,11 @@ describe("populatePdf", () => {
     ])(buffer)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        'Expected field "agree" to be of type PDFTextField, but it is actually of type PDFCheckBox'
+      );
+    }
   });
 
   it("returns Left when the buffer is not a valid pdf", async () => {
@@ -144,6 +160,9 @@ describe("populatePdf", () => {
       invalidPdfBuffer
     )();
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toContain("No PDF header found");
+    }
   });
 });
 
@@ -168,6 +187,11 @@ describe("getPdfFieldsValue", () => {
     const result = await getPdfFieldsValue(["missing"])(buffer)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        'PDFDocument has no form field with the name "missing"'
+      );
+    }
   });
 
   it("returns Left (EntityNotFoundError) when a field has no value set", async () => {
@@ -188,5 +212,8 @@ describe("getPdfFieldsValue", () => {
   it("returns Left when the buffer is not a valid pdf", async () => {
     const result = await getPdfFieldsValue(["x"])(invalidPdfBuffer)();
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toContain("No PDF header found");
+    }
   });
 });

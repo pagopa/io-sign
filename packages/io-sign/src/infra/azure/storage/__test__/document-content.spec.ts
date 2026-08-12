@@ -66,6 +66,11 @@ describe("getDocumentContent", () => {
     const result = await getDocumentContent(document)(containerClient)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        "The specified Blob does not exists."
+      );
+    }
     expect(blobClient.downloadToBuffer).not.toHaveBeenCalled();
   });
 
@@ -81,5 +86,10 @@ describe("getDocumentContent", () => {
     const result = await getDocumentContent(document)(containerClient)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        "Unable to download content for the specified Blob."
+      );
+    }
   });
 });

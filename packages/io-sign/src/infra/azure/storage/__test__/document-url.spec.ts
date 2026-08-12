@@ -81,6 +81,11 @@ describe("toDocumentWithSasUrl", () => {
     const result = await toDocumentWithSasUrl()(document)(containerClient)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        "The specified Blob does not exists."
+      );
+    }
     expect(blobClient.generateSasUrl).not.toHaveBeenCalled();
   });
 
@@ -94,6 +99,11 @@ describe("toDocumentWithSasUrl", () => {
     const result = await toDocumentWithSasUrl()(document)(containerClient)();
 
     expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) {
+      expect(result.left.message).toBe(
+        "Unable to generate the SAS Url for the specified Blob."
+      );
+    }
   });
 });
 
