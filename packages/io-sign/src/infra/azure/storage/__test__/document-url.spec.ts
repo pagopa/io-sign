@@ -44,7 +44,7 @@ describe("toDocumentWithSasUrl", () => {
   it("replaces the document url with a generated sas url", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas")
+      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
@@ -54,14 +54,14 @@ describe("toDocumentWithSasUrl", () => {
       "blob-123.pdf"
     );
     expect(result).toStrictEqual(
-      E.right({ ...document, url: "https://storage.example.com/sas" })
+      E.right({ ...document, url: "https://storage.example.com/sas-url" })
     );
   });
 
   it("uses the given permissions and expiration", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas")
+      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
@@ -71,9 +71,9 @@ describe("toDocumentWithSasUrl", () => {
     expect(options.permissions.toString()).toBe("rw");
   });
 
-  it("returns Left when the blob existence check rejects", async () => {
+  it("returns Left when the blob existence check rejects (e.g. network error)", async () => {
     const blobClient = {
-      exists: vi.fn().mockRejectedValue(new Error("error message")),
+      exists: vi.fn().mockRejectedValue(new Error("network error")),
       generateSasUrl: vi.fn()
     };
     const containerClient = makeContainerClient(blobClient);
@@ -101,7 +101,7 @@ describe("getDocumentUrl", () => {
   it("returns only the generated sas url", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas")
+      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
@@ -110,6 +110,6 @@ describe("getDocumentUrl", () => {
       5
     )(document)(containerClient)();
 
-    expect(result).toStrictEqual(E.right("https://storage.example.com/sas"));
+    expect(result).toStrictEqual(E.right("https://storage.example.com/sas-url"));
   });
 });
