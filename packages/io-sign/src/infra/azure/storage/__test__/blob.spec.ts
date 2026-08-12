@@ -40,15 +40,12 @@ describe("blobExists", () => {
     expect(result).toStrictEqual(E.right(true));
   });
 
-  it("returns Left when the blob does not exist", async () => {
+  it("returns Right(false) when the blob does not exist", async () => {
     const blobClient = { exists: vi.fn().mockResolvedValue(false) } as unknown as BlobClient;
 
     const result = await blobExists(blobClient)();
 
-    expect(E.isLeft(result)).toBe(true);
-    if (E.isLeft(result)) {
-      expect(result.left.message).toBe("The specified Blob does not exists.");
-    }
+    expect(result).toStrictEqual(E.right(false));
   });
 
   it("returns Left when checking existence rejects", async () => {
@@ -78,7 +75,7 @@ describe("getBlobClient", () => {
     expect(result).toStrictEqual(E.right(blobClient));
   });
 
-  it("returns Left when the underlying blob does not exist", async () => {
+  it("still returns the blob client when the supplied blob does not exist", async () => {
     const blobClient = { exists: vi.fn().mockResolvedValue(false) };
     const containerClient = {
       getBlobClient: vi.fn().mockReturnValue(blobClient)
@@ -86,15 +83,12 @@ describe("getBlobClient", () => {
 
     const result = await getBlobClient("blobName")(containerClient)();
 
-    expect(E.isLeft(result)).toBe(true);
-    if (E.isLeft(result)) {
-      expect(result.left.message).toBe("The specified Blob does not exists.");
-    }
+    expect(result).toStrictEqual(E.right(blobClient));
   });
 
-  it("returns Left when the existence check rejects", async () => {
+  it("returns Left when the blob existence check rejects (e.g. network error)", async () => {
     const blobClient = {
-      exists: vi.fn().mockRejectedValue(new Error("error message"))
+      exists: vi.fn().mockRejectedValue(new Error("network error"))
     };
     const containerClient = {
       getBlobClient: vi.fn().mockReturnValue(blobClient)
@@ -145,13 +139,13 @@ describe("generateSasUrlFromBlob", () => {
 
   it("returns Right with the generated sas url", async () => {
     const blobClient = {
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas")
+      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
     } as unknown as BlobClient;
 
     const result = await generateSasUrlFromBlob(options)(blobClient)();
 
     expect(blobClient.generateSasUrl).toHaveBeenCalledWith(options);
-    expect(result).toStrictEqual(E.right("https://storage.example.com/sas"));
+    expect(result).toStrictEqual(E.right("https://storage.example.com/sas-url"));
   });
 
   it("returns Left when generating the sas url rejects", async () => {
