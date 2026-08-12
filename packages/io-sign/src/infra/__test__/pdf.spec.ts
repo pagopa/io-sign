@@ -88,6 +88,9 @@ describe("getPdfMetadata", () => {
     expect(E.isLeft(result)).toBe(true);
     if (E.isLeft(result)) {
       expect(result.left.name).toBe("ValidationError");
+      expect(result.left.message).toBe(
+        "Failed to extract metadata from pdf file!"
+      );
     }
   });
 });
@@ -95,11 +98,11 @@ describe("getPdfMetadata", () => {
 describe("populatePdf", () => {
   it("sets the value of the given text fields and returns the updated pdf", async () => {
     const buffer = await createPdfBuffer((form, page) => {
-      const field = form.createTextField("fullName");
+      const field = form.createTextField("QUADROB_fullName");
       field.addToPage(page);
     });
     const fields: Field[] = [
-      { fieldName: "fullName", fieldValue: "Mario Rossi" }
+      { fieldName: "QUADROB_fullName", fieldValue: "Mario Rossi" }
     ];
 
     const result = await populatePdf(fields)(buffer)();
@@ -107,17 +110,17 @@ describe("populatePdf", () => {
     expect(E.isRight(result)).toBe(true);
     if (E.isRight(result)) {
       const populatedDoc = await PDFDocument.load(result.right);
-      expect(populatedDoc.getForm().getTextField("fullName").getText()).toBe(
+      expect(populatedDoc.getForm().getTextField("QUADROB_fullName").getText()).toBe(
         "Mario Rossi"
       );
     }
   });
 
-  it("returns Left when a field does not exist", async () => {
+  it("returns Left when a field does not exist in pdf", async () => {
     const buffer = await createPdfBuffer();
 
     const result = await populatePdf([
-      { fieldName: "missing", fieldValue: "x" }
+      { fieldName: "missing", fieldValue: "test" }
     ])(buffer)();
 
     expect(E.isLeft(result)).toBe(true);
@@ -147,15 +150,15 @@ describe("populatePdf", () => {
 describe("getPdfFieldsValue", () => {
   it("returns the value of the requested text fields", async () => {
     const buffer = await createPdfBuffer((form, page) => {
-      const field = form.createTextField("fullName");
+      const field = form.createTextField("QUADROB_fullName");
       field.setText("Mario Rossi");
       field.addToPage(page);
     });
 
-    const result = await getPdfFieldsValue(["fullName"])(buffer)();
+    const result = await getPdfFieldsValue(["QUADROB_fullName"])(buffer)();
 
     expect(result).toStrictEqual(
-      E.right([{ fieldName: "fullName", fieldValue: "Mario Rossi" }])
+      E.right([{ fieldName: "QUADROB_fullName", fieldValue: "Mario Rossi" }])
     );
   });
 
@@ -178,6 +181,7 @@ describe("getPdfFieldsValue", () => {
     expect(E.isLeft(result)).toBe(true);
     if (E.isLeft(result)) {
       expect(result.left.name).toBe("EntityNotFoundError");
+      expect(result.left.message).toBe("An error occurred while attempting to access the pdf field content.");
     }
   });
 
