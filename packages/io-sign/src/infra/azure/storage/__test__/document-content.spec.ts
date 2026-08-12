@@ -54,9 +54,9 @@ describe("getDocumentContent", () => {
     expect(result).toStrictEqual(E.right(buffer));
   });
 
-  it("returns Left when the blob existence check rejects", async () => {
+  it("returns Left when the blob existence check rejects (e.g. network error)", async () => {
     const blobClient = {
-      exists: vi.fn().mockRejectedValue(new Error("error message")),
+      exists: vi.fn().mockRejectedValue(new Error("network error")),
       downloadToBuffer: vi.fn()
     };
     const containerClient = {
