@@ -58,7 +58,7 @@ describe("toDocumentWithSasUrl", () => {
     );
   });
 
-  it("uses the given permissions and expiration", async () => {
+  it("uses the given permissions", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
       generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
