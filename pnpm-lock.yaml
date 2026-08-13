@@ -217,9 +217,6 @@ importers:
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
-      '@pagopa/azure-storage-migration-kit':
-        specifier: 0.0.5
-        version: 0.0.5(@azure/storage-blob@12.33.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit':
         specifier: 'catalog:'
         version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
@@ -378,9 +375,6 @@ importers:
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
-      '@pagopa/azure-storage-migration-kit':
-        specifier: 0.0.5
-        version: 0.0.5(@azure/storage-blob@12.33.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit':
         specifier: 'catalog:'
         version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
@@ -672,9 +666,6 @@ importers:
       '@azure/storage-queue':
         specifier: 'catalog:'
         version: 12.31.0
-      '@pagopa/azure-storage-migration-kit':
-        specifier: 0.0.5
-        version: 0.0.5(@azure/storage-blob@12.33.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
       '@pagopa/handler-kit':
         specifier: ^1.1.0
         version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
@@ -2450,13 +2441,6 @@ packages:
   '@opentelemetry/semantic-conventions@1.24.1':
     resolution: {integrity: sha512-VkliWlS4/+GHLLW7J/rVBA00uXus1SWvwFvcUDxDwmFxYfg/2VI6ekwdXS28cjI8Qz2ky2BzG8OUHo+WeYIWqw==}
     engines: {node: '>=14'}
-
-  '@pagopa/azure-storage-migration-kit@0.0.5':
-    resolution: {integrity: sha512-fla36WKSqhPn7Qr65377F77NohncVc5AVkk6zzJ+YHk0H+xcB12TpU/15H6cEECdfR/PGUJvY57PA7046yjGlQ==}
-    peerDependencies:
-      '@azure/storage-blob': ^12.24.0
-      fp-ts: ^2.13.1
-      io-ts: ^2.2.20
 
   '@pagopa/eslint-config@5.1.2':
     resolution: {integrity: sha512-7Byb+K51xcWKjk9oWDU0GeHPpdRm3Y1zgLSP0NZ0wnijxmD4GGe3DNLMhbu3q7MOCrHbbJXWR4jqR3BqE6P7dw==}
@@ -8849,20 +8833,6 @@ snapshots:
       '@opentelemetry/semantic-conventions': 1.24.1
 
   '@opentelemetry/semantic-conventions@1.24.1': {}
-
-  '@pagopa/azure-storage-migration-kit@0.0.5(@azure/storage-blob@12.33.0)(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)':
-    dependencies:
-      '@azure/core-auth': 1.10.1
-      '@azure/storage-blob': 12.33.0
-      fp-ts: 2.16.10
-      io-ts: 2.2.22(fp-ts@2.16.10)
-      tsup: 6.7.0(@swc/core@1.15.18)(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - postcss
-      - supports-color
-      - ts-node
-      - typescript
 
   '@pagopa/eslint-config@5.1.2(eslint@10.0.3)(prettier@3.5.3)(vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.3.3))(yaml@2.9.0))':
     dependencies:
