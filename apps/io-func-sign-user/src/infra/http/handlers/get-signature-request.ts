@@ -6,11 +6,11 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
 
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
+import { ContainerClient } from "@azure/storage-blob";
 
 import * as A from "fp-ts/lib/Array";
 
-import { toDocumentWithSasUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
+import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import {
   getEnvironment,
@@ -18,20 +18,20 @@ import {
   SignatureRequest
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../../http/encoders/signature-request";
-import { requireSigner } from "../decoders/signer";
+import { requireSignerIdFromFiscalCode } from "../decoders/signer";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 
 const grantReadAccessToDocuments =
   (request: SignatureRequest) =>
   (r: {
-    validatedContainerClient: BaseContainerClientWithFallback;
-    signedContainerClient: BaseContainerClientWithFallback;
+    validatedContainerClient: ContainerClient;
+    signedContainerClient: ContainerClient;
   }): TE.TaskEither<Error, SignatureRequest> => {
     if (request.status === "SIGNED") {
       return pipe(
         request.documents,
         A.traverse(TE.ApplicativePar)((doc) =>
-          toDocumentWithSasUrlWithFallback("r", 5)(doc)(r.signedContainerClient)
+          toDocumentWithSasUrl("r", 5)(doc)(r.signedContainerClient)
         ),
         TE.map((documents) => ({ ...request, documents }))
       );
@@ -39,9 +39,7 @@ const grantReadAccessToDocuments =
     return pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrlWithFallback("r", 55)(doc)(
-          r.validatedContainerClient
-        )
+        toDocumentWithSasUrl("r", 55)(doc)(r.validatedContainerClient)
       ),
       TE.map((documents) => ({ ...request, documents }))
     );
@@ -50,11 +48,11 @@ const grantReadAccessToDocuments =
 export const GetSignatureRequestHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
-      signerId: pipe(requireSigner(req), RTE.fromEither),
+      signerId: requireSignerIdFromFiscalCode(req),
       signatureRequestId: requireSignatureRequestId(req)
     }),
     RTE.chainW(({ signerId, signatureRequestId }) =>
-      getSignatureRequest(signatureRequestId, signerId.id)
+      getSignatureRequest(signatureRequestId, signerId)
     ),
     RTE.chainW(grantReadAccessToDocuments),
     RTE.map((request) =>

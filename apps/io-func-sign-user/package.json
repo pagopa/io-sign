@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-user",
-  "version": "2.2.0",
+  "version": "2.9.5",
   "private": true,
   "license": "MPL-2.0",
   "files": [
@@ -20,7 +20,7 @@
     "start": "func start  --port 7072",
     "build:package": "npm-pack-zip --add-version",
     "generate:lollipop-api-models": "rimraf ./src/infra/lollipop/models && gen-api-models --api-spec https://raw.githubusercontent.com/pagopa/io-functions-lollipop/f0a4485bf65f4f2d50ca1383a56a808c4f2ad4ea/openapi/external.yaml --no-strict --out-dir ./src/infra/lollipop/models --request-types --response-decoders --client",
-    "generate:user-api-models": "rimraf ./src/infra/http/models && gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models",
+    "generate:user-api-models": "rimraf ./src/infra/http/models && gen-api-models --api-spec ./api/internal.yaml --out-dir ./src/infra/http/models",
     "generate:api-models": "pnpm generate:user-api-models & pnpm generate:lollipop-api-models"
   },
   "dependencies": {
@@ -30,7 +30,6 @@
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",
     "@io-sign/io-sign": "workspace:^",
-    "@pagopa/azure-storage-migration-kit": "0.0.5",
     "@pagopa/handler-kit": "catalog:",
     "@pagopa/handler-kit-azure-func": "catalog:",
     "@pagopa/io-functions-commons": "catalog:",

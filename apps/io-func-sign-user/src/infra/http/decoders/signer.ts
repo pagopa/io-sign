@@ -1,11 +1,14 @@
-import { flow, pipe } from "fp-ts/lib/function";
+import { pipe } from "fp-ts/lib/function";
 import { lookup } from "fp-ts/Record";
 import * as E from "fp-ts/lib/Either";
+import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as TE from "fp-ts/lib/TaskEither";
 import * as t from "io-ts";
 
 import * as H from "@pagopa/handler-kit";
 
-import { Signer } from "@io-sign/io-sign/signer";
+import { Signer, SignerRepository } from "@io-sign/io-sign/signer";
+import { requireFiscalCode } from "./fiscal-code";
 
 export const SpidLevel = t.keyof({
   "https://www.spid.gov.it/SpidL1": null,
@@ -38,23 +41,21 @@ export const requireSpidLevel = (req: H.HttpRequest) =>
     )
   );
 
-export const requireSignerId = (req: H.HttpRequest) =>
+export const requireSignerIdFromFiscalCode = (
+  req: H.HttpRequest
+): RTE.ReaderTaskEither<
+  { signerRepository: SignerRepository },
+  Error,
+  Signer["id"]
+> =>
   pipe(
-    req.headers,
-    lookup("x-iosign-signer-id"),
-    E.fromOption(
-      () => new H.HttpBadRequestError("Missing x-iosign-signer-id in header")
-    ),
-    E.chainW(
-      H.parse(
-        Signer.props.id,
-        "The content of x-iosign-signer-id is not a valid id"
-      )
+    RTE.fromEither(requireFiscalCode(req)),
+    RTE.chainW(
+      (fiscalCode) =>
+        ({ signerRepository }: { signerRepository: SignerRepository }) =>
+          pipe(
+            signerRepository.getSignerByFiscalCode(fiscalCode),
+            TE.map((signer) => signer.id)
+          )
     )
   );
-
-export const requireSigner = flow(
-  requireSignerId,
-  E.map((id) => ({ id })),
-  E.chainW(H.parse(Signer, "Cannot parse the given object to a Signer"))
-);

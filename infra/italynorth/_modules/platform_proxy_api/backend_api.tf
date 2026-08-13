@@ -17,6 +17,26 @@ resource "azurerm_api_management_named_value" "app_backend_key" {
   }
 }
 
+resource "azurerm_api_management_named_value" "user_func_key" {
+  name                = "io-sign-user-func-key"
+  api_management_name = var.platform_apim_name
+  resource_group_name = var.platform_apim_resource_group_name
+  display_name        = "io-sign-user-func-key"
+  secret              = true
+  value_from_key_vault {
+    secret_id = "${var.key_vault_common_uri_itn}secrets/io-fn-sign-user-key"
+  }
+}
+
+resource "azurerm_api_management_named_value" "user_func_url" {
+  name                = "io-sign-user-func-url"
+  api_management_name = var.platform_apim_name
+  resource_group_name = var.platform_apim_resource_group_name
+  display_name        = "io-sign-user-func-url"
+
+  value               = format("https://%s-sign-user-func-02.azurewebsites.net", var.project_itn)
+}
+
 resource "azurerm_api_management_api" "io_sign" {
   name                  = "io-p-sign-api"
   api_management_name   = var.platform_apim_name
@@ -33,8 +53,8 @@ resource "azurerm_api_management_api" "io_sign" {
   protocols    = ["https"]
 
   import {
-    content_format = "openapi-link"
-    content_value  = "https://raw.githubusercontent.com/pagopa/io-backend/066b5aa08e40a270164fe6dccd9ed4d08705c05a/openapi/generated/api_io_sign.yaml"
+    content_format = "openapi"
+    content_value  = file("${path.module}/../../../../apps/io-func-sign-user/api/external.yaml")
   }
 }
 
@@ -42,7 +62,7 @@ resource "azurerm_api_management_product_api" "io_sign" {
   api_name            = azurerm_api_management_api.io_sign.name
   resource_group_name = var.platform_apim_resource_group_name
   api_management_name = var.platform_apim_name
-  product_id          = data.azurerm_api_management_product.apim_platform_domain_product.product_id
+  product_id          = azurerm_api_management_product.apim_platform_domain_product.product_id
 }
 
 resource "azurerm_api_management_api_policy" "io_sign" {
@@ -50,7 +70,7 @@ resource "azurerm_api_management_api_policy" "io_sign" {
   api_management_name = var.platform_apim_name
   resource_group_name = var.platform_apim_resource_group_name
 
-  xml_content = file("${path.module}/policies/io_sign/_api_base_policy_rev1.xml")
+  xml_content = file("${path.module}/policies/io_sign/_api_base_policy.xml")
 }
 
 resource "azurerm_api_management_api_tag" "io_sign_api_tag" {

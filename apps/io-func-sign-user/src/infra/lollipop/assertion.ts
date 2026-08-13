@@ -14,7 +14,7 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { validate } from "@io-sign/io-sign/validation";
 import { LollipopAssertionRef } from "../http/models/LollipopAssertionRef";
 import { LollipopJWTAuthorization } from "../http/models/LollipopJWTAuthorization";
-import { LollipopApiClient } from "./client";
+import { LollipopApiClientExt } from "./client";
 import { LollipopAuthBearer } from "./models/LollipopAuthBearer";
 import { AssertionType, AssertionTypeEnum } from "./models/AssertionType";
 import { LCUserInfo } from "./models/LCUserInfo";
@@ -37,7 +37,7 @@ export const isAssertionSaml =
     type === AssertionTypeEnum.SAML && SamlUserInfo.is(assertion);
 
 export const makeGetBase64SamlAssertion =
-  (lollipopClient: LollipopApiClient): GetSamlAssertion =>
+  (lollipopClient: LollipopApiClientExt): GetSamlAssertion =>
   ({ assertionRef, jwtAuthorization, assertionType }) =>
     pipe(
       TE.tryCatch(
@@ -81,3 +81,30 @@ export const makeGetBase64SamlAssertion =
       TE.chainEitherK(stringToBase64Encode),
       TE.chainEitherKW(validate(NonEmptyString, "Saml assertion is not valid"))
     );
+
+// Matches the first `keyid` value in a `signature-input` header
+// e.g. sig1=(...);keyid="sha256-abc...";nonce="xyz"
+const KEY_ID_REGEX = /;?keyid="([^"]+)";?/;
+
+/**
+ * Returns the hash algorithm prefix of an AssertionRef.
+ * e.g. "sha256-abc..." → "sha256"
+ */
+export const getAlgoFromAssertionRef = (
+  assertionRef: LollipopAssertionRef
+): string => assertionRef.split("-")[0];
+
+/**
+ * Extracts the public-key thumbprint from the `keyid` field of a
+ * `signature-input` header value.
+ */
+export const getKeyThumbprintFromSignature = (
+  signatureInput: string
+): E.Either<Error, string> => {
+  const match = KEY_ID_REGEX.exec(signatureInput);
+  return match?.[1]
+    ? E.right(match[1])
+    : E.left(
+        new Error('Missing or invalid "keyid" in "signature-input" header')
+      );
+};

@@ -27,7 +27,8 @@ const requireIssuerEnvironment = (
     req.headers,
     lookup("x-iosign-issuer-environment"),
     O.getOrElse(() => "TEST"),
-    H.parse(IssuerEnvironment, "Invalid issuer environment")
+    H.parse(IssuerEnvironment, "Invalid issuer environment"),
+    E.mapLeft(() => new H.HttpBadRequestError("Invalid issuer environment"))
   );
 
 export const GetQtspClausesMetadataHandler = H.of((req: H.HttpRequest) =>

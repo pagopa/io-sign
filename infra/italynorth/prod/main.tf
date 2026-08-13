@@ -53,6 +53,17 @@ module "function_sign_backoffice" {
   tags                                  = local.tags
 }
 
+module "function_sign_events" {
+  source                            = "../_modules/events_function_app"
+  vnet_common_name_itn              = local.vnet_common_name_itn
+  common_resource_group_name_itn    = local.common_resource_group_name_itn
+  sign_events_snet_cidr             = local.sign_events_snet_cidr
+  function_events_autoscale_minimum = local.function_events_autoscale_minimum
+  function_events_autoscale_maximum = local.function_events_autoscale_maximum
+  function_events_autoscale_default = local.function_events_autoscale_default
+  tags                              = local.tags
+}
+
 module "itn_sign_backoffice_app" {
   source = "../_modules/backoffice_app_service"
 
@@ -81,6 +92,7 @@ module "platform_proxy_api" {
   key_vault_resource_group_name_itn = module.sign_key_vault.resource_group_name
   key_vault_common_uri_itn          = module.sign_key_vault.vault_uri
   subscription_id                   = data.azurerm_subscription.current.subscription_id
+  project_itn                       = local.project_itn
 }
 
 

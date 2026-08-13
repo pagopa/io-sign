@@ -1,5 +1,85 @@
 # io-func-sign-user
 
+## 2.9.5
+
+### Patch Changes
+
+- 4f0a261: remove weu storage account
+
+## 2.9.4
+
+### Patch Changes
+
+- 6f1df85: remove migration kit for signed documents
+
+## 2.9.3
+
+### Patch Changes
+
+- ff35d85: remove migration kit for validated-documents
+
+## 2.9.2
+
+### Patch Changes
+
+- 253295c: expose external openapi and fix internal openapi
+
+## 2.9.1
+
+### Patch Changes
+
+- Updated dependencies [4fe50c8]
+  - @io-sign/io-sign@1.11.5
+
+## 2.9.0
+
+### Minor Changes
+
+- 534d48b: Fix create-signature assertion-ref logic
+
+## 2.8.0
+
+### Minor Changes
+
+- 3a462da: decouple create-signature
+
+## 2.7.1
+
+### Patch Changes
+
+- Updated dependencies [92fcb86]
+  - @io-sign/io-sign@1.11.4
+
+## 2.7.0
+
+### Minor Changes
+
+- 4370e43: decouple post-create-filled-document
+
+## 2.6.0
+
+### Minor Changes
+
+- dc6a3ee: add getMetadata api
+
+## 2.5.0
+
+### Minor Changes
+
+- 0b63ef3: decouple get-qtsp-clauses-metadata
+
+## 2.4.0
+
+### Minor Changes
+
+- 168234b: decouple get-signature-request
+
+## 2.3.0
+
+### Minor Changes
+
+- d8375f0: Decouple get-signature-requests
+
 ## 2.2.0
 
 ### Minor Changes

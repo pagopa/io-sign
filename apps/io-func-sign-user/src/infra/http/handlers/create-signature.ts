@@ -11,11 +11,9 @@ import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
 import { ContainerClient } from "@azure/storage-blob";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
-import { getDocumentUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
 import { GetDocumentUrl } from "@io-sign/io-sign/document-url";
 import { SignerRepository } from "@io-sign/io-sign/signer";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
@@ -25,7 +23,8 @@ import { validate } from "@io-sign/io-sign/validation";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import * as L from "@pagopa/logger";
 
-import { requireSigner, requireSpidLevel } from "../decoders/signer";
+import { requireSpidLevel } from "../decoders/signer";
+import { requireFiscalCode } from "../decoders/fiscal-code";
 import { requireCreateSignatureLollipopParams } from "../decoders/lollipop";
 import {
   requireCreateSignatureBody,
@@ -46,16 +45,45 @@ import {
 } from "../../azure/cosmos/signature-request";
 import { makeNotifySignatureReadyEvent } from "../../azure/storage/signature";
 
-import { LollipopApiClient } from "../../lollipop/client";
-import { makeGetBase64SamlAssertion } from "../../lollipop/assertion";
+import type { LollipopApiClientExt } from "../../lollipop/client";
+import type { LollipopApiClientInt } from "../../lollipop/lc-params";
+import { makeGetLcParams } from "../../lollipop/lc-params";
+import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
+import type { IoProfileClientWithApiKey } from "@io-sign/io-sign/infra/io-profile/client";
+import {
+  getAlgoFromAssertionRef,
+  getKeyThumbprintFromSignature,
+  makeGetBase64SamlAssertion
+} from "../../lollipop/assertion";
 import { getSignatureFromHeaderName } from "../../lollipop/signature";
+import { LollipopAssertionRef } from "../models/LollipopAssertionRef";
+
+const checkAssertionRefMatchesSignature = (
+  assertionRef: LollipopAssertionRef,
+  signatureInput: string
+): E.Either<Error, void> =>
+  pipe(
+    getKeyThumbprintFromSignature(signatureInput),
+    E.chain((keyThumbprint) =>
+      assertionRef ===
+      `${getAlgoFromAssertionRef(assertionRef)}-${keyThumbprint}`
+        ? E.right(undefined)
+        : E.left<Error>(
+            new H.HttpForbiddenError(
+              "AssertionRef does not match the keyid in signature-input"
+            )
+          )
+    )
+  );
 
 export type CreateSignatureDependencies = {
   signerRepository: SignerRepository;
-  lollipopApiClient: LollipopApiClient;
+  lollipopApiClientExt: LollipopApiClientExt;
+  lollipopApiClientInt: LollipopApiClientInt;
+  ioProfileClient: IoProfileClientWithApiKey;
   db: CosmosDatabase;
   qtspQueue: QueueClient;
-  validatedContainerClient: BaseContainerClientWithFallback;
+  validatedContainerClient: ContainerClient;
   signedContainerClient: ContainerClient;
   qtspConfig: NamirialConfig;
 };
@@ -64,7 +92,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
   pipe(
     RTE.fromEither(
       sequenceS(E.Apply)({
-        signer: requireSigner(req),
+        fiscalCode: requireFiscalCode(req),
         spidLevel: requireSpidLevel(req),
         body: requireCreateSignatureBody(req),
         documentsSignature: requireDocumentsSignature(req),
@@ -86,15 +114,20 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
       (sequence) =>
         ({
           signerRepository,
-          lollipopApiClient,
+          lollipopApiClientExt,
+          lollipopApiClientInt,
+          ioProfileClient,
           db,
           qtspQueue,
           validatedContainerClient,
           signedContainerClient,
           qtspConfig
         }: CreateSignatureDependencies) => {
+          const getValidatedEmailByFiscalCode =
+            makeGetValidatedEmailByFiscalCode(ioProfileClient);
+          const getLcParams = makeGetLcParams(lollipopApiClientInt);
           const getBase64SamlAssertion =
-            makeGetBase64SamlAssertion(lollipopApiClient);
+            makeGetBase64SamlAssertion(lollipopApiClientExt);
           const getSignatureRequest = makeGetSignatureRequest(db);
           const creatQtspSignatureRequest =
             makeCreateSignatureRequestWithToken()(makeGetToken())(qtspConfig);
@@ -104,10 +137,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
 
           const getDownloadDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
-          ) =>
-            getDocumentUrlWithFallback("r", 60)(document)(
-              validatedContainerClient
-            );
+          ) => getDocumentUrl("r", 60)(document)(validatedContainerClient);
 
           const getUploadSignedDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
@@ -126,30 +156,75 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           );
 
           return pipe(
-            sequenceS(TE.ApplySeq)({
-              samlAssertionBase64: getBase64SamlAssertion(
-                sequence.lollipopParams
-              ),
-              tosSignature: pipe(
-                getSignatureFromHeaderName(
-                  sequence.lollipopParams.signatureInput,
-                  sequence.lollipopParams.signature,
-                  "x-pagopa-lollipop-custom-tos-challenge"
-                ),
-                TE.fromEither
-              ),
-              challengeSignature: pipe(
-                getSignatureFromHeaderName(
-                  sequence.lollipopParams.signatureInput,
-                  sequence.lollipopParams.signature,
-                  "x-pagopa-lollipop-custom-sign-challenge"
-                ),
-                TE.fromEither
+            TE.fromEither(
+              checkAssertionRefMatchesSignature(
+                sequence.lollipopParams.assertionRef,
+                sequence.lollipopParams.signatureInput
               )
-            }),
+            ),
+            TE.chainW(() =>
+              sequenceS(TE.ApplyPar)({
+                signer: signerRepository.getSignerByFiscalCode(
+                  sequence.fiscalCode
+                ),
+                email: getValidatedEmailByFiscalCode(sequence.fiscalCode),
+                lcParams: getLcParams({
+                  assertionRef: sequence.lollipopParams.assertionRef,
+                  signatureInput: sequence.lollipopParams.signatureInput
+                })
+              })
+            ),
+            TE.chainW(({ signer, email, lcParams }) =>
+              pipe(
+                sequenceS(TE.ApplySeq)({
+                  samlAssertionBase64: getBase64SamlAssertion({
+                    assertionRef: lcParams.assertion_ref,
+                    jwtAuthorization: lcParams.lc_authentication_bearer,
+                    assertionType: lcParams.assertion_type
+                  }),
+                  tosSignature: pipe(
+                    getSignatureFromHeaderName(
+                      sequence.lollipopParams.signatureInput,
+                      sequence.lollipopParams.signature,
+                      "x-pagopa-lollipop-custom-tos-challenge"
+                    ),
+                    TE.fromEither
+                  ),
+                  challengeSignature: pipe(
+                    getSignatureFromHeaderName(
+                      sequence.lollipopParams.signatureInput,
+                      sequence.lollipopParams.signature,
+                      "x-pagopa-lollipop-custom-sign-challenge"
+                    ),
+                    TE.fromEither
+                  )
+                }),
+                TE.map(
+                  ({
+                    samlAssertionBase64,
+                    tosSignature,
+                    challengeSignature
+                  }) => ({
+                    signer,
+                    email,
+                    samlAssertionBase64,
+                    tosSignature,
+                    challengeSignature,
+                    publicKey: lcParams.pub_key
+                  })
+                )
+              )
+            ),
             TE.map(
-              ({ samlAssertionBase64, tosSignature, challengeSignature }) => ({
-                signer: sequence.signer,
+              ({
+                signer,
+                email,
+                samlAssertionBase64,
+                tosSignature,
+                challengeSignature,
+                publicKey
+              }) => ({
+                signer,
                 qtspClauses: {
                   ...sequence.qtspClauses,
                   // TODO: [SFEQS-1237] workaround for WAF
@@ -171,11 +246,11 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
                         )
                 },
                 documentsSignature: sequence.documentsSignature,
-                email: sequence.body.email,
+                email,
                 signatureRequestId: sequence.body.signatureRequestId,
                 signatureValidationParams: {
                   signatureInput: sequence.lollipopParams.signatureInput,
-                  publicKey: sequence.lollipopParams.publicKey,
+                  publicKey,
                   samlAssertionBase64,
                   tosSignature,
                   challengeSignature

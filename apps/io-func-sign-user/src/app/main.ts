@@ -9,6 +9,8 @@ import { identity, pipe } from "fp-ts/lib/function";
 
 import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
+import { createIoProfileClient } from "@io-sign/io-sign/infra/io-profile/client";
+import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -18,7 +20,6 @@ import {
 } from "@io-sign/io-sign/signature-request";
 import { CreateFilledDocumentFunction } from "../infra/azure/functions/create-filled-document";
 import { FillDocumentFunction } from "../infra/azure/functions/fill-document";
-import { GetSignerByFiscalCodeFunction } from "../infra/azure/functions/get-signer-by-fiscal-code";
 import { GetQtspClausesMetadataFunction } from "../infra/azure/functions/get-qtsp-clauses-metadata";
 import { CreateSignatureFunction } from "../infra/azure/functions/create-signature";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
@@ -27,14 +28,17 @@ import { FillDocumentPayload } from "../filled-document";
 import { ValidateSignaturePayload } from "./use-cases/validate-signature";
 import { GetThirdPartyMessageDetailsFunction } from "../infra/azure/functions/get-third-party-message-details";
 import { GetThirdPartyMessageAttachmentContentFunction } from "../infra/azure/functions/get-third-party-message-attachments-content";
-import { createLollipopApiClient } from "../infra/lollipop/client";
+import {
+  createLollipopApiClientExt,
+  createLollipopApiClientInt
+} from "../infra/lollipop/client";
 import { GetSignatureRequestsFunction } from "../infra/azure/functions/get-signature-requests";
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signature-request";
 import { UpdateSignatureRequestFunction } from "../infra/azure/functions/update-signature-request";
 import { InfoFunction } from "../infra/azure/functions/info";
+import { GetMetadataFunction } from "../infra/azure/functions/get-metadata";
 import { getConfigFromEnvironment } from "./config";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
 
 const configOrError = pipe(
   getConfigFromEnvironment(process.env),
@@ -85,41 +89,14 @@ const onRejectedQueueClient = new QueueClient(
   "on-signature-request-rejected"
 );
 
-// ITN is the new primary for validated-documents (all new writes go here).
-const validatedContainerClientItn = new ContainerClient(
-  config.azure.storage.connectionStringItn,
-  "validated-documents"
-);
-
-// WEU is kept as the fallback: blobs validated before the migration still live here.
 const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
+  config.azure.storage.connectionStringItn,
   "validated-documents"
 );
 
-// Reads try ITN first and fall back to WEU; writes always go to ITN.
-const validatedContainerClientWithFallback =
-  new BaseContainerClientWithFallback(
-    validatedContainerClientItn,
-    validatedContainerClient
-  );
-
-// ITN is the new primary for signed-documents (QTSP will write here after migration).
-const signedContainerClientItn = new ContainerClient(
+const signedContainerClient = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "signed-documents"
-);
-
-// WEU is kept as the fallback: blobs signed before the migration still live here.
-const signedContainerClient = new ContainerClient(
-  config.azure.storage.connectionString,
-  "signed-documents"
-);
-
-// Reads try ITN first and fall back to WEU; writes always go to ITN.
-const signedContainerClientWithFallback = new BaseContainerClientWithFallback(
-  signedContainerClientItn,
-  signedContainerClient
 );
 
 const pdvTokenizerClient = createPdvTokenizerClient(
@@ -134,9 +111,22 @@ const ioApiClient = createIOApiClient(
   config.pagopa.ioServices.subscriptionKey
 );
 
-const lollipopApiClient = createLollipopApiClient(
-  config.pagopa.lollipop.apiBasePath,
-  config.pagopa.lollipop.apiKey
+const ioProfileClient = createIoProfileClient(
+  config.pagopa.ioProfile.basePath,
+  config.pagopa.ioProfile.apiKey
+);
+
+const getValidatedEmailByFiscalCode =
+  makeGetValidatedEmailByFiscalCode(ioProfileClient);
+
+const lollipopApiClientExt = createLollipopApiClientExt(
+  config.pagopa.lollipopExternal.apiBasePath,
+  config.pagopa.lollipopExternal.apiKey
+);
+
+const lollipopApiClientInt = createLollipopApiClientInt(
+  config.pagopa.lollipopInternal.apiBasePath,
+  config.pagopa.lollipopInternal.apiKey
 );
 
 const generateSignatureRequestQrCode = makeGenerateSignatureRequestQrCode(
@@ -151,11 +141,12 @@ const info = InfoFunction({
   namirialConfig: config.namirial,
   pdvTokenizerClient,
   ioApiClient,
-  lollipopApiClient,
+  lollipopApiClientExt,
+  lollipopApiClientInt,
   db: database,
   filledContainerClient,
   validatedContainerClient,
-  signedContainerClient: signedContainerClientItn,
+  signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
   onWaitForSignatureQueueClient
@@ -168,8 +159,20 @@ app.http("info", {
   handler: info
 });
 
+const getMetadata = GetMetadataFunction({
+  ioSignServiceId: config.pagopa.ioSignServiceId
+});
+
+app.http("getMetadata", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "metadata",
+  handler: getMetadata
+});
+
 const getSignatureRequests = GetSignatureRequestsFunction({
-  signatureRequestRepository
+  signatureRequestRepository,
+  signerRepository
 });
 
 app.http("getSignatureRequests", {
@@ -181,8 +184,9 @@ app.http("getSignatureRequests", {
 
 const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
-  validatedContainerClient: validatedContainerClientWithFallback,
-  signedContainerClient: signedContainerClientWithFallback
+  signerRepository,
+  validatedContainerClient,
+  signedContainerClient
 });
 
 app.http("getSignatureRequest", {
@@ -206,11 +210,13 @@ app.storageQueue("updateSignatureRequest", {
 
 const createSignature = CreateSignatureFunction({
   signerRepository,
-  lollipopApiClient,
+  lollipopApiClientExt,
+  lollipopApiClientInt,
+  ioProfileClient,
   db: database,
   qtspQueue,
-  validatedContainerClient: validatedContainerClientWithFallback,
-  signedContainerClient: signedContainerClientItn,
+  validatedContainerClient,
+  signedContainerClient,
   qtspConfig: config.namirial
 });
 
@@ -234,18 +240,6 @@ app.storageQueue("createSignatureRequest", {
   handler: createSignatureRequest
 });
 
-const getSignerByFiscalCode = GetSignerByFiscalCodeFunction({
-  signerRepository,
-  ioApiClient
-});
-
-app.http("getSignerByFiscalCode", {
-  methods: ["POST"],
-  authLevel: "function",
-  route: "signers",
-  handler: getSignerByFiscalCode
-});
-
 const getQtspClausesMetadata = GetQtspClausesMetadataFunction(config.namirial);
 
 app.http("getQtspClausesMetadata", {
@@ -258,7 +252,8 @@ app.http("getQtspClausesMetadata", {
 const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
   documentsToFillQueue,
-  signerRepository
+  signerRepository,
+  getValidatedEmailByFiscalCode
 });
 
 app.http("createFilledDocument", {
@@ -284,7 +279,7 @@ const getThirdPartyMessageAttachmentContent =
   GetThirdPartyMessageAttachmentContentFunction({
     signerRepository,
     db: database,
-    signedContainerClient: signedContainerClientWithFallback
+    signedContainerClient
   });
 
 app.http("getThirdPartyMessageAttachmentContent", {
@@ -308,7 +303,7 @@ app.storageQueue("fillDocument", {
 
 const validateSignature = ValidateSignatureFunction({
   db: database,
-  signedContainerClient: signedContainerClientItn,
+  signedContainerClient,
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,

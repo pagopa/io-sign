@@ -11,15 +11,14 @@ post {
 }
 
 headers {
-  x-iosign-signer-id: {{signer_id}}
+  x-iosign-fiscal-code: {{fiscal_code}}
+  x-iosign-name: {{name}}
+  x-iosign-family-name: {{family_name}}
 }
 
 body:json {
   {
-    "document_url": "{{document_url}}",
-    "email": "mario.rossi@test.com",
-    "family_name": "Rossi",
-    "name": "Mario"
+    "document_url": "{{document_url}}"
   }
 }
 

@@ -1,5 +1,19 @@
 # io-func-sign-support
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [4fe50c8]
+  - @io-sign/io-sign@1.11.5
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [92fcb86]
+  - @io-sign/io-sign@1.11.4
+
 ## 1.8.0
 
 ### Minor Changes

@@ -1,14 +1,14 @@
 import * as H from "@pagopa/handler-kit";
 import { sequenceS } from "fp-ts/lib/Apply";
 
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
+import { ContainerClient } from "@azure/storage-blob";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import * as A from "fp-ts/lib/Array";
 
-import { toDocumentWithSasUrlWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
+import { toDocumentWithSasUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
 
 import { flow, pipe } from "fp-ts/lib/function";
 import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
@@ -20,11 +20,11 @@ import { requireSignatureRequestId } from "../decoders/signature-request";
 
 const grantReadAccessToDocuments =
   (request: SignatureRequestSigned) =>
-  (r: { signedContainerClient: BaseContainerClientWithFallback }) =>
+  (r: { signedContainerClient: ContainerClient }) =>
     pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrlWithFallback("r", 5)(doc)(r.signedContainerClient)
+        toDocumentWithSasUrl("r", 5)(doc)(r.signedContainerClient)
       ),
       TE.map((documents): SignatureRequestSigned => ({ ...request, documents }))
     );

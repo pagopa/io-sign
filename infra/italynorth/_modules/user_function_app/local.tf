@@ -18,7 +18,6 @@ locals {
       CosmosDbConnectionString             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       CosmosDbEndpoint                     = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbDatabaseName                 = "user"
-      StorageAccountConnectionString       = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-CONNECTION-STRING)"
       StorageAccountItnConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
       userUploadedBlobContainerName        = "uploaded-documents"
       userValidatedBlobContainerName       = "validated-documents"
@@ -44,6 +43,10 @@ locals {
       IoLinkBaseUrl                        = "https://continua.io.pagopa.it"
       WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES    = "200,204"
+      "AzureWebJobs.createSignatureRequest.Disabled"           = "1"
+      "AzureWebJobs.fillDocument.Disabled"                     = "1"
+      "AzureWebJobs.updateSignatureRequest.Disabled"           = "1"
+      "AzureWebJobs.validateSignature.Disabled"                = "1"
     }
   }
 }

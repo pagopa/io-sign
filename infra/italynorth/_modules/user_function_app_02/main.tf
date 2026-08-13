@@ -20,7 +20,7 @@ module "function_sign_user_02" {
   }
 
   subnet_cidr                              = var.sign_user_02_snet_cidr
-  health_check_path                        = "/api/v1/sign/info" // TBD
+  health_check_path                        = "/api/v1/sign/info"
   subnet_pep_id                            = data.azurerm_subnet.private_endpoints_subnet_itn.id
   private_dns_zone_resource_group_name     = data.azurerm_resource_group.weu-common.name
   application_insights_connection_string   = data.azurerm_application_insights.application_insights.connection_string
@@ -28,7 +28,15 @@ module "function_sign_user_02" {
 
   app_settings = local.io_sign_user_func_02.app_settings
 
-  slot_app_settings = local.io_sign_user_func_02.app_settings
+  slot_app_settings = merge(
+    local.io_sign_user_func_02.app_settings,
+    {
+      "AzureWebJobs.createSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.fillDocument.Disabled"           = "1"
+      "AzureWebJobs.updateSignatureRequest.Disabled" = "1"
+      "AzureWebJobs.validateSignature.Disabled"      = "1"
+    }
+  )
 
   sticky_app_setting_names = [
     "AzureWebJobs.createSignatureRequest.Disabled",

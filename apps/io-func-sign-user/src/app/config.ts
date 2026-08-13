@@ -4,6 +4,7 @@ import { pipe } from "fp-ts/function";
 import * as RE from "fp-ts/lib/ReaderEither";
 
 import { sequenceS } from "fp-ts/lib/Apply";
+import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import {
   getPdvTokenizerConfigFromEnvironment,
   PdvTokenizerConfig
@@ -33,9 +34,16 @@ import {
   NamirialConfig
 } from "../infra/namirial/config";
 import {
-  getLollipopConfigFromEnvironment,
-  LollipopConfig
+  getLollipopExtConfigFromEnvironment,
+  getLollipopIntConfigFromEnvironment,
+  LollipopExtConfig,
+  LollipopIntConfig
 } from "../infra/lollipop/config";
+import { readNonEmptyFromEnvironment } from "@io-sign/io-sign/infra/env";
+import {
+  getIoProfileConfigFromEnvironment,
+  IoProfileConfig
+} from "@io-sign/io-sign/infra/io-profile/config";
 
 export const Config = t.type({
   azure: t.type({
@@ -46,7 +54,10 @@ export const Config = t.type({
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
     ioServices: IOServicesConfig,
-    lollipop: LollipopConfig,
+    lollipopExternal: LollipopExtConfig,
+    lollipopInternal: LollipopIntConfig,
+    ioSignServiceId: NonEmptyString,
+    ioProfile: IoProfileConfig,
     ioLink: IoLinkConfig
   }),
   namirial: NamirialConfig
@@ -65,9 +76,12 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     tokenizer: getPdvTokenizerConfigFromEnvironment,
     ioServices: getIoServicesConfigFromEnvironment,
     namirial: getNamirialConfigFromEnvironment,
-    lollipop: getLollipopConfigFromEnvironment,
+    lollipopExternal: getLollipopExtConfigFromEnvironment,
+    lollipopInternal: getLollipopIntConfigFromEnvironment,
     eventHubs: getEventHubsConfigFromEnvironment,
-    ioLink: getIoLinkConfigFromEnvironment
+    ioLink: getIoLinkConfigFromEnvironment,
+    ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId"),
+    ioProfile: getIoProfileConfigFromEnvironment
   }),
   RE.map((config) => ({
     azure: {
@@ -78,7 +92,10 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     pagopa: {
       tokenizer: config.tokenizer,
       ioServices: config.ioServices,
-      lollipop: config.lollipop,
+      lollipopExternal: config.lollipopExternal,
+      lollipopInternal: config.lollipopInternal,
+      ioSignServiceId: config.ioSignServiceId,
+      ioProfile: config.ioProfile,
       ioLink: config.ioLink
     },
     namirial: config.namirial

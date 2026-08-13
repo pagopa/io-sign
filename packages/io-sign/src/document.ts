@@ -103,7 +103,7 @@ export const SignatureFields = t.brand(
 );
 
 export const DocumentMetadata = t.type({
-  title: WithinRangeString(3, 60),
+  title: WithinRangeString(3, 61),
   signatureFields: SignatureFields,
   pdfDocumentMetadata: PdfDocumentMetadata
 });

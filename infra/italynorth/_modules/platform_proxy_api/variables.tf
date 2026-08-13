@@ -27,6 +27,11 @@ variable "subscription_id" {
   description = "Subscription ID"
 }
 
+variable "project_itn" {
+  type        = string
+  description = "ITN project prefix (e.g. io-p-itn)"
+}
+
 variable "key_vault_common_uri_itn" {
   type        = string
   description = "Key Vault Common URI ITN"

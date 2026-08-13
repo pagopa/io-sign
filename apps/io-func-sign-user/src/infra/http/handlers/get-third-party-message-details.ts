@@ -16,7 +16,7 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { makeGetSignatureRequest } from "../../azure/cosmos/signature-request";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 import { SignatureRequestToThirdPartyMessage } from "../encoders/signature-request";
-import { requireFiscalCode } from "../decoders/fiscal-code";
+import { requireFiscalCodeFromIoMessages } from "../decoders/fiscal-code";
 
 type GetThirdPartyMessageDetailsDependencies = {
   signerRepository: SignerRepository;
@@ -26,7 +26,7 @@ type GetThirdPartyMessageDetailsDependencies = {
 export const GetThirdPartyMessageDetailsHandler = H.of((req: H.HttpRequest) =>
   pipe(
     sequenceS(RTE.ApplyPar)({
-      fiscalCode: RTE.fromEither(requireFiscalCode(req)),
+      fiscalCode: RTE.fromEither(requireFiscalCodeFromIoMessages(req)),
       signatureRequestId: requireSignatureRequestId(req)
     }),
     RTE.chainW(

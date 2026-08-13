@@ -1,5 +1,17 @@
 # @io-sign/io-sign
 
+## 1.11.5
+
+### Patch Changes
+
+- 4fe50c8: fix range on DocumentMetadata title type definition
+
+## 1.11.4
+
+### Patch Changes
+
+- 92fcb86: Fix OpenAPI decode regex AppVersion on io-profile
+
 ## 1.11.3
 
 ### Patch Changes

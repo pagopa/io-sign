@@ -8,20 +8,20 @@ import { lookup } from "fp-ts/lib/Record";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { Database } from "@azure/cosmos";
-import { BaseContainerClientWithFallback } from "@pagopa/azure-storage-migration-kit";
+import { ContainerClient } from "@azure/storage-blob";
 
 import { SignerRepository } from "@io-sign/io-sign/signer";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { Document, DocumentId, DocumentReady } from "@io-sign/io-sign/document";
 import { GetDocumentContent } from "@io-sign/io-sign/document-content";
-import { getDocumentContentWithFallback } from "@io-sign/io-sign/infra/azure/storage/blob-storage-with-fallback";
+import { getDocumentContent as getDocumentContentFromStorage } from "@io-sign/io-sign/infra/azure/storage/document-content";
 import { bufferResponse } from "@io-sign/io-sign/infra/http/response";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 import { makeGetSignatureRequest } from "../../azure/cosmos/signature-request";
 import { requireSignatureRequestId } from "../decoders/signature-request";
 import { makeGetSignedDocumentContent } from "../../../app/use-cases/get-signed-document-content";
-import { requireFiscalCode } from "../decoders/fiscal-code";
+import { requireFiscalCodeFromIoMessages } from "../decoders/fiscal-code";
 
 const requireDocumentId = (
   req: H.HttpRequest
@@ -38,14 +38,14 @@ const requireDocumentId = (
 export type GetThirdPartyMessageAttachmentContentDependencies = {
   signerRepository: SignerRepository;
   db: Database;
-  signedContainerClient: BaseContainerClientWithFallback;
+  signedContainerClient: ContainerClient;
 };
 
 export const GetThirdPartyMessageAttachmentContentHandler = H.of(
   (req: H.HttpRequest) =>
     pipe(
       sequenceS(RTE.ApplyPar)({
-        fiscalCode: RTE.fromEither(requireFiscalCode(req)),
+        fiscalCode: RTE.fromEither(requireFiscalCodeFromIoMessages(req)),
         signatureRequestId: requireSignatureRequestId(req),
         documentId: RTE.fromEither(requireDocumentId(req))
       }),
@@ -59,8 +59,7 @@ export const GetThirdPartyMessageAttachmentContentHandler = H.of(
             const getSignatureRequest = makeGetSignatureRequest(db);
             const getDocumentContent: GetDocumentContent = (
               document: DocumentReady
-            ) =>
-              getDocumentContentWithFallback(document)(signedContainerClient);
+            ) => getDocumentContentFromStorage(document)(signedContainerClient);
             const getSignedDocumentContent =
               makeGetSignedDocumentContent(getDocumentContent);
 

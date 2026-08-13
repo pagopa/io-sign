@@ -119,7 +119,6 @@ export const requireCreateSignatureBody = (req: H.HttpRequest) =>
     req.body,
     validate(CreateSignatureBody),
     E.map((body) => ({
-      email: body.email,
       signatureRequestId: body.signature_request_id
     }))
   );

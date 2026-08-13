@@ -35,10 +35,13 @@ import {
   makeAzureStorageContainerHealthCheck,
   makeAzureStorageQueueHealthCheck
 } from "../../azure/storage/health-check";
-import { LollipopApiClient } from "../../lollipop/client";
+import { LollipopApiClientExt } from "../../lollipop/client";
+import type { LollipopApiClientInt } from "../../lollipop/lc-params";
 import {
-  LollipopApiClientProblemSource,
-  makeLollipopClientHealthCheck
+  LollipopApiClientExtProblemSource,
+  LollipopApiClientIntProblemSource,
+  makeLollipopExtClientHealthCheck,
+  makeLollipopIntClientHealthCheck
 } from "../../lollipop/health-check";
 
 declare const APP_VERSION: string;
@@ -49,7 +52,8 @@ type ProblemSource =
   | TokenizerProblemSource
   | IOServicesProblemSource
   | NamirialProblemSource
-  | LollipopApiClientProblemSource;
+  | LollipopApiClientExtProblemSource
+  | LollipopApiClientIntProblemSource;
 
 const applicativeValidation = TE.getApplicativeTaskValidation(
   Task.ApplicativePar,
@@ -60,7 +64,8 @@ type InfoDependencies = {
   namirialConfig: NamirialConfig;
   pdvTokenizerClient: PdvTokenizerClientWithApiKey;
   ioApiClient: IOApiClient;
-  lollipopApiClient: LollipopApiClient;
+  lollipopApiClientExt: LollipopApiClientExt;
+  lollipopApiClientInt: LollipopApiClientInt;
   db: Database;
   filledContainerClient: ContainerClient;
   validatedContainerClient: ContainerClient;
@@ -78,7 +83,8 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         namirialConfig,
         pdvTokenizerClient,
         ioApiClient,
-        lollipopApiClient,
+        lollipopApiClientExt,
+        lollipopApiClientInt,
         db,
         filledContainerClient,
         validatedContainerClient,
@@ -89,7 +95,8 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
       }) =>
         pipe(
           [
-            makeLollipopClientHealthCheck(lollipopApiClient)(),
+            makeLollipopExtClientHealthCheck(lollipopApiClientExt)(),
+            makeLollipopIntClientHealthCheck(lollipopApiClientInt)(),
             makeNamirialHealthCheck(namirialConfig.prod),
             makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
             makeIOServicesHealthCheck(ioApiClient)(),

@@ -1,6 +1,6 @@
 {
   "name": "@io-sign/io-sign",
-  "version": "1.11.3",
+  "version": "1.11.5",
   "repository": "https://github.com/pagopa/io-sign",
   "license": "MPL-2.0",
   "exports": {
@@ -20,7 +20,6 @@
     "@azure/event-hubs": "catalog:",
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",
-    "@pagopa/azure-storage-migration-kit": "0.0.5",
     "@pagopa/handler-kit": "^1.1.0",
     "@pagopa/io-functions-commons": "catalog:",
     "@pagopa/io-functions-services-sdk": "catalog:",
@@ -56,7 +55,9 @@
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "build": "tsc",
-    "generate:api-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders"
+    "generate:api-models": "pnpm generate:pdv-tokenizer-api-models && pnpm generate:io-profile-api-models",
+    "generate:pdv-tokenizer-api-models": "gen-api-models --api-spec ./src/infra/pdv-tokenizer/openapi.yaml --out-dir ./src/infra/pdv-tokenizer/models --client --request-types --response-decoders",
+    "generate:io-profile-api-models": "gen-api-models --api-spec ./src/infra/io-profile/openapi.yaml --no-strict --out-dir ./src/infra/io-profile/models --client --request-types --response-decoders"
   },
   "stableVersion": "0.9.0-beta.3"
 }

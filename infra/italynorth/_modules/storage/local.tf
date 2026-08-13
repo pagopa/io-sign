@@ -36,6 +36,10 @@ locals {
     {
       name      = "waiting-for-signature-request-updates"
       hasPoison = true
+    },
+    {
+      name      = "webhook-delivery"
+      hasPoison = true
     }
   ]
 }

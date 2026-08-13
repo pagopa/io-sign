@@ -3,6 +3,7 @@ import * as H from "@pagopa/handler-kit";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe } from "fp-ts/lib/function";
 
@@ -11,8 +12,12 @@ import { QueueClient } from "@azure/storage-queue";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 
-import { SignerRepository } from "@io-sign/io-sign/signer";
+import {
+  getSignerByFiscalCode,
+  SignerRepository
+} from "@io-sign/io-sign/signer";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
+import { GetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
 import {
   defaultBlobGenerateSasUrlOptions,
   deleteBlobIfExist,
@@ -24,7 +29,8 @@ import {
 
 import { makeCreateFilledDocumentUrl } from "../../../app/use-cases/create-filled-document";
 import { makeNotifyDocumentToFill } from "../../azure/storage/document-to-fill";
-import { requireSigner } from "../decoders/signer";
+import { requireFiscalCode } from "../decoders/fiscal-code";
+import { requireFamilyName, requireName } from "../decoders/user-identity";
 import { CreateFilledDocumentBody } from "../models/CreateFilledDocumentBody";
 import { FilledDocumentToApiModel } from "../encoders/filled-document";
 
@@ -32,40 +38,66 @@ type CreateFilledDocumentsDependencies = {
   filledContainerClient: ContainerClient;
   documentsToFillQueue: QueueClient;
   signerRepository: SignerRepository;
+  getValidatedEmailByFiscalCode: GetValidatedEmailByFiscalCode;
 };
 
 type GetFilledDocumentUrl = (
   filledDocumentBlobName: string
 ) => TE.TaskEither<Error, string>;
 
-const requirePayload = (req: H.HttpRequest) =>
+// TODO: [SFEQS-1237] workaround for WAF — URLs may arrive base64-encoded
+const decodeDocumentUrl = (documentUrl: NonEmptyString) =>
+  documentUrl.includes("https://")
+    ? documentUrl
+    : pipe(
+        E.tryCatch(
+          () => Buffer.from(documentUrl, "base64").toString(),
+          E.toError
+        ),
+        E.chainW(H.parse(NonEmptyString, "Invalid encoded filledDocumentUrl")),
+        E.getOrElse((): NonEmptyString => documentUrl)
+      );
+
+const requireDocumentUrl = (req: H.HttpRequest) =>
   pipe(
     req.body,
     H.parse(CreateFilledDocumentBody),
-    E.mapLeft((e): Error => e),
-    E.chainW((body) =>
+    E.mapLeft((e) => new H.HttpBadRequestError(e.message)),
+    E.map((body) => decodeDocumentUrl(body.document_url))
+  );
+
+const toErrorRetrievingTheSignerId = new Error(
+  "Error retrieving the signer id for this user"
+);
+
+const toErrorRetrievingUserProfile = new Error(
+  "Error retrieving a user profile with validated email address"
+);
+
+const requirePayload = (req: H.HttpRequest) =>
+  pipe(
+    RTE.fromEither(
+      sequenceS(E.Apply)({
+        documentUrl: requireDocumentUrl(req),
+        name: requireName(req),
+        familyName: requireFamilyName(req),
+        fiscalCode: requireFiscalCode(req)
+      })
+    ),
+    RTE.bindW("signer", ({ fiscalCode }) =>
       pipe(
-        requireSigner(req),
-        E.map((signer) => ({
-          signer,
-          // TODO: [SFEQS-1237] workaround for WAF — URLs may arrive base64-encoded
-          documentUrl: body.document_url.includes("https://")
-            ? body.document_url
-            : pipe(
-                E.tryCatch(
-                  () => Buffer.from(body.document_url, "base64").toString(),
-                  E.toError
-                ),
-                E.chainW(
-                  H.parse(NonEmptyString, "Invalid encoded filledDocumentUrl")
-                ),
-                E.getOrElse((): NonEmptyString => body.document_url)
-              ),
-          email: body.email,
-          familyName: body.family_name,
-          name: body.name
-        }))
+        getSignerByFiscalCode(fiscalCode),
+        RTE.mapLeft(() => toErrorRetrievingTheSignerId)
       )
+    ),
+    RTE.bindW(
+      "email",
+      ({ fiscalCode }) =>
+        (r: { getValidatedEmailByFiscalCode: GetValidatedEmailByFiscalCode }) =>
+          pipe(
+            r.getValidatedEmailByFiscalCode(fiscalCode),
+            TE.mapLeft(() => toErrorRetrievingUserProfile)
+          )
     )
   );
 
@@ -96,7 +128,7 @@ const makeGetFilledDocumentUrl =
 
 export const CreateFilledDocumentHandler = H.of((req: H.HttpRequest) =>
   pipe(
-    RTE.fromEither(requirePayload(req)),
+    requirePayload(req),
     RTE.chainW(
       (payload) =>
         ({

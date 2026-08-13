@@ -137,6 +137,19 @@ services:
     environment:
       - NODE_ENV=development
 
+  mock-io-profile:
+    image: mock-io-profile
+    build:
+      context: ./
+      dockerfile: ./docker/mock/Dockerfile
+      args:
+        MOCK_NAME: "mock-io-profile"
+        NODE_VERSION: "24.17.0"
+    ports:
+      - "3013:3013"
+    environment:
+      - NODE_ENV=development
+
   io-func-sign-issuer:
     image: io-func-sign-issuer
     build:
@@ -191,7 +204,43 @@ services:
       - mock-io-services
       - mock-namirial
       - mock-lollipop
+      - mock-io-profile
+
+  io-func-sign-user-legacy:
+    image: io-func-sign-user-legacy
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-user-legacy"
+        NODE_VERSION: "24.17.0"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-user-legacy
+    ports:
+      - ${FUNCTION_USER_LEGACY_PORT}:7071
+    depends_on:
+      - azurite
+      - cosmos-db
+      - eventhubs
+      - mock-io-services
+      - mock-namirial
+      - mock-lollipop
   
+  io-func-sign-events:
+    image: io-func-sign-events
+    build:
+      context: ./
+      dockerfile: ./docker/function/Dockerfile
+      args:
+        FUNCTION_NAME: "io-func-sign-events"
+        NODE_VERSION: "24.17.0"
+    env_file:
+      - ./docker/generated/.env.io-func-sign-events
+    ports:
+      - ${FUNCTION_EVENTS_PORT}:7076
+    depends_on:
+      - azurite
+
   io-sign-backoffice-func:
     image: io-sign-backoffice-func
     build:

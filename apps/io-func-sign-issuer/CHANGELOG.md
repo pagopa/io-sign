@@ -1,5 +1,31 @@
 # io-func-sign-issuer
 
+## 1.8.4
+
+### Patch Changes
+
+- 4f0a261: remove weu storage account
+
+## 1.8.3
+
+### Patch Changes
+
+- 6f1df85: remove migration kit for signed documents
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [4fe50c8]
+  - @io-sign/io-sign@1.11.5
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [92fcb86]
+  - @io-sign/io-sign@1.11.4
+
 ## 1.8.0
 
 ### Minor Changes

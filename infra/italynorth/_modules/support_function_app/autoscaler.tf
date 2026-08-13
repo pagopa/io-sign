@@ -73,7 +73,7 @@ module "function_sign_support_autoscale" {
       #################
       # scale in
       #################
-      lower_threshold           = 55
+      lower_threshold           = 60
       statistic_decrease        = "Average"
       time_aggregation_decrease = "Average"
       time_window_decrease      = 5

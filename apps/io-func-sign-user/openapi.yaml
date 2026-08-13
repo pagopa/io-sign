@@ -18,12 +18,25 @@ paths:
         - QTSP Clauses
       parameters:
         - in: header
-          name: x-iosign-signer-id
+          name: x-iosign-fiscal-code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+        - in: header
+          name: x-iosign-name
           schema:
             type: string
-            description: Signer Id
+            description: First name
             minLength: 1
-            example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+            example: Mario
+          required: true
+        - in: header
+          name: x-iosign-family-name
+          schema:
+            type: string
+            description: Family name
+            minLength: 1
+            example: Rossi
           required: true
       requestBody:
         required: true
@@ -70,6 +83,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignerDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+
+  /metadata:
+    get:
+      operationId: getMetadata
+      summary: Get IO Sign service metadata
+      tags:
+        - Metadata
+      parameters:
+        - in: header
+          name: x-iosign-fiscal-code
+          schema:
+            $ref: "#/components/schemas/FiscalCode"
+          required: true
+      responses:
+        "200":
+          description: IO Sign service metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - serviceId
+                properties:
+                  serviceId:
+                    type: string
+                    minLength: 1
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -527,19 +572,8 @@ components:
           type: string
           minLength: 1
           format: byte
-        email:
-          $ref: "#/components/schemas/Email"
-        name:
-          type: string
-          minLength: 1
-        family_name:
-          type: string
-          minLength: 1
       required:
         - document_url
-        - email
-        - name
-        - family_name
 
     FilledDocumentDetailView:
       type: object
@@ -728,8 +762,6 @@ components:
       properties:
         signature_request_id:
           $ref: "#/components/schemas/Id"
-        email:
-          $ref: "#/components/schemas/Email"
         documents_to_sign:
           type: array
           items:
@@ -740,7 +772,6 @@ components:
           $ref: "#/components/schemas/QtspClauses"
       required:
         - signature_request_id
-        - email
         - documents_to_sign
         - qtsp_clauses
 
