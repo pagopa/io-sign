@@ -29,11 +29,6 @@ data "azurerm_resource_group" "weu-common" {
   name = "${local.prefix}-${local.env_short}-rg-common"
 }
 
-data "azurerm_storage_account" "storage_sign_weu" {
-  name                = "iopsignst"
-  resource_group_name = "${local.project_weu_sign}-data-rg"
-}
-
 data "azurerm_resource_group" "sign_weu_data_rg" {
   name = "${local.project_weu_sign}-data-rg"
 }
