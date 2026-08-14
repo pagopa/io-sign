@@ -687,6 +687,9 @@ importers:
       '@pagopa/logger':
         specifier: 'catalog:'
         version: 1.0.1
+      '@pagopa/ts-commons':
+        specifier: 'catalog:'
+        version: 13.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
       fp-ts:
         specifier: 'catalog:'
         version: 2.16.10

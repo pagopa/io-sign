@@ -1,4 +1,4 @@
-oa3_spec: apps/io-sign-backoffice-func/openapi.yaml
+oa3_spec: apps/io-sign-backoffice-func/api/external.yaml
 name: itn_opex_sign_api_backoffice
 location: Italy North
 timespan: 10m

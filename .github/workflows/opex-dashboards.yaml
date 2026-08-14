@@ -8,7 +8,7 @@ on:
       - "apps/io-func-sign-issuer/openapi.yaml"
       - "apps/io-func-sign-user/openapi.yaml"
       - "apps/io-func-sign-support/openapi.yaml"
-      - "apps/io-sign-backoffice-func/openapi.yaml"
+      - "apps/io-sign-backoffice-func/api/external.yaml"
       - ".opex/**"
       - ".github/workflows/opex-dashboards.yaml"
   pull_request:
@@ -21,7 +21,7 @@ on:
       - "apps/io-func-sign-issuer/openapi.yaml"
       - "apps/io-func-sign-user/openapi.yaml"
       - "apps/io-func-sign-support/openapi.yaml"
-      - "apps/io-sign-backoffice-func/openapi.yaml"
+      - "apps/io-sign-backoffice-func/api/external.yaml"
       - ".opex/**"
       - ".github/workflows/opex-dashboards.yaml"
   workflow_dispatch:
