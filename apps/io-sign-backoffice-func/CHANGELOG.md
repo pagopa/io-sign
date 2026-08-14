@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.8.0
+
+### Minor Changes
+
+- 5fc8a0e: created internal api get-webhook
+
 ## 1.7.2
 
 ### Patch Changes
