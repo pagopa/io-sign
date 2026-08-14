@@ -17,3 +17,11 @@ export const createWebhookPayloadSchema = z.object({
 });
 
 export type CreateWebhookPayload = z.infer<typeof createWebhookPayloadSchema>;
+
+export const createWebhookResponseSchema = z.object({
+  id: z.string().uuid(),
+  publicKey: z.string().min(1),
+  publicKeyThumbprint: z.string().min(1)
+});
+
+export type CreateWebhookResponse = z.infer<typeof createWebhookResponseSchema>;

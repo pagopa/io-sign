@@ -14,6 +14,16 @@ import {
 } from "./index";
 import { getWebhook, insertWebhook } from "./cosmos";
 
+export async function getWebhookForInstitution(
+  institutionId: string
+): Promise<Webhook | undefined> {
+  const institution = await getInstitution(institutionId);
+  if (!institution) return undefined;
+  const issuer = await getIssuerByInstitution(institution);
+  if (!issuer) return undefined;
+  return getWebhook(institutionId, issuer.externalId);
+}
+
 export async function generateWebhookKeyPair() {
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
 
