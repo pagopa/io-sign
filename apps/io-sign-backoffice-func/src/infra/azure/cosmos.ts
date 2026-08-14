@@ -6,11 +6,7 @@ import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
 import { issuerSchema } from "@io-sign/io-sign/issuer";
 import { ApiKeyRepository } from "@/api-key";
 import { IssuerKey, IssuerRepository } from "@/issuer";
-import {
-  WebhookKey,
-  WebhookRepository,
-  webhookSchema
-} from "@/webhook";
+import { WebhookKey, WebhookRepository, webhookSchema } from "@/webhook";
 
 const ConfigFromEnvironment = z
   .object({
