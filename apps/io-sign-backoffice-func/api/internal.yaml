@@ -3,7 +3,7 @@ info:
   title: Firma con IO - Back office Internal API
   version: 1.0.1
 servers:
-  - url: https://localhost/api/sign/backoffice/v1
+  - url: https://localhost
     description: local
 security:
   - FunctionKey: []
