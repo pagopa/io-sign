@@ -13,6 +13,7 @@ import { getConfigFromEnvironment } from "./config";
 import { infoHandler } from "@/infra/handlers/info";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
 import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
+import { getWebhookHandler } from "@/infra/handlers/get-webhook";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
@@ -69,6 +70,17 @@ app.http("getApiKey", {
   authLevel: "function",
   route: "api-keys/{id}",
   handler: getApiKey
+});
+
+const getWebhook = httpAzureFunction(getWebhookHandler)({
+  webhookRepository: backofficeRepository
+});
+
+app.http("getWebhook", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "institutions/{institutionId}/issuers/{issuerId}/webhook",
+  handler: getWebhook
 });
 
 const { apiKeysByIdOutput, handler: createApiKeyById } =

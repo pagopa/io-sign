@@ -6,6 +6,11 @@ import { ApiKey, apiKeySchema } from "@io-sign/io-sign/api-key";
 import { issuerSchema } from "@io-sign/io-sign/issuer";
 import { ApiKeyRepository } from "@/api-key";
 import { IssuerKey, IssuerRepository } from "@/issuer";
+import {
+  WebhookKey,
+  WebhookRepository,
+  webhookSchema
+} from "@/webhook";
 
 const ConfigFromEnvironment = z
   .object({
@@ -30,16 +35,18 @@ export const getCosmosDBConfigFromEnvironment = () => {
 };
 
 export class BackofficeEntitiesRepository
-  implements ApiKeyRepository, IssuerRepository
+  implements ApiKeyRepository, IssuerRepository, WebhookRepository
 {
   #apiKeysById: Container;
   #apiKeys: Container;
   #issuers: Container;
+  #webhooks: Container;
 
   constructor(db: Database) {
     this.#apiKeys = db.container("api-keys");
     this.#apiKeysById = db.container("api-keys-by-id");
     this.#issuers = db.container("issuers");
+    this.#webhooks = db.container("webhooks");
   }
 
   async getApiKeyById(id: ApiKey["id"]) {
@@ -63,6 +70,17 @@ export class BackofficeEntitiesRepository
       return issuerSchema.or(z.undefined()).parse(item.resource);
     } catch (cause) {
       throw new Error("Unable to get the Issuer from DB.", { cause });
+    }
+  }
+
+  async getWebhookByKey(k: WebhookKey) {
+    try {
+      const item = await this.#webhooks
+        .item(k.institutionId, k.issuerId)
+        .read();
+      return webhookSchema.or(z.undefined()).parse(item.resource);
+    } catch (cause) {
+      throw new Error("Unable to get the Webhook from DB.", { cause });
     }
   }
 }

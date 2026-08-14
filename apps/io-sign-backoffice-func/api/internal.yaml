@@ -1,14 +1,12 @@
 openapi: 3.0.3
 info:
-  title: Firma con IO - Back office API
+  title: Firma con IO - Back office Internal API
   version: 1.0.1
 servers:
-  - url: https://api.io.pagopa.it/api/v1/sign/backoffice
-    description: production
-  - url: http://localhost:7071/api/v1/sign/backoffice
+  - url: https://localhost/api/sign/backoffice/v1
     description: local
 security:
-  - SubscriptionKey: []
+  - FunctionKey: []
 paths:
   /info:
     get:
@@ -57,11 +55,48 @@ paths:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
 
+  /institutions/{institutionId}/issuers/{issuerId}/webhook:
+    get:
+      operationId: getWebhookByIssuerAndInstitution
+      tags:
+        - Webhook
+      summary: Get the webhook configured for an issuer and institution
+      parameters:
+        - in: path
+          name: institutionId
+          required: true
+          schema:
+            $ref: "#/components/schemas/InstitutionId"
+        - in: path
+          name: issuerId
+          required: true
+          schema:
+            $ref: "#/components/schemas/IssuerId"
+      responses:
+        "200":
+          description: Webhook detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookView"
+        "404":
+          description: Webhook not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        default:
+          description: "Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+
 components:
   securitySchemes:
-    SubscriptionKey:
+    FunctionKey:
       type: apiKey
-      name: Ocp-Apim-Subscription-Key
+      name: x-functions-key
       in: header
 
   schemas:
@@ -115,3 +150,41 @@ components:
       format: NonEmptyString
       example: 01ARZ3NDEKTSV4RRFFQ69G5FAV
       x-import: "@pagopa/ts-commons/lib/strings"
+
+    IssuerId:
+      type: string
+      description: Issuer Id
+      format: NonEmptyString
+      example: 12345678901
+      x-import: "@pagopa/ts-commons/lib/strings"
+
+    InstitutionId:
+      type: string
+      description: Institution Id
+      format: uuid
+      example: 7d0da980-6dc2-4cf9-8f0f-6a2f6fb5528f
+
+    WebhookStatus:
+      type: string
+      enum:
+        - active
+        - inactive
+
+    WebhookView:
+      type: object
+      required:
+        - url
+        - privateKeySecretName
+        - issuerId
+        - status
+      properties:
+        url:
+          type: string
+          format: uri
+        privateKeySecretName:
+          type: string
+          minLength: 1
+        issuerId:
+          $ref: "#/components/schemas/IssuerId"
+        status:
+          $ref: "#/components/schemas/WebhookStatus"

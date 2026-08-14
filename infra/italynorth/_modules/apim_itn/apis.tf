@@ -144,7 +144,7 @@ resource "azurerm_api_management_api" "io_sign_backoffice_v1" {
 
   import {
     content_format = "openapi"
-    content_value  = file("${path.module}/api/backoffice/v1/openapi.yaml")
+    content_value  = file("${path.module}/../../../../apps/io-sign-backoffice-func/api/external.yaml")
   }
 }
 
