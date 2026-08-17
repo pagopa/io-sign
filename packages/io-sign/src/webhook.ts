@@ -11,12 +11,27 @@ export const webhookSchema = z.object({
 
 export type Webhook = z.infer<typeof webhookSchema>;
 
+const httpsUrl = z
+  .string()
+  .url()
+  .refine((url) => url.startsWith("https://"), {
+    message: "URL must use HTTPS protocol"
+  });
+
 export const createWebhookPayloadSchema = z.object({
   institutionId: z.string().uuid(),
-  url: z.string().url()
+  url: httpsUrl
 });
 
 export type CreateWebhookPayload = z.infer<typeof createWebhookPayloadSchema>;
+
+export const patchWebhookPayloadSchema = z.object({
+  institutionId: z.string().uuid(),
+  url: httpsUrl.optional(),
+  status: z.enum(["active", "inactive"]).optional()
+});
+
+export type PatchWebhookPayload = z.infer<typeof patchWebhookPayloadSchema>;
 
 export const createWebhookResponseSchema = z.object({
   id: z.string().uuid(),

@@ -13,6 +13,24 @@ export async function insertWebhook(webhook: Webhook): Promise<void> {
   }
 }
 
+export async function updateWebhook(
+  webhook: Webhook,
+  fields: Partial<Pick<Webhook, "url" | "status">>
+): Promise<void> {
+  try {
+    const operations = Object.entries(fields).map(([key, value]) => ({
+      op: "replace" as const,
+      path: `/${key}`,
+      value,
+    }));
+    await getCosmosContainerClient(cosmosContainerName)
+      .item(webhook.id, webhook.issuerId)
+      .patch(operations);
+  } catch (cause) {
+    throw new Error("unable to update the webhook", { cause });
+  }
+}
+
 export async function getWebhook(
   id: string,
   issuerId: string

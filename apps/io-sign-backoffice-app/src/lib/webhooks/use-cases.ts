@@ -9,10 +9,26 @@ import { sendMessage } from "@/lib/slack";
 
 import {
   type CreateWebhookPayload,
+  type PatchWebhookPayload,
   webhookSchema,
   type Webhook,
 } from "./index";
-import { getWebhook, insertWebhook } from "./cosmos";
+import { getWebhook, insertWebhook, updateWebhook } from "./cosmos";
+
+export class WebhookNotFoundError extends Error {
+  constructor() {
+    super("webhook not found");
+    this.name = "WebhookNotFoundError";
+  }
+}
+
+export class WebhookAlreadyExistsError extends Error {
+  constructor(cause = {}) {
+    super("the webhook already exists");
+    this.name = "WebhookAlreadyExistsError";
+    this.cause = cause;
+  }
+}
 
 export async function getWebhookForInstitution(
   institutionId: string
@@ -57,11 +73,21 @@ function buildWebhook(
   });
 }
 
-export class WebhookAlreadyExistsError extends Error {
-  constructor(cause = {}) {
-    super("the webhook already exists");
-    this.name = "WebhookAlreadyExistsError";
-    this.cause = cause;
+export async function patchWebhook(payload: PatchWebhookPayload): Promise<void> {
+  try {
+    const webhook = await getWebhookForInstitution(payload.institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    const fields: Partial<Pick<Webhook, "url" | "status">> = {};
+    if (payload.url !== undefined) fields.url = payload.url;
+    if (payload.status !== undefined) fields.status = payload.status;
+    if (Object.keys(fields).length === 0) return;
+    await updateWebhook(webhook, fields);
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to patch the webhook", { cause });
   }
 }
 
