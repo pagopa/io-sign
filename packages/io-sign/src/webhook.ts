@@ -40,3 +40,20 @@ export const createWebhookResponseSchema = z.object({
 });
 
 export type CreateWebhookResponse = z.infer<typeof createWebhookResponseSchema>;
+
+export const rotateWebhookKeyPayloadSchema = z.object({
+  institutionId: z.string().uuid()
+});
+
+export type RotateWebhookKeyPayload = z.infer<
+  typeof rotateWebhookKeyPayloadSchema
+>;
+
+export const rotateWebhookKeyResponseSchema = z.object({
+  publicKey: z.string().min(1),
+  publicKeyThumbprint: z.string().min(1)
+});
+
+export type RotateWebhookKeyResponse = z.infer<
+  typeof rotateWebhookKeyResponseSchema
+>;

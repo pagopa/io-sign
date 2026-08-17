@@ -10,6 +10,8 @@ import { sendMessage } from "@/lib/slack";
 import {
   type CreateWebhookPayload,
   type PatchWebhookPayload,
+  type RotateWebhookKeyPayload,
+  type RotateWebhookKeyResponse,
   webhookSchema,
   type Webhook,
 } from "./index";
@@ -88,6 +90,33 @@ export async function patchWebhook(payload: PatchWebhookPayload): Promise<void> 
     throw cause instanceof WebhookNotFoundError
       ? cause
       : new Error("unable to patch the webhook", { cause });
+  }
+}
+
+export async function rotateWebhookKey(
+  payload: RotateWebhookKeyPayload
+): Promise<RotateWebhookKeyResponse> {
+  try {
+    const webhook = await getWebhookForInstitution(payload.institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    const generatedKeyPair = await generateWebhookKeyPair();
+    await upsertWebhookPrivateKey(
+      webhook.privateKeySecretName,
+      generatedKeyPair.privateKey
+    );
+    await updateWebhook(webhook, {
+      publicKeyThumbprint: generatedKeyPair.publicKeyThumbprint,
+    });
+    return {
+      publicKey: generatedKeyPair.publicKey,
+      publicKeyThumbprint: generatedKeyPair.publicKeyThumbprint,
+    };
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to rotate the webhook key", { cause });
   }
 }
 

@@ -15,7 +15,7 @@ export async function insertWebhook(webhook: Webhook): Promise<void> {
 
 export async function updateWebhook(
   webhook: Webhook,
-  fields: Partial<Pick<Webhook, "url" | "status">>
+  fields: Partial<Pick<Webhook, "url" | "status" | "publicKeyThumbprint">>
 ): Promise<void> {
   try {
     const operations = Object.entries(fields).map(([key, value]) => ({
