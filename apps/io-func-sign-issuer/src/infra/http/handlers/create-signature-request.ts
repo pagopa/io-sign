@@ -6,6 +6,7 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as E from "fp-ts/lib/Either";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { createAndSendSignEvent } from "@io-sign/io-sign/sign-event";
 import { requireIssuer } from "../../http/decoders/issuer";
 import { CreateSignatureRequestBody } from "../../http/models/CreateSignatureRequestBody";
 import { getDossierById } from "../../../dossier";
@@ -80,6 +81,9 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
     RTE.chainW(insertSignatureRequest),
     RTE.chainFirstW((request) =>
       pipe(request, createAndSendAnalyticsEvent(EventName.SIGNATURE_CREATED))
+    ),
+    RTE.chainFirstW((request) =>
+      pipe(request, createAndSendSignEvent(EventName.SIGNATURE_CREATED))
     ),
     RTE.map(
       flow(

@@ -65,6 +65,11 @@ const eventAnalyticsClient = new EventHubProducerClient(
   "io-p-itn-sign-analytics-01"
 );
 
+const signEventsClient = new EventHubProducerClient(
+  config.azure.eventHubs.eventsItnConnectionString,
+  "io-p-itn-sign-events-01"
+);
+
 const pdvTokenizerClientWithApiKey = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
@@ -144,6 +149,7 @@ const info = InfoFunction({
   db: database,
   eventHubBillingClient,
   eventHubAnalyticsClient: eventAnalyticsClient,
+  signEventsClient,
   uploadedContainerClient,
   validatedContainerClient,
   onSignatureRequestReadyQueueClient
@@ -251,7 +257,8 @@ const createSignatureRequest = CreateSignatureRequestFunction({
   issuerRepository,
   dossierRepository,
   signatureRequestRepository,
-  eventAnalyticsClient
+  eventAnalyticsClient,
+  signEventsClient
 });
 
 app.http("createSignatureRequest", {
