@@ -60,6 +60,11 @@ const eventHubAnalyticsClient = new EventHubProducerClient(
   "io-p-itn-sign-analytics-01"
 );
 
+const signEventsClient = new EventHubProducerClient(
+  config.azure.eventHubs.eventsItnConnectionString,
+  "io-p-itn-sign-events-01"
+);
+
 const filledContainerClient = new ContainerClient(
   config.azure.storage.connectionStringItn,
   "filled-modules"
@@ -154,7 +159,8 @@ const info = InfoFunction({
   signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
-  onWaitForSignatureQueueClient
+  onWaitForSignatureQueueClient,
+  signEventsClient
 });
 
 app.http("info", {
@@ -204,7 +210,8 @@ app.http("getSignatureRequest", {
 const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient
+  eventAnalyticsClient: eventHubAnalyticsClient,
+  signEventsClient
 });
 
 app.storageQueue("updateSignatureRequest", {
@@ -313,6 +320,7 @@ const validateSignature = ValidateSignatureFunction({
   onSignedQueueClient,
   onRejectedQueueClient,
   eventHubAnalyticsClient,
+  signEventsClient,
   inputDecoder: ValidateSignaturePayload
 });
 
