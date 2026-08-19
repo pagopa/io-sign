@@ -11,12 +11,10 @@ post {
 }
 
 headers {
-  signature-input: sig1=("x-pagopa-lollipop-custom-tos-challenge");created=1678291148;nonce="nonce1";alg="ecdsa-p256-sha256";keyid="key1",sig2=("x-pagopa-lollipop-custom-sign-challenge");created=1678291148;nonce="nonce2";alg="ecdsa-p256-sha256";keyid="key1"
+  signature-input: sig1=("x-pagopa-lollipop-custom-tos-challenge");created=1678291148;nonce="nonce1";alg="ecdsa-p256-sha256";keyid="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",sig2=("x-pagopa-lollipop-custom-sign-challenge");created=1678291148;nonce="nonce2";alg="ecdsa-p256-sha256";keyid="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   signature: sig1=:YmFzZTY0dG9zMQ==:,sig2=:YmFzZTY0c2lnMQ==:
-  x-pagopa-lollipop-auth-jwt: jwt
-  x-pagopa-lollipop-assertion-ref: sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  x-iosign-assertion-ref: sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   x-pagopa-lollipop-assertion-type: SAML
-  x-pagopa-lollipop-public-key: SET_IN_PREREQUEST_SCRIPT
   x-pagopa-lollipop-custom-tos-challenge: tos-challenge-mock
   x-pagopa-lollipop-custom-sign-challenge: sign-challenge-mock
   x-iosign-fiscal-code: {{fiscal_code}}
