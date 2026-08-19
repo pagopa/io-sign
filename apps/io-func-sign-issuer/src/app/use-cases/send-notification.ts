@@ -26,6 +26,7 @@ import {
 
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
+import { CreateAndSendSignEvent } from "@io-sign/io-sign/sign-event";
 
 const truncateTo120Chars = truncateWithEllipsis();
 
@@ -70,7 +71,8 @@ export const makeSendNotification =
     signerRepository: SignerRepository,
     notificationService: NotificationService,
     upsertSignatureRequest: UpsertSignatureRequest,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
+    createAndSendSignEvent: CreateAndSendSignEvent
   ) =>
   ({ signatureRequest }: { signatureRequest: SignatureRequest }) => {
     const sendRequestToSignNotification = (req: SignatureRequest) =>
@@ -108,6 +110,14 @@ export const makeSendNotification =
               )
             )
           ),
+          TE.tap((result) =>
+            !result.sent
+              ? pipe(
+                  signatureRequest,
+                  createAndSendSignEvent(EventName.NOTIFICATION_REJECTED)
+                )
+              : TE.right(undefined)
+          ),
           TE.chain((result) =>
             result.sent ? TE.right(result.notification) : TE.left(result.error)
           )
@@ -119,7 +129,8 @@ export const makeSendNotification =
             ...signatureRequest,
             notification
           },
-          upsertSignatureRequest
+          upsertSignatureRequest,
+          TE.chainFirstW(createAndSendSignEvent(EventName.NOTIFICATION_SENT))
         )
       ),
       TE.map(({ notification }) => notification)

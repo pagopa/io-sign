@@ -2,6 +2,10 @@ import * as H from "@pagopa/handler-kit";
 
 import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
 import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import {
+  createAndSendSignEvent,
+  eventNameByRequestStatus
+} from "@io-sign/io-sign/sign-event";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
@@ -90,6 +94,9 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
           );
       }
     }),
+    RTE.chainFirstW((req) =>
+      pipe(req, createAndSendSignEvent(eventNameByRequestStatus[req.status]))
+    ),
     // the updated signature request will now be sent to the queue to reflect the change on user-side as well
     RTE.chainW(enqueueSignatureRequest),
     RTE.map(() => H.empty),

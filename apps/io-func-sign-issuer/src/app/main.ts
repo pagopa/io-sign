@@ -193,6 +193,7 @@ const sendNotification = SendNotificationFunction({
   signerRepository,
   notificationService,
   eventHubAnalyticsClient: eventAnalyticsClient,
+  signEventsClient,
   issuerRepository
 });
 
@@ -272,6 +273,7 @@ const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   issuerRepository,
   signatureRequestRepository,
   eventAnalyticsClient,
+  signEventsClient,
   ready: onSignatureRequestReadyQueueClient,
   updated: waitingForSignatureRequestUpdatesQueueClient
 });
@@ -298,7 +300,8 @@ app.http("validateDocument", {
 
 const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
   db: database,
-  inputDecoder: SignatureRequestToBeSigned
+  inputDecoder: SignatureRequestToBeSigned,
+  signEventsClient
 });
 
 app.storageQueue("markAsWaitForSignature", {
@@ -314,6 +317,7 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
   notificationService,
   eventAnalyticsClient,
   billingEventProducer: eventHubBillingClient,
+  signEventsClient,
   inputDecoder: ClosedSignatureRequest
 });
 
@@ -338,7 +342,8 @@ const validateUpload = makeValidateUploadBlobHandler({
   uploadMetadataRepository,
   uploadedFileStorage,
   validatedFileStorage,
-  eventAnalyticsClient
+  eventAnalyticsClient,
+  signEventsClient
 });
 
 app.storageBlob("validateUpload", {

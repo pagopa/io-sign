@@ -37,6 +37,7 @@ import {
   patchSignatureRequestDocument,
   startValidationOnDocument
 } from "../../signature-request";
+import { createAndSendDocumentSignEvent } from "@io-sign/io-sign/sign-event";
 
 export const validateExistingSignatureField =
   (clauseTitle: string, { uniqueName }: SignatureFieldAttributes) =>
@@ -232,7 +233,7 @@ export const validateUpload = (
               RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
               // Update upload metadata and remove document
               // fromt temp storage
-              RTE.chainW(() =>
+              RTE.chainFirstW(() =>
                 pipe(
                   meta,
                   markUploadMetadataAsValid,
@@ -247,9 +248,13 @@ export const validateUpload = (
                   RTE.chainW(removeDocumentFromStorage)
                 )
               ),
-              RTE.chainFirstW(() =>
-                createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
-                  signatureRequest
+              RTE.chainFirstW(
+                createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)
+              ),
+              RTE.chainW((req) =>
+                createAndSendDocumentSignEvent(EventName.DOCUMENT_UPLOADED)(
+                  req,
+                  meta.documentId
                 )
               )
             )
@@ -268,10 +273,14 @@ export const validateUpload = (
                 })
               ),
               // Remove REJECTED file from temp storage
-              RTE.chainW(() => removeDocumentFromStorage(meta.id)),
-              RTE.chainFirstW(() =>
-                createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
-                  signatureRequest
+              RTE.chainFirstW(() => removeDocumentFromStorage(meta.id)),
+              RTE.chainFirstW(
+                createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)
+              ),
+              RTE.chainW((req) =>
+                createAndSendDocumentSignEvent(EventName.DOCUMENT_REJECTED)(
+                  req,
+                  meta.documentId
                 )
               )
             )

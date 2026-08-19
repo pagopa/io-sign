@@ -8,16 +8,20 @@ import {
   makeUpsertSignatureRequest
 } from "../azure/cosmos/signature-request";
 import { makeMarkRequestAsWaitForSignature } from "../../app/use-cases/mark-request-wait-for-signature";
+import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
+import { makeCreateAndSendSignEvent } from "@io-sign/io-sign/infra/azure/event-hubs/sign-event";
 
 export type MarkAsWaitForSignatureEnvironment = {
   db: Database;
+  signEventsClient: SignEventsProducerClient;
 };
 
 export const MarkAsWaitForSignatureHandler = H.of(
   (payload: SignatureRequestToBeSigned) =>
-    ({ db }: MarkAsWaitForSignatureEnvironment) =>
+    ({ db, signEventsClient }: MarkAsWaitForSignatureEnvironment) =>
       makeMarkRequestAsWaitForSignature(
         makeGetSignatureRequest(db),
-        makeUpsertSignatureRequest(db)
+        makeUpsertSignatureRequest(db),
+        makeCreateAndSendSignEvent(signEventsClient)
       )(payload)
 );

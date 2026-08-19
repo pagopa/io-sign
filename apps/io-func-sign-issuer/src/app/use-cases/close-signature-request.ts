@@ -21,6 +21,11 @@ import {
   upsertSignatureRequest
 } from "../../signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
+import {
+  createAndSendSignEvent,
+  eventNameByRequestStatus
+} from "@io-sign/io-sign/sign-event";
+import { eventNameByRequestStatus as eventNameByRequestStatusLegacy } from "@io-sign/io-sign/event";
 
 // TODO(SFEQS-2108): move here the signature request cancelation logic
 // since CANCELLED is an "end status" such as SIGNED and REJECTED
@@ -61,14 +66,6 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-const eventNameByRequestStatus: Record<
-  ClosedSignatureRequest["status"],
-  EventName
-> = {
-  SIGNED: EventName.SIGNATURE_SIGNED,
-  REJECTED: EventName.SIGNATURE_REJECTED
-};
-
 const sendNotification = sendSignatureRequestNotification(
   buildNotificationMessage
 );
@@ -81,11 +78,14 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
     RTE.chainEitherKW(markRequestAsClosed(request)),
     RTE.chain(upsertSignatureRequest),
     RTE.chainFirstReaderTaskKW(sendNotification),
-    RTE.chainFirstW(
+    RTE.chainFirstW((req) =>
       pipe(
-        eventNameByRequestStatus[request.status],
-        createAndSendAnalyticsEvent
+        req,
+        createAndSendAnalyticsEvent(eventNameByRequestStatusLegacy[req.status])
       )
+    ),
+    RTE.chainFirstW((req) =>
+      pipe(req, createAndSendSignEvent(eventNameByRequestStatus[req.status]))
     ),
     // only if the closed request is in REJECTED status
     RTE.chainFirstW(
