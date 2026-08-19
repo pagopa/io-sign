@@ -10,6 +10,7 @@ import { Database } from "@azure/cosmos";
 import { HealthProblem } from "@pagopa/io-functions-commons/dist/src/utils/healthcheck";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
+import { EventHubProducerClient } from "@azure/event-hubs";
 import {
   makePdvTokenizerHealthCheck,
   TokenizerProblemSource
@@ -20,6 +21,10 @@ import {
   IOServicesProblemSource,
   makeIOServicesHealthCheck
 } from "@io-sign/io-sign/infra/io-services/health-check";
+import {
+  AzureEventHubProblemSource,
+  makeAzureEventHubHealthCheck
+} from "@io-sign/io-sign/infra/azure/event-hubs/health-check";
 import { NamirialConfig } from "../../namirial/config";
 
 import {
@@ -49,6 +54,7 @@ declare const APP_VERSION: string;
 type ProblemSource =
   | AzureCosmosProblemSource
   | AzureStorageProblemSource
+  | AzureEventHubProblemSource
   | TokenizerProblemSource
   | IOServicesProblemSource
   | NamirialProblemSource
@@ -73,6 +79,7 @@ type InfoDependencies = {
   documentsToFillQueue: QueueClient;
   qtspQueue: QueueClient;
   onWaitForSignatureQueueClient: QueueClient;
+  signEventsClient: EventHubProducerClient;
 };
 
 export const InfoHandler = H.of((_req: H.HttpRequest) =>
@@ -91,7 +98,8 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         signedContainerClient,
         documentsToFillQueue,
         qtspQueue,
-        onWaitForSignatureQueueClient
+        onWaitForSignatureQueueClient,
+        signEventsClient
       }) =>
         pipe(
           [
@@ -106,7 +114,8 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
             makeAzureStorageContainerHealthCheck(signedContainerClient),
             makeAzureStorageQueueHealthCheck(documentsToFillQueue),
             makeAzureStorageQueueHealthCheck(qtspQueue),
-            makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient)
+            makeAzureStorageQueueHealthCheck(onWaitForSignatureQueueClient),
+            makeAzureEventHubHealthCheck(signEventsClient)
           ],
           RA.sequence(applicativeValidation),
           TE.map(() => ({ message: "It's working!", version: APP_VERSION }))
