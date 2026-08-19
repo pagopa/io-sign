@@ -6,6 +6,7 @@ import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 
 import * as H from "@pagopa/handler-kit";
 import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { createAndSendSignEvent } from "@io-sign/io-sign/sign-event";
 import {
   getSignatureRequest,
   markAsCancelled,
@@ -21,6 +22,7 @@ export const UpdateSignatureRequestHandler = H.of(
       RTE.chain(upsertSignatureRequest),
       RTE.chainFirstW(
         createAndSendAnalyticsEvent(EventName.SIGNATURE_CANCELLED)
-      )
+      ),
+      RTE.chainFirstW(createAndSendSignEvent(EventName.SIGNATURE_CANCELLED))
     )
 );
