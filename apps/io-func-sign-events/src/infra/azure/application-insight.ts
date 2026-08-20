@@ -4,7 +4,11 @@ const ConfigFromEnvironment = z
   .object({
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().min(1).optional(),
     APPINSIGHTS_INSTRUMENTATIONKEY: z.string().min(1).optional(),
-    APPINSIGHTS_SAMPLING_PERCENTAGE: z.number().min(0).max(100).optional()
+    APPINSIGHTS_SAMPLING_PERCENTAGE: z.coerce
+      .number()
+      .min(0)
+      .max(100)
+      .optional()
   })
   .transform((env) => ({
     applicationInsightsConnectionString:
