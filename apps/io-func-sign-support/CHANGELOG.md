@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.8.3
+
+### Patch Changes
+
+- 8bcd156: Configuring setup of application insights
+
 ## 1.8.2
 
 ### Patch Changes
