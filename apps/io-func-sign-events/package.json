@@ -26,7 +26,9 @@
     "@azure/functions": "catalog:",
     "@pagopa/handler-kit": "catalog:",
     "@pagopa/handler-kit-azure-func": "catalog:",
-    "fp-ts": "catalog:"
+    "@pagopa/ts-commons": "catalog:",
+    "fp-ts": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@io-sign/eslint-config": "workspace:^",

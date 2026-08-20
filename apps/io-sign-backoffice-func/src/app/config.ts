@@ -18,6 +18,10 @@ import {
   getSelfcareApiClientConfigFromEnvironment,
   SelfcareApiClientConfig
 } from "@/infra/selfcare/api-client";
+import {
+  ApplicationInsightsConfig,
+  getApplicationInsightsConfigFromEnvironment
+} from "@/infra/azure/application-insight";
 
 type Config = {
   slack: SlackConfig;
@@ -27,6 +31,7 @@ type Config = {
   };
   google: GoogleConfig;
   cosmos: CosmosDBConfig;
+  appinsights: ApplicationInsightsConfig;
 };
 
 export const getConfigFromEnvironment = (): Config => ({
@@ -36,5 +41,6 @@ export const getConfigFromEnvironment = (): Config => ({
     contracts: getSelfcareConfigFromEnvironment()
   },
   google: getGoogleConfigFromEnvironment(),
-  cosmos: getCosmosDBConfigFromEnvironment()
+  cosmos: getCosmosDBConfigFromEnvironment(),
+  appinsights: getApplicationInsightsConfigFromEnvironment()
 });

@@ -18,6 +18,7 @@ import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 
 const config = getConfigFromEnvironment();
 
@@ -30,6 +31,10 @@ const cosmos = new CosmosClient(config.cosmos.cosmosDbConnectionString);
 const database = cosmos.database(config.cosmos.cosmosDbName);
 
 const backofficeRepository = new BackofficeEntitiesRepository(database);
+
+initAppInsights(config.appinsights.applicationInsightsConnectionString, {
+  samplingPercentage: config.appinsights.applicationInsightsSamplingPercentage
+});
 
 const selfcareApiClient = new SelfcareApiClient(config.selfcare.api);
 
