@@ -1,5 +1,17 @@
 # io-sign-backoffice-func
 
+## 1.8.2
+
+### Patch Changes
+
+- c12ce70: Fix env parsing
+
+## 1.8.1
+
+### Patch Changes
+
+- 8bcd156: Configuring setup of application insights
+
 ## 1.8.0
 
 ### Minor Changes
