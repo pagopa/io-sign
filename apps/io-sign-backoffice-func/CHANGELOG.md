@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.8.2
+
+### Patch Changes
+
+- c12ce70: Fix env parsing
+
 ## 1.8.1
 
 ### Patch Changes
