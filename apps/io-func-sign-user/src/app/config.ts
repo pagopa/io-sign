@@ -1,4 +1,8 @@
 import * as t from "io-ts";
+import {
+  ApplicationInsightsConfig,
+  getApplicationInsightsConfigFromEnvironment
+} from "@io-sign/io-sign/infra/azure/appinsights/config";
 
 import { pipe } from "fp-ts/function";
 import * as RE from "fp-ts/lib/ReaderEither";
@@ -49,7 +53,8 @@ export const Config = t.type({
   azure: t.type({
     storage: StorageConfig,
     cosmos: CosmosConfig,
-    eventHubs: EventHubConfig
+    eventHubs: EventHubConfig,
+    appinsights: ApplicationInsightsConfig
   }),
   pagopa: t.type({
     tokenizer: PdvTokenizerConfig,
@@ -81,13 +86,15 @@ export const getConfigFromEnvironment: RE.ReaderEither<
     eventHubs: getEventHubsConfigFromEnvironment,
     ioLink: getIoLinkConfigFromEnvironment,
     ioSignServiceId: readNonEmptyFromEnvironment("IoSignServiceId"),
-    ioProfile: getIoProfileConfigFromEnvironment
+    ioProfile: getIoProfileConfigFromEnvironment,
+    appinsights: getApplicationInsightsConfigFromEnvironment
   }),
   RE.map((config) => ({
     azure: {
       storage: config.storage,
       cosmos: config.cosmos,
-      eventHubs: config.eventHubs
+      eventHubs: config.eventHubs,
+      appinsights: config.appinsights
     },
     pagopa: {
       tokenizer: config.tokenizer,

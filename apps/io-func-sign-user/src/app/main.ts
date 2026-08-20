@@ -11,6 +11,7 @@ import { CosmosClient } from "@azure/cosmos";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createIoProfileClient } from "@io-sign/io-sign/infra/io-profile/client";
 import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 
 import { makeGenerateSignatureRequestQrCode } from "@io-sign/io-sign/infra/io-link/qr-code";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -103,6 +104,10 @@ const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
   config.pagopa.tokenizer.apiKey
 );
+
+initAppInsights(config.azure.appinsights.connectionString, {
+  samplingPercentage: config.azure.appinsights.samplingPercentage
+});
 
 const signerRepository = new PdvTokenizerSignerRepository(pdvTokenizerClient);
 
