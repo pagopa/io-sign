@@ -12,6 +12,7 @@ import {
   PeopleRounded,
   VpnKey,
   DashboardCustomize,
+  Usb,
 } from "@mui/icons-material";
 
 import SidenavItem from "./SidenavItem";
@@ -37,16 +38,22 @@ export default function Sidenav() {
       segment: "api-keys",
       href: `/${institutionId}/api-keys`,
     },
+    {
+      title: t("firmaconio.webhook.title"),
+      icon: Usb,
+      segment: "webhook",
+      href: `/${institutionId}/webhook`,
+    },
   ];
 
   const usersURL = new URL(
     `/dashboard/${institutionId}/users`,
-    process.env.NEXT_PUBLIC_SELFCARE_URL
+    process.env.NEXT_PUBLIC_SELFCARE_URL,
   );
 
   const groupsURL = new URL(
     `/dashboard/${institutionId}/groups`,
-    process.env.NEXT_PUBLIC_SELFCARE_URL
+    process.env.NEXT_PUBLIC_SELFCARE_URL,
   );
 
   const external = [

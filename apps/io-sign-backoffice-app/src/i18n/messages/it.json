@@ -156,6 +156,76 @@
         "title": "Modifica indirizzo IP"
       }
     },
+    "webhook": {
+      "title": "Webhook",
+      "description": "Qui puoi configurare il webhook.",
+      "status": {
+        "title": "Stato",
+        "description": "Clicca sul toggle per attivare o spegnere il webhook.",
+        "active": "Attivo",
+        "inactive": "Inattivo",
+        "changeStatusModal": {
+          "title": "Cambia stato webhook",
+          "descriptionToInactive": "Il webhook è attualmente attivo. Confermando, verrà disattivato.",
+          "descriptionToActive": "Il webhook è attualmente inattivo. Confermando, verrà attivato.",
+          "cancel": "Annulla",
+          "confirm": "Conferma",
+          "errors": {
+            "generic": "Non è stato possibile aggiornare lo stato. Riprova."
+          }
+        }
+      },
+      "url": {
+        "title": "URL",
+        "description": "Clicca su Modifica URL per cambiare l’URL del webhook.",
+        "changeUrlModal": {
+          "title": "Modifica URL webhook",
+          "description": "Inserisci la nuova URL del webhook del tuo ente.",
+          "urlLabel": "URL webhook",
+          "cancel": "Annulla",
+          "confirm": "Conferma",
+          "errors": {
+            "generic": "Non è stato possibile aggiornare la URL. Riprova.",
+            "httpsRequired": "L'URL deve utilizzare il protocollo HTTPS"
+          }
+        }
+      },
+      "publicKeyThumbprint": {
+        "title": "Thumbprint chiave pubblica",
+        "description": "Clicca su Ruota chiave per generare una nuova coppia di chiavi crittografiche.",
+        "rotateKey": "Ruota chiave",
+        "rotateKeyModal": {
+          "title": "Ruota la chiave del webhook",
+          "description": "Questa operazione genera una nuova coppia di chiavi crittografiche. La chiave attuale verrà invalidata immediatamente e non sarà più recuperabile. Sei sicuro di voler continuare?",
+          "cancel": "Annulla",
+          "confirm": "Ruota chiave",
+          "errors": {
+            "generic": "Non è stato possibile ruotare la chiave. Riprova."
+          }
+        }
+      },
+      "empty": "Non è ancora stato configurato il webhook.<pp> Configura </pp>",
+      "configure": "Configura",
+      "configureModal": {
+        "title": "Configura il webhook",
+        "description": "Inserisci la URL del webhook del tuo ente.",
+        "urlLabel": "URL webhook",
+        "cancel": "Annulla",
+        "confirm": "Continua",
+        "errors": {
+          "generic": "Non è stato possibile creare il webhook. Riprova.",
+          "httpsRequired": "L'URL deve utilizzare il protocollo HTTPS"
+        }
+      },
+      "successModal": {
+        "title": "Webhook configurato",
+        "description": "Salva la chiave pubblica e la thumbprint. Non potranno essere recuperate in seguito.",
+        "publicKey": "Chiave pubblica",
+        "thumbprint": "Thumbprint",
+        "copy": "Copia",
+        "done": "Fatto"
+      }
+    },
     "overview": {
       "cards": {
         "issuer": {
