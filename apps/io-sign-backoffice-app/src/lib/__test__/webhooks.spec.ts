@@ -2,8 +2,11 @@ import { vi, describe, it, expect } from "vitest";
 
 import {
   WebhookAlreadyExistsError,
+  WebhookNotFoundError,
   createWebhook,
   generateWebhookKeyPair,
+  patchWebhook,
+  rotateWebhookKey,
 } from "@/lib/webhooks/use-cases";
 
 import { Webhook } from "@/lib/webhooks";
@@ -190,6 +193,177 @@ describe("createWebhook", () => {
         publicKeyThumbprint: expect.any(String),
         status: "inactive",
       })
+    );
+  });
+});
+
+describe("patchWebhook", () => {
+  it("should throw WebhookNotFoundError when no webhook exists for the institution", async () => {
+    // default mock returns empty iterator → getWebhook returns undefined
+    await expect(
+      patchWebhook({
+        institutionId: mocks.institution.id,
+        url: "https://new-webhook.example.com/notify",
+      })
+    ).rejects.toThrowError(WebhookNotFoundError);
+  });
+
+  it("should call updateWebhook with the provided url field", async () => {
+    const cosmosPatch = vi.fn().mockResolvedValue({});
+
+    // First call → getWebhook (query returning the existing webhook)
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: false,
+                value: { resources: [mocks.webhook] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
+    // Second call → updateWebhook (item patch)
+    getCosmosContainerClient.mockReturnValueOnce({
+      item: vi.fn().mockReturnValue({ patch: cosmosPatch }),
+    });
+
+    await patchWebhook({
+      institutionId: mocks.institution.id,
+      url: "https://new-webhook.example.com/notify",
+    });
+
+    expect(cosmosPatch).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ op: "replace", path: "/url" }),
+      ])
+    );
+  });
+
+  it("should not call updateWebhook when no optional fields are provided", async () => {
+    const cosmosPatch = vi.fn().mockResolvedValue({});
+
+    // getWebhook returns the existing webhook
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: false,
+                value: { resources: [mocks.webhook] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
+    await patchWebhook({ institutionId: mocks.institution.id });
+
+    expect(cosmosPatch).not.toHaveBeenCalled();
+  });
+});
+
+describe("rotateWebhookKey", () => {
+  it("should throw WebhookNotFoundError when no webhook exists for the institution", async () => {
+    await expect(
+      rotateWebhookKey({ institutionId: mocks.institution.id })
+    ).rejects.toThrowError(WebhookNotFoundError);
+  });
+
+  it("should call upsertWebhookPrivateKey with the correct secret name", async () => {
+    const cosmosPatch = vi.fn().mockResolvedValue({});
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: false,
+                value: { resources: [mocks.webhook] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      item: vi.fn().mockReturnValue({ patch: cosmosPatch }),
+    });
+
+    await rotateWebhookKey({ institutionId: mocks.institution.id });
+
+    expect(upsertWebhookPrivateKey).toHaveBeenCalledWith(
+      mocks.webhook.privateKeySecretName,
+      expect.any(String)
+    );
+  });
+
+  it("should return publicKey and publicKeyThumbprint", async () => {
+    const cosmosPatch = vi.fn().mockResolvedValue({});
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: false,
+                value: { resources: [mocks.webhook] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      item: vi.fn().mockReturnValue({ patch: cosmosPatch }),
+    });
+
+    const result = await rotateWebhookKey({ institutionId: mocks.institution.id });
+
+    expect(result).toMatchObject({
+      publicKey: expect.any(String),
+      publicKeyThumbprint: expect.any(String),
+    });
+  });
+
+  it("should update the webhook with the new publicKeyThumbprint in Cosmos", async () => {
+    const cosmosPatch = vi.fn().mockResolvedValue({});
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      items: {
+        query: vi.fn(() => ({
+          getAsyncIterator: vi.fn().mockReturnValue({
+            [Symbol.asyncIterator]: () => ({
+              next: async () => ({
+                done: false,
+                value: { resources: [mocks.webhook] },
+              }),
+            }),
+          }),
+        })),
+      },
+    });
+
+    getCosmosContainerClient.mockReturnValueOnce({
+      item: vi.fn().mockReturnValue({ patch: cosmosPatch }),
+    });
+
+    await rotateWebhookKey({ institutionId: mocks.institution.id });
+
+    expect(cosmosPatch).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ op: "replace", path: "/publicKeyThumbprint" }),
+      ])
     );
   });
 });
