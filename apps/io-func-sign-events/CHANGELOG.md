@@ -1,5 +1,16 @@
 # io-func-sign-events
 
+## 2.2.0
+
+### Minor Changes
+
+- 9c6a067: Fix esm for azure func
+
+### Patch Changes
+
+- Updated dependencies [9c6a067]
+  - @io-sign/hexagonal-azure-functions@1.2.0
+
 ## 2.1.0
 
 ### Minor Changes
