@@ -159,6 +159,9 @@ importers:
       neverthrow:
         specifier: ^8.2.0
         version: 8.2.0
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       zod:
         specifier: ^4.0.0
         version: 4.4.3
