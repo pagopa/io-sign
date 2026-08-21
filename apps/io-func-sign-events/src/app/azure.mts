@@ -7,7 +7,7 @@ import { makeApplicationInsightsLogger } from "@pagopa/hexagonal-core/adapters/l
 import { getSignEventsHubConfigFromEnvironment } from "../infra/azure/event-hubs/config.js";
 import { makeSignEventsHub } from "../infra/azure/event-hubs/sign-events.health.js";
 import { getBackofficeFuncConfigFromEnvironment } from "../infra/backoffice-func/config.js";
-import { makeBackofficeFunc } from "../infra/backoffice-func/client.js";
+import { makeBackofficeFunc } from "../infra/backoffice-func/client.mjs";
 import { mountInfoAdapter } from "../adapters/inbound/index.js";
 import { makeInfoUseCase } from "../application/use-cases/info.use-case.js";
 

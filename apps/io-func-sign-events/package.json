@@ -1,7 +1,7 @@
 {
   "name": "io-func-sign-events",
   "version": "2.1.0",
-  "main": "./dist/app/azure.js",
+  "main": "./dist/app/azure.mjs",
   "private": true,
   "license": "ISC",
   "files": [
@@ -28,13 +28,12 @@
     "@io-sign/hexagonal-azure-functions": "workspace:*",
     "@pagopa/hexagonal-core": "0.5.1",
     "neverthrow": "^8.2.0",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.3.2",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@io-sign/eslint-config": "workspace:^",
     "@types/node": "catalog:",
-    "@types/node-fetch": "^2",
     "@vitest/coverage-c8": "catalog:",
     "azure-functions-core-tools": "catalog:",
     "eslint": "catalog:",
