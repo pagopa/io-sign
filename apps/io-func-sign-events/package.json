@@ -1,7 +1,7 @@
 {
   "name": "io-func-sign-events",
-  "version": "1.0.2",
-  "main": "./dist/main.js",
+  "version": "2.0.0",
+  "main": "./dist/app/azure.js",
   "private": true,
   "license": "ISC",
   "files": [
@@ -11,7 +11,8 @@
   ],
   "bundledDependencies": true,
   "scripts": {
-    "build": "tsup-node",
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "format": "prettier --write .",
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
@@ -23,16 +24,16 @@
   },
   "keywords": [],
   "dependencies": {
+    "@azure/event-hubs": "catalog:",
     "@azure/functions": "catalog:",
-    "@pagopa/handler-kit": "catalog:",
-    "@pagopa/handler-kit-azure-func": "catalog:",
-    "@pagopa/ts-commons": "catalog:",
-    "fp-ts": "catalog:",
-    "zod": "catalog:"
+    "@io-sign/hexagonal-azure-functions": "workspace:*",
+    "@pagopa/hexagonal-core": "0.5.1",
+    "applicationinsights": "catalog:",
+    "neverthrow": "^8.2.0",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@io-sign/eslint-config": "workspace:^",
-    "@pagopa/logger": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-c8": "catalog:",
     "azure-functions-core-tools": "catalog:",
@@ -40,8 +41,7 @@
     "eslint-plugin-prettier": "catalog:",
     "npm-pack-zip": "catalog:",
     "prettier": "catalog:",
-    "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }

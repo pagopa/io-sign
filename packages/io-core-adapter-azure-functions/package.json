@@ -1,0 +1,20 @@
+{
+  "name": "@io-sign/hexagonal-azure-functions",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@azure/functions": "catalog:",
+    "@pagopa/hexagonal-core": "0.5.1",
+    "neverthrow": "^8.2.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

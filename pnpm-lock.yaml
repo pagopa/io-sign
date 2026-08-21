@@ -10,7 +10,7 @@ catalogs:
       specifier: ^4.0.0
       version: 4.0.0
     '@azure/event-hubs':
-      specifier: ^5.9.0
+      specifier: ^5.11.2
       version: 5.11.2
     '@azure/functions':
       specifier: ^4.11.1
@@ -147,37 +147,37 @@ importers:
 
   apps/io-func-sign-events:
     dependencies:
+      '@azure/event-hubs':
+        specifier: 'catalog:'
+        version: 5.11.2
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
-      '@pagopa/handler-kit':
+      '@io-sign/hexagonal-azure-functions':
+        specifier: workspace:*
+        version: link:../../packages/io-core-adapter-azure-functions
+      '@pagopa/hexagonal-core':
+        specifier: 0.5.1
+        version: 0.5.1(@standard-schema/spec@1.1.0)(neverthrow@8.2.0)(zod@4.4.3)
+      applicationinsights:
         specifier: 'catalog:'
-        version: 1.1.1(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
-      '@pagopa/handler-kit-azure-func':
-        specifier: 'catalog:'
-        version: 2.0.8(@swc/core@1.15.18)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
-      '@pagopa/ts-commons':
-        specifier: 'catalog:'
-        version: 13.1.1(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))
-      fp-ts:
-        specifier: 'catalog:'
-        version: 2.16.10
+        version: 2.9.5
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
       zod:
-        specifier: 'catalog:'
-        version: 3.22.4
+        specifier: ^4.0.0
+        version: 4.4.3
     devDependencies:
       '@io-sign/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
-      '@pagopa/logger':
-        specifier: 'catalog:'
-        version: 1.0.1
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
       '@vitest/coverage-c8':
         specifier: 'catalog:'
-        version: 0.33.0(vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@4.9.5))(yaml@2.9.0))
+        version: 0.33.0(vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.3.3))(yaml@2.9.0))
       azure-functions-core-tools:
         specifier: 'catalog:'
         version: 4.0.5455
@@ -193,15 +193,12 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.5.3
-      tsup:
-        specifier: 'catalog:'
-        version: 7.2.0(@swc/core@1.15.18)(postcss@8.5.15)(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@24.13.3)(typescript@4.9.5))(typescript@4.9.5)
       typescript:
-        specifier: ^4.8.4
-        version: 4.9.5
+        specifier: 'catalog:'
+        version: 5.3.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@4.9.5))(yaml@2.9.0)
+        version: 3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.3.3))(yaml@2.9.0)
 
   apps/io-func-sign-issuer:
     dependencies:
@@ -754,6 +751,25 @@ importers:
       eslint-plugin-prettier:
         specifier: 'catalog:'
         version: 5.5.5(eslint-config-prettier@10.1.8(eslint@10.0.3))(eslint@10.0.3)(prettier@3.5.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.3.3
+
+  packages/io-core-adapter-azure-functions:
+    dependencies:
+      '@azure/functions':
+        specifier: 'catalog:'
+        version: 4.11.1
+      '@pagopa/hexagonal-core':
+        specifier: 0.5.1
+        version: 0.5.1(@standard-schema/spec@1.1.0)(neverthrow@8.2.0)(zod@4.4.3)
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
+      zod:
+        specifier: ^4.0.0
+        version: 4.4.3
+    devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 5.3.3
@@ -2570,6 +2586,17 @@ packages:
       fp-ts: ^2.13.1
       io-ts: ^2.2.20
 
+  '@pagopa/hexagonal-core@0.5.1':
+    resolution: {integrity: sha512-Fv5pXoP/NHCy/pNCuAG8ltTe0hUBzzDTuWb1o5pSAxiEL6v35bSFUdTi1URXGRa94W2ISEvr92rHed/xYUShIQ==}
+    peerDependencies:
+      '@pagopa/azure-tracing': ^0.5.4
+      '@standard-schema/spec': ^1.1.0
+      neverthrow: ^8.2.0
+      zod: ^4.0.0
+    peerDependenciesMeta:
+      '@pagopa/azure-tracing':
+        optional: true
+
   '@pagopa/io-functions-commons@29.1.2':
     resolution: {integrity: sha512-bI4zoC+/9apyZ7SWgjQe7iKrUxONC7Sn5fPja6uK/KT7Bb/hZlUwuWkxkweexk9YVTJiyWv696KlgzQox5aGgw==}
     peerDependencies:
@@ -2828,6 +2855,9 @@ packages:
   '@sendgrid/mail@6.5.5':
     resolution: {integrity: sha512-DSu8oTPI0BJFH60jMOG9gM+oeNMoRALFmdAYg2PIXpL+Zbxd7L2GzQZtmf1jLy/8UBImkbB3D74TjiOBiLRK1w==}
     engines: {node: '>=6.0.0'}
+
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
   '@storybook/addon-actions@8.6.18':
     resolution: {integrity: sha512-GcYhtE91GjIQTuZlwpTJ8jfMp6NC79nkpe1DGe0eetTpyQqLq1WUt+ACkk0Z5lqq2u8HBc09zCCGw+D8iCLpYQ==}
@@ -5612,6 +5642,10 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
+  neverthrow@8.2.0:
+    resolution: {integrity: sha512-kOCT/1MCPAxY5iUV3wytNFUMUolzuwd/VF/1KCx7kf6CutrOsTie+84zTGTpgQycjvfLdBBdvBvFLqFD2c0wkQ==}
+    engines: {node: '>=18'}
+
   newtype-ts@0.3.5:
     resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
     peerDependencies:
@@ -7430,6 +7464,9 @@ packages:
   zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
 
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
 snapshots:
 
   '@aashutoshrathi/word-wrap@1.2.6': {}
@@ -7579,10 +7616,10 @@ snapshots:
   '@azure/core-rest-pipeline@1.10.1':
     dependencies:
       '@azure/abort-controller': 1.1.0
-      '@azure/core-auth': 1.5.0
-      '@azure/core-tracing': 1.0.1
-      '@azure/core-util': 1.9.0
-      '@azure/logger': 1.0.4
+      '@azure/core-auth': 1.10.1
+      '@azure/core-tracing': 1.3.1
+      '@azure/core-util': 1.13.1
+      '@azure/logger': 1.3.0
       form-data: 4.0.5
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
@@ -7796,8 +7833,8 @@ snapshots:
 
   '@azure/opentelemetry-instrumentation-azure-sdk@1.0.0-beta.5':
     dependencies:
-      '@azure/core-tracing': 1.0.1
-      '@azure/logger': 1.0.4
+      '@azure/core-tracing': 1.3.1
+      '@azure/logger': 1.3.0
       '@opentelemetry/api': 1.8.0
       '@opentelemetry/core': 1.24.1(@opentelemetry/api@1.8.0)
       '@opentelemetry/instrumentation': 0.41.2(@opentelemetry/api@1.8.0)
@@ -9033,6 +9070,12 @@ snapshots:
       - ts-node
       - typescript
 
+  '@pagopa/hexagonal-core@0.5.1(@standard-schema/spec@1.1.0)(neverthrow@8.2.0)(zod@4.4.3)':
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      neverthrow: 8.2.0
+      zod: 4.4.3
+
   '@pagopa/io-functions-commons@29.1.2(@azure/functions@4.11.1)(express@4.22.2)(fp-ts@2.16.10)(io-ts@2.2.22(fp-ts@2.16.10))':
     dependencies:
       '@azure/cosmos': 4.0.0
@@ -9278,6 +9321,8 @@ snapshots:
     dependencies:
       '@sendgrid/client': 6.5.5
       '@sendgrid/helpers': 6.5.5
+
+  '@standard-schema/spec@1.1.0': {}
 
   '@storybook/addon-actions@8.6.18(storybook@8.6.18(prettier@2.7.1))':
     dependencies:
@@ -9804,6 +9849,15 @@ snapshots:
       std-env: 3.7.0
       vitest: 3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@4.9.5))(yaml@2.9.0)
 
+  '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.3.3))(yaml@2.9.0))':
+    dependencies:
+      '@ampproject/remapping': 2.2.1
+      c8: 7.14.0
+      magic-string: 0.30.7
+      picocolors: 1.0.0
+      std-env: 3.7.0
+      vitest: 3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.3.3))(yaml@2.9.0)
+
   '@vitest/coverage-c8@0.33.0(vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.8.3))(yaml@2.9.0))':
     dependencies:
       '@ampproject/remapping': 2.2.1
@@ -9849,7 +9903,6 @@ snapshots:
     optionalDependencies:
       msw: 2.12.10(@types/node@24.13.3)(typescript@5.3.3)
       vite: 5.1.1(@types/node@24.13.3)
-    optional: true
 
   '@vitest/mocker@3.2.6(msw@2.12.10(@types/node@24.13.3)(typescript@5.8.3))(vite@5.1.1(@types/node@24.13.3))':
     dependencies:
@@ -9905,9 +9958,9 @@ snapshots:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
-  acorn-import-assertions@1.9.0(acorn@8.11.3):
+  acorn-import-assertions@1.9.0(acorn@8.16.0):
     dependencies:
-      acorn: 8.11.3
+      acorn: 8.16.0
 
   acorn-jsx@5.3.2(acorn@8.16.0):
     dependencies:
@@ -9987,7 +10040,7 @@ snapshots:
 
   applicationinsights@2.9.5:
     dependencies:
-      '@azure/core-auth': 1.5.0
+      '@azure/core-auth': 1.10.1
       '@azure/core-rest-pipeline': 1.10.1
       '@azure/core-util': 1.2.0
       '@azure/opentelemetry-instrumentation-azure-sdk': 1.0.0-beta.5
@@ -11758,8 +11811,8 @@ snapshots:
 
   import-in-the-middle@1.4.2:
     dependencies:
-      acorn: 8.11.3
-      acorn-import-assertions: 1.9.0(acorn@8.11.3)
+      acorn: 8.16.0
+      acorn-import-assertions: 1.9.0(acorn@8.16.0)
       cjs-module-lexer: 1.3.1
       module-details-from-path: 1.0.3
 
@@ -12481,6 +12534,10 @@ snapshots:
   negotiator@1.0.0: {}
 
   neo-async@2.6.2: {}
+
+  neverthrow@8.2.0:
+    optionalDependencies:
+      '@rollup/rollup-linux-x64-gnu': 4.62.2
 
   newtype-ts@0.3.5(fp-ts@2.16.10)(monocle-ts@2.3.13(fp-ts@2.16.10)):
     dependencies:
@@ -14381,7 +14438,6 @@ snapshots:
       - terser
       - tsx
       - yaml
-    optional: true
 
   vitest@3.2.6(@types/node@24.13.3)(happy-dom@20.10.6)(msw@2.12.10(@types/node@24.13.3)(typescript@5.8.3))(yaml@2.9.0):
     dependencies:
@@ -14665,3 +14721,5 @@ snapshots:
       readable-stream: 2.3.8
 
   zod@3.22.4: {}
+
+  zod@4.4.3: {}
