@@ -1,3 +1,5 @@
+import * as appInsights from "applicationinsights";
+import type { AppInsightsTelemetryClient } from "@pagopa/hexagonal-core/adapters/logger";
 import { z } from "zod";
 
 const ConfigFromEnvironment = z
@@ -29,4 +31,23 @@ export const getApplicationInsightsConfigFromEnvironment = () => {
     });
   }
   return result.data;
+};
+
+// Initializes the SDK and returns a client shaped as the hexagonal seam.
+export const makeAzureTelemetryClient = (
+  config: ApplicationInsightsConfig
+): AppInsightsTelemetryClient => {
+  appInsights.setup(config.applicationInsightsConnectionString).start();
+  const client = appInsights.defaultClient;
+  client.config.samplingPercentage =
+    config.applicationInsightsSamplingPercentage;
+  return {
+    trackTrace: (t) => client.trackTrace(t),
+    trackEvent: (t) => client.trackEvent(t),
+    trackException: (t) => client.trackException(t),
+    flush: () =>
+      new Promise<void>((resolve) =>
+        client.flush({ callback: () => resolve() })
+      )
+  };
 };

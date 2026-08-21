@@ -21,6 +21,8 @@ locals {
       CosmosDbUserDatabaseName             = "user"
       CosmosDbBackofficeDatabaseName       = "backoffice"
       SignEventsHubItnConnectionString     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
+      BackofficeFuncBaseUrl                = "https://${data.azurerm_linux_function_app.backoffice_func.default_hostname}"
+      BackofficeFuncApiKey                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackofficeFuncApiKey)"
       AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
       BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/events/info"
