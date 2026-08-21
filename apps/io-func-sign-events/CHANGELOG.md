@@ -1,5 +1,13 @@
 # io-func-sign-events
 
+## 2.0.1
+
+### Patch Changes
+
+- 67e5da8: restore HTTP dependency tracking in Application Insights
+- Updated dependencies [67e5da8]
+  - @io-sign/hexagonal-azure-functions@1.0.1
+
 ## 2.0.0
 
 ### Major Changes
