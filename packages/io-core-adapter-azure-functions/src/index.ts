@@ -1,6 +1,6 @@
-export { mountAzureFunctionsRoute, type ErrorResponderConfig } from "./http.js";
+export { mountAzureFunctionsRoute, type ErrorResponderConfig } from "./adapters/http.js";
 export {
   makeAzureTelemetryClient,
   getApplicationInsightsConfigFromEnvironment,
   type ApplicationInsightsConfig
-} from "./appinsights.js";
+} from "./adapters/appinsights.js";
