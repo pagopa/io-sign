@@ -1,5 +1,11 @@
 # @io-sign/hexagonal-azure-functions
 
+## 1.2.0
+
+### Minor Changes
+
+- 9c6a067: Fix esm for azure func
+
 ## 1.1.0
 
 ### Minor Changes
