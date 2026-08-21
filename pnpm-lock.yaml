@@ -150,18 +150,12 @@ importers:
       '@azure/event-hubs':
         specifier: 'catalog:'
         version: 5.11.2
-      '@azure/functions':
-        specifier: 'catalog:'
-        version: 4.11.1
       '@io-sign/hexagonal-azure-functions':
         specifier: workspace:*
         version: link:../../packages/io-core-adapter-azure-functions
       '@pagopa/hexagonal-core':
         specifier: 0.5.1
         version: 0.5.1(@standard-schema/spec@1.1.0)(neverthrow@8.2.0)(zod@4.4.3)
-      applicationinsights:
-        specifier: 'catalog:'
-        version: 2.9.5
       neverthrow:
         specifier: ^8.2.0
         version: 8.2.0
