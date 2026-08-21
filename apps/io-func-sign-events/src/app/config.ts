@@ -1,7 +1,7 @@
 import {
   ApplicationInsightsConfig,
   getApplicationInsightsConfigFromEnvironment
-} from "../infra/azure/application-insight";
+} from "../infra/azure/application-insight.js";
 
 type Config = {
   appinsights: ApplicationInsightsConfig;

@@ -3,14 +3,10 @@ packages:
   - Bruno
   - apps/*
 
-linkWorkspacePackages: true
-packageImportMethod: "clone-or-copy"
-cleanupUnusedCatalogs: true
-
 catalog:
   '@azure/cosmos': ^4.0.0
+  '@azure/event-hubs': ^5.11.2
   '@azure/functions': ^4.11.1
-  '@azure/event-hubs': ^5.9.0
   '@azure/storage-blob': ^12.33.0
   '@azure/storage-queue': ^12.31.0
   '@pagopa/eslint-config': ^5.1.2
@@ -44,3 +40,9 @@ catalog:
   undici: ^7.28.0
   vitest: ^3.2.6
   zod: ^3.22.4
+
+cleanupUnusedCatalogs: true
+
+linkWorkspacePackages: true
+
+packageImportMethod: clone-or-copy
