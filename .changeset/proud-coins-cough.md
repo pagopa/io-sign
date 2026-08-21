@@ -3,4 +3,4 @@
 "io-func-sign-events": minor
 ---
 
-revert migration to ESM
+Fix esm for azure func
