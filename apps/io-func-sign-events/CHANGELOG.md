@@ -1,5 +1,16 @@
 # io-func-sign-events
 
+## 2.1.0
+
+### Minor Changes
+
+- bc70889: Moving events-func and hexagonal-azure-functions package to ESM
+
+### Patch Changes
+
+- Updated dependencies [bc70889]
+  - @io-sign/hexagonal-azure-functions@1.1.0
+
 ## 2.0.1
 
 ### Patch Changes

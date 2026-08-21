@@ -1,5 +1,11 @@
 # @io-sign/hexagonal-azure-functions
 
+## 1.1.0
+
+### Minor Changes
+
+- bc70889: Moving events-func and hexagonal-azure-functions package to ESM
+
 ## 1.0.1
 
 ### Patch Changes
