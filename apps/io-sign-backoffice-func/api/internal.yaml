@@ -175,6 +175,7 @@ components:
       required:
         - url
         - privateKeySecretName
+        - publicKeyThumbprint
         - issuerId
         - status
       properties:
@@ -182,6 +183,9 @@ components:
           type: string
           format: uri
         privateKeySecretName:
+          type: string
+          minLength: 1
+        publicKeyThumbprint:
           type: string
           minLength: 1
         issuerId:
