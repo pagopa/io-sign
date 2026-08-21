@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
 import type { BackofficeFunc } from "../../application/ports/backoffice-func.js";

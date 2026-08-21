@@ -1,6 +1,7 @@
 {
   "name": "io-func-sign-events",
   "version": "2.0.1",
+  "type": "module",
   "main": "./dist/app/azure.js",
   "private": true,
   "license": "ISC",
@@ -28,6 +29,7 @@
     "@io-sign/hexagonal-azure-functions": "workspace:*",
     "@pagopa/hexagonal-core": "0.5.1",
     "neverthrow": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "zod": "^4.0.0"
   },
   "devDependencies": {
