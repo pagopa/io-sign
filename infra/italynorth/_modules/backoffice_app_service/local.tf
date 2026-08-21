@@ -27,5 +27,6 @@ locals {
     SELFCARE_API_KEY                  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=selfcare-prod-api-key)"
     PDV_TOKENIZER_API_KEY             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=pdv-tokenizer-api-key)"
     SLACK_WEB_HOOK_URL                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=slack-webhook-url)"
+    KEY_VAULT_URL                     = "https://${data.azurerm_key_vault.sign_kv.name}.vault.azure.net"
   }
 }
