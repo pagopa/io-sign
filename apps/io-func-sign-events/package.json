@@ -1,8 +1,7 @@
 {
   "name": "io-func-sign-events",
   "version": "2.1.0",
-  "type": "module",
-  "main": "./dist/app/azure.js",
+  "main": "./dist/app/azure.mjs",
   "private": true,
   "license": "ISC",
   "files": [
