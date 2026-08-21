@@ -11,6 +11,7 @@
   "dependencies": {
     "@azure/functions": "catalog:",
     "@pagopa/hexagonal-core": "0.5.1",
+    "applicationinsights": "catalog:",
     "neverthrow": "^8.2.0",
     "zod": "^4.0.0"
   },

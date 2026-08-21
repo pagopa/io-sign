@@ -1,9 +1,9 @@
 import { EventHubProducerClient } from "@azure/event-hubs";
-import { makeApplicationInsightsLogger } from "@pagopa/hexagonal-core/adapters/logger";
 import {
   getApplicationInsightsConfigFromEnvironment,
   makeAzureTelemetryClient
-} from "../infra/azure/application-insight.js";
+} from "@io-sign/hexagonal-azure-functions";
+import { makeApplicationInsightsLogger } from "@pagopa/hexagonal-core/adapters/logger";
 import { getSignEventsHubConfigFromEnvironment } from "../infra/azure/event-hubs/config.js";
 import { makeSignEventsHub } from "../infra/azure/event-hubs/sign-events.health.js";
 import { getBackofficeFuncConfigFromEnvironment } from "../infra/backoffice-func/config.js";

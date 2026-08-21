@@ -24,15 +24,16 @@ const ConfigFromEnvironment = z
 
 export type ApplicationInsightsConfig = z.infer<typeof ConfigFromEnvironment>;
 
-export const getApplicationInsightsConfigFromEnvironment = () => {
-  const result = ConfigFromEnvironment.safeParse(process.env);
-  if (!result.success) {
-    throw new Error("error parsing ApplicationInsights config", {
-      cause: result.error.issues
-    });
-  }
-  return result.data;
-};
+export const getApplicationInsightsConfigFromEnvironment =
+  (): ApplicationInsightsConfig => {
+    const result = ConfigFromEnvironment.safeParse(process.env);
+    if (!result.success) {
+      throw new Error("error parsing ApplicationInsights config", {
+        cause: result.error.issues
+      });
+    }
+    return result.data;
+  };
 
 export const makeAzureTelemetryClient = (
   config: ApplicationInsightsConfig
