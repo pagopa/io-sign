@@ -1,7 +1,7 @@
 data "azurerm_subscription" "current" {}
 
 data "azurerm_linux_function_app" "backoffice_func" {
-  name                = "${local.project_itn_sign}-backoffice-func-${local.instance_number}"
+  name                = "${local.project_itn_sign}-bo-func-${local.instance_number}"
   resource_group_name = data.azurerm_resource_group.sign_itn_rg.name
 }
 
