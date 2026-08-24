@@ -46,7 +46,7 @@
     "npm-pack-zip": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }

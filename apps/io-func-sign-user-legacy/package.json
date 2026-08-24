@@ -53,7 +53,7 @@
     "prettier": "catalog:",
     "rimraf": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "main": "dist/main.js"
