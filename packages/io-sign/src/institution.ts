@@ -9,7 +9,7 @@ export const institutionSchema = z
     id: z.string().uuid(),
     description: z.string().min(1),
     taxCode: z.string().min(1),
-    userProductRoles: z.array(UserRole).default(["operator"]),
+    userProductRoles: z.array(UserRole).default(["Operatore"]),
     logo: z.string().url(),
     supportEmail: z.string().email().optional()
   })
