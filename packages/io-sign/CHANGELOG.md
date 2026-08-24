@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.6
+
+### Patch Changes
+
+- 71e189a: Bump zod to v4 and typescript to v5
+
 ## 1.11.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # io-sign-backoffice-func
 
+## 1.8.3
+
+### Patch Changes
+
+- 71e189a: Bump zod to v4 and typescript to v5
+- Updated dependencies [71e189a]
+  - @io-sign/io-sign@1.11.6
+
 ## 1.8.2
 
 ### Patch Changes
