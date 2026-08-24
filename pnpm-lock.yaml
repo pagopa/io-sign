@@ -561,8 +561,8 @@ importers:
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.2.33)(react@18.2.0))(@types/react@18.2.33)(react@18.2.0)
       '@hookform/resolvers':
-        specifier: 3.9.1
-        version: 3.9.1(react-hook-form@7.71.2(react@18.2.0))
+        specifier: ^3.3.1
+        version: 3.10.0(react-hook-form@7.71.2(react@18.2.0))
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
@@ -2021,8 +2021,8 @@ packages:
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
 
-  '@hookform/resolvers@3.9.1':
-    resolution: {integrity: sha512-ud2HqmGBM0P0IABqoskKWI6PEf6ZDDBZkFqe2Vnl+mTHCEHzr3ISjjZyCwTjC/qpL25JC9aIDkloQejvMeq0ug==}
+  '@hookform/resolvers@3.10.0':
+    resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
     peerDependencies:
       react-hook-form: ^7.0.0
 
@@ -8546,7 +8546,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@hookform/resolvers@3.9.1(react-hook-form@7.71.2(react@18.2.0))':
+  '@hookform/resolvers@3.10.0(react-hook-form@7.71.2(react@18.2.0))':
     dependencies:
       react-hook-form: 7.71.2(react@18.2.0)
 

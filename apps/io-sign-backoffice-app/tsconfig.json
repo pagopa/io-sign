@@ -26,12 +26,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "zod": [
-        "./node_modules/zod/index.d.ts"
-      ],
-      "zod/*": [
-        "./node_modules/zod/*"
       ]
     }
   },
