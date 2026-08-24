@@ -1,7 +1,7 @@
 import {
   ApplicationInsightsConfig,
   getApplicationInsightsConfigFromEnvironment
-} from "../infra/azure/application-insight";
+} from "@io-sign/hexagonal-azure-functions";
 
 type Config = {
   appinsights: ApplicationInsightsConfig;
