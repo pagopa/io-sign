@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-user",
-  "version": "2.9.6",
+  "version": "2.9.7",
   "private": true,
   "license": "MPL-2.0",
   "files": [
@@ -53,7 +53,7 @@
     "prettier": "catalog:",
     "rimraf": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "main": "dist/main.js"
