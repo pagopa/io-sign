@@ -22,7 +22,7 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@hookform/resolvers": "^3.3.1",
+    "@hookform/resolvers": "3.9.1",
     "@io-sign/io-sign": "workspace:^",
     "@mui/icons-material": "^5.18.0",
     "@mui/lab": "^5.0.0-alpha.177",
