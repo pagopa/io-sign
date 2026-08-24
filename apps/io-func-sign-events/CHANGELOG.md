@@ -1,5 +1,13 @@
 # io-func-sign-events
 
+## 2.2.1
+
+### Patch Changes
+
+- 71e189a: Bump zod to v4 and typescript to v5
+- Updated dependencies [71e189a]
+  - @io-sign/hexagonal-azure-functions@1.2.1
+
 ## 2.2.0
 
 ### Minor Changes
