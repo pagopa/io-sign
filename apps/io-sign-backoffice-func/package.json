@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-func",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
@@ -38,7 +38,7 @@
     "eslint-plugin-prettier": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "main": "dist/main.js",

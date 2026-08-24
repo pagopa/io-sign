@@ -1,5 +1,13 @@
 # io-func-sign-user
 
+## 2.9.7
+
+### Patch Changes
+
+- 71e189a: Bump zod to v4 and typescript to v5
+- Updated dependencies [71e189a]
+  - @io-sign/io-sign@1.11.6
+
 ## 2.9.6
 
 ### Patch Changes

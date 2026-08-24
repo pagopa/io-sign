@@ -39,7 +39,7 @@ catalog:
   ulid: ^2.3.0
   undici: ^7.28.0
   vitest: ^3.2.6
-  zod: ^3.22.4
+  zod: 4.4.3
 
 cleanupUnusedCatalogs: true
 

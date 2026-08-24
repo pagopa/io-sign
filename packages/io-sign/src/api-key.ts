@@ -16,7 +16,7 @@ export const cidrSchema = z.custom<string>((val) => {
   const [ip, subnet] = val.split("/");
   const result = z
     .object({
-      ip: z.string().ip({ version: "v4" }),
+      ip: z.ipv4(),
       subnet: z
         .string()
         .regex(/^\d+$/)

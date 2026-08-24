@@ -35,8 +35,7 @@ export default function IpAddressListInput({
 
   const schema = cidrSchema.or(
     z
-      .string()
-      .ip()
+      .ipv4()
       .transform((ip) => (isIpWhitelist(ip) ? PUBLIC_CIDR : `${ip}/32`)),
   );
 

@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-issuer",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "private": true,
   "license": "MPL-2.0",
   "files": [
@@ -50,7 +50,7 @@
     "npm-pack-zip": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   },
   "main": "dist/main.js"

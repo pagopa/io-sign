@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-support",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "main": "./dist/main.js",
   "private": true,
   "license": "ISC",
@@ -46,7 +46,7 @@
     "npm-pack-zip": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
-    "typescript": "^4.8.4",
+    "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }
