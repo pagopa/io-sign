@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.9.6
+
+### Patch Changes
+
+- 8bcd156: Configuring setup of application insights
+
 ## 2.9.5
 
 ### Patch Changes

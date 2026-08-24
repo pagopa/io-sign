@@ -217,7 +217,7 @@ services:
     env_file:
       - ./docker/generated/.env.io-func-sign-events
     ports:
-      - ${FUNCTION_EVENTS_PORT}:7076
+      - ${FUNCTION_EVENTS_PORT}:7071
     depends_on:
       - azurite
 

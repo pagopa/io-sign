@@ -1,11 +1,13 @@
 {
   "name": "io-sign-backoffice-func",
-  "version": "1.7.2",
+  "version": "1.8.2",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
     "build": "tsup-node",
     "format": "prettier --write .",
+    "generate:internal-api-models": "rm -rf ./src/infra/http/models && $(pnpm root -w)/.pnpm/node_modules/.bin/gen-api-models --api-spec ./api/internal.yaml --out-dir ./src/infra/http/models",
+    "generate:api-models": "pnpm generate:internal-api-models",
     "lint": "eslint \"src/**\"",
     "lint:fix": "eslint --fix \"src/**\"",
     "start": "func start",
@@ -21,6 +23,7 @@
     "@pagopa/handler-kit-azure-func": "catalog:",
     "@pagopa/io-functions-commons": "catalog:",
     "@pagopa/logger": "catalog:",
+    "@pagopa/ts-commons": "catalog:",
     "fp-ts": "catalog:",
     "googleapis": "catalog:",
     "io-ts": "catalog:",

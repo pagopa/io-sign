@@ -1,0 +1,21 @@
+meta {
+  name: get-webhook
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{io-sign-backoffice-func-base-url}}/institutions/:institutionId/issuers/:issuerId/webhook
+  body: none
+  auth: inherit
+}
+
+params:path {
+  institutionId: {{institution_id}}
+  issuerId: {{issuer_id}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

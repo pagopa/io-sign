@@ -1,4 +1,5 @@
 import { app } from "@azure/functions";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 import { CosmosClient } from "@azure/cosmos";
 
 import * as E from "fp-ts/Either";
@@ -45,6 +46,10 @@ const signatureRequestRepository = new CosmosDbSignatureRequestRepository(
 );
 
 const signerRepository = new PdvTokenizerSignerRepository(tokenizerClient);
+
+initAppInsights(config.azure.appinsights.connectionString, {
+  samplingPercentage: config.azure.appinsights.samplingPercentage
+});
 
 // Info endpoint - health check
 const info = httpAzureFunction(InfoHandler)({});

@@ -13,10 +13,12 @@ import { getConfigFromEnvironment } from "./config";
 import { infoHandler } from "@/infra/handlers/info";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
 import { getApiKeyHandler } from "@/infra/handlers/get-api-key";
+import { getWebhookHandler } from "@/infra/handlers/get-webhook";
 import { ioSignContracts } from "@/infra/selfcare/contract";
 import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
+import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 
 const config = getConfigFromEnvironment();
 
@@ -29,6 +31,10 @@ const cosmos = new CosmosClient(config.cosmos.cosmosDbConnectionString);
 const database = cosmos.database(config.cosmos.cosmosDbName);
 
 const backofficeRepository = new BackofficeEntitiesRepository(database);
+
+initAppInsights(config.appinsights.applicationInsightsConnectionString, {
+  samplingPercentage: config.appinsights.applicationInsightsSamplingPercentage
+});
 
 const selfcareApiClient = new SelfcareApiClient(config.selfcare.api);
 
@@ -69,6 +75,17 @@ app.http("getApiKey", {
   authLevel: "function",
   route: "api-keys/{id}",
   handler: getApiKey
+});
+
+const getWebhook = httpAzureFunction(getWebhookHandler)({
+  webhookRepository: backofficeRepository
+});
+
+app.http("getWebhook", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "institutions/{institutionId}/issuers/{issuerId}/webhook",
+  handler: getWebhook
 });
 
 const { apiKeysByIdOutput, handler: createApiKeyById } =
