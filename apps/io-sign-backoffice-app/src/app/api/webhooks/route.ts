@@ -16,9 +16,16 @@ import {
   UnauthenticatedUserError,
   getLoggedUser,
   isAllowedInstitution,
+  isInstitutionAllowedForWebhook,
 } from "@/lib/auth/use-cases";
 
 async function resolvePermission(loggedUser: { id: string }, institutionId: string) {
+  if (!isInstitutionAllowedForWebhook(institutionId)) {
+    return NextResponse.json(
+      { title: "Forbidden", detail: "The operation is forbidden" },
+      { status: 403, headers: { "Content-Type": "application/problem+json" } }
+    );
+  }
   const allowed = await isAllowedInstitution(loggedUser.id, institutionId);
   if (!allowed) {
     return NextResponse.json(

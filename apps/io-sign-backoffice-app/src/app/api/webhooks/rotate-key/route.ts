@@ -11,6 +11,7 @@ import {
   UnauthenticatedUserError,
   getLoggedUser,
   isAllowedInstitution,
+  isInstitutionAllowedForWebhook,
 } from "@/lib/auth/use-cases";
 
 export async function POST(request: NextRequest) {
@@ -18,6 +19,12 @@ export async function POST(request: NextRequest) {
     const loggedUser = await getLoggedUser();
     const body = await request.json();
     const parsedBody = rotateWebhookKeyPayloadSchema.parse(body);
+    if (!isInstitutionAllowedForWebhook(parsedBody.institutionId)) {
+      return NextResponse.json(
+        { title: "Forbidden", detail: "The operation is forbidden" },
+        { status: 403, headers: { "Content-Type": "application/problem+json" } }
+      );
+    }
     const allowed = await isAllowedInstitution(
       loggedUser.id,
       parsedBody.institutionId
