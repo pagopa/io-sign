@@ -50,3 +50,11 @@ export async function rotateWebhookKey(
   }
   return rotateWebhookKeyResponseSchema.parse(await resp.json());
 }
+
+export async function checkWebhookAccess(institutionId: string): Promise<boolean> {
+  const url = `/api/webhooks/access?institutionId=${encodeURIComponent(institutionId)}`;
+  const resp = await fetch(url);
+  if (!resp.ok) return false;
+  const data = await resp.json();
+  return data.allowed === true;
+}
