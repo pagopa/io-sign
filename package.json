@@ -20,8 +20,7 @@
     "docker:build": "docker compose --env-file docker/.env.common build",
     "docker:start": "docker compose --env-file docker/.env.common up -d",
     "docker:stop": "docker compose --env-file docker/.env.common down",
-    "docker:clean": "docker system prune",
-    "fix:eventhub-bundle": "node -e \"const fs=require('fs'),path=require('path');const src=require.resolve('azure-functions-core-tools/bin/System.Memory.Data.dll');const bundleDir=path.join(process.env.HOME,'.azure-functions-core-tools/Functions/ExtensionBundles/Microsoft.Azure.Functions.ExtensionBundle');if(!fs.existsSync(bundleDir)){console.log('bundle dir not found, skip');process.exit(0);}const vers=fs.readdirSync(bundleDir).filter(v=>v.startsWith('4.'));vers.forEach(v=>{const dst=path.join(bundleDir,v,'bin','System.Memory.Data.dll');if(!fs.existsSync(dst)){fs.copyFileSync(src,dst);console.log('copied System.Memory.Data.dll to bundle',v);}});\""
+    "docker:clean": "docker system prune"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
