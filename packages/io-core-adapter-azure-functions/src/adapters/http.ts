@@ -9,6 +9,7 @@ import {
 } from "@pagopa/hexagonal-core/adapters";
 import type { BaseError } from "@pagopa/hexagonal-core/domain/errors";
 import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import { ZodError } from "zod";
 import { makeInvocationContextLogger } from "./invocation-context-logger.js";
 
 export type ErrorResponderConfig = Parameters<typeof mapErrorToHttpResponse>[0];
@@ -73,7 +74,13 @@ export const mountAzureFunctionsRoute = <
       const logger = makeInvocationContextLogger(context);
       const useCase = useCaseFactory(logger);
       const payload = await extractPayload(req);
-      const input = inputMapper(payload);
+      let input: Input;
+      try {
+        input = inputMapper(payload);
+      } catch (e) {
+        const detail = e instanceof ZodError ? e.issues.map((i) => i.message).join("; ") : "Invalid request";
+        return { status: 400, jsonBody: { status: 400, title: "Bad Request", detail } };
+      }
       const result = await useCase(input);
       return result.match(
         (output) => ({ status: successStatus, jsonBody: outputMapper(output) }),

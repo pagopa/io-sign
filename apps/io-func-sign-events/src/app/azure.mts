@@ -6,7 +6,7 @@ import { getBackofficeFuncConfigFromEnvironment } from "../infra/backoffice-func
 import { makeBackofficeFunc } from "../infra/backoffice-func/client.mjs";
 import {
   mountInfoAdapterHttp,
-  mountSignEventTrigger
+  mountSignEventAdapterTrigger
 } from "../adapters/inbound/index.js";
 import { makeInfoUseCase } from "../application/use-cases/info.use-case.js";
 import { makeSignEventPDNDUseCase } from "../application/use-cases/sign-event-pdnd.use-case.js";
@@ -40,14 +40,17 @@ mountInfoAdapterHttp(
 );
 
 // Event Hub triggers.
-mountSignEventTrigger((logger) => makeSignEventPDNDUseCase({ logger }), {
+mountSignEventAdapterTrigger((logger) => makeSignEventPDNDUseCase({ logger }), {
   connection: "SignEventsHubItnConnectionString",
   eventHubName: "io-p-itn-sign-events-01",
   consumerGroup: "pdnd"
 });
 
-mountSignEventTrigger((logger) => makeSignEventWebhookUseCase({ logger }), {
-  connection: "SignEventsHubItnConnectionString",
-  eventHubName: "io-p-itn-sign-events-01",
-  consumerGroup: "webhook"
-});
+mountSignEventAdapterTrigger(
+  (logger) => makeSignEventWebhookUseCase({ logger }),
+  {
+    connection: "SignEventsHubItnConnectionString",
+    eventHubName: "io-p-itn-sign-events-01",
+    consumerGroup: "webhook"
+  }
+);

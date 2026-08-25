@@ -7,8 +7,9 @@ export const makeSignEventWebhookUseCase =
   (deps: { logger: Logger }): UseCase<SignEvent, void, BaseError> =>
   async (event) => {
     deps.logger.info("sign event received by trigger for webhook", {
-      type: event.type,
-      payload: JSON.stringify(event.payload)
+      eventName: event.eventName,
+      payloadType: event.payloadType,
+      payload: JSON.stringify(event.payload, null, 2)
     });
     return ok(undefined);
   };
