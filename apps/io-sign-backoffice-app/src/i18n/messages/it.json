@@ -192,13 +192,15 @@
       },
       "publicKeyThumbprint": {
         "title": "Thumbprint chiave pubblica",
-        "description": "Clicca su Ruota chiave per generare una nuova coppia di chiavi crittografiche.",
-        "rotateKey": "Ruota chiave",
+        "description": "Clicca su Rigenera chiave per generare una nuova coppia di chiavi crittografiche.",
+        "rotateKey": "Rigenera chiave",
+        "copiedAlert": "Thumbprint copiato negli appunti",
+        "copyButton": "Copia Thumbprint",
         "rotateKeyModal": {
-          "title": "Ruota la chiave del webhook",
+          "title": "Rigenera la chiave del webhook",
           "description": "Questa operazione genera una nuova coppia di chiavi crittografiche. La chiave attuale verrà invalidata immediatamente e non sarà più recuperabile. Sei sicuro di voler continuare?",
           "cancel": "Annulla",
-          "confirm": "Ruota chiave",
+          "confirm": "Rigenera chiave",
           "errors": {
             "generic": "Non è stato possibile ruotare la chiave. Riprova."
           }
@@ -274,6 +276,14 @@
       "cta": "Accedi",
       "description": "Accedendo, accetti i <tos>Termini e condizioni d’uso</tos> del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
       "title": "Firma con IO"
+    },
+    "components": {
+      "textItemWithCopyAndHide": {
+        "copy": "Copia",
+        "copied": "Copiato!",
+        "show": "Mostra",
+        "hide": "Nascondi"
+      }
     }
   }
 }

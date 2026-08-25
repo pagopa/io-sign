@@ -8,7 +8,6 @@ import {
   Paper,
   Stack,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { EditRounded, KeyRounded, PinDrop } from "@mui/icons-material";
@@ -18,6 +17,8 @@ import { Webhook } from "@/lib/webhooks";
 import ChangeStatusModal from "./ChangeStatusModal";
 import ChangeUrlModal from "./ChangeUrlModal";
 import RotateKeyModal from "./RotateKeyModal";
+import { TextItemWithCopyAndHide } from "./TextItemWithCopyAndHide";
+import PageHeader from "@/components/Page/PageHeader";
 
 type Props = {
   webhook: Webhook;
@@ -31,8 +32,15 @@ export default function WebhookView({ webhook, institutionId }: Props) {
   const [urlModalOpen, setUrlModalOpen] = useState(false);
   const [rotateKeyModalOpen, setRotateKeyModalOpen] = useState(false);
 
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(webhook.publicKeyThumbprint);
+    alert(t("publicKeyThumbprint.copiedAlert"));
+  };
+
   return (
-    <>
+    <Stack spacing={3}>
+      <PageHeader title={t("title")} description={t("description")} />
+
       <Stack spacing={3}>
         <Paper variant="outlined">
           <Stack p={3} spacing={3} bgcolor="background.paper">
@@ -45,7 +53,7 @@ export default function WebhookView({ webhook, institutionId }: Props) {
             <Typography variant="body1">{t("status.description")}</Typography>
             <Stack direction="row" alignItems="center" spacing={1}>
               <Switch
-                value="aaaa"
+                value={webhook.status}
                 checked={webhook.status === "active"}
                 onChange={() => setStatusModalOpen(true)}
               />
@@ -94,16 +102,23 @@ export default function WebhookView({ webhook, institutionId }: Props) {
               {t("publicKeyThumbprint.description")}
             </Typography>
 
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <TextField
-                value={webhook.publicKeyThumbprint}
-                autoComplete="off"
-                size="small"
-                type="password"
-              />
+            <Stack direction="row" alignItems="center" spacing={2} pt={2}>
+              <Stack sx={{ width: "40ch" }}>
+                <TextItemWithCopyAndHide
+                  label={t("publicKeyThumbprint.title")}
+                  value={webhook.publicKeyThumbprint}
+                  showCopyButton={false}
+                />
+              </Stack>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleCopy()}
+              >
+                {t("publicKeyThumbprint.copyButton")}
+              </Button>
               <Button
                 variant="outlined"
-                size="small"
                 color="primary"
                 onClick={() => setRotateKeyModalOpen(true)}
               >
@@ -132,7 +147,8 @@ export default function WebhookView({ webhook, institutionId }: Props) {
         open={rotateKeyModalOpen}
         onClose={() => setRotateKeyModalOpen(false)}
         institutionId={institutionId}
+        currentUrl={webhook.url}
       />
-    </>
+    </Stack>
   );
 }

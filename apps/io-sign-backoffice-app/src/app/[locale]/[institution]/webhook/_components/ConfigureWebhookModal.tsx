@@ -60,6 +60,7 @@ export default function ConfigureWebhookModal({
         publicKey={created.publicKey}
         publicKeyThumbprint={created.publicKeyThumbprint}
         onDone={handleDone}
+        currentUrl={url}
       />
     );
   }

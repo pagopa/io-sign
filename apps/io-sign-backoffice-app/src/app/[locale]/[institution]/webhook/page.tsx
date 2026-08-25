@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { getTranslations } from "next-intl/server";
 
 import Page from "@/components/Page";
 
@@ -14,19 +13,13 @@ export default async function WebhookPage({
   params: Promise<{ institution: string }>;
 }) {
   const { institution } = await params;
-  const t = await getTranslations("firmaconio.webhook");
 
   const webhook = await getWebhookForInstitution(institution).catch(
     () => undefined,
   );
 
   return (
-    <Page
-      header={{
-        title: t("title"),
-        description: t("description"),
-      }}
-    >
+    <Page>
       <Suspense>
         {webhook ? (
           <WebhookView webhook={webhook} institutionId={institution} />

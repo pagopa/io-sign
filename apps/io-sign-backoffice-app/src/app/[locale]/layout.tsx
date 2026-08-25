@@ -37,6 +37,7 @@ export default async function RootLayout({
     "firmaconio.overview.title",
     "firmaconio.apiKeys.title",
     "firmaconio.webhook",
+    "firmaconio.components",
   ]);
   return (
     <html lang={locale}>

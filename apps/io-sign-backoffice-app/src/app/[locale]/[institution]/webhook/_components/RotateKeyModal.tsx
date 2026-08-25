@@ -16,12 +16,14 @@ type Props = {
   open: boolean;
   onClose: () => void;
   institutionId: string;
+  currentUrl: string;
 };
 
 export default function RotateKeyModal({
   open,
   onClose,
   institutionId,
+  currentUrl,
 }: Props) {
   const t = useTranslations(
     "firmaconio.webhook.publicKeyThumbprint.rotateKeyModal",
@@ -58,6 +60,7 @@ export default function RotateKeyModal({
         publicKey={rotated.publicKey}
         publicKeyThumbprint={rotated.publicKeyThumbprint}
         onDone={handleDone}
+        currentUrl={currentUrl}
       />
     );
   }
