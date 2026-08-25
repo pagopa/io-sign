@@ -7,13 +7,14 @@ import { InfoResponseSchema } from "../../application/use-cases/info.use-case.js
 
 export const infoContract: RouteContract<
   object,
-  { 200: typeof InfoResponseSchema; 500: typeof ProblemJson }
+  { 200: typeof InfoResponseSchema; 500: typeof ProblemJson; 503: typeof ProblemJson }
 > = defineRoute({
   method: "get",
   path: "/info",
   request: {},
   response: {
     200: InfoResponseSchema,
-    500: ProblemJson
+    500: ProblemJson,
+    503: ProblemJson
   }
 });

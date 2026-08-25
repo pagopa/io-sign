@@ -25,27 +25,31 @@ describe("makeInfoUseCase", () => {
     const result = await useCase({ query: "" });
     expect(result.isOk()).toBe(true);
     const value = result._unsafeUnwrap();
-    expect(value.health.signEventsHub).toEqual({ status: "ok" });
-    expect(value.health.backofficeFunc).toEqual({ status: "ok" });
     expect(value.message).toBe("It's working!");
+    expect(typeof value.version).toBe("string");
   });
 
-  it("reports ko for signEventsHub when it fails", async () => {
+  it("returns err when signEventsHub fails", async () => {
     const useCase = makeInfoUseCase({ logger, signEventsHub: hubKo, backofficeFunc: backofficeOk });
     const result = await useCase({ query: "" });
-    expect(result.isOk()).toBe(true);
-    const value = result._unsafeUnwrap();
-    expect(value.health.signEventsHub).toEqual({ status: "ko", error: "Service unavailable: hub down" });
-    expect(value.health.backofficeFunc).toEqual({ status: "ok" });
+    expect(result.isErr()).toBe(true);
+    expect(result._unsafeUnwrapErr().message).toContain("hub down");
   });
 
-  it("reports ko for backofficeFunc when it fails", async () => {
+  it("returns err when backofficeFunc fails", async () => {
     const useCase = makeInfoUseCase({ logger, signEventsHub: hubOk, backofficeFunc: backofficeKo });
     const result = await useCase({ query: "" });
-    expect(result.isOk()).toBe(true);
-    const value = result._unsafeUnwrap();
-    expect(value.health.signEventsHub).toEqual({ status: "ok" });
-    expect(value.health.backofficeFunc).toEqual({ status: "ko", error: "Service unavailable: backoffice down" });
+    expect(result.isErr()).toBe(true);
+    expect(result._unsafeUnwrapErr().message).toContain("backoffice down");
+  });
+
+  it("aggregates multiple failures in the error message", async () => {
+    const useCase = makeInfoUseCase({ logger, signEventsHub: hubKo, backofficeFunc: backofficeKo });
+    const result = await useCase({ query: "" });
+    expect(result.isErr()).toBe(true);
+    const msg = result._unsafeUnwrapErr().message;
+    expect(msg).toContain("hub down");
+    expect(msg).toContain("backoffice down");
   });
 
   it("runs health checks in parallel", async () => {

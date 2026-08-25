@@ -40,9 +40,6 @@ const functionNameFrom = (path: string): string =>
 /**
  * Registers an Azure Functions HTTP trigger from a hexagonal route contract.
  *
- * Mirrors mountFastifyRoute from @pagopa/hexagonal-fastify but targets
- * azureApp.http() directly — no Fastify or server.inject() involved.
- *
  * NOTE: this is a simulation of a future @pagopa/hexagonal-azure-functions
  * package. Type-level constraints (EnsureErrorResponsePayloads, etc.) are
  * intentionally omitted and will be added when the real library ships.
@@ -60,6 +57,7 @@ export const mountAzureFunctionsRoute = <
     inputMapper: (payload: HttpRequestPayload) => Input;
     outputMapper: (output: O) => Body;
     useCaseFactory: (logger: Logger) => UseCase<Input, O, E>;
+    authLevel?: "anonymous" | "function" | "admin";
   },
   config?: ErrorResponderConfig
 ): void => {
@@ -68,7 +66,7 @@ export const mountAzureFunctionsRoute = <
 
   azureApp.http(functionNameFrom(contract.path), {
     methods: [contract.method.toUpperCase() as HttpMethod],
-    authLevel: "anonymous",
+    authLevel: spec.authLevel ?? "anonymous",
     route: contract.path.replace(/^\//, ""),
     handler: async (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
       const logger = makeInvocationContextLogger(context);
@@ -83,8 +81,8 @@ export const mountAzureFunctionsRoute = <
       }
       const result = await useCase(input);
       return result.match(
-        (output) => ({ status: successStatus, jsonBody: outputMapper(output) }),
-        (error) => {
+        (output: any) => ({ status: successStatus, jsonBody: outputMapper(output) }),
+        (error: any) => {
           const { status, headers, jsonBody } = mapErrorToHttpResponse(config)(error);
           return {
             status,
