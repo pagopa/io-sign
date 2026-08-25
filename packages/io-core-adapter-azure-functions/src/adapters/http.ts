@@ -1,5 +1,5 @@
 import { app as azureApp } from "@azure/functions";
-import type { HttpRequest, HttpResponseInit, HttpMethod } from "@azure/functions";
+import type { HttpRequest, HttpResponseInit, HttpMethod, InvocationContext } from "@azure/functions";
 import {
   mapErrorToHttpResponse,
   type HttpRequestPayload,
@@ -8,7 +8,8 @@ import {
   type ResponseMap
 } from "@pagopa/hexagonal-core/adapters";
 import type { BaseError } from "@pagopa/hexagonal-core/domain/errors";
-import type { UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import { makeInvocationContextLogger } from "./invocation-context-logger.js";
 
 export type ErrorResponderConfig = Parameters<typeof mapErrorToHttpResponse>[0];
 
@@ -57,18 +58,20 @@ export const mountAzureFunctionsRoute = <
     contract: RouteContract<Req, Resp>;
     inputMapper: (payload: HttpRequestPayload) => Input;
     outputMapper: (output: O) => Body;
-    useCase: UseCase<Input, O, E>;
+    useCaseFactory: (logger: Logger) => UseCase<Input, O, E>;
   },
   config?: ErrorResponderConfig
 ): void => {
-  const { contract, inputMapper, outputMapper, useCase } = spec;
+  const { contract, inputMapper, outputMapper, useCaseFactory } = spec;
   const successStatus = successStatusFrom(contract.response);
 
   azureApp.http(functionNameFrom(contract.path), {
     methods: [contract.method.toUpperCase() as HttpMethod],
     authLevel: "anonymous",
     route: contract.path.replace(/^\//, ""),
-    handler: async (req: HttpRequest): Promise<HttpResponseInit> => {
+    handler: async (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
+      const logger = makeInvocationContextLogger(context);
+      const useCase = useCaseFactory(logger);
       const payload = await extractPayload(req);
       const input = inputMapper(payload);
       const result = await useCase(input);

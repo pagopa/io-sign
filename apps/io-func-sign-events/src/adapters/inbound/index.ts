@@ -1,1 +1,5 @@
-export { mountInfoAdapter } from "./info.adapter.js";
+export { mountInfoAdapterHttp } from "./http/info.adapter.js";
+export {
+  mountSignEventTrigger,
+  type ProcessSignEventUseCase
+} from "./event-hub/sign-event.adapter.js";
