@@ -39,6 +39,12 @@
               "ConsumerGroups": [
                 {
                   "Name": "Default"
+                },
+                {
+                  "Name": "pdnd"
+                },
+                {
+                  "Name": "webhook"
                 }
               ]
             }

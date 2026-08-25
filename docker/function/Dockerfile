@@ -38,7 +38,8 @@ RUN apt-get update && \
 FROM functions-node AS runner
 ARG FUNCTION_NAME
 ENV AzureWebJobsScriptRoot=/usr/src/app \
-  AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+  AzureFunctionsJobHost__Logging__Console__IsEnabled=true \
+  AzureFunctionsJobHost__logging__logLevel__default=Trace
 
 WORKDIR /usr/src/app/apps/${FUNCTION_NAME}
 COPY --from=installer /usr/src/app /usr/src/app

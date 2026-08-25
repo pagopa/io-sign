@@ -20,7 +20,7 @@ catalog:
   '@types/node': ^24.0.0
   '@vitest/coverage-c8': ^0.33.0
   applicationinsights: ^2.9.5
-  azure-functions-core-tools: ^4.0.5455
+  azure-functions-core-tools: 4.0.6610
   date-fns: ^2.29.3
   eslint: ^10.0.3
   eslint-plugin-prettier: ^5.5.5
