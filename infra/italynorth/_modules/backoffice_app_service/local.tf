@@ -28,5 +28,6 @@ locals {
     PDV_TOKENIZER_API_KEY             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=pdv-tokenizer-api-key)"
     SLACK_WEB_HOOK_URL                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=slack-webhook-url)"
     KEY_VAULT_URL                     = "https://${data.azurerm_key_vault.sign_kv.name}.vault.azure.net"
+    WEBHOOK_ENABLED_INSTITUTION_IDS   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=backoffice-webhook-enabled-institution-ids)"
   }
 }
