@@ -8,6 +8,14 @@ import { isLeft } from "fp-ts/lib/Either";
 import { User } from "@io-sign/io-sign/institution";
 import { Issuer, IssuerKey, IssuerRepository } from "@/issuer";
 
+vi.mock("googleapis", () => ({
+  google: {
+    auth: {
+      GoogleAuth: vi.fn(() => ({})),
+    },
+  },
+}));
+
 import { google } from "googleapis";
 import { UserRepository } from "@/user";
 

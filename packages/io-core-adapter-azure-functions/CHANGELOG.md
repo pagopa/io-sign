@@ -1,5 +1,11 @@
 # @io-sign/hexagonal-azure-functions
 
+## 1.2.1
+
+### Patch Changes
+
+- 71e189a: Bump zod to v4 and typescript to v5
+
 ## 1.2.0
 
 ### Minor Changes
