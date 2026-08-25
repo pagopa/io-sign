@@ -157,3 +157,81 @@ module "event_hub" {
 
   tags = local.tags
 }
+
+module "dns" {
+  source = "../_modules/dns"
+
+  tags = local.tags
+}
+
+module "landing" {
+  source = "../_modules/landing"
+
+  tags = local.tags
+}
+
+# --- import blocks: migrate existing resources from westeurope state ---
+
+locals {
+  sub = "ec285037-c673-4f58-b594-d7c480da4e8b"
+}
+
+import {
+  to = azurerm_resource_group.data_rg
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-data-rg"
+}
+
+import {
+  to = azurerm_resource_group.integration_rg
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg"
+}
+
+import {
+  to = module.dns.azurerm_dns_zone.firma_io_pagopa_it[0]
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it"
+}
+
+import {
+  to = module.dns.azurerm_dns_mx_record.ses_mx_firma_io_pagopa_it
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/MX/@"
+}
+
+import {
+  to = module.dns.azurerm_dns_cname_record.ses_validation_firma_io_pagopa_it["usgxww7qq2vgfzl4da6yv4qb4f7ls5kq._domainkey"]
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/CNAME/usgxww7qq2vgfzl4da6yv4qb4f7ls5kq._domainkey"
+}
+
+import {
+  to = module.dns.azurerm_dns_cname_record.ses_validation_firma_io_pagopa_it["e4m2laccz356yraixvndjtoivkwf4sc2._domainkey"]
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/CNAME/e4m2laccz356yraixvndjtoivkwf4sc2._domainkey"
+}
+
+import {
+  to = module.dns.azurerm_dns_cname_record.ses_validation_firma_io_pagopa_it["43al7wmot7uxzzz6dfq7fnkcqilx6q6l._domainkey"]
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/CNAME/43al7wmot7uxzzz6dfq7fnkcqilx6q6l._domainkey"
+}
+
+import {
+  to = module.dns.azurerm_dns_txt_record.spf1_mailup_firma_io_pagopa_it
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/TXT/@"
+}
+
+import {
+  to = module.dns.azurerm_dns_cname_record.dkim1_mailup_firma_io_pagopa_it
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/CNAME/ml01._domainkey"
+}
+
+import {
+  to = module.dns.azurerm_dns_cname_record.dkim2_mailup_firma_io_pagopa_it
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/CNAME/ml02._domainkey"
+}
+
+import {
+  to = module.dns.azurerm_dns_txt_record.dmarc_mailup_firma_io_pagopa_it
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-sign-integration-rg/providers/Microsoft.Network/dnsZones/firma.io.pagopa.it/TXT/_dmarc"
+}
+
+import {
+  to = module.landing.azurerm_dns_cname_record.cloudfront
+  id = "/subscriptions/${local.sub}/resourceGroups/io-p-rg-external/providers/Microsoft.Network/dnsZones/io.italia.it/CNAME/firma"
+}
