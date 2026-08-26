@@ -72,7 +72,16 @@ module "itn_sign_backoffice_app_roles" {
     {
       name                = data.azurerm_key_vault.sign_kv.name
       resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
-      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.name} to read and write secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
+      roles = {
+        secrets = "reader"
+      }
+    },
+    {
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.name} to write secrets to ${data.azurerm_key_vault.sign_kv.name}"
       has_rbac_support    = true
       roles = {
         secrets = "writer"
@@ -91,7 +100,16 @@ module "itn_sign_backoffice_app_staging_roles" {
     {
       name                = data.azurerm_key_vault.sign_kv.name
       resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
-      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.slot.name} to read and write secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.slot.name} to read secrets from ${data.azurerm_key_vault.sign_kv.name}"
+      has_rbac_support    = true
+      roles = {
+        secrets = "reader"
+      }
+    },
+    {
+      name                = data.azurerm_key_vault.sign_kv.name
+      resource_group_name = data.azurerm_key_vault.sign_kv.resource_group_name
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.slot.name} to write secrets to ${data.azurerm_key_vault.sign_kv.name}"
       has_rbac_support    = true
       roles = {
         secrets = "writer"
