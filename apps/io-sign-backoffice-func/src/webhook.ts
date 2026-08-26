@@ -4,14 +4,7 @@ import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
-
-export const webhookSchema = z.object({
-  id: z.string().uuid(),
-  issuerId: z.string().min(1),
-  url: z.string().url(),
-  privateKeySecretName: z.string().min(1),
-  status: z.enum(["active", "inactive"])
-});
+import { webhookSchema } from "@io-sign/io-sign/webhook";
 
 export type Webhook = z.infer<typeof webhookSchema>;
 export type WebhookKey = Pick<

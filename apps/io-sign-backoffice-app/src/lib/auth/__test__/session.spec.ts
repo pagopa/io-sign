@@ -38,7 +38,7 @@ afterEach(() => {
 describe("createSessionCookie", () => {
   it<TestContext>("creates a session cookie with the given (signed) payload", async (ctx) => {
     await createSessionCookie(ctx.payload);
-    expect(setCookie.mock.lastCall[1]).toMatchInlineSnapshot(
+    expect(setCookie.mock.lastCall![1]).toMatchInlineSnapshot(
       '"eyJhbGciOiJIUzI1NiJ9.eyJxdW90ZSI6IlF1YWxpdHkgaXMgbm90IGFuIGFjdCwgaXQgaXMgYSBoYWJpdC4iLCJpYXQiOjE2ODk2MjksImV4cCI6MTY5MDUyOTgzNH0.Z8iwAN5NJ4R3D-y38RU4sXGhl8UaiMSY6EpU4DOzk0Y"'
     );
   });
@@ -66,7 +66,7 @@ describe("getPayloadFromSessionCookie", () => {
   it<TestContext>("returns the decoded payload", async (ctx) => {
     await createSessionCookie(ctx.payload);
     getCookie.mockImplementationOnce(() => ({
-      value: setCookie.mock.lastCall[1],
+      value: setCookie.mock.lastCall![1],
     }));
     await expect(getPayloadFromSessionCookie()).resolves.toEqual(
       expect.objectContaining(ctx.payload)
