@@ -1,5 +1,13 @@
 # io-sign-backoffice-func
 
+## 1.8.4
+
+### Patch Changes
+
+- 3efa723: Add backoffice webhook endpoints
+- Updated dependencies [3efa723]
+  - @io-sign/io-sign@1.11.7
+
 ## 1.8.3
 
 ### Patch Changes
