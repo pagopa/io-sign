@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.11.7
+
+### Patch Changes
+
+- 3efa723: Add backoffice webhook endpoints
+
 ## 1.11.6
 
 ### Patch Changes

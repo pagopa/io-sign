@@ -1,7 +1,7 @@
 import { getCosmosContainerClient } from "../cosmos";
-import { FeedResponse } from "@azure/cosmos";
+import { z } from "zod";
 
-import { Webhook } from "./index";
+import { Webhook, webhookSchema } from "./index";
 
 const cosmosContainerName = "webhooks";
 
@@ -46,27 +46,11 @@ export async function getWebhook(
   issuerId: string
 ): Promise<Webhook | undefined> {
   try {
-    const query = "SELECT * FROM c WHERE c.id = @id AND c.issuerId = @issuerId";
-    const parameters = [
-      { name: "@id", value: id },
-      { name: "@issuerId", value: issuerId }
-    ];
-    const cosmosResponse: AsyncIterable<FeedResponse<Webhook>> =
-      getCosmosContainerClient(cosmosContainerName)
-        .items.query({
-          parameters,
-          query
-        })
-        .getAsyncIterator();
+    const item = await getCosmosContainerClient(cosmosContainerName)
+      .item(id, issuerId)
+      .read();
 
-    for await (const { resources } of cosmosResponse) {
-      const webhook = resources.at(0);
-      if (typeof webhook !== "undefined") {
-        return webhook;
-      }
-    }
-
-    return undefined;
+    return webhookSchema.or(z.undefined()).parse(item.resource);
   } catch (cause) {
     throw new Error("unable to get the webhook", { cause });
   }
