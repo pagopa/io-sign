@@ -31,6 +31,16 @@ export async function updateWebhook(
   }
 }
 
+export async function deleteWebhook(webhook: Webhook): Promise<void> {
+  try {
+    await getCosmosContainerClient(cosmosContainerName)
+      .item(webhook.id, webhook.issuerId)
+      .delete();
+  } catch (cause) {
+    throw new Error("unable to delete the webhook", { cause });
+  }
+}
+
 export async function getWebhook(
   id: string,
   issuerId: string

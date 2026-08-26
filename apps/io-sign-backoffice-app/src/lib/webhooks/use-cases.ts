@@ -15,7 +15,7 @@ import {
   webhookSchema,
   type Webhook,
 } from "./index";
-import { getWebhook, insertWebhook, updateWebhook } from "./cosmos";
+import { deleteWebhook, getWebhook, insertWebhook, updateWebhook } from "./cosmos";
 
 export class WebhookNotFoundError extends Error {
   constructor() {
@@ -117,6 +117,22 @@ export async function rotateWebhookKey(
     throw cause instanceof WebhookNotFoundError
       ? cause
       : new Error("unable to rotate the webhook key", { cause });
+  }
+}
+
+export async function deleteWebhookForInstitution(
+  institutionId: string
+): Promise<void> {
+  try {
+    const webhook = await getWebhookForInstitution(institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    await deleteWebhook(webhook);
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to delete the webhook", { cause });
   }
 }
 
