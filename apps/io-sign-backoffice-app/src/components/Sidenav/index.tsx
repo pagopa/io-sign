@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 import { useParams, usePathname } from "next/navigation";
@@ -12,8 +12,10 @@ import {
   PeopleRounded,
   VpnKey,
   DashboardCustomize,
+  Usb,
 } from "@mui/icons-material";
 
+import { checkWebhookAccess } from "@/lib/webhooks/client";
 import SidenavItem from "./SidenavItem";
 
 export default function Sidenav() {
@@ -22,7 +24,13 @@ export default function Sidenav() {
   const segment = useMemo(() => pathname.split("/").at(2) ?? null, [pathname]);
   const params = useParams();
 
-  const institutionId = params.institution;
+  const institutionId = params.institution as string;
+
+  const [webhookEnabled, setWebhookEnabled] = useState(false);
+
+  useEffect(() => {
+    checkWebhookAccess(institutionId).then(setWebhookEnabled);
+  }, [institutionId]);
 
   const sections = [
     {
@@ -37,16 +45,26 @@ export default function Sidenav() {
       segment: "api-keys",
       href: `/${institutionId}/api-keys`,
     },
+    ...(webhookEnabled
+      ? [
+          {
+            title: t("firmaconio.webhook.title"),
+            icon: Usb,
+            segment: "webhook",
+            href: `/${institutionId}/webhook`,
+          },
+        ]
+      : []),
   ];
 
   const usersURL = new URL(
     `/dashboard/${institutionId}/users`,
-    process.env.NEXT_PUBLIC_SELFCARE_URL
+    process.env.NEXT_PUBLIC_SELFCARE_URL,
   );
 
   const groupsURL = new URL(
     `/dashboard/${institutionId}/groups`,
-    process.env.NEXT_PUBLIC_SELFCARE_URL
+    process.env.NEXT_PUBLIC_SELFCARE_URL,
   );
 
   const external = [
