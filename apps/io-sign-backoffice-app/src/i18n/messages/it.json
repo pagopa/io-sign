@@ -226,6 +226,20 @@
         "thumbprint": "Thumbprint",
         "copy": "Copia",
         "done": "Fatto"
+      },
+      "devTools": {
+        "title": "Strumenti sviluppatore",
+        "description": "Queste azioni sono riservate agli sviluppatori e non devono essere eseguite in produzione.",
+        "deleteButton": "Elimina webhook"
+      },
+      "deleteModal": {
+        "title": "Elimina webhook",
+        "description": "Questa operazione elimina il webhook dal database. La chiave privata nel Key Vault non verrà rimossa. L'operazione è irreversibile.",
+        "cancel": "Annulla",
+        "confirm": "Elimina",
+        "errors": {
+          "generic": "Non è stato possibile eliminare il webhook. Riprova."
+        }
       }
     },
     "overview": {

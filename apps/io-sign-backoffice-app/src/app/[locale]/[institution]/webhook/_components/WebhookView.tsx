@@ -10,27 +10,30 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { EditRounded, KeyRounded, PinDrop } from "@mui/icons-material";
+import { BugReportRounded, EditRounded, KeyRounded, PinDrop } from "@mui/icons-material";
 
 import { Webhook } from "@/lib/webhooks";
 
 import ChangeStatusModal from "./ChangeStatusModal";
 import ChangeUrlModal from "./ChangeUrlModal";
 import RotateKeyModal from "./RotateKeyModal";
+import DeleteWebhookModal from "./DeleteWebhookModal";
 import { TextItemWithCopyAndHide } from "./TextItemWithCopyAndHide";
 import PageHeader from "@/components/Page/PageHeader";
 
 type Props = {
   webhook: Webhook;
   institutionId: string;
+  canDelete: boolean;
 };
 
-export default function WebhookView({ webhook, institutionId }: Props) {
+export default function WebhookView({ webhook, institutionId, canDelete }: Props) {
   const t = useTranslations("firmaconio.webhook");
 
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
   const [rotateKeyModalOpen, setRotateKeyModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(webhook.publicKeyThumbprint);
@@ -129,6 +132,32 @@ export default function WebhookView({ webhook, institutionId }: Props) {
         </Paper>
       </Stack>
 
+      {canDelete && (
+        <Paper
+          variant="outlined"
+          sx={{ borderStyle: "dashed", borderColor: "warning.main" }}
+        >
+          <Stack p={3} spacing={2} bgcolor="background.paper">
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <BugReportRounded color="warning" />
+              <Typography variant="body1" fontWeight={600} color="warning.main">
+                {t("devTools.title")}
+              </Typography>
+            </Stack>
+            <Typography variant="body2">{t("devTools.description")}</Typography>
+            <Stack direction="row">
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setDeleteModalOpen(true)}
+              >
+                {t("devTools.deleteButton")}
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
+      )}
+
       <ChangeStatusModal
         open={statusModalOpen}
         onClose={() => setStatusModalOpen(false)}
@@ -148,6 +177,12 @@ export default function WebhookView({ webhook, institutionId }: Props) {
         onClose={() => setRotateKeyModalOpen(false)}
         institutionId={institutionId}
         currentUrl={webhook.url}
+      />
+
+      <DeleteWebhookModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        institutionId={institutionId}
       />
     </Stack>
   );

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import Page from "@/components/Page";
 
-import { isInstitutionAllowedForWebhook } from "@/lib/auth/use-cases";
+import { isInstitutionAllowedForWebhook, isInstitutionAllowedForWebhookDelete } from "@/lib/auth/use-cases";
 import { getWebhookForInstitution } from "@/lib/webhooks/use-cases";
 
 import WebhookView from "./_components/WebhookView";
@@ -24,11 +24,13 @@ export default async function WebhookPage({
     () => undefined,
   );
 
+  const canDelete = isInstitutionAllowedForWebhookDelete(institution);
+
   return (
     <Page>
       <Suspense>
         {webhook ? (
-          <WebhookView webhook={webhook} institutionId={institution} />
+          <WebhookView webhook={webhook} institutionId={institution} canDelete={canDelete} />
         ) : (
           <WebhookEmptyView institutionId={institution} />
         )}
