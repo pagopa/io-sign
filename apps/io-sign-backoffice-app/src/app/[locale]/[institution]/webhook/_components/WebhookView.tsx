@@ -3,14 +3,21 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
+  Alert,
   Button,
   IconButton,
   Paper,
+  Snackbar,
   Stack,
   Switch,
   Typography,
 } from "@mui/material";
-import { BugReportRounded, EditRounded, KeyRounded, PinDrop } from "@mui/icons-material";
+import {
+  BugReportRounded,
+  EditRounded,
+  KeyRounded,
+  PinDrop,
+} from "@mui/icons-material";
 
 import { Webhook } from "@/lib/webhooks";
 
@@ -27,17 +34,26 @@ type Props = {
   canDelete: boolean;
 };
 
-export default function WebhookView({ webhook, institutionId, canDelete }: Props) {
+export default function WebhookView({
+  webhook,
+  institutionId,
+  canDelete,
+}: Props) {
   const t = useTranslations("firmaconio.webhook");
 
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
   const [rotateKeyModalOpen, setRotateKeyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(webhook.publicKeyThumbprint);
-    alert(t("publicKeyThumbprint.copiedAlert"));
+    setCopied(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setCopied(false);
   };
 
   return (
@@ -128,6 +144,16 @@ export default function WebhookView({ webhook, institutionId, canDelete }: Props
                 {t("publicKeyThumbprint.rotateKey")}
               </Button>
             </Stack>
+            <Snackbar
+              open={copied}
+              onClose={handleSnackbarClose}
+              autoHideDuration={3000}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <Alert severity="success" variant="outlined">
+                {t("publicKeyThumbprint.copiedAlert")}
+              </Alert>
+            </Snackbar>
           </Stack>
         </Paper>
       </Stack>

@@ -161,7 +161,7 @@
       "description": "Qui puoi configurare il webhook.",
       "status": {
         "title": "Stato",
-        "description": "Clicca sul toggle per attivare o spegnere il webhook.",
+        "description": "Clicca sul toggle per attivare o disattivare il webhook.",
         "active": "Attivo",
         "inactive": "Inattivo",
         "changeStatusModal": {
@@ -229,7 +229,7 @@
       },
       "devTools": {
         "title": "Strumenti sviluppatore",
-        "description": "Queste azioni sono riservate agli sviluppatori e non devono essere eseguite in produzione.",
+        "description": "Questa sezione viene visualizzata solo dall'utenza di test di PagoPA e non sarà visualizzata in produzione dagli altri enti. Serve per testare la sezione webhook in autonomia in ogni sua parte.",
         "deleteButton": "Elimina webhook"
       },
       "deleteModal": {
