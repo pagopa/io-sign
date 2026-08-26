@@ -46,15 +46,12 @@ const mocks: {
 const { getCosmosContainerClient } = vi.hoisted(() => ({
   getCosmosContainerClient: vi.fn().mockReturnValue({
     items: {
-      query: vi.fn(() => ({
-        getAsyncIterator: vi.fn().mockReturnValue({
-          [Symbol.asyncIterator]: () => ({
-            next: async () => ({ done: true }),
-          }),
-        }),
-      })),
       create: vi.fn().mockResolvedValue({}),
     },
+    item: vi.fn().mockReturnValue({
+      read: vi.fn().mockResolvedValue({ resource: undefined }),
+      patch: vi.fn().mockResolvedValue({}),
+    }),
   }),
 }));
 
@@ -115,18 +112,9 @@ describe("generateWebhookKeyPair", () => {
 describe("createWebhook", () => {
   it("should throw WebhookAlreadyExistsError when a webhook already exists", async () => {
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     await expect(
@@ -163,17 +151,11 @@ describe("createWebhook", () => {
   it("should persist the webhook in Cosmos with publicKeyThumbprint", async () => {
     const cosmosCreate = vi.fn().mockResolvedValue({});
 
-    // First call → getWebhook (query returning no results)
+    // First call → getWebhook (item read returning no results)
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({ done: true }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: undefined }),
+      }),
     });
 
     // Second call → insertWebhook (create)
@@ -211,20 +193,11 @@ describe("patchWebhook", () => {
   it("should call updateWebhook with the provided url field", async () => {
     const cosmosPatch = vi.fn().mockResolvedValue({});
 
-    // First call → getWebhook (query returning the existing webhook)
+    // First call → getWebhook (item read returning the existing webhook)
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     // Second call → updateWebhook (item patch)
@@ -249,18 +222,9 @@ describe("patchWebhook", () => {
 
     // getWebhook returns the existing webhook
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     await patchWebhook({ institutionId: mocks.institution.id });
@@ -280,18 +244,9 @@ describe("rotateWebhookKey", () => {
     const cosmosPatch = vi.fn().mockResolvedValue({});
 
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     getCosmosContainerClient.mockReturnValueOnce({
@@ -310,18 +265,9 @@ describe("rotateWebhookKey", () => {
     const cosmosPatch = vi.fn().mockResolvedValue({});
 
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     getCosmosContainerClient.mockReturnValueOnce({
@@ -340,18 +286,9 @@ describe("rotateWebhookKey", () => {
     const cosmosPatch = vi.fn().mockResolvedValue({});
 
     getCosmosContainerClient.mockReturnValueOnce({
-      items: {
-        query: vi.fn(() => ({
-          getAsyncIterator: vi.fn().mockReturnValue({
-            [Symbol.asyncIterator]: () => ({
-              next: async () => ({
-                done: false,
-                value: { resources: [mocks.webhook] },
-              }),
-            }),
-          }),
-        })),
-      },
+      item: vi.fn().mockReturnValue({
+        read: vi.fn().mockResolvedValue({ resource: mocks.webhook }),
+      }),
     });
 
     getCosmosContainerClient.mockReturnValueOnce({
