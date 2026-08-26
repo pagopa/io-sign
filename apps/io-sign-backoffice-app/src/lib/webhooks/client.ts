@@ -51,6 +51,14 @@ export async function rotateWebhookKey(
   return rotateWebhookKeyResponseSchema.parse(await resp.json());
 }
 
+export async function deleteWebhook(institutionId: string): Promise<void> {
+  const url = `/api/webhooks?institutionId=${encodeURIComponent(institutionId)}`;
+  const resp = await fetch(url, { method: "DELETE" });
+  if (!resp.ok) {
+    throw new Error(resp.statusText);
+  }
+}
+
 export async function checkWebhookAccess(institutionId: string): Promise<boolean> {
   const url = `/api/webhooks/access?institutionId=${encodeURIComponent(institutionId)}`;
   const resp = await fetch(url);

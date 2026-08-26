@@ -111,3 +111,13 @@ export function isInstitutionAllowedForWebhook(institutionId: string): boolean {
   if (list.includes("*")) return true;
   return list.includes(institutionId);
 }
+
+export function isInstitutionAllowedForWebhookDelete(
+  institutionId: string
+): boolean {
+  const list = parseWebhookAllowlist(
+    process.env.WEBHOOK_DELETE_ENABLED_INSTITUTION_IDS ?? "[]"
+  );
+  if (list.includes("*")) return true;
+  return list.includes(institutionId);
+}
