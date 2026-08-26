@@ -20,17 +20,6 @@ module "function_sign_issuer" {
   tags                              = local.tags
 }
 
-module "function_sign_user" {
-  source                          = "../_modules/user_function_app"
-  vnet_common_name_itn            = local.vnet_common_name_itn
-  common_resource_group_name_itn  = local.common_resource_group_name_itn
-  sign_user_snet_cidr             = local.sign_user_snet_cidr
-  function_user_autoscale_minimum = local.function_user_autoscale_minimum
-  function_user_autoscale_maximum = local.function_user_autoscale_maximum
-  function_user_autoscale_default = local.function_user_autoscale_default
-  tags                            = local.tags
-}
-
 module "function_sign_user_02" {
   source                             = "../_modules/user_function_app_02"
   vnet_common_name_itn               = local.vnet_common_name_itn
