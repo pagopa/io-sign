@@ -13,6 +13,8 @@ export const WebhookToApiModel: E.Encoder<WebhookViewModelType, Webhook> = {
       url: webhook.url,
       privateKeySecretName:
         webhook.privateKeySecretName as WebhookViewModelType["privateKeySecretName"],
+      publicKeyThumbprint:
+        webhook.publicKeyThumbprint as WebhookViewModelType["publicKeyThumbprint"],
       issuerId: webhook.issuerId as WebhookViewModelType["issuerId"],
       status: webhook.status as WebhookStatusEnum
     })

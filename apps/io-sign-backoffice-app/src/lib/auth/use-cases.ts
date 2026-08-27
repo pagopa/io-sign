@@ -94,3 +94,30 @@ export async function isAllowedInstitution(
   const institutions = await getInstitutionsByUserId(userId);
   return institutions.some((institution) => institution.id === institutionId);
 }
+
+function parseWebhookAllowlist(raw: string): string[] {
+  return raw
+    .trim()
+    .replace(/^\[|\]$/g, "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+export function isInstitutionAllowedForWebhook(institutionId: string): boolean {
+  const list = parseWebhookAllowlist(
+    process.env.WEBHOOK_ENABLED_INSTITUTION_IDS ?? "[]"
+  );
+  if (list.includes("*")) return true;
+  return list.includes(institutionId);
+}
+
+export function isInstitutionAllowedForWebhookDelete(
+  institutionId: string
+): boolean {
+  const list = parseWebhookAllowlist(
+    process.env.WEBHOOK_DELETE_ENABLED_INSTITUTION_IDS ?? "[]"
+  );
+  if (list.includes("*")) return true;
+  return list.includes(institutionId);
+}

@@ -1,5 +1,22 @@
 # io-sign-backoffice-app
 
+## 2.0.0
+
+### Major Changes
+
+- 73356c5: Add new section "Webhook"
+
+## 1.10.0
+
+### Minor Changes
+
+- 3efa723: Add backoffice webhook endpoints
+
+### Patch Changes
+
+- Updated dependencies [3efa723]
+  - @io-sign/io-sign@1.11.7
+
 ## 1.9.3
 
 ### Patch Changes

@@ -156,6 +156,92 @@
         "title": "Modifica indirizzo IP"
       }
     },
+    "webhook": {
+      "title": "Webhook",
+      "description": "Qui puoi configurare il webhook.",
+      "status": {
+        "title": "Stato",
+        "description": "Clicca sul toggle per attivare o disattivare il webhook.",
+        "active": "Attivo",
+        "inactive": "Inattivo",
+        "changeStatusModal": {
+          "title": "Cambia stato webhook",
+          "descriptionToInactive": "Il webhook è attualmente attivo. Confermando, verrà disattivato.",
+          "descriptionToActive": "Il webhook è attualmente inattivo. Confermando, verrà attivato.",
+          "cancel": "Annulla",
+          "confirm": "Conferma",
+          "errors": {
+            "generic": "Non è stato possibile aggiornare lo stato. Riprova."
+          }
+        }
+      },
+      "url": {
+        "title": "URL",
+        "description": "Clicca su Modifica URL per cambiare l’URL del webhook.",
+        "changeUrlModal": {
+          "title": "Modifica URL webhook",
+          "description": "Inserisci la nuova URL del webhook del tuo ente.",
+          "urlLabel": "URL webhook",
+          "cancel": "Annulla",
+          "confirm": "Conferma",
+          "errors": {
+            "generic": "Non è stato possibile aggiornare la URL. Riprova.",
+            "httpsRequired": "L'URL deve utilizzare il protocollo HTTPS"
+          }
+        }
+      },
+      "publicKeyThumbprint": {
+        "title": "Thumbprint chiave pubblica",
+        "description": "Clicca su Rigenera chiave per generare una nuova coppia di chiavi crittografiche.",
+        "rotateKey": "Rigenera chiave",
+        "copiedAlert": "Thumbprint copiato negli appunti",
+        "copyButton": "Copia Thumbprint",
+        "rotateKeyModal": {
+          "title": "Rigenera la chiave del webhook",
+          "description": "Questa operazione genera una nuova coppia di chiavi crittografiche. La chiave attuale verrà invalidata immediatamente e non sarà più recuperabile. Sei sicuro di voler continuare?",
+          "cancel": "Annulla",
+          "confirm": "Rigenera chiave",
+          "errors": {
+            "generic": "Non è stato possibile ruotare la chiave. Riprova."
+          }
+        }
+      },
+      "empty": "Non è ancora stato configurato il webhook.<pp> Configura </pp>",
+      "configure": "Configura",
+      "configureModal": {
+        "title": "Configura il webhook",
+        "description": "Inserisci la URL del webhook del tuo ente.",
+        "urlLabel": "URL webhook",
+        "cancel": "Annulla",
+        "confirm": "Continua",
+        "errors": {
+          "generic": "Non è stato possibile creare il webhook. Riprova.",
+          "httpsRequired": "L'URL deve utilizzare il protocollo HTTPS"
+        }
+      },
+      "successModal": {
+        "title": "Webhook configurato",
+        "description": "Salva la chiave pubblica e la thumbprint. Non potranno essere recuperate in seguito.",
+        "publicKey": "Chiave pubblica",
+        "thumbprint": "Thumbprint",
+        "copy": "Copia",
+        "done": "Fatto"
+      },
+      "devTools": {
+        "title": "Strumenti sviluppatore",
+        "description": "Questa sezione viene visualizzata solo dall'utenza di test di PagoPA e non sarà visualizzata in produzione dagli altri enti. Serve per testare la sezione webhook in autonomia in ogni sua parte.",
+        "deleteButton": "Elimina webhook"
+      },
+      "deleteModal": {
+        "title": "Elimina webhook",
+        "description": "Questa operazione elimina il webhook dal database. La chiave privata nel Key Vault non verrà rimossa. L'operazione è irreversibile.",
+        "cancel": "Annulla",
+        "confirm": "Elimina",
+        "errors": {
+          "generic": "Non è stato possibile eliminare il webhook. Riprova."
+        }
+      }
+    },
     "overview": {
       "cards": {
         "issuer": {
@@ -204,6 +290,14 @@
       "cta": "Accedi",
       "description": "Accedendo, accetti i <tos>Termini e condizioni d’uso</tos> del servizio e confermi di avere letto l’<pp>Informativa Privacy</pp>. ",
       "title": "Firma con IO"
+    },
+    "components": {
+      "textItemWithCopyAndHide": {
+        "copy": "Copia",
+        "copied": "Copiato!",
+        "show": "Mostra",
+        "hide": "Nascondi"
+      }
     }
   }
 }

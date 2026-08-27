@@ -1,5 +1,12 @@
 # io-func-sign-user
 
+## 2.9.8
+
+### Patch Changes
+
+- Updated dependencies [3efa723]
+  - @io-sign/io-sign@1.11.7
+
 ## 2.9.7
 
 ### Patch Changes

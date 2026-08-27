@@ -1,0 +1,181 @@
+import { generateKeyPairSync } from "node:crypto";
+
+import { calculateJwkThumbprint } from "jose";
+
+import { getInstitution } from "@/lib/institutions/use-cases";
+import { getIssuerByInstitution } from "@/lib/issuers/use-cases";
+import { upsertWebhookPrivateKey } from "./keyvault";
+import { sendMessage } from "@/lib/slack";
+
+import {
+  type CreateWebhookPayload,
+  type PatchWebhookPayload,
+  type RotateWebhookKeyPayload,
+  type RotateWebhookKeyResponse,
+  webhookSchema,
+  type Webhook,
+} from "./index";
+import { deleteWebhook, getWebhook, insertWebhook, updateWebhook } from "./cosmos";
+
+export class WebhookNotFoundError extends Error {
+  constructor() {
+    super("webhook not found");
+    this.name = "WebhookNotFoundError";
+  }
+}
+
+export class WebhookAlreadyExistsError extends Error {
+  constructor(cause = {}) {
+    super("the webhook already exists");
+    this.name = "WebhookAlreadyExistsError";
+    this.cause = cause;
+  }
+}
+
+export async function getWebhookForInstitution(
+  institutionId: string
+): Promise<Webhook | undefined> {
+  const institution = await getInstitution(institutionId);
+  if (!institution) return undefined;
+  const issuer = await getIssuerByInstitution(institution);
+  if (!issuer) return undefined;
+  return getWebhook(institutionId, issuer.externalId);
+}
+
+export async function generateWebhookKeyPair() {
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+
+  // .export({ format: "jwk" }) returns a plain object but TS types it as
+  // JsonWebKey which lacks the index signature that jose's JWK requires.
+  // The runtime is fully compatible (Ed25519 → OKP crv); the cast is safe.
+  const publicJwk = publicKey.export({ format: "jwk" }) as Record<string, string>;
+  const privateJwk = privateKey.export({ format: "jwk" }) as Record<string, string>;
+
+  const publicKeyThumbprint = await calculateJwkThumbprint(publicJwk, "sha256");
+
+  return {
+    publicKey: Buffer.from(JSON.stringify(publicJwk)).toString("base64url"),
+    privateKey: Buffer.from(JSON.stringify(privateJwk)).toString("base64url"),
+    publicKeyThumbprint,
+  };
+}
+
+function buildWebhook(
+  payload: CreateWebhookPayload,
+  issuerId: string,
+  publicKeyThumbprint: string
+): Webhook {
+  return webhookSchema.parse({
+    id: payload.institutionId,
+    issuerId,
+    url: payload.url,
+    privateKeySecretName: `webhook-private-key-${issuerId}`,
+    publicKeyThumbprint,
+    status: "inactive" as const,
+  });
+}
+
+export async function patchWebhook(payload: PatchWebhookPayload): Promise<void> {
+  try {
+    const webhook = await getWebhookForInstitution(payload.institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    const fields: Partial<Pick<Webhook, "url" | "status">> = {};
+    if (payload.url !== undefined) fields.url = payload.url;
+    if (payload.status !== undefined) fields.status = payload.status;
+    if (Object.keys(fields).length === 0) return;
+    await updateWebhook(webhook, fields);
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to patch the webhook", { cause });
+  }
+}
+
+export async function rotateWebhookKey(
+  payload: RotateWebhookKeyPayload
+): Promise<RotateWebhookKeyResponse> {
+  try {
+    const webhook = await getWebhookForInstitution(payload.institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    const generatedKeyPair = await generateWebhookKeyPair();
+    await upsertWebhookPrivateKey(
+      webhook.privateKeySecretName,
+      generatedKeyPair.privateKey
+    );
+    await updateWebhook(webhook, {
+      publicKeyThumbprint: generatedKeyPair.publicKeyThumbprint,
+    });
+    return {
+      publicKey: generatedKeyPair.publicKey,
+      publicKeyThumbprint: generatedKeyPair.publicKeyThumbprint,
+    };
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to rotate the webhook key", { cause });
+  }
+}
+
+export async function deleteWebhookForInstitution(
+  institutionId: string
+): Promise<void> {
+  try {
+    const webhook = await getWebhookForInstitution(institutionId);
+    if (!webhook) {
+      throw new WebhookNotFoundError();
+    }
+    await deleteWebhook(webhook);
+  } catch (cause) {
+    throw cause instanceof WebhookNotFoundError
+      ? cause
+      : new Error("unable to delete the webhook", { cause });
+  }
+}
+
+export async function createWebhook(payload: CreateWebhookPayload) {
+  try {
+    const institution = await getInstitution(payload.institutionId);
+    if (!institution) {
+      throw new Error("institution does not exists");
+    }
+
+    const issuer = await getIssuerByInstitution(institution);
+    if (issuer === undefined) {
+      throw new Error("issuer not found for the institution");
+    }
+
+    const existingWebhook = await getWebhook(institution.id, issuer.externalId);
+    if (existingWebhook) {
+      throw new WebhookAlreadyExistsError("a webhook already exists for the institution");
+    }
+
+    const generatedKeyPair = await generateWebhookKeyPair();
+    const webhook = buildWebhook(
+      payload,
+      issuer.externalId,
+      generatedKeyPair.publicKeyThumbprint
+    );
+    await upsertWebhookPrivateKey(
+      webhook.privateKeySecretName,
+      generatedKeyPair.privateKey
+    );
+
+    await insertWebhook(webhook);
+    await sendMessage(
+      `(_backoffice_) *${institution.name}* (\`${issuer?.externalId}\`) ha creato un nuovo webhook.`
+    );
+    return {
+      id: webhook.id,
+      publicKey: generatedKeyPair.publicKey,
+      publicKeyThumbprint: generatedKeyPair.publicKeyThumbprint,
+    };
+  } catch (cause) {
+    throw cause instanceof WebhookAlreadyExistsError
+      ? cause
+      : new Error("unable to create the webhook", { cause });
+  }
+}
