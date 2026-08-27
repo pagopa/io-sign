@@ -1,3 +1,0 @@
-# .prettierrc
-parser: typescript
-trailingComma: "none"
