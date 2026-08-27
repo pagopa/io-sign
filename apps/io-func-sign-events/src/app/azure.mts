@@ -1,6 +1,5 @@
-import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
-import { getSignEventProducerConfigFromEnvironment } from "../adapters/outbound/sign-event-publisher/config.js";
+import { getSignEventPublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-publisher/config.js";
 import { makeSignEventPublisher } from "../adapters/outbound/sign-event-publisher/client.js";
 import { getBackofficeServiceConfigFromEnvironment } from "../adapters/outbound/backoffice-service/config.js";
 import { makeBackofficeService } from "../adapters/outbound/backoffice-service/client.mjs";
@@ -19,16 +18,16 @@ const ERROR_RESPONDER_CONFIG = {
   typeBaseUrl: "https://example.pagopa.it/problems/"
 };
 
+const SIGN_EVENT_HUB_NAME = "io-p-itn-sign-events-01";
+
 // TODO: evaluate switch to makeApplicationInsightsLogger from @pagopa/hexagonal-core/adapters.
 
 makeAzureTelemetryClient(getApplicationInsightsConfigFromEnvironment());
 
-const signEventProducerConfig = getSignEventProducerConfigFromEnvironment();
-const signEventProducerClient = new EventHubProducerClient(
-  signEventProducerConfig.connectionString,
-  "io-p-itn-sign-events-01"
+const signEventPublisher = makeSignEventPublisher(
+  getSignEventPublisherConfigFromEnvironment(),
+  SIGN_EVENT_HUB_NAME
 );
-const signEventPublisher = makeSignEventPublisher(signEventProducerClient);
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
 );
@@ -43,7 +42,7 @@ mountInfoAdapterHttp(
 // Event Hub triggers.
 mountSignEventAdapterTrigger((logger) => makeSignEventPDNDUseCase({ logger }), {
   connection: "SignEventsHubItnConnectionString",
-  eventHubName: "io-p-itn-sign-events-01",
+  eventHubName: SIGN_EVENT_HUB_NAME,
   consumerGroup: "pdnd"
 });
 
@@ -51,7 +50,7 @@ mountSignEventAdapterTrigger(
   (logger) => makeSignEventWebhookUseCase({ logger }),
   {
     connection: "SignEventsHubItnConnectionString",
-    eventHubName: "io-p-itn-sign-events-01",
+    eventHubName: SIGN_EVENT_HUB_NAME,
     consumerGroup: "webhook"
   }
 );
