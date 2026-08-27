@@ -30,6 +30,7 @@
     "@pagopa/hexagonal-core": "0.5.1",
     "neverthrow": "^8.2.0",
     "node-fetch": "^3.3.2",
+    "ulid": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

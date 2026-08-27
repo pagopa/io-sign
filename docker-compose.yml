@@ -46,6 +46,12 @@ services:
       - 10001:10001
       - 10002:10002
     command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "10002"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
   
   azurite-setup:
     image: node:24-alpine
@@ -59,7 +65,8 @@ services:
   eventhubs-internal:
     image: "mcr.microsoft.com/azure-messaging/eventhubs-emulator:latest@sha256:25ec4141efb69933a0c82e6a787fa147a3895519e7d236d4c41ba568e03100eb"
     depends_on:
-      - "azurite"
+      azurite:
+        condition: service_healthy
     volumes:
       - "./eventhubs-emulator.json:/Eventhubs_Emulator/ConfigFiles/Config.json"
     environment:

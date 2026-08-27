@@ -26,7 +26,7 @@ const PDND_ANALYTICS_EVENT_HUB_NAME = "io-p-itn-sign-analytics-01";
 
 makeAzureTelemetryClient(getApplicationInsightsConfigFromEnvironment());
 
-const signEventPDNDPublisher = makeSignEventPDNDPublisher(
+const pdndPublisher = makeSignEventPDNDPublisher(
   getSignEventPDNDPublisherConfigFromEnvironment(),
   PDND_BILLING_EVENT_HUB_NAME,
   PDND_ANALYTICS_EVENT_HUB_NAME
@@ -37,17 +37,19 @@ const backofficeService = makeBackofficeService(
 
 // Endpoints.
 mountInfoAdapterHttp(
-  (logger) =>
-    makeInfoUseCase({ logger, signEventPDNDPublisher, backofficeService }),
+  (logger) => makeInfoUseCase({ logger, pdndPublisher, backofficeService }),
   ERROR_RESPONDER_CONFIG
 );
 
 // Event Hub triggers.
-mountSignEventAdapterTrigger((logger) => makeSignEventPDNDUseCase({ logger }), {
-  connection: "SignEventsHubItnConnectionString",
-  eventHubName: SIGN_EVENT_HUB_NAME,
-  consumerGroup: "pdnd"
-});
+mountSignEventAdapterTrigger(
+  (logger) => makeSignEventPDNDUseCase({ logger, pdndPublisher }),
+  {
+    connection: "SignEventsHubItnConnectionString",
+    eventHubName: SIGN_EVENT_HUB_NAME,
+    consumerGroup: "pdnd"
+  }
+);
 
 mountSignEventAdapterTrigger(
   (logger) => makeSignEventWebhookUseCase({ logger }),

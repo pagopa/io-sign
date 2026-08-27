@@ -18,11 +18,17 @@ const logger: Logger = {
   with: () => logger
 };
 
-const hubOk: SignEventPDNDPublisher = { checkHealth: async () => ok(undefined) };
+const hubOk: SignEventPDNDPublisher = {
+  checkHealth: async () => ok(undefined),
+  sendAnalyticsEvent: async () => ok(undefined),
+  sendBillingEvent: async () => ok(undefined)
+};
 const backofficeOk: BackofficeService = { checkHealth: async () => ok(undefined) };
 
 const hubKo: SignEventPDNDPublisher = {
-  checkHealth: async () => err(new ServiceUnavailableError("hub down"))
+  checkHealth: async () => err(new ServiceUnavailableError("hub down")),
+  sendAnalyticsEvent: async () => ok(undefined),
+  sendBillingEvent: async () => ok(undefined)
 };
 const backofficeKo: BackofficeService = {
   checkHealth: async () => err(new ServiceUnavailableError("backoffice down"))
@@ -30,7 +36,7 @@ const backofficeKo: BackofficeService = {
 
 describe("makeInfoUseCase", () => {
   it("returns ok with all health checks green", async () => {
-    const useCase = makeInfoUseCase({ logger, signEventPDNDPublisher: hubOk, backofficeService: backofficeOk });
+    const useCase = makeInfoUseCase({ logger, pdndPublisher: hubOk, backofficeService: backofficeOk });
     const result = await useCase({ query: "" });
     expect(result.isOk()).toBe(true);
     const value = result._unsafeUnwrap();
@@ -39,21 +45,21 @@ describe("makeInfoUseCase", () => {
   });
 
   it("returns err when signEventPublisher fails", async () => {
-    const useCase = makeInfoUseCase({ logger, signEventPDNDPublisher: hubKo, backofficeService: backofficeOk });
+    const useCase = makeInfoUseCase({ logger, pdndPublisher: hubKo, backofficeService: backofficeOk });
     const result = await useCase({ query: "" });
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().message).toContain("hub down");
   });
 
   it("returns err when backofficeService fails", async () => {
-    const useCase = makeInfoUseCase({ logger, signEventPDNDPublisher: hubOk, backofficeService: backofficeKo });
+    const useCase = makeInfoUseCase({ logger, pdndPublisher: hubOk, backofficeService: backofficeKo });
     const result = await useCase({ query: "" });
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr().message).toContain("backoffice down");
   });
 
   it("aggregates multiple failures in the error message", async () => {
-    const useCase = makeInfoUseCase({ logger, signEventPDNDPublisher: hubKo, backofficeService: backofficeKo });
+    const useCase = makeInfoUseCase({ logger, pdndPublisher: hubKo, backofficeService: backofficeKo });
     const result = await useCase({ query: "" });
     expect(result.isErr()).toBe(true);
     const msg = result._unsafeUnwrapErr().message;
@@ -66,13 +72,15 @@ describe("makeInfoUseCase", () => {
     let hubResolved = false;
     let backofficeResolved = false;
     const slowHub: SignEventPDNDPublisher = {
-      checkHealth: async () => { await delay(50); hubResolved = true; return ok(undefined); }
+      checkHealth: async () => { await delay(50); hubResolved = true; return ok(undefined); },
+      sendAnalyticsEvent: async () => ok(undefined),
+      sendBillingEvent: async () => ok(undefined)
     };
     const slowBackoffice: BackofficeService = {
       checkHealth: async () => { await delay(50); backofficeResolved = true; return ok(undefined); }
     };
     const start = Date.now();
-    const useCase = makeInfoUseCase({ logger, signEventPDNDPublisher: slowHub, backofficeService: slowBackoffice });
+    const useCase = makeInfoUseCase({ logger, pdndPublisher: slowHub, backofficeService: slowBackoffice });
     await useCase({ query: "" });
     expect(Date.now() - start).toBeLessThan(150);
     expect(hubResolved).toBe(true);

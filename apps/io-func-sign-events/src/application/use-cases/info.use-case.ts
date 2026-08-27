@@ -10,15 +10,15 @@ const APP_VERSION = pkg.version;
 
 type InfoDeps = {
   logger: Logger;
-  signEventPDNDPublisher: SignEventPDNDPublisher;
+  pdndPublisher: SignEventPDNDPublisher;
   backofficeService: BackofficeService;
 };
 
 export const makeInfoUseCase =
-  ({ signEventPDNDPublisher, backofficeService }: InfoDeps): InfoUseCase =>
+  ({ pdndPublisher, backofficeService }: InfoDeps): InfoUseCase =>
   async () => {
     const [hubHealth, backofficeHealth] = await Promise.all([
-      signEventPDNDPublisher.checkHealth(),
+      pdndPublisher.checkHealth(),
       backofficeService.checkHealth()
     ]);
     const failures = [hubHealth, backofficeHealth].flatMap((r) =>
