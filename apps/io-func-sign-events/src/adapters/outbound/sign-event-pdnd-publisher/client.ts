@@ -21,16 +21,19 @@ const sendEvent = async (
 };
 
 export const makeSignEventPDNDPublisher = (
-  { connectionString }: SignEventPDNDPublisherConfig,
+  {
+    billingConnectionString,
+    analyticsConnectionString
+  }: SignEventPDNDPublisherConfig,
   eventHubNameBilling: string,
   eventHubNameAnalytics: string
 ): SignEventPDNDPublisher => {
   const clientBilling = new EventHubProducerClient(
-    connectionString,
+    billingConnectionString,
     eventHubNameBilling
   );
   const clientAnalytics = new EventHubProducerClient(
-    connectionString,
+    analyticsConnectionString,
     eventHubNameAnalytics
   );
   return {

@@ -2,10 +2,12 @@ import { z } from "zod";
 
 const ConfigFromEnvironment = z
   .object({
-    SignEventsHubItnConnectionString: z.string().min(1)
+    BillingEventHubItnConnectionString: z.string().min(1),
+    AnalyticsEventHubItnConnectionString: z.string().min(1)
   })
   .transform((env) => ({
-    connectionString: env.SignEventsHubItnConnectionString
+    billingConnectionString: env.BillingEventHubItnConnectionString,
+    analyticsConnectionString: env.AnalyticsEventHubItnConnectionString
   }));
 
 export type SignEventPDNDPublisherConfig = z.infer<

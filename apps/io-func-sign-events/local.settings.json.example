@@ -6,6 +6,10 @@
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureFunctionsJobHost__logging__logLevel__Function": "Trace",
     "SignEventsHubItnConnectionString": "",
+    "AnalyticsEventHubItnConnectionString": "",
+    "BillingEventHubItnConnectionString": "",
+    "BackofficeFuncBaseUrl": "",
+    "BackofficeFuncApiKey": "",
     "APPLICATIONINSIGHTS_CONNECTION_STRING": ""
   }
 }
