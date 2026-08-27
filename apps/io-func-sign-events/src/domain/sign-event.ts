@@ -90,7 +90,9 @@ export const SignEvent = z.discriminatedUnion("payloadType", [
     eventId: z.ulid(),
     eventName: EventName,
     payloadType: z.literal("signature_request"),
-    payload: signatureRequest
+    payload: z.object({
+      signatureRequest
+    })
   }),
   z.object({
     eventId: z.ulid(),

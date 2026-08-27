@@ -2,7 +2,7 @@ import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
 import { ulid } from "ulid";
 import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
 import { err, ok } from "neverthrow";
-import type { SignatureRequest, SignEvent } from "../../domain/sign-event.js";
+import type { SignEvent } from "../../domain/sign-event.js";
 import { AnalyticsEventName } from "../../domain/pdnd-event.js";
 import type {
   AnalyticsEvent,
@@ -14,15 +14,10 @@ import type { SignEventPDNDPublisher } from "../../domain/ports/outbound/sign-ev
 const toPricingPlan = (env: "TEST" | "DEFAULT" | "INTERNAL"): PricingPlan =>
   env === "TEST" ? "FREE" : env;
 
-const extractRequest = (event: SignEvent): SignatureRequest =>
-  event.payloadType === "signature_request"
-    ? event.payload
-    : event.payload.signatureRequest;
-
 const toAnalyticsEvent = (event: SignEvent): AnalyticsEvent | null => {
   const nameResult = AnalyticsEventName.safeParse(event.eventName);
   if (!nameResult.success) return null;
-  const req = extractRequest(event);
+  const req = event.payload.signatureRequest;
   return {
     id: ulid(),
     name: nameResult.data,
@@ -38,7 +33,7 @@ const toAnalyticsEvent = (event: SignEvent): AnalyticsEvent | null => {
 
 const toBillingEvent = (event: SignEvent): BillingEvent | null => {
   if (event.eventName !== "io.sign.signature_request.signed") return null;
-  const req = extractRequest(event);
+  const req = event.payload.signatureRequest;
   return {
     id: ulid(),
     name: "io.sign.signature_request.signed",

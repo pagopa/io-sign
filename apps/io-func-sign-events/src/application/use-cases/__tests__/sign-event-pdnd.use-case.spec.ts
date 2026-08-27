@@ -28,14 +28,22 @@ const aCreatedSignEvent: SignEvent = {
   eventId: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
   eventName: "io.sign.signature_request.created",
   payloadType: "signature_request",
-  payload: aBasePayload
+  payload: {
+    signatureRequest: aBasePayload
+  }
 };
 
 const aSignedSignEvent: SignEvent = {
   eventId: "01ARZ3NDEKTSV4RRFFQ69G5FAX",
   eventName: "io.sign.signature_request.signed",
   payloadType: "signature_request",
-  payload: { ...aBasePayload, status: "SIGNED" as const }
+  payload: { 
+    signatureRequest: {
+      ...aBasePayload,
+      status: "SIGNED" as const,
+      signedAt: "2024-01-02T00:00:00.000Z"
+    }
+  }
 };
 
 const makeLogger = (): Logger => ({
@@ -80,7 +88,13 @@ describe("makeSignEventPDNDUseCase", () => {
       eventId: "01ARZ3NDEKTSV4RRFFQ69G5FAY",
       eventName: "io.sign.signature_request.wait_for_signature",
       payloadType: "signature_request",
-      payload: { ...aBasePayload, status: "WAIT_FOR_SIGNATURE" as const }
+      payload: {
+        signatureRequest: {
+          ...aBasePayload,
+          status: "WAIT_FOR_SIGNATURE" as const,
+          qrCodeUrl: "https://example.com/qr"
+        }
+      }
     };
     const pdndPublisher = makePdndPublisher();
     const useCase = makeSignEventPDNDUseCase({ logger: makeLogger(), pdndPublisher });
