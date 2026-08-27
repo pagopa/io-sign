@@ -1,4 +1,4 @@
-import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
+// import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
 import { getSignEventPDNDPublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-pdnd-publisher/config.js";
 import { makeSignEventPDNDPublisher } from "../adapters/outbound/sign-event-pdnd-publisher/client.js";
 import { getBackofficeServiceConfigFromEnvironment } from "../adapters/outbound/backoffice-service/config.js";
@@ -51,11 +51,12 @@ mountSignEventAdapterTrigger(
   }
 );
 
-mountSignEventAdapterTrigger(
-  (logger) => makeSignEventWebhookUseCase({ logger }),
-  {
-    connection: "SignEventsHubItnConnectionString",
-    eventHubName: SIGN_EVENT_HUB_NAME,
-    consumerGroup: "webhook"
-  }
-);
+// Coming soon..
+// mountSignEventAdapterTrigger(
+//   (logger) => makeSignEventWebhookUseCase({ logger }),
+//   {
+//     connection: "SignEventsHubItnConnectionString",
+//     eventHubName: SIGN_EVENT_HUB_NAME,
+//     consumerGroup: "webhook"
+//   }
+// );
