@@ -2,7 +2,7 @@ import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
 import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
 import { err, ok } from "neverthrow";
 import type { BackofficeService } from "../../domain/ports/outbound/backoffice-service.js";
-import type { SignEventPublisher } from "../../domain/ports/outbound/sign-event-publisher.js";
+import type { SignEventPDNDPublisher } from "../../domain/ports/outbound/sign-event-pdnd-publisher.js";
 import type { InfoUseCase } from "../contracts/info.js";
 import pkg from "../../../package.json";
 
@@ -10,15 +10,15 @@ const APP_VERSION = pkg.version;
 
 type InfoDeps = {
   logger: Logger;
-  signEventPublisher: SignEventPublisher;
+  signEventPDNDPublisher: SignEventPDNDPublisher;
   backofficeService: BackofficeService;
 };
 
 export const makeInfoUseCase =
-  ({ signEventPublisher, backofficeService }: InfoDeps): InfoUseCase =>
+  ({ signEventPDNDPublisher, backofficeService }: InfoDeps): InfoUseCase =>
   async () => {
     const [hubHealth, backofficeHealth] = await Promise.all([
-      signEventPublisher.checkHealth(),
+      signEventPDNDPublisher.checkHealth(),
       backofficeService.checkHealth()
     ]);
     const failures = [hubHealth, backofficeHealth].flatMap((r) =>

@@ -1,6 +1,6 @@
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
-import { getSignEventPublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-publisher/config.js";
-import { makeSignEventPublisher } from "../adapters/outbound/sign-event-publisher/client.js";
+import { getSignEventPDNDPublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-pdnd-publisher/config.js";
+import { makeSignEventPDNDPublisher } from "../adapters/outbound/sign-event-pdnd-publisher/client.js";
 import { getBackofficeServiceConfigFromEnvironment } from "../adapters/outbound/backoffice-service/config.js";
 import { makeBackofficeService } from "../adapters/outbound/backoffice-service/client.mjs";
 import {
@@ -19,14 +19,17 @@ const ERROR_RESPONDER_CONFIG = {
 };
 
 const SIGN_EVENT_HUB_NAME = "io-p-itn-sign-events-01";
+const PDND_BILLING_EVENT_HUB_NAME = "io-p-itn-sign-billing-01";
+const PDND_ANALYTICS_EVENT_HUB_NAME = "io-p-itn-sign-analytics-01";
 
 // TODO: evaluate switch to makeApplicationInsightsLogger from @pagopa/hexagonal-core/adapters.
 
 makeAzureTelemetryClient(getApplicationInsightsConfigFromEnvironment());
 
-const signEventPublisher = makeSignEventPublisher(
-  getSignEventPublisherConfigFromEnvironment(),
-  SIGN_EVENT_HUB_NAME
+const signEventPDNDPublisher = makeSignEventPDNDPublisher(
+  getSignEventPDNDPublisherConfigFromEnvironment(),
+  PDND_BILLING_EVENT_HUB_NAME,
+  PDND_ANALYTICS_EVENT_HUB_NAME
 );
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
@@ -35,7 +38,7 @@ const backofficeService = makeBackofficeService(
 // Endpoints.
 mountInfoAdapterHttp(
   (logger) =>
-    makeInfoUseCase({ logger, signEventPublisher, backofficeService }),
+    makeInfoUseCase({ logger, signEventPDNDPublisher, backofficeService }),
   ERROR_RESPONDER_CONFIG
 );
 
