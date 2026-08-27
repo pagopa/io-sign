@@ -5,13 +5,13 @@ const ConfigFromEnvironment = z.object({
   BackofficeFuncApiKey: z.string().min(1)
 });
 
-export type BackofficeFuncConfig = { baseUrl: string; apiKey: string };
+export type BackofficeServiceConfig = { baseUrl: string; apiKey: string };
 
-export const getBackofficeFuncConfigFromEnvironment =
-  (): BackofficeFuncConfig => {
+export const getBackofficeServiceConfigFromEnvironment =
+  (): BackofficeServiceConfig => {
     const result = ConfigFromEnvironment.safeParse(process.env);
     if (!result.success) {
-      throw new Error(`BackofficeFunc config: ${result.error.message}`);
+      throw new Error(`BackofficeService config: ${result.error.message}`);
     }
     return {
       baseUrl: result.data.BackofficeFuncBaseUrl,

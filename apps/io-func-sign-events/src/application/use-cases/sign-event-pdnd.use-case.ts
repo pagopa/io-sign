@@ -3,10 +3,12 @@ import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
 import { ok } from "neverthrow";
 import type { SignEvent } from "../../domain/sign-event.js";
 
+type SignEventPDNDDeps = { logger: Logger };
+
 export const makeSignEventPDNDUseCase =
-  (deps: { logger: Logger }): UseCase<SignEvent, void, BaseError> =>
+  ({ logger }: SignEventPDNDDeps): UseCase<SignEvent, void, BaseError> =>
   async (event) => {
-    deps.logger.info("sign event received by trigger for pdnd", {
+    logger.info("sign event received by trigger for pdnd", {
       eventName: event.eventName,
       payloadType: event.payloadType,
       payload: JSON.stringify(event.payload, null, 2)

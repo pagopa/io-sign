@@ -8,13 +8,13 @@ const ConfigFromEnvironment = z
     connectionString: env.SignEventsHubItnConnectionString
   }));
 
-export type SignEventsHubConfig = z.infer<typeof ConfigFromEnvironment>;
+export type SignEventProducerConfig = z.infer<typeof ConfigFromEnvironment>;
 
-export const getSignEventsHubConfigFromEnvironment =
-  (): SignEventsHubConfig => {
+export const getSignEventProducerConfigFromEnvironment =
+  (): SignEventProducerConfig => {
     const result = ConfigFromEnvironment.safeParse(process.env);
     if (!result.success) {
-      throw new Error("error parsing SignEventsHub config", {
+      throw new Error("error parsing SignEventProducer config", {
         cause: result.error.issues
       });
     }

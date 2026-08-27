@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
 import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
-import type { BackofficeFunc } from "../../application/ports/backoffice-func.js";
-import type { BackofficeFuncConfig } from "./config.js";
+import type { BackofficeService } from "../../../domain/ports/outbound/backoffice-service.js";
+import type { BackofficeServiceConfig } from "./config.js";
 
-export const makeBackofficeFunc = (
-  config: BackofficeFuncConfig
-): BackofficeFunc => ({
+export const makeBackofficeService = (
+  config: BackofficeServiceConfig
+): BackofficeService => ({
   checkHealth: async () => {
     try {
       const baseUrl = config.baseUrl.replace(/\/$/, "");
@@ -17,7 +17,7 @@ export const makeBackofficeFunc = (
       if (!response.ok) {
         return err(
           new ServiceUnavailableError(
-            `backoffice-func returned ${response.status}`
+            `backoffice-service returned ${response.status}`
           )
         );
       }
@@ -25,7 +25,7 @@ export const makeBackofficeFunc = (
     } catch (e) {
       const detail = e instanceof Error ? e.message : String(e);
       return err(
-        new ServiceUnavailableError(`backoffice-func unreachable: ${detail}`)
+        new ServiceUnavailableError(`backoffice-service unreachable: ${detail}`)
       );
     }
   }

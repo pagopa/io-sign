@@ -1,17 +1,19 @@
 import { EventHubProducerClient } from "@azure/event-hubs";
 import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
-import type { SignEventsHub } from "../../../application/ports/sign-events-hub.js";
+import type { SignEventPublisher } from "../../../domain/ports/outbound/sign-event-publisher.js";
 
-export const makeSignEventsHub = (
+export const makeSignEventPublisher = (
   client: EventHubProducerClient
-): SignEventsHub => ({
+): SignEventPublisher => ({
   checkHealth: async () => {
     try {
       await client.getPartitionIds();
       return ok(undefined);
     } catch {
-      return err(new ServiceUnavailableError(`sign-events hub unreachable.`));
+      return err(
+        new ServiceUnavailableError(`sign-event publisher unreachable.`)
+      );
     }
   }
 });

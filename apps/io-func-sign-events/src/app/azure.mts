@@ -1,9 +1,9 @@
 import { EventHubProducerClient } from "@azure/event-hubs";
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
-import { getSignEventsHubConfigFromEnvironment } from "../infra/azure/event-hubs/config.js";
-import { makeSignEventsHub } from "../infra/azure/event-hubs/sign-events.health.js";
-import { getBackofficeFuncConfigFromEnvironment } from "../infra/backoffice-func/config.js";
-import { makeBackofficeFunc } from "../infra/backoffice-func/client.mjs";
+import { getSignEventProducerConfigFromEnvironment } from "../adapters/outbound/sign-event-publisher/config.js";
+import { makeSignEventPublisher } from "../adapters/outbound/sign-event-publisher/client.js";
+import { getBackofficeServiceConfigFromEnvironment } from "../adapters/outbound/backoffice-service/config.js";
+import { makeBackofficeService } from "../adapters/outbound/backoffice-service/client.mjs";
 import {
   mountInfoAdapterHttp,
   mountSignEventAdapterTrigger
@@ -23,19 +23,20 @@ const ERROR_RESPONDER_CONFIG = {
 
 makeAzureTelemetryClient(getApplicationInsightsConfigFromEnvironment());
 
-const signEventsHubConfig = getSignEventsHubConfigFromEnvironment();
-const signEventsHubClient = new EventHubProducerClient(
-  signEventsHubConfig.connectionString,
+const signEventProducerConfig = getSignEventProducerConfigFromEnvironment();
+const signEventProducerClient = new EventHubProducerClient(
+  signEventProducerConfig.connectionString,
   "io-p-itn-sign-events-01"
 );
-const signEventsHub = makeSignEventsHub(signEventsHubClient);
-const backofficeFunc = makeBackofficeFunc(
-  getBackofficeFuncConfigFromEnvironment()
+const signEventPublisher = makeSignEventPublisher(signEventProducerClient);
+const backofficeService = makeBackofficeService(
+  getBackofficeServiceConfigFromEnvironment()
 );
 
 // Endpoints.
 mountInfoAdapterHttp(
-  (logger) => makeInfoUseCase({ logger, signEventsHub, backofficeFunc }),
+  (logger) =>
+    makeInfoUseCase({ logger, signEventPublisher, backofficeService }),
   ERROR_RESPONDER_CONFIG
 );
 

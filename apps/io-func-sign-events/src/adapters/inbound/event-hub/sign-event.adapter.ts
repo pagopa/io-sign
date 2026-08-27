@@ -2,12 +2,10 @@ import {
   type EventHubTriggerConfig,
   mountAzureFunctionsEventHubTrigger
 } from "@io-sign/hexagonal-azure-functions";
-import type { BaseError } from "@pagopa/hexagonal-core/domain/errors";
-import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
 import type { SignEvent } from "../../../domain/sign-event.js";
 import { SignEvent as SignEventSchema } from "../../../domain/sign-event.js";
-
-export type SignEventUseCase = UseCase<SignEvent, void, BaseError>;
+import type { SignEventUseCase } from "../../../application/contracts/sign-event.js";
 
 const inputMapper = (message: unknown): SignEvent => {
   const parsed = Buffer.isBuffer(message)

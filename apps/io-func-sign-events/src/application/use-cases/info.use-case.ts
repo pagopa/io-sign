@@ -1,36 +1,25 @@
 import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
-import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
-import { ok, err } from "neverthrow";
-import { z } from "zod";
-import type { BackofficeFunc } from "../ports/backoffice-func.js";
-import type { SignEventsHub } from "../ports/sign-events-hub.js";
+import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
+import { err, ok } from "neverthrow";
+import type { BackofficeService } from "../../domain/ports/outbound/backoffice-service.js";
+import type { SignEventPublisher } from "../../domain/ports/outbound/sign-event-publisher.js";
+import type { InfoUseCase } from "../contracts/info.js";
 import pkg from "../../../package.json";
 
 const APP_VERSION = pkg.version;
 
-export interface InfoInput {
-  query: string;
-}
-
-export const InfoResponseSchema = z.object({
-  message: z.string(),
-  version: z.string()
-});
-
-export type InfoResponse = z.infer<typeof InfoResponseSchema>;
-
-export type InfoUseCase = UseCase<InfoInput, InfoResponse, ServiceUnavailableError>;
+type InfoDeps = {
+  logger: Logger;
+  signEventPublisher: SignEventPublisher;
+  backofficeService: BackofficeService;
+};
 
 export const makeInfoUseCase =
-  (deps: {
-    logger: Logger;
-    signEventsHub: SignEventsHub;
-    backofficeFunc: BackofficeFunc;
-  }): InfoUseCase =>
+  ({ signEventPublisher, backofficeService }: InfoDeps): InfoUseCase =>
   async () => {
     const [hubHealth, backofficeHealth] = await Promise.all([
-      deps.signEventsHub.checkHealth(),
-      deps.backofficeFunc.checkHealth()
+      signEventPublisher.checkHealth(),
+      backofficeService.checkHealth()
     ]);
     const failures = [hubHealth, backofficeHealth].flatMap((r) =>
       r.isErr() ? [r.error.message] : []
