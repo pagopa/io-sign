@@ -11,7 +11,7 @@ export const PricingPlan = z.enum(["FREE", "DEFAULT", "INTERNAL"]);
 export type PricingPlan = z.infer<typeof PricingPlan>;
 
 const baseEvent = z.object({
-  id: uuid,
+  id: z.ulid(),
   signatureRequestId: z.ulid(),
   signerId: uuid,
   internalInstitutionId: uuid,

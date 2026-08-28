@@ -4,3 +4,5 @@ FUNCTIONS_WORKER_RUNTIME=node
 NODE_ENV=development
 AzureFunctionsJobHost__logging__logLevel__Function=Trace
 SignEventsHubItnConnectionString=${SIGN_EVENTS_HUB_ITN_CONNECTION_STRING}
+AnalyticsEventHubItnConnectionString=${SIGN_EVENTS_HUB_ITN_CONNECTION_STRING}
+BillingEventHubItnConnectionString=${SIGN_EVENTS_HUB_ITN_CONNECTION_STRING}
