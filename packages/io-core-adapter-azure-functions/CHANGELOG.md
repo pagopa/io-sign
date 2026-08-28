@@ -1,5 +1,11 @@
 # @io-sign/hexagonal-azure-functions
 
+## 1.3.0
+
+### Minor Changes
+
+- 258766c: Add PDND ingestion trigger to io-func-sign-events
+
 ## 1.2.1
 
 ### Patch Changes
