@@ -31,8 +31,10 @@ export class ScanQrCodeDialogElement extends LitElement {
   }
 
   static styles = css`
-    h1 {
+    h2 {
       font-size: 1.625em;
+      font-family: "Titillio Semibold Woff", sans-serif;
+      font-weight: 500;
     }
     .app-badges {
       display: flex;
@@ -48,12 +50,15 @@ export class ScanQrCodeDialogElement extends LitElement {
       width: 150px;
       height: 150px;
     }
+    .download-msg {
+      font-size: 0.875em;
+    }
   `;
 
   render() {
     return html`<io-dialog>
       <div class="content">
-        <h1>${msg(str`Scan the QR code`)}</h1>
+        <h2>${msg(str`Scan the QR code`)}</h2>
         <p>
           ${msg(
             html`To view and sign the documents with IO, <br />
@@ -63,7 +68,10 @@ export class ScanQrCodeDialogElement extends LitElement {
         <div>
           <img class="qr-code" src="${this.qrCodeUrl}" />
         </div>
-        <span>${msg(str`Don’t have the IO app? Download it now`)}</span>
+        </br>
+        <span class="download-msg">${msg(
+          str`Don’t have the IO app? Download it now`
+        )}</span>
         <div class="app-badges">
           <a
             href="https://apps.apple.com/it/app/io/id1501681835"

@@ -1,16 +1,16 @@
 @font-face {
-  font-family: "Titillium Web";
-  font-weight: bold;
-  src: url(./TitilliumWeb-Bold.ttf) format("truetype");
+  font-family: "Titillio Semibold Woff";
+  font-weight: 500;
+  src: url(./Titillio-Semibold.woff) format("opentype");
 }
 
 @font-face {
-  font-family: "Titillium Web";
-  font-weight: 400;
-  src: url(./TitilliumWeb-Regular.ttf) format("truetype");
+  font-family: "Titillio Regular Woff";
+  font-weight: 500;
+  src: url(./Titillio-Regular.woff) format("opentype");
 }
 
 body {
-  --io-primary-color: #0073e6;
-  --io-font-family: "Titillium Web";
+  --io-primary-color: #0B3EE3;
+  --io-font-family: "Titillio Regular Woff";
 }
