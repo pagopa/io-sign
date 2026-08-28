@@ -63,7 +63,7 @@ locals {
       name                   = "events"
       partitions             = 3
       message_retention_days = 7
-      consumers              = []
+      consumers              = ["pdnd", "webhook"]
       keys = [
         {
           name   = "io-sign-events-func-sender"

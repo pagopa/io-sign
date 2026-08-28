@@ -1,58 +1,31 @@
-import type { GenericError } from "@pagopa/hexagonal-core/domain/errors";
-import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
-import { ok } from "neverthrow";
-import { z } from "zod";
-import type { BackofficeFunc } from "../ports/backoffice-func.js";
-import type { SignEventsHub } from "../ports/sign-events-hub.js";
+import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
+import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
+import { err, ok } from "neverthrow";
+import type { BackofficeService } from "../../domain/ports/outbound/backoffice-service.js";
+import type { SignEventPDNDPublisher } from "../../domain/ports/outbound/sign-event-pdnd-publisher.js";
+import type { InfoUseCase } from "../contracts/info.js";
 import pkg from "../../../package.json";
 
 const APP_VERSION = pkg.version;
 
-export interface InfoInput {
-  query: string;
-}
-
-const healthStatus = z.discriminatedUnion("status", [
-  z.object({ status: z.literal("ok") }),
-  z.object({ status: z.literal("ko"), error: z.string() })
-]);
-
-export const InfoResponseSchema = z.object({
-  message: z.string(),
-  version: z.string(),
-  health: z.object({
-    signEventsHub: healthStatus,
-    backofficeFunc: healthStatus
-  })
-});
-
-export type InfoResponse = z.infer<typeof InfoResponseSchema>;
-
-export type InfoUseCase = UseCase<InfoInput, InfoResponse, GenericError>;
+type InfoDeps = {
+  logger: Logger;
+  pdndPublisher: SignEventPDNDPublisher;
+  backofficeService: BackofficeService;
+};
 
 export const makeInfoUseCase =
-  (deps: {
-    logger: Logger;
-    signEventsHub: SignEventsHub;
-    backofficeFunc: BackofficeFunc;
-  }): InfoUseCase =>
+  ({ pdndPublisher, backofficeService }: InfoDeps): InfoUseCase =>
   async () => {
     const [hubHealth, backofficeHealth] = await Promise.all([
-      deps.signEventsHub.checkHealth(),
-      deps.backofficeFunc.checkHealth()
+      pdndPublisher.checkHealth(),
+      backofficeService.checkHealth()
     ]);
-    return ok({
-      message: "It's working!",
-      version: APP_VERSION,
-      health: {
-        signEventsHub: hubHealth.match(
-          () => ({ status: "ok" as const }),
-          (error) => ({ status: "ko" as const, error: error.message })
-        ),
-        backofficeFunc: backofficeHealth.match(
-          () => ({ status: "ok" as const }),
-          (error) => ({ status: "ko" as const, error: error.message })
-        )
-      }
-    });
+    const failures = [hubHealth, backofficeHealth].flatMap((r) =>
+      r.isErr() ? [r.error.message] : []
+    );
+    if (failures.length > 0) {
+      return err(new ServiceUnavailableError(failures.join("\n")));
+    }
+    return ok({ message: "It's working!", version: APP_VERSION });
   };

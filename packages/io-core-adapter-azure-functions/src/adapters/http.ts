@@ -1,5 +1,5 @@
 import { app as azureApp } from "@azure/functions";
-import type { HttpRequest, HttpResponseInit, HttpMethod } from "@azure/functions";
+import type { HttpRequest, HttpResponseInit, HttpMethod, InvocationContext } from "@azure/functions";
 import {
   mapErrorToHttpResponse,
   type HttpRequestPayload,
@@ -8,7 +8,9 @@ import {
   type ResponseMap
 } from "@pagopa/hexagonal-core/adapters";
 import type { BaseError } from "@pagopa/hexagonal-core/domain/errors";
-import type { UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
+import { ZodError } from "zod";
+import { makeInvocationContextLogger } from "./invocation-context-logger.js";
 
 export type ErrorResponderConfig = Parameters<typeof mapErrorToHttpResponse>[0];
 
@@ -38,9 +40,6 @@ const functionNameFrom = (path: string): string =>
 /**
  * Registers an Azure Functions HTTP trigger from a hexagonal route contract.
  *
- * Mirrors mountFastifyRoute from @pagopa/hexagonal-fastify but targets
- * azureApp.http() directly — no Fastify or server.inject() involved.
- *
  * NOTE: this is a simulation of a future @pagopa/hexagonal-azure-functions
  * package. Type-level constraints (EnsureErrorResponsePayloads, etc.) are
  * intentionally omitted and will be added when the real library ships.
@@ -57,24 +56,33 @@ export const mountAzureFunctionsRoute = <
     contract: RouteContract<Req, Resp>;
     inputMapper: (payload: HttpRequestPayload) => Input;
     outputMapper: (output: O) => Body;
-    useCase: UseCase<Input, O, E>;
+    useCaseFactory: (logger: Logger) => UseCase<Input, O, E>;
+    authLevel?: "anonymous" | "function" | "admin";
   },
   config?: ErrorResponderConfig
 ): void => {
-  const { contract, inputMapper, outputMapper, useCase } = spec;
+  const { contract, inputMapper, outputMapper, useCaseFactory } = spec;
   const successStatus = successStatusFrom(contract.response);
 
   azureApp.http(functionNameFrom(contract.path), {
     methods: [contract.method.toUpperCase() as HttpMethod],
-    authLevel: "anonymous",
+    authLevel: spec.authLevel ?? "anonymous",
     route: contract.path.replace(/^\//, ""),
-    handler: async (req: HttpRequest): Promise<HttpResponseInit> => {
+    handler: async (req: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
+      const logger = makeInvocationContextLogger(context);
+      const useCase = useCaseFactory(logger);
       const payload = await extractPayload(req);
-      const input = inputMapper(payload);
+      let input: Input;
+      try {
+        input = inputMapper(payload);
+      } catch (e) {
+        const detail = e instanceof ZodError ? e.issues.map((i) => i.message).join("; ") : "Invalid request";
+        return { status: 400, jsonBody: { status: 400, title: "Bad Request", detail } };
+      }
       const result = await useCase(input);
       return result.match(
-        (output) => ({ status: successStatus, jsonBody: outputMapper(output) }),
-        (error) => {
+        (output: any) => ({ status: successStatus, jsonBody: outputMapper(output) }),
+        (error: any) => {
           const { status, headers, jsonBody } = mapErrorToHttpResponse(config)(error);
           return {
             status,
