@@ -1,6 +1,6 @@
 module "eventhub" {
   source  = "pagopa-dx/azure-event-hub/azurerm"
-  version = "~> 0.2"
+  version = "~> 1.0"
 
   environment = {
     prefix          = local.prefix
