@@ -1,12 +1,6 @@
 import { flow, pipe } from "fp-ts/lib/function";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
-import {
-  createAndSendAnalyticsEvent,
-  createBillingEvent,
-  EventName,
-  sendBillingEvent
-} from "@io-sign/io-sign/event";
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
 
@@ -21,6 +15,11 @@ import {
   upsertSignatureRequest
 } from "../../signature-request";
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
+import {
+  createAndSendSignEvent,
+  eventNameByRequestStatus,
+  EventName
+} from "@io-sign/io-sign/sign-event";
 
 // TODO(SFEQS-2108): move here the signature request cancelation logic
 // since CANCELLED is an "end status" such as SIGNED and REJECTED
@@ -61,14 +60,6 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-const eventNameByRequestStatus: Record<
-  ClosedSignatureRequest["status"],
-  EventName
-> = {
-  SIGNED: EventName.SIGNATURE_SIGNED,
-  REJECTED: EventName.SIGNATURE_REJECTED
-};
-
 const sendNotification = sendSignatureRequestNotification(
   buildNotificationMessage
 );
@@ -81,11 +72,8 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
     RTE.chainEitherKW(markRequestAsClosed(request)),
     RTE.chain(upsertSignatureRequest),
     RTE.chainFirstReaderTaskKW(sendNotification),
-    RTE.chainFirstW(
-      pipe(
-        eventNameByRequestStatus[request.status],
-        createAndSendAnalyticsEvent
-      )
+    RTE.chainFirstW((req) =>
+      pipe(req, createAndSendSignEvent(eventNameByRequestStatus[req.status]))
     ),
     // only if the closed request is in REJECTED status
     RTE.chainFirstW(
@@ -107,20 +95,6 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
               sampling: false
             }
           )
-        ),
-        RTE.altW(() => RTE.right(void 0))
-      )
-    ),
-    // only if the closed request is in SIGNED status
-    RTE.chainW(
-      flow(
-        RTE.fromPredicate(
-          (closed): closed is SignatureRequestSigned =>
-            closed.status === "SIGNED",
-          () => new Error("to continue should be SIGNED")
-        ),
-        RTE.chainFirstW((request) =>
-          pipe(createBillingEvent(request), sendBillingEvent)
         ),
         RTE.altW(() => RTE.right(void 0))
       )

@@ -15,7 +15,7 @@ import {
   SignatureRequest,
   SignatureRequestRepository,
 } from "../../../../signature-request";
-import { EventHubProducerClient } from "@azure/event-hubs";
+import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 import { QueueClient } from "@azure/storage-queue";
 
 describe("SetSignatureRequestHandler", () => {
@@ -123,7 +123,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -156,7 +156,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -189,7 +189,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -225,7 +225,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
@@ -259,7 +259,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {
         sendMessage: (_: string) => Promise.resolve({}),

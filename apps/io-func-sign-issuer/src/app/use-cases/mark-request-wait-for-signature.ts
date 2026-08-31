@@ -9,11 +9,16 @@ import {
   markAsWaitForSignature,
   UpsertSignatureRequest
 } from "../../signature-request";
+import {
+  CreateAndSendSignEvent,
+  EventName
+} from "@io-sign/io-sign/sign-event";
 
 export const makeMarkRequestAsWaitForSignature =
   (
     getSignatureRequest: GetSignatureRequest,
-    upsertSignatureRequest: UpsertSignatureRequest
+    upsertSignatureRequest: UpsertSignatureRequest,
+    createAndSendSignEvent: CreateAndSendSignEvent
   ) =>
   (request: SignatureRequestToBeSigned) =>
     pipe(
@@ -24,5 +29,8 @@ export const makeMarkRequestAsWaitForSignature =
         )
       ),
       TE.chainEitherK(markAsWaitForSignature(request.qrCodeUrl)),
-      TE.chain(upsertSignatureRequest)
+      TE.chain(upsertSignatureRequest),
+      TE.chainFirstW(
+        createAndSendSignEvent(EventName.SIGNATURE_WAIT_FOR_SIGNATURE)
+      )
     );

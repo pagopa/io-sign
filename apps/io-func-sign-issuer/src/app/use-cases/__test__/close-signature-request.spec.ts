@@ -27,7 +27,7 @@ import { FiscalCode } from "../../../infra/http/models/FiscalCode";
 import { TelemetryService } from "@io-sign/io-sign/telemetry";
 import { NotificationService } from "@io-sign/io-sign/notification";
 
-import { EventName, EventProducerClient } from "@io-sign/io-sign/event";
+import { EventName, SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
 import { CloseSignatureRequestHandler } from "../../../infra/handlers/close-signature-request";
 
@@ -148,7 +148,7 @@ const notificationService: NotificationService = {
   submit: notification.submit,
 };
 
-const eventProducerClient: EventProducerClient = {
+const signEventsProducerClient: SignEventsProducerClient = {
   createBatch: () =>
     Promise.resolve({
       tryAdd: () => true,
@@ -163,8 +163,7 @@ const closeSignatureRequest = (input: ClosedSignatureRequest) =>
     signerRepository,
     telemetryService,
     notificationService,
-    eventAnalyticsClient: eventProducerClient,
-    billingEventProducer: eventProducerClient,
+    signEventsClient: signEventsProducerClient,
     inputDecoder: ClosedSignatureRequest,
     logger: {
       log: () => () => void 0,
@@ -207,20 +206,20 @@ describe("closeSignatureRequest", () => {
   });
 
   describe("Given a SIGNED request", () => {
-    it("tracks a billing event", async () => {
+    it("sends a sign event", async () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
       expect(E.isRight(result));
-      expect(analytics.sendBatch).toHaveBeenCalledTimes(2);
+      expect(analytics.sendBatch).toHaveBeenCalledTimes(1);
     });
 
-    it("fails on error on billing event", async () => {
+    it("does not fail when the sign event cannot be sent", async () => {
       analytics.sendBatch.mockRejectedValueOnce(new Error("unexpected!"));
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
-      expect(E.isLeft(result));
+      expect(E.isRight(result));
     });
   });
 

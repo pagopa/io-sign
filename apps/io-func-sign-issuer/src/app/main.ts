@@ -55,16 +55,6 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-const eventHubBillingClient = new EventHubProducerClient(
-  config.azure.eventHubs.billingItnConnectionString,
-  "io-p-itn-sign-billing-01"
-);
-
-const eventAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsItnConnectionString,
-  "io-p-itn-sign-analytics-01"
-);
-
 const signEventsClient = new EventHubProducerClient(
   config.azure.eventHubs.eventsItnConnectionString,
   "io-p-itn-sign-events-01"
@@ -147,8 +137,6 @@ const info = InfoFunction({
   pdvTokenizerClient: pdvTokenizerClientWithApiKey,
   ioApiClient,
   db: database,
-  eventHubBillingClient,
-  eventHubAnalyticsClient: eventAnalyticsClient,
   signEventsClient,
   uploadedContainerClient,
   validatedContainerClient,
@@ -192,7 +180,7 @@ const sendNotification = SendNotificationFunction({
   db: database,
   signerRepository,
   notificationService,
-  eventHubAnalyticsClient: eventAnalyticsClient,
+  signEventsClient,
   issuerRepository
 });
 
@@ -270,7 +258,7 @@ app.http("createSignatureRequest", {
 const setSignatureRequestStatus = SetSignatureRequestStatusFunction({
   issuerRepository,
   signatureRequestRepository,
-  eventAnalyticsClient,
+  signEventsClient,
   ready: onSignatureRequestReadyQueueClient,
   updated: waitingForSignatureRequestUpdatesQueueClient
 });
@@ -297,6 +285,7 @@ app.http("validateDocument", {
 
 const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
   db: database,
+  signEventsClient,
   inputDecoder: SignatureRequestToBeSigned
 });
 
@@ -311,8 +300,7 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
   signerRepository,
   telemetryService,
   notificationService,
-  eventAnalyticsClient,
-  billingEventProducer: eventHubBillingClient,
+  signEventsClient,
   inputDecoder: ClosedSignatureRequest
 });
 
@@ -337,7 +325,7 @@ const validateUpload = makeValidateUploadBlobHandler({
   uploadMetadataRepository,
   uploadedFileStorage,
   validatedFileStorage,
-  eventAnalyticsClient
+  signEventsClient
 });
 
 app.storageBlob("validateUpload", {
