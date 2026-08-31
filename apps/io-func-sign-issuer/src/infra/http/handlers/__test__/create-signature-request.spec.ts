@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll } from "vitest";
+import { describe, expect, it, beforeAll, vi } from "vitest";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
@@ -123,7 +123,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -152,7 +152,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -184,7 +184,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -196,6 +196,41 @@ describe("CreateSignatureRequestHandler", () => {
         }),
       })
     );
+  });
+
+  it("should send a SIGNATURE_CREATED event when signature request is created successfully", async () => {
+    const sendBatch = vi.fn().mockResolvedValue(undefined);
+    const mockBatch = { tryAdd: vi.fn().mockReturnValue(true) };
+    const signEventsClient = {
+      createBatch: vi.fn().mockResolvedValue(mockBatch),
+      sendBatch,
+      close: vi.fn().mockResolvedValue(undefined),
+    } as unknown as EventHubProducerClient;
+
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      body: {
+        dossier_id: mocks.dossier.id,
+        signer_id: newId(),
+      },
+    };
+
+    const run = CreateSignatureRequestHandler({
+      logger,
+      issuerRepository,
+      dossierRepository,
+      signatureRequestRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+      signEventsClient,
+    });
+
+    await run();
+
+    expect(sendBatch).toHaveBeenCalledOnce();
   });
 
   it("should return a 500 HTTP response on error on insert", () => {
@@ -225,7 +260,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository: signatureRequestRepositoryThatFailsOnInsert,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient,
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
@@ -268,7 +303,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient,
     });
 
     const metadata = pipe(
