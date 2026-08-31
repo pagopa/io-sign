@@ -6,7 +6,8 @@ import { readFromEnvironment } from "../../env";
 
 export const EventHubConfig = t.type({
   billingItnConnectionString: t.string,
-  analyticsItnConnectionString: t.string
+  analyticsItnConnectionString: t.string,
+  eventsItnConnectionString: t.string
 });
 
 type EventHubConfig = t.TypeOf<typeof EventHubConfig>;
@@ -21,5 +22,8 @@ export const getEventHubsConfigFromEnvironment: RE.ReaderEither<
   ),
   analyticsItnConnectionString: readFromEnvironment(
     "AnalyticsEventHubItnConnectionString"
+  ),
+  eventsItnConnectionString: readFromEnvironment(
+    "SignEventsHubItnConnectionString"
   )
 });

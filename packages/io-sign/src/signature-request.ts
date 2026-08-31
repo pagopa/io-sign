@@ -12,7 +12,7 @@ import { Notification } from "./notification";
 import { Issuer, IssuerEnvironment } from "./issuer";
 import { Document } from "./document";
 
-const SignatureRequest = t.type({
+const SignatureRequestBase = t.type({
   id: Id,
   signerId: Signer.props.id,
   issuerId: Issuer.props.id,
@@ -29,7 +29,7 @@ const SignatureRequest = t.type({
   expiresAt: IsoDateFromString
 });
 
-export const SignatureRequestId = SignatureRequest.props.id;
+export const SignatureRequestId = SignatureRequestBase.props.id;
 
 export type SignatureRequestId = t.TypeOf<typeof SignatureRequestId>;
 
@@ -38,7 +38,7 @@ export const makeSignatureRequestVariant = <S extends string, A, O>(
   codec: t.Type<A, O>
 ) =>
   t.intersection([
-    SignatureRequest,
+    SignatureRequestBase,
     t.type({
       status: t.literal<S>(status)
     }),
@@ -143,6 +143,18 @@ export const SignatureRequestCancelled = makeSignatureRequestVariant(
 export type SignatureRequestCancelled = t.TypeOf<
   typeof SignatureRequestCancelled
 >;
+
+export const SignatureRequest = t.union([
+  SignatureRequestDraft,
+  SignatureRequestReady,
+  SignatureRequestToBeSigned,
+  SignatureRequestWaitForQtsp,
+  SignatureRequestSigned,
+  SignatureRequestRejected,
+  SignatureRequestCancelled
+]);
+
+export type SignatureRequest = t.TypeOf<typeof SignatureRequest>;
 
 export const getDocument = (id: Document["id"]) =>
   flow(
