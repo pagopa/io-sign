@@ -9,7 +9,10 @@ import * as A from "fp-ts/lib/Array";
 import * as L from "@pagopa/logger";
 
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-import { createAndSendDocumentSignEvent, EventName } from "@io-sign/io-sign/sign-event";
+import {
+  createAndSendDocumentSignEvent,
+  EventName
+} from "@io-sign/io-sign/sign-event";
 
 import {
   DocumentMetadata,

@@ -4,7 +4,6 @@ import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
 
-import { SignatureRequestSigned } from "@io-sign/io-sign/signature-request";
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
 import {
   ClosedSignatureRequest,
@@ -17,8 +16,8 @@ import {
 import { sendSignatureRequestNotification } from "../../signature-request-notification";
 import {
   createAndSendSignEvent,
-  eventNameByRequestStatus,
-  EventName
+  EventName,
+  eventNameByRequestStatus
 } from "@io-sign/io-sign/sign-event";
 
 // TODO(SFEQS-2108): move here the signature request cancelation logic

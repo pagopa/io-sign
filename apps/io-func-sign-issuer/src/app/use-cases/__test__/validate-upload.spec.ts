@@ -251,7 +251,7 @@ describe("validateUpload", () => {
 
   it("sends a DOCUMENT_UPLOADED event when the PDF is valid", async () => {
     vi.mocked(getPdfMetadata).mockReturnValue(
-      TE.right({ pages: [{ number: 0, width: 100, height: 100 }], formFields: [] })
+      TE.right({ pages: [{ number: 0, width: 100, height: 100 }], formFields: [] }) as unknown as TE.TaskEither<Error, PdfDocumentMetadata>
     );
     const { signEventsClient, tryAdd } = makeSignEventsClient();
 

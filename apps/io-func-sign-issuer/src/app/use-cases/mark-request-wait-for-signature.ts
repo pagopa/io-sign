@@ -9,10 +9,7 @@ import {
   markAsWaitForSignature,
   UpsertSignatureRequest
 } from "../../signature-request";
-import {
-  CreateAndSendSignEvent,
-  EventName
-} from "@io-sign/io-sign/sign-event";
+import { CreateAndSendSignEvent, EventName } from "@io-sign/io-sign/sign-event";
 
 export const makeMarkRequestAsWaitForSignature =
   (

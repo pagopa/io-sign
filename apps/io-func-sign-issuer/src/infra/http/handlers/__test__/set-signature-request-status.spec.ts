@@ -267,7 +267,7 @@ describe("SetSignatureRequestHandler", () => {
       input: req,
       inputDecoder: H.HttpRequest,
       signEventsClient,
-      ready: { sendMessage: () => Promise.resolve({}) } as QueueClient,
+      ready: { sendMessage: () => Promise.resolve({}) } as unknown as QueueClient,
       updated: {} as QueueClient,
     })();
     expect(tryAdd).toHaveBeenCalledWith(
