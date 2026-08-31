@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.9.0
+
+### Minor Changes
+
+- ca6a9af: Switch createSignatureRequest ingestion from analytics to sign-events
+
+### Patch Changes
+
+- Updated dependencies [ca6a9af]
+  - @io-sign/io-sign@1.12.0
+
 ## 1.8.6
 
 ### Patch Changes
