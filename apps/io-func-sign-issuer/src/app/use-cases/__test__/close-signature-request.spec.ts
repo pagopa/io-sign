@@ -101,7 +101,7 @@ const mocks = {
   signatureRequest: { wait, rejected, signed },
 };
 
-const { requests, telemetry, notification, analytics } = vi.hoisted(() => ({
+const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(() => ({
   requests: {
     upsert: vi.fn((request: SignatureRequest) => TE.right(request)),
     get: vi.fn((id: SignatureRequest["id"]) => {
@@ -152,10 +152,10 @@ const notificationService: NotificationService = {
 const signEventsProducerClient: SignEventsProducerClient = {
   createBatch: () =>
     Promise.resolve({
-      tryAdd: analytics.tryAdd,
+      tryAdd: signEvents.tryAdd,
     }),
   close: () => Promise.resolve(void 0),
-  sendBatch: analytics.sendBatch,
+  sendBatch: signEvents.sendBatch,
 };
 
 const closeSignatureRequest = (input: ClosedSignatureRequest) =>
@@ -202,8 +202,8 @@ describe("closeSignatureRequest", () => {
           subject: expect.stringContaining("problema con la firma"),
         })
       );
-      expect(analytics.sendBatch).toHaveBeenCalled();
-      expect(analytics.tryAdd).toHaveBeenCalledWith(
+      expect(signEvents.sendBatch).toHaveBeenCalled();
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({
             eventName: EventName.SIGNATURE_REJECTED,
@@ -219,18 +219,18 @@ describe("closeSignatureRequest", () => {
         mocks.signatureRequest.signed
       )();
       expect(E.isRight(result));
-      expect(analytics.tryAdd).toHaveBeenCalledWith(
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({
             eventName: EventName.SIGNATURE_SIGNED,
           }),
         })
       );
-      expect(analytics.sendBatch).toHaveBeenCalledTimes(1);
+      expect(signEvents.sendBatch).toHaveBeenCalledTimes(1);
     });
 
     it("does not fail when the sign event cannot be sent", async () => {
-      analytics.sendBatch.mockRejectedValueOnce(new Error("unexpected!"));
+      signEvents.sendBatch.mockRejectedValueOnce(new Error("unexpected!"));
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
