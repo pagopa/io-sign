@@ -24,6 +24,6 @@ export const getEventHubsConfigFromEnvironment: RE.ReaderEither<
     "AnalyticsEventHubItnConnectionString"
   ),
   eventsItnConnectionString: readFromEnvironment(
-    "SignEventsHubItnConnectionString"
+    "SignEventsHubSenderItnConnectionString"
   )
 });
