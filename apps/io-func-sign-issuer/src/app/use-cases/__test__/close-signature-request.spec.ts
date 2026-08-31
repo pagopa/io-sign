@@ -118,6 +118,7 @@ const { requests, telemetry, notification, analytics } = vi.hoisted(() => ({
     submit: vi.fn(() => TE.left(new Error("can't send (but it can fail!)"))),
   },
   analytics: {
+    tryAdd: vi.fn(() => true),
     sendBatch: vi.fn(() => Promise.resolve(void 0)),
   },
 }));
@@ -151,7 +152,7 @@ const notificationService: NotificationService = {
 const signEventsProducerClient: SignEventsProducerClient = {
   createBatch: () =>
     Promise.resolve({
-      tryAdd: () => true,
+      tryAdd: analytics.tryAdd,
     }),
   close: () => Promise.resolve(void 0),
   sendBatch: analytics.sendBatch,
@@ -202,15 +203,29 @@ describe("closeSignatureRequest", () => {
         })
       );
       expect(analytics.sendBatch).toHaveBeenCalled();
+      expect(analytics.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_REJECTED,
+          }),
+        })
+      );
     });
   });
 
   describe("Given a SIGNED request", () => {
-    it("sends a sign event", async () => {
+    it("sends a SIGNATURE_SIGNED sign event", async () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
       expect(E.isRight(result));
+      expect(analytics.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_SIGNED,
+          }),
+        })
+      );
       expect(analytics.sendBatch).toHaveBeenCalledTimes(1);
     });
 
