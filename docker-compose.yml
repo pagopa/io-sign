@@ -86,11 +86,11 @@ services:
     command: >
       sh -c "apk add --no-cache socat openssl &&
              openssl req -x509 -newkey rsa:2048 -keyout /key.pem -out /cert.pem -days 365 -nodes -subj '/CN=eventhubs' &&
-             socat OPENSSL-LISTEN:5671,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:eventhubs-internal:5672 &
+             (socat OPENSSL-LISTEN:5671,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:eventhubs-internal:5672 &
              socat TCP-LISTEN:5672,reuseaddr,fork TCP:eventhubs-internal:5672 &
              socat TCP-LISTEN:9092,reuseaddr,fork TCP:eventhubs-internal:9092 &
              socat TCP-LISTEN:9093,reuseaddr,fork TCP:eventhubs-internal:9093 &
-             wait"
+             wait)"
 
   kafka-ui:
     image: "provectuslabs/kafka-ui:latest@sha256:8f2ff02d64b0a7a2b71b6b3b3148b85f66d00ec20ad40c30bdcd415d46d31818"
@@ -174,6 +174,7 @@ services:
       - cosmos-db
       - eventhubs
       - mock-io-services
+      - io-sign-backoffice-func
 
   io-func-sign-support:
     image: io-func-sign-support

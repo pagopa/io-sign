@@ -48,6 +48,19 @@ export enum EventName {
   QTSP_API_ERROR = "io.sign.qtsp.api.error"
 }
 
+export const eventNameByRequestStatus: Record<
+  SignatureRequest["status"],
+  EventName
+> = {
+  DRAFT: EventName.SIGNATURE_CREATED,
+  READY: EventName.SIGNATURE_READY,
+  CANCELLED: EventName.SIGNATURE_CANCELLED,
+  WAIT_FOR_SIGNATURE: EventName.SIGNATURE_READY,
+  WAIT_FOR_QTSP: EventName.SIGNATURE_READY,
+  REJECTED: EventName.SIGNATURE_REJECTED,
+  SIGNED: EventName.SIGNATURE_SIGNED
+};
+
 export type PricingPlan = t.TypeOf<typeof PricingPlan>;
 
 // This is the structure of an event that is used for billing and analytics
