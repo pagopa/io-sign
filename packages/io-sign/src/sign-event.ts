@@ -46,7 +46,9 @@ export const eventNameByRequestStatus: Record<
 
 const SignatureRequestEventPayload = t.type({
   payloadType: t.literal("signature_request"),
-  payload: SignatureRequest
+  payload: t.type({
+    signatureRequest: SignatureRequest
+  })
 });
 
 const SignatureRequestDocumentEventPayload = t.type({
@@ -131,7 +133,7 @@ export const createAndSendSignEvent =
     pipe(
       createSignEvent(eventName)({
         payloadType: "signature_request",
-        payload: signatureRequest
+        payload: { signatureRequest }
       }),
       sendSignEvent,
       RTE.map(() => signatureRequest),
