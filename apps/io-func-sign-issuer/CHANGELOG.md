@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.10.0
+
+### Minor Changes
+
+- 1bf4b00: Route all issuer events through the sign-events pipeline
+
 ## 1.9.0
 
 ### Minor Changes
