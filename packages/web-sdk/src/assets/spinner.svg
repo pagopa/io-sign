@@ -1,28 +1,11 @@
-<svg
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    fill-rule="evenodd"
-    clip-rule="evenodd"
-    d="M2 12C2 17.5228 6.47715 22 12 22C12.5523 22 13 22.4477 13 23C13 23.5523 12.5523 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 12.5523 23.5523 13 23 13C22.4477 13 22 12.5523 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z"
-    fill="var(--io-spinner-color, white)"
-  />
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient
-      id="paint0_angular_117_32"
-      cx="0"
-      cy="0"
-      r="1"
-      gradientUnits="userSpaceOnUse"
-      gradientTransform="translate(12 12) rotate(15.2551) scale(12.4383)"
-    >
-      <stop offset="0.203125" stop-opacity="0" />
-      <stop offset="0.5" />
-      <stop offset="1" />
-    </radialGradient>
+    <linearGradient id="ioSpinnerFade" x1="38.3333" y1="20" x2="20" y2="38.3333" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--io-spinner-color, #0B3EE3)" stop-opacity="0"/>
+      <stop offset="1" stop-color="var(--io-spinner-color, #0B3EE3)" stop-opacity="1"/>
+    </linearGradient>
   </defs>
+  <path d="M 20 38.3333 A 18.3333 18.3333 0 1 1 38.3333 20" fill="none" stroke="var(--io-spinner-color, #0B3EE3)" stroke-width="3.3333"/>
+  <path d="M 38.3333 20 A 18.3333 18.3333 0 0 1 20 38.3333" fill="none" stroke="url(#ioSpinnerFade)" stroke-width="3.3333"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M37.9692 16.0012C38.8821 15.8834 39.7177 16.528 39.8354 17.4409C39.9449 18.2895 39.9998 19.1443 39.9998 20C39.9998 20.9205 39.2537 21.6667 38.3332 21.6667C37.4127 21.6667 36.6665 20.9205 36.6665 20C36.6665 19.287 36.6208 18.5746 36.5295 17.8674C36.4117 16.9545 37.0563 16.119 37.9692 16.0012Z" fill="var(--io-spinner-color, #0B3EE3)"/>
 </svg>

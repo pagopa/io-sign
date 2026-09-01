@@ -17,7 +17,8 @@ export class IOButtonElement
 
   static styles = css`
     :host {
-      --io-button-bg-color: var(--io-primary-color, #0073e6);
+      --io-button-bg-color: var(--io-primary-color, #0b3ee3);
+      --io-font-family: "Titillio Semibold Woff";
     }
     button {
       display: flex;
@@ -26,11 +27,13 @@ export class IOButtonElement
       align-items: center;
       font-family: var(--io-font-family, sans-serif);
       border: 0;
-      height: 40px;
+      height: 48px;
       font-size: 1em;
-      font-weight: bold;
-      padding: 0.5em 1.2em;
-      border-radius: var(--io-border-radius, 4px);
+      gap: 8px;
+      letter-spacing: 0;
+      font-weight: 500;
+      padding: 0.75em 1.5em;
+      border-radius: var(--io-border-radius, 8px);
       min-width: 155px;
       background: var(--io-button-bg-color);
       color: var(--io-button-color, white);
