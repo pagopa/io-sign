@@ -13,8 +13,7 @@ import {
   SignatureRequestRejected,
   SignatureRequestSigned
 } from "@io-sign/io-sign/signature-request";
-import { EventName } from "@io-sign/io-sign/event";
-import { CreateAndSendSignEvent } from "@io-sign/io-sign/sign-event";
+import { CreateAndSendSignEvent, EventName } from "@io-sign/io-sign/sign-event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
   markAsRejected,

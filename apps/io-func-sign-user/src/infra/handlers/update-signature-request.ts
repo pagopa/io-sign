@@ -5,8 +5,7 @@ import { pipe } from "fp-ts/lib/function";
 import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 
 import * as H from "@pagopa/handler-kit";
-import { EventName } from "@io-sign/io-sign/event";
-import { createAndSendSignEvent } from "@io-sign/io-sign/sign-event";
+import { createAndSendSignEvent, EventName } from "@io-sign/io-sign/sign-event";
 import {
   getSignatureRequest,
   markAsCancelled,
