@@ -1,5 +1,5 @@
 ---
-"io-func-sign-issuer": minor
+"io-func-sign-user": minor
 ---
 
-Route all issuer events through the sign-events pipeline
+Route all user events through the sign-events pipeline
