@@ -1,7 +1,7 @@
 import * as H from "@pagopa/handler-kit";
 
 import { enqueue } from "@io-sign/io-sign/infra/azure/storage/queue";
-import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { createAndSendSignEvent, EventName } from "@io-sign/io-sign/sign-event";
 import * as E from "fp-ts/lib/Either";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 
@@ -85,7 +85,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
             RTE.fromEither,
             RTE.chainW(upsertSignatureRequest),
             RTE.chainFirstW((req) =>
-              pipe(req, createAndSendAnalyticsEvent(EventName.SIGNATURE_READY))
+              pipe(req, createAndSendSignEvent(EventName.SIGNATURE_READY))
             )
           );
       }

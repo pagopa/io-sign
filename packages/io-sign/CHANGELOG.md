@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.12.0
+
+### Minor Changes
+
+- ca6a9af: Add sign-events eventhub implementation
+
 ## 1.11.7
 
 ### Patch Changes

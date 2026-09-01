@@ -10,7 +10,7 @@ import * as H from "@pagopa/handler-kit";
 import { IssuerRepository } from "../../../issuer";
 import { SignatureRequestRepository } from "../../../signature-request";
 import { QueueClient } from "@azure/storage-queue";
-import { EventProducerClient } from "@io-sign/io-sign/event";
+import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 import { SetSignatureRequestStatusHandler } from "../../http/handlers/set-signature-request-status";
 import { makeLogger } from "./logger";
 import {
@@ -22,7 +22,7 @@ import {
 type SetSignatureRequestStatusDeps = {
   issuerRepository: IssuerRepository;
   signatureRequestRepository: SignatureRequestRepository;
-  eventAnalyticsClient: EventProducerClient;
+  signEventsClient: SignEventsProducerClient;
   ready: QueueClient;
   updated: QueueClient;
 };
