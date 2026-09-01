@@ -32,8 +32,6 @@ locals {
       NamirialTestApiBasePath           = "https://pagopa-test.namirial.com"
       NamirialTestUsername              = "api"
       NamirialTestPassword              = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=NamirialTestPassword)"
-      AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
-      BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       SignEventsHubSenderItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubSenderItnConnectionString)"
       SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SelfCareEventHubConnectionString)"
       SelfCareApiBasePath               = "https://api.selfcare.pagopa.it"
