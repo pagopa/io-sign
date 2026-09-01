@@ -1,5 +1,11 @@
 # io-func-sign-events
 
+## 2.3.1
+
+### Patch Changes
+
+- d73ea82: Accept ULID and UUID for issuerId
+
 ## 2.3.0
 
 ### Minor Changes
