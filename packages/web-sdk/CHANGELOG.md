@@ -1,5 +1,11 @@
 # @io-sign/web-sdk
 
+## 2.0.0
+
+### Major Changes
+
+- a053236: Updated "Firma con IO" Ui
+
 ## 1.0.4
 
 ### Patch Changes
