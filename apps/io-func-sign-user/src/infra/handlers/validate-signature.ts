@@ -3,9 +3,7 @@ import * as H from "@pagopa/handler-kit";
 import { Database } from "@azure/cosmos";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
-import { EventHubProducerClient } from "@azure/event-hubs";
 
-import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
 import { makeCreateAndSendSignEvent } from "@io-sign/io-sign/infra/azure/event-hubs/sign-event";
 import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
@@ -36,7 +34,6 @@ export type ValidateSignatureEnvironment = {
   qtspConfig: NamirialConfig;
   onSignedQueueClient: QueueClient;
   onRejectedQueueClient: QueueClient;
-  eventHubAnalyticsClient: EventHubProducerClient;
   signEventsClient: SignEventsProducerClient;
 };
 
@@ -48,7 +45,6 @@ export const ValidateSignatureHandler = H.of(
       qtspConfig,
       onSignedQueueClient,
       onRejectedQueueClient,
-      eventHubAnalyticsClient,
       signEventsClient
     }: ValidateSignatureEnvironment) => {
       const validateSignature = makeValidateSignature(
@@ -60,7 +56,6 @@ export const ValidateSignatureHandler = H.of(
         makeGetSignatureRequestWithToken()(makeGetToken())(qtspConfig),
         makeNotifySignatureRequestSignedEvent(onSignedQueueClient),
         makeNotifySignatureRequestRejectedEvent(onRejectedQueueClient),
-        makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient),
         makeCreateAndSendSignEvent(signEventsClient)
       );
       return validateSignature(payload);

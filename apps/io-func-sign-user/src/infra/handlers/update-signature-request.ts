@@ -5,7 +5,7 @@ import { pipe } from "fp-ts/lib/function";
 import { SignatureRequestCancelled } from "@io-sign/io-sign/signature-request";
 
 import * as H from "@pagopa/handler-kit";
-import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { EventName } from "@io-sign/io-sign/event";
 import { createAndSendSignEvent } from "@io-sign/io-sign/sign-event";
 import {
   getSignatureRequest,
@@ -20,9 +20,6 @@ export const UpdateSignatureRequestHandler = H.of(
       ({ id, signerId }) => getSignatureRequest(id, signerId),
       RTE.chainEitherK(markAsCancelled(new Date())),
       RTE.chain(upsertSignatureRequest),
-      RTE.chainFirstW(
-        createAndSendAnalyticsEvent(EventName.SIGNATURE_CANCELLED)
-      ),
       RTE.chainFirstW(createAndSendSignEvent(EventName.SIGNATURE_CANCELLED))
     )
 );

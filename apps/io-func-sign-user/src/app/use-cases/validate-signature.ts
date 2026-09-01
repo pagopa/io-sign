@@ -13,7 +13,7 @@ import {
   SignatureRequestRejected,
   SignatureRequestSigned
 } from "@io-sign/io-sign/signature-request";
-import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { EventName } from "@io-sign/io-sign/event";
 import { CreateAndSendSignEvent } from "@io-sign/io-sign/sign-event";
 import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
@@ -181,18 +181,14 @@ const handleFailedStatus = (
 };
 
 const makeHandleReadyStatus =
-  (
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
-    createAndSendSignEvent: CreateAndSendSignEvent
-  ) =>
+  (createAndSendSignEvent: CreateAndSendSignEvent) =>
   (
     signatureRequest: SignatureRequest,
     qtspSignatureRequest: QtspSignatureRequest
   ) =>
     pipe(
       signatureRequest,
-      createAndSendAnalyticsEvent(EventName.CERTIFICATE_CREATED),
-      TE.chainFirstW(createAndSendSignEvent(EventName.CERTIFICATE_CREATED)),
+      createAndSendSignEvent(EventName.CERTIFICATE_CREATED),
       TE.chainFirstIOK(() =>
         L.debug("Certificate created", {
           signatureRequest,
@@ -230,7 +226,6 @@ export const makeValidateSignature =
     getQtspSignatureRequest: GetQtspSignatureRequest,
     notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
     notifySignatureRequestRejectedEvent: NotifySignatureRequestRejectedEvent,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent,
     createAndSendSignEvent: CreateAndSendSignEvent
   ) =>
   ({ signatureId, signerId }: ValidateSignaturePayload) => {
@@ -247,10 +242,7 @@ export const makeValidateSignature =
       notifySignatureRequestSignedEvent,
       markSignatureAndSignatureRequestAsRejected
     );
-    const handleReadyStatus = makeHandleReadyStatus(
-      createAndSendAnalyticsEvent,
-      createAndSendSignEvent
-    );
+    const handleReadyStatus = makeHandleReadyStatus(createAndSendSignEvent);
     return pipe(
       signerId,
       getSignature(signatureId),
@@ -284,10 +276,7 @@ export const makeValidateSignature =
                 !result.retrieved
                   ? pipe(
                       signatureRequest,
-                      createAndSendAnalyticsEvent(EventName.QTSP_API_ERROR),
-                      TE.chainFirstW(
-                        createAndSendSignEvent(EventName.QTSP_API_ERROR)
-                      )
+                      createAndSendSignEvent(EventName.QTSP_API_ERROR)
                     )
                   : TE.right(undefined)
               ),
