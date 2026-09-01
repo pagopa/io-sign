@@ -31,7 +31,8 @@ const document = z.object({ id: z.ulid(), status: z.string() }).loose();
 const signatureRequestBase = z.object({
   id: z.ulid(),
   signerId: uuid,
-  issuerId: uuid,
+  // issuerId can be a ULID (new records) or a UUID (legacy records)
+  issuerId: z.union([uuid, z.ulid()]),
   issuerEmail: z.email(),
   issuerDescription: z.string(),
   issuerInternalInstitutionId: uuid,
