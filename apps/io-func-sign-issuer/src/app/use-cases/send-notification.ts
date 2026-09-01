@@ -17,7 +17,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { makeSignatureRequestVariant } from "@io-sign/io-sign/signature-request";
 
 import { DocumentReady } from "@io-sign/io-sign/document";
-import { CreateAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import { CreateAndSendSignEvent, EventName } from "@io-sign/io-sign/sign-event";
 import { Notification } from "@io-sign/io-sign/notification";
 import {
   SignatureRequest,
@@ -70,7 +70,7 @@ export const makeSendNotification =
     signerRepository: SignerRepository,
     notificationService: NotificationService,
     upsertSignatureRequest: UpsertSignatureRequest,
-    createAndSendAnalyticsEvent: CreateAndSendAnalyticsEvent
+    createAndSendSignEvent: CreateAndSendSignEvent
   ) =>
   ({ signatureRequest }: { signatureRequest: SignatureRequest }) => {
     const sendRequestToSignNotification = (req: SignatureRequest) =>
@@ -99,14 +99,12 @@ export const makeSendNotification =
           ),
           TE.fromTask,
           TE.chainFirstW((result) =>
-            pipe(
-              signatureRequest,
-              createAndSendAnalyticsEvent(
-                result.sent
-                  ? EventName.NOTIFICATION_SENT
-                  : EventName.NOTIFICATION_REJECTED
-              )
-            )
+            !result.sent
+              ? pipe(
+                  signatureRequest,
+                  createAndSendSignEvent(EventName.NOTIFICATION_REJECTED)
+                )
+              : TE.right(undefined)
           ),
           TE.chain((result) =>
             result.sent ? TE.right(result.notification) : TE.left(result.error)
@@ -119,7 +117,8 @@ export const makeSendNotification =
             ...signatureRequest,
             notification
           },
-          upsertSignatureRequest
+          upsertSignatureRequest,
+          TE.chainFirstW(createAndSendSignEvent(EventName.NOTIFICATION_SENT))
         )
       ),
       TE.map(({ notification }) => notification)

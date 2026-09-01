@@ -9,7 +9,10 @@ import * as A from "fp-ts/lib/Array";
 import * as L from "@pagopa/logger";
 
 import { PdfDocumentMetadata } from "@io-sign/io-sign/document";
-import { createAndSendAnalyticsEvent, EventName } from "@io-sign/io-sign/event";
+import {
+  createAndSendDocumentSignEvent,
+  EventName
+} from "@io-sign/io-sign/sign-event";
 
 import {
   DocumentMetadata,
@@ -248,8 +251,9 @@ export const validateUpload = (
                 )
               ),
               RTE.chainFirstW(() =>
-                createAndSendAnalyticsEvent(EventName.DOCUMENT_UPLOADED)(
-                  signatureRequest
+                createAndSendDocumentSignEvent(EventName.DOCUMENT_UPLOADED)(
+                  signatureRequest,
+                  meta.documentId
                 )
               )
             )
@@ -270,8 +274,9 @@ export const validateUpload = (
               // Remove REJECTED file from temp storage
               RTE.chainW(() => removeDocumentFromStorage(meta.id)),
               RTE.chainFirstW(() =>
-                createAndSendAnalyticsEvent(EventName.DOCUMENT_REJECTED)(
-                  signatureRequest
+                createAndSendDocumentSignEvent(EventName.DOCUMENT_REJECTED)(
+                  signatureRequest,
+                  meta.documentId
                 )
               )
             )

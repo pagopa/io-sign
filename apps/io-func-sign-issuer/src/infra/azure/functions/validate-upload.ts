@@ -19,14 +19,14 @@ import {
 import { validateUpload } from "../../../app/use-cases/validate-upload";
 import { makeLogger } from "./logger";
 import { SignatureRequestRepository } from "../../../signature-request";
-import { EventProducerClient } from "@io-sign/io-sign/event";
+import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
 type ValidateUploadDeps = {
   uploadMetadataRepository: UploadMetadataRepository;
   signatureRequestRepository: SignatureRequestRepository;
   uploadedFileStorage: FileStorage;
   validatedFileStorage: FileStorage;
-  eventAnalyticsClient: EventProducerClient;
+  signEventsClient: SignEventsProducerClient;
 };
 
 export const makeValidateUploadBlobHandler =

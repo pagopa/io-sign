@@ -7,11 +7,10 @@ import { flow, pipe } from "fp-ts/lib/function";
 import { sequenceS } from "fp-ts/lib/Apply";
 
 import { Database } from "@azure/cosmos";
-import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { SignerRepository } from "@io-sign/io-sign/signer";
 import { NotificationService } from "@io-sign/io-sign/notification";
-import { makeCreateAndSendAnalyticsEvent } from "@io-sign/io-sign/infra/azure/event-hubs/event";
+import { makeCreateAndSendSignEvent } from "@io-sign/io-sign/infra/azure/event-hubs/sign-event";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
@@ -22,12 +21,13 @@ import { makeUpsertSignatureRequest } from "../../azure/cosmos/signature-request
 import { NotificationToApiModel } from "../encoders/notification";
 import { requireIssuer } from "../decoders/issuer";
 import { requireSignatureRequestId } from "../decoders/signature-request";
+import { SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
 type SendNotificationDependencies = {
   db: Database;
   signerRepository: SignerRepository;
   notificationService: NotificationService;
-  eventHubAnalyticsClient: EventHubProducerClient;
+  signEventsClient: SignEventsProducerClient;
   issuerRepository: IssuerRepository;
 };
 
@@ -58,13 +58,13 @@ export const SendNotificationHandler = H.of((req: H.HttpRequest) =>
           db,
           signerRepository,
           notificationService,
-          eventHubAnalyticsClient
+          signEventsClient
         }: SendNotificationDependencies) => {
           const sendNotification = makeSendNotification(
             signerRepository,
             notificationService,
             makeUpsertSignatureRequest(db),
-            makeCreateAndSendAnalyticsEvent(eventHubAnalyticsClient)
+            makeCreateAndSendSignEvent(signEventsClient)
           );
           return sendNotification({ signatureRequest });
         }

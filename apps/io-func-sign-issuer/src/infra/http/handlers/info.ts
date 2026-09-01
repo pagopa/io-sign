@@ -55,8 +55,6 @@ type InfoDependencies = {
   pdvTokenizerClient: PdvTokenizerClientWithApiKey;
   ioApiClient: IOApiClient;
   db: Database;
-  eventHubBillingClient: EventHubProducerClient;
-  eventHubAnalyticsClient: EventHubProducerClient;
   signEventsClient: EventHubProducerClient;
   uploadedContainerClient: ContainerClient;
   validatedContainerClient: ContainerClient;
@@ -71,8 +69,6 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
         pdvTokenizerClient,
         ioApiClient,
         db,
-        eventHubBillingClient,
-        eventHubAnalyticsClient,
         signEventsClient,
         uploadedContainerClient,
         validatedContainerClient,
@@ -83,8 +79,6 @@ export const InfoHandler = H.of((_req: H.HttpRequest) =>
             makePdvTokenizerHealthCheck(pdvTokenizerClient)(),
             makeIOServicesHealthCheck(ioApiClient)(),
             makeAzureCosmosDbHealthCheck(db),
-            makeAzureEventHubHealthCheck(eventHubBillingClient),
-            makeAzureEventHubHealthCheck(eventHubAnalyticsClient),
             makeAzureEventHubHealthCheck(signEventsClient),
             makeAzureStorageContainerHealthCheck(uploadedContainerClient),
             makeAzureStorageContainerHealthCheck(validatedContainerClient),

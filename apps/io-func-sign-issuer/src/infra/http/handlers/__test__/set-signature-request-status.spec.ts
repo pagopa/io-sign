@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll } from "vitest";
+import { describe, expect, it, beforeAll, vi } from "vitest";
 
 import * as L from "@pagopa/logger";
 import * as H from "@pagopa/handler-kit";
@@ -15,7 +15,7 @@ import {
   SignatureRequest,
   SignatureRequestRepository,
 } from "../../../../signature-request";
-import { EventHubProducerClient } from "@azure/event-hubs";
+import { EventName, SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 import { QueueClient } from "@azure/storage-queue";
 
 describe("SetSignatureRequestHandler", () => {
@@ -123,7 +123,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -156,7 +156,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -189,7 +189,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {} as QueueClient,
     });
@@ -225,7 +225,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {
         sendMessage: (_: string) => Promise.resolve({}),
       } as QueueClient,
@@ -238,6 +238,44 @@ describe("SetSignatureRequestHandler", () => {
         }),
       })
     );
+  });
+
+  it("should send a SIGNATURE_READY event when status is set to READY", async () => {
+    const tryAdd = vi.fn().mockReturnValue(true);
+    const sendBatch = vi.fn().mockResolvedValue(undefined);
+    const signEventsClient: SignEventsProducerClient = {
+      createBatch: vi.fn().mockResolvedValue({ tryAdd }),
+      sendBatch,
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      path: {
+        signatureRequestId: mocks.signatureRequests.find(
+          (r) => r.status === "DRAFT"
+        )?.id!,
+      },
+      body: "READY",
+    };
+    await SetSignatureRequestStatusHandler({
+      logger,
+      issuerRepository,
+      signatureRequestRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+      signEventsClient,
+      ready: { sendMessage: () => Promise.resolve({}) } as unknown as QueueClient,
+      updated: {} as QueueClient,
+    })();
+    expect(tryAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({ eventName: EventName.SIGNATURE_READY }),
+      })
+    );
+    expect(sendBatch).toHaveBeenCalledOnce();
   });
 
   it("should return a 204 HTTP response on success when settings status to CANCELLED", () => {
@@ -259,7 +297,7 @@ describe("SetSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      eventAnalyticsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as SignEventsProducerClient,
       ready: {} as QueueClient,
       updated: {
         sendMessage: (_: string) => Promise.resolve({}),
