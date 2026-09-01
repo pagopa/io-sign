@@ -35,6 +35,10 @@ export class ScanQrCodeDialogElement extends LitElement {
       font-size: 1.625em;
       font-family: "Titillio Semibold Woff", sans-serif;
       font-weight: 500;
+      line-height: 2.125rem;
+    }
+    p {
+      line-height: 1.5rem;
     }
     .app-badges {
       display: flex;

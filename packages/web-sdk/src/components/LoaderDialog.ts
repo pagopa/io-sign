@@ -15,6 +15,7 @@ export class LoaderDialogElement extends LitElement {
       font-size: 1.625em;
       font-family: "Titillio Semibold Woff", sans-serif;
       font-weight: 400;
+      line-height: 2.125rem;
     }
     .content {
       margin-top: 40%;
