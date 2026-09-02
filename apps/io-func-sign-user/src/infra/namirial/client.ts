@@ -12,8 +12,6 @@ import {
   isSuccessful,
   responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
-import * as L from "@pagopa/logger";
 import { NamirialCredentialsConfig } from "./config";
 import { ClausesMetadata } from "./clauses-metadata";
 import {
@@ -101,20 +99,6 @@ export const makeCreateSignatureRequest =
             }),
           E.toError
         )
-      ),
-
-      TE.chainFirst((response) =>
-        TE.fromTask(async () => {
-          const body = await response
-            .clone()
-            .text()
-            .catch(() => "<unable to read body>");
-          L.debug("Namirial create signature request response", {
-            status: response.status,
-            statusText: response.statusText,
-            body
-          })({ logger: ConsoleLogger })();
-        })
       ),
       TE.chain((response) =>
         pipe(
