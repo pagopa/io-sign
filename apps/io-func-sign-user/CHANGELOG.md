@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.9.11
+
+### Patch Changes
+
+- 5af94f1: remove temp logging for debug
+
 ## 2.9.10
 
 ### Patch Changes
