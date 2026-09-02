@@ -1,6 +1,6 @@
 module "function_sign_issuer_autoscale" {
   source  = "pagopa-dx/azure-app-service-plan-autoscaler/azurerm"
-  version = "~> 2.0"
+  version = "~> 4.0"
 
   resource_group_name = module.function_sign_issuer.function_app.resource_group_name
   location            = local.location_itn
