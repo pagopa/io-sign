@@ -55,9 +55,9 @@ const config = configOrError;
 const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
-const eventHubAnalyticsClient = new EventHubProducerClient(
-  config.azure.eventHubs.analyticsItnConnectionString,
-  "io-p-itn-sign-analytics-01"
+const signEventsClient = new EventHubProducerClient(
+  config.azure.eventHubs.eventsItnConnectionString,
+  "io-p-itn-sign-events-01"
 );
 
 const filledContainerClient = new ContainerClient(
@@ -154,7 +154,8 @@ const info = InfoFunction({
   signedContainerClient,
   documentsToFillQueue,
   qtspQueue,
-  onWaitForSignatureQueueClient
+  onWaitForSignatureQueueClient,
+  signEventsClient
 });
 
 app.http("info", {
@@ -204,7 +205,7 @@ app.http("getSignatureRequest", {
 const updateSignatureRequest = UpdateSignatureRequestFunction({
   signatureRequestRepository,
   inputDecoder: SignatureRequestCancelled,
-  eventAnalyticsClient: eventHubAnalyticsClient
+  signEventsClient
 });
 
 app.storageQueue("updateSignatureRequest", {
@@ -312,7 +313,7 @@ const validateSignature = ValidateSignatureFunction({
   qtspConfig: config.namirial,
   onSignedQueueClient,
   onRejectedQueueClient,
-  eventHubAnalyticsClient,
+  signEventsClient,
   inputDecoder: ValidateSignaturePayload
 });
 
