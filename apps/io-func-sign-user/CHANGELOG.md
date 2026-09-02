@@ -1,5 +1,16 @@
 # io-func-sign-user
 
+## 2.10.0
+
+### Minor Changes
+
+- 238c349: Route all user events through the sign-events pipeline
+
+### Patch Changes
+
+- Updated dependencies [238c349]
+  - @io-sign/io-sign@1.13.0
+
 ## 2.9.11
 
 ### Patch Changes

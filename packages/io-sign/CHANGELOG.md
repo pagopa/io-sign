@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.13.0
+
+### Minor Changes
+
+- 238c349: Clean up from old event hub producer clients
+
 ## 1.12.0
 
 ### Minor Changes
