@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.9.10
+
+### Patch Changes
+
+- a2acd28: Temp logging for debug
+
 ## 2.9.9
 
 ### Patch Changes
