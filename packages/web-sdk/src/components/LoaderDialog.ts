@@ -11,9 +11,11 @@ import "./Dialog";
 @customElement("io-sign-loader-dialog")
 export class LoaderDialogElement extends LitElement {
   static styles = css`
-    p {
-      font-size: 1.5em;
-      line-height: 28px;
+    h2 {
+      font-size: 1.625em;
+      font-family: "Titillio Semibold Woff", sans-serif;
+      font-weight: 400;
+      line-height: 2.125rem;
     }
     .content {
       margin-top: 40%;
@@ -22,15 +24,15 @@ export class LoaderDialogElement extends LitElement {
   `;
 
   render() {
-    return html`<io-dialog disable-close>
+    return html`<io-dialog>
       <div class="content">
-        <p>${msg(html`Stiamo preparando i<br />documenti...`)}</p>
         <io-spinner
           style=${styleMap({
-            "--io-spinner-color": "#0073E6",
+            "--io-spinner-color": "#0B3EE3",
             "--io-spinner-size": "40px",
           })}
         ></io-spinner>
+        <h2>${msg(html`Stiamo preparando i<br />documenti...`)}</h2>
       </div>
     </io-dialog>`;
   }

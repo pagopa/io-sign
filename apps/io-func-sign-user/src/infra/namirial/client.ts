@@ -100,7 +100,6 @@ export const makeCreateSignatureRequest =
           E.toError
         )
       ),
-
       TE.chain((response) =>
         pipe(
           TE.tryCatch(() => response.json(), E.toError),

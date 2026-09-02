@@ -30,8 +30,8 @@ export class IODialogElement extends LitElement {
       color: var(--io-dialog-color, #17324d);
       background-color: var(--io-dialog-bg-color, white);
       text-align: center;
-      border-radius: var(--io-border-radius, 4px);
-      padding: 1em;
+      border-radius: var(--io-border-radius, 16px);
+      padding: 1.5em;
       min-width: 300px;
     }
     .dialog header {
