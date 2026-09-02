@@ -13,6 +13,9 @@ import {
   getApplicationInsightsConfigFromEnvironment,
   makeAzureTelemetryClient
 } from "@io-sign/hexagonal-azure-functions";
+import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
+import { makeSignEventWebhookQueuePublisher } from "../adapters/outbound/sign-event-webhook-queue-publisher/client.js";
+import { getSignEventWebhookQueuePublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-webhook-queue-publisher/config.js";
 
 const ERROR_RESPONDER_CONFIG = {
   typeBaseUrl: "https://example.pagopa.it/problems/"
@@ -21,6 +24,7 @@ const ERROR_RESPONDER_CONFIG = {
 const SIGN_EVENT_HUB_NAME = "io-p-itn-sign-events-01";
 const PDND_BILLING_EVENT_HUB_NAME = "io-p-itn-sign-billing-01";
 const PDND_ANALYTICS_EVENT_HUB_NAME = "io-p-itn-sign-analytics-01";
+const WEBHOOK_QUEUE_NAME = "webhook-delivery";
 
 // TODO: evaluate switch to makeApplicationInsightsLogger from @pagopa/hexagonal-core/adapters.
 
@@ -31,13 +35,23 @@ const pdndPublisher = makeSignEventPDNDPublisher(
   PDND_BILLING_EVENT_HUB_NAME,
   PDND_ANALYTICS_EVENT_HUB_NAME
 );
+const webhookQueuePublisher = makeSignEventWebhookQueuePublisher(
+  getSignEventWebhookQueuePublisherConfigFromEnvironment(),
+  WEBHOOK_QUEUE_NAME
+);
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
 );
 
 // Endpoints.
 mountInfoAdapterHttp(
-  (logger) => makeInfoUseCase({ logger, pdndPublisher, backofficeService }),
+  (logger) =>
+    makeInfoUseCase({
+      logger,
+      pdndPublisher,
+      backofficeService,
+      webhookQueuePublisher
+    }),
   ERROR_RESPONDER_CONFIG
 );
 
@@ -51,12 +65,16 @@ mountSignEventAdapterTrigger(
   }
 );
 
-// Coming soon..
-// mountSignEventAdapterTrigger(
-//   (logger) => makeSignEventWebhookUseCase({ logger }),
-//   {
-//     connection: "SignEventsHubItnConnectionString",
-//     eventHubName: SIGN_EVENT_HUB_NAME,
-//     consumerGroup: "webhook"
-//   }
-// );
+mountSignEventAdapterTrigger(
+  (logger) =>
+    makeSignEventWebhookUseCase({
+      logger,
+      backofficeService,
+      webhookQueuePublisher
+    }),
+  {
+    connection: "SignEventsHubItnConnectionString",
+    eventHubName: SIGN_EVENT_HUB_NAME,
+    consumerGroup: "webhook"
+  }
+);

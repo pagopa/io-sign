@@ -153,6 +153,9 @@ importers:
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
+      '@azure/storage-queue':
+        specifier: 'catalog:'
+        version: 12.31.0
       '@io-sign/hexagonal-azure-functions':
         specifier: workspace:*
         version: link:../../packages/io-core-adapter-azure-functions
