@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 1.10.2
+
+### Patch Changes
+
+- 25d222e: chore: remove dead analytics/billing env vars
+- Updated dependencies [25d222e]
+  - @io-sign/io-sign@1.13.1
+
 ## 1.10.1
 
 ### Patch Changes
