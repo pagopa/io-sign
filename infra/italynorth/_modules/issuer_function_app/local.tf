@@ -25,8 +25,6 @@ locals {
       IoServicesConfigurationId            = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=io-services-configuration-id)"
       PdvTokenizerApiBasePath              = "https://api.tokenizer.pdv.pagopa.it"
       PdvTokenizerApiKey                   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=PdvTokenizerApiKey)"
-      AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
-      BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       SignEventsHubSenderItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubSenderItnConnectionString)"
       BackOfficeApiBasePath                = "https://api.io.pagopa.it/api/v1/sign/backoffice"
       BackOfficeApiKey                     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackOfficeApiKey)"

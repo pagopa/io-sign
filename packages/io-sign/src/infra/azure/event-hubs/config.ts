@@ -5,8 +5,6 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { readFromEnvironment } from "../../env";
 
 export const EventHubConfig = t.type({
-  billingItnConnectionString: t.string,
-  analyticsItnConnectionString: t.string,
   eventsItnConnectionString: t.string
 });
 
@@ -17,12 +15,6 @@ export const getEventHubsConfigFromEnvironment: RE.ReaderEither<
   Error,
   EventHubConfig
 > = sequenceS(RE.Apply)({
-  billingItnConnectionString: readFromEnvironment(
-    "BillingEventHubItnConnectionString"
-  ),
-  analyticsItnConnectionString: readFromEnvironment(
-    "AnalyticsEventHubItnConnectionString"
-  ),
   eventsItnConnectionString: readFromEnvironment(
     "SignEventsHubSenderItnConnectionString"
   )
