@@ -9,6 +9,7 @@ import {
 } from "../../domain/ports/outbound/backoffice-service.js";
 import { WebhookQueueEvent } from "../../domain/webhook-queue-event.js";
 import { WebhookEvent } from "../../domain/webhook-event.js";
+import { ulid } from "ulid";
 
 type SignEventWebhookDeps = {
   logger: Logger;
@@ -31,7 +32,7 @@ const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
       )
         return undefined;
       return {
-        eventId: "",
+        eventId: ulid(),
         eventType: "signature-request.status.update",
         signatureRequestId,
         status: signatureRequestStatus,
@@ -48,7 +49,7 @@ const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
       )
         return undefined;
       return {
-        eventId: "",
+        eventId: ulid(),
         eventType: "signature-request.document.status.update",
         signatureRequestId,
         documentId,
@@ -66,6 +67,7 @@ const makeWebhookQueueEvent = (
   { privateKeySecretName, publicKeyThumbprint, url }: IssuerWebhook,
   webhookEvent: WebhookEvent
 ): WebhookQueueEvent => ({
+  id: webhookEvent.eventId,
   retryCount: 0,
   webhookUrl: url,
   webhookPrivateKeySecretName: privateKeySecretName,
