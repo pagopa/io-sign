@@ -1,5 +1,8 @@
 import fetch from "node-fetch";
-import { ServiceUnavailableError } from "@pagopa/hexagonal-core/domain/errors";
+import {
+  GenericError,
+  ServiceUnavailableError
+} from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
 import {
   type BackofficeService,
@@ -46,19 +49,22 @@ export const makeBackofficeService = (
       if (!response.ok) {
         if (response.status === 404) return ok(undefined);
         return err(
-          new ServiceUnavailableError(
-            `backoffice-service returned ${response.status}`
-          )
+          new GenericError(`backoffice-service returned ${response.status}`)
         );
       }
 
       const webhook = issuerWebhookSchema.safeParse(await response.json());
+      if (!webhook.success) {
+        return err(
+          new GenericError(
+            `backoffice-service returned an invalid webhook: ${webhook.error.message}`
+          )
+        );
+      }
       return ok(webhook.data);
     } catch (e) {
       const detail = e instanceof Error ? e.message : String(e);
-      return err(
-        new ServiceUnavailableError(`backoffice-service unreachable: ${detail}`)
-      );
+      return err(new GenericError(`backoffice-service error: ${detail}`));
     }
   }
 });

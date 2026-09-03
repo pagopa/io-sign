@@ -23,13 +23,15 @@ export const makeInfoUseCase =
     webhookQueuePublisher
   }: InfoDeps): InfoUseCase =>
   async () => {
-    const [hubHealth, backofficeHealth] = await Promise.all([
-      pdndPublisher.checkHealth(),
-      backofficeService.checkHealth(),
-      webhookQueuePublisher.checkHealth()
-    ]);
-    const failures = [hubHealth, backofficeHealth].flatMap((r) =>
-      r.isErr() ? [r.error.message] : []
+    const [hubHealth, backofficeHealth, webhookQueueHealth] = await Promise.all(
+      [
+        pdndPublisher.checkHealth(),
+        backofficeService.checkHealth(),
+        webhookQueuePublisher.checkHealth()
+      ]
+    );
+    const failures = [hubHealth, backofficeHealth, webhookQueueHealth].flatMap(
+      (r) => (r.isErr() ? [r.error.message] : [])
     );
     if (failures.length > 0) {
       return err(new ServiceUnavailableError(failures.join("\n")));

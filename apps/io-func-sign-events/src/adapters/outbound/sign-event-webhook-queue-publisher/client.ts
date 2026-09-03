@@ -1,23 +1,22 @@
 import { QueueClient } from "@azure/storage-queue";
 import {
+  BaseError,
   GenericError,
   ServiceUnavailableError
 } from "@pagopa/hexagonal-core/domain/errors";
-import { err, ok } from "neverthrow";
+import { err, ok, Result } from "neverthrow";
 import type { SignEventWebhookQueuePublisherConfig } from "./config.js";
 import { SignEventWebhookQueuePublisher } from "../../../domain/ports/outbound/sign-event-webhook-queue-publisher.js";
 import { WebhookQueueEvent } from "../../../domain/webhook-queue-event.js";
 
-const enqueue = async (
-  queueClient: QueueClient,
-  event: WebhookQueueEvent,
-  visibilityTimeout: number
-): Promise<void> => {
-  const queueEventText = JSON.stringify(event);
-  // TODO: check correct stringify
-  const queueEventBase64 = Buffer.from(queueEventText).toString("base64");
-  await queueClient.sendMessage(queueEventBase64, { visibilityTimeout });
-};
+class StorageQueueError extends BaseError {
+  name = "StorageQueueError";
+  errorCode?: string;
+  constructor(errorCode?: string) {
+    super("Unable to enqueue the message.");
+    this.errorCode = errorCode;
+  }
+}
 
 export const makeSignEventWebhookQueuePublisher = (
   { storageAccountConnectionString }: SignEventWebhookQueuePublisherConfig,
@@ -40,10 +39,21 @@ export const makeSignEventWebhookQueuePublisher = (
         );
       }
     },
-    enqueue: async (event: WebhookQueueEvent, visibilityTimeout = 0) => {
+    enqueue: async (
+      event: WebhookQueueEvent,
+      visibilityTimeout = 0
+    ): Promise<Result<void, StorageQueueError>> => {
       try {
-        await enqueue(webhookStorageQueue, event, visibilityTimeout);
-        return ok(undefined);
+        const queueEventText = JSON.stringify(event);
+        const queueEventBase64 = Buffer.from(queueEventText).toString("base64");
+        const response = await webhookStorageQueue.sendMessage(
+          queueEventBase64,
+          {
+            visibilityTimeout
+          }
+        );
+        if (response.errorCode === undefined) return ok();
+        return err(new StorageQueueError(response.errorCode));
       } catch (e) {
         const detail = e instanceof Error ? e.message : String(e);
         return err(
