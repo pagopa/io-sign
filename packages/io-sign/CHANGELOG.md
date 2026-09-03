@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.13.1
+
+### Patch Changes
+
+- 25d222e: chore: remove dead analytics/billing env vars
+
 ## 1.13.0
 
 ### Minor Changes
