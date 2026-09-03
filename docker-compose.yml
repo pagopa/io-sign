@@ -47,7 +47,7 @@ services:
       - 10002:10002
     command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "10002"]
+      test: ["CMD", "nc", "-z", "127.0.0.1", "10002"]
       interval: 5s
       timeout: 5s
       retries: 10
