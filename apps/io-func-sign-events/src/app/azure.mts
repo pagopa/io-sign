@@ -5,7 +5,8 @@ import { getBackofficeServiceConfigFromEnvironment } from "../adapters/outbound/
 import { makeBackofficeService } from "../adapters/outbound/backoffice-service/client.mjs";
 import {
   mountInfoAdapterHttp,
-  mountSignEventAdapterTrigger
+  mountSignEventAdapterTrigger,
+  mountWebhookDeliveryAdapterTrigger
 } from "../adapters/inbound/index.js";
 import { makeInfoUseCase } from "../application/use-cases/info.use-case.js";
 import { makeSignEventPDNDUseCase } from "../application/use-cases/sign-event-pdnd.use-case.js";
@@ -16,6 +17,10 @@ import {
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
 import { makeSignEventWebhookQueuePublisher } from "../adapters/outbound/sign-event-webhook-queue-publisher/client.js";
 import { getSignEventWebhookQueuePublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-webhook-queue-publisher/config.js";
+import { makeWebhookKeyReader } from "../adapters/outbound/webhook-key-reader/client.js";
+import { getWebhookKeyReaderConfigFromEnvironment } from "../adapters/outbound/webhook-key-reader/config.js";
+import { makeWebhookDeliveryClient } from "../adapters/outbound/webhook-delivery-client/client.mjs";
+import { makeDeliverWebhookUseCase } from "../application/use-cases/deliver-webhook.use-case.js";
 
 const ERROR_RESPONDER_CONFIG = {
   typeBaseUrl: "https://example.pagopa.it/problems/"
@@ -42,6 +47,10 @@ const webhookQueuePublisher = makeSignEventWebhookQueuePublisher(
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
 );
+const webhookKeyReader = makeWebhookKeyReader(
+  getWebhookKeyReaderConfigFromEnvironment()
+);
+const webhookDeliveryClient = makeWebhookDeliveryClient();
 
 // Endpoints.
 mountInfoAdapterHttp(
@@ -76,5 +85,19 @@ mountSignEventAdapterTrigger(
     connection: "SignEventsHubItnConnectionString",
     eventHubName: SIGN_EVENT_HUB_NAME,
     consumerGroup: "webhook"
+  }
+);
+
+// queue trigger
+mountWebhookDeliveryAdapterTrigger(
+  (logger) =>
+    makeDeliverWebhookUseCase({
+      logger,
+      webhookKeyReader,
+      webhookDeliveryClient
+    }),
+  {
+    connection: "StorageAccountItnConnectionString",
+    queueName: WEBHOOK_QUEUE_NAME
   }
 );

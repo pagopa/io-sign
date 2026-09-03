@@ -11,8 +11,8 @@ export const webhookEvent = z.discriminatedUnion("eventType", [
   z.object({
     eventId: z.ulid(),
     eventType: z.literal("signature-request.status.update"),
-    timestamp: z.date(),
-    generatedAt: z.date(),
+    timestamp: z.coerce.date(),
+    generatedAt: z.coerce.date(),
     signatureRequestId: z.ulid(),
     status: z.enum([
       // "WAIT_FOR_SIGNATURE",
@@ -24,8 +24,8 @@ export const webhookEvent = z.discriminatedUnion("eventType", [
   z.object({
     eventId: z.ulid(),
     eventType: z.literal("signature-request.document.status.update"),
-    timestamp: z.date(),
-    generatedAt: z.date(),
+    timestamp: z.coerce.date(),
+    generatedAt: z.coerce.date(),
     signatureRequestId: z.ulid(),
     documentStatus: z.enum(["READY", "REJECTED"]),
     documentId: z.ulid()
