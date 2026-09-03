@@ -18,6 +18,7 @@ const config = {
 };
 
 const aWebhookQueueEvent: WebhookQueueEvent = {
+  id: "01ARZ3NDEKTSV4RRFFQ69G5FAV",
   retryCount: 0,
   webhookUrl: "https://example.com/webhook",
   webhookPrivateKeySecretName: "a-secret-name",

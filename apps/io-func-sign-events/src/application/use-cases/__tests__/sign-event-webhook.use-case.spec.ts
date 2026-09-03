@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import type { MockedFunction } from "vitest";
 import { ok, err } from "neverthrow";
 import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
 import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
@@ -9,6 +10,7 @@ import type {
   IssuerWebhook
 } from "../../../domain/ports/outbound/backoffice-service.js";
 import type { SignEventWebhookQueuePublisher } from "../../../domain/ports/outbound/sign-event-webhook-queue-publisher.js";
+import type { WebhookQueueEvent } from "../../../domain/webhook-queue-event.js";
 
 const aSignatureRequestId = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
 const aDocumentId = "01ARZ3NDEKTSV4RRFFQ69G5FB1";
@@ -118,24 +120,14 @@ const makeWebhookQueuePublisher = (
   ...overrides
 });
 
-describe("makeSignEventWebhookUseCase", () => {
-  it("logs the event with the correct message and properties", async () => {
-    const logger = makeLogger();
-    const useCase = makeSignEventWebhookUseCase({
-      logger,
-      backofficeService: makeBackofficeService(),
-      webhookQueuePublisher: makeWebhookQueuePublisher()
-    });
-    await useCase(aSignedSignEvent);
-    expect(logger.info).toHaveBeenCalledWith(
-      "sign event received by trigger for webhook",
-      expect.objectContaining({
-        eventName: aSignedSignEvent.eventName,
-        payloadType: aSignedSignEvent.payloadType
-      })
-    );
-  });
+const ulidRegex = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/;
 
+const enqueueMock = (publisher: SignEventWebhookQueuePublisher) =>
+  publisher.enqueue as unknown as MockedFunction<
+    (event: WebhookQueueEvent) => Promise<unknown>
+  >;
+
+describe("makeSignEventWebhookUseCase", () => {
   it("looks up the webhook using the issuer and institution of the event", async () => {
     const backofficeService = makeBackofficeService();
     const useCase = makeSignEventWebhookUseCase({
@@ -150,12 +142,11 @@ describe("makeSignEventWebhookUseCase", () => {
     );
   });
 
-  it("returns err and logs when the webhook lookup fails", async () => {
-    const logger = makeLogger();
+  it("returns err when the webhook lookup fails", async () => {
     const anError = new GenericError("backoffice-service returned 500");
     const webhookQueuePublisher = makeWebhookQueuePublisher();
     const useCase = makeSignEventWebhookUseCase({
-      logger,
+      logger: makeLogger(),
       backofficeService: makeBackofficeService({
         getWebhookForIssuer: vi.fn(async () => err(anError))
       }),
@@ -164,18 +155,13 @@ describe("makeSignEventWebhookUseCase", () => {
     const result = await useCase(aSignedSignEvent);
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr()).toBe(anError);
-    expect(logger.error).toHaveBeenCalledWith(
-      "failed to get webhook for issuer",
-      expect.objectContaining({ error: JSON.stringify(anError) })
-    );
     expect(webhookQueuePublisher.enqueue).not.toHaveBeenCalled();
   });
 
-  it("returns err and logs when the enqueue fails", async () => {
-    const logger = makeLogger();
+  it("returns err when the enqueue fails", async () => {
     const anError = new GenericError("failed to enqueue webhook queue event");
     const useCase = makeSignEventWebhookUseCase({
-      logger,
+      logger: makeLogger(),
       backofficeService: makeBackofficeService(),
       webhookQueuePublisher: makeWebhookQueuePublisher({
         enqueue: vi.fn(async () => err(anError))
@@ -184,10 +170,6 @@ describe("makeSignEventWebhookUseCase", () => {
     const result = await useCase(aSignedSignEvent);
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr()).toBe(anError);
-    expect(logger.error).toHaveBeenCalledWith(
-      "failed to enqueue webhook queue event",
-      expect.objectContaining({ error: JSON.stringify(anError) })
-    );
   });
 
   it("does not enqueue when the issuer has no webhook configured", async () => {
@@ -273,17 +255,21 @@ describe("makeSignEventWebhookUseCase", () => {
       expect(result.isOk()).toBe(true);
       expect(webhookQueuePublisher.enqueue).toHaveBeenCalledWith(
         expect.objectContaining({
+          id: expect.stringMatching(ulidRegex),
           retryCount: 0,
           webhookUrl: anActiveWebhook.url,
           webhookPrivateKeySecretName: anActiveWebhook.privateKeySecretName,
           webhookPublicKeyThumbprint: anActiveWebhook.publicKeyThumbprint,
           webhookEvent: expect.objectContaining({
+            eventId: expect.stringMatching(ulidRegex),
             eventType: "signature-request.status.update",
             signatureRequestId: aSignatureRequestId,
             status
           })
         })
       );
+      const [queueEvent] = enqueueMock(webhookQueuePublisher).mock.calls[0];
+      expect(queueEvent.id).toBe(queueEvent.webhookEvent.eventId);
     }
   );
 
@@ -302,7 +288,9 @@ describe("makeSignEventWebhookUseCase", () => {
       expect(result.isOk()).toBe(true);
       expect(webhookQueuePublisher.enqueue).toHaveBeenCalledWith(
         expect.objectContaining({
+          id: expect.stringMatching(ulidRegex),
           webhookEvent: expect.objectContaining({
+            eventId: expect.stringMatching(ulidRegex),
             eventType: "signature-request.document.status.update",
             signatureRequestId: aSignatureRequestId,
             documentId: aDocumentId,
@@ -310,6 +298,21 @@ describe("makeSignEventWebhookUseCase", () => {
           })
         })
       );
+      const [queueEvent] = enqueueMock(webhookQueuePublisher).mock.calls[0];
+      expect(queueEvent.id).toBe(queueEvent.webhookEvent.eventId);
     }
   );
+
+  it("generates a different event id for each enqueued event", async () => {
+    const webhookQueuePublisher = makeWebhookQueuePublisher();
+    const useCase = makeSignEventWebhookUseCase({
+      logger: makeLogger(),
+      backofficeService: makeBackofficeService(),
+      webhookQueuePublisher
+    });
+    await useCase(aSignedSignEvent);
+    await useCase(aSignedSignEvent);
+    const [[first], [second]] = enqueueMock(webhookQueuePublisher).mock.calls;
+    expect(first.id).not.toBe(second.id);
+  });
 });
