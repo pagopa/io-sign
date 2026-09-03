@@ -57,7 +57,7 @@ export const makeSignEventWebhookQueuePublisher = (
       } catch (e) {
         const detail = e instanceof Error ? e.message : String(e);
         return err(
-          new GenericError(`failed to enqueue webhook queue event: ${detail}`)
+          new GenericError(`webhook-queue-publisher error: ${detail}`)
         );
       }
     }

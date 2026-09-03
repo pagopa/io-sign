@@ -75,17 +75,10 @@ const makeWebhookQueueEvent = (
 
 export const makeSignEventWebhookUseCase =
   ({
-    logger,
     backofficeService,
     webhookQueuePublisher
   }: SignEventWebhookDeps): UseCase<SignEvent, void, BaseError> =>
   async (event) => {
-    logger.info("sign event received by trigger for webhook", {
-      eventName: event.eventName,
-      payloadType: event.payloadType,
-      payload: JSON.stringify(event.payload, null, 2)
-    });
-
     const { issuerId, issuerInternalInstitutionId: institutionId } =
       event.payload.signatureRequest;
     const issuerWebhookResult = await backofficeService.getWebhookForIssuer(
@@ -93,12 +86,7 @@ export const makeSignEventWebhookUseCase =
       institutionId
     );
 
-    if (issuerWebhookResult.isErr()) {
-      logger.error("failed to get webhook for issuer", {
-        error: JSON.stringify(issuerWebhookResult.error)
-      });
-      return err(issuerWebhookResult.error);
-    }
+    if (issuerWebhookResult.isErr()) return err(issuerWebhookResult.error);
 
     if (issuerWebhookResult.value?.status === "active") {
       const webhookEvent = makeWebhookEvent(event);
@@ -111,12 +99,7 @@ export const makeSignEventWebhookUseCase =
 
       const enqueueResult =
         await webhookQueuePublisher.enqueue(webhookQueueEvent);
-      if (enqueueResult.isErr()) {
-        logger.error("failed to enqueue webhook queue event", {
-          error: JSON.stringify(enqueueResult.error)
-        });
-        return err(enqueueResult.error);
-      }
+      if (enqueueResult.isErr()) return err(enqueueResult.error);
     }
 
     return ok(undefined);

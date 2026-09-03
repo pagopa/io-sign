@@ -53,30 +53,19 @@ export type SignEventPDNDDeps = {
 
 export const makeSignEventPDNDUseCase =
   ({
-    logger,
     pdndPublisher
   }: SignEventPDNDDeps): UseCase<SignEvent, void, GenericError> =>
   async (signEvent) => {
-    const analytics = toAnalyticsEvent(signEvent);
-    if (analytics !== null) {
-      const analyticsResult = await pdndPublisher.sendAnalyticsEvent(analytics);
-      if (analyticsResult.isErr()) {
-        logger.error("failed to send analytics event to pdnd", {
-          eventName: signEvent.eventName
-        });
-        return err(analyticsResult.error);
-      }
-    }
-
     const billing = toBillingEvent(signEvent);
     if (billing !== null) {
       const billingResult = await pdndPublisher.sendBillingEvent(billing);
-      if (billingResult.isErr()) {
-        logger.error("failed to send billing event to pdnd", {
-          eventName: signEvent.eventName
-        });
-        return err(billingResult.error);
-      }
+      if (billingResult.isErr()) return err(billingResult.error);
+    }
+
+    const analytics = toAnalyticsEvent(signEvent);
+    if (analytics !== null) {
+      const analyticsResult = await pdndPublisher.sendAnalyticsEvent(analytics);
+      if (analyticsResult.isErr()) return err(analyticsResult.error);
     }
 
     return ok(undefined);
