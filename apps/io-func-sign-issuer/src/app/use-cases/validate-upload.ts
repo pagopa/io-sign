@@ -235,7 +235,7 @@ export const validateUpload = (
               RTE.chainW(patchSignatureRequestDocument(meta.documentId)),
               // Update upload metadata and remove document
               // fromt temp storage
-              RTE.chainW(() =>
+              RTE.chainFirstW(() =>
                 pipe(
                   meta,
                   markUploadMetadataAsValid,
@@ -250,9 +250,9 @@ export const validateUpload = (
                   RTE.chainW(removeDocumentFromStorage)
                 )
               ),
-              RTE.chainFirstW(() =>
+              RTE.chainFirstW((req) =>
                 createAndSendDocumentSignEvent(EventName.DOCUMENT_UPLOADED)(
-                  signatureRequest,
+                  req,
                   meta.documentId
                 )
               )
@@ -272,10 +272,10 @@ export const validateUpload = (
                 })
               ),
               // Remove REJECTED file from temp storage
-              RTE.chainW(() => removeDocumentFromStorage(meta.id)),
-              RTE.chainFirstW(() =>
+              RTE.chainFirstW(() => removeDocumentFromStorage(meta.id)),
+              RTE.chainFirstW((req) =>
                 createAndSendDocumentSignEvent(EventName.DOCUMENT_REJECTED)(
-                  signatureRequest,
+                  req,
                   meta.documentId
                 )
               )
