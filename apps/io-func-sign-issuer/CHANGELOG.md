@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.10.3
+
+### Patch Changes
+
+- 533893f: Fix DOCUMENT_UPLOADED and DOCUMENT_REJECTED event ingestion
+
 ## 1.10.2
 
 ### Patch Changes
