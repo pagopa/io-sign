@@ -5,6 +5,7 @@ import type { BackofficeService } from "../../domain/ports/outbound/backoffice-s
 import type { SignEventPDNDPublisher } from "../../domain/ports/outbound/sign-event-pdnd-publisher.js";
 import type { InfoUseCase } from "../contracts/info.js";
 import pkg from "../../../package.json";
+import { SignEventWebhookQueuePublisher } from "../../domain/ports/outbound/sign-event-webhook-queue-publisher.js";
 
 const APP_VERSION = pkg.version;
 
@@ -12,17 +13,25 @@ type InfoDeps = {
   logger: Logger;
   pdndPublisher: SignEventPDNDPublisher;
   backofficeService: BackofficeService;
+  webhookQueuePublisher: SignEventWebhookQueuePublisher;
 };
 
 export const makeInfoUseCase =
-  ({ pdndPublisher, backofficeService }: InfoDeps): InfoUseCase =>
+  ({
+    pdndPublisher,
+    backofficeService,
+    webhookQueuePublisher
+  }: InfoDeps): InfoUseCase =>
   async () => {
-    const [hubHealth, backofficeHealth] = await Promise.all([
-      pdndPublisher.checkHealth(),
-      backofficeService.checkHealth()
-    ]);
-    const failures = [hubHealth, backofficeHealth].flatMap((r) =>
-      r.isErr() ? [r.error.message] : []
+    const [hubHealth, backofficeHealth, webhookQueueHealth] = await Promise.all(
+      [
+        pdndPublisher.checkHealth(),
+        backofficeService.checkHealth(),
+        webhookQueuePublisher.checkHealth()
+      ]
+    );
+    const failures = [hubHealth, backofficeHealth, webhookQueueHealth].flatMap(
+      (r) => (r.isErr() ? [r.error.message] : [])
     );
     if (failures.length > 0) {
       return err(new ServiceUnavailableError(failures.join("\n")));

@@ -26,6 +26,7 @@
   "dependencies": {
     "@azure/event-hubs": "catalog:",
     "@azure/functions": "catalog:",
+    "@azure/storage-queue": "catalog:",
     "@io-sign/hexagonal-azure-functions": "workspace:*",
     "@pagopa/hexagonal-core": "0.5.1",
     "neverthrow": "^8.2.0",

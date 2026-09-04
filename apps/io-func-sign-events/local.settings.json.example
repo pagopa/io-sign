@@ -10,6 +10,7 @@
     "BillingEventHubItnConnectionString": "",
     "BackofficeFuncBaseUrl": "",
     "BackofficeFuncApiKey": "",
-    "APPLICATIONINSIGHTS_CONNECTION_STRING": ""
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
+    "StorageAccountItnConnectionString": ""
   }
 }
