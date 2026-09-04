@@ -2,14 +2,14 @@ import fetch from "node-fetch";
 import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
 import type { WebhookDeliveryClient } from "../../../domain/ports/outbound/webhook-delivery-client.js";
-import type { WebhookDeliveryPayload } from "../../../domain/webhook-delivery-payload.js";
+import { WebhookEvent } from "../../../domain/webhook-event.js";
 
 export const makeWebhookDeliveryClient = (): WebhookDeliveryClient => ({
   deliver: async (
     url: string,
     signature: string,
     publicKeyThumbprint: string,
-    payload: WebhookDeliveryPayload
+    payload: WebhookEvent
   ) => {
     try {
       const response = await fetch(url.replace(/\/$/, ""), {

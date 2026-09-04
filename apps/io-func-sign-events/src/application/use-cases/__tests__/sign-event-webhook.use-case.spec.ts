@@ -263,8 +263,10 @@ describe("makeSignEventWebhookUseCase", () => {
           webhookEvent: expect.objectContaining({
             eventId: expect.stringMatching(ulidRegex),
             eventType: "signature-request.status.update",
-            signatureRequestId: aSignatureRequestId,
-            status
+            payload: {
+              signatureRequestId: aSignatureRequestId,
+              status
+            }
           })
         })
       );
@@ -292,9 +294,11 @@ describe("makeSignEventWebhookUseCase", () => {
           webhookEvent: expect.objectContaining({
             eventId: expect.stringMatching(ulidRegex),
             eventType: "signature-request.document.status.update",
-            signatureRequestId: aSignatureRequestId,
-            documentId: aDocumentId,
-            documentStatus
+            payload: {
+              signatureRequestId: aSignatureRequestId,
+              documentId: aDocumentId,
+              documentStatus
+            }
           })
         })
       );

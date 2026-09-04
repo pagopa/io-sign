@@ -34,10 +34,12 @@ const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
       return {
         eventId: ulid(),
         eventType: "signature-request.status.update",
-        signatureRequestId,
-        status: signatureRequestStatus,
         generatedAt: new Date(),
-        timestamp: new Date()
+        timestamp: new Date(),
+        payload: {
+          signatureRequestId,
+          status: signatureRequestStatus
+        }
       };
     }
     case "signature_request_document": {
@@ -51,11 +53,13 @@ const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
       return {
         eventId: ulid(),
         eventType: "signature-request.document.status.update",
-        signatureRequestId,
-        documentId,
-        documentStatus: document.status,
         generatedAt: new Date(),
-        timestamp: new Date()
+        timestamp: new Date(),
+        payload: {
+          signatureRequestId,
+          documentId,
+          documentStatus: document.status
+        }
       };
     }
     default:

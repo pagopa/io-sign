@@ -13,22 +13,26 @@ export const webhookEvent = z.discriminatedUnion("eventType", [
     eventType: z.literal("signature-request.status.update"),
     timestamp: z.coerce.date(),
     generatedAt: z.coerce.date(),
-    signatureRequestId: z.ulid(),
-    status: z.enum([
-      // "WAIT_FOR_SIGNATURE",
-      // "WAIT_FOR_QTSP",
-      "SIGNED",
-      "REJECTED"
-    ])
+    payload: z.object({
+      signatureRequestId: z.ulid(),
+      status: z.enum([
+        // "WAIT_FOR_SIGNATURE",
+        // "WAIT_FOR_QTSP",
+        "SIGNED",
+        "REJECTED"
+      ])
+    })
   }),
   z.object({
     eventId: z.ulid(),
     eventType: z.literal("signature-request.document.status.update"),
     timestamp: z.coerce.date(),
     generatedAt: z.coerce.date(),
-    signatureRequestId: z.ulid(),
-    documentStatus: z.enum(["READY", "REJECTED"]),
-    documentId: z.ulid()
+    payload: z.object({
+      signatureRequestId: z.ulid(),
+      documentStatus: z.enum(["READY", "REJECTED"]),
+      documentId: z.ulid()
+    })
   })
 ]);
 export type WebhookEvent = z.infer<typeof webhookEvent>;

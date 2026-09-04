@@ -17,8 +17,8 @@ import {
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
 import { makeSignEventWebhookQueuePublisher } from "../adapters/outbound/sign-event-webhook-queue-publisher/client.js";
 import { getSignEventWebhookQueuePublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-webhook-queue-publisher/config.js";
-import { makeWebhookKeyReader } from "../adapters/outbound/webhook-key-reader/client.js";
-import { getWebhookKeyReaderConfigFromEnvironment } from "../adapters/outbound/webhook-key-reader/config.js";
+import { makeSecretReader } from "../adapters/outbound/secret-reader/client.js";
+import { getSecretReaderConfigFromEnvironment } from "../adapters/outbound/secret-reader/config.js";
 import { makeWebhookDeliveryClient } from "../adapters/outbound/webhook-delivery-client/client.mjs";
 import { makeDeliverWebhookUseCase } from "../application/use-cases/deliver-webhook.use-case.js";
 
@@ -47,12 +47,10 @@ const webhookQueuePublisher = makeSignEventWebhookQueuePublisher(
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
 );
-const webhookKeyReader = makeWebhookKeyReader(
-  getWebhookKeyReaderConfigFromEnvironment()
-);
+const secretReader = makeSecretReader(getSecretReaderConfigFromEnvironment());
 const webhookDeliveryClient = makeWebhookDeliveryClient();
 
-// Endpoints.
+// HTTP triggers.
 mountInfoAdapterHttp(
   (logger) =>
     makeInfoUseCase({
@@ -88,12 +86,12 @@ mountSignEventAdapterTrigger(
   }
 );
 
-// queue trigger
+// Storage Queue triggers.
 mountWebhookDeliveryAdapterTrigger(
   (logger) =>
     makeDeliverWebhookUseCase({
       logger,
-      webhookKeyReader,
+      secretReader,
       webhookDeliveryClient
     }),
   {

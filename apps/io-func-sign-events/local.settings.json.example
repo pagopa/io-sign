@@ -12,6 +12,6 @@
     "BackofficeFuncApiKey": "",
     "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
     "StorageAccountItnConnectionString": "",
-    "SignEventsKeyVaultUrl": ""
+    "IoSignKeyVaultUrl": ""
   }
 }

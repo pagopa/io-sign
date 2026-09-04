@@ -1,24 +1,25 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { SecretClient } from "@azure/keyvault-secrets";
-import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
+import {
+  GenericError,
+  NotFoundError
+} from "@pagopa/hexagonal-core/domain/errors";
 import { err, ok } from "neverthrow";
-import type { WebhookKeyReader } from "../../../domain/ports/outbound/webhook-key-reader.js";
-import type { WebhookKeyReaderConfig } from "./config.js";
+import type { SecretReader } from "../../../domain/ports/outbound/secret-reader.js";
+import type { SecretReaderConfig } from "./config.js";
 
-export const makeWebhookKeyReader = (
-  config: WebhookKeyReaderConfig
-): WebhookKeyReader => {
+export const makeSecretReader = (config: SecretReaderConfig): SecretReader => {
   const secretClient = new SecretClient(
     config.vaultUrl,
     new DefaultAzureCredential()
   );
   return {
-    getPrivateKey: async (secretName) => {
+    getSecret: async (secretName) => {
       try {
         const { value } = await secretClient.getSecret(secretName);
         if (!value) {
           return err(
-            new GenericError(`key vault secret "${secretName}" has no value`)
+            new NotFoundError(secretName, `key vault secret not found`)
           );
         }
         return ok(value);
