@@ -1,24 +1,47 @@
 import type {
-  BaseError,
+  BaseError as BaseErrorType,
   GenericError as GenericErrorType
 } from "@pagopa/hexagonal-core/domain/errors";
+import { BaseError } from "@pagopa/hexagonal-core/domain/errors";
 import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
 import type { Logger, UseCase } from "@pagopa/hexagonal-core/domain/ports";
 import type { WebhookDeliveryClient } from "../../domain/ports/outbound/webhook-delivery-client.js";
 import type { SecretReader } from "../../domain/ports/outbound/secret-reader.js";
-import type { WebhookQueueEvent } from "../../domain/webhook-queue-event";
+import { WebhookQueueEvent } from "../../domain/webhook-queue-event";
 import { err, ok, Result } from "neverthrow";
 import { createPrivateKey, sign as signMessage } from "node:crypto";
+import { SignEventWebhookQueuePublisher } from "../../domain/ports/outbound/sign-event-webhook-queue-publisher.js";
+import { WebhookEvent } from "../../domain/webhook-event.js";
 
 type DeliverWebhookDeps = {
   logger: Logger;
   secretReader: SecretReader;
   webhookDeliveryClient: WebhookDeliveryClient;
+  webhookQueuePublisher: SignEventWebhookQueuePublisher;
+};
+
+class MaximumRetryReached extends BaseError {
+  name = "MaximumRetryReached";
+  eventId?: string;
+  constructor(eventId?: string) {
+    super("Unable to deliver the event to the webhook.");
+    this.eventId = eventId;
+  }
+}
+
+const createRetry = (
+  queueEvent: WebhookQueueEvent
+): { newQueueEvent: WebhookQueueEvent; visibilityTimeout: number } => {
+  queueEvent.retryCount++;
+  const visibilityTimeout =
+    (queueEvent.retryCount < 6 ? Math.pow(2, queueEvent.retryCount) : 60) * 60;
+
+  return { newQueueEvent: queueEvent, visibilityTimeout };
 };
 
 const makeSignature = (
   privateKeyBase64: string,
-  { webhookEvent }: WebhookQueueEvent
+  webhookEvent: WebhookEvent
 ): Result<string, GenericErrorType> => {
   try {
     const privateJwk = JSON.parse(
@@ -54,29 +77,48 @@ const makeSignature = (
 
 export const makeDeliverWebhookUseCase =
   ({
+    logger,
     secretReader,
-    webhookDeliveryClient
-  }: DeliverWebhookDeps): UseCase<WebhookQueueEvent, void, BaseError> =>
+    webhookDeliveryClient,
+    webhookQueuePublisher
+  }: DeliverWebhookDeps): UseCase<WebhookQueueEvent, void, BaseErrorType> =>
   async (queueEvent) => {
+    const {
+      id,
+      webhookPrivateKeySecretName,
+      webhookEvent,
+      webhookUrl,
+      webhookPublicKeyThumbprint
+    } = queueEvent;
     const privateKey = await secretReader.getSecret(
-      queueEvent.webhookPrivateKeySecretName
+      webhookPrivateKeySecretName
     );
     if (privateKey.isErr()) return err(privateKey.error);
 
-    queueEvent.webhookEvent.timestamp = new Date();
+    webhookEvent.timestamp = new Date();
 
-    const signature = makeSignature(privateKey.value, queueEvent);
+    const signature = makeSignature(privateKey.value, webhookEvent);
     if (signature.isErr()) return err(signature.error);
 
     const webhookDeliveryResult = await webhookDeliveryClient.deliver(
-      queueEvent.webhookUrl,
+      webhookUrl,
       signature.value,
-      queueEvent.webhookPublicKeyThumbprint,
-      queueEvent.webhookEvent
+      webhookPublicKeyThumbprint,
+      webhookEvent
     );
     if (webhookDeliveryResult.isErr()) {
-      // Retry logic.
-      return err(webhookDeliveryResult.error);
+      const threshold = new Date();
+      threshold.setDate(threshold.getDate() - 7);
+      if (webhookEvent.generatedAt < threshold)
+        return err(new MaximumRetryReached(id));
+
+      const { newQueueEvent, visibilityTimeout } = createRetry(queueEvent);
+      await webhookQueuePublisher.enqueue(newQueueEvent, visibilityTimeout);
+      logger.info("Webhook deliver fail", {
+        webhookEventId: queueEvent.id,
+        webhookEventRetry: queueEvent.retryCount - 1,
+        webhookEventNextRetryInMinutes: visibilityTimeout / 60
+      });
     }
     return ok(undefined);
   };

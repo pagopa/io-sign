@@ -92,7 +92,8 @@ mountWebhookDeliveryAdapterTrigger(
     makeDeliverWebhookUseCase({
       logger,
       secretReader,
-      webhookDeliveryClient
+      webhookDeliveryClient,
+      webhookQueuePublisher
     }),
   {
     connection: "StorageAccountItnConnectionString",

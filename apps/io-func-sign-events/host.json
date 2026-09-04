@@ -25,6 +25,9 @@
   "extensions": {
     "http": {
       "routePrefix": "api/v1/sign/events"
+    },
+    "queues": {
+      "maxDequeueCount": 1
     }
   }
 }
