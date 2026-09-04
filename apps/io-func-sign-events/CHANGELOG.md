@@ -1,5 +1,11 @@
 # io-func-sign-events
 
+## 2.4.0
+
+### Minor Changes
+
+- 9df4003: Add webhook storage queue ingestion trigger
+
 ## 2.3.1
 
 ### Patch Changes
