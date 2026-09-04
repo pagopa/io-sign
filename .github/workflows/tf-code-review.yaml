@@ -15,7 +15,7 @@ on:
 
 jobs:
   prod_itn_core_code_review:
-    uses: pagopa/dx/.github/workflows/infra_plan.yaml@main
+    uses: pagopa/dx/.github/workflows/infra_plan.yaml@723b8233cd9c48bac7cc9e796471d4e12d4f8e5c # main
     name: Prod - Code Review
     secrets: inherit
     with:
