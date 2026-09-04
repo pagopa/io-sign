@@ -26,6 +26,8 @@
   "dependencies": {
     "@azure/event-hubs": "catalog:",
     "@azure/functions": "catalog:",
+    "@azure/identity": "catalog:",
+    "@azure/keyvault-secrets": "catalog:",
     "@azure/storage-queue": "catalog:",
     "@io-sign/hexagonal-azure-functions": "workspace:*",
     "@pagopa/hexagonal-core": "0.5.1",

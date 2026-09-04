@@ -27,6 +27,7 @@ locals {
       BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
       WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/events/info"
       WEBSITE_SWAP_WARMUP_PING_STATUSES    = "200,204"
+      IoSignKeyVaultUrl                    = "https://${data.azurerm_key_vault.sign_kv.name}.vault.azure.net"
     }
   }
 }

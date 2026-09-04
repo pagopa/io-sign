@@ -11,6 +11,7 @@
     "BackofficeFuncBaseUrl": "",
     "BackofficeFuncApiKey": "",
     "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
-    "StorageAccountItnConnectionString": ""
+    "StorageAccountItnConnectionString": "",
+    "IoSignKeyVaultUrl": ""
   }
 }
