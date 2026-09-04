@@ -33,12 +33,14 @@ module "function_sign_events" {
     {
       "AzureWebJobs.signEventTrigger_pdnd.Disabled"    = "1"
       "AzureWebJobs.signEventTrigger_webhook.Disabled" = "1"
+      "AzureWebJobs.deliverWebhookTrigger.Disabled" = "1"
     }
   )
 
   sticky_app_setting_names = [
     "AzureWebJobs.signEventTrigger_pdnd.Disabled",
     "AzureWebJobs.signEventTrigger_webhook.Disabled",
+    "AzureWebJobs.deliverWebhookTrigger.Disabled",
   ]
 
   action_group_ids = [data.azurerm_monitor_action_group.common_error_action_group.id, data.azurerm_monitor_action_group.sign_error_action_group.id]
