@@ -1,5 +1,16 @@
 # io-func-sign-events
 
+## 2.5.0
+
+### Minor Changes
+
+- 71d6005: Implemented deliverWebhookUseCase: send event to the issuer webhook
+
+### Patch Changes
+
+- Updated dependencies [71d6005]
+  - @io-sign/hexagonal-azure-functions@1.4.0
+
 ## 2.4.0
 
 ### Minor Changes

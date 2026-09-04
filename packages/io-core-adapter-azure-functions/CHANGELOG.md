@@ -1,5 +1,11 @@
 # @io-sign/hexagonal-azure-functions
 
+## 1.4.0
+
+### Minor Changes
+
+- 71d6005: Added mountAzureFunctionsStorageQueueTrigger adapter
+
 ## 1.3.0
 
 ### Minor Changes
