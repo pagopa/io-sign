@@ -28,21 +28,21 @@ locals {
 
   #issuer function app
   sign_issuer_snet_cidr             = "10.20.41.0/26"
-  function_issuer_autoscale_minimum = 2
-  function_issuer_autoscale_maximum = 5
-  function_issuer_autoscale_default = 2
+  function_issuer_autoscale_minimum = 6
+  function_issuer_autoscale_maximum = 30
+  function_issuer_autoscale_default = 6
 
   #user function app 02
   sign_user_02_snet_cidr             = "10.20.43.0/26"
-  function_user_02_autoscale_minimum = 2
-  function_user_02_autoscale_maximum = 5
-  function_user_02_autoscale_default = 2
+  function_user_02_autoscale_minimum = 4
+  function_user_02_autoscale_maximum = 30
+  function_user_02_autoscale_default = 4
 
   #backoffice function app
   sign_backoffice_snet_cidr             = "10.20.41.64/26"
-  function_backoffice_autoscale_minimum = 2
-  function_backoffice_autoscale_maximum = 5
-  function_backoffice_autoscale_default = 2
+  function_backoffice_autoscale_minimum = 6
+  function_backoffice_autoscale_maximum = 30
+  function_backoffice_autoscale_default = 6
 
   #backoffice app service
   sign_backoffice_app_snet_cidr = "10.20.42.64/26"
@@ -61,11 +61,11 @@ locals {
       ttl            = null
     }
     signature_requests = {
-      max_throughput = 2000
+      max_throughput = 8000
       ttl            = null
     }
     uploads = {
-      max_throughput = 1000
+      max_throughput = 4000
       ttl            = 604800
     }
     issuers = {
@@ -88,7 +88,7 @@ locals {
 
   cosmos_io_sign_database_user = {
     signature_requests = {
-      max_throughput = 1000
+      max_throughput = 2000
       ttl            = null
     }
     signatures = {
@@ -99,15 +99,15 @@ locals {
 
   cosmos_io_sign_database_backoffice = {
     api_keys = {
-      max_throughput = 2000
+      max_throughput = 8000
       ttl            = null
     }
     api_keys_by_id = {
-      max_throughput = 1000
+      max_throughput = 4000
       ttl            = null
     }
     issuers = {
-      max_throughput = 1000
+      max_throughput = 4000
       ttl            = null
     }
     consents = {
