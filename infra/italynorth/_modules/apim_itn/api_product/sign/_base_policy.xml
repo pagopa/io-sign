@@ -180,7 +180,7 @@
                 </check-header>
                 <!-- Delete temporary header -->
                 <set-header name="X-Allowed" exists-action="delete" />
-                <rate-limit-by-key calls="150" renewal-period="5" counter-key="@(context.Subscription.Id)" retry-after-header-name="x-rate-limit-retry-after" remaining-calls-header-name="x-rate-limit-remaining" />
+                <rate-limit-by-key calls="150" renewal-period="1" counter-key="@(context.Subscription.Id)" retry-after-header-name="x-rate-limit-retry-after" remaining-calls-header-name="x-rate-limit-remaining" />
             </when>
             <otherwise>
                 <!-- Allow direct call only from internal -->
