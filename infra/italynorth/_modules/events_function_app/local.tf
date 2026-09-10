@@ -11,24 +11,23 @@ locals {
 
   io_sign_events_func = {
     app_settings = {
-      FUNCTIONS_WORKER_PROCESS_COUNT       = 4
-      AzureWebJobsDisableHomepage          = "true"
-      NODE_ENV                             = "production"
-      StorageAccountItnConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
-      CosmosDbConnectionString             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
-      CosmosDbEndpoint                     = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
-      CosmosDbIssuerDatabaseName           = "issuer"
-      CosmosDbUserDatabaseName             = "user"
-      CosmosDbBackofficeDatabaseName       = "backoffice"
-      SignEventsHubItnConnectionString     = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
-      BackofficeFuncBaseUrl                = "https://${data.azurerm_linux_function_app.backoffice_func.default_hostname}"
-      BackofficeFuncApiKey                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackofficeFuncApiKey)"
-      AnalyticsEventHubItnConnectionString = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
-      BillingEventHubItnConnectionString   = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
-      WEBSITE_SWAP_WARMUP_PING_PATH        = "/api/v1/sign/events/info"
-      WEBSITE_SWAP_WARMUP_PING_STATUSES    = "200,204"
-      IoSignKeyVaultUrl                    = "https://${data.azurerm_key_vault.sign_kv.name}.vault.azure.net"
-
+      FUNCTIONS_WORKER_PROCESS_COUNT                   = 4
+      AzureWebJobsDisableHomepage                      = "true"
+      NODE_ENV                                         = "production"
+      StorageAccountItnConnectionString                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
+      CosmosDbConnectionString                         = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
+      CosmosDbEndpoint                                 = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+      CosmosDbIssuerDatabaseName                       = "issuer"
+      CosmosDbUserDatabaseName                         = "user"
+      CosmosDbBackofficeDatabaseName                   = "backoffice"
+      SignEventsHubItnConnectionString                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
+      BackofficeFuncBaseUrl                            = "https://${data.azurerm_linux_function_app.backoffice_func.default_hostname}"
+      BackofficeFuncApiKey                             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackofficeFuncApiKey)"
+      AnalyticsEventHubItnConnectionString             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=AnalyticsEventHubItnConnectionString)"
+      BillingEventHubItnConnectionString               = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BillingEventHubItnConnectionString)"
+      WEBSITE_SWAP_WARMUP_PING_PATH                    = "/api/v1/sign/events/info"
+      WEBSITE_SWAP_WARMUP_PING_STATUSES                = "200,204"
+      IoSignKeyVaultUrl                                = "https://${data.azurerm_key_vault.sign_kv.name}.vault.azure.net"
       "AzureWebJobs.signEventTrigger_webhook.Disabled" = "0"
     }
   }
