@@ -11,8 +11,11 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import { validate } from "@io-sign/io-sign/validation";
 
+import { ActionNotAllowedError } from "@io-sign/io-sign/error";
+
 import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 import { QueueClient } from "@azure/storage-queue";
+import { isBefore } from "date-fns/fp";
 import {
   SetSignatureRequestStatusBody,
   SetSignatureRequestStatusBodyEnum
@@ -49,6 +52,21 @@ const getQueue =
     }
   };
 
+// A signature request can be moved to READY only if it is not expired yet
+const checkIfNotExpired = <T extends { expiresAt: Date }>(
+  request: T
+): E.Either<ActionNotAllowedError, T> =>
+  pipe(
+    request,
+    E.fromPredicate(
+      ({ expiresAt }) => pipe(new Date(), isBefore(expiresAt)),
+      () =>
+        new ActionNotAllowedError(
+          "Cannot mark the signature request as READY because it has expired"
+        )
+    )
+  );
+
 const enqueueSignatureRequest =
   (signatureRequest: SignatureRequest) =>
   (queueClient: { ready: QueueClient; updated: QueueClient }) =>
@@ -82,6 +100,7 @@ export const SetSignatureRequestStatusHandler = H.of((req: H.HttpRequest) =>
           return pipe(
             signatureRequest,
             markAsReady,
+            E.chainW(checkIfNotExpired),
             RTE.fromEither,
             RTE.chainW(upsertSignatureRequest),
             RTE.chainFirstW((req) =>
