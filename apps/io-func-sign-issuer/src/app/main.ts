@@ -37,6 +37,7 @@ import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
 import { CreateSignatureRequestFunction } from "../infra/azure/functions/create-signature-request";
 import { SetSignatureRequestStatusFunction } from "../infra/azure/functions/set-signature-request-status";
+import { SetSignatureRequestExpiresAtFunction } from "../infra/azure/functions/set-signature-request-expires-at";
 import { validateDocumentFunction } from "../infra/azure/functions/validate-document";
 import { ClosedSignatureRequest } from "../signature-request";
 import { getConfigFromEnvironment } from "./config";
@@ -279,6 +280,18 @@ app.http("validateDocument", {
   authLevel: "function",
   route: "validate-document",
   handler: validateDocument
+});
+
+const setSignatureRequestExpiresAt = SetSignatureRequestExpiresAtFunction({
+  issuerRepository,
+  signatureRequestRepository
+});
+
+app.http("setSignatureRequestExpiresAt", {
+  methods: ["PATCH"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}/expires-at",
+  handler: setSignatureRequestExpiresAt
 });
 
 // ---- QUEUE TRIGGERS ----
