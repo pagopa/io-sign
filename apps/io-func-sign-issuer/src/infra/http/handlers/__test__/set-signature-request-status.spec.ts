@@ -34,6 +34,9 @@ describe("SetSignatureRequestHandler", () => {
     status: "ACTIVE",
   };
 
+  const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const inNinetyDays = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+
   const signatureRequests: ReadonlyArray<SignatureRequest> = [
     {
       id: newId(),
@@ -49,7 +52,24 @@ describe("SetSignatureRequestHandler", () => {
       status: "DRAFT",
       createdAt: new Date(),
       updatedAt: new Date(),
-      expiresAt: new Date(),
+      expiresAt: inNinetyDays,
+      documents: [],
+    },
+    {
+      id: newId(),
+      issuerId: issuer.id,
+      issuerEmail: issuer.email,
+      issuerDescription: issuer.description,
+      issuerInternalInstitutionId: issuer.internalInstitutionId,
+      issuerEnvironment: issuer.environment,
+      issuerDepartment: issuer.department,
+      signerId: newId(),
+      dossierId: newId(),
+      dossierTitle: "Richiesta di firma scaduta" as NonEmptyString,
+      status: "DRAFT",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      expiresAt: anHourAgo,
       documents: [],
     },
     {
@@ -235,6 +255,46 @@ describe("SetSignatureRequestHandler", () => {
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 204,
+        }),
+      })
+    );
+  });
+
+  it("should return a 400 HTTP response when setting status to READY on an expired signature request", () => {
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: {
+        "x-subscription-id": mocks.issuer.subscriptionId,
+      },
+      path: {
+        signatureRequestId: mocks.signatureRequests.find(
+          (signatureRequest) =>
+            signatureRequest.status === "DRAFT" &&
+            signatureRequest.expiresAt.getTime() < Date.now()
+        )?.id!,
+      },
+      body: "READY",
+    };
+
+    const run = SetSignatureRequestStatusHandler({
+      logger,
+      issuerRepository,
+      signatureRequestRepository,
+      input: req,
+      inputDecoder: H.HttpRequest,
+      signEventsClient: {} as SignEventsProducerClient,
+      ready: {
+        sendMessage: (_: string) => Promise.resolve({}),
+      } as QueueClient,
+      updated: {} as QueueClient,
+    });
+    expect(run()).resolves.toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          statusCode: 400,
+          headers: expect.objectContaining({
+            "Content-Type": "application/problem+json",
+          }),
         }),
       })
     );
