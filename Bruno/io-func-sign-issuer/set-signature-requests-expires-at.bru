@@ -1,0 +1,28 @@
+meta {
+  name: set-signature-requests-expires-at
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{io-func-sign-issuer-base-url}}/sign/signature-requests/:signature_request_id/expires-at
+  body: json
+  auth: inherit
+}
+
+params:path {
+  signature_request_id: {{signature_request_id}}
+}
+
+body:json {
+  {
+    "expires_at": "2026-09-10T09:50:00.000Z"
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}
