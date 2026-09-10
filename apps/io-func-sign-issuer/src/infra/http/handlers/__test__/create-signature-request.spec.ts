@@ -101,6 +101,7 @@ describe("CreateSignatureRequestHandler", () => {
       insert: (request) => TE.right(request),
       patchDocument: (request, documentId) =>
         TE.left(new Error("not implemented")),
+      patchExpiresAt: () => TE.left(new Error("not implemented")),
     };
   });
 
@@ -242,6 +243,7 @@ describe("CreateSignatureRequestHandler", () => {
         insert: () => TE.left(new Error("insert failed")),
         patchDocument: (request, documentId) =>
           TE.left(new Error("not implemented")),
+        patchExpiresAt: () => TE.left(new Error("not implemented")),
       };
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
