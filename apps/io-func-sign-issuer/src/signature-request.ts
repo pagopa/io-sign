@@ -128,6 +128,27 @@ export const withExpiryDate =
       }))
     );
 
+// The issuer can change the expiry date only while the request is still a draft, and only to a date in the future
+export const validateExpiryDate =
+  (expiryDate: Date) =>
+  (request: SignatureRequest): E.Either<Error, Date> =>
+    pipe(
+      request,
+      E.fromPredicate(
+        (request): request is SignatureRequestDraft =>
+          request.status === "DRAFT",
+        () =>
+          new ActionNotAllowedError(
+            "The expiry date can be updated only while the signature request is in DRAFT status"
+          )
+      ),
+      E.filterOrElse(
+        () => pipe(new Date(), isBefore(expiryDate)),
+        () => new ActionNotAllowedError("The expiry date must be in the future")
+      ),
+      E.map(() => expiryDate)
+    );
+
 export const replaceDocument =
   (id: Document["id"], updated: Document) => (request: SignatureRequestDraft) =>
     pipe(
@@ -448,6 +469,11 @@ export type SignatureRequestRepository = {
     request: SignatureRequest,
     documentId: Document["id"]
   ) => TE.TaskEither<Error, SignatureRequest>;
+  patchExpiresAt: (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"],
+    expiresAt: Date
+  ) => TE.TaskEither<Error, SignatureRequest>;
   findByDossier: (
     dossier: Dossier,
     options?: { maxItemCount?: number; continuationToken?: string }
@@ -514,6 +540,19 @@ export const patchSignatureRequestDocument =
   > =>
   ({ signatureRequestRepository: repo }) =>
     pipe(repo.patchDocument(request, documentId));
+
+export const patchSignatureRequestExpiresAt =
+  (
+    id: SignatureRequest["id"],
+    issuerId: SignatureRequest["issuerId"],
+    expiresAt: Date
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    repo.patchExpiresAt(id, issuerId, expiresAt);
 
 export const findSignatureRequestsByDossier =
   (
