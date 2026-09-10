@@ -150,6 +150,46 @@ export class CosmosDbSignatureRequestRepository
       )
     );
 
+  public patchExpiresAt: SignatureRequestRepository["patchExpiresAt"] = (
+    id,
+    issuerId,
+    expiresAt
+  ) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          this.#container.item(id, issuerId).patch([
+            {
+              op: "replace",
+              path: "/expiresAt",
+              value: expiresAt.toISOString()
+            },
+            {
+              op: "replace",
+              path: "/updatedAt",
+              value: new Date().toISOString()
+            }
+          ]),
+        toCosmosErrorResponse
+      ),
+      TE.chainW((patchResponse) =>
+        pipe(
+          patchResponse.resource,
+          TE.fromNullable(
+            CosmosErrorResponse({
+              code: 404,
+              message: "item not found for input id",
+              name: "Not Found"
+            })
+          ),
+          TE.chainEitherKW(
+            flow(SignatureRequest.decode, E.mapLeft(CosmosDecodingError))
+          )
+        )
+      ),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
+
   public async findByDossier(
     dossier: Dossier,
     options: { maxItemCount?: number; continuationToken?: string } = {}
