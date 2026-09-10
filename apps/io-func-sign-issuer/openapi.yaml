@@ -380,6 +380,38 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /signature-requests/{signatureRequestId}/expires-at:
+    patch:
+      operationId: setSignatureRequestExpiresAt
+      tags:
+        - Signature Request
+      summary: Set the expires date of a signature request
+      parameters:
+        - in: path
+          name: signatureRequestId
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetSignatureRequestExpiresAtBody"
+      responses:
+        "204":
+          description: No content
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     SubscriptionKey:
@@ -874,3 +906,12 @@ components:
             type: string
       required:
         - is_valid
+
+    SetSignatureRequestExpiresAtBody:
+      type: object
+      properties:
+        expires_at: 
+          $ref: "#/components/schemas/Timestamp"
+      required:
+        - expires_at
+    
