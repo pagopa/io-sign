@@ -3,7 +3,7 @@ name: 'io-sign-dev'
 services:
   cosmos-db-internal:
     #preview version wich supports ARM
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview@sha256:2db1f9e74c506bcf6fc347aa937aea1c00fa756061296a5a9efba530ce86ec02
     mem_limit: 3G
     cpu_count: 2
     tty: true
@@ -17,7 +17,7 @@ services:
       - 1234:1234
 
   cosmos-db:
-    image: alpine:latest
+    image: alpine:latest@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
     depends_on:
       - cosmos-db-internal
     ports:
@@ -28,7 +28,7 @@ services:
              socat OPENSSL-LISTEN:8081,reuseaddr,fork,cert=/cert.pem,key=/key.pem,verify=0 TCP:cosmos-db-internal:8081"
   
   cosmos-db-setup:
-    image: node:24-alpine
+    image: node:24-alpine@sha256:50c8e8ca1d27439048670df5883f32d57cf81cff6233222c893fd0d9884cbd81
     working_dir: /app
     depends_on:
       - cosmos-db
@@ -40,7 +40,7 @@ services:
     command: sh -c "npm install @azure/cosmos && node setup-cosmos-containers.js"
       
   azurite:
-    image: mcr.microsoft.com/azure-storage/azurite:latest
+    image: mcr.microsoft.com/azure-storage/azurite:latest@sha256:830430c1da1a2d537e08f3e6764dd1f5ae00cf0346bcaf625b968ec3f0971fd5
     ports:
       - 10000:10000
       - 10001:10001
@@ -54,7 +54,7 @@ services:
       start_period: 10s
   
   azurite-setup:
-    image: node:24-alpine
+    image: node:24-alpine@sha256:50c8e8ca1d27439048670df5883f32d57cf81cff6233222c893fd0d9884cbd81
     working_dir: /app
     depends_on:
       - azurite
@@ -75,7 +75,7 @@ services:
       ACCEPT_EULA: Y
 
   eventhubs:
-    image: alpine:latest
+    image: alpine:latest@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
     depends_on:
       - eventhubs-internal
     ports:
