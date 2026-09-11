@@ -33,5 +33,5 @@ permissions:
 jobs:
   opex_dashboards:
     name: OpEx Dashboards
-    uses: pagopa/dx/.github/workflows/opex-dashboard-deploy.yaml@main
+    uses: pagopa/dx/.github/workflows/opex-dashboard-deploy.yaml@625f02f382c33eb449cd94facb8e426bf7ae37ea # main
     secrets: inherit
