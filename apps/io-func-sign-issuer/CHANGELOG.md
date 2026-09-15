@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.10.4
+
+### Patch Changes
+
+- 6eab569: validate expiry date when moving a signature request to READY
+
 ## 1.10.3
 
 ### Patch Changes
