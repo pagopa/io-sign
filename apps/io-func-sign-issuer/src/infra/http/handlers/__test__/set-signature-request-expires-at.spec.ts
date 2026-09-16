@@ -9,6 +9,7 @@ import { Issuer } from "@io-sign/io-sign/issuer";
 import { newId } from "@io-sign/io-sign/id";
 
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
+import { Document } from "@io-sign/io-sign/document";
 import { IssuerRepository } from "../../../../issuer";
 import { SetSignatureRequestExpiresAtHandler } from "../set-signature-request-expires-at";
 import {
@@ -53,11 +54,29 @@ describe("SetSignatureRequestExpiresAtHandler", () => {
     documents: [],
   };
 
+  const readyDocument: Document = {
+    id: newId(),
+    status: "READY",
+    metadata: {
+      title: "doc #1" as NonEmptyString,
+      signatureFields: [] as unknown as Document["metadata"]["signatureFields"],
+      pdfDocumentMetadata: {
+        pages: [],
+        formFields: [],
+      },
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    uploadedAt: new Date(),
+    url: "https://example.com/doc.pdf",
+  };
+
   const signatureRequests: ReadonlyArray<SignatureRequest> = [
     {
       ...baseRequest,
       id: newId(),
       status: "DRAFT",
+      documents: [readyDocument],
     },
     {
       ...baseRequest,
@@ -65,13 +84,24 @@ describe("SetSignatureRequestExpiresAtHandler", () => {
       status: "WAIT_FOR_SIGNATURE",
       qrCodeUrl: "qrCodeUrl",
     },
+    {
+      ...baseRequest,
+      id: newId(),
+      status: "DRAFT",
+      documents: [],
+    },
   ];
 
   const mocks = { issuer, signatureRequests };
 
-  const draftId = mocks.signatureRequests.find((r) => r.status === "DRAFT")!.id;
+  const draftId = mocks.signatureRequests.find(
+    (r) => r.status === "DRAFT" && r.documents.length > 0
+  )!.id;
   const nonDraftId = mocks.signatureRequests.find(
     (r) => r.status !== "DRAFT"
+  )!.id;
+  const draftWithoutReadyDocumentId = mocks.signatureRequests.find(
+    (r) => r.status === "DRAFT" && r.documents.length === 0
   )!.id;
 
   beforeAll(() => {
@@ -167,6 +197,20 @@ describe("SetSignatureRequestExpiresAtHandler", () => {
       ...H.request("https://api.test.it/"),
       headers: { "x-subscription-id": mocks.issuer.subscriptionId },
       path: { signatureRequestId: nonDraftId },
+      body: { expires_at: inOneYear },
+    };
+    await expect(run(req)).resolves.toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({ statusCode: 400 }),
+      })
+    );
+  });
+
+  it("should return a 400 HTTP response when the signature request has no document in READY status", async () => {
+    const req: H.HttpRequest = {
+      ...H.request("https://api.test.it/"),
+      headers: { "x-subscription-id": mocks.issuer.subscriptionId },
+      path: { signatureRequestId: draftWithoutReadyDocumentId },
       body: { expires_at: inOneYear },
     };
     await expect(run(req)).resolves.toEqual(

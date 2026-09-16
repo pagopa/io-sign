@@ -6,7 +6,7 @@ import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { DocumentMetadata } from "@io-sign/io-sign/document";
+import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
 import {
   newSignatureRequest,
@@ -85,12 +85,29 @@ describe("SignatureRequest", () => {
     });
   });
 
+  const withOneReadyDocument = (request: SignatureRequest): SignatureRequest =>
+    ({
+      ...request,
+      documents: request.documents.map(
+        (document, index): Document =>
+          index === 0
+            ? {
+                ...document,
+                status: "READY",
+                uploadedAt: new Date(),
+                url: "https://example.com/doc.pdf"
+              }
+            : document
+      )
+    }) as SignatureRequest;
+
   describe("validateExpiryDate", () => {
-    it("should return the validated expiry date when the request is a draft", () => {
+    it("should return the validated expiry date when the request is a draft with at least one READY document", () => {
       const newExpiryDate = pipe(new Date(), addDays(4));
       expect(
         pipe(
           newSignatureRequest(dossier, newSigner(), issuer),
+          withOneReadyDocument,
           validateExpiryDate(newExpiryDate),
           E.map(isEqual(newExpiryDate)),
           E.getOrElse(() => false)
@@ -110,10 +127,20 @@ describe("SignatureRequest", () => {
         )
       ).toBe(true);
     });
+    it("should return an error when the request has no document in READY status", () => {
+      expect(
+        pipe(
+          newSignatureRequest(dossier, newSigner(), issuer),
+          validateExpiryDate(pipe(new Date(), addDays(4))),
+          E.isLeft
+        )
+      ).toBe(true);
+    });
     it("should return an error when the new expiry date is in the past", () => {
       expect(
         pipe(
           newSignatureRequest(dossier, newSigner(), issuer),
+          withOneReadyDocument,
           validateExpiryDate(pipe(new Date(), subDays(1))),
           E.isLeft
         )

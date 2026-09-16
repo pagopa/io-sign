@@ -143,6 +143,14 @@ export const validateExpiryDate =
           )
       ),
       E.filterOrElse(
+        (request) =>
+          request.documents.some((document) => document.status === "READY"),
+        () =>
+          new ActionNotAllowedError(
+            "The expiry date can be updated only after at least one document has been uploaded"
+          )
+      ),
+      E.filterOrElse(
         () => pipe(new Date(), isBefore(expiryDate)),
         () => new ActionNotAllowedError("The expiry date must be in the future")
       ),
