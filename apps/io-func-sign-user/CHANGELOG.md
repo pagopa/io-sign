@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.10.2
+
+### Patch Changes
+
+- a1527e6: extend max dequeue count
+
 ## 2.10.1
 
 ### Patch Changes
