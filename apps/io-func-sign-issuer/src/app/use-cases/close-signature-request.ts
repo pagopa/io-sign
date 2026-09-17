@@ -73,17 +73,12 @@ const sendNotification = (signatureRequest: SignatureRequest) =>
       })
     ),
     RTE.orElseW((error) =>
-      pipe(
-        RTE.right(void 0),
-        RTE.chainFirst(() =>
-          L.errorRTE(
-            "Unable to send the signature request notification to the citizen",
-            {
-              signatureRequestId: signatureRequest.id,
-              error: error.message
-            }
-          )
-        )
+      L.errorRTE(
+        "Unable to send the signature request notification to the citizen",
+        {
+          signatureRequestId: signatureRequest.id,
+          error: error.message
+        }
       )
     )
   );
