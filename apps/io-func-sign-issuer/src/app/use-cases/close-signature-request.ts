@@ -4,6 +4,7 @@ import * as L from "@pagopa/logger";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
 import {
@@ -60,25 +61,21 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-// Sends the notification to the citizen, logging the outcome since this is a
+// Sends the notification to the citizen, logging failures since this is a
 // fire and forget operation: the request closure must not fail because of it.
 const sendNotification = (signatureRequest: SignatureRequest) =>
   pipe(
     signatureRequest,
     sendSignatureRequestNotification(buildNotificationMessage),
-    RTE.chainFirstW((notification) =>
-      L.infoRTE("Signature request notification sent to the citizen", {
-        signatureRequestId: signatureRequest.id,
-        ioMessageId: notification.ioMessageId
-      })
-    ),
     RTE.orElseW((error) =>
-      L.errorRTE(
-        "Unable to send the signature request notification to the citizen",
-        {
-          signatureRequestId: signatureRequest.id,
-          error: error.message
-        }
+      RTE.rightIO(
+        L.error(
+          "Unable to send the signature request notification to the citizen",
+          {
+            signatureRequestId: signatureRequest.id,
+            error: error.message
+          }
+        )({ logger: ConsoleLogger })
       )
     )
   );
