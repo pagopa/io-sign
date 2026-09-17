@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
@@ -45,6 +45,14 @@ export default function ChangeUrlModal({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setUrl(currentUrl);
+      setLoading(false);
+      setError(false);
+    }
+  }, [open, currentUrl]);
 
   return (
     <Dialog open={open} onClose={onClose}>

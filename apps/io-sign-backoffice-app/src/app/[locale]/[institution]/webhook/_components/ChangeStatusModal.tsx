@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Alert, Button, Stack, Typography } from "@mui/material";
@@ -44,6 +44,13 @@ export default function ChangeStatusModal({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!open) {
+      setLoading(false);
+      setError(false);
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onClose={onClose}>

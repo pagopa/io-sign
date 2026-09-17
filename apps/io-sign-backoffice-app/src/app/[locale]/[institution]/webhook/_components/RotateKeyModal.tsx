@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Alert, Button, Stack, Typography } from "@mui/material";
@@ -52,6 +52,14 @@ export default function RotateKeyModal({
     onClose();
     router.refresh();
   };
+
+  useEffect(() => {
+    if (!open) {
+      setRotated(null);
+      setLoading(false);
+      setError(false);
+    }
+  }, [open]);
 
   if (rotated) {
     return (

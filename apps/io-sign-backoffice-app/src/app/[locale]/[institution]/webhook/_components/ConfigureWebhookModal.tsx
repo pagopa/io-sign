@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
@@ -52,6 +52,15 @@ export default function ConfigureWebhookModal({
     onClose();
     router.refresh();
   };
+
+  useEffect(() => {
+    if (!open) {
+      setUrl("");
+      setLoading(false);
+      setError(false);
+      setCreated(null);
+    }
+  }, [open]);
 
   if (created) {
     return (

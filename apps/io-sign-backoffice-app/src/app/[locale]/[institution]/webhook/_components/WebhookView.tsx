@@ -16,6 +16,7 @@ import {
   BugReportRounded,
   EditRounded,
   KeyRounded,
+  Link,
   PinDrop,
 } from "@mui/icons-material";
 
@@ -88,7 +89,7 @@ export default function WebhookView({
         <Paper variant="outlined">
           <Stack p={3} spacing={3} bgcolor="background.paper">
             <Stack direction="row" alignItems="center" spacing={1}>
-              <PinDrop color="inherit" />
+              <Link color="inherit" />
               <Typography variant="body1" fontWeight={600}>
                 {t("url.title")}
               </Typography>
@@ -148,7 +149,7 @@ export default function WebhookView({
               open={copied}
               onClose={handleSnackbarClose}
               autoHideDuration={3000}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
               <Alert severity="success" variant="outlined">
                 {t("publicKeyThumbprint.copiedAlert")}
