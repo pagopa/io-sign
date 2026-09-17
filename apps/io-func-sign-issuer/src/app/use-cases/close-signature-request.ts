@@ -4,7 +4,6 @@ import * as L from "@pagopa/logger";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 
 import { sendTelemetryEvent } from "@io-sign/io-sign/telemetry";
 import {
@@ -68,14 +67,12 @@ const sendNotification = (signatureRequest: SignatureRequest) =>
     signatureRequest,
     sendSignatureRequestNotification(buildNotificationMessage),
     RTE.orElseW((error) =>
-      RTE.rightIO(
-        L.error(
-          "Unable to send the signature request notification to the citizen",
-          {
-            signatureRequestId: signatureRequest.id,
-            error: error.message
-          }
-        )({ logger: ConsoleLogger })
+      L.errorRTE(
+        "Unable to send the signature request notification to the citizen",
+        {
+          signatureRequestId: signatureRequest.id,
+          error: error.message
+        }
       )
     )
   );
