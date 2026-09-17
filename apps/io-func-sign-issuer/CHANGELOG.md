@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.10.5
+
+### Patch Changes
+
+- 6530999: add logs for sendNotification
+
 ## 1.10.4
 
 ### Patch Changes
