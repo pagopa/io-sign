@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.13.2
+
+### Patch Changes
+
+- 491bcda: add error log in getProfile
+
 ## 1.13.1
 
 ### Patch Changes
