@@ -1,5 +1,6 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
+import * as L from "@pagopa/logger";
 
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 import { flow, pipe } from "fp-ts/lib/function";
@@ -10,6 +11,7 @@ import {
 } from "../../error";
 import { HttpBadRequestError } from "../http/errors";
 import { IOApiClient } from "./client";
+import { ConsoleLogger } from "../console-logger";
 
 export type RetriveUserProfileSenderAllowed = (
   fiscal_code: FiscalCode
@@ -55,6 +57,11 @@ export const makeRetriveUserProfileSenderAllowed =
           }),
           TE.fromEither
         )
+      ),
+      TE.orElseFirstIOK((error) =>
+        L.error("Unable to retrieve the user profile", {
+          error: error.message
+        })({ logger: ConsoleLogger })
       ),
       TE.map((userProfile) => userProfile.sender_allowed)
     );
