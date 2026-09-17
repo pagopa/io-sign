@@ -1,5 +1,6 @@
 import { flow, pipe } from "fp-ts/lib/function";
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
+import * as L from "@pagopa/logger";
 
 import { NotificationMessage } from "@io-sign/io-sign/notification";
 import { truncateWithEllipsis } from "@io-sign/io-sign/utility";
@@ -59,9 +60,28 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-const sendNotification = sendSignatureRequestNotification(
-  buildNotificationMessage
-);
+// Sends the notification to the citizen, logging the outcome since this is a
+// fire and forget operation: the request closure must not fail because of it.
+const sendNotification = (signatureRequest: SignatureRequest) =>
+  pipe(
+    signatureRequest,
+    sendSignatureRequestNotification(buildNotificationMessage),
+    RTE.chainFirstW((notification) =>
+      L.infoRTE("Signature request notification sent to the citizen", {
+        signatureRequestId: signatureRequest.id,
+        ioMessageId: notification.ioMessageId
+      })
+    ),
+    RTE.orElseW((error) =>
+      L.errorRTE(
+        "Unable to send the signature request notification to the citizen",
+        {
+          signatureRequestId: signatureRequest.id,
+          error: error.message
+        }
+      )
+    )
+  );
 
 // "closeSignatureRequest" ends the Signature Request lifecycle
 export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
@@ -70,7 +90,7 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
     getSignatureRequest(request.id, request.issuerId),
     RTE.chainEitherKW(markRequestAsClosed(request)),
     RTE.chain(upsertSignatureRequest),
-    RTE.chainFirstReaderTaskKW(sendNotification),
+    RTE.chainFirstW(sendNotification),
     RTE.chainFirstW((req) =>
       pipe(req, createAndSendSignEvent(eventNameByRequestStatus[req.status]))
     ),
