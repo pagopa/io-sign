@@ -177,7 +177,7 @@
       },
       "url": {
         "title": "URL",
-        "description": "Clicca su Modifica URL per cambiare l’URL del webhook.",
+        "description": "URL a cui il webhook invia le notifiche. Per modificarlo, clicca sull'icona accanto.",
         "changeUrlModal": {
           "title": "Modifica URL webhook",
           "description": "Inserisci la nuova URL del webhook del tuo ente.",
@@ -185,7 +185,7 @@
           "cancel": "Annulla",
           "confirm": "Conferma",
           "errors": {
-            "generic": "Non è stato possibile aggiornare la URL. Riprova.",
+            "generic": "Non è stato possibile aggiornare l'URL. Riprova.",
             "httpsRequired": "L'URL deve utilizzare il protocollo HTTPS"
           }
         }
@@ -240,6 +240,11 @@
         "errors": {
           "generic": "Non è stato possibile eliminare il webhook. Riprova."
         }
+      },
+      "activeWarningModal": {
+        "title": "Disattiva il webhook",
+        "description": "Per poter effettuare l'operazione che desideri, il webhook deve essere in stato inattivo.",
+        "close": "Chiudi"
       }
     },
     "overview": {
