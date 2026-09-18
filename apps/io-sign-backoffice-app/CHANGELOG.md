@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 2.0.5
+
+### Patch Changes
+
+- ff49cc5: Apply changes to the design and copy of the webhook flow
+
 ## 2.0.4
 
 ### Patch Changes
