@@ -190,6 +190,7 @@ const signatureRequestRepository: SignatureRequestRepository = {
   get: (_id, _issuerId) => TE.right(O.some(signatureRequest)),
   upsert: (req) => TE.right(req),
   patchDocument: (req, _docId) => TE.right(req),
+  patchExpiresAt: () => TE.left(new Error("not implemented")),
   findByDossier: () => Promise.reject(new Error("not implemented")),
   insert: () => TE.left(new Error("not implemented")),
 };

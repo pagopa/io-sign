@@ -73,6 +73,7 @@ describe("GetSignatureRequestHandler", () => {
       insert: () => TE.left(new Error("not implemented")),
       patchDocument: (request, documentId) =>
         TE.left(new Error("not implemented")),
+      patchExpiresAt: () => TE.left(new Error("not implemented")),
     };
   });
 

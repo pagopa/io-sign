@@ -128,6 +128,7 @@ const signatureRequestRepository: SignatureRequestRepository = {
   upsert: requests.upsert,
   findByDossier: () => Promise.reject(new Error("not implemented")),
   patchDocument: () => TE.left(new Error("not implemented")),
+  patchExpiresAt: () => TE.left(new Error("not implemented")),
   insert: () => TE.left(new Error("not implemented")),
 };
 

@@ -6,13 +6,18 @@ import { addDays, isEqual, subDays } from "date-fns/fp";
 import { newId } from "@io-sign/io-sign/id";
 import { Issuer } from "@io-sign/io-sign/issuer";
 import { EmailString, NonEmptyString } from "@pagopa/ts-commons/lib/strings";
-import { DocumentMetadata } from "@io-sign/io-sign/document";
+import { Document, DocumentMetadata } from "@io-sign/io-sign/document";
 import { newDossier } from "../dossier";
-import { newSignatureRequest, withExpiryDate } from "../signature-request";
+import {
+  newSignatureRequest,
+  SignatureRequest,
+  validateExpiryDate,
+  withExpiryDate
+} from "../signature-request";
 import * as O from "fp-ts/lib/Option";
 
 const newSigner = () => ({
-  id: newId(),
+  id: newId()
 });
 
 const issuer: Issuer = {
@@ -24,20 +29,20 @@ const issuer: Issuer = {
   environment: "TEST",
   vatNumber: "15376271001" as NonEmptyString,
   department: "",
-  status: "ACTIVE",
+  status: "ACTIVE"
 };
 
 const dossier = newDossier(issuer, "My dossier" as NonEmptyString, [
   {
     title: "document #1",
     signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
-    pdfDocumentMetadata: { pages: [], formFields: [] },
+    pdfDocumentMetadata: { pages: [], formFields: [] }
   },
   {
     title: "document #2",
     signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
-    pdfDocumentMetadata: { pages: [], formFields: [] },
-  },
+    pdfDocumentMetadata: { pages: [], formFields: [] }
+  }
 ]);
 
 describe("SignatureRequest", () => {
@@ -74,6 +79,69 @@ describe("SignatureRequest", () => {
         pipe(
           newSignatureRequest(dossier, newSigner(), issuer),
           withExpiryDate(pipe(new Date(), subDays(100))),
+          E.isLeft
+        )
+      ).toBe(true);
+    });
+  });
+
+  const withOneReadyDocument = (request: SignatureRequest): SignatureRequest =>
+    ({
+      ...request,
+      documents: request.documents.map(
+        (document, index): Document =>
+          index === 0
+            ? {
+                ...document,
+                status: "READY",
+                uploadedAt: new Date(),
+                url: "https://example.com/doc.pdf"
+              }
+            : document
+      )
+    }) as SignatureRequest;
+
+  describe("validateExpiryDate", () => {
+    it("should return the validated expiry date when the request is a draft with at least one READY document", () => {
+      const newExpiryDate = pipe(new Date(), addDays(4));
+      expect(
+        pipe(
+          newSignatureRequest(dossier, newSigner(), issuer),
+          withOneReadyDocument,
+          validateExpiryDate(newExpiryDate),
+          E.map(isEqual(newExpiryDate)),
+          E.getOrElse(() => false)
+        )
+      ).toBe(true);
+    });
+    it("should return an error when the request is not in DRAFT status", () => {
+      const request = {
+        ...newSignatureRequest(dossier, newSigner(), issuer),
+        status: "READY"
+      } as SignatureRequest;
+      expect(
+        pipe(
+          request,
+          validateExpiryDate(pipe(new Date(), addDays(4))),
+          E.isLeft
+        )
+      ).toBe(true);
+    });
+    it("should return an error when the request has no document in READY status", () => {
+      expect(
+        pipe(
+          newSignatureRequest(dossier, newSigner(), issuer),
+          validateExpiryDate(pipe(new Date(), addDays(4))),
+          E.isLeft
+        )
+      ).toBe(true);
+    });
+    it("should return an error when the new expiry date is in the past", () => {
+      expect(
+        pipe(
+          newSignatureRequest(dossier, newSigner(), issuer),
+          withOneReadyDocument,
+          validateExpiryDate(pipe(new Date(), subDays(1))),
           E.isLeft
         )
       ).toBe(true);
