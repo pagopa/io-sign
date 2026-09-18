@@ -242,8 +242,8 @@
         }
       },
       "activeWarningModal": {
-        "title": "Disattiva il webhook",
-        "description": "Per poter effettuare l'operazione che desideri, il webhook deve essere in stato inattivo.",
+        "title": "Devi prima disattivare il Webhook",
+        "description": "Per poter effettuare l’azione devi prima disattivare il webhook.",
         "close": "Chiudi"
       }
     },
