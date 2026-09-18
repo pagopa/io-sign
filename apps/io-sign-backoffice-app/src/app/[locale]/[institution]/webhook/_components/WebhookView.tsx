@@ -16,6 +16,7 @@ import {
   BugReportRounded,
   EditRounded,
   KeyRounded,
+  Link,
   PinDrop,
 } from "@mui/icons-material";
 
@@ -25,6 +26,7 @@ import ChangeStatusModal from "./ChangeStatusModal";
 import ChangeUrlModal from "./ChangeUrlModal";
 import RotateKeyModal from "./RotateKeyModal";
 import DeleteWebhookModal from "./DeleteWebhookModal";
+import WebhookMustBeInactiveModal from "./WebhookMustBeInactiveModal";
 import { TextItemWithCopyAndHide } from "./TextItemWithCopyAndHide";
 import PageHeader from "@/components/Page/PageHeader";
 
@@ -45,7 +47,26 @@ export default function WebhookView({
   const [urlModalOpen, setUrlModalOpen] = useState(false);
   const [rotateKeyModalOpen, setRotateKeyModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [mustBeInactiveModalOpen, setMustBeInactiveModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const isActive = webhook.status === "active";
+
+  const handleEditUrlClick = () => {
+    if (isActive) {
+      setMustBeInactiveModalOpen(true);
+    } else {
+      setUrlModalOpen(true);
+    }
+  };
+
+  const handleRotateKeyClick = () => {
+    if (isActive) {
+      setMustBeInactiveModalOpen(true);
+    } else {
+      setRotateKeyModalOpen(true);
+    }
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(webhook.publicKeyThumbprint);
@@ -88,7 +109,7 @@ export default function WebhookView({
         <Paper variant="outlined">
           <Stack p={3} spacing={3} bgcolor="background.paper">
             <Stack direction="row" alignItems="center" spacing={1}>
-              <PinDrop color="inherit" />
+              <Link color="inherit" />
               <Typography variant="body1" fontWeight={600}>
                 {t("url.title")}
               </Typography>
@@ -101,7 +122,7 @@ export default function WebhookView({
               <IconButton
                 size="small"
                 color="primary"
-                onClick={() => setUrlModalOpen(true)}
+                onClick={handleEditUrlClick}
               >
                 <EditRounded />
               </IconButton>
@@ -139,7 +160,7 @@ export default function WebhookView({
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => setRotateKeyModalOpen(true)}
+                onClick={handleRotateKeyClick}
               >
                 {t("publicKeyThumbprint.rotateKey")}
               </Button>
@@ -148,7 +169,7 @@ export default function WebhookView({
               open={copied}
               onClose={handleSnackbarClose}
               autoHideDuration={3000}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
               <Alert severity="success" variant="outlined">
                 {t("publicKeyThumbprint.copiedAlert")}
@@ -209,6 +230,11 @@ export default function WebhookView({
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         institutionId={institutionId}
+      />
+
+      <WebhookMustBeInactiveModal
+        open={mustBeInactiveModalOpen}
+        onClose={() => setMustBeInactiveModalOpen(false)}
       />
     </Stack>
   );
