@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 1.10.6
+
+### Patch Changes
+
+- 491bcda: add error log in getProfile
+- Updated dependencies [491bcda]
+  - @io-sign/io-sign@1.13.2
+
 ## 1.10.5
 
 ### Patch Changes

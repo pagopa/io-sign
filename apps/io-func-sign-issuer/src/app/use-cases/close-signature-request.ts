@@ -60,18 +60,12 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-// Sends the notification to the citizen, logging the outcome since this is a
+// Sends the notification to the citizen, logging failures since this is a
 // fire and forget operation: the request closure must not fail because of it.
 const sendNotification = (signatureRequest: SignatureRequest) =>
   pipe(
     signatureRequest,
     sendSignatureRequestNotification(buildNotificationMessage),
-    RTE.chainFirstW((notification) =>
-      L.infoRTE("Signature request notification sent to the citizen", {
-        signatureRequestId: signatureRequest.id,
-        ioMessageId: notification.ioMessageId
-      })
-    ),
     RTE.orElseW((error) =>
       L.errorRTE(
         "Unable to send the signature request notification to the citizen",
