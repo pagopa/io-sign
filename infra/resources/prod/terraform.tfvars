@@ -174,26 +174,6 @@ integration_hub = {
   ]
 }
 
-# DNS
-
-dns_zone_names = {
-  website = "firma.io.pagopa.it"
-}
-
-dns_ses_validation = [
-  {
-    name   = "usgxww7qq2vgfzl4da6yv4qb4f7ls5kq._domainkey"
-    record = "usgxww7qq2vgfzl4da6yv4qb4f7ls5kq.dkim.amazonses.com"
-  },
-  {
-    name   = "e4m2laccz356yraixvndjtoivkwf4sc2._domainkey"
-    record = "e4m2laccz356yraixvndjtoivkwf4sc2.dkim.amazonses.com"
-  },
-  {
-    name   = "43al7wmot7uxzzz6dfq7fnkcqilx6q6l._domainkey"
-    record = "43al7wmot7uxzzz6dfq7fnkcqilx6q6l.dkim.amazonses.com"
-  },
-]
 
 io_common = {
   resource_group_name          = "io-p-rg-common"
@@ -201,5 +181,3 @@ io_common = {
   appgateway_snet_name         = "io-p-appgateway-snet"
   vnet_common_name             = "io-p-vnet-common"
 }
-
-landing_cdn_url = "d1z4jrsc2tpogm.cloudfront.net"
