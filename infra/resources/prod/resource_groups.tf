@@ -1,7 +1,9 @@
-resource "azurerm_resource_group" "sign" {
-  name     = format("%s-itn-sign-rg-01", local.product)
-  location = "italynorth"
+# Ownership moved to infra/italynorth/prod, kept in Azure (not destroyed)
+removed {
+  from = azurerm_resource_group.sign
 
-  tags = var.tags
+  lifecycle {
+    destroy = false
+  }
 }
 
