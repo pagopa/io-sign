@@ -105,7 +105,8 @@ export const SignatureRequestSigned = makeSignatureRequestVariant(
       documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification
+      notification: Notification,
+      outcomeNotification: Notification
     })
   ])
 );
@@ -122,7 +123,8 @@ export const SignatureRequestRejected = makeSignatureRequestVariant(
       documents: t.array(DocumentReady)
     }),
     t.partial({
-      notification: Notification
+      notification: Notification,
+      outcomeNotification: Notification
     })
   ])
 );
