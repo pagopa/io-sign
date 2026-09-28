@@ -25,7 +25,7 @@ import {
 import { SignerRepository } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "../../../infra/http/models/FiscalCode";
 import { TelemetryService } from "@io-sign/io-sign/telemetry";
-import { NotificationService } from "@io-sign/io-sign/notification";
+import { Notification, NotificationService } from "@io-sign/io-sign/notification";
 
 import { EventName, SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
@@ -115,7 +115,10 @@ const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(
     trackEvent: vi.fn(() => () => void 0),
   },
   notification: {
-    submit: vi.fn(() => TE.left(new Error("can't send (but it can fail!)"))),
+    submit: vi.fn(
+      (): TE.TaskEither<Error, Notification> =>
+        TE.left(new Error("can't send (but it can fail!)"))
+    ),
   },
   analytics: {
     tryAdd: vi.fn(() => true),
@@ -208,6 +211,33 @@ describe("closeSignatureRequest", () => {
           body: expect.objectContaining({
             eventName: EventName.SIGNATURE_REJECTED,
           }),
+        })
+      );
+    });
+
+    it("does not save an outcomeNotification when the notification cannot be sent", async () => {
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result));
+      expect(requests.upsert).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          outcomeNotification: expect.anything(),
+        })
+      );
+    });
+
+    it("saves the ioMessageId as outcomeNotification when the notification is sent", async () => {
+      const ioMessageId = newId();
+      notification.submit.mockReturnValueOnce(TE.right({ ioMessageId }));
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result));
+      expect(requests.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outcomeNotification: { ioMessageId },
         })
       );
     });
