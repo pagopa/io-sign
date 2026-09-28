@@ -55,28 +55,6 @@ variable "key_vault_common" {
   })
 }
 
-# DNS
-variable "dns_ses_validation" {
-  type = list(object({
-    name   = string
-    record = string
-  }))
-  description = "CNAME records to validate SES domain identity"
-}
-
-variable "dns_default_ttl_sec" {
-  type        = number
-  description = "Default TTL for DNS"
-  default     = 3600
-}
-
-variable "dns_zone_names" {
-  type = object({
-    website = string
-  })
-  description = "The names for the DNS zones"
-}
-
 variable "subnets_cidrs" {
   type = map(
     list(string)
@@ -171,9 +149,4 @@ variable "io_common" {
     vnet_common_name             = string
   })
   description = "Name of common resources of IO platform"
-}
-
-variable "landing_cdn_url" {
-  type        = string
-  description = "The URL of the landing CDN hosted by PAWSBuilder"
 }
