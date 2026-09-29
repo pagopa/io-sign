@@ -60,29 +60,22 @@ const markRequestAsClosed = (closed: ClosedSignatureRequest) => {
   }
 };
 
-// Sends the notification to the citizen and saves its ioMessageId as
-// outcomeNotification, logging failures since this is a fire and forget
-// operation: the request closure must not fail because of it.
+// Sends the notification to the citizen and returns the request
+// with the sent notification set as outcomeNotification
 const sendNotification = (signatureRequest: SignatureRequest) =>
   pipe(
     signatureRequest,
     sendSignatureRequestNotification(buildNotificationMessage),
-    RTE.chainW((outcomeNotification) => {
-      const requestWithOutcomeNotification = {
-        ...signatureRequest,
-        outcomeNotification
-      };
-      return upsertSignatureRequest(requestWithOutcomeNotification);
-    }),
-    RTE.orElseW((error) =>
-      L.errorRTE(
-        "Unable to send or save the signature request outcome notification",
-        {
-          signatureRequestId: signatureRequest.id,
-          error: error.message
-        }
-      )
-    )
+    RTE.orElseFirstW((error) =>
+      L.errorRTE("Unable to send the signature request outcome notification", {
+        signatureRequestId: signatureRequest.id,
+        error: error.message
+      })
+    ),
+    RTE.map((outcomeNotification) => ({
+      ...signatureRequest,
+      outcomeNotification
+    }))
   );
 
 // "closeSignatureRequest" ends the Signature Request lifecycle
@@ -92,7 +85,29 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
     getSignatureRequest(request.id, request.issuerId),
     RTE.chainEitherKW(markRequestAsClosed(request)),
     RTE.chain(upsertSignatureRequest),
-    RTE.chainFirstW(sendNotification),
+    // 2. notify the citizen and save the outcomeNotification.
+    // Failures are only logged since this is a fire and forget
+    RTE.chainFirstW((signatureRequest) =>
+      pipe(
+        sendNotification(signatureRequest),
+        RTE.chainW((requestWithOutcomeNotification) =>
+          pipe(
+            upsertSignatureRequest(requestWithOutcomeNotification),
+            RTE.orElseFirstW((error) =>
+              L.errorRTE(
+                "Unable to save the signature request outcome notification",
+                {
+                  signatureRequestId: signatureRequest.id,
+                  error: error.message
+                }
+              )
+            )
+          )
+        ),
+        // errors are already logged, the request closure must go on
+        RTE.orElseW(() => RTE.right(undefined))
+      )
+    ),
     RTE.chainFirstW((req) =>
       pipe(req, createAndSendSignEvent(eventNameByRequestStatus[req.status]))
     ),
