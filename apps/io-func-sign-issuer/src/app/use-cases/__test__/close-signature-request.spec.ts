@@ -103,7 +103,10 @@ const mocks = {
 
 const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(() => ({
   requests: {
-    upsert: vi.fn((request: SignatureRequest) => TE.right(request)),
+    upsert: vi.fn(
+      (request: SignatureRequest): TE.TaskEither<Error, SignatureRequest> =>
+        TE.right(request)
+    ),
     get: vi.fn((id: SignatureRequest["id"]) => {
       if (id === mocks.signatureRequest.wait.id) {
         return TE.right(O.some(mocks.signatureRequest.wait));
@@ -240,6 +243,55 @@ describe("closeSignatureRequest", () => {
           outcomeNotification: { ioMessageId },
         })
       );
+    });
+
+    it("sends the sign event even if the notification cannot be sent", async () => {
+      signEvents.tryAdd.mockClear();
+      signEvents.sendBatch.mockClear();
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_REJECTED,
+          }),
+        })
+      );
+      expect(signEvents.sendBatch).toHaveBeenCalledTimes(1);
+    });
+
+    it("sends the sign event even if the outcomeNotification cannot be saved", async () => {
+      signEvents.tryAdd.mockClear();
+      signEvents.sendBatch.mockClear();
+      notification.submit.mockReturnValueOnce(
+        TE.right({ ioMessageId: newId() })
+      );
+      requests.upsert
+        // the first upsert (request closure) succeeds
+        .mockImplementationOnce((request: SignatureRequest) => TE.right(request))
+        // the second upsert (outcomeNotification) fails
+        .mockImplementationOnce(() => TE.left(new Error("can't save!")));
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      expect(requests.upsert).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          outcomeNotification: expect.anything(),
+        })
+      );
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_REJECTED,
+          }),
+        })
+      );
+      expect(signEvents.sendBatch).toHaveBeenCalledTimes(1);
     });
   });
 
