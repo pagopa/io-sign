@@ -67,10 +67,13 @@ const sendNotification = (signatureRequest: SignatureRequest) =>
     signatureRequest,
     sendSignatureRequestNotification(buildNotificationMessage),
     RTE.orElseFirstW((error) =>
-      L.errorRTE("Unable to send the signature request outcome notification", {
-        signatureRequestId: signatureRequest.id,
-        error: error.message
-      })
+      L.errorRTE(
+        "Unable to send the signature request notification to the citizen",
+        {
+          signatureRequestId: signatureRequest.id,
+          error: error.message
+        }
+      )
     ),
     RTE.map((outcomeNotification) => ({
       ...signatureRequest,
