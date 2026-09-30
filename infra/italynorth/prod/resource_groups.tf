@@ -1,9 +1,3 @@
-# Moved from infra/resources/prod state, previously managed there
-import {
-  to = azurerm_resource_group.sign
-  id = "/subscriptions/${data.azurerm_subscription.current.subscription_id}/resourceGroups/${format("%s-rg-01", local.project_itn_sign)}"
-}
-
 resource "azurerm_resource_group" "sign" {
   name     = format("%s-rg-01", local.project_itn_sign)
   location = local.location
