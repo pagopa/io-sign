@@ -145,12 +145,12 @@ traces
 | where cloud_RoleName == "io-p-itn-sign-issuer-func-01"
 | where message has "Unable to send the signature request notification to the citizen"
     or message has "Unable to save the signature request outcome notification"
-| summarize AggregatedValue = count() by bin(timestamp, 30m)
+| project timestamp, message
   QUERY
 
   severity    = 2
-  frequency   = 30
-  time_window = 30
+  frequency   = 10
+  time_window = 10
 
   trigger {
     operator  = "GreaterThanOrEqual"
