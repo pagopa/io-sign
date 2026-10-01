@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
