@@ -1,5 +1,13 @@
 # io-func-sign-issuer
 
+## 1.10.7
+
+### Patch Changes
+
+- 8dcacc3: track the messageId of the outcome notification (SIGNED/REJECTED) sent when a signature request is closed
+- Updated dependencies [8dcacc3]
+  - @io-sign/io-sign@1.13.3
+
 ## 1.10.6
 
 ### Patch Changes
