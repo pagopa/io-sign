@@ -101,6 +101,9 @@ export const closeSignatureRequest = (request: ClosedSignatureRequest) =>
                 "Unable to save the signature request outcome notification",
                 {
                   signatureRequestId: signatureRequest.id,
+                  ioMessageId:
+                    requestWithOutcomeNotification.outcomeNotification
+                      .ioMessageId,
                   error: error.message
                 }
               )
