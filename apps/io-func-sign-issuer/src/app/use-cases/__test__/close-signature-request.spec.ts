@@ -25,7 +25,7 @@ import {
 import { SignerRepository } from "@io-sign/io-sign/signer";
 import { FiscalCode } from "../../../infra/http/models/FiscalCode";
 import { TelemetryService } from "@io-sign/io-sign/telemetry";
-import { NotificationService } from "@io-sign/io-sign/notification";
+import { Notification, NotificationService } from "@io-sign/io-sign/notification";
 
 import { EventName, SignEventsProducerClient } from "@io-sign/io-sign/sign-event";
 
@@ -103,7 +103,10 @@ const mocks = {
 
 const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(() => ({
   requests: {
-    upsert: vi.fn((request: SignatureRequest) => TE.right(request)),
+    upsert: vi.fn(
+      (request: SignatureRequest): TE.TaskEither<Error, SignatureRequest> =>
+        TE.right(request)
+    ),
     get: vi.fn((id: SignatureRequest["id"]) => {
       if (id === mocks.signatureRequest.wait.id) {
         return TE.right(O.some(mocks.signatureRequest.wait));
@@ -115,7 +118,10 @@ const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(
     trackEvent: vi.fn(() => () => void 0),
   },
   notification: {
-    submit: vi.fn(() => TE.left(new Error("can't send (but it can fail!)"))),
+    submit: vi.fn(
+      (): TE.TaskEither<Error, Notification> =>
+        TE.left(new Error("can't send (but it can fail!)"))
+    ),
   },
   analytics: {
     tryAdd: vi.fn(() => true),
@@ -190,7 +196,7 @@ describe("closeSignatureRequest", () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.rejected
       )();
-      expect(E.isRight(result));
+      expect(E.isRight(result)).toBe(true);
       expect(requests.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           status: mocks.signatureRequest.rejected.status,
@@ -211,6 +217,80 @@ describe("closeSignatureRequest", () => {
         })
       );
     });
+
+    it("does not save an outcomeNotification when the notification cannot be sent", async () => {
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      // only the upsert that closes the request
+      expect(requests.upsert).toHaveBeenCalledTimes(1);
+      expect(requests.upsert).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          outcomeNotification: expect.anything(),
+        })
+      );
+    });
+
+    it("saves the ioMessageId as outcomeNotification when the notification is sent", async () => {
+      const ioMessageId = newId();
+      notification.submit.mockReturnValueOnce(TE.right({ ioMessageId }));
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      expect(requests.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outcomeNotification: { ioMessageId },
+        })
+      );
+    });
+
+    it("sends the sign event even if the notification cannot be sent", async () => {
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_REJECTED,
+          }),
+        })
+      );
+      expect(signEvents.sendBatch).toHaveBeenCalledTimes(1);
+    });
+
+    it("sends the sign event even if the outcomeNotification cannot be saved", async () => {
+      notification.submit.mockReturnValueOnce(
+        TE.right({ ioMessageId: newId() })
+      );
+      requests.upsert
+        // the first upsert (request closure) succeeds
+        .mockImplementationOnce((request: SignatureRequest) => TE.right(request))
+        // the second upsert (outcomeNotification) fails
+        .mockImplementationOnce(() => TE.left(new Error("can't save!")));
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.rejected
+      )();
+      expect(E.isRight(result)).toBe(true);
+      expect(requests.upsert).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          outcomeNotification: expect.anything(),
+        })
+      );
+      expect(signEvents.tryAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            eventName: EventName.SIGNATURE_REJECTED,
+          }),
+        })
+      );
+      expect(signEvents.sendBatch).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("Given a SIGNED request", () => {
@@ -218,7 +298,7 @@ describe("closeSignatureRequest", () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
-      expect(E.isRight(result));
+      expect(E.isRight(result)).toBe(true);
       expect(signEvents.tryAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           body: expect.objectContaining({
@@ -234,7 +314,7 @@ describe("closeSignatureRequest", () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
       )();
-      expect(E.isRight(result));
+      expect(E.isRight(result)).toBe(true);
     });
   });
 
@@ -243,7 +323,7 @@ describe("closeSignatureRequest", () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.rejected
       )();
-      expect(E.isRight(result));
+      expect(E.isRight(result)).toBe(true);
       expect(telemetry.trackEvent).toBeCalledWith(
         EventName.SIGNATURE_REJECTED,
         expect.objectContaining({
