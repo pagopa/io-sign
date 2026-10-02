@@ -129,3 +129,39 @@ customEvents
 
   tags = var.tags
 }
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "outcome_notification_send_error" {
+  name                = format("%s-outcome-notification-send-error", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
+
+  data_source_id          = data.azurerm_application_insights.application_insights.id
+  description             = "[IO-SIGN] Unable to send the signature outcome (SIGNED/REJECTED) message to the citizen, or to save its ioMessageId"
+  enabled                 = true
+  auto_mitigation_enabled = false
+
+  query = <<-QUERY
+traces
+| where cloud_RoleName == "io-p-itn-sign-issuer-func-01"
+| where message has "Unable to send the signature request notification to the citizen"
+    or message has "Unable to save the signature request outcome notification"
+| project timestamp, message
+  QUERY
+
+  severity    = 2
+  frequency   = 10
+  time_window = 10
+
+  trigger {
+    operator  = "GreaterThanOrEqual"
+    threshold = 1
+  }
+
+  action {
+    action_group = [
+      azurerm_monitor_action_group.slack_fci_tech.id
+    ]
+  }
+
+  tags = var.tags
+}
