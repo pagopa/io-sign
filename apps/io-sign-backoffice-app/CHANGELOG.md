@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 2.0.7
+
+### Patch Changes
+
+- 1586db1: upgrade next
+
 ## 2.0.6
 
 ### Patch Changes
