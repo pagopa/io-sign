@@ -3,4 +3,4 @@
 "io-func-sign-user": minor
 ---
 
-Fix invocation order on completed validated signature
+Make completed signature handling idempotent
