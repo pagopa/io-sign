@@ -662,6 +662,9 @@ components:
           $ref: "#/components/schemas/Id"
         expires_at:
           $ref: "#/components/schemas/Timestamp"
+          description: |-
+            Optional expiration date of the signature request. If omitted, it defaults to 90 days from request creation.
+            When provided, it must be in the future and at most 90 days from request creation.
         documents_metadata:
           $ref: "#/components/schemas/DocumentMetadataList"
       required:
