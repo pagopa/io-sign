@@ -1,6 +1,8 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as T from "fp-ts/lib/Task";
 import * as A from "fp-ts/lib/Array";
+import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 
 import { pipe } from "fp-ts/lib/function";
 
@@ -85,8 +87,7 @@ const makeHandleCompletedStatus =
     getSignedDocumentUrl: GetBlobUrl,
     upsertSignatureRequest: UpsertSignatureRequest,
     upsertSignature: UpsertSignature,
-    notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent,
-    markSignatureAndSignatureRequestAsRejected: MarkSignatureAndSignatureRequestAsRejected
+    notifySignatureRequestSignedEvent: NotifySignatureRequestSignedEvent
   ) =>
   (
     signature: Signature,
@@ -113,17 +114,31 @@ const makeHandleCompletedStatus =
         ...signatureRequest,
         documents
       })),
-      TE.chainEitherK(markAsSigned),
+      TE.chainEitherK((request) =>
+        pipe(
+          request,
+          O.fromPredicate((r) => r.status === "SIGNED"),
+          O.fold(() => markAsSigned(request), E.right)
+        )
+      ),
+      // Upsert signature
+      TE.chainFirst(() =>
+        pipe(
+          {
+            ...signature,
+            status: "COMPLETED" as const
+          },
+          upsertSignature
+        )
+      ),
+      TE.chain(upsertSignatureRequest),
       TE.chainFirst((r: SignatureRequest) =>
         notifySignatureRequestSignedEvent(r as SignatureRequestSigned)
       ),
-      TE.chain(upsertSignatureRequest),
-      // Upsert signature
       TE.map(() => ({
         ...signature,
         status: "COMPLETED" as const
       })),
-      TE.chain(upsertSignature),
       TE.chainFirstIOK(() =>
         L.debug("Signed by the QTSP", {
           signatureRequest,
@@ -131,15 +146,6 @@ const makeHandleCompletedStatus =
         })({
           logger: ConsoleLogger
         })
-      ),
-      TE.alt(() =>
-        pipe(
-          "Signed document not found!",
-          markSignatureAndSignatureRequestAsRejected(
-            signature,
-            signatureRequest
-          )
-        )
       )
     );
 
@@ -238,8 +244,7 @@ export const makeValidateSignature =
       getSignedDocumentUrl,
       upsertSignatureRequest,
       upsertSignature,
-      notifySignatureRequestSignedEvent,
-      markSignatureAndSignatureRequestAsRejected
+      notifySignatureRequestSignedEvent
     );
     const handleReadyStatus = makeHandleReadyStatus(createAndSendSignEvent);
     return pipe(
