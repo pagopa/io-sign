@@ -521,7 +521,7 @@ importers:
         specifier: ^4.17.23
         version: 4.18.1
       next:
-        specifier: ^15.5.26
+        specifier: ^15.5.27
         version: 15.5.27(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-intl:
         specifier: ^3.26.5
