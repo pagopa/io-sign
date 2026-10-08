@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.10.8
+
+### Patch Changes
+
+- c4973e3: reject signature requests whose expires_at is more than 90 days from now
+
 ## 1.10.7
 
 ### Patch Changes
