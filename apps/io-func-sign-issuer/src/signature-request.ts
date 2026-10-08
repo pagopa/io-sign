@@ -12,7 +12,7 @@ import * as H from "@pagopa/handler-kit";
 import { Signer } from "@io-sign/io-sign/signer";
 
 import { pipe } from "fp-ts/lib/function";
-import { addDays, isBefore } from "date-fns/fp";
+import { addDays, isAfter, isBefore } from "date-fns/fp";
 
 import { ActionNotAllowedError } from "@io-sign/io-sign/error";
 
@@ -64,7 +64,10 @@ export const ClosedSignatureRequest = t.union([
 
 export type ClosedSignatureRequest = t.TypeOf<typeof ClosedSignatureRequest>;
 
-export const defaultExpiryDate = () => pipe(new Date(), addDays(90));
+export const MAX_EXPIRY_DAYS = 90;
+
+export const defaultExpiryDate = () =>
+  pipe(new Date(), addDays(MAX_EXPIRY_DAYS));
 
 export const newSignatureRequest = (
   dossier: Dossier,
@@ -100,6 +103,15 @@ export const newSignatureRequest = (
   )
 });
 
+class ExpiryDateTooFarError extends Error {
+  name = "InvalidExpireDateError";
+  constructor() {
+    super(
+      `The expiry date cannot be more than ${MAX_EXPIRY_DAYS} days from now.`
+    );
+  }
+}
+
 class InvalidExpiryDateError extends Error {
   name = "InvalidExpireDateError";
   constructor() {
@@ -127,6 +139,17 @@ export const withExpiryDate =
         expiresAt: expiryDate
       }))
     );
+
+const isWithinMaxExpiryDays = (expiryDate: Date) => {
+  const maxExpiryDate = pipe(new Date(), addDays(MAX_EXPIRY_DAYS));
+  return !isAfter(maxExpiryDate)(expiryDate);
+};
+
+export const validateMaxExpiryDate = (expiryDate: Date) =>
+  pipe(
+    expiryDate,
+    E.fromPredicate(isWithinMaxExpiryDays, () => new ExpiryDateTooFarError())
+  );
 
 export const replaceDocument =
   (id: Document["id"], updated: Document) => (request: SignatureRequestDraft) =>
