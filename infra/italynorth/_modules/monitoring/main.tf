@@ -145,6 +145,43 @@ traces
 | where cloud_RoleName == "io-p-itn-sign-issuer-func-01"
 | where message has "Unable to send the signature request notification to the citizen"
     or message has "Unable to save the signature request outcome notification"
+| where message !has "It is not allowed to send a message to this user"
+| project timestamp, message
+  QUERY
+
+  severity    = 1
+  frequency   = 10
+  time_window = 10
+
+  trigger {
+    operator  = "GreaterThanOrEqual"
+    threshold = 1
+  }
+
+  action {
+    action_group = [
+      azurerm_monitor_action_group.slack_fci_tech.id
+    ]
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "outcome_notification_not_allowed" {
+  name                = format("%s-outcome-notification-not-allowed", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
+
+  data_source_id          = data.azurerm_application_insights.application_insights.id
+  description             = "[IO-SIGN] The citizen is not enabled to receive the signature outcome (SIGNED/REJECTED) message"
+  enabled                 = true
+  auto_mitigation_enabled = false
+
+  query = <<-QUERY
+traces
+| where cloud_RoleName == "io-p-itn-sign-issuer-func-01"
+| where message has "Unable to send the signature request notification to the citizen"
+| where message has "It is not allowed to send a message to this user"
 | project timestamp, message
   QUERY
 
