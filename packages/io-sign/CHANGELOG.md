@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.13.3
+
+### Patch Changes
+
+- 8dcacc3: track the messageId of the outcome notification (SIGNED/REJECTED) sent when a signature request is closed
+
 ## 1.13.2
 
 ### Patch Changes

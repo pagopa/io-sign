@@ -1,3 +1,10 @@
+resource "azurerm_resource_group" "sign" {
+  name     = format("%s-rg-01", local.project_itn_sign)
+  location = local.location
+
+  tags = local.tags
+}
+
 resource "azurerm_resource_group" "data_rg" {
   name     = format("%s-data-rg", local.project_weu_sign)
   location = "westeurope"

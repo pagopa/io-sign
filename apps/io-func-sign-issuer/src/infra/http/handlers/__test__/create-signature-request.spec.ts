@@ -16,10 +16,11 @@ import { DocumentMetadata } from "@io-sign/io-sign/document";
 import { IssuerRepository } from "../../../../issuer";
 import {
   SignatureRequest,
-  SignatureRequestRepository,
+  SignatureRequestRepository
 } from "../../../../signature-request";
 import { EventHubProducerClient } from "@azure/event-hubs";
 import { pipe } from "fp-ts/lib/function";
+import { addDays } from "date-fns/fp";
 
 describe("CreateSignatureRequestHandler", () => {
   let issuerRepository: IssuerRepository;
@@ -35,7 +36,7 @@ describe("CreateSignatureRequestHandler", () => {
     environment: "TEST",
     vatNumber: "14711371128" as NonEmptyString,
     department: "dep1" as NonEmptyString,
-    status: "ACTIVE",
+    status: "ACTIVE"
   };
 
   const dossier: Dossier = {
@@ -50,11 +51,11 @@ describe("CreateSignatureRequestHandler", () => {
         signatureFields: [] as unknown as DocumentMetadata["signatureFields"],
         pdfDocumentMetadata: {
           pages: [],
-          formFields: [],
-        },
-      },
+          formFields: []
+        }
+      }
     ],
-    supportEmail: issuer.email,
+    supportEmail: issuer.email
   };
 
   const signatureRequest: SignatureRequest = {
@@ -72,7 +73,7 @@ describe("CreateSignatureRequestHandler", () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     expiresAt: new Date(),
-    documents: [],
+    documents: []
   };
 
   const mocks = { issuer, dossier, signatureRequest };
@@ -83,7 +84,7 @@ describe("CreateSignatureRequestHandler", () => {
         mocks.issuer.subscriptionId === subscriptionId
           ? TE.right(O.some(mocks.issuer))
           : TE.right(O.none),
-      getByVatNumber: () => TE.right(O.none),
+      getByVatNumber: () => TE.right(O.none)
     };
 
     dossierRepository = {
@@ -91,7 +92,7 @@ describe("CreateSignatureRequestHandler", () => {
       getById: (id, issuerId) =>
         mocks.dossier.id === id && mocks.dossier.issuerId === issuerId
           ? TE.right(O.some(dossier))
-          : TE.right(O.none),
+          : TE.right(O.none)
     };
 
     signatureRequestRepository = {
@@ -100,21 +101,21 @@ describe("CreateSignatureRequestHandler", () => {
       findByDossier: () => Promise.reject("not implemented"),
       insert: (request) => TE.right(request),
       patchDocument: (request, documentId) =>
-        TE.left(new Error("not implemented")),
+        TE.left(new Error("not implemented"))
     };
   });
 
   const logger: L.Logger = {
     log: () => () => {},
-    format: L.format.simple,
+    format: L.format.simple
   };
 
   it("should return a 401 HTTP response when issuer is not found", () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": "sub-that-does-not-exists",
-      },
+        "x-subscription-id": "sub-that-does-not-exists"
+      }
     };
     const run = CreateSignatureRequestHandler({
       logger,
@@ -123,16 +124,16 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 401,
           headers: expect.objectContaining({
-            "Content-Type": "application/problem+json",
-          }),
-        }),
+            "Content-Type": "application/problem+json"
+          })
+        })
       })
     );
   });
@@ -141,9 +142,9 @@ describe("CreateSignatureRequestHandler", () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": mocks.issuer.subscriptionId,
+        "x-subscription-id": mocks.issuer.subscriptionId
       },
-      body: {},
+      body: {}
     };
     const run = CreateSignatureRequestHandler({
       logger,
@@ -152,16 +153,16 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 422,
           headers: expect.objectContaining({
-            "Content-Type": "application/problem+json",
-          }),
-        }),
+            "Content-Type": "application/problem+json"
+          })
+        })
       })
     );
   });
@@ -170,12 +171,12 @@ describe("CreateSignatureRequestHandler", () => {
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": mocks.issuer.subscriptionId,
+        "x-subscription-id": mocks.issuer.subscriptionId
       },
       body: {
         dossier_id: mocks.dossier.id,
-        signer_id: newId(),
-      },
+        signer_id: newId()
+      }
     };
     const run = CreateSignatureRequestHandler({
       logger,
@@ -184,16 +185,16 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 201,
           headers: expect.objectContaining({
-            "Content-Type": "application/json",
-          }),
-        }),
+            "Content-Type": "application/json"
+          })
+        })
       })
     );
   });
@@ -204,18 +205,18 @@ describe("CreateSignatureRequestHandler", () => {
     const signEventsClient = {
       createBatch: vi.fn().mockResolvedValue(mockBatch),
       sendBatch,
-      close: vi.fn().mockResolvedValue(undefined),
+      close: vi.fn().mockResolvedValue(undefined)
     } as unknown as EventHubProducerClient;
 
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": mocks.issuer.subscriptionId,
+        "x-subscription-id": mocks.issuer.subscriptionId
       },
       body: {
         dossier_id: mocks.dossier.id,
-        signer_id: newId(),
-      },
+        signer_id: newId()
+      }
     };
 
     const run = CreateSignatureRequestHandler({
@@ -225,7 +226,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient,
+      signEventsClient
     });
 
     await run();
@@ -241,17 +242,17 @@ describe("CreateSignatureRequestHandler", () => {
         findByDossier: () => Promise.reject("not implemented"),
         insert: () => TE.left(new Error("insert failed")),
         patchDocument: (request, documentId) =>
-          TE.left(new Error("not implemented")),
+          TE.left(new Error("not implemented"))
       };
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": mocks.issuer.subscriptionId,
+        "x-subscription-id": mocks.issuer.subscriptionId
       },
       body: {
         dossier_id: mocks.dossier.id,
-        signer_id: newId(),
-      },
+        signer_id: newId()
+      }
     };
     const run = CreateSignatureRequestHandler({
       logger,
@@ -260,16 +261,16 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository: signatureRequestRepositoryThatFailsOnInsert,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient
     });
     expect(run()).resolves.toEqual(
       expect.objectContaining({
         right: expect.objectContaining({
           statusCode: 500,
           headers: expect.objectContaining({
-            "Content-Type": "application/problem+json",
-          }),
-        }),
+            "Content-Type": "application/problem+json"
+          })
+        })
       })
     );
   });
@@ -278,23 +279,23 @@ describe("CreateSignatureRequestHandler", () => {
     const documentsMetadata = [
       {
         title: "test doc #1",
-        signature_fields: [],
+        signature_fields: []
       },
       {
         title: "test doc #2",
-        signature_fields: [],
-      },
+        signature_fields: []
+      }
     ];
     const req: H.HttpRequest = {
       ...H.request("https://api.test.it/"),
       headers: {
-        "x-subscription-id": mocks.issuer.subscriptionId,
+        "x-subscription-id": mocks.issuer.subscriptionId
       },
       body: {
         dossier_id: mocks.dossier.id,
         signer_id: newId(),
-        documents_metadata: documentsMetadata,
-      },
+        documents_metadata: documentsMetadata
+      }
     };
     const run = CreateSignatureRequestHandler({
       logger,
@@ -303,7 +304,7 @@ describe("CreateSignatureRequestHandler", () => {
       signatureRequestRepository,
       input: req,
       inputDecoder: H.HttpRequest,
-      signEventsClient: {} as EventHubProducerClient,
+      signEventsClient: {} as EventHubProducerClient
     });
 
     const metadata = pipe(
@@ -322,11 +323,69 @@ describe("CreateSignatureRequestHandler", () => {
         right: expect.objectContaining({
           statusCode: 201,
           headers: expect.objectContaining({
-            "Content-Type": "application/json",
-          }),
-        }),
+            "Content-Type": "application/json"
+          })
+        })
       })
     );
     expect(metadata).toStrictEqual(documentsMetadata);
+  });
+
+  const runWithExpiresAt = (expiresAt?: Date) =>
+    CreateSignatureRequestHandler({
+      logger,
+      issuerRepository,
+      dossierRepository,
+      signatureRequestRepository,
+      input: {
+        ...H.request("https://api.test.it/"),
+        headers: {
+          "x-subscription-id": mocks.issuer.subscriptionId
+        },
+        body: {
+          dossier_id: mocks.dossier.id,
+          signer_id: newId(),
+          expires_at: expiresAt?.toISOString()
+        }
+      },
+      inputDecoder: H.HttpRequest,
+      signEventsClient: {} as EventHubProducerClient
+    })();
+
+  it("should return a 400 HTTP response when expires_at is more than 90 days from now", async () => {
+    const result = await runWithExpiresAt(pipe(new Date(), addDays(91)));
+    expect(result).toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          statusCode: 400
+        })
+      })
+    );
+  });
+
+  it("should return a 201 HTTP response with the requested expires_at when it is within 90 days", async () => {
+    const expiresAt = pipe(new Date(), addDays(30));
+    const result = await runWithExpiresAt(expiresAt);
+    expect(result).toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          statusCode: 201,
+          body: expect.objectContaining({
+            expires_at: expiresAt
+          })
+        })
+      })
+    );
+  });
+
+  it("should return a 201 HTTP response with the default expires_at when it is not set", async () => {
+    const result = await runWithExpiresAt();
+    expect(result).toEqual(
+      expect.objectContaining({
+        right: expect.objectContaining({
+          statusCode: 201
+        })
+      })
+    );
   });
 });

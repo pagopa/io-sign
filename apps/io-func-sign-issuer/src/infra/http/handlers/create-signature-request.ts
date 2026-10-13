@@ -13,6 +13,7 @@ import { getDossierById } from "../../../dossier";
 import {
   defaultExpiryDate,
   newSignatureRequest,
+  validateMaxExpiryDate,
   withExpiryDate
 } from "../../../signature-request";
 import { SignatureRequestToApiModel } from "../encoders/signature-request";
@@ -64,6 +65,9 @@ export const CreateSignatureRequestHandler = H.of((req: H.HttpRequest) =>
         expiresAt,
         documentsMetadata
       })
+    ),
+    RTE.chainFirstEitherKW(({ expiresAt }) =>
+      pipe(expiresAt, O.traverse(E.Applicative)(validateMaxExpiryDate))
     ),
     RTE.chainW(({ issuer, dossier, signer, expiresAt, documentsMetadata }) =>
       pipe(

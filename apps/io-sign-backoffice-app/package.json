@@ -1,6 +1,6 @@
 {
   "name": "io-sign-backoffice-app",
-  "version": "2.0.5",
+  "version": "2.0.7",
   "private": true,
   "license": "MPL-2.0",
   "scripts": {
@@ -32,7 +32,7 @@
     "@types/lodash": "^4.14.197",
     "jose": "^4.14.4",
     "lodash": "^4.17.23",
-    "next": "^15.5.13",
+    "next": "^15.5.27",
     "next-intl": "^3.26.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
