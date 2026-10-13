@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.11.0
+
+### Minor Changes
+
+- 986b50d: Make completed signature handling idempotent
+
 ## 2.10.4
 
 ### Patch Changes

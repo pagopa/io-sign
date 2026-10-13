@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.11.0
+
+### Minor Changes
+
+- 986b50d: Make completed signature handling idempotent
+
 ## 1.10.8
 
 ### Patch Changes
