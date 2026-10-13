@@ -107,12 +107,16 @@ const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(
       (request: SignatureRequest): TE.TaskEither<Error, SignatureRequest> =>
         TE.right(request)
     ),
-    get: vi.fn((id: SignatureRequest["id"]) => {
+    get: vi.fn(
+      (
+        id: SignatureRequest["id"]
+      ): TE.TaskEither<Error, O.Option<SignatureRequest>> => {
       if (id === mocks.signatureRequest.wait.id) {
         return TE.right(O.some(mocks.signatureRequest.wait));
       }
       return TE.right(O.none);
-    }),
+      }
+    ),
   },
   telemetry: {
     trackEvent: vi.fn(() => () => void 0),
@@ -294,6 +298,22 @@ describe("closeSignatureRequest", () => {
   });
 
   describe("Given a SIGNED request", () => {
+    it("succeeds without repeating effects when the request is already signed", async () => {
+      vi.clearAllMocks();
+      requests.get.mockReturnValueOnce(
+        TE.right(O.some(mocks.signatureRequest.signed))
+      );
+
+      const result = await closeSignatureRequest(
+        mocks.signatureRequest.signed
+      )();
+
+      expect(E.isRight(result)).toBe(true);
+      expect(requests.upsert).not.toHaveBeenCalled();
+      expect(notification.submit).not.toHaveBeenCalled();
+      expect(signEvents.tryAdd).not.toHaveBeenCalled();
+    });
+
     it("sends a SIGNATURE_SIGNED sign event", async () => {
       const result = await closeSignatureRequest(
         mocks.signatureRequest.signed
