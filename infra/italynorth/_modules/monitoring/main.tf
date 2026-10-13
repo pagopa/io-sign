@@ -185,7 +185,7 @@ traces
 | project timestamp, message
   QUERY
 
-  severity    = 2
+  severity    = 3
   frequency   = 10
   time_window = 10
 
