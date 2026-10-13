@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.11.1
+
+### Patch Changes
+
+- 7703ec4: Update DocumentMetadata title minLength on openapi specs
+
 ## 1.11.0
 
 ### Minor Changes
