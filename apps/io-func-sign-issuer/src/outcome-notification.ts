@@ -13,7 +13,7 @@ import { sendSignatureRequestNotification } from "./signature-request-notificati
 
 const truncateTo120Chars = truncateWithEllipsis();
 
-export const buildNotificationMessage = (
+const buildNotificationMessage = (
   request: SignatureRequest
 ): NotificationMessage => {
   const supportEmail = `[${request.issuerEmail}](mailto:${request.issuerEmail})`;
