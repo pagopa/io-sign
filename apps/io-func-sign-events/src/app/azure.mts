@@ -79,7 +79,7 @@ mountSignEventAdapterTrigger(
       logger,
       backofficeService,
       webhookQueuePublisher,
-      isWebhookEnabledForInstitution: isInstitutionAllowedForWebhook
+      isInstitutionAllowedForWebhook
     }),
   {
     connection: "SignEventsHubItnConnectionString",

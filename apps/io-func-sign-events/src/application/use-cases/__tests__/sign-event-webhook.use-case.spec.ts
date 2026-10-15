@@ -131,9 +131,9 @@ const enqueueMock = (publisher: SignEventWebhookQueuePublisher) =>
   >;
 
 const makeSignEventWebhookUseCase = (
-  deps: Omit<SignEventWebhookDeps, "isWebhookEnabledForInstitution"> &
+  deps: Omit<SignEventWebhookDeps, "isInstitutionAllowedForWebhook"> &
     Partial<SignEventWebhookDeps>
-) => makeUseCase({ isWebhookEnabledForInstitution: () => true, ...deps });
+) => makeUseCase({ isInstitutionAllowedForWebhook: () => true, ...deps });
 
 describe("makeSignEventWebhookUseCase", () => {
   it("skips the backoffice lookup when the institution is not enabled", async () => {
@@ -143,7 +143,7 @@ describe("makeSignEventWebhookUseCase", () => {
       logger: makeLogger(),
       backofficeService,
       webhookQueuePublisher,
-      isWebhookEnabledForInstitution: (id) => id !== anInstitutionId
+      isInstitutionAllowedForWebhook: (id) => id !== anInstitutionId
     });
     const result = await useCase(aSignedSignEvent);
     expect(result.isOk()).toBe(true);

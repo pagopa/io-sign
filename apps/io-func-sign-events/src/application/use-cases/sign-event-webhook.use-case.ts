@@ -15,7 +15,7 @@ export type SignEventWebhookDeps = {
   logger: Logger;
   backofficeService: BackofficeService;
   webhookQueuePublisher: SignEventWebhookQueuePublisher;
-  isWebhookEnabledForInstitution: (institutionId: string) => boolean;
+  isInstitutionAllowedForWebhook: (institutionId: string) => boolean;
 };
 
 const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
@@ -84,13 +84,13 @@ export const makeSignEventWebhookUseCase =
   ({
     backofficeService,
     webhookQueuePublisher,
-    isWebhookEnabledForInstitution
+    isInstitutionAllowedForWebhook
   }: SignEventWebhookDeps): UseCase<SignEvent, void, BaseError> =>
   async (event) => {
     const { issuerId, issuerInternalInstitutionId: institutionId } =
       event.payload.signatureRequest;
 
-    if (!isWebhookEnabledForInstitution(institutionId)) return ok(undefined);
+    if (!isInstitutionAllowedForWebhook(institutionId)) return ok(undefined);
 
     const issuerWebhookResult = await backofficeService.getWebhookForIssuer(
       issuerId,
