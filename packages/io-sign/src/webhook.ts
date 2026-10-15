@@ -57,3 +57,19 @@ export const rotateWebhookKeyResponseSchema = z.object({
 export type RotateWebhookKeyResponse = z.infer<
   typeof rotateWebhookKeyResponseSchema
 >;
+
+// Accepts "[id1,id2]" or "id1,id2"; "*" means all institutions.
+export const parseWebhookAllowlist = (raw: string): string[] =>
+  raw
+    .trim()
+    .replace(/^\[|\]$/g, "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+export const isInstitutionAllowedForWebhook = (
+  institutionId: string,
+  allowlist = parseWebhookAllowlist(
+    process.env.WEBHOOK_ENABLED_INSTITUTION_IDS ?? "[]"
+  )
+): boolean => allowlist.includes("*") || allowlist.includes(institutionId);

@@ -7,11 +7,11 @@ import {
   rotateWebhookKey,
 } from "@/lib/webhooks/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
+import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
 import {
   UnauthenticatedUserError,
   getLoggedUser,
   isAllowedInstitution,
-  isInstitutionAllowedForWebhook,
 } from "@/lib/auth/use-cases";
 
 export async function POST(request: NextRequest) {

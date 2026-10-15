@@ -3,10 +3,8 @@ import { notFound } from "next/navigation";
 
 import Page from "@/components/Page";
 
-import {
-  isInstitutionAllowedForWebhook,
-  isInstitutionAllowedForWebhookDelete,
-} from "@/lib/auth/use-cases";
+import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
+import { isInstitutionAllowedForWebhookDelete } from "@/lib/auth/use-cases";
 import { getWebhookForInstitution } from "@/lib/webhooks/use-cases";
 
 import WebhookView from "./_components/WebhookView";

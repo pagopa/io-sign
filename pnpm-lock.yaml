@@ -171,6 +171,9 @@ importers:
       '@io-sign/hexagonal-azure-functions':
         specifier: workspace:*
         version: link:../../packages/io-core-adapter-azure-functions
+      '@io-sign/io-sign':
+        specifier: workspace:^
+        version: link:../../packages/io-sign
       '@pagopa/hexagonal-core':
         specifier: 0.5.1
         version: 0.5.1(@standard-schema/spec@1.1.0)(neverthrow@8.2.0)(zod@4.4.3)

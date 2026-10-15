@@ -12,6 +12,7 @@
     "BackofficeFuncApiKey": "",
     "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
     "StorageAccountItnConnectionString": "",
-    "IoSignKeyVaultUrl": ""
+    "IoSignKeyVaultUrl": "",
+    "WEBHOOK_ENABLED_INSTITUTION_IDS": "[]"
   }
 }
