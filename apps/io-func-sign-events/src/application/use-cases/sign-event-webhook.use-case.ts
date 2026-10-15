@@ -11,10 +11,11 @@ import { WebhookQueueEvent } from "../../domain/webhook-queue-event.js";
 import { WebhookEvent } from "../../domain/webhook-event.js";
 import { ulid } from "ulid";
 
-type SignEventWebhookDeps = {
+export type SignEventWebhookDeps = {
   logger: Logger;
   backofficeService: BackofficeService;
   webhookQueuePublisher: SignEventWebhookQueuePublisher;
+  isWebhookEnabledForInstitution: (institutionId: string) => boolean;
 };
 
 const makeWebhookEvent = (signEvent: SignEvent): WebhookEvent | undefined => {
@@ -82,11 +83,15 @@ const makeWebhookQueueEvent = (
 export const makeSignEventWebhookUseCase =
   ({
     backofficeService,
-    webhookQueuePublisher
+    webhookQueuePublisher,
+    isWebhookEnabledForInstitution
   }: SignEventWebhookDeps): UseCase<SignEvent, void, BaseError> =>
   async (event) => {
     const { issuerId, issuerInternalInstitutionId: institutionId } =
       event.payload.signatureRequest;
+
+    if (!isWebhookEnabledForInstitution(institutionId)) return ok(undefined);
+
     const issuerWebhookResult = await backofficeService.getWebhookForIssuer(
       issuerId,
       institutionId

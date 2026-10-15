@@ -3,7 +3,10 @@ import type { MockedFunction } from "vitest";
 import { ok, err } from "neverthrow";
 import { GenericError } from "@pagopa/hexagonal-core/domain/errors";
 import type { Logger } from "@pagopa/hexagonal-core/domain/ports";
-import { makeSignEventWebhookUseCase } from "../sign-event-webhook.use-case.js";
+import {
+  makeSignEventWebhookUseCase as makeUseCase,
+  type SignEventWebhookDeps
+} from "../sign-event-webhook.use-case.js";
 import type { SignEvent } from "../../../domain/sign-event.js";
 import type {
   BackofficeService,
@@ -127,7 +130,27 @@ const enqueueMock = (publisher: SignEventWebhookQueuePublisher) =>
     (event: WebhookQueueEvent) => Promise<unknown>
   >;
 
+const makeSignEventWebhookUseCase = (
+  deps: Omit<SignEventWebhookDeps, "isWebhookEnabledForInstitution"> &
+    Partial<SignEventWebhookDeps>
+) => makeUseCase({ isWebhookEnabledForInstitution: () => true, ...deps });
+
 describe("makeSignEventWebhookUseCase", () => {
+  it("skips the backoffice lookup when the institution is not enabled", async () => {
+    const backofficeService = makeBackofficeService();
+    const webhookQueuePublisher = makeWebhookQueuePublisher();
+    const useCase = makeSignEventWebhookUseCase({
+      logger: makeLogger(),
+      backofficeService,
+      webhookQueuePublisher,
+      isWebhookEnabledForInstitution: (id) => id !== anInstitutionId
+    });
+    const result = await useCase(aSignedSignEvent);
+    expect(result.isOk()).toBe(true);
+    expect(backofficeService.getWebhookForIssuer).not.toHaveBeenCalled();
+    expect(webhookQueuePublisher.enqueue).not.toHaveBeenCalled();
+  });
+
   it("looks up the webhook using the issuer and institution of the event", async () => {
     const backofficeService = makeBackofficeService();
     const useCase = makeSignEventWebhookUseCase({
