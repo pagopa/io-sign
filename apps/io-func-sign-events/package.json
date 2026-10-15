@@ -30,6 +30,7 @@
     "@azure/keyvault-secrets": "catalog:",
     "@azure/storage-queue": "catalog:",
     "@io-sign/hexagonal-azure-functions": "workspace:*",
+    "@io-sign/io-sign": "workspace:^",
     "@pagopa/hexagonal-core": "0.5.1",
     "neverthrow": "^8.2.0",
     "node-fetch": "^3.3.2",

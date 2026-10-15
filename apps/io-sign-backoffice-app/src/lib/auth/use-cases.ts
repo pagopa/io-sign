@@ -1,4 +1,5 @@
 import { InstitutionDetail } from "../institutions";
+import { parseWebhookAllowlist } from "@io-sign/io-sign/utility";
 import {
   getInstitution,
   getInstitutionsByUserId,
@@ -93,15 +94,6 @@ export async function isAllowedInstitution(
 ) {
   const institutions = await getInstitutionsByUserId(userId);
   return institutions.some((institution) => institution.id === institutionId);
-}
-
-function parseWebhookAllowlist(raw: string): string[] {
-  return raw
-    .trim()
-    .replace(/^\[|\]$/g, "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
 }
 
 export function isInstitutionAllowedForWebhook(institutionId: string): boolean {
