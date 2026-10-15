@@ -10,10 +10,7 @@ import {
 } from "../adapters/inbound/index.js";
 import { makeInfoUseCase } from "../application/use-cases/info.use-case.js";
 import { makeSignEventPDNDUseCase } from "../application/use-cases/sign-event-pdnd.use-case.js";
-import {
-  getApplicationInsightsConfigFromEnvironment,
-  makeAzureTelemetryClient
-} from "@io-sign/hexagonal-azure-functions";
+import { makeAzureTelemetryClient } from "@io-sign/hexagonal-azure-functions";
 import { makeSignEventWebhookUseCase } from "../application/use-cases/sign-event-webhook.use-case.js";
 import { makeSignEventWebhookQueuePublisher } from "../adapters/outbound/sign-event-webhook-queue-publisher/client.js";
 import { getSignEventWebhookQueuePublisherConfigFromEnvironment } from "../adapters/outbound/sign-event-webhook-queue-publisher/config.js";
@@ -22,6 +19,7 @@ import { getSecretReaderConfigFromEnvironment } from "../adapters/outbound/secre
 import { makeWebhookDeliveryClient } from "../adapters/outbound/webhook-delivery-client/client.mjs";
 import { makeDeliverWebhookUseCase } from "../application/use-cases/deliver-webhook.use-case.js";
 import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
+import { getConfigFromEnvironment } from "./config.js";
 
 const ERROR_RESPONDER_CONFIG = {
   typeBaseUrl: "https://example.pagopa.it/problems/"
@@ -34,7 +32,9 @@ const WEBHOOK_QUEUE_NAME = "webhook-delivery";
 
 // TODO: evaluate switch to makeApplicationInsightsLogger from @pagopa/hexagonal-core/adapters.
 
-makeAzureTelemetryClient(getApplicationInsightsConfigFromEnvironment());
+const config = getConfigFromEnvironment();
+
+makeAzureTelemetryClient(config.appinsights);
 
 const pdndPublisher = makeSignEventPDNDPublisher(
   getSignEventPDNDPublisherConfigFromEnvironment(),
@@ -79,7 +79,11 @@ mountSignEventAdapterTrigger(
       logger,
       backofficeService,
       webhookQueuePublisher,
-      isInstitutionAllowedForWebhook
+      isInstitutionAllowedForWebhook: (institutionId) =>
+        isInstitutionAllowedForWebhook(
+          institutionId,
+          config.webhook.enabledInstitutionIds
+        )
     }),
   {
     connection: "SignEventsHubItnConnectionString",

@@ -68,10 +68,8 @@ export const parseWebhookAllowlist = (raw: string): string[] =>
     .filter(Boolean);
 
 export const isInstitutionAllowedForWebhook = (
-  institutionId: string
-): boolean => {
-  const list = parseWebhookAllowlist(
+  institutionId: string,
+  allowlist = parseWebhookAllowlist(
     process.env.WEBHOOK_ENABLED_INSTITUTION_IDS ?? "[]"
-  );
-  return list.includes("*") || list.includes(institutionId);
-};
+  )
+): boolean => allowlist.includes("*") || allowlist.includes(institutionId);
