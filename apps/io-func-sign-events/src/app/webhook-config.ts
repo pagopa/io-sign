@@ -3,11 +3,11 @@ import { parseWebhookAllowlist } from "@io-sign/io-sign/webhook";
 
 const ConfigFromEnvironment = z
   .object({
-    WEBHOOK_ENABLED_INSTITUTION_IDS: z.string().optional()
+    WEBHOOK_ENABLED_INSTITUTION_IDS: z.string().min(1)
   })
   .transform((env) => ({
     enabledInstitutionIds: parseWebhookAllowlist(
-      env.WEBHOOK_ENABLED_INSTITUTION_IDS ?? "[]"
+      env.WEBHOOK_ENABLED_INSTITUTION_IDS
     )
   }));
 
