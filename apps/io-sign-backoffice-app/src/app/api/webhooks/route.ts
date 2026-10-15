@@ -15,11 +15,11 @@ import {
   patchWebhook,
 } from "@/lib/webhooks/use-cases";
 import { ValidationProblem } from "@/lib/api/responses";
+import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
 import {
   UnauthenticatedUserError,
   getLoggedUser,
   isAllowedInstitution,
-  isInstitutionAllowedForWebhook,
   isInstitutionAllowedForWebhookDelete,
 } from "@/lib/auth/use-cases";
 

@@ -30,15 +30,6 @@ export const stringFromBase64Encode = (arrayBuffer: unknown) =>
     E.mapLeft(() => new Error("Unable to convert base64 string to utf-8"))
   );
 
-// Accepts "[id1,id2]" or "id1,id2"; "*" means all institutions.
-export const parseWebhookAllowlist = (raw: string): string[] =>
-  raw
-    .trim()
-    .replace(/^\[|\]$/g, "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
 export const truncateWithEllipsis =
   (maxLength = 120) =>
   (text: string): string =>

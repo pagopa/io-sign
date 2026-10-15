@@ -21,7 +21,7 @@ import { makeSecretReader } from "../adapters/outbound/secret-reader/client.js";
 import { getSecretReaderConfigFromEnvironment } from "../adapters/outbound/secret-reader/config.js";
 import { makeWebhookDeliveryClient } from "../adapters/outbound/webhook-delivery-client/client.mjs";
 import { makeDeliverWebhookUseCase } from "../application/use-cases/deliver-webhook.use-case.js";
-import { getWebhookAllowlistFromEnvironment } from "../adapters/outbound/webhook-allowlist/config.js";
+import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
 
 const ERROR_RESPONDER_CONFIG = {
   typeBaseUrl: "https://example.pagopa.it/problems/"
@@ -48,7 +48,6 @@ const webhookQueuePublisher = makeSignEventWebhookQueuePublisher(
 const backofficeService = makeBackofficeService(
   getBackofficeServiceConfigFromEnvironment()
 );
-const isWebhookEnabledForInstitution = getWebhookAllowlistFromEnvironment();
 const secretReader = makeSecretReader(getSecretReaderConfigFromEnvironment());
 const webhookDeliveryClient = makeWebhookDeliveryClient();
 
@@ -80,7 +79,7 @@ mountSignEventAdapterTrigger(
       logger,
       backofficeService,
       webhookQueuePublisher,
-      isWebhookEnabledForInstitution
+      isWebhookEnabledForInstitution: isInstitutionAllowedForWebhook
     }),
   {
     connection: "SignEventsHubItnConnectionString",

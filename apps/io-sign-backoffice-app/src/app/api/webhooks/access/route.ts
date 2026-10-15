@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isInstitutionAllowedForWebhook } from "@io-sign/io-sign/webhook";
 import {
   UnauthenticatedUserError,
   getLoggedUser,
   isAllowedInstitution,
-  isInstitutionAllowedForWebhook,
 } from "@/lib/auth/use-cases";
 
 const querySchema = z.object({
