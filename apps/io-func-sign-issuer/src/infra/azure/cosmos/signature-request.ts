@@ -12,6 +12,7 @@ import * as t from "io-ts";
 import * as E from "fp-ts/lib/Either";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as A from "fp-ts/lib/Array";
+import * as O from "fp-ts/lib/Option";
 import * as cosmos from "@azure/cosmos";
 import { flow, pipe } from "fp-ts/lib/function";
 import { toCosmosDatabaseError } from "@io-sign/io-sign/infra/azure/cosmos/errors";
@@ -88,6 +89,29 @@ export class CosmosDbSignatureRequestRepository
       TE.mapLeft(toCosmosDatabaseError)
     );
   }
+
+  public getById: SignatureRequestRepository["getById"] = (id) =>
+    pipe(
+      TE.tryCatch(
+        () =>
+          this.#container.items
+            .query({
+              query: "SELECT * FROM m WHERE m.id = @id",
+              parameters: [{ name: "@id", value: id }]
+            })
+            .fetchAll(),
+        toCosmosErrorResponse
+      ),
+      TE.chainEitherKW(({ resources }) =>
+        pipe(
+          A.head(resources),
+          O.traverse(E.Applicative)(
+            flow(SignatureRequest.decode, E.mapLeft(CosmosDecodingError))
+          )
+        )
+      ),
+      TE.mapLeft(toCosmosDatabaseError)
+    );
 
   public upsert(request: SignatureRequest) {
     return pipe(this.#model.upsert(request), TE.mapLeft(toCosmosDatabaseError));

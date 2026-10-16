@@ -95,6 +95,7 @@ describe("GetRequestsByDossierHandler", () => {
         items:
           mocks.dossierWithRequests.id === dossier.id ? [mocks.request] : [],
       }),
+      getById: () => TE.left(new Error("not implemented")),
       get: () => TE.left(new Error("not implemented")),
       upsert: () => TE.left(new Error("not implemented")),
       insert: () => TE.left(new Error("not implemented")),
