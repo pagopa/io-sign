@@ -1,5 +1,16 @@
 # io-func-sign-issuer
 
+## 1.12.0
+
+### Minor Changes
+
+- a301e5b: add API to manually send the outcome notification (SIGNED/REJECTED) of a signature request
+
+### Patch Changes
+
+- Updated dependencies [a301e5b]
+  - @io-sign/io-sign@1.14.0
+
 ## 1.11.1
 
 ### Patch Changes
