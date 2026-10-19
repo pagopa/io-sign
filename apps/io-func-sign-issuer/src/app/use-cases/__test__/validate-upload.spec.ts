@@ -187,6 +187,7 @@ const uploadMetadataRepository: UploadMetadataRepository = {
 };
 
 const signatureRequestRepository: SignatureRequestRepository = {
+  getById: () => TE.left(new Error("not implemented")),
   get: (_id, _issuerId) => TE.right(O.some(signatureRequest)),
   upsert: (req) => TE.right(req),
   patchDocument: (req, _docId) => TE.right(req),

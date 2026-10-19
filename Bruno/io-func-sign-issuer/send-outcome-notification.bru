@@ -1,0 +1,22 @@
+meta {
+  name: send-outcome-notification
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{io-func-sign-issuer-base-url}}/sign/signature-requests/:signature_request_id/outcome-notification
+  body: none
+  auth: inherit
+}
+
+params:path {
+  signature_request_id: {{signature_request_id}}
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+}

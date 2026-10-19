@@ -5,6 +5,10 @@ export class ActionNotAllowedError extends Error {
 export class EntityNotFoundError extends Error {
   name = "EntityNotFoundError";
 }
+export class NotificationNotAllowedError extends Error {
+  name = "NotificationNotAllowedError";
+}
+
 export class TooManyRequestsError extends Error {
   name = "TooManyRequestsError";
 }

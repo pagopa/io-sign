@@ -1,5 +1,11 @@
 # @io-sign/io-sign
 
+## 1.14.0
+
+### Minor Changes
+
+- a301e5b: IONotificationService now returns NotificationNotAllowedError, mapped to 403 Forbidden, when the citizen doesn't allow messages from the service (previously ActionNotAllowedError, mapped to 400 Bad Request)
+
 ## 1.13.3
 
 ### Patch Changes

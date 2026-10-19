@@ -104,6 +104,7 @@ describe("SetSignatureRequestHandler", () => {
     };
 
     signatureRequestRepository = {
+      getById: () => TE.left(new Error("not implemented")),
       get: (id, issuerId) => {
         const signatureRequest = mocks.signatureRequests.find(
           (signatureRequest) =>

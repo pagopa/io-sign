@@ -1,4 +1,4 @@
-oa3_spec: apps/io-func-sign-issuer/openapi.yaml
+oa3_spec: apps/io-func-sign-issuer/api/external.yaml
 name: itn_opex_sign_api_issuer
 location: Italy North
 timespan: 10m

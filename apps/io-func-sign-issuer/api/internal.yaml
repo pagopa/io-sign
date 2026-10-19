@@ -10,6 +10,35 @@ servers:
 security:
   - SubscriptionKey: []
 paths:
+  /info:
+    get:
+      operationId: getInfo
+      tags:
+        - Health Check
+      summary: Health check endpoint
+      security: []
+      responses:
+        "200":
+          description: Used to check if the function is active
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                  - version
+                properties:
+                  message:
+                    type: string
+                    example: "It's working!"
+                  version:
+                    type: string
+                    example: "0.20.1"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
   /dossiers:
     post:
       operationId: createDossier
@@ -165,6 +194,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignatureRequestDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"        
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -351,6 +382,40 @@ paths:
         default:
           $ref: "#/components/responses/Unexpected"
 
+  /signature-requests/{signatureRequestId}/outcome-notification:
+    post:
+      operationId: sendOutcomeNotification
+      tags:
+        - Signature Request
+      summary: Send a signature request outcome notification to user via IO message
+      parameters:
+        - in: path
+          name: signatureRequestId
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: The notification detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationDetailView"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/Unexpected"
+        default:
+          $ref: "#/components/responses/Unexpected"
+
 components:
   securitySchemes:
     SubscriptionKey:
@@ -521,7 +586,7 @@ components:
       properties:
         title:
           type: string
-          minLength: 3
+          minLength: 4
           maxLength: 60
         signature_fields:
           type: array
