@@ -96,6 +96,7 @@ describe("CreateSignatureRequestHandler", () => {
     };
 
     signatureRequestRepository = {
+      getById: () => TE.left(new Error("not implemented")),
       get: () => TE.left(new Error("not implemented")),
       upsert: () => TE.left(new Error("not implemented")),
       findByDossier: () => Promise.reject("not implemented"),
@@ -237,6 +238,7 @@ describe("CreateSignatureRequestHandler", () => {
   it("should return a 500 HTTP response on error on insert", () => {
     const signatureRequestRepositoryThatFailsOnInsert: SignatureRequestRepository =
       {
+        getById: () => TE.left(new Error("not implemented")),
         get: () => TE.left(new Error("not implemented")),
         upsert: () => TE.left(new Error("not implemented")),
         findByDossier: () => Promise.reject("not implemented"),

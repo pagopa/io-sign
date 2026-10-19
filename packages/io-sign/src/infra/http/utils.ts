@@ -17,6 +17,8 @@ const toHttpError = (e: Error): Error => {
       return new H.HttpNotFoundError(e.message);
     case "InvalidExpireDateError":
       return new H.HttpBadRequestError(e.message);
+    case "NotificationNotAllowedError":
+      return new H.HttpForbiddenError(e.message);
     case "TooManyRequestsError":
       return new H.HttpTooManyRequestsError(e.message);
   }

@@ -32,6 +32,7 @@ import { GetSignatureRequestFunction } from "../infra/azure/functions/get-signat
 import { CosmosDbSignatureRequestRepository } from "../infra/azure/cosmos/signature-request";
 import { makeValidateUploadBlobHandler } from "../infra/azure/functions/validate-upload";
 import { CloseSignatureRequestFunction } from "../infra/azure/functions/close-signature-request";
+import { SendOutcomeNotificationFunction } from "../infra/azure/functions/send-outcome-notification";
 import { CosmosDbUploadMetadataRepository } from "../infra/azure/cosmos/upload";
 
 import { BlobStorageFileStorage } from "../infra/azure/storage/upload";
@@ -279,6 +280,19 @@ app.http("validateDocument", {
   authLevel: "function",
   route: "validate-document",
   handler: validateDocument
+});
+
+const sendOutcomeNotification = SendOutcomeNotificationFunction({
+  signatureRequestRepository,
+  signerRepository,
+  notificationService
+});
+
+app.http("sendOutcomeNotification", {
+  methods: ["POST"],
+  authLevel: "function",
+  route: "signature-requests/{signatureRequestId}/outcome-notification",
+  handler: sendOutcomeNotification
 });
 
 // ---- QUEUE TRIGGERS ----

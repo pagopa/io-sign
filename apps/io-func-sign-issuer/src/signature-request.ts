@@ -466,6 +466,9 @@ export type SignatureRequestRepository = {
     id: SignatureRequest["id"],
     issuerId: SignatureRequest["issuerId"]
   ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
+  getById: (
+    id: SignatureRequest["id"]
+  ) => TE.TaskEither<Error, O.Option<SignatureRequest>>;
   upsert: (request: SignatureRequest) => TE.TaskEither<Error, SignatureRequest>;
   patchDocument: (
     request: SignatureRequest,
@@ -569,6 +572,24 @@ export const findSignatureRequestsByDossier =
               continuationToken: t.string
             })
           ])
+        )
+      )
+    );
+
+export const getSignatureRequestById =
+  (
+    id: SignatureRequest["id"]
+  ): RTE.ReaderTaskEither<
+    SignatureRequestEnvironment,
+    Error,
+    SignatureRequest
+  > =>
+  ({ signatureRequestRepository: repo }) =>
+    pipe(
+      repo.getById(id),
+      TE.chain(
+        TE.fromOption(
+          () => new EntityNotFoundError("Signature request not found")
         )
       )
     );

@@ -134,6 +134,7 @@ const { requests, telemetry, notification, analytics: signEvents } = vi.hoisted(
 }));
 
 const signatureRequestRepository: SignatureRequestRepository = {
+  getById: () => TE.left(new Error("not implemented")),
   get: requests.get,
   upsert: requests.upsert,
   findByDossier: () => Promise.reject(new Error("not implemented")),

@@ -32,7 +32,7 @@ resource "azurerm_api_management_api" "io_sign_issuer_v1" {
 
   import {
     content_format = "openapi"
-    content_value  = file("${path.module}/api/issuer/v1/openapi.yaml")
+    content_value  = file("${path.module}/../../../../apps/io-func-sign-issuer/api/external.yaml")
   }
 }
 

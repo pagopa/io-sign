@@ -19,6 +19,11 @@ export class HttpBadRequestError extends HttpError {
   title = "Bad Request";
 }
 
+export class HttpForbiddenError extends HttpError {
+  status = 403;
+  title = "Forbidden";
+}
+
 export class HttpNotFoundError extends HttpError {
   status = 404;
   title = "Not Found";
@@ -49,6 +54,8 @@ export const HttpErrorFromError = new t.Type<HttpError, Error, Error>(
         return t.success(new HttpNotFoundError(e.message));
       case "InvalidExpireDateError":
         return t.success(new HttpBadRequestError(e.message));
+      case "NotificationNotAllowedError":
+        return t.success(new HttpForbiddenError(e.message));
       case "TooManyRequestsError":
         return t.success(new HttpTooManyRequestsError(e.message));
     }

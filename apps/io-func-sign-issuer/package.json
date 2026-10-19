@@ -1,6 +1,6 @@
 {
   "name": "io-func-sign-issuer",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "private": true,
   "license": "MPL-2.0",
   "files": [
@@ -19,7 +19,7 @@
     "typecheck": "tsc",
     "start": "func start",
     "build:package": "npm-pack-zip --add-version",
-    "generate:api-models": "gen-api-models --api-spec ./openapi.yaml --out-dir ./src/infra/http/models"
+    "generate:api-models": "gen-api-models --api-spec ./api/internal.yaml --out-dir ./src/infra/http/models"
   },
   "dependencies": {
     "@azure/cosmos": "catalog:",

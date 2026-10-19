@@ -63,6 +63,7 @@ describe("GetSignatureRequestHandler", () => {
     };
 
     signatureRequestRepository = {
+      getById: () => TE.left(new Error("not implemented")),
       get: (id, issuerId) =>
         mocks.signatureRequest.id === id &&
         mocks.signatureRequest.issuerId === issuerId
