@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "apps/io-func-sign-issuer/openapi.yaml"
+      - "apps/io-func-sign-issuer/api/external.yaml"
       - "apps/io-func-sign-user/api/external.yaml"
       - "apps/io-func-sign-support/openapi.yaml"
       - "apps/io-sign-backoffice-func/api/external.yaml"
@@ -18,7 +18,7 @@ on:
       - reopened
       - ready_for_review
     paths:
-      - "apps/io-func-sign-issuer/openapi.yaml"
+      - "apps/io-func-sign-issuer/api/external.yaml"
       - "apps/io-func-sign-user/api/external.yaml"
       - "apps/io-func-sign-support/openapi.yaml"
       - "apps/io-sign-backoffice-func/api/external.yaml"

@@ -17,7 +17,7 @@ import {
 } from "../../notification";
 import { HttpBadRequestError, HttpError } from "../http/errors";
 
-import { ActionNotAllowedError, TooManyRequestsError } from "../../error";
+import { NotificationNotAllowedError, TooManyRequestsError } from "../../error";
 
 import { IOApiClient } from "./client";
 import { makeRetriveUserProfileSenderAllowed } from "./profile";
@@ -67,8 +67,9 @@ export class IONotificationService implements NotificationService {
       makeRetriveUserProfileSenderAllowed(ioApiClient),
       TE.filterOrElse(
         identity,
+        // the message is used by the outcome_notification_* alerts => don't change it
         () =>
-          new ActionNotAllowedError(
+          new NotificationNotAllowedError(
             "It is not allowed to send a message to this user."
           )
       ),

@@ -6,9 +6,14 @@ import {
   HttpBadRequestError,
   HttpError,
   HttpErrorFromError,
+  HttpForbiddenError,
   HttpNotFoundError,
 } from "../errors";
-import { ActionNotAllowedError, EntityNotFoundError } from "../../../error";
+import {
+  ActionNotAllowedError,
+  EntityNotFoundError,
+  NotificationNotAllowedError,
+} from "../../../error";
 
 describe("errors", () => {
   describe("isHttpError", () => {
@@ -69,6 +74,26 @@ describe("errors", () => {
       );
       expect(isHttpBadRequest).toBe(true);
     });
+    it("should parse a NotificationNotAllowedError as HttpForbidden", () => {
+      const notificationNotAllowed = new NotificationNotAllowedError(
+        "It is not allowed to send a message to this user."
+      );
+      const isHttpForbidden = pipe(
+        HttpErrorFromError.decode(notificationNotAllowed),
+        E.mapLeft(() => false),
+        E.filterOrElse(
+          (e) => e.name === "HttpError",
+          () => false
+        ),
+        E.filterOrElse(
+          (e) => e.status === 403,
+          () => false
+        ),
+        E.map(HttpErrorFromError.is),
+        E.getOrElse(identity)
+      );
+      expect(isHttpForbidden).toBe(true);
+    });
     it("should parse an InvalidExpiryDateError as HttpBadRequest", () => {
       const InvalidExpireDateError = new (class extends Error {
         name = "InvalidExpireDateError";
@@ -99,6 +124,12 @@ describe("errors", () => {
     it("has the 404 status code", () => {
       const e = new HttpNotFoundError();
       expect(e.status).toBe(404);
+    });
+  });
+  describe("HttpForbiddenError", () => {
+    it("has the 403 status code", () => {
+      const e = new HttpForbiddenError();
+      expect(e.status).toBe(403);
     });
   });
   describe("HttpBadRequestError", () => {
