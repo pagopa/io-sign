@@ -51,6 +51,20 @@ resource "azurerm_monitor_action_group" "slack_fci_tech" {
   tags = var.tags
 }
 
+resource "azurerm_monitor_action_group" "sm_fci" {
+  name                = "ServiceManagementFirmaConIo"
+  resource_group_name = local.resource_group_name
+  short_name          = "SMFCI"
+
+  email_receiver {
+    name                    = "sendtooperations"
+    email_address           = "io-service-management@pagopa.it"
+    use_common_alert_schema = true
+  }
+
+  tags = var.tags
+}
+
 data "azurerm_monitor_action_group" "error_action_group" {
   resource_group_name = "io-p-rg-common"
   name                = "${local.prefix}${local.env_short}error"
@@ -160,7 +174,8 @@ traces
 
   action {
     action_group = [
-      azurerm_monitor_action_group.slack_fci_tech.id
+      azurerm_monitor_action_group.slack_fci_tech.id,
+      azurerm_monitor_action_group.sm_fci.id
     ]
   }
 
@@ -196,7 +211,8 @@ traces
 
   action {
     action_group = [
-      azurerm_monitor_action_group.slack_fci_tech.id
+      azurerm_monitor_action_group.slack_fci_tech.id,
+      azurerm_monitor_action_group.sm_fci.id
     ]
   }
 
