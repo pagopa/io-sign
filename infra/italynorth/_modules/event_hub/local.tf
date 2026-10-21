@@ -15,7 +15,10 @@ locals {
     "3.126.198.129",  # PDND-DATALAKE
     "52.29.215.8",    # PDND-DATALAKE
     "63.181.230.22",  # PDND-DATALAKE
-    "52.29.74.207"    # PDND-DATALAKE
+    "52.29.74.207",   # PDND-DATALAKE
+    "63.184.191.90",  # PDND-DATALAKE
+    "63.184.95.69",   # PDND-DATALAKE
+    "93.189.21.104"   # PDND-DATALAKE
   ]
 
   hubs = [
