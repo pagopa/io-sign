@@ -11,6 +11,7 @@ on:
     paths:
       - "infra/italynorth/prod/**"
       - "infra/italynorth/_modules/**"
+      - "apps/io-func-sign-issuer/api/**"
       - ".github/workflows/itn-tf-code-review.yaml"
 
 jobs:
