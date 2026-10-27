@@ -9,6 +9,8 @@ on:
       - "infra/italynorth/prod/**"
       - "infra/italynorth/_modules/**"
       - "apps/io-func-sign-issuer/api/**"
+      - "apps/io-func-sign-user/api/**"
+      - "apps/io-sign-backoffice-func/api/**"
       - ".github/workflows/itn-tf-deploy.yaml"
 
 jobs:
