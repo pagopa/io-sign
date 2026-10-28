@@ -58,6 +58,68 @@ resource "azurerm_api_management_api_operation_policy" "get_signer_by_fiscal_cod
   xml_content         = file("${path.module}/api/issuer/v1/get_signer_by_fiscal_code_policy/policy.xml")
 }
 
+# Operational product
+
+resource "azurerm_api_management_product" "io_sign_operational" {
+  product_id            = "io-sign-operational-api"
+  display_name          = "IO Sign - Operational API"
+  description           = "Operational APIs for IO Sign"
+  api_management_name   = var.apim_name
+  resource_group_name   = var.apim_resource_group_name
+  published             = true
+  subscription_required = true
+  approval_required     = false
+}
+
+resource "azurerm_api_management_product_policy" "io_sign_operational" {
+  product_id          = azurerm_api_management_product.io_sign_operational.product_id
+  api_management_name = var.apim_name
+  resource_group_name = var.apim_resource_group_name
+  xml_content         = file("${path.module}/api/base_policy.xml")
+}
+
+resource "azurerm_api_management_api" "io_sign_operational_v1" {
+  name                  = format("%s-sign-operational-api", var.product)
+  api_management_name   = var.apim_name
+  resource_group_name   = var.apim_resource_group_name
+  revision              = "1"
+  subscription_required = true
+
+  description  = "IO Sign - Operational API"
+  display_name = "IO Sign - Operational API"
+  path         = "api/v1/sign/operational"
+  protocols    = ["https"]
+
+  import {
+    content_format = "openapi"
+    content_value  = file("${path.module}/../../../../apps/io-func-sign-issuer/api/operational.yaml")
+  }
+}
+
+resource "azurerm_api_management_api_policy" "io_sign_operational_v1" {
+  api_name            = azurerm_api_management_api.io_sign_operational_v1.name
+  api_management_name = var.apim_name
+  resource_group_name = var.apim_resource_group_name
+  xml_content         = file("${path.module}/api/operational/v1/base_policy.xml")
+
+  depends_on = [
+    azurerm_api_management_named_value.io_fn_sign_issuer_url_itn,
+    azurerm_api_management_named_value.io_fn_sign_issuer_key_itn
+  ]
+}
+
+resource "azurerm_api_management_product_api" "io_sign_operational_v1" {
+  api_name            = azurerm_api_management_api.io_sign_operational_v1.name
+  product_id          = azurerm_api_management_product.io_sign_operational.product_id
+  api_management_name = var.apim_name
+  resource_group_name = var.apim_resource_group_name
+
+  depends_on = [
+    azurerm_api_management_product_policy.io_sign_operational,
+    azurerm_api_management_api_policy.io_sign_operational_v1
+  ]
+}
+
 # Support product
 
 resource "azurerm_api_management_product" "io_sign_support" {
