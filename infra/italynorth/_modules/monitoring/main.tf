@@ -236,6 +236,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "poison_queue_message"
   criteria {
     query                   = <<-QUERY
       traces
+      | where cloud_RoleName contains "sign"
       | where message has "Moving message to queue" and message has "-poison"
       | project timestamp, cloud_RoleName, message
     QUERY
