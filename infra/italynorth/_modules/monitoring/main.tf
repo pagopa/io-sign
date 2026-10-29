@@ -247,8 +247,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "poison_queue_message"
 
   action {
     action_groups = [
-      azurerm_monitor_action_group.slack_fci_tech.id,
-      azurerm_monitor_action_group.sm_fci.id
+      azurerm_monitor_action_group.slack_fci_tech.id
     ]
   }
 
