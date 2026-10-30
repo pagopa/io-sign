@@ -218,3 +218,38 @@ traces
 
   tags = var.tags
 }
+
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "poison_queue_message" {
+  name                = format("%s-poison-queue-message", local.project_itn_sign)
+  resource_group_name = local.resource_group_name
+  location            = local.location
+  scopes              = [data.azurerm_application_insights.application_insights.id]
+
+  description             = "[IO-SIGN] A message has been moved to a poison queue"
+  enabled                 = true
+  auto_mitigation_enabled = false
+
+  severity             = 2
+  evaluation_frequency = "PT10M"
+  window_duration      = "PT10M"
+
+  criteria {
+    query                   = <<-QUERY
+      traces
+      | where cloud_RoleName contains "sign"
+      | where message has "Moving message to queue" and message has "-poison"
+      | project timestamp, cloud_RoleName, message
+    QUERY
+    operator                = "GreaterThan"
+    time_aggregation_method = "Count"
+    threshold               = 0
+  }
+
+  action {
+    action_groups = [
+      azurerm_monitor_action_group.slack_fci_tech.id
+    ]
+  }
+
+  tags = var.tags
+}
