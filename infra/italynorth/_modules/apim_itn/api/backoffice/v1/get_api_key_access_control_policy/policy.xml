@@ -1,0 +1,24 @@
+<policies>
+    <inbound>
+        <base />
+        <!-- Cache per subscription key: responses are never shared between issuers -->
+        <cache-lookup vary-by-developer="false" vary-by-developer-groups="false" downstream-caching-type="none">
+            <vary-by-header>Ocp-Apim-Subscription-Key</vary-by-header>
+        </cache-lookup>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <!-- Cache only successful responses -->
+        <choose>
+            <when condition="@(context.Response.StatusCode == 200)">
+                <cache-store duration="60" />
+            </when>
+        </choose>
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
