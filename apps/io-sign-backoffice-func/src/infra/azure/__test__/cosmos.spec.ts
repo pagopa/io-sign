@@ -18,8 +18,6 @@ const apiKey: ApiKey = {
 
 type Resources = Record<string, Record<string, unknown>>;
 
-// Fake Cosmos database: like the real SDK, reading a missing item
-// does not throw, it returns an undefined resource.
 const makeDatabase = (containers: Resources, failOn?: string) =>
   ({
     container: (name: string) => ({
