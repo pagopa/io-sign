@@ -4,9 +4,16 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { ApiKey } from "@io-sign/io-sign/api-key";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
 
+export type ApiKeyAccessControl = Pick<ApiKey, "environment" | "testers">;
+
 export type ApiKeyRepository = {
   getApiKeyById(id: ApiKey["id"]): Promise<ApiKey | undefined>;
 };
+
+export const toApiKeyAccessControl = ({
+  environment,
+  testers
+}: ApiKey): ApiKeyAccessControl => ({ environment, testers });
 
 type ApiKeyEnvironment = {
   apiKeyRepository: ApiKeyRepository;
