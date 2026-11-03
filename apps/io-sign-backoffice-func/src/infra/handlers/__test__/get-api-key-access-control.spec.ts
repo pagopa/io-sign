@@ -6,7 +6,7 @@ import { ApiKeyRepository } from "@/api-key";
 import { ApiKey } from "@io-sign/io-sign/api-key";
 
 const logger = {
-  log: () => () => {},
+  log: () => () => {}
 };
 
 const apiKey: ApiKey = {
@@ -14,19 +14,19 @@ const apiKey: ApiKey = {
   cidrs: [],
   testers: ["AAAAAA00A00A000A"],
   environment: "test",
-  institutionId: "123",
+  institutionId: "3f1c2d9e-8a4b-4c6d-9e2f-1a2b3c4d5e6f",
   status: "active",
   createdAt: new Date(),
-  id: "my-api-key",
+  id: "my-api-key"
 };
 
 const testRepository: ApiKeyRepository = {
-  getApiKeyById: vi.fn(async (id) => (id === apiKey.id ? apiKey : undefined)),
+  getApiKeyById: vi.fn(async (id) => (id === apiKey.id ? apiKey : undefined))
 };
 
 const requestWithId = (id: string): H.HttpRequest => ({
   ...H.request("http://localhost/api-keys/"),
-  path: { id },
+  path: { id }
 });
 
 const invokeHandler = (req: H.HttpRequest) =>
@@ -34,7 +34,7 @@ const invokeHandler = (req: H.HttpRequest) =>
     logger,
     input: req,
     inputDecoder: H.HttpRequest,
-    apiKeyRepository: testRepository,
+    apiKeyRepository: testRepository
   })();
 
 describe("getApiKeyAccessControl", () => {
@@ -42,7 +42,7 @@ describe("getApiKeyAccessControl", () => {
     const result = await invokeHandler(requestWithId(""));
     expect(result).toEqual(
       expect.objectContaining({
-        right: expect.objectContaining({ statusCode: 422 }),
+        right: expect.objectContaining({ statusCode: 422 })
       })
     );
   });
@@ -53,7 +53,7 @@ describe("getApiKeyAccessControl", () => {
     );
     expect(result).toEqual(
       expect.objectContaining({
-        right: expect.objectContaining({ statusCode: 404 }),
+        right: expect.objectContaining({ statusCode: 404 })
       })
     );
   });
@@ -66,9 +66,9 @@ describe("getApiKeyAccessControl", () => {
           statusCode: 200,
           body: {
             environment: apiKey.environment,
-            testers: apiKey.testers,
-          },
-        }),
+            testers: apiKey.testers
+          }
+        })
       })
     );
   });
@@ -80,7 +80,7 @@ describe("getApiKeyAccessControl", () => {
     const result = await invokeHandler(requestWithId(apiKey.id));
     expect(result).toEqual(
       expect.objectContaining({
-        right: expect.objectContaining({ statusCode: 500 }),
+        right: expect.objectContaining({ statusCode: 500 })
       })
     );
   });

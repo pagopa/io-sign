@@ -5,7 +5,7 @@ import { EntityNotFoundError } from "@io-sign/io-sign/error";
 import {
   ApiKeyRepository,
   getApiKeyById,
-  toApiKeyAccessControl,
+  toApiKeyAccessControl
 } from "../api-key";
 
 const apiKey: ApiKey = {
@@ -13,17 +13,17 @@ const apiKey: ApiKey = {
   cidrs: ["0.0.0.0/0"],
   testers: ["AAAAAA00A00A000A", "BBBBBB00B00B000B"],
   environment: "test",
-  institutionId: "123",
+  institutionId: "3f1c2d9e-8a4b-4c6d-9e2f-1a2b3c4d5e6f",
   status: "active",
   createdAt: new Date(),
-  id: "my-api-key",
+  id: "my-api-key"
 };
 
 describe("toApiKeyAccessControl", () => {
   it("should keep only environment and testers", () => {
     expect(toApiKeyAccessControl(apiKey)).toEqual({
       environment: "test",
-      testers: ["AAAAAA00A00A000A", "BBBBBB00B00B000B"],
+      testers: ["AAAAAA00A00A000A", "BBBBBB00B00B000B"]
     });
   });
 
@@ -51,7 +51,7 @@ describe("getApiKeyById", () => {
     const result = await getApiKeyById("unknown")({ apiKeyRepository })();
     expect(result).toEqual({
       _tag: "Left",
-      left: expect.any(EntityNotFoundError),
+      left: expect.any(EntityNotFoundError)
     });
   });
 
@@ -62,7 +62,7 @@ describe("getApiKeyById", () => {
     const result = await getApiKeyById(apiKey.id)({ apiKeyRepository })();
     expect(result).toEqual({
       _tag: "Left",
-      left: new Error("Error retrieving the Api Key."),
+      left: new Error("Error retrieving the Api Key.")
     });
   });
 });

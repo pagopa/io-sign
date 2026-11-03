@@ -49,6 +49,9 @@ export class BackofficeEntitiesRepository
   async getApiKeyById(id: ApiKey["id"]) {
     try {
       const apiKeyById = await this.#apiKeysById.item(id, id).read();
+      if (apiKeyById.resource === undefined) {
+        return undefined;
+      }
       const { institutionId } = apiKeySchema
         .pick({
           institutionId: true
