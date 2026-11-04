@@ -53,10 +53,20 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const cosmosClient = new CosmosClient({
-  endpoint: config.azure.cosmos.endpoint,
-  aadCredentials: new DefaultAzureCredential()
-});
+const getCosmosClient = () => {
+  if (process.env.NODE_ENV !== "production") {
+    return new CosmosClient(config.azure.cosmos.connectionString);
+  }
+  if (!config.azure.cosmos.endpoint) {
+    throw new Error("CosmosDbEndpoint must be set in production");
+  }
+  return new CosmosClient({
+    endpoint: config.azure.cosmos.endpoint,
+    aadCredentials: new DefaultAzureCredential()
+  });
+};
+
+const cosmosClient = getCosmosClient();
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const signEventsClient = new EventHubProducerClient(

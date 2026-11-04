@@ -29,10 +29,18 @@ const getCosmosConfig = cache(() => {
 
 const getCosmosClient = () => {
   if (!cosmosClient) {
-    cosmosClient = new CosmosClient({
-      endpoint: getCosmosConfig().cosmosDbEndpoint,
-      aadCredentials: new DefaultAzureCredential()
-    });
+    const config = getCosmosConfig();
+    if (process.env.NODE_ENV !== "production") {
+      cosmosClient = new CosmosClient(config.cosmosDbConnectionString);
+    } else {
+      if (!config.cosmosDbEndpoint) {
+        throw new Error("COSMOS_DB_ENDPOINT must be set in production");
+      }
+      cosmosClient = new CosmosClient({
+        endpoint: config.cosmosDbEndpoint,
+        aadCredentials: new DefaultAzureCredential()
+      });
+    }
   }
   return cosmosClient;
 };

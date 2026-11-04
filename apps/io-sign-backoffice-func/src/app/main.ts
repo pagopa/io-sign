@@ -28,10 +28,20 @@ const googleAuth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
-const cosmos = new CosmosClient({
-  endpoint: config.cosmos.cosmosDbEndpoint,
-  aadCredentials: new DefaultAzureCredential()
-});
+const getCosmosClient = () => {
+  if (process.env.NODE_ENV !== "production") {
+    return new CosmosClient(config.cosmos.cosmosDbConnectionString);
+  }
+  if (!config.cosmos.cosmosDbEndpoint) {
+    throw new Error("COSMOS_DB_ENDPOINT must be set in production");
+  }
+  return new CosmosClient({
+    endpoint: config.cosmos.cosmosDbEndpoint,
+    aadCredentials: new DefaultAzureCredential()
+  });
+};
+
+const cosmos = getCosmosClient();
 const database = cosmos.database(config.cosmos.cosmosDbName);
 
 const backofficeRepository = new BackofficeEntitiesRepository(database);
