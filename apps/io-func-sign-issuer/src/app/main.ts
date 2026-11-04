@@ -153,7 +153,8 @@ app.http("info", {
 
 const getSignerByFiscalCode = GetSignerFunction({
   signerRepository,
-  ioApiClient
+  ioApiClient,
+  accessControlRepository: issuerRepository
 });
 
 app.http("getSignerByFiscalCode", {
