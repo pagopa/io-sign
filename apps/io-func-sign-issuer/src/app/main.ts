@@ -1,5 +1,6 @@
 import { app } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { EventHubProducerClient } from "@azure/event-hubs";
@@ -53,7 +54,10 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const cosmosClient = new CosmosClient({
+  endpoint: config.azure.cosmos.endpoint,
+  aadCredentials: new DefaultAzureCredential()
+});
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const signEventsClient = new EventHubProducerClient(

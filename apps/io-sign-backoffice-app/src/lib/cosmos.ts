@@ -1,15 +1,18 @@
 import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 import { cache } from "react";
 
 let cosmosClient: CosmosClient;
 
 const Config = z
   .object({
+    COSMOS_DB_ENDPOINT: z.string().min(1),
     COSMOS_DB_CONNECTION_STRING: z.string().min(1),
     COSMOS_DB_NAME: z.string().min(1),
   })
   .transform((env) => ({
+    cosmosDbEndpoint: env.COSMOS_DB_ENDPOINT,
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
     cosmosDbName: env.COSMOS_DB_NAME,
   }));
@@ -26,7 +29,10 @@ const getCosmosConfig = cache(() => {
 
 const getCosmosClient = () => {
   if (!cosmosClient) {
-    cosmosClient = new CosmosClient(getCosmosConfig().cosmosDbConnectionString);
+    cosmosClient = new CosmosClient({
+      endpoint: getCosmosConfig().cosmosDbEndpoint,
+      aadCredentials: new DefaultAzureCredential()
+    });
   }
   return cosmosClient;
 };

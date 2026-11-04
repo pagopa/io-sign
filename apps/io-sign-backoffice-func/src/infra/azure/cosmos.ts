@@ -11,10 +11,12 @@ import { webhookSchema } from "@io-sign/io-sign/webhook";
 
 const ConfigFromEnvironment = z
   .object({
+    COSMOS_DB_ENDPOINT: z.string().min(1),
     COSMOS_DB_CONNECTION_STRING: z.string().min(1),
     COSMOS_DB_NAME: z.string().min(1)
   })
   .transform((env) => ({
+    cosmosDbEndpoint: env.COSMOS_DB_ENDPOINT,
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
     cosmosDbName: env.COSMOS_DB_NAME
   }));

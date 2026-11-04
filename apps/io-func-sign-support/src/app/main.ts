@@ -1,6 +1,7 @@
 import { app } from "@azure/functions";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 
 import * as E from "fp-ts/Either";
 import { identity, pipe } from "fp-ts/function";
@@ -28,7 +29,10 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const cosmosClient = new CosmosClient({
+  endpoint: config.azure.cosmos.endpoint,
+  aadCredentials: new DefaultAzureCredential()
+});
 
 const issuerDb = cosmosClient.database(config.azure.cosmos.issuerDbName);
 const userDb = cosmosClient.database(config.azure.cosmos.userDbName);

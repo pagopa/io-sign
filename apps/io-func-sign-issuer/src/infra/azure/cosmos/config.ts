@@ -5,6 +5,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const CosmosConfig = t.type({
+  endpoint: t.string,
   connectionString: t.string,
   dbName: t.string
 });
@@ -16,6 +17,7 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
   Error,
   CosmosConfig
 > = sequenceS(RE.Apply)({
+  endpoint: readFromEnvironment("CosmosDbEndpoint"),
   connectionString: readFromEnvironment("CosmosDbConnectionString"),
   dbName: readFromEnvironment("CosmosDbDatabaseName")
 });

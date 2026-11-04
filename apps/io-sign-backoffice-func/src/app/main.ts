@@ -9,6 +9,7 @@ import { makeCreateApiKeyByIdHandler } from "@/infra/handlers/create-api-key-by-
 import { google } from "googleapis";
 
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 import { getConfigFromEnvironment } from "./config";
 import { infoHandler } from "@/infra/handlers/info";
 import { onSelfcareContractsMessageHandler } from "@/infra/handlers/on-selfcare-contracts-message";
@@ -27,7 +28,10 @@ const googleAuth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
-const cosmos = new CosmosClient(config.cosmos.cosmosDbConnectionString);
+const cosmos = new CosmosClient({
+  endpoint: config.cosmos.cosmosDbEndpoint,
+  aadCredentials: new DefaultAzureCredential()
+});
 const database = cosmos.database(config.cosmos.cosmosDbName);
 
 const backofficeRepository = new BackofficeEntitiesRepository(database);

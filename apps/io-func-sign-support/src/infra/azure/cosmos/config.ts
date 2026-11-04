@@ -7,6 +7,7 @@ import { pipe } from "fp-ts/function";
 import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 
 export const CosmosConfig = t.type({
+  endpoint: t.string,
   connectionString: t.string,
   issuerDbName: t.string,
   userDbName: t.string
@@ -20,6 +21,7 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
   CosmosConfig
 > = pipe(
   RE.Do,
+  RE.bind("endpoint", () => readFromEnvironment("CosmosDbEndpoint")),
   RE.bind("connectionString", () =>
     readFromEnvironment("CosmosDbConnectionString")
   ),
