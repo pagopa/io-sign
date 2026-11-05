@@ -176,7 +176,7 @@ resource "azurerm_api_management_product_api" "io_sign_support_v1" {
 
 resource "azurerm_api_management_product" "io_sign_backoffice" {
   product_id            = format("%s-sign-backoffice-apim-product", var.product)
-  display_name          = "IO SIGN BACKOFFICE"
+  display_name          = "IO SIGN BACKOFFICE Product"
   description           = "Api Management product for io-sign-backoffice REST APIs"
   api_management_name   = var.apim_name
   resource_group_name   = var.apim_resource_group_name
@@ -199,8 +199,8 @@ resource "azurerm_api_management_api" "io_sign_backoffice_v1" {
   revision              = "1"
   subscription_required = true
 
-  display_name = "IO SIGN BACKOFFICE API"
-  description  = "io-sign-backoffice REST APIs"
+  display_name = "IO Sign - Backoffice API"
+  description  = "IO Sign - Backoffice API"
   path         = "api/v1/sign/backoffice"
   protocols    = ["https"]
 
