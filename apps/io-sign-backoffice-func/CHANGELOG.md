@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.9.0
+
+### Minor Changes
+
+- 9d3210d: add api to get access control information (Fiscal codes allowed when the environment is test)
+
 ## 1.8.10
 
 ### Patch Changes
