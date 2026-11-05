@@ -19,6 +19,7 @@ import { IoTsType } from "@/infra/handlers/validation";
 import { BackofficeEntitiesRepository } from "@/infra/azure/cosmos";
 import { SelfcareApiClient } from "@/infra/selfcare/api-client";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
+import { getApiKeyAccessControlHandler } from "@/infra/handlers/get-api-key-access-control";
 
 const config = getConfigFromEnvironment();
 
@@ -108,4 +109,17 @@ const info = httpAzureFunction(infoHandler)({ selfcareContractsConsumer });
 app.http("info", {
   methods: ["GET"],
   handler: info
+});
+
+const getApiKeyAccessControl = httpAzureFunction(getApiKeyAccessControlHandler)(
+  {
+    apiKeyRepository: backofficeRepository
+  }
+);
+
+app.http("getApiKeyAccessControl", {
+  methods: ["GET"],
+  authLevel: "function",
+  route: "api-keys/{id}/access-control",
+  handler: getApiKeyAccessControl
 });

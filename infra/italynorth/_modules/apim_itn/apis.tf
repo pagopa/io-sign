@@ -217,6 +217,14 @@ resource "azurerm_api_management_api_policy" "io_sign_backoffice_v1" {
   xml_content         = file("${path.module}/api/backoffice/v1/base_policy.xml")
 }
 
+resource "azurerm_api_management_api_operation_policy" "get_api_key_access_control_policy" {
+  api_name            = azurerm_api_management_api.io_sign_backoffice_v1.name
+  api_management_name = var.apim_name
+  resource_group_name = var.apim_resource_group_name
+  operation_id        = "getApiKeyAccessControl"
+  xml_content         = file("${path.module}/api/backoffice/v1/get_api_key_access_control_policy/policy.xml")
+}
+
 resource "azurerm_api_management_product_api" "io_sign_backoffice_v1" {
   api_name            = azurerm_api_management_api.io_sign_backoffice_v1.name
   product_id          = azurerm_api_management_product.io_sign_backoffice.product_id
