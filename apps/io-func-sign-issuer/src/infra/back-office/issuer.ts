@@ -13,6 +13,7 @@ import {
   responseToJson
 } from "@io-sign/io-sign/infra/client-utils";
 import { ApiKey, getIssuerEnvironment, IssuerRepository } from "../../issuer";
+import { ApiKeyAccessControl } from "../../access-control";
 
 class IssuerModel {
   #basePath: string;
@@ -71,6 +72,40 @@ class IssuerModel {
       )
     );
   }
+
+  findAccessControl(
+    subscriptionId: Issuer["subscriptionId"]
+  ): TE.TaskEither<Error, ApiKeyAccessControl> {
+    return pipe(
+      TE.tryCatch(
+        () =>
+          makeFetchWithTimeout()(
+            `${this.#basePath}/api-keys/${subscriptionId}/access-control`,
+            {
+              method: "GET",
+              headers: {
+                ...defaultHeader,
+                "Ocp-Apim-Subscription-Key": this.#apiKey
+              }
+            }
+          ),
+        E.toError
+      ),
+      TE.filterOrElse(
+        isSuccessful,
+        () =>
+          new Error(
+            "The attempt to get access control data from back office failed."
+          )
+      ),
+      TE.chain(
+        responseToJson(
+          ApiKeyAccessControl,
+          "Invalid format for access control data"
+        )
+      )
+    );
+  }
 }
 
 export class BackOfficeIssuerRepository implements IssuerRepository {
@@ -86,5 +121,9 @@ export class BackOfficeIssuerRepository implements IssuerRepository {
 
   getBySubscriptionId(subscriptionId: Issuer["subscriptionId"]) {
     return pipe(this.#issuerModel.findBySubscriptionId(subscriptionId));
+  }
+
+  getApiKeyAccessControl(subscriptionId: Issuer["subscriptionId"]) {
+    return pipe(this.#issuerModel.findAccessControl(subscriptionId));
   }
 }

@@ -5,6 +5,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 
 import { flow, pipe } from "fp-ts/lib/function";
+import { sequenceS } from "fp-ts/lib/Apply";
 
 import { FiscalCode } from "@pagopa/ts-commons/lib/strings";
 
@@ -15,10 +16,16 @@ import { logErrorAndReturnResponse } from "@io-sign/io-sign/infra/http/utils";
 
 import { GetSignerByFiscalCodeBody } from "../models/GetSignerByFiscalCodeBody";
 import { SignerToApiModel } from "../encoders/signer";
+import { requireSubscriptionId } from "../decoders/subscription-id";
+import {
+  AccessControlRepository,
+  ensureFiscalCodeAllowed
+} from "../../../access-control";
 
 type GetSignerDependencies = {
   signerRepository: SignerRepository;
   ioApiClient: IOApiClient;
+  accessControlRepository: AccessControlRepository;
 };
 
 const requireFiscalCodeFromBody = (
@@ -32,21 +39,27 @@ const requireFiscalCodeFromBody = (
     )
   );
 
+const parseRequest = (req: H.HttpRequest) =>
+  sequenceS(E.Apply)({
+    fiscalCode: requireFiscalCodeFromBody(req),
+    subscriptionId: requireSubscriptionId(req)
+  });
+
 export const GetSignerHandler = H.of((req: H.HttpRequest) =>
   pipe(
-    RTE.fromEither(requireFiscalCodeFromBody(req)),
+    parseRequest(req),
+    RTE.fromEither,
+    RTE.chainFirstW(({ subscriptionId, fiscalCode }) =>
+      ensureFiscalCodeAllowed(subscriptionId, fiscalCode)
+    ),
     RTE.chainW(
-      (fiscalCode) =>
-        ({ signerRepository, ioApiClient }: GetSignerDependencies) => {
-          const retriveUserProfile =
-            makeRetriveUserProfileSenderAllowed(ioApiClient);
-
-          return pipe(
+      ({ fiscalCode }) =>
+        ({ signerRepository, ioApiClient }: GetSignerDependencies) =>
+          pipe(
             fiscalCode,
-            retriveUserProfile,
+            makeRetriveUserProfileSenderAllowed(ioApiClient),
             TE.chain(() => signerRepository.getSignerByFiscalCode(fiscalCode))
-          );
-        }
+          )
     ),
     RTE.map(flow(SignerToApiModel.encode, H.successJson)),
     RTE.orElseW(logErrorAndReturnResponse)
