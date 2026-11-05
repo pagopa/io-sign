@@ -50,14 +50,6 @@ resource "azurerm_api_management_product_api" "io_sign_issuer_v1" {
   resource_group_name = var.apim_resource_group_name
 }
 
-resource "azurerm_api_management_api_operation_policy" "get_signer_by_fiscal_code_policy_itn" {
-  api_name            = azurerm_api_management_api.io_sign_issuer_v1.name
-  api_management_name = var.apim_name
-  resource_group_name = var.apim_resource_group_name
-  operation_id        = "getSignerByFiscalCode"
-  xml_content         = file("${path.module}/api/issuer/v1/get_signer_by_fiscal_code_policy/policy.xml")
-}
-
 # Operational product
 
 resource "azurerm_api_management_product" "io_sign_operational" {
@@ -176,7 +168,7 @@ resource "azurerm_api_management_product_api" "io_sign_support_v1" {
 
 resource "azurerm_api_management_product" "io_sign_backoffice" {
   product_id            = format("%s-sign-backoffice-apim-product", var.product)
-  display_name          = "IO SIGN BACKOFFICE"
+  display_name          = "IO SIGN BACKOFFICE Product"
   description           = "Api Management product for io-sign-backoffice REST APIs"
   api_management_name   = var.apim_name
   resource_group_name   = var.apim_resource_group_name
@@ -199,8 +191,8 @@ resource "azurerm_api_management_api" "io_sign_backoffice_v1" {
   revision              = "1"
   subscription_required = true
 
-  display_name = "IO SIGN BACKOFFICE API"
-  description  = "io-sign-backoffice REST APIs"
+  display_name = "IO Sign - Backoffice API"
+  description  = "IO Sign - Backoffice API"
   path         = "api/v1/sign/backoffice"
   protocols    = ["https"]
 
