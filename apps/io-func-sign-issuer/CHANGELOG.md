@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.13.0
+
+### Minor Changes
+
+- 2d9d480: getSignerByFiscalCode now enforces the issuer's access control by calling the backoffice API, instead of relying on the APIM policy
+
 ## 1.12.0
 
 ### Minor Changes
