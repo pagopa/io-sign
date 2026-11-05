@@ -31,6 +31,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
+  /api-keys/{id}/access-control:
+    get:
+      operationId: getApiKeyAccessControl
+      tags:
+        - Issuer
+      summary: Get environment and testers of an Api Key
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            $ref: "#/components/schemas/Id"
+      responses:
+        "200":
+          description: "Api Key environment and testers"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyAccessControl"
+        default:
+          description: "Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
 
 components:
   securitySchemes:
@@ -40,6 +65,23 @@ components:
       in: header
 
   schemas:
+    ApiKeyAccessControl:
+      type: object
+      required:
+        - environment
+        - testers
+      properties:
+        environment:
+          type: string
+          enum:
+            - test
+            - prod
+        testers:
+          type: array
+          items:
+            type: string
+          description: Fiscal codes allowed when the environment is test
+
     ProblemDetail:
       type: object
       properties:
