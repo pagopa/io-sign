@@ -15,7 +15,7 @@ locals {
       SELFCARE_EVENT_HUB_CONTRACTS_NAME = "sc-contracts"
       BACK_OFFICE_API_BASE_PATH         = "https://api.io.pagopa.it/api/v1/sign/backoffice"
       COSMOS_DB_NAME                    = "backoffice"
-      COSMOS_DB_ENDPOINT                = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+      COSMOS_DB__accountEndpoint        = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       COSMOS_DB_CONNECTION_STRING       = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       SelfCareEventHubConnectionString  = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SelfCareEventHubConnectionString)"
       SLACK_WEBHOOK_URL                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=slack-webhook-url)"

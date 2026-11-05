@@ -34,7 +34,7 @@ const getCosmosClient = () => {
     return new CosmosClient(config.cosmos.cosmosDbConnectionString);
   }
   if (!config.cosmos.cosmosDbEndpoint) {
-    throw new Error("COSMOS_DB_ENDPOINT must be set in production");
+    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
   }
   return new CosmosClient({
     endpoint: config.cosmos.cosmosDbEndpoint,
@@ -109,8 +109,8 @@ const { apiKeysByIdOutput, handler: createApiKeyById } =
 app.cosmosDB("createApiKeyById", {
   containerName: "api-keys",
   databaseName: config.cosmos.cosmosDbName,
-  connection: "COSMOS_DB_CONNECTION_STRING",
-  createLeaseContainerIfNotExists: true,
+  connection: "COSMOS_DB",
+  createLeaseContainerIfNotExists: process.env.NODE_ENV !== "production",
   leaseContainerName: "leases",
   leaseContainerPrefix: "api-keys",
   startFromBeginning: true,

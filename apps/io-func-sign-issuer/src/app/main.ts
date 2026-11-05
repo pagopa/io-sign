@@ -59,7 +59,7 @@ const getCosmosClient = () => {
     return new CosmosClient(config.azure.cosmos.connectionString);
   }
   if (!config.azure.cosmos.endpoint) {
-    throw new Error("CosmosDbEndpoint must be set in production");
+    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
   }
   return new CosmosClient({
     endpoint: config.azure.cosmos.endpoint,
@@ -369,12 +369,12 @@ const { issuersByVatNumberViewOutput, handler: createIssuersByVatNumberView } =
   makeCreateIssuersByVatNumberViewHandler();
 
 app.cosmosDB("createIssuerByVatNumberView", {
-  connection: "CosmosDbConnectionString",
+  connection: "COSMOS_DB",
   databaseName: "%CosmosDbDatabaseName%",
   containerName: "issuers",
   leaseContainerName: "leases",
   leaseContainerPrefix: "issuers-by-vat",
-  createLeaseContainerIfNotExists: true,
+  createLeaseContainerIfNotExists: process.env.NODE_ENV !== "production",
   startFromBeginning: true,
   extraOutputs: [issuersByVatNumberViewOutput],
   handler: createIssuersByVatNumberView

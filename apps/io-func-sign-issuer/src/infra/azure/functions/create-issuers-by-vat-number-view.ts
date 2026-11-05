@@ -11,7 +11,7 @@ import { RetrievedIssuer } from "../cosmos/issuer";
 
 export const makeCreateIssuersByVatNumberViewHandler = () => {
   const issuersByVatNumberViewOutput = output.cosmosDB({
-    connection: "CosmosDbConnectionString",
+    connection: "COSMOS_DB",
     databaseName: "%CosmosDbDatabaseName%",
     containerName: "issuers-by-vat-number",
     createIfNotExists: false

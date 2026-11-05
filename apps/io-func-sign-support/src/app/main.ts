@@ -34,7 +34,7 @@ const getCosmosClient = () => {
     return new CosmosClient(config.azure.cosmos.connectionString);
   }
   if (!config.azure.cosmos.endpoint) {
-    throw new Error("CosmosDbEndpoint must be set in production");
+    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
   }
   return new CosmosClient({
     endpoint: config.azure.cosmos.endpoint,

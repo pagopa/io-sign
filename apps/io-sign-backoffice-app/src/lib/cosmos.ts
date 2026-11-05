@@ -7,12 +7,12 @@ let cosmosClient: CosmosClient;
 
 const Config = z
   .object({
-    COSMOS_DB_ENDPOINT: z.string().min(1),
+    COSMOS_DB__accountEndpoint: z.string().min(1).optional(),
     COSMOS_DB_CONNECTION_STRING: z.string().min(1),
     COSMOS_DB_NAME: z.string().min(1),
   })
   .transform((env) => ({
-    cosmosDbEndpoint: env.COSMOS_DB_ENDPOINT,
+    cosmosDbEndpoint: env.COSMOS_DB__accountEndpoint,
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
     cosmosDbName: env.COSMOS_DB_NAME,
   }));
@@ -34,7 +34,7 @@ const getCosmosClient = () => {
       cosmosClient = new CosmosClient(config.cosmosDbConnectionString);
     } else {
       if (!config.cosmosDbEndpoint) {
-        throw new Error("COSMOS_DB_ENDPOINT must be set in production");
+        throw new Error("COSMOS_DB__accountEndpoint must be set in production");
       }
       cosmosClient = new CosmosClient({
         endpoint: config.cosmosDbEndpoint,

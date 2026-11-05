@@ -21,7 +21,7 @@ export const makeCreateApiKeyByIdHandler = (cosmosDbName: string) => {
     databaseName: cosmosDbName,
     containerName: "api-keys-by-id",
     createIfNotExists: false,
-    connection: "COSMOS_DB_CONNECTION_STRING"
+    connection: "COSMOS_DB"
   });
 
   const handler = async (

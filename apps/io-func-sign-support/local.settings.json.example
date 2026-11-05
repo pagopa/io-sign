@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "CosmosDbEndpoint": "COSMOS_DB_ENDPOINT",
+    "COSMOS_DB__accountEndpoint": "COSMOS_DB_ENDPOINT",
     "CosmosDbConnectionString": "COSMOS_DB_CONNECTION_STRING",
     "CosmosDbIssuerDatabaseName": "COSMOS_ISSUER_DB_NAME",
     "CosmosDbUserDatabaseName": "COSMOS_USER_DB_NAME"
