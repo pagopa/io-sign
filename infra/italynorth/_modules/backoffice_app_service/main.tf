@@ -88,6 +88,14 @@ module "itn_sign_backoffice_app_roles" {
       }
     }
   ]
+  cosmos = [
+    {
+      account_name        = var.cosmosdb_account_name
+      resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.name} to read/write CosmosDB via RBAC"
+    }
+  ]
 }
 
 module "itn_sign_backoffice_app_staging_roles" {
@@ -114,6 +122,14 @@ module "itn_sign_backoffice_app_staging_roles" {
       roles = {
         secrets = "writer"
       }
+    }
+  ]
+  cosmos = [
+    {
+      account_name        = var.cosmosdb_account_name
+      resource_group_name = data.azurerm_resource_group.sign_weu_data_rg.name
+      role                = "writer"
+      description         = "Allow ${module.itn_sign_backoffice_app.app_service.app_service.slot.name} to read/write CosmosDB via RBAC"
     }
   ]
 }

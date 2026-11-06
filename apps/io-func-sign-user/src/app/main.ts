@@ -8,6 +8,7 @@ import * as E from "fp-ts/lib/Either";
 import { identity, pipe } from "fp-ts/lib/function";
 
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
 import { createIoProfileClient } from "@io-sign/io-sign/infra/io-profile/client";
 import { makeGetValidatedEmailByFiscalCode } from "@io-sign/io-sign/infra/io-profile/profile";
@@ -52,7 +53,20 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const getCosmosClient = () => {
+  if (process.env.NODE_ENV !== "production") {
+    return new CosmosClient(config.azure.cosmos.connectionString);
+  }
+  if (!config.azure.cosmos.endpoint) {
+    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
+  }
+  return new CosmosClient({
+    endpoint: config.azure.cosmos.endpoint,
+    aadCredentials: new DefaultAzureCredential()
+  });
+};
+
+const cosmosClient = getCosmosClient();
 const database = cosmosClient.database(config.azure.cosmos.dbName);
 
 const signEventsClient = new EventHubProducerClient(

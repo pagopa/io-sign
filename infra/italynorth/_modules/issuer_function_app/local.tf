@@ -15,7 +15,7 @@ locals {
       AzureWebJobsDisableHomepage          = "true"
       NODE_ENV                             = "production"
       CosmosDbConnectionString             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
-      CosmosDbEndpoint                     = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+      COSMOS_DB__accountEndpoint            = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbDatabaseName                 = "issuer"
       StorageAccountItnConnectionString    = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
       IssuerUploadedBlobContainerName      = "uploaded-documents"
