@@ -6,15 +6,27 @@ import { cache } from "react";
 let cosmosClient: CosmosClient;
 
 const Config = z
-  .object({
-    COSMOS_DB__accountEndpoint: z.string().min(1).optional(),
-    COSMOS_DB_CONNECTION_STRING: z.string().min(1),
-    COSMOS_DB_NAME: z.string().min(1),
-  })
+  .discriminatedUnion("COSMOS_DB_AUTH", [
+    z.object({
+      COSMOS_DB_AUTH: z.literal("rbac"),
+      COSMOS_DB__accountEndpoint: z.string().min(1),
+      COSMOS_DB_NAME: z.string().min(1),
+    }),
+    z.object({
+      COSMOS_DB_AUTH: z.literal("connection-string"),
+      COSMOS_DB_CONNECTION_STRING: z.string().min(1),
+      COSMOS_DB_NAME: z.string().min(1),
+    }),
+  ])
   .transform((env) => ({
-    cosmosDbEndpoint: env.COSMOS_DB__accountEndpoint,
-    cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
     cosmosDbName: env.COSMOS_DB_NAME,
+    auth:
+      env.COSMOS_DB_AUTH === "rbac"
+        ? ({ mode: "rbac", endpoint: env.COSMOS_DB__accountEndpoint } as const)
+        : ({
+            mode: "connection-string",
+            connectionString: env.COSMOS_DB_CONNECTION_STRING,
+          } as const),
   }));
 
 const getCosmosConfig = cache(() => {
@@ -29,18 +41,14 @@ const getCosmosConfig = cache(() => {
 
 const getCosmosClient = () => {
   if (!cosmosClient) {
-    const config = getCosmosConfig();
-    if (process.env.NODE_ENV !== "production") {
-      cosmosClient = new CosmosClient(config.cosmosDbConnectionString);
-    } else {
-      if (!config.cosmosDbEndpoint) {
-        throw new Error("COSMOS_DB__accountEndpoint must be set in production");
-      }
-      cosmosClient = new CosmosClient({
-        endpoint: config.cosmosDbEndpoint,
-        aadCredentials: new DefaultAzureCredential()
-      });
-    }
+    const { auth } = getCosmosConfig();
+    cosmosClient =
+      auth.mode === "rbac"
+        ? new CosmosClient({
+            endpoint: auth.endpoint,
+            aadCredentials: new DefaultAzureCredential(),
+          })
+        : new CosmosClient(auth.connectionString);
   }
   return cosmosClient;
 };
