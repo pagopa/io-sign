@@ -112,7 +112,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-io-services"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     ports:
       - "3011:3011"
     environment:
@@ -125,7 +125,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-namirial"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     ports:
       - "3010:3010"
     environment:
@@ -138,7 +138,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-lollipop"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     ports:
       - "3012:3012"
     environment:
@@ -151,7 +151,7 @@ services:
       dockerfile: ./docker/mock/Dockerfile
       args:
         MOCK_NAME: "mock-io-profile"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     ports:
       - "3013:3013"
     environment:
@@ -164,7 +164,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-issuer"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     env_file:
       - ./docker/generated/.env.io-func-sign-issuer
     ports:
@@ -183,7 +183,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-support"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     env_file:
       - ./docker/generated/.env.io-func-sign-support
     ports:
@@ -200,7 +200,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-user"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     env_file:
       - ./docker/generated/.env.io-func-sign-user
     ports:
@@ -221,7 +221,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-func-sign-events"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     env_file:
       - ./docker/generated/.env.io-func-sign-events
     ports:
@@ -236,7 +236,7 @@ services:
       dockerfile: ./docker/function/Dockerfile
       args:
         FUNCTION_NAME: "io-sign-backoffice-func"
-        NODE_VERSION: "24.17.0"
+        NODE_VERSION: "24.22.1"
     env_file:
       - ./docker/generated/.env.io-sign-backoffice-func
     ports:
