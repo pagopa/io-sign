@@ -7,4 +7,4 @@
 "io-sign-backoffice-func": patch
 ---
 
-upgrade node version to resolve CVE
+update the Node version to resolve the CVE
