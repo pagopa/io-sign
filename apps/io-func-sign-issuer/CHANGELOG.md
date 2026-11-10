@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.13.1
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 1.13.0
 
 ### Minor Changes
