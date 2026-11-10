@@ -1,5 +1,11 @@
 # io-sign-backoffice-func
 
+## 1.9.1
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 1.9.0
 
 ### Minor Changes
