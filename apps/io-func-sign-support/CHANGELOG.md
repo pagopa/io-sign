@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.8.12
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 1.8.11
 
 ### Patch Changes

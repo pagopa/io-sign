@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 2.0.9
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 2.0.8
 
 ### Patch Changes

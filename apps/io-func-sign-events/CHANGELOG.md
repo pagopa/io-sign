@@ -1,5 +1,11 @@
 # io-func-sign-events
 
+## 2.5.1
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 2.5.0
 
 ### Minor Changes

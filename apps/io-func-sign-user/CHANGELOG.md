@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.11.2
+
+### Patch Changes
+
+- 0fb4ebd: update the Node version to resolve the CVE
+
 ## 2.11.1
 
 ### Patch Changes
