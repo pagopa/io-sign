@@ -29,7 +29,6 @@
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@pagopa/mui-italia": "^1.0.1",
-    "@pagopa/logger": "catalog:",
     "@types/lodash": "^4.14.197",
     "jose": "^4.14.4",
     "lodash": "^4.17.23",

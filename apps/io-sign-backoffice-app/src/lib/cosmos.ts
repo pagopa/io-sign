@@ -2,8 +2,6 @@ import { z } from "zod";
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
 import { cache } from "react";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 
 let cosmosClient: CosmosClient;
 
@@ -44,18 +42,13 @@ const getCosmosConfig = cache(() => {
 const getCosmosClient = () => {
   if (!cosmosClient) {
     const { auth } = getCosmosConfig();
-    if (auth.mode === "rbac") {
-      L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
-      cosmosClient = new CosmosClient({
-        endpoint: auth.endpoint,
-        aadCredentials: new DefaultAzureCredential(),
-      });
-    } else {
-      L.info("Returning a connection-string CosmosClient")({
-        logger: ConsoleLogger,
-      })();
-      cosmosClient = new CosmosClient(auth.connectionString);
-    }
+    cosmosClient =
+      auth.mode === "rbac"
+        ? new CosmosClient({
+            endpoint: auth.endpoint,
+            aadCredentials: new DefaultAzureCredential(),
+          })
+        : new CosmosClient(auth.connectionString);
   }
   return cosmosClient;
 };
