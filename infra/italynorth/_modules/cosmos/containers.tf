@@ -99,6 +99,18 @@ resource "azurerm_cosmosdb_sql_container" "issuer_issuers_whitelist_container" {
   }
 }
 
+# Lease container for the Cosmos DB trigger (createIssuerByVatNumberView).
+# Must be managed here: with RBAC the trigger cannot create it at runtime.
+resource "azurerm_cosmosdb_sql_container" "issuer_leases_container" {
+  name                  = "leases"
+  resource_group_name   = data.azurerm_resource_group.sign_weu_data_rg.name
+  account_name          = azurerm_cosmosdb_account.cosmos_io_sign.name
+  database_name         = azurerm_cosmosdb_sql_database.issuer_database.name
+  partition_key_paths   = ["/_partitionKey"]
+  partition_key_version = 2
+  throughput            = 400
+}
+
 # =====================
 # DATABASE: user
 # =====================
@@ -208,4 +220,16 @@ resource "azurerm_cosmosdb_sql_container" "backoffice_webhooks_container" {
   autoscale_settings {
     max_throughput = var.io_sign_database_backoffice.webhooks.max_throughput
   }
+}
+
+# Lease container for the Cosmos DB trigger (createApiKeyById).
+# Must be managed here: with RBAC the trigger cannot create it at runtime.
+resource "azurerm_cosmosdb_sql_container" "backoffice_leases_container" {
+  name                  = "leases"
+  resource_group_name   = data.azurerm_resource_group.sign_weu_data_rg.name
+  account_name          = azurerm_cosmosdb_account.cosmos_io_sign.name
+  database_name         = azurerm_cosmosdb_sql_database.backoffice_database.name
+  partition_key_paths   = ["/_partitionKey"]
+  partition_key_version = 2
+  throughput            = 400
 }
