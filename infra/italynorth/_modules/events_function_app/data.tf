@@ -43,8 +43,3 @@ data "azurerm_application_insights" "application_insights" {
   name                = format("%s-ai-common", local.product)
   resource_group_name = format("%s-rg-common", local.product)
 }
-
-data "azurerm_cosmosdb_account" "cosmos_sign_weu" {
-  name                = "${local.project_weu_sign}-cosmos"
-  resource_group_name = "${local.project_weu_sign}-data-rg"
-}
