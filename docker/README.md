@@ -9,6 +9,26 @@ Prerequisites
 - Enough disk space and CPU/RAM — the environment runs multiple services (Azurite, Cosmos emulator, EventHubs emulator, etc.).
 - On macOS use a `zsh` terminal (commands in this file are for `zsh`).
 
+### Cosmos DB authentication
+
+The issuer, user, support and backoffice Functions select Cosmos SDK
+authentication using `USE_MANAGED_IDENTITY`, independently of `NODE_ENV`.
+This setting is required and accepts only `"true"` or `"false"`:
+
+- `"false"` uses the connection string, as configured in the Docker `env-dev`
+  files and the `local.settings.json.example` files.
+- `"true"` uses `DefaultAzureCredential` and requires
+  `COSMOS_DB__accountEndpoint` and Cosmos DB data-plane RBAC permissions.
+  Terraform enables this mode for Azure apps and their staging slots.
+
+Cosmos triggers and output bindings do not read `USE_MANAGED_IDENTITY`.
+They use the `COSMOS_DB` connection string locally and
+`COSMOS_DB__accountEndpoint` in Azure. Do not define `COSMOS_DB` in Azure
+when using managed identity, because the exact setting takes precedence over
+the identity-based connection prefix.
+Lease containers are created automatically only in connection-string mode;
+with managed identity, Terraform must provision them beforehand.
+
 Useful commands overview
 
 - Generate env files for Docker: `pnpm run docker:generate:env`
@@ -180,4 +200,3 @@ pnpm run docker:start
 pnpm run docker:stop
 pnpm run docker:clean
 ```
-

@@ -4,9 +4,13 @@ import * as RE from "fp-ts/ReaderEither";
 
 import { pipe } from "fp-ts/function";
 
-import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
+import {
+  readBooleanFromEnvironment,
+  readFromEnvironment
+} from "@io-sign/io-sign/infra/env";
 
 export const CosmosConfig = t.type({
+  useManagedIdentity: t.boolean,
   endpoint: t.union([t.string, t.undefined]),
   connectionString: t.string,
   issuerDbName: t.string,
@@ -21,6 +25,9 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
   CosmosConfig
 > = pipe(
   RE.Do,
+  RE.bind("useManagedIdentity", () =>
+    readBooleanFromEnvironment("USE_MANAGED_IDENTITY")
+  ),
   RE.bind("endpoint", () =>
     RE.asks((env: NodeJS.ProcessEnv) => env.COSMOS_DB__accountEndpoint)
   ),

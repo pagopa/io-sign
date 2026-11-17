@@ -11,11 +11,13 @@ import { webhookSchema } from "@io-sign/io-sign/webhook";
 
 const ConfigFromEnvironment = z
   .object({
+    USE_MANAGED_IDENTITY: z.enum(["true", "false"]),
     COSMOS_DB__accountEndpoint: z.string().min(1).optional(),
     COSMOS_DB_CONNECTION_STRING: z.string().min(1),
     COSMOS_DB_NAME: z.string().min(1)
   })
   .transform((env) => ({
+    useManagedIdentity: env.USE_MANAGED_IDENTITY === "true",
     cosmosDbEndpoint: env.COSMOS_DB__accountEndpoint,
     cosmosDbConnectionString: env.COSMOS_DB_CONNECTION_STRING,
     cosmosDbName: env.COSMOS_DB_NAME

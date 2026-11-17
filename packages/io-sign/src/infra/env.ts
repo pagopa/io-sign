@@ -30,3 +30,13 @@ export const readNonEmptyFromEnvironment = (variableName: string) =>
       )
     )
   );
+
+export const readBooleanFromEnvironment = (variableName: string) =>
+  pipe(
+    readFromEnvironment(variableName),
+    RE.chainEitherK((value) =>
+      value === "true" || value === "false"
+        ? E.right(value === "true")
+        : E.left(new Error(`"${variableName}" must be "true" or "false"`))
+    )
+  );

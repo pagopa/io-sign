@@ -32,14 +32,16 @@ const googleAuth = new google.auth.GoogleAuth({
 });
 
 const getCosmosClient = () => {
-  if (process.env.NODE_ENV !== "production") {
+  if (!config.cosmos.useManagedIdentity) {
     L.info("Returning a connection-string CosmosClient")({
       logger: ConsoleLogger
     })();
     return new CosmosClient(config.cosmos.cosmosDbConnectionString);
   }
   if (!config.cosmos.cosmosDbEndpoint) {
-    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
+    throw new Error(
+      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
+    );
   }
   L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
@@ -116,7 +118,7 @@ app.cosmosDB("createApiKeyById", {
   containerName: "api-keys",
   databaseName: config.cosmos.cosmosDbName,
   connection: "COSMOS_DB",
-  createLeaseContainerIfNotExists: process.env.NODE_ENV !== "production",
+  createLeaseContainerIfNotExists: !config.cosmos.useManagedIdentity,
   leaseContainerName: "leases",
   leaseContainerPrefix: "api-keys",
   startFromBeginning: true,

@@ -3,6 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "node",
+    "USE_MANAGED_IDENTITY": "false",
     "COSMOS_DB__accountEndpoint": "COSMOS_DB_ENDPOINT",
     "SelfCareEventHubConnectionString": "SELF_CARE_EVENT_HUB_CONNECTION_STRING",
     "SELFCARE_EVENT_HUB_CONTRACTS_NAME": "SELFCARE_EVENT_HUB_CONTRACTS_NAME",

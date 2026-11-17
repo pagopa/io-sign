@@ -1,9 +1,62 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { Database } from "@azure/cosmos";
 import { ApiKey } from "@io-sign/io-sign/api-key";
 
-import { BackofficeEntitiesRepository } from "../cosmos";
+import {
+  BackofficeEntitiesRepository,
+  getCosmosDBConfigFromEnvironment
+} from "../cosmos";
+
+describe("Cosmos authentication configuration", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  const stubEnvironment = () => {
+    vi.stubEnv("COSMOS_DB__accountEndpoint", "https://cosmos.example");
+    vi.stubEnv("COSMOS_DB_CONNECTION_STRING", "connection-string");
+    vi.stubEnv("COSMOS_DB_NAME", "backoffice");
+  };
+
+  it.each(["production", "development", undefined])(
+    "uses the explicit flag with NODE_ENV=%s",
+    (nodeEnv) => {
+      stubEnvironment();
+      vi.stubEnv("NODE_ENV", nodeEnv);
+      for (const useManagedIdentity of [true, false]) {
+        vi.stubEnv("USE_MANAGED_IDENTITY", String(useManagedIdentity));
+        expect(getCosmosDBConfigFromEnvironment()).toEqual({
+          useManagedIdentity,
+          cosmosDbEndpoint: "https://cosmos.example",
+          cosmosDbConnectionString: "connection-string",
+          cosmosDbName: "backoffice"
+        });
+      }
+    }
+  );
+
+  it.each([undefined, "", "TRUE", "1"])(
+    "rejects USE_MANAGED_IDENTITY=%s",
+    (value) => {
+      stubEnvironment();
+      vi.stubEnv("USE_MANAGED_IDENTITY", value);
+      expect(() => getCosmosDBConfigFromEnvironment()).toThrow(
+        "error parsing CosmosDB config"
+      );
+    }
+  );
+
+  it("allows connection-string mode without an endpoint", () => {
+    stubEnvironment();
+    vi.stubEnv("COSMOS_DB__accountEndpoint", undefined);
+    vi.stubEnv("USE_MANAGED_IDENTITY", "false");
+    expect(getCosmosDBConfigFromEnvironment()).toEqual({
+      useManagedIdentity: false,
+      cosmosDbEndpoint: undefined,
+      cosmosDbConnectionString: "connection-string",
+      cosmosDbName: "backoffice"
+    });
+  });
+});
 
 const apiKey: ApiKey = {
   displayName: "test key",

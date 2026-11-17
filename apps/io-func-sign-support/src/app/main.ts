@@ -32,14 +32,16 @@ if (configOrError instanceof Error) {
 const config = configOrError;
 
 const getCosmosClient = () => {
-  if (process.env.NODE_ENV !== "production") {
+  if (!config.azure.cosmos.useManagedIdentity) {
     L.info("Returning a connection-string CosmosClient")({
       logger: ConsoleLogger
     })();
     return new CosmosClient(config.azure.cosmos.connectionString);
   }
   if (!config.azure.cosmos.endpoint) {
-    throw new Error("COSMOS_DB__accountEndpoint must be set in production");
+    throw new Error(
+      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
+    );
   }
   L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({

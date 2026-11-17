@@ -14,6 +14,7 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT         = 4
       AzureWebJobsDisableHomepage            = "true"
       NODE_ENV                               = "production"
+      USE_MANAGED_IDENTITY                   = "true"
       NODE_TLS_REJECT_UNAUTHORIZED           = 0
       CosmosDbConnectionString               = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       COSMOS_DB__accountEndpoint             = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint

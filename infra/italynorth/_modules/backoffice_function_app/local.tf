@@ -12,6 +12,7 @@ locals {
   io_sign_backoffice_func = {
     app_settings = {
       NODE_ENV                          = "production"
+      USE_MANAGED_IDENTITY              = "true"
       SELFCARE_EVENT_HUB_CONTRACTS_NAME = "sc-contracts"
       BACK_OFFICE_API_BASE_PATH         = "https://api.io.pagopa.it/api/v1/sign/backoffice"
       COSMOS_DB_NAME                    = "backoffice"
