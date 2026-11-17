@@ -1,5 +1,11 @@
 # io-sign-backoffice-app
 
+## 2.0.10
+
+### Patch Changes
+
+- 6d64bfb: cosmos with rbac
+
 ## 2.0.9
 
 ### Patch Changes

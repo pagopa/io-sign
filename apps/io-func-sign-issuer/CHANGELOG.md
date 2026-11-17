@@ -1,5 +1,11 @@
 # io-func-sign-issuer
 
+## 1.13.2
+
+### Patch Changes
+
+- 6d64bfb: cosmos with rbac
+
 ## 1.13.1
 
 ### Patch Changes
