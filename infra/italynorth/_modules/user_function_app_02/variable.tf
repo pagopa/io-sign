@@ -37,3 +37,8 @@ variable "function_user_02_autoscale_default" {
   description = "The number of instances that are available for scaling if metrics are not available for evaluation."
   default     = 1
 }
+
+variable "cosmosdb_account_name" {
+  type        = string
+  description = "Name of the Cosmos DB account"
+}

@@ -1,6 +1,9 @@
 import { app } from "@azure/functions";
+import * as L from "@pagopa/logger";
+import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 import { CosmosClient } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 
 import * as E from "fp-ts/Either";
 import { identity, pipe } from "fp-ts/function";
@@ -28,7 +31,26 @@ if (configOrError instanceof Error) {
 
 const config = configOrError;
 
-const cosmosClient = new CosmosClient(config.azure.cosmos.connectionString);
+const getCosmosClient = () => {
+  if (!config.azure.cosmos.useManagedIdentity) {
+    L.info("Returning a connection-string CosmosClient")({
+      logger: ConsoleLogger
+    })();
+    return new CosmosClient(config.azure.cosmos.connectionString);
+  }
+  if (!config.azure.cosmos.endpoint) {
+    throw new Error(
+      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
+    );
+  }
+  L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
+  return new CosmosClient({
+    endpoint: config.azure.cosmos.endpoint,
+    aadCredentials: new DefaultAzureCredential()
+  });
+};
+
+const cosmosClient = getCosmosClient();
 
 const issuerDb = cosmosClient.database(config.azure.cosmos.issuerDbName);
 const userDb = cosmosClient.database(config.azure.cosmos.userDbName);

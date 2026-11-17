@@ -20,3 +20,8 @@ variable "sign_backoffice_app_snet_cidr" {
   description = "Services Subnet CIDR"
 }
 
+variable "cosmosdb_account_name" {
+  type        = string
+  description = "Name of the Cosmos DB account"
+}
+

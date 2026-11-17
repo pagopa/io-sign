@@ -3,9 +3,11 @@
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "node",
+    "USE_MANAGED_IDENTITY": "false",
+    "COSMOS_DB__accountEndpoint": "COSMOS_DB_ENDPOINT",
     "CosmosDbConnectionString": "COSMOS_DB_CONNECTION_STRING",
     "CosmosDbIssuerDatabaseName": "COSMOS_ISSUER_DB_NAME",
-    "CosmosDbUserDatabaseName": "COSMOS_USER_DB_NAME"
+    "CosmosDbUserDatabaseName": "COSMOS_USER_DB_NAME",
     "PdvTokenizerApiBasePath": "PDV_TOKENIZER_SERVICES_API_URL",
     "PdvTokenizerApiKey": "PDV_TOKENIZER_SERVICES_API_KEY",
     "AzureFunctionsJobHost__logging__logLevel__Function": "Trace"

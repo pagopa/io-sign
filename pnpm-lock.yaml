@@ -229,6 +229,9 @@ importers:
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
+      '@azure/identity':
+        specifier: 'catalog:'
+        version: 4.13.1
       '@azure/storage-blob':
         specifier: 'catalog:'
         version: 12.33.0
@@ -314,6 +317,9 @@ importers:
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
+      '@azure/identity':
+        specifier: 'catalog:'
+        version: 4.13.1
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign
@@ -387,6 +393,9 @@ importers:
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
+      '@azure/identity':
+        specifier: 'catalog:'
+        version: 4.13.1
       '@azure/storage-blob':
         specifier: 'catalog:'
         version: 12.33.0
@@ -605,6 +614,9 @@ importers:
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.1
+      '@azure/identity':
+        specifier: 'catalog:'
+        version: 4.13.1
       '@io-sign/io-sign':
         specifier: workspace:^
         version: link:../../packages/io-sign

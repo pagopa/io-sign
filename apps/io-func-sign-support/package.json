@@ -26,6 +26,7 @@
   "dependencies": {
     "@azure/cosmos": "catalog:",
     "@azure/functions": "catalog:",
+    "@azure/identity": "catalog:",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "catalog:",
     "@pagopa/handler-kit-azure-func": "catalog:",

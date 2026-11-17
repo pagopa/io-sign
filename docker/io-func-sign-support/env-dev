@@ -1,6 +1,7 @@
 NODE_TLS_REJECT_UNAUTHORIZED=0
 AzureWebJobsStorage=UseDevelopmentStorage=true
 FUNCTIONS_WORKER_RUNTIME=node
+USE_MANAGED_IDENTITY=false
 CosmosDbConnectionString=${COSMOS_DB_CONNECTION_STRING}
 CosmosDbIssuerDatabaseName=${COSMOS_DB_ISSUER_DATABASE_NAME}
 CosmosDbUserDatabaseName=${COSMOS_DB_USER_DATABASE_NAME}

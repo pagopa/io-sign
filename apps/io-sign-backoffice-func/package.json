@@ -18,6 +18,7 @@
     "@azure/cosmos": "^3.17.3",
     "@azure/event-hubs": "catalog:",
     "@azure/functions": "catalog:",
+    "@azure/identity": "catalog:",
     "@io-sign/io-sign": "workspace:^",
     "@pagopa/handler-kit": "catalog:",
     "@pagopa/handler-kit-azure-func": "catalog:",

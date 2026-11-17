@@ -18,6 +18,7 @@ NamirialTestApiBasePath=${NAMIRIAL_TEST_API_BASE_PATH}
 NamirialTestUsername=${NAMIRIAL_TEST_USERNAME}
 NamirialTestPassword=${NAMIRIAL_TEST_PASSWORD}
 NODE_ENV=development
+USE_MANAGED_IDENTITY=false
 AzureFunctionsJobHost__logging__logLevel__Function=Trace
 IoLinkBaseUrl=${IO_LINK_BASE_URL}
 IoSignServiceId=${IO_SIGN_SERVICE_ID}

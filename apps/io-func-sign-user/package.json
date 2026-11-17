@@ -26,6 +26,7 @@
   "dependencies": {
     "@azure/cosmos": "catalog:",
     "@azure/functions": "catalog:",
+    "@azure/identity": "catalog:",
     "@azure/event-hubs": "catalog:",
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",
