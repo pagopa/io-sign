@@ -2,6 +2,18 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+### Cosmos DB authentication
+
+Set `USE_MANAGED_IDENTITY` explicitly, independently of `NODE_ENV`:
+
+- `"true"` uses `DefaultAzureCredential` and requires
+  `COSMOS_DB__accountEndpoint` and Cosmos DB data-plane RBAC permissions.
+- `"false"` uses `COSMOS_DB_CONNECTION_STRING`, for example with a local emulator.
+
+Both modes require `COSMOS_DB_NAME`. Missing or invalid flag values cause a
+configuration error. Terraform sets `USE_MANAGED_IDENTITY="true"` for the Azure
+app and its staging slot.
+
 First, run the development server:
 
 ```bash

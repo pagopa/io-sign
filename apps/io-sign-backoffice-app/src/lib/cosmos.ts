@@ -6,14 +6,14 @@ import { cache } from "react";
 let cosmosClient: CosmosClient;
 
 const Config = z
-  .discriminatedUnion("COSMOS_DB_AUTH", [
+  .discriminatedUnion("USE_MANAGED_IDENTITY", [
     z.object({
-      COSMOS_DB_AUTH: z.literal("rbac"),
+      USE_MANAGED_IDENTITY: z.literal("true"),
       COSMOS_DB__accountEndpoint: z.string().min(1),
       COSMOS_DB_NAME: z.string().min(1),
     }),
     z.object({
-      COSMOS_DB_AUTH: z.literal("connection-string"),
+      USE_MANAGED_IDENTITY: z.literal("false"),
       COSMOS_DB_CONNECTION_STRING: z.string().min(1),
       COSMOS_DB_NAME: z.string().min(1),
     }),
@@ -21,7 +21,7 @@ const Config = z
   .transform((env) => ({
     cosmosDbName: env.COSMOS_DB_NAME,
     auth:
-      env.COSMOS_DB_AUTH === "rbac"
+      env.USE_MANAGED_IDENTITY === "true"
         ? ({ mode: "rbac", endpoint: env.COSMOS_DB__accountEndpoint } as const)
         : ({
             mode: "connection-string",
