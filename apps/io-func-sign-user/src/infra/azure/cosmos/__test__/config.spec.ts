@@ -22,8 +22,9 @@ describe("Cosmos authentication configuration", () => {
         ).toEqual(
           E.right({
             useManagedIdentity,
-            endpoint: environment.COSMOS_DB__accountEndpoint,
-            connectionString: environment.CosmosDbConnectionString,
+            ...(useManagedIdentity
+              ? { endpoint: environment.COSMOS_DB__accountEndpoint }
+              : { connectionString: environment.CosmosDbConnectionString }),
             dbName: environment.CosmosDbDatabaseName
           })
         );
@@ -55,8 +56,23 @@ describe("Cosmos authentication configuration", () => {
     ).toEqual(
       E.right({
         useManagedIdentity: false,
-        endpoint: undefined,
         connectionString: environment.CosmosDbConnectionString,
+        dbName: environment.CosmosDbDatabaseName
+      })
+    );
+  });
+
+  it("allows managed identity without a connection string", () => {
+    expect(
+      getCosmosConfigFromEnvironment({
+        ...environment,
+        CosmosDbConnectionString: undefined,
+        USE_MANAGED_IDENTITY: "true"
+      })
+    ).toEqual(
+      E.right({
+        useManagedIdentity: true,
+        endpoint: environment.COSMOS_DB__accountEndpoint,
         dbName: environment.CosmosDbDatabaseName
       })
     );

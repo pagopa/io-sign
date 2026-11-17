@@ -1,21 +1,23 @@
 import * as t from "io-ts";
 
 import * as RE from "fp-ts/ReaderEither";
+import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe } from "fp-ts/function";
 
+import { readFromEnvironment } from "@io-sign/io-sign/infra/env";
 import {
-  readBooleanFromEnvironment,
-  readFromEnvironment
-} from "@io-sign/io-sign/infra/env";
+  CosmosAuthConfig,
+  getCosmosAuthConfigFromEnvironment
+} from "@io-sign/io-sign/infra/azure/cosmos/config";
 
-export const CosmosConfig = t.type({
-  useManagedIdentity: t.boolean,
-  endpoint: t.union([t.string, t.undefined]),
-  connectionString: t.string,
-  issuerDbName: t.string,
-  userDbName: t.string
-});
+export const CosmosConfig = t.intersection([
+  CosmosAuthConfig,
+  t.type({
+    issuerDbName: t.string,
+    userDbName: t.string
+  })
+]);
 
 type CosmosConfig = t.TypeOf<typeof CosmosConfig>;
 
@@ -24,18 +26,14 @@ export const getCosmosConfigFromEnvironment: RE.ReaderEither<
   Error,
   CosmosConfig
 > = pipe(
-  RE.Do,
-  RE.bind("useManagedIdentity", () =>
-    readBooleanFromEnvironment("USE_MANAGED_IDENTITY")
-  ),
-  RE.bind("endpoint", () =>
-    RE.asks((env: NodeJS.ProcessEnv) => env.COSMOS_DB__accountEndpoint)
-  ),
-  RE.bind("connectionString", () =>
-    readFromEnvironment("CosmosDbConnectionString")
-  ),
-  RE.bind("issuerDbName", () =>
-    readFromEnvironment("CosmosDbIssuerDatabaseName")
-  ),
-  RE.bind("userDbName", () => readFromEnvironment("CosmosDbUserDatabaseName"))
+  sequenceS(RE.Apply)({
+    auth: getCosmosAuthConfigFromEnvironment,
+    issuerDbName: readFromEnvironment("CosmosDbIssuerDatabaseName"),
+    userDbName: readFromEnvironment("CosmosDbUserDatabaseName")
+  }),
+  RE.map(({ auth, issuerDbName, userDbName }) => ({
+    ...auth,
+    issuerDbName,
+    userDbName
+  }))
 );

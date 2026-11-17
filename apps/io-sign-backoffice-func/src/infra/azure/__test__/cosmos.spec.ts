@@ -26,8 +26,9 @@ describe("Cosmos authentication configuration", () => {
         vi.stubEnv("USE_MANAGED_IDENTITY", String(useManagedIdentity));
         expect(getCosmosDBConfigFromEnvironment()).toEqual({
           useManagedIdentity,
-          cosmosDbEndpoint: "https://cosmos.example",
-          cosmosDbConnectionString: "connection-string",
+          ...(useManagedIdentity
+            ? { cosmosDbEndpoint: "https://cosmos.example" }
+            : { cosmosDbConnectionString: "connection-string" }),
           cosmosDbName: "backoffice"
         });
       }
@@ -51,11 +52,45 @@ describe("Cosmos authentication configuration", () => {
     vi.stubEnv("USE_MANAGED_IDENTITY", "false");
     expect(getCosmosDBConfigFromEnvironment()).toEqual({
       useManagedIdentity: false,
-      cosmosDbEndpoint: undefined,
       cosmosDbConnectionString: "connection-string",
       cosmosDbName: "backoffice"
     });
   });
+
+  it("allows managed identity without a connection string", () => {
+    stubEnvironment();
+    vi.stubEnv("COSMOS_DB_CONNECTION_STRING", undefined);
+    vi.stubEnv("USE_MANAGED_IDENTITY", "true");
+    expect(getCosmosDBConfigFromEnvironment()).toEqual({
+      useManagedIdentity: true,
+      cosmosDbEndpoint: "https://cosmos.example",
+      cosmosDbName: "backoffice"
+    });
+  });
+
+  it.each([undefined, ""])(
+    "rejects a missing or empty RBAC endpoint: %s",
+    (endpoint) => {
+      stubEnvironment();
+      vi.stubEnv("USE_MANAGED_IDENTITY", "true");
+      vi.stubEnv("COSMOS_DB__accountEndpoint", endpoint);
+      expect(() => getCosmosDBConfigFromEnvironment()).toThrow(
+        "error parsing CosmosDB config"
+      );
+    }
+  );
+
+  it.each([undefined, ""])(
+    "rejects a missing or empty local connection string: %s",
+    (connectionString) => {
+      stubEnvironment();
+      vi.stubEnv("USE_MANAGED_IDENTITY", "false");
+      vi.stubEnv("COSMOS_DB_CONNECTION_STRING", connectionString);
+      expect(() => getCosmosDBConfigFromEnvironment()).toThrow(
+        "error parsing CosmosDB config"
+      );
+    }
+  );
 });
 
 const apiKey: ApiKey = {

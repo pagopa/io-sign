@@ -38,11 +38,6 @@ const getCosmosClient = () => {
     })();
     return new CosmosClient(config.cosmos.cosmosDbConnectionString);
   }
-  if (!config.cosmos.cosmosDbEndpoint) {
-    throw new Error(
-      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
-    );
-  }
   L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
     endpoint: config.cosmos.cosmosDbEndpoint,
