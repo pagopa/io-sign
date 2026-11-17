@@ -17,7 +17,7 @@ locals {
     COSMOS_DB_NAME                         = "backoffice"
     COSMOS_DB_AUTH                         = "rbac"
     COSMOS_DB__accountEndpoint             = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
-    CosmosDbEndpoint                       = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+    COSMOS_DB_ENDPOINT                       = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
     APIM_RESOURCE_GROUP_NAME               = data.azurerm_api_management.apim.resource_group_name,
     APIM_SERVICE_NAME                      = data.azurerm_api_management.apim.name,
     APIM_PRODUCT_NAME                      = "io-sign-api"
