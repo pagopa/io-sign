@@ -1,5 +1,11 @@
 # io-func-sign-user
 
+## 2.11.3
+
+### Patch Changes
+
+- 6d64bfb: cosmos with rbac
+
 ## 2.11.2
 
 ### Patch Changes

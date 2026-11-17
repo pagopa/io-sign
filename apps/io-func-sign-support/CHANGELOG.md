@@ -1,5 +1,11 @@
 # io-func-sign-support
 
+## 1.8.13
+
+### Patch Changes
+
+- 6d64bfb: cosmos with rbac
+
 ## 1.8.12
 
 ### Patch Changes
