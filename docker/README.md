@@ -21,6 +21,10 @@ This setting is required and accepts only `"true"` or `"false"`:
   `COSMOS_DB__accountEndpoint` and Cosmos DB data-plane RBAC permissions.
   Terraform enables this mode for Azure apps and their staging slots.
 
+Terraform also retains `CosmosDbEndpoint` with the same endpoint value for
+compatibility with previously deployed code. Keep both settings during the
+infrastructure-first rollout and while rollback to that code remains supported.
+
 Cosmos triggers and output bindings do not read `USE_MANAGED_IDENTITY`.
 They use the `COSMOS_DB` connection string locally and
 `COSMOS_DB__accountEndpoint` in Azure. Do not define `COSMOS_DB` in Azure

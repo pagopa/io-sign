@@ -17,6 +17,7 @@ locals {
       USE_MANAGED_IDENTITY              = "true"
       CosmosDbConnectionString          = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
       COSMOS_DB__accountEndpoint        = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
+      CosmosDbEndpoint                  = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbIssuerDatabaseName        = "issuer"
       CosmosDbUserDatabaseName          = "user"
       PdvTokenizerApiBasePath           = "https://api.tokenizer.pdv.pagopa.it"
