@@ -19,11 +19,21 @@ This setting is required and accepts only `"true"` or `"false"`:
   files and the `local.settings.json.example` files.
 - `"true"` uses `DefaultAzureCredential` and requires
   `COSMOS_DB__accountEndpoint` and Cosmos DB data-plane RBAC permissions.
-  Terraform enables this mode for Azure apps and their staging slots.
+  No Cosmos DB connection string is required in this mode.
+  Terraform enables it for Azure apps and their staging slots.
 
-Terraform also retains `CosmosDbEndpoint` with the same endpoint value for
-compatibility with previously deployed code. Keep both settings during the
-infrastructure-first rollout and while rollback to that code remains supported.
+Azure app settings no longer contain Cosmos DB connection strings or the legacy
+`CosmosDbEndpoint` / `COSMOS_DB_ENDPOINT` aliases. The events Function does not
+access Cosmos DB and has no Cosmos DB settings. Account key authentication and
+the existing Key Vault secret are unchanged; local connection-string access
+remains supported.
+
+Deploy the updated Functions before applying the Terraform cleanup: older
+versions still require a connection string during configuration parsing, even
+when managed identity is enabled. Terraform applies automatically on merge, so
+merge and deploy the runtime-only changes to both production and staging slots
+first, then merge the infrastructure cleanup separately. Rolling back to older
+versions requires restoring the removed app settings first.
 
 Cosmos triggers and output bindings do not read `USE_MANAGED_IDENTITY`.
 They use the `COSMOS_DB` connection string locally and

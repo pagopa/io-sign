@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import {
   azureFunction,
   httpAzureFunction
@@ -33,17 +31,8 @@ const googleAuth = new google.auth.GoogleAuth({
 
 const getCosmosClient = () => {
   if (!config.cosmos.useManagedIdentity) {
-    L.info("Returning a connection-string CosmosClient")({
-      logger: ConsoleLogger
-    })();
     return new CosmosClient(config.cosmos.cosmosDbConnectionString);
   }
-  if (!config.cosmos.cosmosDbEndpoint) {
-    throw new Error(
-      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
-    );
-  }
-  L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
     endpoint: config.cosmos.cosmosDbEndpoint,
     aadCredentials: new DefaultAzureCredential()

@@ -4,7 +4,6 @@ locals {
   location_itn     = "italynorth"
   domain           = "sign"
   instance_number  = "01"
-  project_weu_sign = format("%s-%s-%s", local.prefix, local.env_short, local.domain)
   product          = format("%s-%s", local.prefix, local.env_short)
   project_itn      = "${local.product}-itn"
   project_itn_sign = format("%s-%s-itn-%s", local.prefix, local.env_short, local.domain)
@@ -15,11 +14,6 @@ locals {
       AzureWebJobsDisableHomepage                      = "true"
       NODE_ENV                                         = "production"
       StorageAccountItnConnectionString                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
-      CosmosDbConnectionString                         = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=COSMOS-DB-CONNECTION-STRING)"
-      CosmosDbEndpoint                                 = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
-      CosmosDbIssuerDatabaseName                       = "issuer"
-      CosmosDbUserDatabaseName                         = "user"
-      CosmosDbBackofficeDatabaseName                   = "backoffice"
       SignEventsHubItnConnectionString                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
       BackofficeFuncBaseUrl                            = "https://${data.azurerm_linux_function_app.backoffice_func.default_hostname}"
       BackofficeFuncApiKey                             = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=BackofficeFuncApiKey)"

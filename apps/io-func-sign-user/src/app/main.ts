@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
@@ -57,17 +55,8 @@ const config = configOrError;
 
 const getCosmosClient = () => {
   if (!config.azure.cosmos.useManagedIdentity) {
-    L.info("Returning a connection-string CosmosClient")({
-      logger: ConsoleLogger
-    })();
     return new CosmosClient(config.azure.cosmos.connectionString);
   }
-  if (!config.azure.cosmos.endpoint) {
-    throw new Error(
-      "COSMOS_DB__accountEndpoint must be set when USE_MANAGED_IDENTITY=true"
-    );
-  }
-  L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
     endpoint: config.azure.cosmos.endpoint,
     aadCredentials: new DefaultAzureCredential()
