@@ -57,12 +57,8 @@ const config = configOrError;
 
 const getCosmosClient = () => {
   if (!config.azure.cosmos.useManagedIdentity) {
-    L.info("Returning a connection-string CosmosClient")({
-      logger: ConsoleLogger
-    })();
     return new CosmosClient(config.azure.cosmos.connectionString);
   }
-  L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
     endpoint: config.azure.cosmos.endpoint,
     aadCredentials: new DefaultAzureCredential()

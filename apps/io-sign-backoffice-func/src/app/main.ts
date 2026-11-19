@@ -33,12 +33,8 @@ const googleAuth = new google.auth.GoogleAuth({
 
 const getCosmosClient = () => {
   if (!config.cosmos.useManagedIdentity) {
-    L.info("Returning a connection-string CosmosClient")({
-      logger: ConsoleLogger
-    })();
     return new CosmosClient(config.cosmos.cosmosDbConnectionString);
   }
-  L.info("Returning an RBAC CosmosClient")({ logger: ConsoleLogger })();
   return new CosmosClient({
     endpoint: config.cosmos.cosmosDbEndpoint,
     aadCredentials: new DefaultAzureCredential()
