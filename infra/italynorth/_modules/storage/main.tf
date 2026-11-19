@@ -185,7 +185,7 @@ resource "azurerm_storage_management_policy" "io_sign_storage_management_policy"
 # -----------------------------------------------
 module "sign_storage_infra_ci_role" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = data.azurerm_client_config.current.object_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 

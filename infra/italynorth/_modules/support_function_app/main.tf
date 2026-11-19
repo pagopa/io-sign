@@ -37,7 +37,7 @@ module "function_sign_support" {
 
 module "itn_sign_support_func_roles" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = module.function_sign_support.function_app.function_app.principal_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 

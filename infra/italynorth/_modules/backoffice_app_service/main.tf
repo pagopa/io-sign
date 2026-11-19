@@ -32,7 +32,7 @@ module "itn_sign_backoffice_app" {
 
 module "itn_sign_bo_app_apim_role" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = module.itn_sign_backoffice_app.app_service.app_service.principal_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -48,7 +48,7 @@ module "itn_sign_bo_app_apim_role" {
 
 module "itn_sign_bo_app_apim_staging_role" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = module.itn_sign_backoffice_app.app_service.app_service.slot.principal_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -64,7 +64,7 @@ module "itn_sign_bo_app_apim_staging_role" {
 
 module "itn_sign_backoffice_app_roles" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = module.itn_sign_backoffice_app.app_service.app_service.principal_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
@@ -100,7 +100,7 @@ module "itn_sign_backoffice_app_roles" {
 
 module "itn_sign_backoffice_app_staging_roles" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = module.itn_sign_backoffice_app.app_service.app_service.slot.principal_id
   subscription_id = data.azurerm_subscription.current.subscription_id
 
