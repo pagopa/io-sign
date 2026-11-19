@@ -1,5 +1,13 @@
 # @io-sign/io-sign
 
+## 1.14.1
+
+### Patch Changes
+
+- 64aa47a: Require only the Cosmos DB credentials for the selected authentication mode,
+  allowing Azure connection string settings to be removed while preserving local
+  connection-string authentication.
+
 ## 1.14.0
 
 ### Minor Changes
