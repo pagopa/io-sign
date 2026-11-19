@@ -1,5 +1,15 @@
 # io-func-sign-support
 
+## 1.8.14
+
+### Patch Changes
+
+- 64aa47a: Require only the Cosmos DB credentials for the selected authentication mode,
+  allowing Azure connection string settings to be removed while preserving local
+  connection-string authentication.
+- Updated dependencies [64aa47a]
+  - @io-sign/io-sign@1.14.1
+
 ## 1.8.13
 
 ### Patch Changes
