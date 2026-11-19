@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ContainerClient } from "@azure/storage-blob";

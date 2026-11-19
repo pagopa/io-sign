@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";

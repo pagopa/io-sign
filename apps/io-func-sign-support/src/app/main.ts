@@ -1,6 +1,4 @@
 import { app } from "@azure/functions";
-import * as L from "@pagopa/logger";
-import { ConsoleLogger } from "@io-sign/io-sign/infra/console-logger";
 import { initAppInsights } from "@pagopa/ts-commons/lib/appinsights";
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
