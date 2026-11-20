@@ -1,6 +1,6 @@
 module "apim_platform_roles" {
   source          = "pagopa-dx/azure-role-assignments/azurerm"
-  version         = "~> 1.2.0"
+  version         = "~> 1.3.2"
   principal_id    = var.platform_apim_identity_principal_id
   subscription_id = var.subscription_id
 
