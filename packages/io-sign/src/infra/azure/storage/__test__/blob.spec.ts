@@ -8,6 +8,7 @@ import {
 } from "@azure/storage-blob";
 
 import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
 
 import {
   blobExists,
@@ -33,7 +34,9 @@ afterEach(() => {
 
 describe("blobExists", () => {
   it("returns Right(true) when the blob exists", async () => {
-    const blobClient = { exists: vi.fn().mockResolvedValue(true) } as unknown as BlobClient;
+    const blobClient = {
+      exists: vi.fn().mockResolvedValue(true)
+    } as unknown as BlobClient;
 
     const result = await blobExists(blobClient)();
 
@@ -41,7 +44,9 @@ describe("blobExists", () => {
   });
 
   it("returns Right(false) when the blob does not exist", async () => {
-    const blobClient = { exists: vi.fn().mockResolvedValue(false) } as unknown as BlobClient;
+    const blobClient = {
+      exists: vi.fn().mockResolvedValue(false)
+    } as unknown as BlobClient;
 
     const result = await blobExists(blobClient)();
 
@@ -130,7 +135,9 @@ describe("withExpireInMinutes", () => {
     const result = withExpireInMinutes(5)(options);
 
     expect(result.startsOn).toStrictEqual(now);
-    expect(result.expiresOn).toStrictEqual(new Date("2026-01-01T10:05:00.000Z"));
+    expect(result.expiresOn).toStrictEqual(
+      new Date("2026-01-01T10:05:00.000Z")
+    );
   });
 });
 
@@ -139,13 +146,17 @@ describe("generateSasUrlFromBlob", () => {
 
   it("returns Right with the generated sas url", async () => {
     const blobClient = {
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
+      generateSasUrl: vi
+        .fn()
+        .mockResolvedValue("https://storage.example.com/sas-url")
     } as unknown as BlobClient;
 
     const result = await generateSasUrlFromBlob(options)(blobClient)();
 
     expect(blobClient.generateSasUrl).toHaveBeenCalledWith(options);
-    expect(result).toStrictEqual(E.right("https://storage.example.com/sas-url"));
+    expect(result).toStrictEqual(
+      E.right("https://storage.example.com/sas-url")
+    );
   });
 
   it("returns Left when generating the sas url rejects", async () => {
@@ -161,6 +172,68 @@ describe("generateSasUrlFromBlob", () => {
         "Unable to generate the SAS Url for the specified Blob."
       );
     }
+  });
+
+  it("generates a user delegation SAS using the requested validity and permissions", async () => {
+    const options = pipe(
+      defaultBlobGenerateSasUrlOptions(),
+      withPermissions("racw"),
+      withExpireInMinutes(15)
+    );
+    const key = { signedOid: "identity" };
+    const service = {
+      getUserDelegationKey: vi.fn().mockResolvedValue(key)
+    } as unknown as import("@azure/storage-blob").BlobServiceClient;
+    const blob = {
+      generateSasUrl: vi.fn(),
+      generateUserDelegationSasUrl: vi
+        .fn()
+        .mockResolvedValue("https://storage.example.com/delegated")
+    } as unknown as BlobClient;
+
+    expect(await generateSasUrlFromBlob(options, service)(blob)()).toEqual(
+      E.right("https://storage.example.com/delegated")
+    );
+    expect(service.getUserDelegationKey).toHaveBeenCalledWith(
+      options.startsOn,
+      options.expiresOn
+    );
+    expect(blob.generateUserDelegationSasUrl).toHaveBeenCalledWith(
+      options,
+      key
+    );
+    expect(blob.generateSasUrl).not.toHaveBeenCalled();
+    expect(options.permissions?.toString()).toBe("racw");
+  });
+
+  it("surfaces user delegation key errors without falling back to account keys", async () => {
+    const options = pipe(
+      defaultBlobGenerateSasUrlOptions(),
+      withExpireInMinutes(5)
+    );
+    const failure = new Error("forbidden");
+    const service = {
+      getUserDelegationKey: vi.fn().mockRejectedValue(failure)
+    } as unknown as import("@azure/storage-blob").BlobServiceClient;
+    const blob = {
+      generateSasUrl: vi.fn(),
+      generateUserDelegationSasUrl: vi.fn()
+    } as unknown as BlobClient;
+    const result = await generateSasUrlFromBlob(options, service)(blob)();
+    expect(E.isLeft(result)).toBe(true);
+    if (E.isLeft(result)) expect(result.left.cause).toBe(failure);
+    expect(blob.generateSasUrl).not.toHaveBeenCalled();
+  });
+
+  it("requires a validity window for delegation", async () => {
+    const service = {
+      getUserDelegationKey: vi.fn()
+    } as unknown as import("@azure/storage-blob").BlobServiceClient;
+    const blob = { generateSasUrl: vi.fn() } as unknown as BlobClient;
+    const result = await generateSasUrlFromBlob(options, service)(blob)();
+    expect(E.isLeft(result)).toBe(true);
+    expect(service.getUserDelegationKey).not.toHaveBeenCalled();
+    expect(blob.generateSasUrl).not.toHaveBeenCalled();
   });
 });
 

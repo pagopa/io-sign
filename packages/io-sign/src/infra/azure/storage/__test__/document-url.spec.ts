@@ -1,9 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
 
-import { ContainerClient } from "@azure/storage-blob";
+import {
+  BlobServiceClient,
+  ContainerClient,
+  ServiceGetUserDelegationKeyResponse
+} from "@azure/storage-blob";
 
 import * as E from "fp-ts/lib/Either";
-import { NonEmptyString, WithinRangeString } from "@pagopa/ts-commons/lib/strings";
+import {
+  NonEmptyString,
+  WithinRangeString
+} from "@pagopa/ts-commons/lib/strings";
 
 import { newId } from "../../../../id";
 import { DocumentMetadata, DocumentReady } from "../../../../document";
@@ -41,18 +48,53 @@ const makeContainerClient = (blobClient: object) =>
   }) as unknown as ContainerClient;
 
 describe("toDocumentWithSasUrl", () => {
+  it("uses the supplied service client to generate a delegated SAS", async () => {
+    const service = new BlobServiceClient(
+      "https://account.blob.core.windows.net"
+    );
+    const container = service.getContainerClient("documents");
+    const blob = container.getBlobClient("blob-123.pdf");
+    vi.spyOn(blob, "exists").mockResolvedValue(true);
+    vi.spyOn(container, "getBlobClient").mockReturnValue(blob);
+    const delegation = vi
+      .spyOn(service, "getUserDelegationKey")
+      .mockResolvedValue({
+        signedObjectId: "00000000-0000-0000-0000-000000000001",
+        signedTenantId: "00000000-0000-0000-0000-000000000002",
+        signedStartsOn: new Date("2025-01-01T00:00:00Z"),
+        signedExpiresOn: new Date("2099-01-01T00:00:00Z"),
+        signedService: "b",
+        signedVersion: "2025-07-05",
+        value: Buffer.from("test-delegation-key").toString("base64")
+      } as ServiceGetUserDelegationKeyResponse);
+
+    const result = await toDocumentWithSasUrl("r", 5, service)(document)(
+      container
+    )();
+    expect(E.isRight(result)).toBe(true);
+    if (E.isLeft(result)) throw result.left;
+    const url = new URL(result.right.url);
+    expect(url.pathname).toBe("/documents/blob-123.pdf");
+    expect(url.searchParams.get("sp")).toBe("r");
+    expect(url.searchParams.get("skoid")).toBe(
+      "00000000-0000-0000-0000-000000000001"
+    );
+    expect(url.searchParams.get("sig")).toBeTruthy();
+    expect(delegation).toHaveBeenCalledOnce();
+  });
+
   it("replaces the document url with a generated sas url", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
+      generateSasUrl: vi
+        .fn()
+        .mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
     const result = await toDocumentWithSasUrl()(document)(containerClient)();
 
-    expect(containerClient.getBlobClient).toHaveBeenCalledWith(
-      "blob-123.pdf"
-    );
+    expect(containerClient.getBlobClient).toHaveBeenCalledWith("blob-123.pdf");
     expect(result).toStrictEqual(
       E.right({ ...document, url: "https://storage.example.com/sas-url" })
     );
@@ -61,7 +103,9 @@ describe("toDocumentWithSasUrl", () => {
   it("uses the given permissions", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
+      generateSasUrl: vi
+        .fn()
+        .mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
@@ -82,9 +126,7 @@ describe("toDocumentWithSasUrl", () => {
 
     expect(E.isLeft(result)).toBe(true);
     if (E.isLeft(result)) {
-      expect(result.left.message).toBe(
-        "The specified Blob does not exists."
-      );
+      expect(result.left.message).toBe("The specified Blob does not exists.");
     }
     expect(blobClient.generateSasUrl).not.toHaveBeenCalled();
   });
@@ -111,15 +153,16 @@ describe("getDocumentUrl", () => {
   it("returns only the generated sas url", async () => {
     const blobClient = {
       exists: vi.fn().mockResolvedValue(true),
-      generateSasUrl: vi.fn().mockResolvedValue("https://storage.example.com/sas-url")
+      generateSasUrl: vi
+        .fn()
+        .mockResolvedValue("https://storage.example.com/sas-url")
     };
     const containerClient = makeContainerClient(blobClient);
 
-    const result = await getDocumentUrl(
-      "r",
-      5
-    )(document)(containerClient)();
+    const result = await getDocumentUrl("r", 5)(document)(containerClient)();
 
-    expect(result).toStrictEqual(E.right("https://storage.example.com/sas-url"));
+    expect(result).toStrictEqual(
+      E.right("https://storage.example.com/sas-url")
+    );
   });
 });

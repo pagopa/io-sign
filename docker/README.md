@@ -43,6 +43,42 @@ the identity-based connection prefix.
 Lease containers are created automatically only in connection-string mode;
 with managed identity, Terraform must provision them beforehand.
 
+### Application Storage authentication
+
+The issuer, user and events Functions use `USE_STORAGE_MANAGED_IDENTITY` to
+choose authentication independently of the Cosmos DB setting:
+
+- `"false"` uses `StorageAccountItnConnectionString` for the SDK and bindings,
+  including local development with Azurite.
+- `"true"` uses managed identity and `SIGN_STORAGE__queueServiceUri`.
+  Issuer and user also require `SIGN_STORAGE__blobServiceUri`. Their blob SAS
+  URLs use user delegation keys instead of account keys.
+
+The first rollout keeps `StorageAccountItnConnectionString` in Azure so the
+previously deployed applications and rollback continue to work. Terraform
+configures the identity endpoints and grants blob and queue data-plane access
+to both production and staging identities. It does not change the Function host
+storage connection (`AzureWebJobsStorage`) or disable account keys.
+
+Issuer needs Storage Blob Data Owner for its blob trigger, plus queue access for
+trigger and poison messages. The user Function's DX blob writer role also
+requires the custom `PagoPA Storage Blob Tags Contributor` role to exist.
+Verify that role and the existing host-storage permissions, including the
+additional permissions needed by the blob trigger, before deployment.
+
+Apply the infrastructure first, inspect the plan for unexpected replacements,
+and allow RBAC assignments to propagate. Then deploy the new issuer, user and
+events applications to production and staging. Check queue and blob triggers,
+webhook delivery, document upload/download and generated SAS URLs. The new
+applications select identity-based bindings when the flag is true; the previous
+code continues to use the retained connection string. A later cleanup may
+remove that setting only after the rollout and rollback policy are confirmed.
+To switch the new code back to the connection string, set the flag to `"false"`;
+to roll back to the previous code, leave the original connection string in place.
+
+Existing local settings files must add `"USE_STORAGE_MANAGED_IDENTITY": "false"`.
+The examples and Docker env files include this setting.
+
 Useful commands overview
 
 - Generate env files for Docker: `pnpm run docker:generate:env`
