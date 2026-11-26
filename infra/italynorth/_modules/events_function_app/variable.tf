@@ -37,3 +37,11 @@ variable "function_events_autoscale_default" {
   description = "The number of instances that are available for scaling if metrics are not available for evaluation."
   default     = 1
 }
+variable "storage_account" {
+  type = object({
+    name              = string
+    resource_group    = string
+    blob_service_uri  = string
+    queue_service_uri = string
+  })
+}

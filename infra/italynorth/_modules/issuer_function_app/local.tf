@@ -15,6 +15,9 @@ locals {
       AzureWebJobsDisableHomepage            = "true"
       NODE_ENV                               = "production"
       USE_MANAGED_IDENTITY                   = "true"
+      USE_STORAGE_MANAGED_IDENTITY           = "true"
+      SIGN_STORAGE__blobServiceUri           = var.storage_account.blob_service_uri
+      SIGN_STORAGE__queueServiceUri          = var.storage_account.queue_service_uri
       COSMOS_DB__accountEndpoint             = data.azurerm_cosmosdb_account.cosmos_sign_weu.endpoint
       CosmosDbDatabaseName                   = "issuer"
       StorageAccountItnConnectionString      = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"

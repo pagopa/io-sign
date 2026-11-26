@@ -75,6 +75,18 @@ module "itn_sign_user_func_02_roles" {
       description         = "Allow ${module.function_sign_user_02.function_app.function_app.name} to read/write CosmosDB via RBAC"
     }
   ]
+  storage_blob = [{
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    role                 = "writer"
+    description          = "Allow user to access application blobs and generate user delegation SAS"
+  }]
+  storage_queue = [{
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    role                 = "owner"
+    description          = "Allow user to process and publish application queue messages"
+  }]
 }
 
 module "itn_sign_user_func_02_staging_roles" {
@@ -102,4 +114,16 @@ module "itn_sign_user_func_02_staging_roles" {
       description         = "Allow ${module.function_sign_user_02.function_app.function_app.slot.name} to read/write CosmosDB via RBAC"
     }
   ]
+  storage_blob = [{
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    role                 = "writer"
+    description          = "Allow user staging to access application blobs and generate user delegation SAS"
+  }]
+  storage_queue = [{
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    role                 = "owner"
+    description          = "Allow user staging to process and publish application queue messages"
+  }]
 }

@@ -33,7 +33,7 @@ module "function_sign_events" {
     {
       "AzureWebJobs.signEventTrigger_pdnd.Disabled"    = "1"
       "AzureWebJobs.signEventTrigger_webhook.Disabled" = "1"
-      "AzureWebJobs.deliverWebhookTrigger.Disabled" = "1"
+      "AzureWebJobs.deliverWebhookTrigger.Disabled"    = "1"
     }
   )
 
@@ -65,6 +65,13 @@ module "itn_sign_events_func_roles" {
       }
     }
   ]
+  storage_queue = [for queue in ["webhook-delivery", "webhook-delivery-poison"] : {
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    queue_name           = queue
+    role                 = "owner"
+    description          = "Allow events to process and publish webhook queue messages"
+  }]
 }
 
 module "itn_sign_events_func_staging_roles" {
@@ -84,4 +91,11 @@ module "itn_sign_events_func_staging_roles" {
       }
     }
   ]
+  storage_queue = [for queue in ["webhook-delivery", "webhook-delivery-poison"] : {
+    storage_account_name = var.storage_account.name
+    resource_group_name  = var.storage_account.resource_group
+    queue_name           = queue
+    role                 = "owner"
+    description          = "Allow events staging to process and publish webhook queue messages"
+  }]
 }
