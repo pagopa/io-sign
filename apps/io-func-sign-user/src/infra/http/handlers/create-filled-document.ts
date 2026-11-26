@@ -7,7 +7,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 
 import { pipe } from "fp-ts/lib/function";
 
-import { ContainerClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import { QueueClient } from "@azure/storage-queue";
 
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
@@ -36,6 +36,7 @@ import { FilledDocumentToApiModel } from "../encoders/filled-document";
 
 type CreateFilledDocumentsDependencies = {
   filledContainerClient: ContainerClient;
+  blobServiceClient?: BlobServiceClient;
   documentsToFillQueue: QueueClient;
   signerRepository: SignerRepository;
   getValidatedEmailByFiscalCode: GetValidatedEmailByFiscalCode;
@@ -102,7 +103,10 @@ const requirePayload = (req: H.HttpRequest) =>
   );
 
 const makeGetFilledDocumentUrl =
-  (filledContainerClient: ContainerClient): GetFilledDocumentUrl =>
+  (
+    filledContainerClient: ContainerClient,
+    blobServiceClient?: BlobServiceClient
+  ): GetFilledDocumentUrl =>
   (filledDocumentBlobName: string) =>
     pipe(
       filledDocumentBlobName,
@@ -121,7 +125,8 @@ const makeGetFilledDocumentUrl =
             defaultBlobGenerateSasUrlOptions(),
             withPermissions("r"),
             withExpireInMinutes(120)
-          )
+          ),
+          blobServiceClient
         )
       )
     )(filledContainerClient);
@@ -133,11 +138,13 @@ export const CreateFilledDocumentHandler = H.of((req: H.HttpRequest) =>
       (payload) =>
         ({
           filledContainerClient,
+          blobServiceClient,
           documentsToFillQueue,
           signerRepository
         }: CreateFilledDocumentsDependencies) => {
           const getFilledDocumentUrl = makeGetFilledDocumentUrl(
-            filledContainerClient
+            filledContainerClient,
+            blobServiceClient
           );
 
           const notifyDocumentToFill =

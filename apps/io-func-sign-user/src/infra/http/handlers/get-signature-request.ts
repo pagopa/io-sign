@@ -6,7 +6,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 
 import { pipe } from "fp-ts/lib/function";
 
-import { ContainerClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 
 import * as A from "fp-ts/lib/Array";
 
@@ -26,12 +26,15 @@ const grantReadAccessToDocuments =
   (r: {
     validatedContainerClient: ContainerClient;
     signedContainerClient: ContainerClient;
+    blobServiceClient?: BlobServiceClient;
   }): TE.TaskEither<Error, SignatureRequest> => {
     if (request.status === "SIGNED") {
       return pipe(
         request.documents,
         A.traverse(TE.ApplicativePar)((doc) =>
-          toDocumentWithSasUrl("r", 5)(doc)(r.signedContainerClient)
+          toDocumentWithSasUrl("r", 5, r.blobServiceClient)(doc)(
+            r.signedContainerClient
+          )
         ),
         TE.map((documents) => ({ ...request, documents }))
       );
@@ -39,7 +42,9 @@ const grantReadAccessToDocuments =
     return pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrl("r", 55)(doc)(r.validatedContainerClient)
+        toDocumentWithSasUrl("r", 55, r.blobServiceClient)(doc)(
+          r.validatedContainerClient
+        )
       ),
       TE.map((documents) => ({ ...request, documents }))
     );
