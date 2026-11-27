@@ -1,8 +1,7 @@
 import { app } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
-import { ContainerClient } from "@azure/storage-blob";
-import { QueueClient } from "@azure/storage-queue";
+import { makeStorageClients } from "@io-sign/io-sign/infra/azure/storage/client";
 import { EventHubProducerClient } from "@azure/event-hubs";
 
 import { createIOApiClient } from "@io-sign/io-sign/infra/io-services/client";
@@ -112,36 +111,42 @@ const signerRepository = new PdvTokenizerSignerRepository(
   pdvTokenizerClientWithApiKey
 );
 
-const uploadedContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
-  "uploaded-documents"
-);
+const storage = config.azure.storage;
+const storageCredential = storage.useManagedIdentity
+  ? new DefaultAzureCredential()
+  : undefined;
+const {
+  blobService,
+  queueService,
+  blobServiceClient,
+  binding: storageBinding
+} = makeStorageClients(storage, storageCredential);
 
-const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
+const uploadedContainerClient =
+  blobService.getContainerClient("uploaded-documents");
+const validatedContainerClient = blobService.getContainerClient(
   "validated-documents"
 );
 
-const uploadedFileStorage = new BlobStorageFileStorage(uploadedContainerClient);
+const uploadedFileStorage = new BlobStorageFileStorage(
+  uploadedContainerClient,
+  blobServiceClient
+);
 
 const validatedFileStorage = new BlobStorageFileStorage(
-  validatedContainerClient
+  validatedContainerClient,
+  blobServiceClient
 );
 
-const signedContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
-  "signed-documents"
-);
+const signedContainerClient =
+  blobService.getContainerClient("signed-documents");
 
-const onSignatureRequestReadyQueueClient = new QueueClient(
-  config.azure.storage.connectionStringItn,
+const onSignatureRequestReadyQueueClient = queueService.getQueueClient(
   "on-signature-request-ready"
 );
 
-const waitingForSignatureRequestUpdatesQueueClient = new QueueClient(
-  config.azure.storage.connectionStringItn,
-  "waiting-for-signature-request-updates"
-);
+const waitingForSignatureRequestUpdatesQueueClient =
+  queueService.getQueueClient("waiting-for-signature-request-updates");
 
 // ---- HTTP TRIGGERS ----
 
@@ -178,6 +183,7 @@ app.http("getSignerByFiscalCode", {
 const getUploadUrl = GetUploadUrlFunction({
   db: database,
   uploadedContainerClient,
+  blobServiceClient,
   issuerRepository
 });
 
@@ -244,7 +250,8 @@ app.http("getRequestsByDossier", {
 const getSignatureRequest = GetSignatureRequestFunction({
   issuerRepository,
   signatureRequestRepository,
-  signedContainerClient
+  signedContainerClient,
+  blobServiceClient
 });
 
 app.http("getSignatureRequest", {
@@ -317,7 +324,7 @@ const markAsWaitForSignature = MarkAsWaitForSignatureFunction({
 
 app.storageQueue("markAsWaitForSignature", {
   queueName: "on-signature-request-wait-for-signature",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: markAsWaitForSignature
 });
 
@@ -332,13 +339,13 @@ const closeSignatureRequest = CloseSignatureRequestFunction({
 
 app.storageQueue("closeSignatureRequestSigned", {
   queueName: "on-signature-request-signed",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: closeSignatureRequest
 });
 
 app.storageQueue("closeSignatureRequestRejected", {
   queueName: "on-signature-request-rejected",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: closeSignatureRequest
 });
 
@@ -356,7 +363,7 @@ const validateUpload = makeValidateUploadBlobHandler({
 
 app.storageBlob("validateUpload", {
   path: "uploaded-documents/{name}",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: validateUpload
 });
 

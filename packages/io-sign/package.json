@@ -17,6 +17,7 @@
     "dist"
   ],
   "dependencies": {
+    "@azure/core-auth": "^1.10.1",
     "@azure/event-hubs": "catalog:",
     "@azure/storage-blob": "catalog:",
     "@azure/storage-queue": "catalog:",

@@ -1,4 +1,8 @@
-import { BlobClient, ContainerClient } from "@azure/storage-blob";
+import {
+  BlobClient,
+  BlobServiceClient,
+  ContainerClient
+} from "@azure/storage-blob";
 
 import * as TE from "fp-ts/lib/TaskEither";
 
@@ -40,9 +44,14 @@ export const copyFromUrl = (source: string) => (blobClient: BlobClient) =>
   );
 export class BlobStorageFileStorage implements FileStorage {
   #containerClient: ContainerClient;
+  #blobServiceClient?: BlobServiceClient;
 
-  constructor(containerClient: ContainerClient) {
+  constructor(
+    containerClient: ContainerClient,
+    blobServiceClient?: BlobServiceClient
+  ) {
     this.#containerClient = containerClient;
+    this.#blobServiceClient = blobServiceClient;
     this.exists = this.exists.bind(this);
     this.download = this.download.bind(this);
     this.createFromUrl = this.createFromUrl.bind(this);
@@ -78,14 +87,18 @@ export class BlobStorageFileStorage implements FileStorage {
           defaultBlobGenerateSasUrlOptions(),
           withPermissions("r"),
           withExpireInMinutes(5)
-        )
+        ),
+        this.#blobServiceClient
       )
     );
   }
 }
 
 export const makeGetUploadUrl =
-  (containerClient: ContainerClient): GetUploadUrl =>
+  (
+    containerClient: ContainerClient,
+    blobServiceClient?: BlobServiceClient
+  ): GetUploadUrl =>
   (metadata) =>
     pipe(
       containerClient.getBlobClient(metadata.id),
@@ -94,7 +107,8 @@ export const makeGetUploadUrl =
           defaultBlobGenerateSasUrlOptions(),
           withPermissions("racw"),
           withExpireInMinutes(15)
-        )
+        ),
+        blobServiceClient
       ),
       TE.chainEitherKW(validate(UploadUrl, "Invalid SAS Url generated."))
     );

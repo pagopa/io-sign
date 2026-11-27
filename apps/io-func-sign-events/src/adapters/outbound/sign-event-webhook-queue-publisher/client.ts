@@ -1,4 +1,5 @@
 import { QueueClient } from "@azure/storage-queue";
+import { DefaultAzureCredential } from "@azure/identity";
 import {
   BaseError,
   GenericError,
@@ -19,13 +20,15 @@ class StorageQueueError extends BaseError {
 }
 
 export const makeSignEventWebhookQueuePublisher = (
-  { storageAccountConnectionString }: SignEventWebhookQueuePublisherConfig,
+  config: SignEventWebhookQueuePublisherConfig,
   webhookQueueName: string
 ): SignEventWebhookQueuePublisher => {
-  const webhookStorageQueue = new QueueClient(
-    storageAccountConnectionString,
-    webhookQueueName
-  );
+  const webhookStorageQueue = config.useManagedIdentity
+    ? new QueueClient(
+        `${config.queueServiceUri.replace(/\/$/, "")}/${webhookQueueName}`,
+        new DefaultAzureCredential()
+      )
+    : new QueueClient(config.connectionString, webhookQueueName);
   return {
     checkHealth: async () => {
       try {

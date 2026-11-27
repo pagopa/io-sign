@@ -1,6 +1,5 @@
 import { app } from "@azure/functions";
-import { ContainerClient } from "@azure/storage-blob";
-import { QueueClient } from "@azure/storage-queue";
+import { makeStorageClients } from "@io-sign/io-sign/infra/azure/storage/client";
 import { createPdvTokenizerClient } from "@io-sign/io-sign/infra/pdv-tokenizer/client";
 import { PdvTokenizerSignerRepository } from "@io-sign/io-sign/infra/pdv-tokenizer/signer";
 
@@ -71,45 +70,36 @@ const signEventsClient = new EventHubProducerClient(
   "io-p-itn-sign-events-01"
 );
 
-const filledContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
-  "filled-modules"
-);
+const storage = config.azure.storage;
+const storageCredential = storage.useManagedIdentity
+  ? new DefaultAzureCredential()
+  : undefined;
+const {
+  blobService,
+  queueService,
+  blobServiceClient,
+  binding: storageBinding
+} = makeStorageClients(storage, storageCredential);
 
-const documentsToFillQueue = new QueueClient(
-  config.azure.storage.connectionStringItn,
+const filledContainerClient = blobService.getContainerClient("filled-modules");
+const documentsToFillQueue = queueService.getQueueClient(
   "waiting-for-documents-to-fill"
 );
-
-const qtspQueue = new QueueClient(
-  config.azure.storage.connectionStringItn,
-  "waiting-for-qtsp"
-);
-
-const onWaitForSignatureQueueClient = new QueueClient(
-  config.azure.storage.connectionStringItn,
+const qtspQueue = queueService.getQueueClient("waiting-for-qtsp");
+const onWaitForSignatureQueueClient = queueService.getQueueClient(
   "on-signature-request-wait-for-signature"
 );
-
-const onSignedQueueClient = new QueueClient(
-  config.azure.storage.connectionStringItn,
+const onSignedQueueClient = queueService.getQueueClient(
   "on-signature-request-signed"
 );
-
-const onRejectedQueueClient = new QueueClient(
-  config.azure.storage.connectionStringItn,
+const onRejectedQueueClient = queueService.getQueueClient(
   "on-signature-request-rejected"
 );
-
-const validatedContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
+const validatedContainerClient = blobService.getContainerClient(
   "validated-documents"
 );
-
-const signedContainerClient = new ContainerClient(
-  config.azure.storage.connectionStringItn,
-  "signed-documents"
-);
+const signedContainerClient =
+  blobService.getContainerClient("signed-documents");
 
 const pdvTokenizerClient = createPdvTokenizerClient(
   config.pagopa.tokenizer.basePath,
@@ -203,7 +193,8 @@ const getSignatureRequest = GetSignatureRequestFunction({
   signatureRequestRepository,
   signerRepository,
   validatedContainerClient,
-  signedContainerClient
+  signedContainerClient,
+  blobServiceClient
 });
 
 app.http("getSignatureRequest", {
@@ -221,7 +212,7 @@ const updateSignatureRequest = UpdateSignatureRequestFunction({
 
 app.storageQueue("updateSignatureRequest", {
   queueName: "waiting-for-signature-request-updates",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: updateSignatureRequest
 });
 
@@ -234,6 +225,7 @@ const createSignature = CreateSignatureFunction({
   qtspQueue,
   validatedContainerClient,
   signedContainerClient,
+  blobServiceClient,
   qtspConfig: config.namirial
 });
 
@@ -253,7 +245,7 @@ const createSignatureRequest = CreateSignatureRequestFunction({
 
 app.storageQueue("createSignatureRequest", {
   queueName: "on-signature-request-ready",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: createSignatureRequest
 });
 
@@ -268,6 +260,7 @@ app.http("getQtspClausesMetadata", {
 
 const createFilledDocument = CreateFilledDocumentFunction({
   filledContainerClient,
+  blobServiceClient,
   documentsToFillQueue,
   signerRepository,
   getValidatedEmailByFiscalCode
@@ -314,7 +307,7 @@ const fillDocument = FillDocumentFunction({
 
 app.storageQueue("fillDocument", {
   queueName: "waiting-for-documents-to-fill",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: fillDocument
 });
 
@@ -330,6 +323,6 @@ const validateSignature = ValidateSignatureFunction({
 
 app.storageQueue("validateSignature", {
   queueName: "waiting-for-qtsp",
-  connection: "StorageAccountItnConnectionString",
+  connection: storageBinding,
   handler: validateSignature
 });

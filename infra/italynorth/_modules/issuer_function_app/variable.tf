@@ -42,3 +42,11 @@ variable "cosmosdb_account_name" {
   type        = string
   description = "Name of the Cosmos DB account"
 }
+variable "storage_account" {
+  type = object({
+    name              = string
+    resource_group    = string
+    blob_service_uri  = string
+    queue_service_uri = string
+  })
+}

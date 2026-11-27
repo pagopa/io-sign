@@ -1,7 +1,7 @@
 import * as H from "@pagopa/handler-kit";
 import { sequenceS } from "fp-ts/lib/Apply";
 
-import { ContainerClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 
 import * as RTE from "fp-ts/lib/ReaderTaskEither";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -20,11 +20,16 @@ import { requireSignatureRequestId } from "../decoders/signature-request";
 
 const grantReadAccessToDocuments =
   (request: SignatureRequestSigned) =>
-  (r: { signedContainerClient: ContainerClient }) =>
+  (r: {
+    signedContainerClient: ContainerClient;
+    blobServiceClient?: BlobServiceClient;
+  }) =>
     pipe(
       request.documents,
       A.traverse(TE.ApplicativePar)((doc) =>
-        toDocumentWithSasUrl("r", 5)(doc)(r.signedContainerClient)
+        toDocumentWithSasUrl("r", 5, r.blobServiceClient)(doc)(
+          r.signedContainerClient
+        )
       ),
       TE.map((documents): SignatureRequestSigned => ({ ...request, documents }))
     );

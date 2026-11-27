@@ -40,8 +40,9 @@ const pdndPublisher = makeSignEventPDNDPublisher(
   PDND_BILLING_EVENT_HUB_NAME,
   PDND_ANALYTICS_EVENT_HUB_NAME
 );
+const storageConfig = getSignEventWebhookQueuePublisherConfigFromEnvironment();
 const webhookQueuePublisher = makeSignEventWebhookQueuePublisher(
-  getSignEventWebhookQueuePublisherConfigFromEnvironment(),
+  storageConfig,
   WEBHOOK_QUEUE_NAME
 );
 const backofficeService = makeBackofficeService(
@@ -96,7 +97,9 @@ mountWebhookDeliveryAdapterTrigger(
       webhookQueuePublisher
     }),
   {
-    connection: "StorageAccountItnConnectionString",
+    connection: storageConfig.useManagedIdentity
+      ? "SIGN_STORAGE"
+      : "StorageAccountItnConnectionString",
     queueName: WEBHOOK_QUEUE_NAME
   }
 );

@@ -3,6 +3,8 @@ import {
   GenericError,
   ServiceUnavailableError
 } from "@pagopa/hexagonal-core/domain/errors";
+import { QueueClient } from "@azure/storage-queue";
+import { DefaultAzureCredential } from "@azure/identity";
 import { makeSignEventWebhookQueuePublisher } from "../client.js";
 import type { WebhookQueueEvent } from "../../../../domain/webhook-queue-event.js";
 
@@ -12,9 +14,13 @@ const getProperties = vi.hoisted(() => vi.fn());
 vi.mock("@azure/storage-queue", () => ({
   QueueClient: vi.fn(() => ({ sendMessage, getProperties }))
 }));
+vi.mock("@azure/identity", () => ({
+  DefaultAzureCredential: vi.fn(function () {})
+}));
 
 const config = {
-  storageAccountConnectionString: "UseDevelopmentStorage=true"
+  useManagedIdentity: false as const,
+  connectionString: "UseDevelopmentStorage=true"
 };
 
 const aWebhookQueueEvent: WebhookQueueEvent = {
@@ -40,6 +46,28 @@ describe("makeSignEventWebhookQueuePublisher", () => {
   beforeEach(() => {
     sendMessage.mockReset();
     getProperties.mockReset();
+  });
+
+  it("constructs an identity-authenticated queue client", () => {
+    makeSignEventWebhookQueuePublisher(
+      {
+        useManagedIdentity: true,
+        queueServiceUri: "https://account.queue.core.windows.net/"
+      },
+      "webhook-delivery"
+    );
+    expect(QueueClient).toHaveBeenLastCalledWith(
+      "https://account.queue.core.windows.net/webhook-delivery",
+      expect.any(DefaultAzureCredential)
+    );
+  });
+
+  it("constructs a connection-string queue client locally", () => {
+    publisher();
+    expect(QueueClient).toHaveBeenLastCalledWith(
+      "UseDevelopmentStorage=true",
+      "webhook-delivery"
+    );
   });
 
   describe("checkHealth", () => {

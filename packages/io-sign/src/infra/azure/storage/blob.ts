@@ -2,6 +2,7 @@ import {
   BlobClient,
   BlobGenerateSasUrlOptions,
   BlobSASPermissions,
+  BlobServiceClient,
   ContainerClient,
   SASProtocol
 } from "@azure/storage-blob";
@@ -52,14 +53,33 @@ export const withExpireInMinutes = (minutes: number) =>
     }))
   );
 
-export const generateSasUrlFromBlob = (options: BlobGenerateSasUrlOptions) =>
+export const generateSasUrlFromBlob = (
+  options: BlobGenerateSasUrlOptions,
+  blobServiceClient?: BlobServiceClient
+) =>
   pipe(
     RTE.ask<BlobClient>(),
     RTE.chainTaskEitherK((blobClient) =>
       TE.tryCatch(
-        () => blobClient.generateSasUrl(options),
-        () =>
-          new Error("Unable to generate the SAS Url for the specified Blob.")
+        async () => {
+          if (!blobServiceClient) {
+            return blobClient.generateSasUrl(options);
+          }
+          if (!options.startsOn || !options.expiresOn) {
+            throw new Error(
+              "A start and expiry time are required for a user delegation SAS"
+            );
+          }
+          const key = await blobServiceClient.getUserDelegationKey(
+            options.startsOn,
+            options.expiresOn
+          );
+          return blobClient.generateUserDelegationSasUrl(options, key);
+        },
+        (cause) =>
+          new Error("Unable to generate the SAS Url for the specified Blob.", {
+            cause
+          })
       )
     )
   );

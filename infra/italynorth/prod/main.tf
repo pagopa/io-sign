@@ -19,6 +19,7 @@ module "function_sign_issuer" {
   function_issuer_autoscale_maximum = local.function_issuer_autoscale_maximum
   function_issuer_autoscale_default = local.function_issuer_autoscale_default
   cosmosdb_account_name             = module.cosmos_io_sign.name
+  storage_account                   = module.storage_io_sign.account
   tags                              = local.tags
 }
 
@@ -31,6 +32,7 @@ module "function_sign_user_02" {
   function_user_02_autoscale_maximum = local.function_user_02_autoscale_maximum
   function_user_02_autoscale_default = local.function_user_02_autoscale_default
   cosmosdb_account_name              = module.cosmos_io_sign.name
+  storage_account                    = module.storage_io_sign.account
   tags                               = local.tags
 }
 
@@ -54,6 +56,7 @@ module "function_sign_events" {
   function_events_autoscale_minimum = local.function_events_autoscale_minimum
   function_events_autoscale_maximum = local.function_events_autoscale_maximum
   function_events_autoscale_default = local.function_events_autoscale_default
+  storage_account                   = module.storage_io_sign.account
   tags                              = local.tags
 }
 

@@ -13,6 +13,8 @@ locals {
       FUNCTIONS_WORKER_PROCESS_COUNT                   = 4
       AzureWebJobsDisableHomepage                      = "true"
       NODE_ENV                                         = "production"
+      USE_STORAGE_MANAGED_IDENTITY                     = "true"
+      SIGN_STORAGE__queueServiceUri                    = var.storage_account.queue_service_uri
       StorageAccountItnConnectionString                = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=STORAGE-ACCOUNT-ITN-CONNECTION-STRING)"
       SignEventsHubItnConnectionString                 = "@Microsoft.KeyVault(VaultName=${data.azurerm_key_vault.sign_kv.name};SecretName=SignEventsHubItnConnectionString)"
       BackofficeFuncBaseUrl                            = "https://${data.azurerm_linux_function_app.backoffice_func.default_hostname}"

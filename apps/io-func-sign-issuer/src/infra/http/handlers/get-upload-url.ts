@@ -10,7 +10,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { lookup } from "fp-ts/lib/Record";
 
 import { Database } from "@azure/cosmos";
-import { ContainerClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 
 import { DocumentId } from "@io-sign/io-sign/document";
 import { EntityNotFoundError } from "@io-sign/io-sign/error";
@@ -28,6 +28,7 @@ import { requireSignatureRequestId } from "../decoders/signature-request";
 type GetUploadUrlDependencies = {
   db: Database;
   uploadedContainerClient: ContainerClient;
+  blobServiceClient?: BlobServiceClient;
   issuerRepository: IssuerRepository;
 };
 
@@ -52,7 +53,11 @@ export const GetUploadUrlHandler = H.of((req: H.HttpRequest) =>
     }),
     RTE.chainW(
       ({ signatureRequestId, issuer, documentId }) =>
-        ({ db, uploadedContainerClient }: GetUploadUrlDependencies) =>
+        ({
+          db,
+          uploadedContainerClient,
+          blobServiceClient
+        }: GetUploadUrlDependencies) =>
           pipe(
             makeGetSignatureRequest(db)(signatureRequestId)(issuer.id),
             TE.chain(
@@ -66,7 +71,7 @@ export const GetUploadUrlHandler = H.of((req: H.HttpRequest) =>
             TE.chain((signatureRequest) =>
               makeGetUploadUrlUseCase(
                 makeInsertUploadMetadata(db),
-                makeGetUploadUrl(uploadedContainerClient)
+                makeGetUploadUrl(uploadedContainerClient, blobServiceClient)
               )({ signatureRequest, documentId })
             )
           )

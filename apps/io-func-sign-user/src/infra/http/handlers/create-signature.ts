@@ -10,7 +10,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { Database as CosmosDatabase } from "@azure/cosmos";
 import { QueueClient } from "@azure/storage-queue";
-import { ContainerClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 
 import { DocumentReady } from "@io-sign/io-sign/document";
 import { getDocumentUrl } from "@io-sign/io-sign/infra/azure/storage/document-url";
@@ -85,6 +85,7 @@ export type CreateSignatureDependencies = {
   qtspQueue: QueueClient;
   validatedContainerClient: ContainerClient;
   signedContainerClient: ContainerClient;
+  blobServiceClient?: BlobServiceClient;
   qtspConfig: NamirialConfig;
 };
 
@@ -121,6 +122,7 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
           qtspQueue,
           validatedContainerClient,
           signedContainerClient,
+          blobServiceClient,
           qtspConfig
         }: CreateSignatureDependencies) => {
           const getValidatedEmailByFiscalCode =
@@ -137,12 +139,18 @@ export const CreateSignatureHandler = H.of((req: H.HttpRequest) =>
 
           const getDownloadDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
-          ) => getDocumentUrl("r", 60)(document)(validatedContainerClient);
+          ) =>
+            getDocumentUrl("r", 60, blobServiceClient)(document)(
+              validatedContainerClient
+            );
 
           const getUploadSignedDocumentUrl: GetDocumentUrl = (
             document: DocumentReady
           ) =>
-            pipe(document, getDocumentUrl("racw", 60))(signedContainerClient);
+            pipe(
+              document,
+              getDocumentUrl("racw", 60, blobServiceClient)
+            )(signedContainerClient);
 
           const createSignature = makeCreateSignature(
             signerRepository,
