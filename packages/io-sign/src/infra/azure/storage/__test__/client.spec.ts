@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { NonEmptyString } from "@pagopa/ts-commons/lib/strings";
 import { makeStorageClients } from "../client";
 
 describe("storage clients", () => {
+  afterEach(() => vi.restoreAllMocks());
+
   it("uses the connection string and legacy binding locally", () => {
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const clients = makeStorageClients({
       useManagedIdentity: false,
       connectionString: "UseDevelopmentStorage=true" as NonEmptyString
@@ -12,9 +15,15 @@ describe("storage clients", () => {
     expect(clients.blobService.url).toContain("127.0.0.1:10000");
     expect(clients.queueService.url).toContain("127.0.0.1:10001");
     expect(clients.blobServiceClient).toBeUndefined();
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "Creating Storage clients with a connection string"
+      )
+    );
   });
 
   it("uses identity endpoints and binding for Azure", () => {
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
     const credential = {
       getToken: async () => ({
         token: "test",
@@ -39,6 +48,9 @@ describe("storage clients", () => {
       "https://account.queue.core.windows.net/"
     );
     expect(clients.blobServiceClient).toBe(clients.blobService);
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining("Creating Storage clients with managed identity")
+    );
   });
 
   it("rejects managed identity without credentials", () => {
